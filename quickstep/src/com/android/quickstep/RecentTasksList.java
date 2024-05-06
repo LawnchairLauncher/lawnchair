@@ -23,12 +23,10 @@ import static com.android.quickstep.util.SplitScreenUtils.convertShellSplitBound
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 import static com.android.wm.shell.util.GroupedRecentTaskInfo.TYPE_FREEFORM;
 
-import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.TaskInfo;
 import android.content.ComponentName;
-import android.os.Build;
 import android.os.Process;
 import android.os.RemoteException;
 import android.util.SparseBooleanArray;
@@ -53,7 +51,6 @@ import java.util.stream.Collectors;
 /**
  * Manages the recent task list from the system, caching it as necessary.
  */
-@TargetApi(Build.VERSION_CODES.R)
 public class RecentTasksList {
 
     private static final TaskLoadResult INVALID_RESULT = new TaskLoadResult(-1, false, 0);

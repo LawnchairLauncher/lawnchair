@@ -85,7 +85,9 @@ final class BackGestureTutorialController extends TutorialController {
     public int getSuccessFeedbackSubtitle() {
         return mTutorialFragment.isAtFinalStep()
                 ? R.string.back_gesture_feedback_complete_without_follow_up
-                : R.string.back_gesture_feedback_complete_with_overview_follow_up;
+                : ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                        ? R.string.back_gesture_feedback_complete_with_follow_up
+                        : R.string.back_gesture_feedback_complete_with_overview_follow_up;
     }
 
     @Override

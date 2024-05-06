@@ -25,14 +25,13 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.IRecentsAnimationController;
-import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.view.WindowManagerGlobal;
 import android.window.PictureInPictureSurfaceTransaction;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
+import com.android.internal.jank.Cuj;
 import com.android.internal.os.IResultReceiver;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
@@ -183,10 +182,9 @@ public class RecentsAnimationController {
                     });
                 }
             });
-            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
-            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
-            InteractionJankMonitorWrapper.end(
-                    InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME);
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
         };
         if (forceFinish) {
             finishCb.run();

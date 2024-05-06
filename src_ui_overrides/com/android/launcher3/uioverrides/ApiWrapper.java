@@ -19,9 +19,11 @@ package com.android.launcher3.uioverrides;
 import android.app.ActivityOptions;
 import android.app.Person;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.ArrayMap;
@@ -29,6 +31,7 @@ import android.util.ArrayMap;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.UserIconInfo;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +82,39 @@ public class ApiWrapper {
         }
         return users;
     }
+
+    /**
+     * Returns the list of the system packages that are installed at user creation.
+     * An empty list denotes that all system packages are installed for that user at creation.
+     */
+    public static List<String> getPreInstalledSystemPackages(Context context, UserHandle user) {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Returns an intent which can be used to start the App Market activity (Installer
+     * Activity).
+     */
+    public static Intent getAppMarketActivityIntent(Context context, String packageName,
+            UserHandle user) {
+        return new Intent(Intent.ACTION_VIEW)
+                .setData(new Uri.Builder()
+                        .scheme("market")
+                        .authority("details")
+                        .appendQueryParameter("id", packageName)
+                        .build())
+                .putExtra(Intent.EXTRA_REFERRER, new Uri.Builder().scheme("android-app")
+                        .authority(context.getPackageName()).build());
+    }
+
+    /**
+     * Checks if an activity is flagged as non-resizeable.
+     */
+    public static boolean isNonResizeableActivity(LauncherActivityInfo lai) {
+        // Overridden in quickstep
+        return false;
+    }
+
 
     private static class NoopDrawable extends ColorDrawable {
         @Override

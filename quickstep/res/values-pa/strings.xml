@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸੱਜੇ ਜਾਂ ਖੱਬੇ ਪਾਸੇ ਦੇ ਬਿਲਕੁਲ ਕਿਨਾਰੇ ਤੋਂ ਸਵਾਈਪ ਕਰਦੇ ਹੋ"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸੱਜੇ ਜਾਂ ਖੱਬੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ ਸਵਾਈਪ ਕਰਦੇ ਹੋ ਅਤੇ ਛੱਡ ਦਿੰਦੇ ਹੋ"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ਤੁਸੀਂ ਪਿੱਛੇ ਜਾਣ ਲਈ ਸੱਜੇ ਪਾਸੇ ਤੋਂ ਸਵਾਈਪ ਕਰਨ ਦਾ ਤਰੀਕਾ ਜਾਣਿਆ। ਅੱਗੇ, ਐਪਾਂ ਵਿਚਾਲੇ ਸਵਿੱਚ ਕਰਨ ਦਾ ਤਰੀਕਾ ਜਾਣੋ।"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"ਤੁਸੀਂ \'ਵਾਪਸ ਜਾਓ\' ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ। ਅੱਗੇ, ਜਾਣੋ ਕਿ ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਕਿਵੇਂ ਕਰਨੀ ਹੈ।"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"ਤੁਸੀਂ \'ਵਾਪਸ ਜਾਓ\' ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਹਿੱਸੇ ਦੇ ਬਹੁਤ ਨੇੜੇ ਸਵਾਈਪ ਨਾ ਕਰੋ"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ਪਿੱਛੇ ਜਾਣ ਦੇ ਸੰਕੇਤ ਦੀ ਸੰਵੇਦਨਸ਼ੀਲਤਾ ਬਦਲਣ ਲਈ, ਸੈਟਿੰਗਾਂ \'ਤੇ ਜਾਓ"</string>
@@ -95,6 +96,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ਸਕ੍ਰੀਨਸ਼ਾਟ"</string>
     <string name="action_split" msgid="2098009717623550676">"ਸਪਲਿਟ"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ ਨੂੰ ਵਰਤਣ ਲਈ ਕਿਸੇ ਹੋਰ ਐਪ \'ਤੇ ਟੈਪ ਕਰੋ"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ ਵਰਤਣ ਲਈ ਕਿਸੇ ਹੋਰ ਐਪ ਨੂੰ ਚੁਣੋ"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"ਰੱਦ ਕਰੋ"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ ਦੀ ਚੋਣ ਤੋਂ ਬਾਹਰ ਜਾਓ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ ਵਰਤਣ ਲਈ ਕਿਸੇ ਹੋਰ ਐਪ ਨੂੰ ਚੁਣੋ"</string>
@@ -106,11 +108,13 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ਛੱਡੋ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ਸਕ੍ਰੀਨ ਘੁਮਾਓ"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ਟਾਸਕਬਾਰ ਸਿੱਖਿਆ"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ਇੱਕੋ ਸਮੇਂ \'ਤੇ 2 ਐਪਾਂ ਵਰਤਣ ਲਈ, ਐਪ ਨੂੰ ਪਾਸੇ ਵੱਲ ਘਸੀਟੋ"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ਟਾਸਕਬਾਰ ਦਿਖਾਉਣ ਲਈ ਥੋੜ੍ਹਾ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰੋ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ਇੱਕੋ ਵੇਲੇ 2 ਐਪਾਂ ਵਰਤਣ ਲਈ, ਕਿਸੇ ਐਪ ਨੂੰ ਸਾਈਡ \'ਤੇ ਘਸੀਟੋ"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ਟਾਸਕਬਾਰ ਦਿਖਾਉਣ ਲਈ ਹੌਲੀ ਜਿਹੀ ਉੱਤੇ ਵੱਲ ਸਵਾਈਪ ਕਰੋ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ਤੁਹਾਡੇ ਨਿਯਮਬੱਧ ਕੰਮ ਦੇ ਆਧਾਰ \'ਤੇ ਐਪ ਸੁਝਾਅ ਪ੍ਰਾਪਤ ਕਰੋ"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"ਟਾਸਕਬਾਰ \'ਤੇ ਪਿੰਨ ਕਰਨ ਲਈ ਵਿਭਾਜਕ \'ਤੇ ਦਬਾਈ ਰੱਖੋ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ਟਾਸਕਬਾਰ ਦਾ ਹੋਰ ਲਾਹਾ ਲਓ"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ਹਮੇਸ਼ਾਂ ਟਾਸਕਬਾਰ ਦਿਖਾਉਣਾ"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ਆਪਣੀ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਟਾਸਕਬਾਰ ਨੂੰ ਹਮੇਸ਼ਾਂ ਦਿਖਾਉਣ ਲਈ, ਵੰਡੋ ਨੂੰ ਸਪਰਸ਼ ਕਰ ਕੇ ਰੱਖੋ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ਬੰਦ ਕਰੋ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ਸਮਝ ਲਿਆ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ਘਰ"</string>

@@ -21,10 +21,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.LauncherActivityInterface;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 
 public class LayoutUtils {
 
@@ -40,7 +40,7 @@ public class LayoutUtils {
     }
 
     public static int getShelfTrackingDistance(Context context, DeviceProfile dp,
-            PagedOrientationHandler orientationHandler) {
+            RecentsPagedOrientationHandler orientationHandler) {
         // Track the bottom of the window.
         Rect taskSize = new Rect();
         LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, taskSize,

@@ -49,7 +49,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
 import com.android.launcher3.model.BgDataModel;
@@ -211,10 +210,7 @@ public class PreviewSurfaceRenderer {
             return new ContextThemeWrapper(context,
                     Themes.getActivityThemeRes(context));
         }
-        if (Utilities.ATLEAST_R) {
-            context = context.createWindowContext(
-                    LayoutParams.TYPE_APPLICATION_OVERLAY, null);
-        }
+        context = context.createWindowContext(LayoutParams.TYPE_APPLICATION_OVERLAY, null);
         LocalColorExtractor.newInstance(context)
                 .applyColorsOverride(context, mWallpaperColors);
         return new ContextThemeWrapper(context,
@@ -259,7 +255,7 @@ public class PreviewSurfaceRenderer {
                         query += " or " + LauncherSettings.Favorites.SCREEN + " = "
                                 + Workspace.SECOND_SCREEN_ID;
                     }
-                    loadWorkspace(new ArrayList<>(), query, null);
+                    loadWorkspace(new ArrayList<>(), query, null, null);
 
                     final SparseArray<Size> spanInfo =
                             getLoadedLauncherWidgetInfo(previewContext.getBaseContext());

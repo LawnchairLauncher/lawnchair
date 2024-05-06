@@ -281,7 +281,15 @@ public class RectFSpringAnim extends ReleaseCheck {
             if (mRectScaleAnim.canSkipToEnd()) {
                 mRectScaleAnim.skipToEnd();
             }
+            mCurrentScaleProgress = mRectScaleAnim.getSpring().getFinalPosition();
+
+            // Ensures that we end the animation with the final values.
+            mRectXAnimEnded = false;
+            mRectYAnimEnded = false;
+            mRectScaleAnimEnded = false;
+            onUpdate();
         }
+
         mRectXAnimEnded = true;
         mRectYAnimEnded = true;
         mRectScaleAnimEnded = true;

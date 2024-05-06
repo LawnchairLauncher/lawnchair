@@ -159,7 +159,7 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
                     "maxSize=2147483647), " +
                     "cellSize=SizeSpec(fixedSize=0.0, " +
                     "ofAvailableSpace=0.0, " +
-                    "ofRemainderSpace=0.25, " +
+                    "ofRemainderSpace=1.0, " +
                     "matchWorkspace=false, " +
                     "maxSize=2147483647)" +
                     ")"

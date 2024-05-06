@@ -37,6 +37,7 @@ import android.util.FloatProperty;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Utilities;
@@ -71,7 +72,8 @@ public class PreviewItemManager {
 
     private final Context mContext;
     private final FolderIcon mIcon;
-    private final int mIconSize;
+    @VisibleForTesting
+    public final int mIconSize;
 
     // These variables are all associated with the drawing of the preview; they are stored
     // as member variables for shared usage and to avoid computation on each frame
@@ -117,7 +119,7 @@ public class PreviewItemManager {
             final Runnable onCompleteRunnable) {
         return reverse
                 ? new FolderPreviewItemAnim(this, mFirstPageParams.get(0), 0, 2, -1, -1,
-                        FINAL_ITEM_ANIMATION_DURATION, onCompleteRunnable)
+                FINAL_ITEM_ANIMATION_DURATION, onCompleteRunnable)
                 : new FolderPreviewItemAnim(this, mFirstPageParams.get(0), -1, -1, 0, 2,
                         INITIAL_ITEM_ANIMATION_DURATION, onCompleteRunnable);
     }
@@ -217,9 +219,9 @@ public class PreviewItemManager {
     /**
      * Draws each preview item.
      *
-     * @param offset The offset needed to draw the preview items.
+     * @param offset         The offset needed to draw the preview items.
      * @param shouldClipPath Iff true, clip path using {@param clipPath}.
-     * @param clipPath The clip path of the folder icon.
+     * @param clipPath       The clip path of the folder icon.
      */
     private void drawPreviewItem(Canvas canvas, PreviewItemDrawingParams params, PointF offset,
             boolean shouldClipPath, Path clipPath) {
@@ -360,13 +362,13 @@ public class PreviewItemManager {
 
     /**
      * Handles the case where items in the preview are either:
-     *  - Moving into the preview
-     *  - Moving into a new position
-     *  - Moving out of the preview
+     * - Moving into the preview
+     * - Moving into a new position
+     * - Moving out of the preview
      *
      * @param oldItems The list of items in the old preview.
      * @param newItems The list of items in the new preview.
-     * @param dropped The item that was dropped onto the FolderIcon.
+     * @param dropped  The item that was dropped onto the FolderIcon.
      */
     public void onDrop(List<WorkspaceItemInfo> oldItems, List<WorkspaceItemInfo> newItems,
             WorkspaceItemInfo dropped) {
@@ -428,11 +430,11 @@ public class PreviewItemManager {
         p.anim = anim;
     }
 
-    private void setDrawable(PreviewItemDrawingParams p, WorkspaceItemInfo item) {
+    @VisibleForTesting
+    public void setDrawable(PreviewItemDrawingParams p, WorkspaceItemInfo item) {
         if (item.hasPromiseIconUi() || (item.runtimeStatusFlags
-                    & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
+                & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
             PreloadIconDrawable drawable = newPendingIcon(mContext, item);
-            drawable.setLevel(item.getProgressLevel());
             p.drawable = drawable;
         } else {
             p.drawable = item.newIcon(mContext,
@@ -440,7 +442,6 @@ public class PreviewItemManager {
         }
         p.drawable.setBounds(0, 0, mIconSize, mIconSize);
         p.item = item;
-
         // Set the callback to FolderIcon as it is responsible to drawing the icon. The
         // callback will be released when the folder is opened.
         p.drawable.setCallback(mIcon);

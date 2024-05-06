@@ -53,6 +53,7 @@ import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 
 import java.lang.annotation.Retention;
 import java.util.function.IntConsumer;
@@ -75,7 +76,8 @@ public class RecentsOrientedState implements
     @IntDef({ROTATION_0, ROTATION_90, ROTATION_180, ROTATION_270})
     public @interface SurfaceRotation {}
 
-    private PagedOrientationHandler mOrientationHandler = PagedOrientationHandler.PORTRAIT;
+    private RecentsPagedOrientationHandler mOrientationHandler =
+            RecentsPagedOrientationHandler.PORTRAIT;
 
     private @SurfaceRotation int mTouchRotation = ROTATION_0;
     private @SurfaceRotation int mDisplayRotation = ROTATION_0;
@@ -225,13 +227,13 @@ public class RecentsOrientedState implements
     private boolean updateHandler() {
         mRecentsActivityRotation = inferRecentsActivityRotation(mDisplayRotation);
         if (mRecentsActivityRotation == mTouchRotation || isRecentsActivityRotationAllowed()) {
-            mOrientationHandler = PagedOrientationHandler.PORTRAIT;
+            mOrientationHandler = RecentsPagedOrientationHandler.PORTRAIT;
         } else if (mTouchRotation == ROTATION_90) {
-            mOrientationHandler = PagedOrientationHandler.LANDSCAPE;
+            mOrientationHandler = RecentsPagedOrientationHandler.LANDSCAPE;
         } else if (mTouchRotation == ROTATION_270) {
-            mOrientationHandler = PagedOrientationHandler.SEASCAPE;
+            mOrientationHandler = RecentsPagedOrientationHandler.SEASCAPE;
         } else {
-            mOrientationHandler = PagedOrientationHandler.PORTRAIT;
+            mOrientationHandler = RecentsPagedOrientationHandler.PORTRAIT;
         }
         if (DEBUG) {
             Log.d(TAG, "current RecentsOrientedState: " + this);
@@ -413,7 +415,7 @@ public class RecentsOrientedState implements
         return scale;
     }
 
-    public PagedOrientationHandler getOrientationHandler() {
+    public RecentsPagedOrientationHandler getOrientationHandler() {
         return mOrientationHandler;
     }
 

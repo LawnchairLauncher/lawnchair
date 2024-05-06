@@ -19,21 +19,19 @@ import static android.os.VibrationEffect.Composition.PRIMITIVE_LOW_TICK;
 import static android.os.VibrationEffect.createPredefined;
 import static android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED;
 
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT;
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT;
+import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_DELAY;
+import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_END_SCALE_PERCENT;
+import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_ITERATIONS;
+import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_SCALE_EXPONENT;
+import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_START_SCALE_PERCENT;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.media.AudioAttributes;
-import android.os.Build;
 import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -41,14 +39,12 @@ import android.provider.Settings;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 
 /**
  * Wrapper around {@link Vibrator} to easily perform haptic feedback where necessary.
  */
-@TargetApi(Build.VERSION_CODES.Q)
 public class VibratorWrapper {
 
     public static final MainThreadInitializedObject<VibratorWrapper> INSTANCE =
@@ -138,7 +134,7 @@ public class VibratorWrapper {
             mThresholdUntilNextDragCallMillis = 0;
         }
 
-        if (Utilities.ATLEAST_R && mVibrator.areAllPrimitivesSupported(
+        if (mVibrator.areAllPrimitivesSupported(
                 VibrationEffect.Composition.PRIMITIVE_QUICK_RISE,
                 VibrationEffect.Composition.PRIMITIVE_TICK)) {
             if (FeatureFlags.ENABLE_SEARCH_HAPTIC_HINT.get()) {
@@ -226,8 +222,7 @@ public class VibratorWrapper {
     public void vibrate(int primitiveId, float primitiveScale, VibrationEffect fallbackEffect) {
         if (mHasVibrator && mIsHapticFeedbackEnabled) {
             UI_HELPER_EXECUTOR.execute(() -> {
-                if (Utilities.ATLEAST_R && primitiveId >= 0
-                        && mVibrator.areAllPrimitivesSupported(primitiveId)) {
+                if (primitiveId >= 0 && mVibrator.areAllPrimitivesSupported(primitiveId)) {
                     mVibrator.vibrate(VibrationEffect.startComposition()
                             .addPrimitive(primitiveId, primitiveScale)
                             .compose(), VIBRATION_ATTRS);
@@ -261,17 +256,11 @@ public class VibratorWrapper {
     public void vibrateForSearchHint() {
         if (FeatureFlags.ENABLE_SEARCH_HAPTIC_HINT.get() && Utilities.ATLEAST_S
                 && mVibrator.areAllPrimitivesSupported(PRIMITIVE_LOW_TICK)) {
-            LauncherPrefs launcherPrefs = LauncherPrefs.get(mContext);
-            float startScale = launcherPrefs.get(
-                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT) / 100f;
-            float endScale = launcherPrefs.get(
-                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT) / 100f;
-            int scaleExponent = launcherPrefs.get(
-                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT);
-            int iterations = launcherPrefs.get(
-                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS);
-            int delayMs = launcherPrefs.get(
-                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY);
+            float startScale = LPNH_HAPTIC_HINT_START_SCALE_PERCENT.get() / 100f;
+            float endScale = LPNH_HAPTIC_HINT_END_SCALE_PERCENT.get() / 100f;
+            int scaleExponent = LPNH_HAPTIC_HINT_SCALE_EXPONENT.get();
+            int iterations = LPNH_HAPTIC_HINT_ITERATIONS.get();
+            int delayMs = LPNH_HAPTIC_HINT_DELAY.get();
 
             VibrationEffect.Composition composition = VibrationEffect.startComposition();
             for (int i = 0; i < iterations; i++) {

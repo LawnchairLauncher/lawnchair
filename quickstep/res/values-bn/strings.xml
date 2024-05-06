@@ -21,7 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"পিন করুন"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ফ্রি-ফর্ম"</string>
-    <string name="recents_empty_message" msgid="7040467240571714191">"কোনো সাম্প্রতিক আইটেম নেই"</string>
+    <string name="recents_empty_message" msgid="7040467240571714191">"কোনও সাম্প্রতিক আইটেম নেই"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"অ্যাপ ব্যবহারের সেটিংস"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"সবকিছু খালি করুন"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"সম্প্রতি ব্যবহৃত অ্যাপ"</string>
@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"স্ক্রিনের একেবারে ডান বা বাঁদিকের প্রান্ত থেকে সোয়াইপ করেছেন কিনা তা দেখে নিন"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"স্ক্রিনের ডান বা বাঁদিকের প্রান্ত থেকে মাঝখান পর্যন্ত সোয়াইপ করেছেন কিনা দেখে নিয়ে আঙুল তুলে নিন"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ফিরে যেতে, কীভাবে ডানদিক থেকে সোয়াইপ করতে হয় তা আপনি শিখেছেন। এরপর, একটি অ্যাপ থেকে অন্য অ্যাপে কীভাবে যাবেন জেনে নিন।"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"আপনি ফিরে যাওয়ার জেসচার সম্পর্কে জেনেছেন। এরপর, একটি অ্যাপ থেকে অন্য অ্যাপে কীভাবে যাবেন জেনে নিন।"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"আপনি জেনেছেন হাতের জেসচার ব্যবহার করে আগের স্ক্রিনে কীভাবে ফিরে যাওয়া যায়"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"স্ক্রিনের নিচের প্রান্তের খুব কাছে পর্যন্ত যাতে সোয়াইপ না করেন সেটি ভাল করে দেখে নিন"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ফিরে যাওয়ার জেসচারের সেন্সিটিভিটি পরিবর্তন করতে, সেটিংসে যান"</string>
@@ -95,6 +96,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"স্ক্রিনশট নিন"</string>
     <string name="action_split" msgid="2098009717623550676">"স্প্লিট"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"স্প্লিট স্ক্রিন ব্যবহারের জন্য অ্যাপে ট্যাপ করুন"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"স্প্লিট স্ক্রিন ব্যবহার করতে অন্য অ্যাপ বেছে নিন"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"বাতিল করুন"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"স্প্লিট স্ক্রিন বেছে নেওয়ার বিকল্প থেকে বেরিয়ে আসুন"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"স্প্লিট স্ক্রিন ব্যবহার করতে অন্য অ্যাপ বেছে নিন"</string>
@@ -107,10 +109,12 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"স্ক্রিন ঘোরান"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"টাস্কবার এডুকেশন"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"একসাথে ২টি অ্যাপ ব্যবহার করতে একটি অ্যাপ পাশে টেনে আনুন"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"\'টাস্কবার\' দেখানোর জন্য উপরের দিকে আস্তে সোয়াইপ করুন"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"\'টাস্কবার\' দেখার জন্য উপরের দিকে ধীরে সোয়াইপ করুন"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"আপনার রুটিন অনুযায়ী অ্যাপ থেকে সাজেশন পান"</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"টাস্কবার পিন করতে, ড্রাইভার বেশ কিছুক্ষণ প্রেস করে রাখুন"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"\'টাস্কবার\' পিন করতে, ডিভাইডার বেশ কিছুক্ষণ প্রেস করে রাখুন"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"\'টাস্কবার\' ফিচারের সাহায্যে আরও অনেক কিছু করুন"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"টাস্কবার সবসময় দেখানো"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"স্ক্রিনের নিচে টাস্কবার সবসময় দেখাতে ডিভাইডার টাচ করে ধরে থাকুন"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"বন্ধ করুন"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"হয়ে গেছে"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"হোম"</string>

@@ -197,11 +197,10 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
     /**
      * Scrolls this recycler view to the bottom with easing and duration.
      */
-    public void scrollToBottomWithMotion() {
+    public void scrollToBottomWithMotion(int duration) {
         if (mScrollbar != null) {
             mScrollbar.reattachThumbToScroll();
         }
-        // Emphasized interpolators with 500ms duration
-        smoothScrollBy(0, getAvailableScrollHeight(), Interpolators.EMPHASIZED, 500);
+        smoothScrollBy(0, getAvailableScrollHeight(), Interpolators.EMPHASIZED, duration);
     }
 }

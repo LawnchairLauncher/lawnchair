@@ -47,9 +47,9 @@ import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.popup.SystemShortcut.AppInfo;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -281,7 +281,7 @@ public interface TaskShortcutFactory {
             final int intentFlags = task.key.baseIntent.getFlags();
             final TaskView taskView = taskContainer.getTaskView();
             final RecentsView recentsView = taskView.getRecentsView();
-            final PagedOrientationHandler orientationHandler =
+            final RecentsPagedOrientationHandler orientationHandler =
                     recentsView.getPagedOrientationHandler();
 
             boolean notEnoughTasksToSplit =

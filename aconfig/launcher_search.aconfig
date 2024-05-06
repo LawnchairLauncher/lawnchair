@@ -14,3 +14,31 @@ flag {
     description: "This flag enables the animation of the Private Space container"
     bug: "299294792"
 }
+
+flag {
+    name: "private_space_sys_apps_separation"
+    namespace: "launcher_search"
+    description: "This flag enables showing system apps separate in Private Space container."
+    bug: "308054233"
+}
+
+flag {
+    name: "private_space_app_installer_button"
+    namespace: "launcher_search"
+    description: "This flag enables addition of App Installer button in Private Space container."
+    bug: "308064949"
+}
+
+flag {
+    name: "private_space_restrict_accessibility_drag"
+    namespace: "launcher_search"
+    description: "This flag disables accessibility drag for Private Space Apps."
+    bug: "289223923"
+}
+
+flag {
+    name: "private_space_restrict_item_drag"
+    namespace: "launcher_search"
+    description: "This flag disables drag and drop for Private Space Items."
+    bug: "289223923"
+}

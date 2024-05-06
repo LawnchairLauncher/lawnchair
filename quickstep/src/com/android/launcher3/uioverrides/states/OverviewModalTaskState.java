@@ -62,12 +62,6 @@ public class OverviewModalTaskState extends OverviewState {
     @Override
     public void onBackPressed(Launcher launcher) {
         launcher.getStateManager().goToState(LauncherState.OVERVIEW);
-        RecentsView recentsView = launcher.<RecentsView>getOverviewPanel();
-        if (recentsView != null) {
-            recentsView.resetModalVisuals();
-        } else {
-            super.onBackPressed(launcher);
-        }
     }
 
     @Override

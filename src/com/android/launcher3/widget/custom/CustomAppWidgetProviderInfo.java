@@ -33,13 +33,9 @@ import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
         implements Parcelable {
 
-    public final String providerId;
-
-    protected CustomAppWidgetProviderInfo(Parcel parcel, boolean readSelf, String providerId) {
+    protected CustomAppWidgetProviderInfo(Parcel parcel, boolean readSelf) {
         super(parcel);
         if (readSelf) {
-            this.providerId = parcel.readString();
-
             provider = new ComponentName(parcel.readString(),
                     CLS_CUSTOM_WIDGET_PREFIX + parcel.readString());
 
@@ -53,8 +49,6 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
             spanY = parcel.readInt();
             minSpanX = parcel.readInt();
             minSpanY = parcel.readInt();
-        } else {
-            this.providerId = providerId;
         }
     }
 
@@ -77,7 +71,6 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
     @Override
     public void writeToParcel(Parcel out, int flags) {
         super.writeToParcel(out, flags);
-        out.writeString(providerId);
         out.writeString(provider.getPackageName());
         out.writeString(provider.getClassName());
 
@@ -93,12 +86,12 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
         out.writeInt(minSpanY);
     }
 
-    public static final Parcelable.Creator<CustomAppWidgetProviderInfo> CREATOR
-            = new Parcelable.Creator<CustomAppWidgetProviderInfo>() {
+    public static final Parcelable.Creator<CustomAppWidgetProviderInfo> CREATOR =
+            new Parcelable.Creator<>() {
 
         @Override
         public CustomAppWidgetProviderInfo createFromParcel(Parcel parcel) {
-            return new CustomAppWidgetProviderInfo(parcel, true, "");
+            return new CustomAppWidgetProviderInfo(parcel, true);
         }
 
         @Override

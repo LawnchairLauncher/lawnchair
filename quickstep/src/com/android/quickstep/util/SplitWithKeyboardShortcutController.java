@@ -35,6 +35,7 @@ import androidx.annotation.BinderThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -43,6 +44,7 @@ import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.TopTaskTracker;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.Task;
@@ -53,6 +55,7 @@ public class SplitWithKeyboardShortcutController {
 
     private final QuickstepLauncher mLauncher;
     private final SplitSelectStateController mController;
+    private final RecentsAnimationDeviceState mDeviceState;
     private final OverviewComponentObserver mOverviewComponentObserver;
 
     private final int mSplitPlaceholderSize;
@@ -62,10 +65,9 @@ public class SplitWithKeyboardShortcutController {
             SplitSelectStateController controller) {
         mLauncher = launcher;
         mController = controller;
-        RecentsAnimationDeviceState deviceState = new RecentsAnimationDeviceState(
-                launcher.getApplicationContext());
+        mDeviceState = new RecentsAnimationDeviceState(launcher.getApplicationContext());
         mOverviewComponentObserver = new OverviewComponentObserver(launcher.getApplicationContext(),
-                deviceState);
+                mDeviceState);
 
         mSplitPlaceholderSize = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.split_placeholder_size);
@@ -75,7 +77,9 @@ public class SplitWithKeyboardShortcutController {
 
     @BinderThread
     public void enterStageSplit(boolean leftOrTop) {
-        if (!enableSplitContextually()) {
+        if (!enableSplitContextually() ||
+                // Do not enter stage split from keyboard shortcuts if the user is already in split
+                TopTaskTracker.INSTANCE.get(mLauncher).getRunningSplitTaskIds().length == 2) {
             return;
         }
         RecentsAnimationCallbacks callbacks = new RecentsAnimationCallbacks(
@@ -97,6 +101,7 @@ public class SplitWithKeyboardShortcutController {
 
     public void onDestroy() {
         mOverviewComponentObserver.onDestroy();
+        mDeviceState.destroy();
     }
 
     private class SplitWithKeyboardShortcutRecentsAnimationListener implements
@@ -146,10 +151,29 @@ public class SplitWithKeyboardShortcutController {
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    controller.finish(true /* toRecents */, null /* onFinishComplete */,
+                    controller.finish(
+                            true /* toRecents */,
+                            () -> {
+                                LauncherTaskbarUIController controller =
+                                        mLauncher.getTaskbarUIController();
+                                if (controller != null) {
+                                    controller.updateTaskbarLauncherStateGoingHome();
+                                }
+
+                            },
                             false /* sendUserLeaveHint */);
                 }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    mLauncher.getDragLayer().removeView(floatingTaskView);
+                    mController.getSplitAnimationController()
+                            .removeSplitInstructionsView(mLauncher);
+                    mController.resetState();
+                }
             });
+            anim.add(mController.getSplitAnimationController()
+                    .getShowSplitInstructionsAnim(mLauncher).buildAnim());
             anim.buildAnim().start();
         }
     };

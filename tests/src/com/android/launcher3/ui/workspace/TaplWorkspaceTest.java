@@ -15,15 +15,12 @@
  */
 package com.android.launcher3.ui.workspace;
 
-import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 import static com.android.launcher3.util.TestConstants.AppNames.CHROME_APP_NAME;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import android.platform.test.annotations.PlatinumTest;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -70,7 +67,6 @@ public class TaplWorkspaceTest extends AbstractLauncherUiTest {
      * move between workspaces. After, make sure we can launch an app from the Workspace.
      * @throws Exception if we can't set the defaults icons that will appear at the beginning.
      */
-    @PlatinumTest(focusArea = "launcher")
     @Test
     public void testWorkspace() throws Exception {
         // Set workspace  that includes the chrome Activity app icon on the hotseat.
@@ -123,7 +119,6 @@ public class TaplWorkspaceTest extends AbstractLauncherUiTest {
      * Similar to {@link TaplWorkspaceTest#testWorkspace} but here we also make sure we can delete
      * the pages.
      */
-    @PlatinumTest(focusArea = "launcher")
     @Test
     public void testAddAndDeletePageAndFling() {
         Workspace workspace = mLauncher.getWorkspace();

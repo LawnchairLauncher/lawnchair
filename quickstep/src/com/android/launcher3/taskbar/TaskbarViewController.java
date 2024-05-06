@@ -26,11 +26,8 @@ import static com.android.launcher3.anim.AnimatedFloat.VALUE;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_PERSISTENT;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_TRANSIENT;
-import static com.android.launcher3.taskbar.TaskbarManager.isPhoneButtonNavMode;
-import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_ALIGNMENT_ANIM;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_PINNING_ANIM;
@@ -43,13 +40,11 @@ import android.animation.ValueAnimator;
 import android.annotation.NonNull;
 import android.graphics.Rect;
 import android.util.Log;
-import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.Nullable;
-import androidx.core.graphics.ColorUtils;
 import androidx.core.view.OneShotPreDrawListener;
 
 import com.android.app.animation.Interpolators;
@@ -66,7 +61,6 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -96,8 +90,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public static final int ALPHA_INDEX_ASSISTANT_INVOKED = 5;
     public static final int ALPHA_INDEX_SMALL_SCREEN = 6;
     private static final int NUM_ALPHA_CHANNELS = 7;
-
-    private static final float TASKBAR_DARK_THEME_ICONS_BACKGROUND_LUMINANCE = 0.30f;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
@@ -129,12 +121,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
     private int mTaskbarBottomMargin;
     private final int mStashedHandleHeight;
-    private final int mLauncherThemedIconsBackgroundColor;
-    private final int mTaskbarThemedIconsBackgroundColor;
-
-    /** Progress from {@code 0} for Launcher's color to {@code 1} for Taskbar's color. */
-    private final AnimatedFloat mThemedIconsBackgroundProgress = new AnimatedFloat(
-            this::updateIconsBackground);
 
     private final TaskbarModelCallbacks mModelCallbacks;
 
@@ -161,6 +147,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private final int mTransientIconSize;
     private final int mPersistentIconSize;
 
+    private final float mTaskbarLeftRightMargin;
+
     public TaskbarViewController(TaskbarActivityContext activity, TaskbarView taskbarView) {
         mActivity = activity;
         mTransientTaskbarDp = mActivity.getTransientTaskbarDeviceProfile();
@@ -175,23 +163,18 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mTaskbarBottomMargin = activity.getDeviceProfile().taskbarBottomMargin;
         mStashedHandleHeight = activity.getResources()
                 .getDimensionPixelSize(R.dimen.taskbar_stashed_handle_height);
-        mLauncherThemedIconsBackgroundColor = ThemedIconDrawable.getColors(mActivity)[0];
-        if (!Utilities.isDarkTheme(mActivity)) {
-            mTaskbarThemedIconsBackgroundColor = mLauncherThemedIconsBackgroundColor;
-        } else {
-            // Increase luminance for dark themed icons given they are on a dark Taskbar background.
-            float[] colorHSL = new float[3];
-            ColorUtils.colorToHSL(mLauncherThemedIconsBackgroundColor, colorHSL);
-            colorHSL[2] = TASKBAR_DARK_THEME_ICONS_BACKGROUND_LUMINANCE;
-            mTaskbarThemedIconsBackgroundColor = ColorUtils.HSLToColor(colorHSL);
-        }
+
         mIsRtl = Utilities.isRtl(mTaskbarView.getResources());
+        mTaskbarLeftRightMargin = mActivity.getResources().getDimensionPixelSize(
+                R.dimen.transient_taskbar_padding);
+
     }
 
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
-        mTaskbarView.init(new TaskbarViewCallbacks());
-        mTaskbarView.getLayoutParams().height = isPhoneMode(mActivity.getDeviceProfile())
+        mTaskbarView.init(TaskbarViewCallbacksFactory.newInstance(mActivity).create(
+                mActivity, mControllers, mTaskbarView));
+        mTaskbarView.getLayoutParams().height = mActivity.isPhoneMode()
                 ? mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_phone_size)
                 : mActivity.getDeviceProfile().taskbarHeight;
 
@@ -219,7 +202,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             // This gets modified in NavbarButtonsViewController, but the initial value it reads
             // may be incorrect since it's state gets destroyed on taskbar recreate, so reset here
             mTaskbarIconAlpha.get(ALPHA_INDEX_SMALL_SCREEN)
-                    .animateToValue(isPhoneButtonNavMode(mActivity) ? 0 : 1).start();
+                    .animateToValue(mActivity.isPhoneButtonNavMode() ? 0 : 1).start();
         }
         if (enableTaskbarPinning()) {
             mTaskbarView.addOnLayoutChangeListener(mTaskbarViewLayoutChangeListener);
@@ -393,6 +376,26 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
     }
 
+    /**
+     * Calculates visual taskbar view width.
+     */
+    public float getCurrentVisualTaskbarWidth() {
+        if (mTaskbarView.getIconViews().length == 0) {
+            return 0;
+        }
+
+        View[] iconViews = mTaskbarView.getIconViews();
+
+        int leftIndex = mActivity.getDeviceProfile().isQsbInline && !mIsRtl ? 1 : 0;
+        int rightIndex = mActivity.getDeviceProfile().isQsbInline && mIsRtl
+                ? iconViews.length - 2
+                : iconViews.length - 1;
+
+        float left = iconViews[leftIndex].getX();
+        float right = iconViews[rightIndex].getRight() + iconViews[rightIndex].getTranslationX();
+
+        return right - left + (2 * mTaskbarLeftRightMargin);
+    }
 
     /**
      * Sets the translation of the TaskbarView during the swipe up gesture.
@@ -448,18 +451,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         return taskbarIconTranslationYForPinningValue;
     }
 
-    /**
-     * Updates the Taskbar's themed icons background according to the progress between in-app/home.
-     */
-    protected void updateIconsBackground() {
-        mTaskbarView.setThemedIconsBackgroundColor(
-                ColorUtils.blendARGB(
-                        mLauncherThemedIconsBackgroundColor,
-                        mTaskbarThemedIconsBackgroundColor,
-                        mThemedIconsBackgroundProgress.value
-                ));
-    }
-
     private ValueAnimator createRevealAnimForView(View view, boolean isStashed, float newWidth,
             boolean isQsb, boolean dispatchOnAnimationStart) {
         Rect viewBounds = new Rect(0, 0, view.getWidth(), view.getHeight());
@@ -504,6 +495,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             }
         }
         return reveal;
+    }
+
+    public View getTaskbarDividerView() {
+        return mTaskbarView.getTaskbarDividerView();
     }
 
     /**
@@ -598,7 +593,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      *                       1 => fully aligned
      */
     public void setLauncherIconAlignment(float alignmentRatio, DeviceProfile launcherDp) {
-        if (isPhoneMode(launcherDp)) {
+        if (mActivity.isPhoneMode()) {
             mIconAlignControllerLazy = null;
             return;
         }
@@ -653,13 +648,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         setter.setFloat(mTaskbarNavButtonTranslationY, VALUE, -offsetY, interpolator);
         setter.setFloat(mTaskbarNavButtonTranslationYForInAppDisplay, VALUE, offsetY, interpolator);
 
-        if (Utilities.isDarkTheme(mTaskbarView.getContext())) {
-            setter.addFloat(mThemedIconsBackgroundProgress, VALUE, 1f, 0f, LINEAR);
-        }
-
-        int collapsedHeight = mActivity.getDefaultTaskbarWindowHeight();
+        int collapsedHeight = mActivity.getDefaultTaskbarWindowSize();
         int expandedHeight = Math.max(collapsedHeight, taskbarDp.taskbarHeight + offsetY);
-        setter.addOnFrameListener(anim -> mActivity.setTaskbarWindowHeight(
+        setter.addOnFrameListener(anim -> mActivity.setTaskbarWindowSize(
                 anim.getAnimatedFraction() > 0 ? expandedHeight : collapsedHeight));
 
         mTaskbarBottomMargin = isTransientTaskbar
@@ -795,8 +786,16 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             // We only translate on rotation when icon is aligned with hotseat
             return;
         }
-        mActivity.setTaskbarWindowHeight(
-                deviceProfile.taskbarHeight + deviceProfile.getTaskbarOffsetY());
+        int taskbarWindowSize;
+        if (mActivity.isPhoneMode()) {
+            taskbarWindowSize = mActivity.getResources().getDimensionPixelSize(
+                    mActivity.isThreeButtonNav()
+                            ? R.dimen.taskbar_phone_size
+                            : R.dimen.taskbar_stashed_size);
+        } else {
+            taskbarWindowSize = deviceProfile.taskbarHeight + deviceProfile.getTaskbarOffsetY();
+        }
+        mActivity.setTaskbarWindowSize(taskbarWindowSize);
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 
@@ -856,66 +855,4 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mModelCallbacks.updateRunningApps();
     }
 
-    /**
-     * Callbacks for {@link TaskbarView} to interact with its controller.
-     */
-    public class TaskbarViewCallbacks {
-        private final float mSquaredTouchSlop = Utilities.squaredTouchSlop(mActivity);
-
-        private float mDownX, mDownY;
-        private boolean mCanceledStashHint;
-
-        public View.OnClickListener getIconOnClickListener() {
-            return mActivity.getItemOnClickListener();
-        }
-
-        public View.OnClickListener getAllAppsButtonClickListener() {
-            return v -> {
-                mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP);
-                mControllers.taskbarAllAppsController.toggle();
-            };
-        }
-
-        public View.OnLongClickListener getTaskbarDividerLongClickListener() {
-            return v -> {
-                mControllers.taskbarPinningController.showPinningView(v);
-                return true;
-            };
-        }
-
-        public View.OnTouchListener getTaskbarDividerRightClickListener() {
-            return (v, event) -> {
-                if (event.isFromSource(InputDevice.SOURCE_MOUSE)
-                        && event.getButtonState() == MotionEvent.BUTTON_SECONDARY) {
-                    mControllers.taskbarPinningController.showPinningView(v);
-                    return true;
-                }
-                return false;
-            };
-        }
-
-        public View.OnLongClickListener getIconOnLongClickListener() {
-            return mControllers.taskbarDragController::startDragOnLongClick;
-        }
-
-        /** Gets the hover listener for the provided icon view. */
-        public View.OnHoverListener getIconOnHoverListener(View icon) {
-            return new TaskbarHoverToolTipController(mActivity, mTaskbarView, icon);
-        }
-
-        /**
-         * Notifies launcher to update icon alignment.
-         */
-        public void notifyIconLayoutBoundsChanged() {
-            mControllers.uiController.onIconLayoutBoundsChanged();
-        }
-
-        /**
-         * Notifies the taskbar scrim when the visibility of taskbar changes.
-         */
-        public void notifyVisibilityChanged() {
-            mControllers.taskbarScrimViewController.onTaskbarVisibilityChanged(
-                    mTaskbarView.getVisibility());
-        }
-    }
 }

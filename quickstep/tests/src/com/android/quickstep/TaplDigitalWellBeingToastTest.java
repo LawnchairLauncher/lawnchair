@@ -17,8 +17,6 @@ package com.android.quickstep;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
-import static com.android.launcher3.LauncherState.OVERVIEW;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -84,8 +82,7 @@ public class TaplDigitalWellBeingToastTest extends AbstractQuickStepTest {
     }
 
     private DigitalWellBeingToast getToast() {
-        executeOnLauncher(launcher -> launcher.getStateManager().goToState(OVERVIEW));
-        waitForState("Launcher internal state didn't switch to Overview", () -> OVERVIEW);
+        mLauncher.getWorkspace().switchToOverview();
         final TaskView task = getOnceNotNull("No latest task", launcher -> getLatestTask(launcher));
 
         return getFromLauncher(launcher -> {

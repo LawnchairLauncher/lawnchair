@@ -20,6 +20,7 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.ArrayMap;
+import android.view.DisplayCutout;
 import android.view.Surface;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
@@ -73,5 +74,11 @@ public class SystemWindowManagerProxy extends WindowManagerProxy {
             result.put(info, bounds);
         }
         return result;
+    }
+
+    @Override
+    protected DisplayCutout rotateCutout(DisplayCutout original, int startWidth, int startHeight,
+            int fromRotation, int toRotation) {
+        return original.getRotated(startWidth, startHeight, fromRotation, toRotation);
     }
 }

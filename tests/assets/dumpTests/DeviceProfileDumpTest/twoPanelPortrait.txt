@@ -55,7 +55,7 @@ DeviceProfile:
 	bottomSheetCloseDuration: 500
 	bottomSheetWorkspaceScale: 0.97
 	bottomSheetDepth: 1.0
-	allAppsShiftRange: 2075.0px (790.4762dp)
+	allAppsShiftRange: 2208.0px (841.1429dp)
 	allAppsOpenDuration: 500
 	allAppsCloseDuration: 500
 	allAppsIconSizePx: 141.0px (53.714287dp)
@@ -79,7 +79,7 @@ DeviceProfile:
 	hotseatBarEndOffset: 0.0px (0.0dp)
 	hotseatQsbSpace: 0.0px (0.0dp)
 	hotseatQsbHeight: 0.0px (0.0dp)
-	springLoadedHotseatBarTopMarginPx: 171.0px (65.14286dp)
+	springLoadedHotseatBarTopMarginPx: 168.0px (64.0dp)
 	getHotseatLayoutPadding(context).top: 0.0px (0.0dp)
 	getHotseatLayoutPadding(context).bottom: 108.0px (41.142857dp)
 	getHotseatLayoutPadding(context).left: 98.0px (37.333332dp)
@@ -110,7 +110,6 @@ DeviceProfile:
 	overviewTaskIconSizePx: 0.0px (0.0dp)
 	overviewTaskIconDrawableSizePx: 0.0px (0.0dp)
 	overviewTaskIconDrawableSizeGridPx: 0.0px (0.0dp)
-	overviewTaskIconAppChipMenuDrawableSizePx: 0.0px (0.0dp)
 	overviewTaskThumbnailTopMarginPx: 0.0px (0.0dp)
 	overviewActionsTopMarginPx: 0.0px (0.0dp)
 	overviewActionsHeight: 0.0px (0.0dp)
@@ -119,12 +118,12 @@ DeviceProfile:
 	overviewPageSpacing: 0.0px (0.0dp)
 	overviewRowSpacing: 0.0px (0.0dp)
 	overviewGridSideMargin: 0.0px (0.0dp)
-	dropTargetBarTopMarginPx: 168.0px (64.0dp)
+	dropTargetBarTopMarginPx: 0.0px (0.0dp)
 	dropTargetBarSizePx: 147.0px (56.0dp)
-	dropTargetBarBottomMarginPx: 42.0px (16.0dp)
-	getCellLayoutSpringLoadShrunkTop(): 490.0px (186.66667dp)
-	getCellLayoutSpringLoadShrunkBottom(): 1770.0px (674.2857dp)
+	dropTargetBarBottomMarginPx: 84.0px (32.0dp)
+	getCellLayoutSpringLoadShrunkTop(): 364.0px (138.66667dp)
+	getCellLayoutSpringLoadShrunkBottom(): 1773.0px (675.4286dp)
 	workspaceSpringLoadedMinNextPageVisiblePx: 63.0px (24.0dp)
-	getWorkspaceSpringLoadScale(): 0.7437536px (0.2833347dp)
+	getWorkspaceSpringLoadScale(): 0.81871px (0.31188953dp)
 	getCellLayoutHeight(): 1721.0px (655.619dp)
 	getCellLayoutWidth(): 899.0px (342.4762dp)

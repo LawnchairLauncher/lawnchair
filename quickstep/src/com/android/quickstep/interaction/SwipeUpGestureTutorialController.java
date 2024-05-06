@@ -29,13 +29,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Outline;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Build;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
@@ -63,7 +61,6 @@ import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransaction.MockProperties;
 import com.android.quickstep.util.TransformParams;
 
-@TargetApi(Build.VERSION_CODES.R)
 abstract class SwipeUpGestureTutorialController extends TutorialController {
 
     private static final int FAKE_PREVIOUS_TASK_MARGIN = Utilities.dpToPx(24);

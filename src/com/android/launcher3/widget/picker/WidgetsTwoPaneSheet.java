@@ -15,10 +15,12 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 
 import android.content.Context;
 import android.graphics.Outline;
+import android.graphics.Rect;
 import android.os.Process;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -55,13 +57,15 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     private static final int MAXIMUM_WIDTH_LEFT_PANE_FOLDABLE_DP = 395;
     private static final String SUGGESTIONS_PACKAGE_NAME = "widgets_list_suggestions_entry";
 
-    private LinearLayout mSuggestedWidgetsContainer;
+    private FrameLayout mSuggestedWidgetsContainer;
     private WidgetsListHeader mSuggestedWidgetsHeader;
+    private PackageUserKey mSuggestedWidgetsPackageUserKey;
     private LinearLayout mRightPane;
 
     private ScrollView mRightPaneScrollView;
     private WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
     private int mActivePage = -1;
+    private PackageUserKey mSelectedHeader;
 
     private final ViewOutlineProvider mViewOutlineProviderRightPane = new ViewOutlineProvider() {
         @Override
@@ -106,9 +110,15 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
         mWidgetsListTableViewHolderBinder =
                 new WidgetsListTableViewHolderBinder(mActivityContext, layoutInflater, this, this);
-        mRecommendedWidgetsTable = mContent.findViewById(R.id.recommended_widget_table);
-        mRecommendedWidgetsTable.setWidgetCellLongClickListener(this);
-        mRecommendedWidgetsTable.setWidgetCellOnClickListener(this);
+
+        mWidgetRecommendationsContainer = mContent.findViewById(
+                R.id.widget_recommendations_container);
+        mWidgetRecommendationsView = mContent.findViewById(
+                R.id.widget_recommendations_view);
+        mWidgetRecommendationsView.initParentViews(mWidgetRecommendationsContainer);
+        mWidgetRecommendationsView.setWidgetCellLongClickListener(this);
+        mWidgetRecommendationsView.setWidgetCellOnClickListener(this);
+
         mHeaderTitle = mContent.findViewById(R.id.title);
         mRightPane = mContent.findViewById(R.id.right_pane);
         mRightPane.setOutlineProvider(mViewOutlineProviderRightPane);
@@ -143,6 +153,23 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
             }
             layoutParams.weight = layoutParams.width == 0 ? 0.33F : 0;
             leftPane.setLayoutParams(layoutParams);
+            requestApplyInsets();
+            if (mSelectedHeader != null) {
+                if (mSelectedHeader.equals(mSuggestedWidgetsPackageUserKey)) {
+                    mSuggestedWidgetsHeader.callOnClick();
+                } else {
+                    getHeaderChangeListener().onHeaderChanged(mSelectedHeader);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onWidgetsBound() {
+        super.onWidgetsBound();
+        if (!mHasRecommendedWidgets && mSelectedHeader == null) {
+            mAdapters.get(mActivePage).mWidgetsListAdapter.selectFirstHeaderEntry();
+            mAdapters.get(mActivePage).mWidgetsRecyclerView.scrollToTop();
         }
     }
 
@@ -175,10 +202,14 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                 return false;
             }
         };
-        packageItemInfo.title = getContext().getString(R.string.suggested_widgets_header_title);
+        String suggestionsHeaderTitle = getContext().getString(
+                R.string.suggested_widgets_header_title);
+        String suggestionsRightPaneTitle = getContext().getString(
+                R.string.widget_picker_right_pane_accessibility_title, suggestionsHeaderTitle);
+        packageItemInfo.title = suggestionsHeaderTitle;
         WidgetsListHeaderEntry widgetsListHeaderEntry = WidgetsListHeaderEntry.create(
                         packageItemInfo,
-                        getContext().getString(R.string.suggested_widgets_header_title),
+                        suggestionsHeaderTitle,
                         mActivityContext.getPopupDataProvider().getRecommendedWidgets())
                 .withWidgetListShown();
 
@@ -189,14 +220,19 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
             mSuggestedWidgetsHeader.setExpanded(true);
             resetExpandedHeaders();
             mRightPane.removeAllViews();
-            mRightPane.addView(mRecommendedWidgetsTable);
+            mRightPane.addView(mWidgetRecommendationsContainer);
             mRightPaneScrollView.setScrollY(0);
+            mRightPane.setAccessibilityPaneTitle(suggestionsRightPaneTitle);
+            mSuggestedWidgetsPackageUserKey = PackageUserKey.fromPackageItemInfo(packageItemInfo);
+            mSelectedHeader = mSuggestedWidgetsPackageUserKey;
         });
         mSuggestedWidgetsContainer.addView(mSuggestedWidgetsHeader);
+        mRightPane.setAccessibilityPaneTitle(suggestionsRightPaneTitle);
     }
 
     @Override
-    protected float getMaxTableHeight(float noWidgetsViewHeight) {
+    @Px
+    protected float getMaxTableHeight(@Px float noWidgetsViewHeight) {
         return Float.MAX_VALUE;
     }
 
@@ -269,6 +305,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         return new HeaderChangeListener() {
             @Override
             public void onHeaderChanged(@NonNull PackageUserKey selectedHeader) {
+                mSelectedHeader = selectedHeader;
                 WidgetsListContentEntry contentEntry = mActivityContext.getPopupDataProvider()
                         .getSelectedAppWidgets(selectedHeader);
 
@@ -279,23 +316,55 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                 if (mSuggestedWidgetsHeader != null) {
                     mSuggestedWidgetsHeader.setExpanded(false);
                 }
+
+                WidgetsListContentEntry contentEntryToBind;
+                if (enableCategorizedWidgetSuggestions()) {
+                    // Setting max span size enables row to understand how to fit more than one item
+                    // in a row.
+                    contentEntryToBind = contentEntry.withMaxSpanSize(mMaxSpanPerRow);
+                } else {
+                    contentEntryToBind = contentEntry;
+                }
+
                 WidgetsRowViewHolder widgetsRowViewHolder =
                         mWidgetsListTableViewHolderBinder.newViewHolder(mRightPane);
                 mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
-                        contentEntry,
+                        contentEntryToBind,
                         ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
                         Collections.EMPTY_LIST);
                 widgetsRowViewHolder.mDataCallback = data -> {
                     mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
-                            contentEntry,
+                            contentEntryToBind,
                             ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
                             Collections.singletonList(data));
                 };
                 mRightPane.removeAllViews();
                 mRightPane.addView(widgetsRowViewHolder.itemView);
                 mRightPaneScrollView.setScrollY(0);
+                mRightPane.setAccessibilityPaneTitle(
+                        getContext().getString(
+                                R.string.widget_picker_right_pane_accessibility_title,
+                                contentEntry.mPkgItem.title));
             }
         };
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        super.setInsets(insets);
+        FrameLayout rightPaneContainer = mContent.findViewById(R.id.right_pane_container);
+        rightPaneContainer.setPadding(
+                rightPaneContainer.getPaddingLeft(),
+                rightPaneContainer.getPaddingTop(),
+                rightPaneContainer.getPaddingRight(),
+                mBottomPadding);
+        requestLayout();
+    }
+
+    @Override
+    protected int getWidgetListHorizontalMargin() {
+        return getResources().getDimensionPixelSize(
+                R.dimen.widget_list_left_pane_horizontal_margin);
     }
 
     @Override

@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Hakikisha unatelezesha kidole kutoka ukingo wa kulia au kushoto kabisa"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Hakikisha unatelezesha kidole kutoka ukingo wa kulia au kushoto hadi katikati ya skrini na uachilie"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Umejifunza jinsi ya kutelezesha kidole kuanzia kulia ili kurudi nyuma. Sasa jifunze jinsi ya kubadilisha programu."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Umekamilisha ishara ya kurudi nyuma. Hatua inayofuata, jifunze jinsi ya kubadilisha programu."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Umeweka ishara ya kurudi nyuma"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Hakikisha hutelezeshi kidole karibu sana na sehemu ya chini ya skrini"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Kubadilisha hisi ya ishara ya nyuma, nenda kwenye Mipangilio"</string>
@@ -95,6 +96,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Picha ya skrini"</string>
     <string name="action_split" msgid="2098009717623550676">"Iliyogawanywa"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Gusa programu nyingine ili utumie kipengele cha kugawa skrini"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Chagua programu nyingine ili utumie hali ya kugawa skrini"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Ghairi"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Ondoka kwenye hali ya skrini iliyogawanywa"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Chagua programu nyingine ili utumie hali ya kugawa skrini"</string>
@@ -111,6 +113,8 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Pata mapendekezo ya programu kulingana na ratiba yako"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Bonyeza kwa muda mrefu kigawaji ili ubandike Upauzana"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Kamilisha mengi kwa kutumia Upauzana huu"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Onyesha Upauzana kila wakati"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Ili uonyeshe Upauzana kila wakati chini ya skrini yako, gusa na ushikilie kitenganishi"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Funga"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Imemaliza"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Mwanzo"</string>
@@ -124,7 +128,7 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Upauzana umeonyeshwa"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Upauzana umefichwa"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Sehemu ya viungo muhimu"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Onyesha Upauzana kila wakati"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Onyesha Zana kila wakati"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Badilisha hali ya usogezaji"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Kitenganishi cha Upauzana"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Sogeza juu/kushoto"</string>

@@ -27,20 +27,20 @@ open class RandomBoardGenerator(generator: Random) : DeterministicRandomGenerato
      *   usually less than 100.
      * @return a randomly generated board filled with icons and widgets.
      */
-    open fun generateBoard(width: Int, height: Int, remainingEmptySpaces: Int): CellLayoutBoard? {
+    open fun generateBoard(width: Int, height: Int, remainingEmptySpaces: Int): CellLayoutBoard {
         val cellLayoutBoard = CellLayoutBoard(width, height)
         return fillBoard(cellLayoutBoard, Rect(0, 0, width, height), remainingEmptySpaces)
     }
 
     protected fun fillBoard(
-        board: CellLayoutBoard,
-        area: Rect,
-        remainingEmptySpacesArg: Int
+            board: CellLayoutBoard,
+            area: Rect,
+            remainingEmptySpacesArg: Int
     ): CellLayoutBoard {
         var remainingEmptySpaces = remainingEmptySpacesArg
         if (area.height() * area.width() <= 0) return board
-        val width = getRandom(1, area.width() - 1)
-        val height = getRandom(1, area.height() - 1)
+        val width = getRandom(1, area.width())
+        val height = getRandom(1, area.height())
         val x = area.left + getRandom(0, area.width() - width)
         val y = area.top + getRandom(0, area.height() - height)
         if (remainingEmptySpaces > 0) {

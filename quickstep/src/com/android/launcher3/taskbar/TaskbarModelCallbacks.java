@@ -206,17 +206,10 @@ public class TaskbarModelCallbacks implements
 
         if (mDeferUpdatesForSUW) {
             ItemInfo[] finalHotseatItemInfos = hotseatItemInfos;
-            mDeferredUpdates = () -> {
-                updateHotseatItemsAndBackground(finalHotseatItemInfos);
-            };
+            mDeferredUpdates = () -> mContainer.updateHotseatItems(finalHotseatItemInfos);
         } else {
-            updateHotseatItemsAndBackground(hotseatItemInfos);
+            mContainer.updateHotseatItems(hotseatItemInfos);
         }
-    }
-
-    private void updateHotseatItemsAndBackground(ItemInfo[] hotseatItemInfos) {
-        mContainer.updateHotseatItems(hotseatItemInfos);
-        mControllers.taskbarViewController.updateIconsBackground();
     }
 
     /**

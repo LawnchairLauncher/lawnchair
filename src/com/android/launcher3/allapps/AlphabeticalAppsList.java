@@ -22,6 +22,7 @@ import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import android.content.Context;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.android.launcher3.Flags;
@@ -34,6 +35,7 @@ import com.android.launcher3.views.ActivityContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Predicate;
@@ -268,10 +270,10 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 addApps = mWorkProviderManager.shouldShowWorkApps();
             }
             if (addApps) {
-                addAppsWithSections(mApps, position);
+                position = addAppsWithSections(mApps, position);
             }
             if (Flags.enablePrivateSpace()) {
-                addPrivateSpaceItems(position);
+                position = addPrivateSpaceItems(position);
             }
         }
         mAccessibilityResultsCount = (int) mAdapterItems.stream()
@@ -286,7 +288,8 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             for (AdapterItem item : mAdapterItems) {
                 item.rowIndex = 0;
                 if (BaseAllAppsAdapter.isDividerViewType(item.viewType)
-                        || BaseAllAppsAdapter.isPrivateSpaceHeaderView(item.viewType)) {
+                        || BaseAllAppsAdapter.isPrivateSpaceHeaderView(item.viewType)
+                        || BaseAllAppsAdapter.isPrivateSpaceSysAppsDividerView(item.viewType)) {
                     numAppsInSection = 0;
                 } else if (BaseAllAppsAdapter.isIconViewType(item.viewType)) {
                     if (numAppsInSection % mNumAppsPerRowAllApps == 0) {
@@ -308,12 +311,12 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         }
     }
 
-    void addPrivateSpaceItems(int position) {
+    int addPrivateSpaceItems(int position) {
         if (mPrivateProviderManager != null
                 && !mPrivateProviderManager.isPrivateSpaceHidden()
                 && !mPrivateApps.isEmpty()) {
             // Always add PS Header if Space is present and visible.
-            position += mPrivateProviderManager.addPrivateSpaceHeader(mAdapterItems);
+            position = mPrivateProviderManager.addPrivateSpaceHeader(mAdapterItems);
             int privateSpaceState = mPrivateProviderManager.getCurrentState();
             switch (privateSpaceState) {
                 case PrivateProfileManager.STATE_DISABLED:
@@ -321,43 +324,51 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     break;
                 case PrivateProfileManager.STATE_ENABLED:
                     // Add PS Apps only in Enabled State.
-                    addAppsWithSections(mPrivateApps, position);
-                    if (mActivityContext.getAppsView() != null) {
-                        mActivityContext.getAppsView().getActiveRecyclerView()
-                                .scrollToBottomWithMotion();
-                    }
+                    position = addPrivateSpaceApps(position);
                     break;
             }
         }
+        return position;
     }
 
-    private void addAppsWithSections(List<AppInfo> appList, int startPosition) {
+    private int addPrivateSpaceApps(int position) {
+        // Add Install Apps Button first.
+        if (Flags.privateSpaceAppInstallerButton()) {
+            mPrivateProviderManager.addPrivateSpaceInstallAppButton(mAdapterItems);
+            position++;
+        }
+
+        // Split of private space apps into user-installed and system apps.
+        Map<Boolean, List<AppInfo>> split = mPrivateApps.stream()
+                .collect(Collectors.partitioningBy(mPrivateProviderManager
+                                .splitIntoUserInstalledAndSystemApps()));
+        // Add user installed apps
+        position = addAppsWithSections(split.get(true), position);
+        // Add system apps separator.
+        if (Flags.privateSpaceSysAppsSeparation()) {
+            position = mPrivateProviderManager.addSystemAppsDivider(mAdapterItems);
+        }
+        // Add system apps.
+        position = addAppsWithSections(split.get(false), position);
+
+        return position;
+    }
+
+    private int addAppsWithSections(List<AppInfo> appList, int startPosition) {
         String lastSectionName = null;
         boolean hasPrivateApps = false;
         if (mPrivateProviderManager != null) {
             hasPrivateApps = appList.stream().
                     allMatch(mPrivateProviderManager.getItemInfoMatcher());
         }
-        int privateAppCount = 0;
-        int numberOfColumns = mActivityContext.getDeviceProfile().numShownAllAppsColumns;
-        int numberOfAppRows = (int) Math.ceil((double) appList.size() / numberOfColumns);
-        for (AppInfo info : appList) {
+        for (int i = 0; i < appList.size(); i++) {
+            AppInfo info = appList.get(i);
             // Apply decorator to private apps.
             if (hasPrivateApps) {
-                int roundRegion = ROUND_NOTHING;
-                if ((privateAppCount / numberOfColumns) == numberOfAppRows - 1) {
-                    if ((privateAppCount % numberOfColumns) == 0) {
-                        // App is the first column
-                        roundRegion = ROUND_BOTTOM_LEFT;
-                    } else if ((privateAppCount % numberOfColumns) == numberOfColumns-1) {
-                        roundRegion = ROUND_BOTTOM_RIGHT;
-                    }
-                }
                 mAdapterItems.add(AdapterItem.asAppWithDecorationInfo(info,
                         new SectionDecorationInfo(mActivityContext.getApplicationContext(),
-                                roundRegion,
+                                getRoundRegions(i, appList.size()),
                                 true /* decorateTogether */)));
-                privateAppCount += 1;
             } else {
                 mAdapterItems.add(AdapterItem.asApp(info));
             }
@@ -370,6 +381,44 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             }
             startPosition++;
         }
+        return startPosition;
+    }
+
+    /**
+     * Determines the corner regions that should be rounded for a specific app icon based on its
+     * position in a grid. Apps that should only be cared about rounding are the apps in the last
+     * row. In the last row on the first column, the app should only be rounded on the bottom left.
+     * Apps in the middle would not be rounded and the last app on the last row will ALWAYS have a
+     * {@link SectionDecorationInfo#ROUND_BOTTOM_RIGHT}.
+     *
+     * @param appIndex The index of the app icon within the app list.
+     * @param appListSize The total number of apps within the app list.
+     * @return  An integer representing the corner regions to be rounded, using bitwise flags:
+     *          - {@link SectionDecorationInfo#ROUND_NOTHING}: No corners should be rounded.
+     *          - {@link SectionDecorationInfo#ROUND_TOP_LEFT}: Round the top-left corner.
+     *          - {@link SectionDecorationInfo#ROUND_TOP_RIGHT}: Round the top-right corner.
+     *          - {@link SectionDecorationInfo#ROUND_BOTTOM_LEFT}: Round the bottom-left corner.
+     *          - {@link SectionDecorationInfo#ROUND_BOTTOM_RIGHT}: Round the bottom-right corner.
+     */
+    @VisibleForTesting
+    int getRoundRegions(int appIndex, int appListSize) {
+        int numberOfAppRows = (int) Math.ceil((double) appListSize / mNumAppsPerRowAllApps);
+        int roundRegion = ROUND_NOTHING;
+        // App is in the last row.
+        if ((appIndex / mNumAppsPerRowAllApps) == numberOfAppRows - 1) {
+            if ((appIndex % mNumAppsPerRowAllApps) == 0) {
+                // App is the first column.
+                roundRegion = ROUND_BOTTOM_LEFT;
+            } else if ((appIndex % mNumAppsPerRowAllApps) == mNumAppsPerRowAllApps-1) {
+                // App is in the last column.
+                roundRegion = ROUND_BOTTOM_RIGHT;
+            }
+            // Ensure the last private app is rounded on the bottom right.
+            if (appIndex == appListSize - 1) {
+                roundRegion |= ROUND_BOTTOM_RIGHT;
+            }
+        }
+        return roundRegion;
     }
 
     private static class MyDiffCallback extends DiffUtil.Callback {

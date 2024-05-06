@@ -371,4 +371,13 @@ public class FolderInfo extends ItemInfo {
         }
         return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
     }
+
+    @Override
+    public boolean isDisabled() {
+        if (itemType == LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR) {
+            return contents.stream().anyMatch((WorkspaceItemInfo::isDisabled));
+        }
+
+        return super.isDisabled();
+    }
 }

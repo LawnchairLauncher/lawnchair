@@ -16,11 +16,9 @@
 
 package com.android.launcher3.widget;
 
-import android.annotation.TargetApi;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -41,14 +39,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.CheckLongPressHelper;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
 
 /**
@@ -75,7 +72,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     private final Rect mTempRect = new Rect();
     private final CheckLongPressHelper mLongPressHelper;
-    protected final Launcher mLauncher;
+    protected final ActivityContext mActivityContext;
 
     // Maintain the color manager.
     private final LocalColorExtractor mColorExtractor;
@@ -95,16 +92,17 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     private boolean mTrackingWidgetUpdate = false;
 
-    private boolean mIsWidgetCachingDisabled = false;
-
     public LauncherAppWidgetHostView(Context context) {
         super(context);
-        mLauncher = Launcher.getLauncher(context);
+        mActivityContext = ActivityContext.lookupContext(context);
         mLongPressHelper = new CheckLongPressHelper(this, this);
-        setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
+        setAccessibilityDelegate(mActivityContext.getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
+        if (Flags.enableFocusOutline()) {
+            setDefaultFocusHighlightEnabled(false);
+        }
 
-        if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
+        if (Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);
         }
         mColorExtractor = new LocalColorExtractor(); // no-op
@@ -122,50 +120,35 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     @Override
     public boolean onLongClick(View view) {
         if (mIsScrollable) {
-            DragLayer dragLayer = mLauncher.getDragLayer();
-            dragLayer.requestDisallowInterceptTouchEvent(false);
+            mActivityContext.getDragLayer().requestDisallowInterceptTouchEvent(false);
         }
         view.performLongClick();
         return true;
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.Q)
     public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
         super.setAppWidget(appWidgetId, info);
-        if (!mTrackingWidgetUpdate && Utilities.ATLEAST_Q) {
+        if (!mTrackingWidgetUpdate) {
             mTrackingWidgetUpdate = true;
             Trace.beginAsyncSection(TRACE_METHOD_NAME + info.provider, appWidgetId);
             Log.i(TAG, "App widget created with id: " + appWidgetId);
         }
     }
 
-    public void setIsWidgetCachingDisabled(boolean isWidgetCachingDisabled) {
-        mIsWidgetCachingDisabled = isWidgetCachingDisabled;
-    }
-
     @Override
-    @TargetApi(Build.VERSION_CODES.Q)
     public void updateAppWidget(RemoteViews remoteViews) {
-        if (mTrackingWidgetUpdate && remoteViews != null && Utilities.ATLEAST_Q) {
+        if (mTrackingWidgetUpdate && remoteViews != null) {
             Log.i(TAG, "App widget with id: " + getAppWidgetId() + " loaded");
             Trace.endAsyncSection(
                     TRACE_METHOD_NAME + getAppWidgetInfo().provider, getAppWidgetId());
             mTrackingWidgetUpdate = false;
         }
-        if (FeatureFlags.ENABLE_CACHED_WIDGET.get()
-                && !mIsWidgetCachingDisabled) {
+        if (isDeferringUpdates()) {
             mLastRemoteViews = remoteViews;
-            if (isDeferringUpdates()) {
-                return;
-            }
-        } else {
-            if (isDeferringUpdates()) {
-                mLastRemoteViews = remoteViews;
-                return;
-            }
-            mLastRemoteViews = null;
+            return;
         }
+        mLastRemoteViews = null;
 
         super.updateAppWidget(remoteViews);
 
@@ -234,7 +217,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            DragLayer dragLayer = mLauncher.getDragLayer();
+            BaseDragLayer dragLayer = mActivityContext.getDragLayer();
             if (mIsScrollable) {
                 dragLayer.requestDisallowInterceptTouchEvent(true);
             }
@@ -299,8 +282,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         super.onLayout(changed, left, top, right, bottom);
         mIsScrollable = checkScrollableRecursively(this);
 
-        if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
-            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+        if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo info) {
             mTempRect.set(left, top, right, bottom);
             mColorExtractor.setWorkspaceLocation(mTempRect, (View) getParent(), info.screenId);
         }
@@ -434,26 +416,9 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         scheduleNextAdvance();
     }
 
-    public void reInflate() {
-        if (!isAttachedToWindow()) {
-            return;
-        }
-        LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
-        if (info == null) {
-            // This occurs when LauncherAppWidgetHostView is used to render a preview layout.
-            return;
-        }
-        // Remove and rebind the current widget (which was inflated in the wrong
-        // orientation), but don't delete it from the database
-        mLauncher.removeItem(this, info, false  /* deleteFromDb */,
-                "widget removed because of configuration change");
-        mLauncher.bindAppWidget(info);
-    }
-
     @Override
     protected boolean shouldAllowDirectClick() {
-        if (getTag() instanceof ItemInfo) {
-            ItemInfo item = (ItemInfo) getTag();
+        if (getTag() instanceof ItemInfo item) {
             return item.spanX == 1 && item.spanY == 1;
         }
         return false;

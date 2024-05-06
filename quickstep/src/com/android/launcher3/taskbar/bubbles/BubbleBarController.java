@@ -46,6 +46,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Path;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -66,8 +68,10 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BubbleIconFactory;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.taskbar.TaskbarControllers;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.quickstep.SystemUiProxy;
+import com.android.wm.shell.Flags;
 import com.android.wm.shell.bubbles.IBubblesListener;
 import com.android.wm.shell.common.bubbles.BubbleBarUpdate;
 import com.android.wm.shell.common.bubbles.BubbleInfo;
@@ -98,8 +102,8 @@ public class BubbleBarController extends IBubblesListener.Stub {
      *
      * @see #onTaskbarRecreated()
      */
-    private static boolean sBubbleBarEnabled =
-            SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
+    private static boolean sBubbleBarEnabled = Flags.enableBubbleBar()
+            || SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
 
     /** Whether showing bubbles in the launcher bubble bar is enabled. */
     public static boolean isBubbleBarEnabled() {
@@ -108,8 +112,10 @@ public class BubbleBarController extends IBubblesListener.Stub {
 
     /** Re-reads the value of the flag from SystemProperties when taskbar is recreated. */
     public static void onTaskbarRecreated() {
-        sBubbleBarEnabled = SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
+        sBubbleBarEnabled = Flags.enableBubbleBar()
+                || SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
     }
+
     private static final int MASK_HIDE_BUBBLE_BAR = SYSUI_STATE_BOUNCER_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
@@ -408,8 +414,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
                         info.getFlags() | Notification.BubbleMetadata.FLAG_SUPPRESS_NOTIFICATION);
                 mSelectedBubble.getView().updateDotVisibility(true /* animate */);
             }
-            mSystemUiProxy.showBubble(getSelectedBubbleKey(),
-                    getBubbleBarOffsetX(), getBubbleBarOffsetY());
+            mSystemUiProxy.showBubble(getSelectedBubbleKey(), getExpandedBubbleBarDisplayBounds());
         } else {
             Log.w(TAG, "Trying to show the selected bubble but it's null");
         }
@@ -577,12 +582,27 @@ public class BubbleBarController extends IBubblesListener.Stub {
         return mIconFactory.createBadgedIconBitmap(drawable).icon;
     }
 
-    private int getBubbleBarOffsetY() {
+    /**
+     * Get bounds of the bubble bar as if it would be expanded.
+     * Calculates the bounds instead of retrieving current view location as the view may be
+     * animating.
+     */
+    private Rect getExpandedBubbleBarDisplayBounds() {
+        Point displaySize = DisplayController.INSTANCE.get(mContext).getInfo().currentSize;
+        Rect currentBarBounds = mBarView.getBubbleBarBounds();
+        Rect location = new Rect();
+        // currentBarBounds is only useful for distance from left or right edge.
+        // It contains the current bounds, calculate the expanded bounds.
+        if (mBarView.isOnLeft()) {
+            location.left = currentBarBounds.left;
+            location.right = (int) (currentBarBounds.left + mBarView.expandedWidth());
+        } else {
+            location.left = (int) (currentBarBounds.right - mBarView.expandedWidth());
+            location.right = currentBarBounds.right;
+        }
         final int translation = (int) abs(mBubbleStashController.getBubbleBarTranslationY());
-        return translation + mBarView.getHeight();
-    }
-
-    private int getBubbleBarOffsetX() {
-        return mBarView.getWidth() + mBarView.getHorizontalMargin();
+        location.top = displaySize.y - mBarView.getHeight() - translation;
+        location.bottom = displaySize.y - translation;
+        return location;
     }
 }

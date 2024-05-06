@@ -29,7 +29,6 @@ import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 
 import android.animation.ObjectAnimator;
-import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -37,7 +36,6 @@ import android.content.Intent;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -66,7 +64,6 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
-import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TransformParams;
@@ -82,7 +79,6 @@ import java.util.function.Consumer;
 /**
  * Handles the navigation gestures when a 3rd party launcher is the default home activity.
  */
-@TargetApi(Build.VERSION_CODES.R)
 public class FallbackSwipeHandler extends
         AbsSwipeUpHandler<RecentsActivity, FallbackRecentsView, RecentsState> {
 
@@ -375,8 +371,8 @@ public class FallbackSwipeHandler extends
                     if (mSpringAnim != null) {
                         mSpringAnim.onTargetPositionChanged();
                     }
-                    mOnFinishCallback = data.getParcelable(EXTRA_ON_FINISH_CALLBACK);
                 }
+                mOnFinishCallback = data.getParcelable(EXTRA_ON_FINISH_CALLBACK);
                 maybeSendEndMessage();
             } catch (Exception e) {
                 // Ignore

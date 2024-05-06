@@ -19,6 +19,7 @@ package com.android.quickstep.util
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.view.ContextThemeWrapper
 import android.view.SurfaceControl.Transaction
 import android.view.View
 import android.window.TransitionInfo
@@ -26,6 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.apppairs.AppPairIcon
 import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
+import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.quickstep.views.GroupedTaskView
 import com.android.quickstep.views.IconView
@@ -64,6 +66,8 @@ class SplitAnimationControllerTest {
     private val mockTaskIdAttributeContainer: TaskIdAttributeContainer = mock()
     // AppPairIcon
     private val mockAppPairIcon: AppPairIcon = mock()
+    private val mockContextThemeWrapper: ContextThemeWrapper = mock()
+    private val mockTaskbarActivityContext: TaskbarActivityContext = mock()
 
     // SplitSelectSource
     private val splitSelectSource: SplitConfigurationOptions.SplitSelectSource = mock()
@@ -247,9 +251,10 @@ class SplitAnimationControllerTest {
     @Test
     fun playsAppropriateSplitLaunchAnimation_playsIconLaunchCorrectly() {
         val spySplitAnimationController = spy(splitAnimationController)
+        whenever(mockAppPairIcon.context).thenReturn(mockContextThemeWrapper)
         doNothing()
             .whenever(spySplitAnimationController)
-            .composeIconSplitLaunchAnimator(any(), any(), any(), any(), any(), any())
+            .composeIconSplitLaunchAnimator(any(), any(), any(), any())
 
         spySplitAnimationController.playSplitLaunchAnimation(
             null /* launchingTaskView */,
@@ -267,7 +272,33 @@ class SplitAnimationControllerTest {
         )
 
         verify(spySplitAnimationController)
-            .composeIconSplitLaunchAnimator(any(), any(), any(), any(), any(), any())
+            .composeIconSplitLaunchAnimator(any(), any(), any(), any())
+    }
+
+    @Test
+    fun playsAppropriateSplitLaunchAnimation_playsIconLaunchFromTaskbarContextCorrectly() {
+        val spySplitAnimationController = spy(splitAnimationController)
+        whenever(mockAppPairIcon.context).thenReturn(mockTaskbarActivityContext)
+        doNothing()
+            .whenever(spySplitAnimationController)
+            .composeScaleUpLaunchAnimation(any(), any(), any())
+
+        spySplitAnimationController.playSplitLaunchAnimation(
+            null /* launchingTaskView */,
+            mockAppPairIcon,
+            taskId,
+            taskId2,
+            null /* apps */,
+            null /* wallpapers */,
+            null /* nonApps */,
+            stateManager,
+            depthController,
+            transitionInfo,
+            transaction,
+            {} /* finishCallback */
+        )
+
+        verify(spySplitAnimationController).composeScaleUpLaunchAnimation(any(), any(), any())
     }
 
     @Test

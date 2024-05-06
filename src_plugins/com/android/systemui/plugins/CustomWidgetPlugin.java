@@ -39,13 +39,16 @@ public interface CustomWidgetPlugin extends Plugin {
 
     /**
      * Get the UUID for the custom widget.
+     *
+     * @deprecated Not used
      */
-    String getId();
+    @Deprecated
+    default String getId() {
+        return "";
+    }
 
     /**
      * Used to modify a widgets' info.
      */
-    default void updateWidgetInfo(AppWidgetProviderInfo info, Context context) {
-
-    }
+    default void updateWidgetInfo(AppWidgetProviderInfo info, Context context) { }
 }

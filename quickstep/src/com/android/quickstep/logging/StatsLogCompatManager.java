@@ -42,6 +42,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.slice.SliceItem;
 
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
@@ -138,7 +139,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         if (IS_VERBOSE) {
             Log.d(TAG, String.format("\nwriteSnapshot(%d):\n%s", instanceId.getId(), info));
         }
-        if (!Utilities.ATLEAST_R || Utilities.isRunningInTestHarness()) {
+        if (Utilities.isRunningInTestHarness()) {
             return;
         }
         SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_SNAPSHOT,
@@ -341,9 +342,6 @@ public class StatsLogCompatManager extends StatsLogManager {
 
         @Override
         public void log(EventEnum event) {
-            if (!Utilities.ATLEAST_R) {
-                return;
-            }
             if (DEBUG) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
                         event.getId() + "";
@@ -401,11 +399,10 @@ public class StatsLogCompatManager extends StatsLogManager {
                 case LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN:
                     InteractionJankMonitorWrapper.begin(
                             view,
-                            InteractionJankMonitorWrapper.CUJ_ALL_APPS_SCROLL);
+                            Cuj.CUJ_LAUNCHER_ALL_APPS_SCROLL);
                     break;
                 case LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END:
-                    InteractionJankMonitorWrapper.end(
-                            InteractionJankMonitorWrapper.CUJ_ALL_APPS_SCROLL);
+                    InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_ALL_APPS_SCROLL);
                     break;
                 default:
                     break;

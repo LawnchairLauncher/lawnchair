@@ -72,7 +72,7 @@ public class TaplReorderWidgetsTest extends AbstractLauncherUiTest {
     @Before
     public void setup() throws Throwable {
         mWorkspaceBuilder = new TestWorkspaceBuilder(mTargetContext);
-        AbstractLauncherUiTest.initialize(this);
+        super.setUp();
     }
 
     @After

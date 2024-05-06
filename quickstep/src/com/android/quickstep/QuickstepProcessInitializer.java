@@ -15,10 +15,8 @@
  */
 package com.android.quickstep;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Looper;
 import android.os.Trace;
 import android.os.UserManager;
@@ -30,7 +28,6 @@ import com.android.launcher3.MainProcessInitializer;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 @SuppressWarnings("unused")
-@TargetApi(Build.VERSION_CODES.R)
 public class QuickstepProcessInitializer extends MainProcessInitializer {
 
     private static final String TAG = "QuickstepProcessInitializer";

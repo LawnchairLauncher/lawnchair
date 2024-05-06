@@ -20,6 +20,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.SuggestionSpan;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
@@ -42,6 +43,7 @@ public class AllAppsSearchBarController
         implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener,
         OnFocusChangeListener {
 
+    private static final String TAG = "AllAppsSearchBarController";
     protected ActivityContext mLauncher;
     protected SearchCallback<AdapterItem> mCallback;
     protected ExtendedEditText mInput;
@@ -122,6 +124,7 @@ public class AllAppsSearchBarController
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
         if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_GO) {
+            Log.i(TAG, "User tapped ime search button");
             // selectFocusedView should return SearchTargetEvent that is passed onto onClick
             return mLauncher.getAppsView().getMainAdapterProvider().launchHighlightedItem();
         }

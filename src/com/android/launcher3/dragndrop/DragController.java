@@ -16,8 +16,7 @@
 
 package com.android.launcher3.dragndrop;
 
-import static com.android.launcher3.Utilities.ATLEAST_Q;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_NO_LONG_PRESS_DRAG;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -32,8 +31,10 @@ import androidx.annotation.Nullable;
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.Flags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
@@ -224,6 +225,12 @@ public abstract class DragController<T extends ActivityContext>
         }
     }
 
+    protected boolean isItemPinnable() {
+        return !Flags.privateSpaceRestrictItemDrag()
+                || !(mDragObject.dragInfo instanceof ItemInfoWithIcon itemInfoWithIcon)
+                || (itemInfoWithIcon.runtimeStatusFlags & FLAG_NOT_PINNABLE) == 0;
+    }
+
     public Optional<InstanceId> getLogInstanceId() {
         return Optional.ofNullable(mDragObject)
                 .map(dragObject -> dragObject.logInstanceId);
@@ -405,9 +412,7 @@ public abstract class DragController<T extends ActivityContext>
             mMotionDown.set(dragLayerPos.x,  dragLayerPos.y);
         }
 
-        if (ATLEAST_Q) {
-            mLastTouchClassification = ev.getClassification();
-        }
+        mLastTouchClassification = ev.getClassification();
         return mDragDriver != null && mDragDriver.onInterceptTouchEvent(ev);
     }
 
@@ -442,7 +447,7 @@ public abstract class DragController<T extends ActivityContext>
         mLastTouch.set(x, y);
 
         int distanceDragged = mDistanceSinceScroll;
-        if (ATLEAST_Q && mLastTouchClassification == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
+        if (mLastTouchClassification == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
             distanceDragged /= DEEP_PRESS_DISTANCE_FACTOR;
         }
         if (mIsInPreDrag && mOptions.preDragCondition != null
@@ -464,7 +469,7 @@ public abstract class DragController<T extends ActivityContext>
 
     private DropTarget checkTouchMove(final int x, final int y) {
         // If we are in predrag, don't trigger any other event until we get out of it
-        if (ENABLE_NO_LONG_PRESS_DRAG.get() && mIsInPreDrag) {
+        if (mIsInPreDrag) {
             return mLastDropTarget;
         }
         DropTarget dropTarget = findDropTarget(x, y);

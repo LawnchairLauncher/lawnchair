@@ -70,6 +70,34 @@ public class WidgetsModel {
     private final Map<PackageItemInfo, List<WidgetItem>> mWidgetsList = new HashMap<>();
 
     /**
+     * Returns a list of {@link WidgetsListBaseEntry} filtered using given widget item filter. All
+     * {@link WidgetItem}s in a single row are sorted (based on label and user), but the overall
+     * list of {@link WidgetsListBaseEntry}s is not sorted.
+     *
+     * @see com.android.launcher3.widget.picker.WidgetsListAdapter#setWidgets(List)
+     */
+    public synchronized ArrayList<WidgetsListBaseEntry> getFilteredWidgetsListForPicker(
+            Context context,
+            Predicate<WidgetItem> widgetItemFilter) {
+        ArrayList<WidgetsListBaseEntry> result = new ArrayList<>();
+        AlphabeticIndexCompat indexer = new AlphabeticIndexCompat(context);
+
+        for (Map.Entry<PackageItemInfo, List<WidgetItem>> entry : mWidgetsList.entrySet()) {
+            PackageItemInfo pkgItem = entry.getKey();
+            List<WidgetItem> widgetItems = entry.getValue()
+                    .stream()
+                    .filter(widgetItemFilter).toList();
+            if (!widgetItems.isEmpty()) {
+                String sectionName = (pkgItem.title == null) ? "" :
+                        indexer.computeSectionName(pkgItem.title);
+                result.add(WidgetsListHeaderEntry.create(pkgItem, sectionName, widgetItems));
+                result.add(new WidgetsListContentEntry(pkgItem, sectionName, widgetItems));
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns a list of {@link WidgetsListBaseEntry}. All {@link WidgetItem} in a single row
      * are sorted (based on label and user), but the overall list of
      * {@link WidgetsListBaseEntry}s is not sorted.
@@ -77,18 +105,8 @@ public class WidgetsModel {
      * @see com.android.launcher3.widget.picker.WidgetsListAdapter#setWidgets(List)
      */
     public synchronized ArrayList<WidgetsListBaseEntry> getWidgetsListForPicker(Context context) {
-        ArrayList<WidgetsListBaseEntry> result = new ArrayList<>();
-        AlphabeticIndexCompat indexer = new AlphabeticIndexCompat(context);
-
-        for (Map.Entry<PackageItemInfo, List<WidgetItem>> entry : mWidgetsList.entrySet()) {
-            PackageItemInfo pkgItem = entry.getKey();
-            List<WidgetItem> widgetItems = entry.getValue();
-            String sectionName = (pkgItem.title == null) ? "" :
-                    indexer.computeSectionName(pkgItem.title);
-            result.add(WidgetsListHeaderEntry.create(pkgItem, sectionName, widgetItems));
-            result.add(new WidgetsListContentEntry(pkgItem, sectionName, widgetItems));
-        }
-        return result;
+        // return all items
+        return getFilteredWidgetsListForPicker(context, /*widgetItemFilter=*/ item -> true);
     }
 
     /** Returns a mapping of packages to their widgets without static shortcuts. */
@@ -129,7 +147,8 @@ public class WidgetsModel {
                         LauncherAppWidgetProviderInfo.fromProviderInfo(context, widgetInfo);
 
                 widgetsAndShortcuts.add(new WidgetItem(
-                        launcherWidgetInfo, idp, app.getIconCache(), app.getContext()));
+                        launcherWidgetInfo, idp, app.getIconCache(), app.getContext(),
+                        widgetManager));
                 updatedItems.add(launcherWidgetInfo);
             }
 
@@ -188,6 +207,7 @@ public class WidgetsModel {
 
     public void onPackageIconsUpdated(Set<String> packageNames, UserHandle user,
             LauncherAppState app) {
+        WidgetManagerHelper widgetManager = new WidgetManagerHelper(app.getContext());
         for (Entry<PackageItemInfo, List<WidgetItem>> entry : mWidgetsList.entrySet()) {
             if (packageNames.contains(entry.getKey().packageName)) {
                 List<WidgetItem> items = entry.getValue();
@@ -201,7 +221,7 @@ public class WidgetsModel {
                         } else {
                             items.set(i, new WidgetItem(item.widgetInfo,
                                     app.getInvariantDeviceProfile(), app.getIconCache(),
-                                    app.getContext()));
+                                    app.getContext(), widgetManager));
                         }
                     }
                 }

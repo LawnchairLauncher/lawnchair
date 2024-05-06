@@ -34,13 +34,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.LauncherApps;
+import android.content.pm.LauncherApps.ArchiveCompatibilityParams;
 import android.os.UserHandle;
 import android.util.Log;
-import android.util.SparseArray;
-import android.widget.RemoteViews;
 
-import androidx.annotation.GuardedBy;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.graphics.IconShape;
@@ -48,6 +45,7 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIconProvider;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.model.ModelLauncherCallbacks;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.InstallSessionTracker;
@@ -60,6 +58,7 @@ import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 public class LauncherAppState implements SafeCloseable {
@@ -75,13 +74,9 @@ public class LauncherAppState implements SafeCloseable {
     private final LauncherIconProvider mIconProvider;
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
-    private final RunnableList mOnTerminateCallback = new RunnableList();
+    private boolean mIsSafeModeEnabled;
 
-    // WORKAROUND: b/269335387 remove this after widget background listener is enabled
-    /* Array of RemoteViews cached by Launcher process */
-    @GuardedBy("itself")
-    @NonNull
-    public final SparseArray<RemoteViews> mCachedRemoteViews = new SparseArray<>();
+    private final RunnableList mOnTerminateCallback = new RunnableList();
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
@@ -95,20 +90,31 @@ public class LauncherAppState implements SafeCloseable {
         return mContext;
     }
 
+    @SuppressWarnings("NewApi")
     public LauncherAppState(Context context) {
         this(context, LauncherFiles.APP_ICONS_DB);
         Log.v(Launcher.TAG, "LauncherAppState initiated");
         Preconditions.assertUIThread();
 
+        mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
+                () -> context.getPackageManager().isSafeMode());
         mInvariantDeviceProfile.addOnChangeListener(modelPropertiesChanged -> {
             if (modelPropertiesChanged) {
                 refreshAndReloadLauncher();
             }
         });
 
-        mContext.getSystemService(LauncherApps.class).registerCallback(mModel);
+        ModelLauncherCallbacks callbacks = mModel.newModelCallbacks();
+        LauncherApps launcherApps = mContext.getSystemService(LauncherApps.class);
+        launcherApps.registerCallback(callbacks);
         mOnTerminateCallback.add(() ->
-                mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel));
+                mContext.getSystemService(LauncherApps.class).unregisterCallback(callbacks));
+
+        if (Utilities.enableSupportForArchiving()) {
+            ArchiveCompatibilityParams params = new ArchiveCompatibilityParams();
+            params.setEnableUnarchivalConfirmation(false);
+            launcherApps.setArchiveCompatibility(params);
+        }
 
         SimpleBroadcastReceiver modelChangeReceiver =
                 new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
@@ -232,6 +238,10 @@ public class LauncherAppState implements SafeCloseable {
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
         return mInvariantDeviceProfile;
+    }
+
+    public boolean isSafeModeEnabled() {
+        return mIsSafeModeEnabled;
     }
 
     /**

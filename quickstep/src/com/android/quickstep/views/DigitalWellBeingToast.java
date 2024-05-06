@@ -21,7 +21,6 @@ import static android.provider.Settings.ACTION_APP_USAGE_SETTINGS;
 import static com.android.launcher3.Utilities.prefixTextWithIcon;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 
-import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -33,7 +32,6 @@ import android.icu.text.MeasureFormat;
 import android.icu.text.MeasureFormat.FormatWidth;
 import android.icu.util.Measure;
 import android.icu.util.MeasureUnit;
-import android.os.Build;
 import android.os.UserHandle;
 import android.util.Log;
 import android.util.Pair;
@@ -52,8 +50,8 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.lang.annotation.Retention;
@@ -61,7 +59,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.time.Duration;
 import java.util.Locale;
 
-@TargetApi(Build.VERSION_CODES.Q)
 public final class DigitalWellBeingToast {
 
     private static final float THRESHOLD_LEFT_ICON_ONLY = 0.4f;
@@ -324,7 +321,7 @@ public final class DigitalWellBeingToast {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         layoutParams.bottomMargin = ((ViewGroup.MarginLayoutParams)
                 mTaskView.getThumbnail().getLayoutParams()).bottomMargin;
-        PagedOrientationHandler orientationHandler = mTaskView.getPagedOrientationHandler();
+        RecentsPagedOrientationHandler orientationHandler = mTaskView.getPagedOrientationHandler();
         Pair<Float, Float> translations = orientationHandler
                 .getDwbLayoutTranslations(mTaskView.getMeasuredWidth(),
                         mTaskView.getMeasuredHeight(), mSplitBounds, deviceProfile,

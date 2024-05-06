@@ -83,11 +83,9 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         mIcon = findViewById(R.id.work_icon);
         mTextView = findViewById(R.id.pause_text);
         setSelected(true);
-        if (Utilities.ATLEAST_R) {
-            KeyboardInsetAnimationCallback keyboardInsetAnimationCallback =
-                    new KeyboardInsetAnimationCallback(this);
-            setWindowInsetsAnimationCallback(keyboardInsetAnimationCallback);
-        }
+        KeyboardInsetAnimationCallback keyboardInsetAnimationCallback =
+                new KeyboardInsetAnimationCallback(this);
+        setWindowInsetsAnimationCallback(keyboardInsetAnimationCallback);
 
         setInsets(mActivityContext.getDeviceProfile().getInsets());
         updateStringFromCache();

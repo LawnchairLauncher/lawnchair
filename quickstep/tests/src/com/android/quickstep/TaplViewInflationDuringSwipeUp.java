@@ -56,7 +56,6 @@ import com.android.launcher3.tapl.LaunchedAppState;
 import com.android.launcher3.testcomponent.ListViewService;
 import com.android.launcher3.testcomponent.ListViewService.SimpleViewsFactory;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
@@ -93,8 +92,6 @@ public class TaplViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-
         // Workaround for b/142351228, when there are no activities, the system may not destroy the
         // activity correctly for activities under instrumentation, which can leave two concurrent
         // activities, which changes the order in which the activities are cleaned up (overlapping
@@ -102,7 +99,7 @@ public class TaplViewInflationDuringSwipeUp extends AbstractQuickStepTest {
         // is started only after starting another app.
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
 
-        AbstractLauncherUiTest.initialize(this);
+        super.setUp();
 
         mModel = LauncherAppState.getInstance(mTargetContext).getModel();
         Executors.MODEL_EXECUTOR.submit(mModel.getModelDbController()::createEmptyDB).get();

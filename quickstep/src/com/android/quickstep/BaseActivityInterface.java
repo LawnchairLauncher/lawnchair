@@ -35,13 +35,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.RemoteAnimationTarget;
@@ -64,6 +62,7 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.views.ScrimView;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
@@ -77,7 +76,6 @@ import java.util.function.Predicate;
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
  */
-@TargetApi(Build.VERSION_CODES.P)
 public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_TYPE>,
         ACTIVITY_TYPE extends StatefulActivity<STATE_TYPE>> {
 
@@ -131,7 +129,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public abstract int getSwipeUpDestinationAndLength(
             DeviceProfile dp, Context context, Rect outRect,
-            PagedOrientationHandler orientationHandler);
+            RecentsPagedOrientationHandler orientationHandler);
 
     /** Called when the animation to home has fully settled. */
     public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {}
@@ -180,7 +178,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract <T extends RecentsView> T getVisibleRecentsView();
 
     @UiThread
-    public abstract boolean switchToRecentsIfVisible(Runnable onCompleteCallback);
+    public abstract boolean switchToRecentsIfVisible(Animator.AnimatorListener animatorListener);
 
     public abstract Rect getOverviewWindowBounds(
             Rect homeBounds, RemoteAnimationTarget target);
@@ -263,6 +261,23 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         }
     }
 
+    /**
+     * Calculates the taskView size for carousel during app to overview animation on tablets.
+     */
+    public final void calculateCarouselTaskSize(Context context, DeviceProfile dp, Rect outRect,
+            PagedOrientationHandler orientedState) {
+        if (dp.isTablet && dp.isGestureMode) {
+            Resources res = context.getResources();
+            float minScale = res.getFloat(R.dimen.overview_carousel_min_scale);
+            Rect gridRect = new Rect();
+            calculateGridSize(dp, context, gridRect);
+            calculateTaskSizeInternal(context, dp, gridRect, minScale, Gravity.CENTER | Gravity.TOP,
+                    outRect);
+        } else {
+            calculateTaskSize(context, dp, outRect, orientedState);
+        }
+    }
+
     private void calculateFocusTaskSize(Context context, DeviceProfile dp, Rect outRect) {
         Resources res = context.getResources();
         float maxScale = res.getFloat(R.dimen.overview_max_scale);
@@ -288,13 +303,13 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     private void calculateTaskSizeInternal(Context context, DeviceProfile dp,
-            Rect potentialTaskRect, float maxScale, int gravity, Rect outRect) {
+            Rect potentialTaskRect, float targetScale, int gravity, Rect outRect) {
         PointF taskDimension = getTaskDimension(context, dp);
 
         float scale = Math.min(
                 potentialTaskRect.width() / taskDimension.x,
                 potentialTaskRect.height() / taskDimension.y);
-        scale = Math.min(scale, maxScale);
+        scale = Math.min(scale, targetScale);
         int outWidth = Math.round(scale * taskDimension.x);
         int outHeight = Math.round(scale * taskDimension.y);
 
@@ -410,11 +425,14 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             if (activity == null) {
                 return null;
             }
+            RecentsView recentsView = activity.getOverviewPanel();
             STATE_TYPE state = stateFromGestureEndTarget(endTarget);
             ScrimView scrimView = activity.getScrimView();
             ObjectAnimator anim = ObjectAnimator.ofArgb(scrimView, VIEW_BACKGROUND_COLOR,
                     getOverviewScrimColorForState(activity, state));
             anim.setDuration(duration);
+            anim.setInterpolator(recentsView == null || !recentsView.isKeyboardTaskFocusPending()
+                    ? LINEAR : INSTANT);
             return anim;
         }
         return null;
@@ -522,7 +540,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             // Since we are changing the start position of the UI, reapply the state, at the end
             controller.setEndAction(() -> mActivity.getStateManager().goToState(
                     controller.getInterpolatedProgress() > 0.5 ? mTargetState : mBackgroundState,
-                    false));
+                    /* animated= */ false));
 
             RecentsView recentsView = mActivity.getOverviewPanel();
             AnimatorControllerWithResistance controllerWithResistance =

@@ -52,7 +52,8 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
                 ApplicationInfo ai = app.getContext()
                         .getPackageManager().getApplicationInfo(mInstallInfo.packageName, 0);
                 if (InstantAppResolver.newInstance(app.getContext()).isInstantApp(ai)) {
-                    app.getModel().onPackageAdded(ai.packageName, mInstallInfo.user);
+                    app.getModel().newModelCallbacks()
+                            .onPackageAdded(ai.packageName, mInstallInfo.user);
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 // Ignore

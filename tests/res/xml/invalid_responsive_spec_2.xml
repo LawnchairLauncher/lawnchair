@@ -28,7 +28,7 @@
         <workspaceSpec
             launcher:maxAvailableSize="9999dp"
             launcher:dimensionType="width">
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <cellSize launcher:ofRemainderSpace="1" />
             <endPadding launcher:fixedSize="22dp" />
             <gutter launcher:fixedSize="16dp" />
             <startPadding launcher:fixedSize="22dp" />
@@ -38,7 +38,7 @@
     <workspaceSpec
         launcher:maxAvailableSize="9999dp"
         launcher:dimensionType="width">
-        <cellSize launcher:ofRemainderSpace="0.25" />
+        <cellSize launcher:ofRemainderSpace="1" />
         <endPadding launcher:fixedSize="22dp" />
         <gutter launcher:fixedSize="16dp" />
         <startPadding launcher:fixedSize="22dp" />

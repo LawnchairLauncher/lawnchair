@@ -21,35 +21,39 @@ package {
 filegroup {
     name: "launcher-tests-src",
     srcs: [
-      "src/**/*.java",
-      "src/**/*.kt"
+        "src/**/*.java",
+        "src/**/*.kt",
+        "multivalentTests/src/**/*.java",
+        "multivalentTests/src/**/*.kt",
     ],
     exclude_srcs: [
-        ":launcher-non-quickstep-tests-src"
+        ":launcher-non-quickstep-tests-src",
     ],
 }
 
 // Source code used for screenshot tests
 filegroup {
-    name: "launcher-image-tests-src",
+    name: "launcher-image-tests-helpers",
     srcs: [
-      "src/com/android/launcher3/celllayout/board/*.java",
-      "src/com/android/launcher3/celllayout/board/*.kt",
-      "src/com/android/launcher3/celllayout/FavoriteItemsTransaction.java",
-      "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
-      "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
-      "src/com/android/launcher3/ui/TestViewHelpers.java",
-      "src/com/android/launcher3/util/LauncherLayoutBuilder.java",
-      "src/com/android/launcher3/util/ModelTestExtensions.kt",
-      "src/com/android/launcher3/util/TestConstants.java",
-      "src/com/android/launcher3/util/TestUtil.java",
-      "src/com/android/launcher3/util/Wait.java",
-      "src/com/android/launcher3/util/WidgetUtils.java",
-      "src/com/android/launcher3/util/rule/*.java",
-      "src/com/android/launcher3/util/rule/*.kt",
-      "src/com/android/launcher3/util/viewcapture_analysis/*.java",
-      "src/com/android/launcher3/testcomponent/*.java",
-      "src/com/android/launcher3/testcomponent/*.kt",
+        "src/com/android/launcher3/celllayout/board/*.java",
+        "src/com/android/launcher3/celllayout/board/*.kt",
+        "src/com/android/launcher3/celllayout/FavoriteItemsTransaction.java",
+        "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
+        "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
+        "src/com/android/launcher3/ui/TestViewHelpers.java",
+        "multivalentTests/src/com/android/launcher3/util/LauncherLayoutBuilder.java",
+        "src/com/android/launcher3/util/ModelTestExtensions.kt",
+        "src/com/android/launcher3/util/TestConstants.java",
+        "multivalentTests/src/com/android/launcher3/util/TestUtil.java",
+        "src/com/android/launcher3/util/Wait.java",
+        "multivalentTests/src/com/android/launcher3/util/WidgetUtils.java",
+        "src/com/android/launcher3/util/rule/*.java",
+        "src/com/android/launcher3/util/rule/*.kt",
+        "multivalentTests/src/com/android/launcher3/util/rule/*.java",
+        "multivalentTests/src/com/android/launcher3/util/rule/*.kt",
+        "src/com/android/launcher3/util/viewcapture_analysis/*.java",
+        "src/com/android/launcher3/testcomponent/*.java",
+        "src/com/android/launcher3/testcomponent/*.kt",
     ],
 }
 
@@ -57,8 +61,8 @@ filegroup {
 filegroup {
     name: "launcher-non-quickstep-tests-src",
     srcs: [
-       "src/com/android/launcher3/nonquickstep/**/*.java",
-       "src/com/android/launcher3/nonquickstep/**/*.kt",
+        "src/com/android/launcher3/nonquickstep/**/*.java",
+        "src/com/android/launcher3/nonquickstep/**/*.kt",
     ],
 }
 
@@ -66,42 +70,42 @@ filegroup {
 filegroup {
     name: "launcher-oop-tests-src",
     srcs: [
-      "src/com/android/launcher3/allapps/TaplOpenCloseAllApps.java",
-      "src/com/android/launcher3/allapps/TaplTestsAllAppsIconsWorking.java",
-      "src/com/android/launcher3/appiconmenu/TaplAppIconMenuTest.java",
-      "src/com/android/launcher3/dragging/TaplDragTest.java",
-      "src/com/android/launcher3/dragging/TaplUninstallRemove.java",
-      "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
-      "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
-      "src/com/android/launcher3/ui/TaplTestsLauncher3.java",
-      "src/com/android/launcher3/ui/widget/TaplWidgetPickerTest.java",
-      "src/com/android/launcher3/ui/workspace/TaplWorkspaceTest.java",
-      "src/com/android/launcher3/util/LauncherLayoutBuilder.java",
-      "src/com/android/launcher3/util/TestConstants.java",
-      "src/com/android/launcher3/util/TestUtil.java",
-      "src/com/android/launcher3/util/Wait.java",
-      "src/com/android/launcher3/util/WidgetUtils.java",
-      "src/com/android/launcher3/util/rule/FailureWatcher.java",
-      "src/com/android/launcher3/util/rule/ViewCaptureRule.kt",
-      "src/com/android/launcher3/util/rule/SamplerRule.java",
-      "src/com/android/launcher3/util/rule/ScreenRecordRule.java",
-      "src/com/android/launcher3/util/rule/ShellCommandRule.java",
-      "src/com/android/launcher3/util/rule/TestIsolationRule.java",
-      "src/com/android/launcher3/util/rule/TestStabilityRule.java",
-      "src/com/android/launcher3/util/viewcapture_analysis/*.java",
-      "src/com/android/launcher3/testcomponent/BaseTestingActivity.java",
-      "src/com/android/launcher3/testcomponent/OtherBaseTestingActivity.java",
-      "src/com/android/launcher3/testcomponent/CustomShortcutConfigActivity.java",
-      "src/com/android/launcher3/testcomponent/TestCommandReceiver.java",
-      "src/com/android/launcher3/testcomponent/TestLauncherActivity.java",
-      "src/com/android/launcher3/testcomponent/ImeTestActivity.java",
+        "src/com/android/launcher3/allapps/TaplOpenCloseAllAppsTest.java",
+        "src/com/android/launcher3/allapps/TaplAllAppsIconsWorkingTest.java",
+        "src/com/android/launcher3/appiconmenu/TaplAppIconMenuTest.java",
+        "src/com/android/launcher3/dragging/TaplDragTest.java",
+        "src/com/android/launcher3/dragging/TaplUninstallRemoveTest.java",
+        "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
+        "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
+        "src/com/android/launcher3/ui/TaplTestsLauncher3Test.java",
+        "src/com/android/launcher3/ui/widget/TaplWidgetPickerTest.java",
+        "src/com/android/launcher3/ui/workspace/TaplWorkspaceTest.java",
+        "multivalentTests/src/com/android/launcher3/util/LauncherLayoutBuilder.java",
+        "src/com/android/launcher3/util/TestConstants.java",
+        "multivalentTests/src/com/android/launcher3/util/TestUtil.java",
+        "src/com/android/launcher3/util/Wait.java",
+        "multivalentTests/src/com/android/launcher3/util/WidgetUtils.java",
+        "src/com/android/launcher3/util/rule/FailureWatcher.java",
+        "src/com/android/launcher3/util/rule/ViewCaptureRule.kt",
+        "src/com/android/launcher3/util/rule/SamplerRule.java",
+        "src/com/android/launcher3/util/rule/ScreenRecordRule.java",
+        "src/com/android/launcher3/util/rule/ShellCommandRule.java",
+        "src/com/android/launcher3/util/rule/TestIsolationRule.java",
+        "multivalentTests/src/com/android/launcher3/util/rule/TestStabilityRule.java",
+        "src/com/android/launcher3/util/viewcapture_analysis/*.java",
+        "src/com/android/launcher3/testcomponent/BaseTestingActivity.java",
+        "src/com/android/launcher3/testcomponent/OtherBaseTestingActivity.java",
+        "src/com/android/launcher3/testcomponent/CustomShortcutConfigActivity.java",
+        "src/com/android/launcher3/testcomponent/TestCommandReceiver.java",
+        "src/com/android/launcher3/testcomponent/TestLauncherActivity.java",
+        "src/com/android/launcher3/testcomponent/ImeTestActivity.java",
     ],
 }
 
 // Library with all the dependencies for building quickstep
 android_library {
     name: "Launcher3TestLib",
-    srcs: [ ],
+    srcs: [],
     asset_dirs: ["assets"],
     resource_dirs: ["res"],
     static_libs: [
@@ -123,14 +127,19 @@ android_library {
         "testables",
         "com_android_launcher3_flags_lib",
         "com_android_wm_shell_flags_lib",
+        "android.appwidget.flags-aconfig-java",
     ],
     manifest: "AndroidManifest-common.xml",
     platform_apis: true,
+    // TODO(b/319712088): re-enable use_resource_processor
+    use_resource_processor: false,
 }
 
 android_library {
     name: "Launcher3TestResources",
     resource_dirs: ["res"],
+    // TODO(b/319712088): re-enable use_resource_processor
+    use_resource_processor: false,
 }
 
 android_test {
@@ -167,10 +176,89 @@ android_test {
 android_library {
     name: "launcher-testing-shared",
     srcs: [
-        "shared/com/android/launcher3/testing/shared/**/*.java"
+        "multivalentTests/shared/com/android/launcher3/testing/shared/**/*.java",
+        "multivalentTests/shared/com/android/launcher3/testing/shared/**/*.kt"
     ],
-    resource_dirs: [ ],
-    manifest: "shared/AndroidManifest.xml",
+    resource_dirs: [],
+    manifest: "multivalentTests/shared/AndroidManifest.xml",
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,
- }
+}
+
+filegroup {
+    name: "launcher-testing-helpers",
+    srcs: [
+        "src/**/*.java",
+        "src/**/*.kt",
+        "multivalentTests/src/**/*.java",
+        "multivalentTests/src/**/*.kt",
+        "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
+        "tapl/com/android/launcher3/tapl/*.java",
+        "tapl/com/android/launcher3/tapl/*.kt",
+    ],
+    exclude_srcs: [
+        // Test classes
+        "src/**/*Test.java",
+        "src/**/*Test.kt",
+        "multivalentTests/src/**/*Test.java",
+        "multivalentTests/src/**/*Test.kt",
+    ],
+}
+
+android_library {
+    name: "Launcher3Lib",
+    srcs: [
+        ":launcher-src",
+        ":launcher-src_shortcuts_overrides",
+        ":launcher-src_ui_overrides",
+    ],
+    static_libs: [
+        "Launcher3CommonDepsLib",
+    ],
+    // TODO(b/319712088): re-enable use_resource_processor
+    use_resource_processor: false,
+}
+
+android_robolectric_test {
+    enabled: true,
+    name: "Launcher3RoboTests",
+    // multivalentTests directory is a shared folder for not only robolectric converted test
+    // classes but also shared helper classes.
+    srcs: [
+        "multivalentTests/src/com/android/launcher3/util/*.java",
+        "multivalentTests/src/com/android/launcher3/util/*.kt",
+
+        // Test util classes
+        ":launcher-testing-helpers",
+        ":launcher-testing-shared",
+    ],
+    exclude_srcs: [
+        //"src/com/android/launcher3/util/CellContentDimensionsTest.kt", // Failing - b/316553889
+
+        // requires modification to work with inline mock maker
+        "src/com/android/launcher3/util/rule/StaticMockitoRule.java",
+    ],
+    java_resource_dirs: ["config"],
+    static_libs: [
+        "flag-junit-base",
+        "com_android_launcher3_flags_lib",
+        "com_android_wm_shell_flags_lib",
+        "androidx.test.uiautomator_uiautomator",
+        "androidx.core_core-animation-testing",
+        "androidx.test.ext.junit",
+        "inline-mockito-robolectric-prebuilt",
+        "platform-parametric-runner-lib",
+        "testables",
+        "Launcher3TestResources",
+        "SystemUISharedLib",
+        "launcher-testing-shared",
+    ],
+    libs: [
+        "android.test.runner",
+        "android.test.base",
+        "android.test.mock",
+        "truth",
+    ],
+    instrumentation_for: "Launcher3",
+    upstream: true,
+}

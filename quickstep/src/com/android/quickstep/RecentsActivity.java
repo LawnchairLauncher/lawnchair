@@ -498,4 +498,9 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         OverviewCommandHelper overviewCommandHelper = mTISBindHelper.getOverviewCommandHelper();
         return overviewCommandHelper == null || overviewCommandHelper.canStartHomeSafely();
     }
+
+    @NonNull
+    public TISBindHelper getTISBindHelper() {
+        return mTISBindHelper;
+    }
 }

@@ -21,6 +21,8 @@ import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEAS
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.launcher3.Flags.enablePredictiveBackGesture;
+import static com.android.launcher3.Flags.enableUnfoldStateAnimation;
 import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.PENDING_SPLIT_SELECT_INFO;
 import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE;
 import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
@@ -35,11 +37,17 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+import static com.android.launcher3.config.FeatureFlags.enableSplitContextually;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_HOME;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.popup.QuickstepSystemShortcut.getSplitSelectShortcutByPosition;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
+import static com.android.launcher3.popup.SystemShortcut.DONT_SUGGEST_APP;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
+import static com.android.launcher3.popup.SystemShortcut.PRIVATE_PROFILE_INSTALL;
+import static com.android.launcher3.popup.SystemShortcut.UNINSTALL_APP;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.taskbar.LauncherTaskbarUIController.ALL_APPS_PAGE_PROGRESS_INDEX;
 import static com.android.launcher3.taskbar.LauncherTaskbarUIController.MINUS_ONE_PAGE_PROGRESS_INDEX;
@@ -51,6 +59,7 @@ import static com.android.launcher3.testing.shared.TestProtocol.QUICK_SWITCH_STA
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.util.AnimUtils.completeRunnableListCallback;
 import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
@@ -64,7 +73,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.display.DisplayManager;
@@ -72,6 +80,7 @@ import android.media.permission.SafeCloseable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.IRemoteCallback;
 import android.os.SystemProperties;
 import android.os.Trace;
 import android.util.AttributeSet;
@@ -84,6 +93,7 @@ import android.widget.TextClock;
 import android.window.BackEvent;
 import android.window.OnBackAnimationCallback;
 import android.window.OnBackInvokedDispatcher;
+import android.window.RemoteTransition;
 import android.window.SplashScreen;
 
 import androidx.annotation.BinderThread;
@@ -94,6 +104,7 @@ import androidx.annotation.RequiresApi;
 import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.HomeTransitionController;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -140,7 +151,6 @@ import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchT
 import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.ObjectWrapper;
@@ -166,6 +176,8 @@ import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.SplitToWorkspaceController;
 import com.android.quickstep.util.SplitWithKeyboardShortcutController;
 import com.android.quickstep.util.TISBindHelper;
+import com.android.quickstep.util.unfold.LauncherUnfoldTransitionController;
+import com.android.quickstep.util.unfold.ProxyUnfoldTransitionProvider;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
@@ -188,7 +200,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -233,6 +245,8 @@ public class QuickstepLauncher extends Launcher {
 
     private boolean mEnableWidgetDepth;
 
+    private boolean mIsPredictiveBackToHomeInProgress;
+
     private HomeTransitionController mHomeTransitionController;
 
     @Override
@@ -266,8 +280,8 @@ public class QuickstepLauncher extends Launcher {
         mAppTransitionManager.registerRemoteTransitions();
 
         if (FeatureFlags.enableHomeTransitionListener()) {
-            mHomeTransitionController = new HomeTransitionController(this);
-            mHomeTransitionController.registerHomeTransitionListener();
+            mHomeTransitionController = new HomeTransitionController();
+            mHomeTransitionController.registerHomeTransitionListener(this);
         }
 
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
@@ -361,11 +375,21 @@ public class QuickstepLauncher extends Launcher {
     public RunnableList startActivitySafely(View v, Intent intent, ItemInfo item) {
         // Only pause is taskbar controller is not present until the transition (if it exists) ends
         mHotseatPredictionController.setPauseUIUpdate(getTaskbarUIController() == null);
+        Log.d("b/318394698", "startActivitySafely being run, getTaskbarUIController is: "
+                + getTaskbarUIController());
+        PredictionRowView<?> predictionRowView =
+                getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class);
+        // Pause the prediction row updates until the transition (if it exists) ends.
+        predictionRowView.setPredictionUiUpdatePaused(true);
         RunnableList result = super.startActivitySafely(v, intent, item);
         if (result == null) {
             mHotseatPredictionController.setPauseUIUpdate(false);
+            predictionRowView.setPredictionUiUpdatePaused(false);
         } else {
-            result.add(() -> mHotseatPredictionController.setPauseUIUpdate(false));
+            result.add(() -> {
+                mHotseatPredictionController.setPauseUIUpdate(false);
+                predictionRowView.setPredictionUiUpdatePaused(false);
+            });
         }
         return result;
     }
@@ -414,6 +438,15 @@ public class QuickstepLauncher extends Launcher {
         shortcuts.addAll(getSplitShortcuts());
         shortcuts.add(WIDGETS);
         shortcuts.add(INSTALL);
+        if (Flags.enablePrivateSpaceInstallShortcut()) {
+            shortcuts.add(PRIVATE_PROFILE_INSTALL);
+        }
+        if (Flags.enableShortcutDontSuggestApp()) {
+            shortcuts.add(DONT_SUGGEST_APP);
+        }
+        if (Flags.enablePrivateSpace()) {
+            shortcuts.add(UNINSTALL_APP);
+        }
         return shortcuts.stream();
     }
 
@@ -456,7 +489,7 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public void bindExtraContainerItems(FixedContainerItems item) {
-        Log.d(TAG, "Bind extra container items");
+        Log.d(TAG, "Bind extra container items. ContainerId = " + item.containerId);
         if (item.containerId == Favorites.CONTAINER_PREDICTION) {
             mAllAppsPredictions = item;
             PredictionRowView<?> predictionRowView =
@@ -483,6 +516,7 @@ public class QuickstepLauncher extends Launcher {
             mAppTransitionManager.onActivityDestroyed();
         }
         mAppTransitionManager = null;
+        mIsPredictiveBackToHomeInProgress = false;
 
         if (mUnfoldTransitionProgressProvider != null) {
             SystemUiProxy.INSTANCE.get(this).setUnfoldAnimationListener(null);
@@ -565,9 +599,10 @@ public class QuickstepLauncher extends Launcher {
 
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(getDragController());
-        Consumer<AnimatorSet> splitAnimator = animatorSet ->
+        BiConsumer<AnimatorSet, Long> splitAnimator = (animatorSet, duration) ->
                 animatorSet.play(mSplitSelectStateController.getSplitAnimationController()
-                        .createPlaceholderDismissAnim(this));
+                        .createPlaceholderDismissAnim(this, LAUNCHER_SPLIT_SELECTION_EXIT_HOME,
+                                duration));
         switch (mode) {
             case NO_BUTTON:
                 list.add(new NoButtonQuickSwitchTouchController(this));
@@ -616,10 +651,13 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (Utilities.ATLEAST_U && FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+        // Back dispatcher is registered in {@link BaseActivity#onCreate}. For predictive back to
+        // work, we must opt-in BEFORE registering back dispatcher. So we need to call
+        // setEnableOnBackInvokedCallback() before super.onCreate()
+        if (Utilities.ATLEAST_U && enablePredictiveBackGesture()) {
             getApplicationInfo().setEnableOnBackInvokedCallback(true);
         }
+        super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             mPendingSplitSelectInfo = ObjectWrapper.unwrap(
                     savedInstanceState.getIBinder(PENDING_SPLIT_SELECT_INFO));
@@ -644,12 +682,12 @@ public class QuickstepLauncher extends Launcher {
                 Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
                 false /* findExactPairMatch */,
                 foundTasks -> {
-                    @Nullable Task foundTask = foundTasks.get(0);
+                    @Nullable Task foundTask = foundTasks[0];
                     boolean taskWasFound = foundTask != null;
                     splitSelectSource.alreadyRunningTaskId = taskWasFound
                             ? foundTask.key.id
                             : INVALID_TASK_ID;
-                    if (FeatureFlags.enableSplitContextually()) {
+                    if (enableSplitContextually()) {
                         startSplitToHome(splitSelectSource);
                     } else {
                         recentsView.initiateSplitSelect(splitSelectSource);
@@ -702,8 +740,12 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
-    public boolean isSplitSelectionEnabled() {
+    public boolean isSplitSelectionActive() {
         return mSplitSelectStateController.isSplitSelectActive();
+    }
+
+    public boolean areBothSplitAppsConfirmed() {
+        return mSplitSelectStateController.isBothSplitAppsConfirmed();
     }
 
     @Override
@@ -730,12 +772,14 @@ public class QuickstepLauncher extends Launcher {
 
         super.onPause();
 
-        if (FeatureFlags.enableSplitContextually()) {
+        if (enableSplitContextually()) {
             // If Launcher pauses before both split apps are selected, exit split screen.
             if (!mSplitSelectStateController.isBothSplitAppsConfirmed() &&
                     !mSplitSelectStateController.isLaunchingFirstAppFullscreen()) {
+                mSplitSelectStateController
+                        .logExitReason(LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED);
                 mSplitSelectStateController.getSplitAnimationController()
-                        .playPlaceholderDismissAnim(this);
+                        .playPlaceholderDismissAnim(this, LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED);
             }
         }
     }
@@ -801,7 +845,7 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     protected void registerBackDispatcher() {
-        if (!FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+        if (!enablePredictiveBackGesture()) {
             super.registerBackDispatcher();
             return;
         }
@@ -937,6 +981,7 @@ public class QuickstepLauncher extends Launcher {
         if (taskbarManager != null) {
             taskbarManager.setActivity(this);
         }
+        mTISBindHelper.setPredictiveBackToHomeInProgress(mIsPredictiveBackToHomeInProgress);
     }
 
     @Override
@@ -945,9 +990,17 @@ public class QuickstepLauncher extends Launcher {
     }
 
     private void initUnfoldTransitionProgressProvider() {
-        final UnfoldTransitionConfig config = new ResourceUnfoldTransitionConfig();
-        if (config.isEnabled()) {
-            initRemotelyCalculatedUnfoldAnimation(config);
+        if (!enableUnfoldStateAnimation()) {
+            final UnfoldTransitionConfig config = new ResourceUnfoldTransitionConfig();
+            if (config.isEnabled()) {
+                initRemotelyCalculatedUnfoldAnimation(config);
+            }
+        } else {
+            ProxyUnfoldTransitionProvider provider =
+                    SystemUiProxy.INSTANCE.get(this).getUnfoldTransitionProvider();
+            if (provider != null) {
+                new LauncherUnfoldTransitionController(this, provider);
+            }
         }
     }
 
@@ -1001,17 +1054,17 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
-    protected void handleSplitAnimationGoingToHome() {
-        super.handleSplitAnimationGoingToHome();
+    protected void handleSplitAnimationGoingToHome(StatsLogManager.EventEnum splitDismissReason) {
+        super.handleSplitAnimationGoingToHome(splitDismissReason);
         mSplitSelectStateController.getSplitAnimationController()
-                .playPlaceholderDismissAnim(this);
+                .playPlaceholderDismissAnim(this, splitDismissReason);
     }
 
     @Override
-    public void dismissSplitSelection() {
-        super.dismissSplitSelection();
+    public void dismissSplitSelection(StatsLogManager.LauncherEvent splitDismissEvent) {
+        super.dismissSplitSelection(splitDismissEvent);
         mSplitSelectStateController.getSplitAnimationController()
-                .playPlaceholderDismissAnim(this);
+                .playPlaceholderDismissAnim(this, splitDismissEvent);
     }
 
     public <T extends OverviewActionsView> T getActionsView() {
@@ -1062,21 +1115,11 @@ public class QuickstepLauncher extends Launcher {
         // populating workspace.
         // TODO: Find a better place for this
         WellbeingModel.INSTANCE.get(this);
-    }
 
-    @Override
-    public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
-            int workspaceItemCount, boolean isBindSync) {
-        pendingTasks.add(() -> {
-            // This is added in pending task as we need to wait for views to be positioned
-            // correctly before registering them for the animation.
-            if (mLauncherUnfoldAnimationController != null) {
-                // This is needed in case items are rebound while the unfold animation is in
-                // progress.
-                mLauncherUnfoldAnimationController.updateRegisteredViewsIfNeeded();
-            }
-        });
-        super.onInitialBindComplete(boundPages, pendingTasks, workspaceItemCount, isBindSync);
+        if (mLauncherUnfoldAnimationController != null) {
+            // This is needed in case items are rebound while the unfold animation is in progress.
+            mLauncherUnfoldAnimationController.updateRegisteredViewsIfNeeded();
+        }
     }
 
     @Override
@@ -1105,13 +1148,14 @@ public class QuickstepLauncher extends Launcher {
     @Override
     public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
         RunnableList callbacks = new RunnableList();
-        ActivityOptions options = ActivityOptions.makeCustomAnimation(
-                this, 0, 0, Color.TRANSPARENT,
-                Executors.MAIN_EXECUTOR.getHandler(), null,
-                elapsedRealTime -> callbacks.executeAllAndDestroy());
+        ActivityOptions options = ActivityOptions.makeCustomAnimation(this, 0, 0);
         options.setSplashScreenStyle(splashScreenStyle);
         options.setPendingIntentBackgroundActivityStartMode(
                 ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
+
+        IRemoteCallback endCallback = completeRunnableListCallback(callbacks);
+        options.setOnAnimationAbortListener(endCallback);
+        options.setOnAnimationFinishedListener(endCallback);
         return new ActivityOptionsWrapper(options, callbacks);
     }
 
@@ -1242,6 +1286,14 @@ public class QuickstepLauncher extends Launcher {
         mPendingSplitSelectInfo = null;
     }
 
+    /**
+     * Sets flag whether a predictive back-to-home animation is in progress
+     */
+    public void setPredictiveBackToHomeInProgress(boolean isInProgress) {
+        mIsPredictiveBackToHomeInProgress = isInProgress;
+        mTISBindHelper.setPredictiveBackToHomeInProgress(isInProgress);
+    }
+
     @Override
     public boolean areFreeformTasksVisible() {
         if (mDesktopVisibilityController != null) {
@@ -1271,7 +1323,8 @@ public class QuickstepLauncher extends Launcher {
     /**
      * Launches the given {@link GroupTask} in splitscreen.
      */
-    public void launchSplitTasks(@NonNull GroupTask groupTask) {
+    public void launchSplitTasks(
+            @NonNull GroupTask groupTask, @Nullable RemoteTransition remoteTransition) {
         // Top/left and bottom/right tasks respectively.
         Task task1 = groupTask.task1;
         // task2 should never be null when calling this method. Allow a crash to catch invalid calls
@@ -1285,7 +1338,8 @@ public class QuickstepLauncher extends Launcher {
                 /* freezeTaskList= */ false,
                 groupTask.mSplitBounds == null
                         ? SNAP_TO_50_50
-                        : groupTask.mSplitBounds.snapPosition);
+                        : groupTask.mSplitBounds.snapPosition,
+                remoteTransition);
     }
 
     /**
@@ -1308,6 +1362,20 @@ public class QuickstepLauncher extends Launcher {
     @Override
     public boolean hasBubbles() {
         return (mTaskbarUIController != null && mTaskbarUIController.hasBubbles());
+    }
+
+    @NonNull
+    public TISBindHelper getTISBindHelper() {
+        return mTISBindHelper;
+    }
+
+    @Override
+    public boolean handleIncorrectSplitTargetSelection() {
+        if (!enableSplitContextually() || !mSplitSelectStateController.isSplitSelectActive()) {
+            return false;
+        }
+        mSplitSelectStateController.getSplitInstructionsView().goBoing();
+        return true;
     }
 
     private static final class LauncherTaskViewController extends

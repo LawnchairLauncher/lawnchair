@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s 앱 정보"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"앱 페어링 저장"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"길게 터치하여 위젯을 이동하세요."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"두 번 탭한 다음 길게 터치하여 위젯을 이동하거나 맞춤 작업을 사용하세요."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
@@ -40,6 +44,13 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"홈 화면에 추가"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> 위젯이 홈 화면에 추가됨"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"추천"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"매일 사용하는 항목"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"추천 뉴스"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"휴식 공간"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"피트니스 목표 달성"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"사전에 날씨 확인"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"좋아할 만한 항목"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"오른쪽에 <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> 위젯, 왼쪽에 검색 및 옵션"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{위젯 #개}other{위젯 #개}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{바로가기 #개}other{바로가기 #개}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -74,6 +85,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"삭제"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"제거"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"앱 정보"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"비공개 설치"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"설치"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"앱 제안 받지 않음"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"예상 앱 고정"</string>
@@ -125,6 +137,8 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> 설치 중, <xliff:g id="PROGRESS">%2$s</xliff:g> 완료"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> 다운로드 중, <xliff:g id="PROGRESS">%2$s</xliff:g> 완료"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> 설치 대기 중"</string>
+    <!-- no translation found for app_archived_title (9124290918876665128) -->
+    <skip />
     <string name="dialog_update_title" msgid="114234265740994042">"앱 업데이트 필요"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"바로가기 아이콘의 앱이 업데이트되지 않았습니다. 직접 업데이트하여 앱 바로가기를 다시 사용할 수 있도록 하거나 아이콘을 삭제하세요."</string>
     <string name="dialog_update" msgid="2178028071796141234">"업데이트"</string>
@@ -154,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"높이 줄이기"</string>
     <string name="widget_resized" msgid="9130327887929620">"폭 <xliff:g id="NUMBER_0">%1$s</xliff:g>, 높이 <xliff:g id="NUMBER_1">%2$s</xliff:g>로 위젯 크기 조정됨"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"바로가기"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"바로가기 및 알림"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"닫기"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"닫기"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"알림이 해제되었습니다."</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"개인"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"직장"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"직장 프로필"</string>
@@ -174,9 +186,13 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"필터"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"실패: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"비공개 스페이스"</string>
+    <string name="private_space_secondary_label" msgid="611902414159280263">"비공개 앱을 잠그고 숨겨진 상태로 유지"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"비공개"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"비공개 스페이스 설정"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"비공개 스페이스 잠금/잠금 해제"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"잠금"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"비공개 스페이스 전환"</string>
+    <string name="ps_add_button_label" msgid="8611055839242385935">"앱 설치"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"비공개 스페이스에 앱 설치"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"오버플로"</string>
 </resources>

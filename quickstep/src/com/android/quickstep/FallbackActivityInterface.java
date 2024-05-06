@@ -32,10 +32,10 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.taskbar.FallbackTaskbarUIController;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.fallback.RecentsState;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.views.RecentsView;
@@ -60,7 +60,7 @@ public final class FallbackActivityInterface extends
     /** 2 */
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
-            PagedOrientationHandler orientationHandler) {
+            RecentsPagedOrientationHandler orientationHandler) {
         calculateTaskSize(context, dp, outRect, orientationHandler);
         if (dp.isVerticalBarLayout() && DisplayController.getNavigationMode(context) != NO_BUTTON) {
             return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
@@ -122,7 +122,7 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public boolean switchToRecentsIfVisible(Runnable onCompleteCallback) {
+    public boolean switchToRecentsIfVisible(Animator.AnimatorListener animatorListener) {
         return false;
     }
 

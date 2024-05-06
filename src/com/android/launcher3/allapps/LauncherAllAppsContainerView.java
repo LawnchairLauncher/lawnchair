@@ -21,7 +21,6 @@ import android.view.WindowInsets;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.statemanager.StateManager;
 
 /**
@@ -43,11 +42,7 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
 
     @Override
     protected int computeNavBarScrimHeight(WindowInsets insets) {
-        if (Utilities.ATLEAST_Q) {
-            return insets.getTappableElementInsets().bottom;
-        } else {
-            return insets.getStableInsetBottom();
-        }
+        return insets.getTappableElementInsets().bottom;
     }
 
     @Override

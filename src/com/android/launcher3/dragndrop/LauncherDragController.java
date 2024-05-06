@@ -149,9 +149,10 @@ public class LauncherDragController extends DragController<Launcher> {
 
         handleMoveEvent(mLastTouch.x, mLastTouch.y);
 
-        if (!mActivity.isTouchInProgress() && options.simulatedDndStartPoint == null) {
+        if (!isItemPinnable()
+                || (!mActivity.isTouchInProgress() && options.simulatedDndStartPoint == null)) {
             // If it is an internal drag and the touch is already complete, cancel immediately
-            MAIN_EXECUTOR.submit(this::cancelDrag);
+            MAIN_EXECUTOR.post(this::cancelDrag);
         }
         return dragView;
     }

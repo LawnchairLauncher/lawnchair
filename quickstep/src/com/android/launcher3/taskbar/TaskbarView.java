@@ -51,7 +51,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.icons.ThemedIconDrawable;
+import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -59,7 +59,6 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.views.DoubleShadowBubbleTextView;
 import com.android.launcher3.views.IconButtonView;
 
 import java.util.function.Predicate;
@@ -84,7 +83,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private final TaskbarActivityContext mActivityContext;
 
     // Initialized in init.
-    private TaskbarViewController.TaskbarViewCallbacks mControllerCallbacks;
+    private TaskbarViewCallbacks mControllerCallbacks;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
 
@@ -123,7 +122,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mIconLayoutBounds = mActivityContext.getTransientTaskbarBounds();
         Resources resources = getResources();
         boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivityContext)
-                && !TaskbarManager.isPhoneMode(mActivityContext.getDeviceProfile());
+                && !mActivityContext.isPhoneMode();
         mIsRtl = Utilities.isRtl(resources);
         mTransientTaskbarMinWidth = resources.getDimension(R.dimen.transient_taskbar_min_width);
 
@@ -257,7 +256,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         return mIconTouchSize;
     }
 
-    protected void init(TaskbarViewController.TaskbarViewCallbacks callbacks) {
+    protected void init(TaskbarViewCallbacks callbacks) {
         // set taskbar pane title so that accessibility service know it window and focuses.
         setAccessibilityPaneTitle(getContext().getString(R.string.taskbar_a11y_title));
         mControllerCallbacks = callbacks;
@@ -266,6 +265,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         if (mAllAppsButton != null) {
             mAllAppsButton.setOnClickListener(mControllerCallbacks.getAllAppsButtonClickListener());
+            mAllAppsButton.setOnLongClickListener(
+                    mControllerCallbacks.getAllAppsButtonLongClickListener());
+            mAllAppsButton.setHapticFeedbackEnabled(
+                    mControllerCallbacks.isAllAppsButtonHapticFeedbackEnabled());
         }
         if (mTaskbarDivider != null) {
             mTaskbarDivider.setOnLongClickListener(
@@ -401,21 +404,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             addView(mQsb, mIsRtl ? getChildCount() : 0);
             // Always set QSB to invisible after re-adding.
             mQsb.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    /**
-     * Traverse all the child views and change the background of themeIcons
-     **/
-    public void setThemedIconsBackgroundColor(int color) {
-        for (View icon : getIconViews()) {
-            if (icon instanceof DoubleShadowBubbleTextView) {
-                DoubleShadowBubbleTextView textView = ((DoubleShadowBubbleTextView) icon);
-                if (textView.getIcon() != null
-                        && textView.getIcon() instanceof ThemedIconDrawable) {
-                    ((ThemedIconDrawable) textView.getIcon()).changeBackgroundColor(color);
-                }
-            }
         }
     }
 
@@ -618,9 +606,11 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         super.onDraw(canvas);
         if (mLeaveBehindFolderIcon != null) {
             canvas.save();
-            canvas.translate(mLeaveBehindFolderIcon.getLeft(), mLeaveBehindFolderIcon.getTop());
-            mLeaveBehindFolderIcon.getFolderBackground().drawLeaveBehind(canvas,
-                    mFolderLeaveBehindColor);
+            canvas.translate(
+                    mLeaveBehindFolderIcon.getLeft() + mLeaveBehindFolderIcon.getTranslationX(),
+                    mLeaveBehindFolderIcon.getTop());
+            PreviewBackground previewBackground = mLeaveBehindFolderIcon.getFolderBackground();
+            previewBackground.drawLeaveBehind(canvas, mFolderLeaveBehindColor);
             canvas.restore();
         }
     }

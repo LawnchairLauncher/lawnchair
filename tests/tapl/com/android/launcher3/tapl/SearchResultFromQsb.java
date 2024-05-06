@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
+
 import android.widget.TextView;
 
 import androidx.test.uiautomator.By;
@@ -39,7 +41,7 @@ public class SearchResultFromQsb implements SearchInputSource {
 
     /** Find the app from search results with app name. */
     public AppIcon findAppIcon(String appName) {
-        UiObject2 icon = mLauncher.waitForLauncherObject(By.clazz(TextView.class).text(appName));
+        UiObject2 icon = mLauncher.waitForLauncherObject(AppIcon.getAppIconSelector(appName));
         return createAppIcon(icon);
     }
 
@@ -87,12 +89,19 @@ public class SearchResultFromQsb implements SearchInputSource {
                              + (tapRight ? "right" : "left"))) {
             final UiObject2 allAppsBottomSheet =
                     mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
-            mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
+            tapOutside(tapRight, allAppsBottomSheet);
             try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
                     "tapped outside AllApps bottom sheet")) {
                 verifyVisibleContainerOnDismiss();
             }
         }
+    }
+
+    protected void tapOutside(boolean tapRight, UiObject2 allAppsBottomSheet) {
+        mLauncher.runToState(
+                () -> mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight),
+                NORMAL_STATE_ORDINAL,
+                "tappig outside");
     }
 
     protected void verifyVisibleContainerOnDismiss() {

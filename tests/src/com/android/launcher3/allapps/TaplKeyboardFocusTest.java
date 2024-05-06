@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
@@ -33,19 +32,12 @@ import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.views.ActivityContext;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class TaplKeyboardFocusTest extends AbstractLauncherUiTest {
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        initialize(this);
-    }
 
     @Test
     public void testAllAppsFocusApp() {

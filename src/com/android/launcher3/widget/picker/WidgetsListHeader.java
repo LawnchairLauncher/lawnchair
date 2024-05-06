@@ -35,9 +35,9 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.icons.PlaceHolderIconDrawable;
-import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 
@@ -52,8 +52,12 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     private static final int[] EXPANDED_DRAWABLE_STATE = new int[] {android.R.attr.state_expanded};
 
     private final int mIconSize;
-
-    @Nullable private HandlerRunnable mIconLoadRequest;
+    /**
+     * Indicates if the header is collapsable. For example, when displayed in a two pane layout,
+     * widget apps aren't collapsable.
+    */
+    private final boolean mIsCollapsable;
+    @Nullable private CancellableTask mIconLoadRequest;
     @Nullable private Drawable mIconDrawable;
     @Nullable private WidgetsListDrawableState mListDrawableState;
     private ImageView mAppIcon;
@@ -79,6 +83,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
                 R.styleable.WidgetsListRowHeader, defStyleAttr, /* defStyleRes= */ 0);
         mIconSize = a.getDimensionPixelSize(R.styleable.WidgetsListRowHeader_appIconSize,
                 grid.iconSizePx);
+        mIsCollapsable = a.getBoolean(R.styleable.WidgetsListRowHeader_collapsable, true);
     }
 
     @Override
@@ -87,32 +92,36 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         mAppIcon = findViewById(R.id.app_icon);
         mTitle = findViewById(R.id.app_title);
         mSubtitle = findViewById(R.id.app_subtitle);
-        setAccessibilityDelegate(new AccessibilityDelegate() {
+        // Lists that cannot collapse, don't need EXPAND or COLLAPSE accessibility actions.
+        if (mIsCollapsable) {
+            setAccessibilityDelegate(new AccessibilityDelegate() {
 
-            @Override
-            public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
-                if (mIsExpanded) {
-                    info.removeAction(AccessibilityNodeInfo.ACTION_EXPAND);
-                    info.addAction(AccessibilityNodeInfo.ACTION_COLLAPSE);
-                } else {
-                    info.removeAction(AccessibilityNodeInfo.ACTION_COLLAPSE);
-                    info.addAction(AccessibilityNodeInfo.ACTION_EXPAND);
+                @Override
+                public void onInitializeAccessibilityNodeInfo(View host,
+                        AccessibilityNodeInfo info) {
+                    if (mIsExpanded) {
+                        info.removeAction(AccessibilityNodeInfo.ACTION_EXPAND);
+                        info.addAction(AccessibilityNodeInfo.ACTION_COLLAPSE);
+                    } else {
+                        info.removeAction(AccessibilityNodeInfo.ACTION_COLLAPSE);
+                        info.addAction(AccessibilityNodeInfo.ACTION_EXPAND);
+                    }
+                    super.onInitializeAccessibilityNodeInfo(host, info);
                 }
-                super.onInitializeAccessibilityNodeInfo(host, info);
-            }
 
-            @Override
-            public boolean performAccessibilityAction(View host, int action, Bundle args) {
-                switch (action) {
-                    case AccessibilityNodeInfo.ACTION_EXPAND:
-                    case AccessibilityNodeInfo.ACTION_COLLAPSE:
-                        callOnClick();
-                        return true;
-                    default:
-                        return super.performAccessibilityAction(host, action, args);
+                @Override
+                public boolean performAccessibilityAction(View host, int action, Bundle args) {
+                    switch (action) {
+                        case AccessibilityNodeInfo.ACTION_EXPAND:
+                        case AccessibilityNodeInfo.ACTION_COLLAPSE:
+                            callOnClick();
+                            return true;
+                        default:
+                            return super.performAccessibilityAction(host, action, args);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     /** Sets the expand toggle to expand / collapse. */

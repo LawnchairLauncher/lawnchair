@@ -13,35 +13,22 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
-    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
-    <target android:name="scaleGroup">
-        <aapt:attr name="android:animation">
-            <objectAnimator
-                android:duration="150"
-                android:propertyName="scaleX"
-                android:valueFrom="1"
-                android:valueTo="-1" />
-        </aapt:attr>
-    </target>
-    <aapt:attr name="android:drawable">
-        <vector
-            android:width="48dp"
-            android:height="48dp"
-            android:autoMirrored="true"
-            android:tint="?androidprv:attr/materialColorOnSurface"
-            android:viewportHeight="48"
-            android:viewportWidth="48">
-            <group
-                android:name="scaleGroup"
-                android:pivotX="24"
-                android:pivotY="24"
-                android:rotation="90">
-                <path
-                    android:fillColor="@android:color/white"
-                    android:pathData="M18.75,36 L16.6,33.85 26.5,23.95 16.6,14.05 18.75,11.9 30.8,23.95Z" />
-            </group>
-        </vector>
-    </aapt:attr>
-</animated-vector>
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:autoMirrored="true"
+    android:tint="?androidprv:attr/materialColorOnSurface"
+    android:viewportHeight="48"
+    android:viewportWidth="48">
+    <group
+        android:name="scaleGroup"
+        android:pivotX="24"
+        android:pivotY="24"
+        android:rotation="90">
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M18.75,36 L16.6,33.85 26.5,23.95 16.6,14.05 18.75,11.9 30.8,23.95Z" />
+    </group>
+</vector>

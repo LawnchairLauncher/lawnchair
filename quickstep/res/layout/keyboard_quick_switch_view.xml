@@ -42,8 +42,8 @@
             android:layout_width="@dimen/keyboard_quick_switch_no_recent_items_icon_size"
             android:layout_height="@dimen/keyboard_quick_switch_no_recent_items_icon_size"
             android:layout_marginBottom="@dimen/keyboard_quick_switch_no_recent_items_icon_margin"
-            android:src="@drawable/ic_empty_recents"
-            android:tint="?androidprv:attr/materialColorOnSurfaceInverse"
+            android:src="@drawable/view_carousel"
+            android:tint="?androidprv:attr/materialColorOnSurface"
             android:importantForAccessibility="no"
 
             app:layout_constraintVertical_chainStyle="packed"

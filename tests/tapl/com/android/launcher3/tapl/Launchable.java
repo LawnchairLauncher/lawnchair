@@ -16,11 +16,11 @@
 
 package com.android.launcher3.tapl;
 
-import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-
 import static com.android.launcher3.testing.shared.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
 
 import android.graphics.Point;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.test.uiautomator.UiObject2;
@@ -58,8 +58,8 @@ public abstract class Launchable {
      */
     public LaunchedAppState launch(String expectedPackageName) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                    "want to launch an app from " + launchableType())) {
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(String.format(
+                    "want to launch an app (%s) from %s", expectedPackageName, launchableType()))) {
                 LauncherInstrumentation.log("Launchable.launch before click "
                         + mObject.getVisibleCenter() + " in "
                         + mLauncher.getVisibleBounds(mObject));
@@ -97,12 +97,10 @@ public abstract class Launchable {
             LauncherInstrumentation.log("Launchable.launch before click "
                     + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(
                     mObject));
-            mLauncher.executeAndWaitForLauncherEvent(
+
+            mLauncher.executeAndWaitForLauncherStop(
                     () -> mLauncher.clickLauncherObject(mObject),
-                    accessibilityEvent ->
-                            accessibilityEvent.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                    () -> "Unable to click object to launch split",
-                    "Click launcher object to launch split");
+                    "clicking the launchable");
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, OverviewTask.SPLIT_START_EVENT);
@@ -117,11 +115,15 @@ public abstract class Launchable {
                 iconCenter.y - getStartDragThreshold());
 
         if (runToSpringLoadedState) {
+            Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                    "Launchable.startDrag: actionName: long-pressing and triggering drag start"
+                            + " iconCenter: " + iconCenter + " dragStartCenter: "
+                            + dragStartCenter);
             mLauncher.runToState(() -> movePointerForStartDrag(
-                    downTime,
-                    iconCenter,
-                    dragStartCenter,
-                    expectLongClickEvents),
+                            downTime,
+                            iconCenter,
+                            dragStartCenter,
+                            expectLongClickEvents),
                     SPRING_LOADED_STATE_ORDINAL, "long-pressing and triggering drag start");
         } else {
             movePointerForStartDrag(

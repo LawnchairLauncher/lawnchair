@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ଆପଣ ସ୍କ୍ରିନର ଏକଦମ୍-ଡାହାଣ ବା ବାମ ଧାରରୁ ସ୍ୱାଇପ୍ କରୁଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ।"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ଆପଣ ସ୍କ୍ରିନର ଡାହାଣ ବା ବାମ ଧାରରୁ ମଝିକୁ ସ୍ୱାଇପ କରି ଛାଡ଼ି ଦେଉଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ଆପଣ ଡାହାଣରୁ ସ୍ୱାଇପ୍ କରି ପଛକୁ କିପରି ଫେରିବେ ତାହା ଜାଣିଲେ। ତା\'ପରେ, ଆପକୁ କିପରି ସ୍ୱିଚ୍ କରିବେ ତାହା ଜାଣନ୍ତୁ।"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"ଆପଣ \'ପଛକୁ ଫେରନ୍ତୁ\' ଜେଶ୍ଚର୍ ସମ୍ପୂର୍ଣ୍ଣ କରିଛନ୍ତି। ତା\'ପରେ, ଆପଗୁଡ଼ିକୁ କିପରି ସ୍ୱିଚ୍ କରିବେ ତାହା ଜାଣନ୍ତୁ।"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"ଆପଣ \'ପଛକୁ ଫେରନ୍ତୁ\' ଜେଶ୍ଚର ସମ୍ପୂର୍ଣ୍ଣ କରିଛନ୍ତି"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ଆପଣ ସ୍କ୍ରିନର ତଳଭାଗର ଅତି ନିକଟରୁ ସ୍ୱାଇପ କରୁନଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ପଛକୁ ଫେରିବା ଜେଶ୍ଚରର ସମ୍ବେଦନଶୀଳତା ବଦଳାଇବାକୁ ସେଟିଂସକୁ ଯାଆନ୍ତୁ"</string>
@@ -95,6 +96,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ସ୍କ୍ରିନସଟ୍"</string>
     <string name="action_split" msgid="2098009717623550676">"ସ୍ପ୍ଲିଟ୍"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"ସ୍ପ୍ଲିଟସ୍କ୍ରିନ ବ୍ୟବହାର କରିବାକୁ ଅନ୍ୟ ଏକ ଆପରେ ଟାପ କର"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"ସ୍ପ୍ଲିଟ ସ୍କ୍ରିନ ବ୍ୟବହାର କରିବାକୁ ଅନ୍ୟ ଏକ ଆପ ବାଛନ୍ତୁ"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"ବାତିଲ କରନ୍ତୁ"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"ସ୍ପ୍ଲିଟ ସ୍କ୍ରିନ ଚୟନରୁ ବାହାରି ଯାଆନ୍ତୁ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"ସ୍ପ୍ଲିଟ ସ୍କ୍ରିନ ବ୍ୟବହାର କରିବାକୁ ଅନ୍ୟ ଏକ ଆପ ବାଛନ୍ତୁ"</string>
@@ -111,6 +113,8 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ଆପଣଙ୍କ ରୁଟିନ ଆଧାରରେ ଆପ ପରାମର୍ଶଗୁଡ଼ିକୁ ପାଆନ୍ତୁ"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"ଟାସ୍କବାର ପିନ କରିବା ପାଇଁ ଡିଭାଇଡରକୁ ଅଧିକ ସମୟ ଦବାନ୍ତୁ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ଟାସ୍କବାର ମାଧ୍ୟମରେ ଆହୁରି ଅନେକ କିଛି କରନ୍ତୁ"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ସର୍ବଦା ଟାସ୍କବାର ଦେଖାନ୍ତୁ"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ଆପଣଙ୍କ ସ୍କ୍ରିନର ନିମ୍ନରେ ସର୍ବଦା ଟାସ୍କବାର ଦେଖାଇବା ପାଇଁ ଡିଭାଇଡରକୁ ସ୍ପର୍ଶ କରି ଧରି ରଖନ୍ତୁ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ହୋଇଗଲା"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ହୋମ"</string>

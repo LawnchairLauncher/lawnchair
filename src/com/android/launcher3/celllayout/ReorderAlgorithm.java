@@ -49,20 +49,36 @@ public class ReorderAlgorithm {
      * When changing the size of the widget this method will try first subtracting -1 in the x
      * dimension and then subtracting -1 in the y dimension until finding a possible solution or
      * until it no longer can reduce the span.
-     *
      * @param decX     whether it will decrease the horizontal or vertical span if it can't find a
      *                 solution for the current span.
      * @return the same solution variable
      */
     public ItemConfiguration findReorderSolution(ReorderParameters reorderParameters,
             boolean decX) {
+        return findReorderSolution(reorderParameters, mCellLayout.mDirectionVector, decX);
+    }
+
+    /**
+     * This method differs from closestEmptySpaceReorder and dropInPlaceSolution because this method
+     * will move items around and will change the shape of the item if possible to try to find a
+     * solution.
+     * <p>
+     * When changing the size of the widget this method will try first subtracting -1 in the x
+     * dimension and then subtracting -1 in the y dimension until finding a possible solution or
+     * until it no longer can reduce the span.
+     * @param direction Direction to attempt to push items if needed
+     * @param decX     whether it will decrease the horizontal or vertical span if it can't find a
+     *                 solution for the current span.
+     * @return the same solution variable
+     */
+    public ItemConfiguration findReorderSolution(ReorderParameters reorderParameters,
+            int[] direction, boolean decX) {
         return findReorderSolutionRecursive(reorderParameters.getPixelX(),
                 reorderParameters.getPixelY(), reorderParameters.getMinSpanX(),
                 reorderParameters.getMinSpanY(), reorderParameters.getSpanX(),
-                reorderParameters.getSpanY(), mCellLayout.mDirectionVector,
+                reorderParameters.getSpanY(), direction,
                 reorderParameters.getDragView(), decX, reorderParameters.getSolution());
     }
-
 
     private ItemConfiguration findReorderSolutionRecursive(int pixelX, int pixelY, int minSpanX,
             int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,

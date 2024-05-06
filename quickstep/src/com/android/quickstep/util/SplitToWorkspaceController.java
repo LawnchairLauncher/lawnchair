@@ -16,6 +16,7 @@
 
 package com.android.quickstep.util;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
@@ -34,6 +35,7 @@ import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 import android.view.View;
 
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
@@ -42,6 +44,8 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.quickstep.views.FloatingTaskView;
@@ -122,11 +126,16 @@ public class SplitToWorkspaceController {
             intent = appInfo.intent;
             user = appInfo.user;
             bitmapInfo = appInfo.bitmap;
+        } else if (tag instanceof FolderInfo fi && fi.itemType == ITEM_TYPE_APP_PAIR) {
+            // Prompt the user to select something else by wiggling the instructions view
+            mController.getSplitInstructionsView().goBoing();
+            return true;
         } else {
+            // Use Launcher's default click handler
             return false;
         }
 
-        mController.setSecondTask(intent, user);
+        mController.setSecondTask(intent, user, (ItemInfo) tag);
 
         startWorkspaceAnimation(view, null /*bitmap*/, bitmapInfo.newIcon(mLauncher));
         return true;
@@ -174,8 +183,7 @@ public class SplitToWorkspaceController {
             public void onAnimationEnd(Animator animation) {
                 if (!mIsCancelled) {
                     mController.launchSplitTasks(aBoolean -> cleanUp());
-                    InteractionJankMonitorWrapper.end(
-                            InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
+                    InteractionJankMonitorWrapper.end(Cuj.CUJ_SPLIT_SCREEN_ENTER);
                 }
             }
 

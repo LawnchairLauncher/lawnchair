@@ -59,7 +59,7 @@ data class ResponsiveSpec(
     val cellSize: SizeSpec,
 ) : IResponsiveSpec {
     init {
-        check(isValid()) { "Invalid ResponsiveSpec found." }
+        check(isValid()) { "Invalid ResponsiveSpec found. $this" }
     }
 
     constructor(
@@ -106,7 +106,7 @@ data class ResponsiveSpec(
         }
 
         if (!isValidRemainderSpace()) {
-            logError("The total Remainder Space used must be lower or equal to 100%.")
+            logError("The total Remainder Space used must be equal to 0 or 1.")
             return false
         }
 
@@ -131,11 +131,12 @@ data class ResponsiveSpec(
     }
 
     private fun isValidRemainderSpace(): Boolean {
-        // TODO(b/313621277): This validation must be update do accept only 0 or 1 instead of <= 1f.
-        return startPadding.ofRemainderSpace +
-            endPadding.ofRemainderSpace +
-            gutter.ofRemainderSpace +
-            cellSize.ofRemainderSpace <= 1f
+        val remainderSpaceUsed =
+            startPadding.ofRemainderSpace +
+                endPadding.ofRemainderSpace +
+                gutter.ofRemainderSpace +
+                cellSize.ofRemainderSpace
+        return remainderSpaceUsed == 0f || remainderSpaceUsed == 1f
     }
 
     private fun isValidAvailableSpace(): Boolean {
@@ -254,8 +255,8 @@ class CalculatedResponsiveSpec {
 
         startPaddingPx = spec.startPadding.getRemainderSpaceValue(remainderSpace, startPaddingPx)
         endPaddingPx = spec.endPadding.getRemainderSpaceValue(remainderSpace, endPaddingPx)
-        gutterPx = spec.gutter.getRemainderSpaceValue(remainderSpace, gutterPx)
-        cellSizePx = spec.cellSize.getRemainderSpaceValue(remainderSpace, cellSizePx)
+        gutterPx = spec.gutter.getRemainderSpaceValue(remainderSpace, gutterPx, gutters)
+        cellSizePx = spec.cellSize.getRemainderSpaceValue(remainderSpace, cellSizePx, cells)
     }
 
     override fun hashCode(): Int {

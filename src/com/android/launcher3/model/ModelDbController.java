@@ -19,6 +19,7 @@ import static android.util.Base64.NO_PADDING;
 import static android.util.Base64.NO_WRAP;
 
 import static com.android.launcher3.DefaultLayoutParser.RES_PARTNER_DEFAULT_LAYOUT;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE;
 import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_KEY;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_LABEL;
@@ -48,6 +49,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.Xml;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.AutoInstallsLayout;
@@ -62,6 +64,8 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger;
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -261,8 +265,12 @@ public class ModelDbController {
     /**
      * Migrates the DB if needed. If the migration failed, it clears the DB.
      */
-    public void tryMigrateDB() {
+    public void tryMigrateDB(@Nullable LauncherRestoreEventLogger restoreEventLogger) {
+
         if (!migrateGridIfNeeded()) {
+            if (restoreEventLogger != null) {
+                sendMetricsForFailedMigration(restoreEventLogger, getDb());
+            }
             FileLog.d(TAG, "Migration failed: resetting launcher database");
             createEmptyDB();
             LauncherPrefs.get(mContext).putSync(
@@ -309,6 +317,30 @@ public class ModelDbController {
             if (mOpenHelper != oldHelper) {
                 oldHelper.close();
             }
+        }
+    }
+
+    /**
+     * In case of migration failure, report metrics for the count of each itemType in the DB.
+     * @param restoreEventLogger logger used to report Launcher restore metrics
+     */
+    private void sendMetricsForFailedMigration(LauncherRestoreEventLogger restoreEventLogger,
+            SQLiteDatabase db) {
+        try (Cursor cursor = db.rawQuery(
+                "SELECT itemType, COUNT(*) AS count FROM favorites GROUP BY itemType",
+                null
+        )) {
+            if (cursor.moveToFirst()) {
+                do {
+                    restoreEventLogger.logFavoritesItemsRestoreFailed(
+                            cursor.getInt(cursor.getColumnIndexOrThrow(ITEM_TYPE)),
+                            cursor.getInt(cursor.getColumnIndexOrThrow("count")),
+                            RestoreError.GRID_MIGRATION_FAILURE
+                    );
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            FileLog.e(TAG, "sendMetricsForFailedDb: Error reading from database", e);
         }
     }
 
@@ -426,7 +458,7 @@ public class ModelDbController {
             LauncherWidgetHolder widgetHolder) {
         ContentResolver cr = mContext.getContentResolver();
         String blobHandlerDigest = Settings.Secure.getString(cr, LAYOUT_DIGEST_KEY);
-        if (Utilities.ATLEAST_R && !TextUtils.isEmpty(blobHandlerDigest)) {
+        if (!TextUtils.isEmpty(blobHandlerDigest)) {
             BlobStoreManager blobManager = mContext.getSystemService(BlobStoreManager.class);
             try (InputStream in = new ParcelFileDescriptor.AutoCloseInputStream(
                     blobManager.openBlob(BlobHandle.createWithSha256(

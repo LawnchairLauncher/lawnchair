@@ -3,7 +3,6 @@ package com.android.launcher3
 import android.annotation.TargetApi
 import android.os.Build
 import android.os.Trace
-import android.view.ViewTreeObserver.OnDrawListener
 import androidx.annotation.UiThread
 import com.android.launcher3.LauncherConstants.TraceEvents
 import com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID
@@ -18,7 +17,6 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.popup.PopupContainerWithArrow
 import com.android.launcher3.util.ComponentKey
-import com.android.launcher3.util.Executors
 import com.android.launcher3.util.IntArray as LIntArray
 import com.android.launcher3.util.IntSet as LIntSet
 import com.android.launcher3.util.PackageUserKey
@@ -74,14 +72,19 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     override fun onInitialBindComplete(
         boundPages: LIntSet,
         pendingTasks: RunnableList,
+        onCompleteSignal: RunnableList,
         workspaceItemCount: Int,
         isBindSync: Boolean
     ) {
+        if (Utilities.ATLEAST_S) {
+            Trace.endAsyncSection(
+                TraceEvents.DISPLAY_WORKSPACE_TRACE_METHOD_NAME,
+                TraceEvents.DISPLAY_WORKSPACE_TRACE_COOKIE
+            )
+        }
         synchronouslyBoundPages = boundPages
         pagesToBindSynchronously = LIntSet()
         clearPendingBinds()
-        val executor = ViewOnDrawExecutor(pendingTasks)
-        pendingExecutor = executor
         if (!launcher.isInState(LauncherState.ALL_APPS)) {
             launcher.appsView.appsStore.enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW)
             pendingTasks.add {
@@ -90,24 +93,22 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
                 )
             }
         }
-        executor.onLoadAnimationCompleted()
-        executor.attachTo(launcher)
-        if (Utilities.ATLEAST_S) {
-            Trace.endAsyncSection(
-                TraceEvents.DISPLAY_WORKSPACE_TRACE_METHOD_NAME,
-                TraceEvents.DISPLAY_WORKSPACE_TRACE_COOKIE
-            )
-        }
-        launcher.bindComplete(workspaceItemCount, isBindSync)
-        launcher.rootView.viewTreeObserver.addOnDrawListener(
-            object : OnDrawListener {
-                override fun onDraw() {
-                    Executors.MAIN_EXECUTOR.handler.postAtFrontOfQueue {
-                        launcher.rootView.getViewTreeObserver().removeOnDrawListener(this)
-                    }
+        val executor =
+            ViewOnDrawExecutor(pendingTasks) {
+                if (pendingExecutor == it) {
+                    pendingExecutor = null
                 }
             }
-        )
+        pendingExecutor = executor
+
+        if (Flags.enableWorkspaceInflation()) {
+            // Finish the executor as soon as the pending inflation is completed
+            onCompleteSignal.add(executor::markCompleted)
+        } else {
+            // Pending executor is already completed, wait until first draw to run the tasks
+            executor.attachTo(launcher)
+        }
+        launcher.bindComplete(workspaceItemCount, isBindSync)
     }
 
     /**
@@ -139,7 +140,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.viewCache.setCacheSize(R.layout.folder_page, 2)
         TraceHelper.INSTANCE.endSection()
         launcher.workspace.removeExtraEmptyScreen(/* stripEmptyScreens= */ true)
-        launcher.workspace.pageIndicator.setAreScreensBinding(false, deviceProfile.isTwoPanels)
+        launcher.workspace.pageIndicator.setPauseScroll(/*pause=*/ false, deviceProfile.isTwoPanels)
     }
 
     /**
@@ -178,7 +179,10 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         val hadWorkApps = launcher.appsView.shouldShowTabs()
         launcher.appsView.appsStore.setApps(apps, flags, packageUserKeytoUidMap)
         PopupContainerWithArrow.dismissInvalidPopup(launcher)
-        if (hadWorkApps != launcher.appsView.shouldShowTabs()) {
+        if (
+            hadWorkApps != launcher.appsView.shouldShowTabs() &&
+                launcher.stateManager.state == LauncherState.ALL_APPS
+        ) {
             launcher.stateManager.goToState(LauncherState.NORMAL)
         }
     }
@@ -303,8 +307,8 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     }
 
     override fun bindScreens(orderedScreenIds: LIntArray) {
-        launcher.workspace.pageIndicator.setAreScreensBinding(
-            true,
+        launcher.workspace.pageIndicator.setPauseScroll(
+            /*pause=*/ true,
             launcher.deviceProfile.isTwoPanels
         )
         val firstScreenPosition = 0
@@ -413,4 +417,6 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     }
 
     fun getIsFirstPagePinnedItemEnabled(): Boolean = isFirstPagePinnedItemEnabled
+
+    override fun getItemInflater() = launcher.itemInflater
 }

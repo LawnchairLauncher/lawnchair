@@ -29,9 +29,7 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET_HOME;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.SET_END_TARGET_NEW_TASK;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.view.MotionEvent;
 import android.view.RemoteAnimationTarget;
 
@@ -58,7 +56,6 @@ import java.util.function.Predicate;
  * Manages the state for an active system gesture, listens for events from the system and Launcher,
  * and fires events when the states change.
  */
-@TargetApi(Build.VERSION_CODES.R)
 public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationListener {
 
     final Predicate<RemoteAnimationTarget> mLastStartedTaskIdPredicate = new Predicate<>() {

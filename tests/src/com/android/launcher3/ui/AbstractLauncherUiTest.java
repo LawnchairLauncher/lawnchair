@@ -55,14 +55,11 @@ import androidx.test.uiautomator.Until;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
 import com.android.launcher3.tapl.LauncherInstrumentation;
-import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.util.TestUtil;
@@ -83,6 +80,7 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -192,6 +190,7 @@ public abstract class AbstractLauncherUiTest {
 
     protected AbstractLauncherUiTest() {
         mLauncher.enableCheckEventsForSuccessfulGestures();
+        mLauncher.setAnomalyChecker(AbstractLauncherUiTest::verifyKeyguardInvisible);
         try {
             mDevice.setOrientationNatural();
         } catch (RemoteException e) {
@@ -202,10 +201,6 @@ public abstract class AbstractLauncherUiTest {
             mLauncher.setSystemHealthSupplier(startTime -> TestCommandReceiver.callCommand(
                             TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString())
                     .getString("result"));
-            mLauncher.setOnSettledStateAction(
-                    containerType -> executeOnLauncher(
-                            launcher ->
-                                    checkLauncherIntegrity(launcher, containerType)));
         }
         mLauncher.enableDebugTracing();
         // Avoid double-reporting of Launcher crashes.
@@ -223,14 +218,9 @@ public abstract class AbstractLauncherUiTest {
     public SetFlagsRule mSetFlagsRule = new SetFlagsRule(DEVICE_DEFAULT);
 
     public static void initialize(AbstractLauncherUiTest test) throws Exception {
-        initialize(test, false);
-    }
-
-    public static void initialize(
-            AbstractLauncherUiTest test, boolean clearWorkspace) throws Exception {
-        test.reinitializeLauncherData(clearWorkspace);
+        test.reinitializeLauncherData();
         test.mDevice.pressHome();
-        test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
+        test.waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
         test.waitForState("Launcher internal state didn't switch to Home",
                 () -> LauncherState.NORMAL);
         test.waitForResumed("Launcher internal state is still Background");
@@ -310,6 +300,8 @@ public abstract class AbstractLauncherUiTest {
         }
 
         onTestStart();
+
+        initialize(this);
     }
 
     /** Method that should be called when a test starts. */
@@ -370,7 +362,8 @@ public abstract class AbstractLauncherUiTest {
         Assert.assertTrue("Setup wizard is still visible", wizardDismissed);
     }
 
-    private static void verifyKeyguardInvisible() {
+    /** Asserts that keyguard is not visible */
+    public static void verifyKeyguardInvisible() {
         final boolean keyguardAlreadyVisible = sSeenKeyguard;
 
         sSeenKeyguard = sSeenKeyguard
@@ -561,14 +554,18 @@ public abstract class AbstractLauncherUiTest {
                 true /* newTask */);
     }
 
-    public static void startTestActivity(int activityNumber) {
+    public static void startTestActivity(String activityName, String activityLabel) {
         final String packageName = getAppPackageName();
         final Intent intent = getInstrumentation().getContext().getPackageManager().
                 getLaunchIntentForPackage(packageName);
         intent.setComponent(new ComponentName(packageName,
-                "com.android.launcher3.tests.Activity" + activityNumber));
-        startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber),
+                "com.android.launcher3.tests." + activityName));
+        startIntent(intent, By.pkg(packageName).text(activityLabel),
                 false /* newTask */);
+    }
+
+    public static void startTestActivity(int activityNumber) {
+        startTestActivity("Activity" + activityNumber, "TestActivity" + activityNumber);
     }
 
     public static void startImeTestActivity() {
@@ -638,86 +635,6 @@ public abstract class AbstractLauncherUiTest {
         return launcher.getAppsView().getActiveRecyclerView().computeVerticalScrollOffset();
     }
 
-    private void checkLauncherIntegrity(
-            Launcher launcher, ContainerType expectedContainerType) {
-        if (launcher != null) {
-            final StateManager<LauncherState> stateManager = launcher.getStateManager();
-            final LauncherState stableState = stateManager.getCurrentStableState();
-
-            assertTrue("Stable state != state: " + stableState.getClass().getSimpleName() + ", "
-                            + stateManager.getState().getClass().getSimpleName(),
-                    stableState == stateManager.getState());
-
-            final boolean isResumed = launcher.hasBeenResumed();
-            final boolean isStarted = launcher.isStarted();
-            checkLauncherState(launcher, expectedContainerType, isResumed, isStarted);
-
-            final int ordinal = stableState.ordinal;
-
-            switch (expectedContainerType) {
-                case WORKSPACE:
-                case WIDGETS: {
-                    assertTrue(
-                            "Launcher is not resumed in state: " + expectedContainerType,
-                            isResumed);
-                    assertTrue(TestProtocol.stateOrdinalToString(ordinal),
-                            ordinal == TestProtocol.NORMAL_STATE_ORDINAL);
-                    break;
-                }
-                case HOME_ALL_APPS: {
-                    assertTrue(
-                            "Launcher is not resumed in state: " + expectedContainerType,
-                            isResumed);
-                    assertTrue(TestProtocol.stateOrdinalToString(ordinal),
-                            ordinal == TestProtocol.ALL_APPS_STATE_ORDINAL);
-                    break;
-                }
-                case OVERVIEW: {
-                    verifyOverviewState(launcher, expectedContainerType, isStarted, isResumed,
-                            ordinal, TestProtocol.OVERVIEW_STATE_ORDINAL);
-                    break;
-                }
-                case SPLIT_SCREEN_SELECT: {
-                    verifyOverviewState(launcher, expectedContainerType, isStarted, isResumed,
-                            ordinal, TestProtocol.OVERVIEW_SPLIT_SELECT_ORDINAL);
-                    break;
-                }
-                case TASKBAR_ALL_APPS:
-                case LAUNCHED_APP: {
-                    assertTrue("Launcher is resumed in state: " + expectedContainerType,
-                            !isResumed);
-                    assertTrue(TestProtocol.stateOrdinalToString(ordinal),
-                            ordinal == TestProtocol.NORMAL_STATE_ORDINAL);
-                    break;
-                }
-                default:
-                    throw new IllegalArgumentException(
-                            "Illegal container: " + expectedContainerType);
-            }
-        } else {
-            assertTrue(
-                    "Container type is not LAUNCHED_APP, TASKBAR_ALL_APPS "
-                            + "or FALLBACK_OVERVIEW: " + expectedContainerType,
-                    expectedContainerType == ContainerType.LAUNCHED_APP
-                            || expectedContainerType == ContainerType.TASKBAR_ALL_APPS
-                            || expectedContainerType == ContainerType.FALLBACK_OVERVIEW);
-        }
-    }
-
-    protected void checkLauncherState(Launcher launcher, ContainerType expectedContainerType,
-            boolean isResumed, boolean isStarted) {
-        assertTrue("hasBeenResumed() != isStarted(), hasBeenResumed(): " + isResumed,
-                isResumed == isStarted);
-        assertTrue("hasBeenResumed() != isUserActive(), hasBeenResumed(): " + isResumed,
-                isResumed == launcher.isUserActive());
-    }
-
-    protected void checkLauncherStateInOverview(Launcher launcher,
-            ContainerType expectedContainerType, boolean isStarted, boolean isResumed) {
-        assertTrue("Launcher is not resumed in state: " + expectedContainerType,
-                isResumed);
-    }
-
     protected void onLauncherActivityClose(Launcher launcher) {
     }
 
@@ -745,11 +662,5 @@ public abstract class AbstractLauncherUiTest {
             homeAppIcon = mLauncher.getWorkspace().getWorkspaceAppIcon(name);
         }
         return homeAppIcon;
-    }
-
-    private void verifyOverviewState(Launcher launcher, ContainerType expectedContainerType,
-            boolean isStarted, boolean isResumed, int ordinal, int expectedOrdinal) {
-        checkLauncherStateInOverview(launcher, expectedContainerType, isStarted, isResumed);
-        assertEquals(TestProtocol.stateOrdinalToString(ordinal), ordinal, expectedOrdinal);
     }
 }

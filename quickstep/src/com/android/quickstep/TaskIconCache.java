@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.annotation.Nullable;
 import android.app.ActivityManager;
@@ -41,12 +42,12 @@ import com.android.launcher3.icons.BaseIconFactory.IconOptions;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.TaskKeyLruCache;
 import com.android.quickstep.util.TaskVisualsChangeListener;
 import com.android.systemui.shared.recents.model.Task;
@@ -109,21 +110,17 @@ public class TaskIconCache implements DisplayInfoChangeListener {
             callback.accept(task);
             return null;
         }
-        CancellableTask<TaskCacheEntry> request = new CancellableTask<TaskCacheEntry>() {
-            @Override
-            public TaskCacheEntry getResultOnBg() {
-                return getCacheEntry(task);
-            }
-
-            @Override
-            public void handleResult(TaskCacheEntry result) {
-                task.icon = result.icon;
-                task.titleDescription = result.contentDescription;
-                task.title = result.title;
-                callback.accept(task);
-                dispatchIconUpdate(task.key.id);
-            }
-        };
+        CancellableTask<TaskCacheEntry> request = new CancellableTask<>(
+                () -> getCacheEntry(task),
+                MAIN_EXECUTOR,
+                result -> {
+                    task.icon = result.icon;
+                    task.titleDescription = result.contentDescription;
+                    task.title = result.title;
+                    callback.accept(task);
+                    dispatchIconUpdate(task.key.id);
+                }
+        );
         mBgExecutor.execute(request);
         return request;
     }
@@ -191,8 +188,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
             entry.contentDescription = getBadgedContentDescription(
                     activityInfo, task.key.userId, task.taskDescription);
             if (enableOverviewIconMenu()) {
-                entry.title = Utilities.trim(
-                        activityInfo.applicationInfo.loadLabel(mContext.getPackageManager()));
+                entry.title = Utilities.trim(activityInfo.loadLabel(mContext.getPackageManager()));
             }
         }
 

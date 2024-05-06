@@ -23,6 +23,7 @@
     <item android:state_selected="true">
         <shape android:shape="rectangle">
             <stroke android:color="#fff" android:width="2dp" />
+            <corners android:radius="@dimen/focus_outline_radius" />
         </shape>
     </item>
 </selector>

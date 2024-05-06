@@ -19,11 +19,13 @@ package com.android.launcher3.taskbar.navbutton
 import android.content.res.Resources
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.android.launcher3.DeviceProfile
+import android.widget.Space
 import com.android.launcher3.R
+import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.systemui.shared.rotation.RotationButton
 
 /**
@@ -36,7 +38,8 @@ class TaskbarNavLayoutter(
         startContextualContainer: ViewGroup,
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
-        a11yButton: ImageView?
+        a11yButton: ImageView?,
+        space: Space?
 ) :
     AbstractNavButtonLayoutter(
             resources,
@@ -45,12 +48,15 @@ class TaskbarNavLayoutter(
             startContextualContainer,
             imeSwitcher,
             rotationButton,
-            a11yButton
+            a11yButton,
+            space
     ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean) {
+    override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
         // Add spacing after the end of the last nav button
-        var navMarginEnd = resources.getDimension(dp.inv.inlineNavButtonsEndSpacing).toInt()
+        var navMarginEnd = resources
+                .getDimension(context.deviceProfile.inv.inlineNavButtonsEndSpacing)
+                .toInt()
         val contextualWidth = endContextualContainer.width
         // If contextual buttons are showing, we check if the end margin is enough for the
         // contextual button to be showing - if not, move the nav buttons over a smidge
@@ -91,11 +97,12 @@ class TaskbarNavLayoutter(
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
-        if (!dp.isGestureMode) {
+        if (!context.deviceProfile.isGestureMode) {
             val contextualMargin = resources.getDimensionPixelSize(
                     R.dimen.taskbar_contextual_button_padding)
-            repositionContextualContainer(endContextualContainer, 0, Gravity.END)
-            repositionContextualContainer(startContextualContainer, contextualMargin, Gravity.START)
+            repositionContextualContainer(endContextualContainer, WRAP_CONTENT, 0, 0, Gravity.END)
+            repositionContextualContainer(startContextualContainer, WRAP_CONTENT, contextualMargin,
+                    contextualMargin, Gravity.START)
 
             if (imeSwitcher != null) {
                 startContextualContainer.addView(imeSwitcher)
@@ -103,6 +110,7 @@ class TaskbarNavLayoutter(
             }
             if (a11yButton != null) {
                 endContextualContainer.addView(a11yButton)
+                a11yButton.layoutParams = getParamsToCenterView()
             }
             if (rotationButton != null) {
                 endContextualContainer.addView(rotationButton.currentView)

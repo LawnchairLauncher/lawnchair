@@ -19,6 +19,10 @@ package com.android.quickstep.util;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DESKTOP_MODE_SPLIT_LEFT_TOP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DESKTOP_MODE_SPLIT_RIGHT_BOTTOM;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTED_SECOND_APP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_COMPLETE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_HOME;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_INITIATED;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -97,15 +101,15 @@ import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.SplitInstructionsView;
+import com.android.systemui.animation.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 import com.android.wm.shell.splitscreen.ISplitSelectListener;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -151,6 +155,11 @@ public class SplitSelectStateController {
     private SplitInstructionsView mSplitInstructionsView;
 
     private final List<SplitSelectionListener> mSplitSelectionListeners = new ArrayList<>();
+    /**
+     * Tracks metrics from when first app is selected to split launch or cancellation. This also
+     * gets passed over to shell when attempting to invoke split.
+     */
+    private Pair<InstanceId, com.android.launcher3.logging.InstanceId> mSessionInstanceIds;
 
     private final BackPressHandler mSplitBackHandler = new BackPressHandler() {
         @Override
@@ -162,7 +171,8 @@ public class SplitSelectStateController {
         public void onBackInvoked() {
             // When exiting from split selection, leave current context to go to
             // homescreen as well
-            getSplitAnimationController().playPlaceholderDismissAnim(mContext);
+            getSplitAnimationController().playPlaceholderDismissAnim(mContext,
+                    LAUNCHER_SPLIT_SELECTION_EXIT_HOME);
             if (mActivityBackCallback != null) {
                 mActivityBackCallback.run();
             }
@@ -203,6 +213,7 @@ public class SplitSelectStateController {
             int alreadyRunningTask) {
         mSplitSelectDataHolder.setInitialTaskSelect(intent, stagePosition, itemInfo, splitEvent,
                 alreadyRunningTask);
+        createAndLogInstanceIdsForSession();
     }
 
     /**
@@ -213,6 +224,7 @@ public class SplitSelectStateController {
             @StagePosition int stagePosition, @NonNull ItemInfo itemInfo,
             StatsLogManager.EventEnum splitEvent) {
         mSplitSelectDataHolder.setInitialTaskSelect(info, stagePosition, itemInfo, splitEvent);
+        createAndLogInstanceIdsForSession();
     }
 
     /**
@@ -225,14 +237,14 @@ public class SplitSelectStateController {
      *                           tasks (i.e. searching for a running pair of tasks.)
      */
     public void findLastActiveTasksAndRunCallback(@Nullable List<ComponentKey> componentKeys,
-            boolean findExactPairMatch, Consumer<List<Task>> callback) {
+            boolean findExactPairMatch, Consumer<Task[]> callback) {
         mRecentTasksModel.getTasks(taskGroups -> {
             if (componentKeys == null || componentKeys.isEmpty()) {
-                callback.accept(Collections.emptyList());
+                callback.accept(new Task[]{});
                 return;
             }
 
-            List<Task> lastActiveTasks = new ArrayList<>();
+            Task[] lastActiveTasks = new Task[componentKeys.size()];
 
             if (findExactPairMatch) {
                 // Loop through tasks in reverse, since they are ordered with most-recent tasks last
@@ -240,32 +252,35 @@ public class SplitSelectStateController {
                     GroupTask groupTask = taskGroups.get(i);
                     if (isInstanceOfAppPair(
                             groupTask, componentKeys.get(0), componentKeys.get(1))) {
-                        lastActiveTasks.add(groupTask.task1);
+                        lastActiveTasks[0] = groupTask.task1;
                         break;
                     }
                 }
             } else {
                 // For each key we are looking for, add to lastActiveTasks with the corresponding
                 // Task (or do nothing if not found).
-                for (ComponentKey key : componentKeys) {
+                for (int i = 0; i < componentKeys.size(); i++) {
+                    ComponentKey key = componentKeys.get(i);
                     Task lastActiveTask = null;
                     // Loop through tasks in reverse, since they are ordered with recent tasks last
-                    for (int i = taskGroups.size() - 1; i >= 0; i--) {
-                        GroupTask groupTask = taskGroups.get(i);
+                    for (int j = taskGroups.size() - 1; j >= 0; j--) {
+                        GroupTask groupTask = taskGroups.get(j);
                         Task task1 = groupTask.task1;
                         // Don't add duplicate Tasks
-                        if (isInstanceOfComponent(task1, key) && !lastActiveTasks.contains(task1)) {
+                        if (isInstanceOfComponent(task1, key)
+                                && !Arrays.asList(lastActiveTasks).contains(task1)) {
                             lastActiveTask = task1;
                             break;
                         }
                         Task task2 = groupTask.task2;
-                        if (isInstanceOfComponent(task2, key) && !lastActiveTasks.contains(task2)) {
+                        if (isInstanceOfComponent(task2, key)
+                                && !Arrays.asList(lastActiveTasks).contains(task2)) {
                             lastActiveTask = task2;
                             break;
                         }
                     }
 
-                    lastActiveTasks.add(lastActiveTask);
+                    lastActiveTasks[i] = lastActiveTask;
                 }
             }
 
@@ -327,14 +342,12 @@ public class SplitSelectStateController {
      */
     public void launchSplitTasks(@PersistentSnapPosition int snapPosition,
             @Nullable Consumer<Boolean> callback) {
-        Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
-                LogUtils.getShellShareableInstanceId();
-        launchTasks(callback, false /* freezeTaskList */, snapPosition, instanceIds.first);
+        launchTasks(callback, false /* freezeTaskList */, snapPosition, mSessionInstanceIds.first);
 
         mStatsLogManager.logger()
-                .withItemInfo(mSplitSelectDataHolder.getItemInfo())
-                .withInstanceId(instanceIds.second)
-                .log(mSplitSelectDataHolder.getSplitEvent());
+                .withItemInfo(mSplitSelectDataHolder.getSecondItemInfo())
+                .withInstanceId(mSessionInstanceIds.second)
+                .log(LAUNCHER_SPLIT_SELECTED_SECOND_APP);
     }
 
     /**
@@ -361,11 +374,26 @@ public class SplitSelectStateController {
     }
 
     /**
+     * Use to log an event when user exists split selection when the second app **IS NOT** selected.
+     * This must be called before playing any exit animations since most animations will call
+     * {@link #resetState()} which removes {@link #mSessionInstanceIds}.
+     */
+    public void logExitReason(StatsLogManager.EventEnum splitExitEvent) {
+        StatsLogManager.StatsLogger logger = mStatsLogManager.logger();
+        if (mSessionInstanceIds != null) {
+            logger.withInstanceId(mSessionInstanceIds.second);
+        } else {
+            Log.w(TAG, "Missing session instanceIds");
+        }
+        logger.log(splitExitEvent);
+    }
+
+    /**
      * To be called as soon as user selects the second task (even if animations aren't complete)
      * @param task The second task that will be launched.
      */
-    public void setSecondTask(Task task) {
-        mSplitSelectDataHolder.setSecondTask(task.key.id);
+    public void setSecondTask(Task task, ItemInfo itemInfo) {
+        mSplitSelectDataHolder.setSecondTask(task.key.id, itemInfo);
     }
 
     /**
@@ -373,20 +401,20 @@ public class SplitSelectStateController {
      * @param intent The second intent that will be launched.
      * @param user The user of that intent.
      */
-    public void setSecondTask(Intent intent, UserHandle user) {
-        mSplitSelectDataHolder.setSecondTask(intent, user);
+    public void setSecondTask(Intent intent, UserHandle user, ItemInfo itemInfo) {
+        mSplitSelectDataHolder.setSecondTask(intent, user, itemInfo);
     }
 
     /**
      * To be called as soon as user selects the second app (even if animations aren't complete)
      * @param pendingIntent The second PendingIntent that will be launched.
      */
-    public void setSecondTask(PendingIntent pendingIntent) {
-        mSplitSelectDataHolder.setSecondTask(pendingIntent);
+    public void setSecondTask(PendingIntent pendingIntent, ItemInfo itemInfo) {
+        mSplitSelectDataHolder.setSecondTask(pendingIntent, itemInfo);
     }
 
     public void setSecondWidget(PendingIntent pendingIntent, Intent widgetIntent) {
-        mSplitSelectDataHolder.setSecondWidget(pendingIntent, widgetIntent);
+        mSplitSelectDataHolder.setSecondWidget(pendingIntent, widgetIntent, null /*itemInfo*/);
     }
 
     /**
@@ -495,6 +523,29 @@ public class SplitSelectStateController {
     }
 
     /**
+     * Used to launch split screen from a split pair that already exists, optionally with a custom
+     * remote transition.
+     * <p>
+     * See {@link SplitSelectStateController#launchExistingSplitPair(
+     * GroupedTaskView, int, int, int, Consumer, boolean, int, RemoteTransition)}
+     */
+    public void launchExistingSplitPair(@Nullable GroupedTaskView groupedTaskView,
+            int firstTaskId, int secondTaskId, @StagePosition int stagePosition,
+            Consumer<Boolean> callback, boolean freezeTaskList,
+            @PersistentSnapPosition int snapPosition) {
+        launchExistingSplitPair(
+                groupedTaskView,
+                firstTaskId,
+                secondTaskId,
+                stagePosition,
+                callback,
+                freezeTaskList,
+                snapPosition,
+                /* remoteTransition= */ null);
+    }
+
+
+    /**
      * Used to launch split screen from a split pair that already exists (usually accessible through
      * Overview). This is different than {@link #launchTasks(Consumer, boolean, int, InstanceId)}
      * in that this only launches split screen that are existing tasks. This doesn't determine which
@@ -506,7 +557,7 @@ public class SplitSelectStateController {
     public void launchExistingSplitPair(@Nullable GroupedTaskView groupedTaskView,
             int firstTaskId, int secondTaskId, @StagePosition int stagePosition,
             Consumer<Boolean> callback, boolean freezeTaskList,
-            @PersistentSnapPosition int snapPosition) {
+            @PersistentSnapPosition int snapPosition, @Nullable RemoteTransition remoteTransition) {
         mLaunchingTaskView = groupedTaskView;
         final ActivityOptions options1 = ActivityOptions.makeBasic();
         if (freezeTaskList) {
@@ -515,10 +566,12 @@ public class SplitSelectStateController {
         Bundle optionsBundle = options1.toBundle();
 
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
-            final RemoteTransition remoteTransition = getShellRemoteTransition(firstTaskId,
-                    secondTaskId, callback, "LaunchExistingPair");
+            final RemoteTransition transition = remoteTransition == null
+                    ? getShellRemoteTransition(
+                            firstTaskId, secondTaskId, callback, "LaunchExistingPair")
+                    : remoteTransition;
             mSystemUiProxy.startTasks(firstTaskId, optionsBundle, secondTaskId, null /* options2 */,
-                    stagePosition, snapPosition, remoteTransition, null /*shellInstanceId*/);
+                    stagePosition, snapPosition, transition, null /*shellInstanceId*/);
         } else {
             final RemoteAnimationAdapter adapter = getLegacyRemoteAdapter(firstTaskId,
                     secondTaskId, callback);
@@ -550,7 +603,7 @@ public class SplitSelectStateController {
         final RemoteTransition remoteTransition = new RemoteTransition(animationRunner,
                 ActivityThread.currentActivityThread().getApplicationThread(),
                 "LaunchAppFullscreen");
-        InstanceId instanceId = LogUtils.getShellShareableInstanceId().first;
+        InstanceId instanceId = mSessionInstanceIds.first;
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             switch (launchData.getSplitLaunchType()) {
                 case SPLIT_SINGLE_TASK_FULLSCREEN -> mSystemUiProxy.startTasks(firstTaskId,
@@ -600,6 +653,26 @@ public class SplitSelectStateController {
                 new RemoteSplitLaunchAnimationRunner(firstTaskId, secondTaskId, callback);
         return new RemoteAnimationAdapter(animationRunner, 300, 150,
                 ActivityThread.currentActivityThread().getApplicationThread());
+    }
+
+    /**
+     * Will initialize {@link #mSessionInstanceIds} if null and log the first split event from
+     * {@link #mSplitSelectDataHolder}
+     */
+    private void createAndLogInstanceIdsForSession() {
+        if (mSessionInstanceIds != null) {
+            Log.w(TAG, "SessionIds should be null");
+        }
+        // Log separately the start of the session and then the first app selected
+        mSessionInstanceIds = LogUtils.getShellShareableInstanceId();
+        mStatsLogManager.logger()
+                .withInstanceId(mSessionInstanceIds.second)
+                .log(LAUNCHER_SPLIT_SELECTION_INITIATED);
+
+        mStatsLogManager.logger()
+                .withItemInfo(mSplitSelectDataHolder.getItemInfo())
+                .withInstanceId(mSessionInstanceIds.second)
+                .log(mSplitSelectDataHolder.getSplitEvent());
     }
 
     public @StagePosition int getActiveSplitStagePosition() {
@@ -664,8 +737,10 @@ public class SplitSelectStateController {
 
             MAIN_EXECUTOR.execute(() -> {
                 // Only animate from taskView if it's already visible
-                boolean shouldLaunchFromTaskView = mLaunchingTaskView != null &&
-                        mLaunchingTaskView.getRecentsView().isTaskViewVisible(mLaunchingTaskView);
+                boolean shouldLaunchFromTaskView = mLaunchingTaskView != null
+                        && mLaunchingTaskView.getRecentsView() != null
+                        && mLaunchingTaskView.getRecentsView().isTaskViewVisible(
+                        mLaunchingTaskView);
                 mSplitAnimationController.playSplitLaunchAnimation(
                         shouldLaunchFromTaskView ? mLaunchingTaskView : null,
                         mLaunchingIconView,
@@ -774,6 +849,13 @@ public class SplitSelectStateController {
         mFirstFloatingTaskView = null;
         mSplitInstructionsView = null;
         mLaunchingFirstAppFullscreen = false;
+
+        if (mSessionInstanceIds != null) {
+            mStatsLogManager.logger()
+                    .withInstanceId(mSessionInstanceIds.second)
+                    .log(LAUNCHER_SPLIT_SELECTION_COMPLETE);
+        }
+        mSessionInstanceIds = null;
     }
 
     /**

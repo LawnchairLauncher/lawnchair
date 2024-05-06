@@ -54,7 +54,7 @@ import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * Handles swiping up on the nav bar to go home from launcher, e.g. overview or all apps.
@@ -67,7 +67,7 @@ public class NavBarToHomeTouchController implements TouchController,
     private static final float OVERVIEW_TO_HOME_SCRIM_MULTIPLIER = 0.5f;
 
     private final Launcher mLauncher;
-    private final Consumer<AnimatorSet> mCancelSplitRunnable;
+    private final BiConsumer<AnimatorSet, Long> mCancelSplitRunnable;
     private final SingleAxisSwipeDetector mSwipeDetector;
     private final float mPullbackDistance;
 
@@ -81,7 +81,7 @@ public class NavBarToHomeTouchController implements TouchController,
      *                            Animation should be added to the provided AnimatorSet
      */
     public NavBarToHomeTouchController(Launcher launcher,
-            Consumer<AnimatorSet> cancelSplitRunnable) {
+            BiConsumer<AnimatorSet, Long> cancelSplitRunnable) {
         mLauncher = launcher;
         mCancelSplitRunnable = cancelSplitRunnable;
         mSwipeDetector = new SingleAxisSwipeDetector(mLauncher, this,

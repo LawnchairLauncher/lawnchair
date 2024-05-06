@@ -43,14 +43,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Build;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.view.View;
@@ -60,6 +58,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.app.animation.Interpolators;
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatedFloat;
@@ -69,6 +68,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.util.MultiValueUpdateListener;
@@ -82,9 +82,9 @@ import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.animation.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +93,6 @@ import java.util.function.Consumer;
 /**
  * Utility class for helpful methods related to {@link TaskView} objects and their tasks.
  */
-@TargetApi(Build.VERSION_CODES.R)
 public final class TaskViewUtils {
 
     private TaskViewUtils() {}
@@ -195,12 +194,13 @@ public final class TaskViewUtils {
                 remoteTargetHandles = gluer.assignTargets(targets);
             }
         }
+
         final int recentsActivityRotation =
                 recentsView.getPagedViewOrientedState().getRecentsActivityRotation();
-        for (RemoteTargetHandle remoteTargetGluer : remoteTargetHandles) {
-            remoteTargetGluer.getTaskViewSimulator().getOrientationState().setRecentsRotation(
-                    recentsActivityRotation);
-            remoteTargetGluer.getTransformParams().setSyncTransactionApplier(applier);
+        for (RemoteTargetHandle remoteTargetHandle : remoteTargetHandles) {
+            remoteTargetHandle.getTaskViewSimulator().getOrientationState()
+                    .setRecentsRotation(recentsActivityRotation);
+            remoteTargetHandle.getTransformParams().setSyncTransactionApplier(applier);
         }
 
         int taskIndex = recentsView.indexOfChild(v);
@@ -208,7 +208,8 @@ public final class TaskViewUtils {
         BaseActivity baseActivity = BaseActivity.fromContext(context);
         DeviceProfile dp = baseActivity.getDeviceProfile();
         boolean showAsGrid = dp.isTablet;
-        boolean parallaxCenterAndAdjacentTask = taskIndex != recentsView.getCurrentPage();
+        boolean parallaxCenterAndAdjacentTask =
+                !showAsGrid && taskIndex != recentsView.getCurrentPage();
         int taskRectTranslationPrimary = recentsView.getScrollOffset(taskIndex);
         int taskRectTranslationSecondary = showAsGrid ? (int) v.getGridTranslationY() : 0;
 
@@ -393,10 +394,16 @@ public final class TaskViewUtils {
 
         out.addListener(new AnimationSuccessListener() {
             @Override
+            public void onAnimationStart(Animator animation) {
+                for (RemoteTargetHandle remoteTargetHandle : remoteTargetHandles) {
+                    remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(false);
+                }
+            }
+
+            @Override
             public void onAnimationSuccess(Animator animator) {
                 if (isQuickSwitch) {
-                    InteractionJankMonitorWrapper.end(
-                            InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+                    InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
                 }
             }
 
@@ -638,8 +645,35 @@ public final class TaskViewUtils {
                         recentsView.post(() -> {
                             stateManager.moveToRestState();
                             stateManager.reapplyState();
+
+                            // We may have notified launcher is not visible so that taskbar can
+                            // stash immediately. Now that the animation is over, we can update
+                            // that launcher is still visible.
+                            TaskbarUIController controller = recentsView.getSizeStrategy()
+                                    .getTaskbarController();
+                            if (controller != null) {
+                                boolean launcherVisible = true;
+                                for (RemoteAnimationTarget target : appTargets) {
+                                    launcherVisible &= target.isTranslucent;
+                                }
+                                if (launcherVisible) {
+                                    controller.onLauncherVisibilityChanged(true);
+                                }
+                            }
                         });
                     });
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    super.onAnimationCancel(animation);
+                    recentsView.onTaskLaunchedInLiveTileModeCancelled();
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    recentsView.setTaskLaunchCancelledRunnable(null);
                 }
             };
         } else {

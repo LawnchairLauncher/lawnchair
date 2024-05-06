@@ -39,6 +39,7 @@ class CellContentDimensionsTest {
         val config =
             Configuration(runningContext.resources.configuration).apply {
                 this.densityDpi = DisplayMetrics.DENSITY_DEFAULT
+                fontScale = 1.0f
             }
         context = runningContext.createConfigurationContext(config)
         iconSizeSteps = IconSizeSteps(context!!.resources)

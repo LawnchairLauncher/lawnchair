@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"右端または左端からスワイプしてください"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"画面の右端または左端から中央に向かってスワイプし、指を離してください"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"右側からスワイプして前の画面に戻る方法を学習しました。次は、アプリを切り替える方法を覚えましょう。"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"「戻る」操作を完了しました。次は、アプリを切り替える方法を覚えましょう。"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"「戻る」操作を学習しました"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"スワイプする際は画面の下部に近づきすぎないようにしましょう"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"「戻る」操作の感度を変更するには [設定] に移動します"</string>
@@ -95,6 +96,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"スクリーンショット"</string>
     <string name="action_split" msgid="2098009717623550676">"分割"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"分割画面を使用するには、他のアプリをタップします"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"分割画面を使用するには別のアプリを選択してください"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"キャンセル"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"分割画面の選択を終了します"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"分割画面にするには、別のアプリを選択してください"</string>
@@ -106,11 +108,13 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"スキップ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"画面を回転"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"タスクバーの説明"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"アプリを横にドラッグして 2 個のアプリを同時に使用できます"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"アプリを横にドラッグすると 2 個のアプリを同時に使用できます"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"タスクバーを表示するには、上にゆっくりとスワイプします"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"毎日の使用状況に基づいてアプリの候補が表示されます"</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"タスクバーを固定するには分割線を長押ししてください"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"分割線を長押ししてタスクバーを固定します"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"タスクバーの各種機能"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"タスクバーを常に表示"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"タスクバーを画面下部に常に表示するには分割線を長押しします"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"閉じる"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"完了"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ホーム"</string>
@@ -124,7 +128,7 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"タスクバー表示"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"タスクバー非表示"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ナビゲーション バー"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"常にタスクバーを表示"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"常にタスクバーを表示する"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"ナビゲーション モードを変更"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"タスクバーの区切り"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"上 / 左に移動"</string>

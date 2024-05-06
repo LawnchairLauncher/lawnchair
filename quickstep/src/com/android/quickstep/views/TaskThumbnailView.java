@@ -51,11 +51,11 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.SystemUiController.SystemUiControllerFlags;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -513,7 +513,7 @@ public class TaskThumbnailView extends View {
             return false;
         }
 
-        if (recents.getPagedOrientationHandler() == PagedOrientationHandler.PORTRAIT) {
+        if (recents.getPagedOrientationHandler() == RecentsPagedOrientationHandler.PORTRAIT) {
             int currentRotation = recents.getPagedViewOrientedState().getRecentsActivityRotation();
             return (currentRotation - mThumbnailData.rotation) % 2 != 0;
         } else {

@@ -18,15 +18,17 @@ package com.android.launcher3.model.data;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Process;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapInfo.DrawableCreationFlags;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.PackageInstallInfo;
-import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.uioverrides.ApiWrapper;
 
 /**
  * Represents an ItemInfo which also holds an icon.
@@ -113,6 +115,17 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final int FLAG_NOT_PINNABLE = 1 << 13;
 
     /**
+     * Flag indicating whether the package related to the item & user corresponds to that of
+     * archived app.
+     */
+    public static final int FLAG_ARCHIVED = 1 << 14;
+
+    /**
+     * Flag indicating it's the Private Space Install App icon.
+     */
+    public static final int FLAG_PRIVATE_SPACE_INSTALL_APP = 1 << 15;
+
+    /**
      * Status associated with the system state of the underlying item. This is calculated every
      * time a new info is created and not persisted on the disk.
      */
@@ -126,7 +139,8 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      */
     private int mProgressLevel = 100;
 
-    protected ItemInfoWithIcon() { }
+    protected ItemInfoWithIcon() {
+    }
 
     protected ItemInfoWithIcon(ItemInfoWithIcon info) {
         super(info);
@@ -139,6 +153,28 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     @Override
     public boolean isDisabled() {
         return (runtimeStatusFlags & FLAG_DISABLED_MASK) != 0;
+    }
+
+    /**
+     * @return {@code true} if the app is pending download (0 progress) or if the app is archived
+     * and its install session is active
+     */
+    public boolean isPendingDownload() {
+        if (isArchived()) {
+            return this.getProgressLevel() == 0
+                    && (this.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0;
+        }
+        return getProgressLevel() == 0;
+    }
+
+    /**
+     * Returns true if the app corresponding to the item is archived.
+     */
+    public boolean isArchived() {
+        if (!Utilities.enableSupportForArchiving()) {
+            return false;
+        }
+        return (runtimeStatusFlags & FLAG_ARCHIVED) != 0;
     }
 
     /**
@@ -157,7 +193,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public boolean isAppStartable() {
         return ((runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) == 0)
                 && (((runtimeStatusFlags & FLAG_INCREMENTAL_DOWNLOAD_ACTIVE) != 0)
-                    || mProgressLevel == 100);
+                || mProgressLevel == 100 || isArchived());
     }
 
     /**
@@ -166,7 +202,10 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * progress.
      */
     public int getProgressLevel() {
-        if ((runtimeStatusFlags & FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
+        if (((runtimeStatusFlags & FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0)
+                // This condition for archived apps is so that in case unarchival/update of
+                // archived app is cancelled, the state transitions back to 0% installed state.
+                || isArchived()) {
             return mProgressLevel;
         }
         return 100;
@@ -216,7 +255,8 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
         String targetPackage = getTargetPackage();
 
         return targetPackage != null
-                ? new PackageManagerHelper(context).getMarketIntent(targetPackage)
+                ? ApiWrapper.getAppMarketActivityIntent(
+                context, targetPackage, Process.myUserHandle())
                 : null;
     }
 

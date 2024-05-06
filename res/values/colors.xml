@@ -71,7 +71,7 @@
     <color name="folder_background_dark">#1F2020</color>
 
     <color name="folder_preview_light">#7FCFFF</color>
-    <color name="folder_preview_dark">#2A2A2A</color>
+    <color name="folder_preview_dark">#1E1F20</color>
 
     <color name="folder_pagination_color_light">#0B57D0</color>
     <color name="folder_pagination_color_dark">#A8C7FA</color>

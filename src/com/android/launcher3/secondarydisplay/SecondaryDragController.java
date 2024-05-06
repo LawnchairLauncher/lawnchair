@@ -16,6 +16,8 @@
 
 package com.android.launcher3.secondarydisplay;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -128,6 +130,10 @@ public class SecondaryDragController extends DragController<SecondaryDisplayLaun
         mActivity.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         dragView.show(mLastTouch.x, mLastTouch.y);
         mDistanceSinceScroll = 0;
+
+        if (!isItemPinnable()) {
+            MAIN_EXECUTOR.post(this:: cancelDrag);
+        }
 
         if (!mIsInPreDrag) {
             callOnDragStart();

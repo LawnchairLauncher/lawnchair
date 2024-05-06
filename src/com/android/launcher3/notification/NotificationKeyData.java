@@ -26,13 +26,10 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.Utilities;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The key data associated with the notification, used to determine what to include
  * in dots and stub popup views before they are populated.
- *
- * @see NotificationInfo for the full data used when populating the stub views.
  */
 public class NotificationKeyData {
     public final String notificationKey;
@@ -54,15 +51,6 @@ public class NotificationKeyData {
         return new NotificationKeyData(sbn.getKey(), notif.getShortcutId(), notif.number,
                 extractPersonKeyOnly(notif.extras.getParcelableArrayList(
                         Notification.EXTRA_PEOPLE_LIST)));
-    }
-
-    public static List<String> extractKeysOnly(
-            @NonNull List<NotificationKeyData> notificationKeys) {
-        List<String> keysOnly = new ArrayList<>(notificationKeys.size());
-        for (NotificationKeyData notificationKeyData : notificationKeys) {
-            keysOnly.add(notificationKeyData.notificationKey);
-        }
-        return keysOnly;
     }
 
     private static String[] extractPersonKeyOnly(@Nullable ArrayList<Person> people) {

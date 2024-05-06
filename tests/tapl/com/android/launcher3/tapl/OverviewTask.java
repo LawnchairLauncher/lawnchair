@@ -16,6 +16,10 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.OverviewTask.OverviewSplitTask.DEFAULT;
+import static com.android.launcher3.tapl.OverviewTask.OverviewSplitTask.SPLIT_BOTTOM_OR_RIGHT;
+import static com.android.launcher3.tapl.OverviewTask.OverviewSplitTask.SPLIT_TOP_OR_LEFT;
+
 import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
@@ -34,9 +38,6 @@ import java.util.stream.Collectors;
  */
 public final class OverviewTask {
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
-    private static final String TASK_SNAPSHOT_1 = "snapshot";
-    private static final String TASK_SNAPSHOT_2 = "bottomright_snapshot";
-
     static final Pattern TASK_START_EVENT = Pattern.compile("startActivityFromRecentsAsync");
     static final Pattern SPLIT_SELECT_EVENT = Pattern.compile("enterSplitSelect");
     static final Pattern SPLIT_START_EVENT = Pattern.compile("launchSplitTasks");
@@ -64,15 +65,16 @@ public final class OverviewTask {
             return getCombinedSplitTaskHeight();
         }
 
-        return mTask.getVisibleBounds().height();
+        UiObject2 taskSnapshot1 = findObjectInTask(DEFAULT.snapshotRes);
+        return taskSnapshot1.getVisibleBounds().height();
     }
 
     /**
      * Calculates the visible height for split tasks, containing 2 snapshot tiles and a divider.
      */
     private int getCombinedSplitTaskHeight() {
-        UiObject2 taskSnapshot1 = findObjectInTask(TASK_SNAPSHOT_1);
-        UiObject2 taskSnapshot2 = findObjectInTask(TASK_SNAPSHOT_2);
+        UiObject2 taskSnapshot1 = findObjectInTask(SPLIT_TOP_OR_LEFT.snapshotRes);
+        UiObject2 taskSnapshot2 = findObjectInTask(SPLIT_BOTTOM_OR_RIGHT.snapshotRes);
 
         // If the split task is partly off screen, taskSnapshot1 can be invisible.
         if (taskSnapshot1 == null) {
@@ -96,15 +98,16 @@ public final class OverviewTask {
             return getCombinedSplitTaskWidth();
         }
 
-        return mTask.getVisibleBounds().width();
+        UiObject2 taskSnapshot1 = findObjectInTask(DEFAULT.snapshotRes);
+        return taskSnapshot1.getVisibleBounds().width();
     }
 
     /**
      * Calculates the visible width for split tasks, containing 2 snapshot tiles and a divider.
      */
     private int getCombinedSplitTaskWidth() {
-        UiObject2 taskSnapshot1 = findObjectInTask(TASK_SNAPSHOT_1);
-        UiObject2 taskSnapshot2 = findObjectInTask(TASK_SNAPSHOT_2);
+        UiObject2 taskSnapshot1 = findObjectInTask(SPLIT_TOP_OR_LEFT.snapshotRes);
+        UiObject2 taskSnapshot2 = findObjectInTask(SPLIT_BOTTOM_OR_RIGHT.snapshotRes);
 
         int left = Math.min(
                 taskSnapshot1.getVisibleBounds().left, taskSnapshot2.getVisibleBounds().left);
@@ -115,15 +118,15 @@ public final class OverviewTask {
     }
 
     int getTaskCenterX() {
-        return mTask.getParent().getVisibleCenter().x;
+        return mTask.getVisibleCenter().x;
     }
 
     int getTaskCenterY() {
-        return mTask.getParent().getVisibleCenter().y;
+        return mTask.getVisibleCenter().y;
     }
 
     float getExactCenterX() {
-        return mTask.getParent().getVisibleBounds().exactCenterX();
+        return mTask.getVisibleBounds().exactCenterX();
     }
 
     UiObject2 getUiObject() {
@@ -225,11 +228,17 @@ public final class OverviewTask {
     /** Taps the task menu. Returns the task menu object. */
     @NonNull
     public OverviewTaskMenu tapMenu() {
+        return tapMenu(DEFAULT);
+    }
+
+    /** Taps the task menu of the split task. Returns the split task's menu object. */
+    @NonNull
+    public OverviewTaskMenu tapMenu(OverviewSplitTask task) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to tap the task menu")) {
             mLauncher.clickLauncherObject(
-                    mLauncher.waitForObjectInContainer(mTask.getParent(), "icon"));
+                    mLauncher.waitForObjectInContainer(mTask, task.iconAppRes));
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "tapped the task menu")) {
@@ -238,27 +247,31 @@ public final class OverviewTask {
         }
     }
 
-    /** Taps the task menu of the split task. Returns the split task's menu object. */
-    @NonNull
-    public OverviewTaskMenu tapSplitTaskMenu() {
-        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
-             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     "want to tap the split task's menu")) {
-            mLauncher.clickLauncherObject(
-                    mLauncher.waitForObjectInContainer(mTask.getParent(), "bottomRight_icon"));
-
-            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                    "tapped the split task's menu")) {
-                return new OverviewTaskMenu(mLauncher);
-            }
-        }
-    }
-
     boolean isTaskSplit() {
-        return findObjectInTask(TASK_SNAPSHOT_2) != null;
+        return findObjectInTask(SPLIT_BOTTOM_OR_RIGHT.snapshotRes) != null;
     }
 
     private UiObject2 findObjectInTask(String resName) {
-        return mTask.getParent().findObject(mLauncher.getOverviewObjectSelector(resName));
+        return mTask.findObject(mLauncher.getOverviewObjectSelector(resName));
+    }
+
+    /**
+     * Enum used to specify  which task is retrieved when it is a split task.
+     */
+    public enum OverviewSplitTask {
+        // The main task when the task is not split.
+        DEFAULT("snapshot", "icon"),
+        // The first task in split task.
+        SPLIT_TOP_OR_LEFT("snapshot", "icon"),
+        // The second task in split task.
+        SPLIT_BOTTOM_OR_RIGHT("bottomright_snapshot", "bottomRight_icon");
+
+        public final String snapshotRes;
+        public final String iconAppRes;
+
+        OverviewSplitTask(String snapshotRes, String iconAppRes) {
+            this.snapshotRes = snapshotRes;
+            this.iconAppRes = iconAppRes;
+        }
     }
 }

@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"ព័ត៌មានកម្មវិធី​សម្រាប់ %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"រក្សាទុកគូកម្មវិធី"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ចុចឱ្យជាប់​ដើម្បីផ្លាស់ទី​ធាតុក្រាហ្វិក​។"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ចុចពីរដង រួចសង្កត់ឱ្យជាប់ ដើម្បីផ្លាស់ទី​ធាតុក្រាហ្វិក ឬប្រើ​សកម្មភាព​តាមបំណង​។"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,6 +44,13 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"បញ្ចូល​ទៅក្នុង​អេក្រង់​ដើម"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"បានបញ្ចូល​ធាតុក្រាហ្វិក <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ទៅ​អេក្រង់ដើម"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"ការណែនាំ"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"វត្ថុចាំបាច់ប្រចាំថ្ងៃរបស់អ្នក"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"ព័ត៌មាន​សម្រាប់​អ្នក"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"តំបន់បន្ធូរ​អារម្មណ៍របស់អ្នក"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"សម្រេច​គោលដៅ​ហាត់ប្រាណ​របស់អ្នក"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"ទទួលបានដំណឹងជាមុនអំពីអាកាសធាតុ"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"អ្នក​ក៏​អាច​នឹង​ចូលចិត្ត"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"ធាតុក្រាហ្វិក <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> នៅខាងស្ដាំ ការស្វែងរក និងជម្រើសនៅខាងឆ្វេង"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{ធាតុ​ក្រាហ្វិក #}other{ធាតុ​ក្រាហ្វិក #}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{ផ្លូវកាត់ #}other{ផ្លូវកាត់ #}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -74,6 +85,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"យកចេញ"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"លុប"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ព័ត៌មាន​កម្មវិធី"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"ដំឡើងជាលក្ខណៈឯកជន"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ដំឡើង"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"កុំណែនាំកម្មវិធី"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"ខ្ទាស់ការ​ព្យាករ"</string>
@@ -125,6 +137,8 @@
     <string name="app_installing_title" msgid="5864044122733792085">"កំពុង​ដំឡើង <xliff:g id="NAME">%1$s</xliff:g>, បាន​បញ្ចប់ <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"កំពុងដោនឡូត <xliff:g id="NAME">%1$s</xliff:g> បានបញ្ចប់ <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> កំពុងរង់ចាំការដំឡើង"</string>
+    <!-- no translation found for app_archived_title (9124290918876665128) -->
+    <skip />
     <string name="dialog_update_title" msgid="114234265740994042">"តម្រូវឱ្យមាន​កំណែកម្មវិធីថ្មី"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"កម្មវិធីសម្រាប់​រូបតំណាងនេះ​មិនត្រូវបានដំឡើងកំណែ​ទេ។ អ្នកអាច​ដំឡើងកំណែ​ដោយផ្ទាល់ ដើម្បីបើក​ផ្លូវកាត់នេះឡើងវិញ ឬលុបរូបតំណាងនេះ។"</string>
     <string name="dialog_update" msgid="2178028071796141234">"ដំឡើងកំណែ"</string>
@@ -154,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"បន្ថយកម្ពស់"</string>
     <string name="widget_resized" msgid="9130327887929620">"ធាតុក្រាហ្វិកដែលបានប្តូរទំហំទៅទទឹងប្រវែង <xliff:g id="NUMBER_0">%1$s</xliff:g> កម្ពស់ប្រវែង <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ផ្លូវកាត់"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ផ្លូវកាត់ និង​ការជូនដំណឹង"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ច្រានចោល"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"បិទ"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"បាន​បដិសេធ​ការជូនដំណឹង"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ផ្ទាល់ខ្លួន"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ការងារ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"កម្រងព័ត៌មានការងារ"</string>
@@ -174,9 +186,13 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"តម្រង"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"បានបរាជ័យ៖ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"បន្ទប់​ឯកជន"</string>
+    <string name="private_space_secondary_label" msgid="611902414159280263">"រក្សាកម្មវិធីឯកជនឱ្យនៅជាប់សោ និងលាក់"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"ឯកជន"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ការកំណត់ Private Space"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ចាក់សោ/ដោះសោ Private Space"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"ចាក់សោ"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ការផ្លាស់ប្ដូរ Private Space"</string>
+    <string name="ps_add_button_label" msgid="8611055839242385935">"ដំឡើង​កម្មវិធី"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"ដំឡើងកម្មវិធីទៅលំហឯកជន"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ម៉ឺនុយបន្ថែម"</string>
 </resources>

@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -29,12 +30,12 @@ import androidx.core.view.updateLayoutParams
 import com.airbnb.lottie.LottieAnimationView
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.config.FeatureFlags.enableTaskbarPinningEdu
+import com.android.launcher3.config.FeatureFlags.enableTaskbarPinning
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_EDU_OPEN
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
-import com.android.launcher3.taskbar.TaskbarManager.isPhoneMode
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP
+import com.android.launcher3.views.BaseDragLayer
 import com.android.quickstep.util.LottieAnimationColorUtils
 import java.io.PrintWriter
 
@@ -62,7 +63,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
     LoggableTaskbarController {
 
     private val isTooltipEnabled: Boolean
-        get() = !Utilities.isRunningInTestHarness() && !isPhoneMode(activityContext.deviceProfile)
+        get() = !Utilities.isRunningInTestHarness() && !activityContext.isPhoneMode
     private val isOpen: Boolean
         get() = tooltip?.isOpen ?: false
     val isBeforeTooltipFeaturesStep: Boolean
@@ -110,6 +111,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
      */
     fun maybeShowFeaturesEdu() {
         if (!isTooltipEnabled || tooltipStep > TOOLTIP_STEP_FEATURES) {
+            maybeShowPinningEdu()
             return
         }
 
@@ -126,7 +128,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
             if (DisplayController.isTransientTaskbar(activityContext)) {
                 splitscreenAnim.setAnimation(R.raw.taskbar_edu_splitscreen_transient)
                 suggestionsAnim.setAnimation(R.raw.taskbar_edu_suggestions_transient)
-                pinningEdu.visibility = if (enableTaskbarPinningEdu()) VISIBLE else GONE
+                pinningEdu.visibility = if (enableTaskbarPinning()) VISIBLE else GONE
             } else {
                 splitscreenAnim.setAnimation(R.raw.taskbar_edu_splitscreen_persistent)
                 suggestionsAnim.setAnimation(R.raw.taskbar_edu_suggestions_persistent)
@@ -139,7 +141,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
                 if (DisplayController.isTransientTaskbar(activityContext)) {
                     width =
                         resources.getDimensionPixelSize(
-                            if (enableTaskbarPinningEdu())
+                            if (enableTaskbarPinning())
                                 R.dimen.taskbar_edu_features_tooltip_width_with_three_features
                             else R.dimen.taskbar_edu_features_tooltip_width_with_two_features
                         )
@@ -154,6 +156,53 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
             }
 
             findViewById<View>(R.id.done_button)?.setOnClickListener { hide() }
+            show()
+        }
+    }
+
+    /**
+     * Shows standalone Pinning EDU tooltip if this EDU has not been seen.
+     *
+     * We show this standalone edu if users have seen the previous version of taskbar education,
+     * which did not include the pinning feature.
+     */
+    private fun maybeShowPinningEdu() {
+        // use old value of tooltipStep that was set to the previous value of TOOLTIP_STEP_NONE (2
+        // for the original 2 edu steps) as a proxy to needing to show the separate pinning edu
+        if (
+            !enableTaskbarPinning() ||
+                !DisplayController.isTransientTaskbar(activityContext) ||
+                !isTooltipEnabled ||
+                tooltipStep > TOOLTIP_STEP_PINNING ||
+                tooltipStep < TOOLTIP_STEP_FEATURES
+        ) {
+            return
+        }
+        tooltipStep = TOOLTIP_STEP_NONE
+        inflateTooltip(R.layout.taskbar_edu_pinning)
+
+        tooltip?.run {
+            requireViewById<LottieAnimationView>(R.id.standalone_pinning_animation)
+                .supportLightTheme()
+
+            updateLayoutParams<BaseDragLayer.LayoutParams> {
+                if (DisplayController.isTransientTaskbar(activityContext)) {
+                    bottomMargin += activityContext.deviceProfile.taskbarHeight
+                }
+                // Unlike other tooltips, we want to align with taskbar divider rather than center.
+                gravity = Gravity.BOTTOM
+                marginStart = 0
+                width =
+                    resources.getDimensionPixelSize(
+                        R.dimen.taskbar_edu_features_tooltip_width_with_one_feature
+                    )
+            }
+
+            // Calculate the amount the tooltip must be shifted by to align with the taskbar divider
+            val taskbarDividerView = controllers.taskbarViewController.taskbarDividerView
+            val dividerLocation = taskbarDividerView.x + taskbarDividerView.width / 2
+            x = dividerLocation - layoutParams.width / 2
+
             show()
         }
     }

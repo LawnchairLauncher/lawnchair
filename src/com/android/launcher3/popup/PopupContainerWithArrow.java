@@ -17,9 +17,9 @@
 package com.android.launcher3.popup;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
-import static com.android.launcher3.Utilities.ATLEAST_P;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -45,6 +45,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
@@ -54,6 +55,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
@@ -205,17 +207,21 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                 .collect(Collectors.toList());
         container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                 R.layout.popup_container, launcher.getDragLayer(), false);
-        container.configureForLauncher(launcher);
+        container.configureForLauncher(launcher, item);
         container.populateAndShowRows(icon, deepShortcutCount, systemShortcuts);
         launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(item));
         container.requestFocus();
         return container;
     }
 
-    private void configureForLauncher(Launcher launcher) {
+    private void configureForLauncher(Launcher launcher, ItemInfo itemInfo) {
         addOnAttachStateChangeListener(new LauncherPopupLiveUpdateHandler(
                 launcher, (PopupContainerWithArrow<Launcher>) this));
-        mPopupItemDragHandler = new LauncherPopupItemDragHandler(launcher, this);
+        if (!Flags.privateSpaceRestrictItemDrag()
+                || !(itemInfo instanceof ItemInfoWithIcon itemInfoWithIcon)
+                || (itemInfoWithIcon.runtimeStatusFlags & FLAG_NOT_PINNABLE) == 0) {
+            mPopupItemDragHandler = new LauncherPopupItemDragHandler(launcher, this);
+        }
         mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(launcher);
         launcher.getDragController().addDragListener(this);
     }
@@ -248,10 +254,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
      * Animates and loads shortcuts on background thread for this popup container
      */
     private void loadAppShortcuts(ItemInfo originalItemInfo) {
-
-        if (ATLEAST_P) {
-            setAccessibilityPaneTitle(getTitleForAccessibility());
-        }
+        setAccessibilityPaneTitle(getTitleForAccessibility());
         mOriginalIcon.setForceHideDot(true);
         // All views are added. Animate layout from now on.
         setLayoutTransition(new LayoutTransition());

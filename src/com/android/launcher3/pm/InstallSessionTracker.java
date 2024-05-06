@@ -31,11 +31,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
+@SuppressWarnings("NewApi")
 @WorkerThread
 public class InstallSessionTracker extends PackageInstaller.SessionCallback {
 
@@ -77,6 +79,13 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
         }
 
         helper.tryQueuePromiseAppIcon(sessionInfo);
+
+        if (Utilities.enableSupportForArchiving() && sessionInfo != null
+                && sessionInfo.isUnarchival()) {
+            // For archived apps, icon could already be present on the workspace. To make sure
+            // the icon state is updated, we send a change event.
+            callback.onPackageStateChanged(PackageInstallInfo.fromInstallingState(sessionInfo));
+        }
     }
 
     @Override

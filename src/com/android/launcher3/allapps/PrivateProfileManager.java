@@ -17,11 +17,18 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ICON;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_PRIVATE_SPACE_INSTALL_APP;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -30,13 +37,21 @@ import android.os.UserManager;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.Flags;
+import com.android.launcher3.BuildConfig;
+import com.android.launcher3.R;
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SettingsCache;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -45,14 +60,17 @@ import java.util.function.Predicate;
  */
 public class PrivateProfileManager extends UserProfileManager {
 
-    private static final String SAFETY_CENTER_INTENT = Intent.ACTION_SAFETY_CENTER;
-    private static final String PS_SETTINGS_FRAGMENT_KEY = ":settings:fragment_args_key";
-    private static final String PS_SETTINGS_FRAGMENT_VALUE = "AndroidPrivateSpace_personal";
-    private static final int ANIMATION_DURATION = 2000;
+    // TODO (b/324573634): Fix the intent string.
+    public static final Intent PRIVATE_SPACE_INTENT = new
+            Intent("com.android.settings.action.PRIVATE_SPACE_SETUP_FLOW");
+
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
+    private Set<String> mPreInstalledSystemPackages = new HashSet<>();
+    private Intent mAppInstallerIntent = new Intent();
     private PrivateAppsSectionDecorator mPrivateAppsSectionDecorator;
     private boolean mPrivateSpaceSettingsAvailable;
+    private Runnable mUnlockRunnable;
 
     public PrivateProfileManager(UserManager userManager,
             ActivityAllAppsContainerView<?> allApps,
@@ -61,7 +79,7 @@ public class PrivateProfileManager extends UserProfileManager {
         super(userManager, statsLogManager, userCache);
         mAllApps = allApps;
         mPrivateProfileMatcher = (user) -> userCache.getUserInfo(user).isPrivate();
-        UI_HELPER_EXECUTOR.post(this::setPrivateSpaceSettingsAvailable);
+        UI_HELPER_EXECUTOR.post(this::initializeInBackgroundThread);
     }
 
     /** Adds Private Space Header to the layout. */
@@ -71,9 +89,50 @@ public class PrivateProfileManager extends UserProfileManager {
         return adapterItems.size();
     }
 
-    /** Disables quiet mode for Private Space User Profile. */
-    public void unlockPrivateProfile() {
+    /** Adds Private Space System Apps Divider to the layout. */
+    public int addSystemAppsDivider(List<BaseAllAppsAdapter.AdapterItem> adapterItems) {
+        adapterItems.add(new BaseAllAppsAdapter
+                .AdapterItem(VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER));
+        mAllApps.mAH.get(MAIN).mAdapter.notifyItemInserted(adapterItems.size() - 1);
+        return adapterItems.size();
+    }
+
+    /** Adds Private Space install app button to the layout. */
+    public void addPrivateSpaceInstallAppButton(List<BaseAllAppsAdapter.AdapterItem> adapterItems) {
+        Context context = mAllApps.getContext();
+        // Prepare bitmapInfo
+        Intent.ShortcutIconResource shortcut = Intent.ShortcutIconResource.fromContext(
+                context, com.android.launcher3.R.drawable.private_space_install_app_icon);
+        BitmapInfo bitmapInfo = LauncherIcons.obtain(context).createIconBitmap(shortcut);
+
+        AppInfo itemInfo = new AppInfo();
+        itemInfo.title = context.getResources().getString(R.string.ps_add_button_label);
+        itemInfo.intent = mAppInstallerIntent;
+        itemInfo.bitmap = bitmapInfo;
+        itemInfo.contentDescription = context.getResources().getString(
+                com.android.launcher3.R.string.ps_add_button_content_description);
+        itemInfo.runtimeStatusFlags |= FLAG_PRIVATE_SPACE_INSTALL_APP | FLAG_NOT_PINNABLE;
+
+        BaseAllAppsAdapter.AdapterItem item = new BaseAllAppsAdapter.AdapterItem(VIEW_TYPE_ICON);
+        item.itemInfo = itemInfo;
+        item.decorationInfo = new SectionDecorationInfo(context, ROUND_NOTHING,
+                /* decorateTogether */ true);
+
+        adapterItems.add(item);
+        mAllApps.mAH.get(MAIN).mAdapter.notifyItemInserted(adapterItems.size() - 1);
+    }
+
+    /**
+     * Disables quiet mode for Private Space User Profile.
+     * The runnable passed will be executed in the {@link #reset()} method,
+     * when Launcher receives update about profile availability.
+     * The runnable passed is only executed once, and reset after execution.
+     * In case the method is called again, before the previously set runnable was executed,
+     * the runnable will be updated.
+     */
+    public void unlockPrivateProfile(Runnable runnable) {
         enableQuietMode(false);
+        mUnlockRunnable = runnable;
     }
 
     /** Enables quiet mode for Private Space User Profile. */
@@ -89,35 +148,71 @@ public class PrivateProfileManager extends UserProfileManager {
 
     /** Resets the current state of Private Profile, w.r.t. to Launcher. */
     public void reset() {
+        int previousState = getCurrentState();
         boolean isEnabled = !mAllApps.getAppsStore()
                 .hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED);
         int updatedState = isEnabled ? STATE_ENABLED : STATE_DISABLED;
         setCurrentState(updatedState);
         resetPrivateSpaceDecorator(updatedState);
+        if (transitioningFromLockedToUnlocked(previousState, updatedState)) {
+            applyUnlockRunnable();
+        }
     }
 
-    /** Opens the Private Space Settings Entry Point. */
+    /** Opens the Private Space Settings Page. */
     public void openPrivateSpaceSettings() {
-        Intent psSettingsIntent = new Intent(SAFETY_CENTER_INTENT);
-        psSettingsIntent.putExtra(PS_SETTINGS_FRAGMENT_KEY, PS_SETTINGS_FRAGMENT_VALUE);
-        mAllApps.getContext().startActivity(psSettingsIntent);
+        if (mPrivateSpaceSettingsAvailable) {
+            mAllApps.getContext().startActivity(PRIVATE_SPACE_INTENT);
+        }
     }
 
-    /** Whether Private Space Settings Entry Point is available on the device. */
+    /** Returns whether or not Private Space Settings Page is available. */
     public boolean isPrivateSpaceSettingsAvailable() {
         return mPrivateSpaceSettingsAvailable;
     }
 
-    private void setPrivateSpaceSettingsAvailable() {
-        if (mPrivateSpaceSettingsAvailable) {
-            return;
-        }
+    /** Sets whether Private Space Settings Page is available. */
+    public boolean setPrivateSpaceSettingsAvailable(boolean value) {
+        return mPrivateSpaceSettingsAvailable = value;
+    }
+
+    /** Initializes binder call based properties in non-main thread.
+     * <p>
+     * This can cause the Private Space container items to not load/respond correctly sometimes,
+     * when the All Apps Container loads for the first time (device restarts, new profiles
+     * added/removed, etc.), as the properties are being set in non-ui thread whereas the container
+     * loads in the ui thread.
+     * This case should still be ok, as locking the Private Space container and unlocking it,
+     * reloads the values, fixing the incorrect UI.
+     */
+    private void initializeInBackgroundThread() {
         Preconditions.assertNonUiThread();
-        Intent psSettingsIntent = new Intent(SAFETY_CENTER_INTENT);
-        psSettingsIntent.putExtra(PS_SETTINGS_FRAGMENT_KEY, PS_SETTINGS_FRAGMENT_VALUE);
+        setPreInstalledSystemPackages();
+        setAppInstallerIntent();
+        initializePrivateSpaceSettingsState();
+    }
+
+    private void initializePrivateSpaceSettingsState() {
+        Preconditions.assertNonUiThread();
         ResolveInfo resolveInfo = mAllApps.getContext().getPackageManager()
-                .resolveActivity(psSettingsIntent, PackageManager.MATCH_SYSTEM_ONLY);
-        mPrivateSpaceSettingsAvailable = resolveInfo != null;
+                .resolveActivity(PRIVATE_SPACE_INTENT, PackageManager.MATCH_SYSTEM_ONLY);
+        setPrivateSpaceSettingsAvailable(resolveInfo != null);
+    }
+
+    private void setPreInstalledSystemPackages() {
+        Preconditions.assertNonUiThread();
+        if (getProfileUser() != null) {
+            mPreInstalledSystemPackages = new HashSet<>(ApiWrapper
+                    .getPreInstalledSystemPackages(mAllApps.getContext(), getProfileUser()));
+        }
+    }
+
+    private void setAppInstallerIntent() {
+        Preconditions.assertNonUiThread();
+        if (getProfileUser() != null) {
+            mAppInstallerIntent = ApiWrapper.getAppMarketActivityIntent(mAllApps.getContext(),
+                    BuildConfig.APPLICATION_ID, getProfileUser());
+        }
     }
 
     @VisibleForTesting
@@ -138,13 +233,6 @@ public class PrivateProfileManager extends UserProfileManager {
             }
             // Add Private Space Decorator to the Recycler view.
             mainAdapterHolder.mRecyclerView.addItemDecoration(mPrivateAppsSectionDecorator);
-            if (Flags.privateSpaceAnimation() && mAllApps.getActiveRecyclerView()
-                    == mainAdapterHolder.mRecyclerView) {
-                RecyclerViewAnimationController recyclerViewAnimationController =
-                        new RecyclerViewAnimationController(mAllApps);
-                recyclerViewAnimationController.animateToState(true /* expand */,
-                        ANIMATION_DURATION, () -> {});
-            }
         } else {
             // Remove Private Space Decorator from the Recycler view.
             if (mPrivateAppsSectionDecorator != null) {
@@ -158,8 +246,30 @@ public class PrivateProfileManager extends UserProfileManager {
         setQuietMode(enable);
     }
 
+    void applyUnlockRunnable() {
+        if (mUnlockRunnable != null) {
+            // reset the runnable to prevent re-execution.
+            MAIN_EXECUTOR.post(mUnlockRunnable);
+            mUnlockRunnable = null;
+        }
+    }
+
+    private boolean transitioningFromLockedToUnlocked(int previousState, int updatedState) {
+        return previousState == STATE_DISABLED && updatedState == STATE_ENABLED;
+    }
+
     @Override
     public Predicate<UserHandle> getUserMatcher() {
         return mPrivateProfileMatcher;
+    }
+
+    /**
+     * Splits private apps into user installed and system apps.
+     * When the list of system apps is empty, all apps are treated as system.
+     */
+    public Predicate<AppInfo> splitIntoUserInstalledAndSystemApps() {
+        return appInfo -> !mPreInstalledSystemPackages.isEmpty()
+                && (appInfo.componentName == null
+                || !(mPreInstalledSystemPackages.contains(appInfo.componentName.getPackageName())));
     }
 }

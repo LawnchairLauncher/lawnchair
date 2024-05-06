@@ -24,6 +24,7 @@ import static com.android.launcher3.allapps.UserProfileManager.STATE_TRANSITION;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -33,8 +34,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -59,25 +63,26 @@ public class PrivateSpaceHeaderViewControllerTest {
     private static final int PS_TRANSITION_IMAGE_COUNT = 1;
 
     private Context mContext;
-    private LayoutInflater mLayoutInflater;
     private PrivateSpaceHeaderViewController mPsHeaderViewController;
     private RelativeLayout mPsHeaderLayout;
     @Mock
     private PrivateProfileManager mPrivateProfileManager;
+    @Mock
+    private ActivityAllAppsContainerView mAllApps;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mContext = new ActivityContextWrapper(getApplicationContext());
-        mLayoutInflater = LayoutInflater.from(getApplicationContext());
-        mPsHeaderViewController = new PrivateSpaceHeaderViewController(mPrivateProfileManager);
-        mPsHeaderLayout = (RelativeLayout) mLayoutInflater.inflate(R.layout.private_space_header,
-                null);
+        mPsHeaderViewController = new PrivateSpaceHeaderViewController(mAllApps,
+                mPrivateProfileManager);
+        mPsHeaderLayout = (RelativeLayout) LayoutInflater.from(mContext).inflate(
+                R.layout.private_space_header, null);
     }
 
     @Test
     public void privateProfileDisabled_psHeaderContainsLockedView() throws Exception {
-        Bitmap unlockButton = getBitmap(mContext.getDrawable(R.drawable.bg_ps_unlock_button));
+        Bitmap unlockButton = getBitmap(mContext.getDrawable(R.drawable.ic_lock));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_DISABLED);
 
         mPsHeaderViewController.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
@@ -90,11 +95,15 @@ public class PrivateSpaceHeaderViewControllerTest {
             if (view.getId() == R.id.ps_container_header) {
                 totalContainerHeaderView += 1;
                 assertEquals(View.VISIBLE, view.getVisibility());
-            } else if (view.getId() == R.id.ps_lock_unlock_button
-                    && view instanceof ImageView imageView) {
+            } else if (view.getId() == R.id.settingsAndLockGroup) {
+                ImageView lockIcon = view.findViewById(R.id.lock_icon);
+                assertTrue(getBitmap(lockIcon.getDrawable()).sameAs(unlockButton));
+                assertEquals(View.VISIBLE, lockIcon.getVisibility());
+
+                // Verify textView shouldn't be showing when disabled.
+                TextView lockText = view.findViewById(R.id.lock_text);
+                assertEquals(View.GONE, lockText.getVisibility());
                 totalLockUnlockButtonView += 1;
-                assertEquals(View.VISIBLE, view.getVisibility());
-                getBitmap(imageView.getDrawable()).sameAs(unlockButton);
             } else {
                 assertEquals(View.GONE, view.getVisibility());
             }
@@ -105,8 +114,8 @@ public class PrivateSpaceHeaderViewControllerTest {
 
     @Test
     public void privateProfileEnabled_psHeaderContainsUnlockedView() throws Exception {
-        Bitmap lockImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_lock_button));
-        Bitmap settingsImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_settings_button));
+        Bitmap lockImage = getBitmap(mContext.getDrawable(R.drawable.ic_lock));
+        Bitmap settingsImage = getBitmap(mContext.getDrawable(R.drawable.ic_ps_settings));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
         when(mPrivateProfileManager.isPrivateSpaceSettingsAvailable()).thenReturn(true);
 
@@ -121,16 +130,20 @@ public class PrivateSpaceHeaderViewControllerTest {
             if (view.getId() == R.id.ps_container_header) {
                 totalContainerHeaderView += 1;
                 assertEquals(View.VISIBLE, view.getVisibility());
-            } else if (view.getId() == R.id.ps_lock_unlock_button
-                    && view instanceof ImageView imageView) {
-                totalLockUnlockButtonView += 1;
-                assertEquals(View.VISIBLE, view.getVisibility());
-                getBitmap(imageView.getDrawable()).sameAs(lockImage);
-            } else if (view.getId() == R.id.ps_settings_button
-                    && view instanceof ImageView imageView) {
+            } else if (view.getId() == R.id.settingsAndLockGroup) {
+                // Look for settings button.
+                ImageButton settingsButton = view.findViewById(R.id.ps_settings_button);
+                assertEquals(View.VISIBLE, settingsButton.getVisibility());
                 totalSettingsImageView += 1;
-                assertEquals(View.VISIBLE, view.getVisibility());
-                getBitmap(imageView.getDrawable()).sameAs(settingsImage);
+                assertTrue(getBitmap(settingsButton.getDrawable()).sameAs(settingsImage));
+
+                // Look for lock_icon and lock_text.
+                ImageView lockIcon = view.findViewById(R.id.lock_icon);
+                assertTrue(getBitmap(lockIcon.getDrawable()).sameAs(lockImage));
+                assertEquals(View.VISIBLE, lockIcon.getVisibility());
+                TextView lockText = view.findViewById(R.id.lock_text);
+                assertEquals(View.VISIBLE, lockText.getVisibility());
+                totalLockUnlockButtonView += 1;
             } else {
                 assertEquals(View.GONE, view.getVisibility());
             }
@@ -143,7 +156,7 @@ public class PrivateSpaceHeaderViewControllerTest {
     @Test
     public void privateProfileEnabledAndNoSettingsIntent_psHeaderContainsUnlockedView()
             throws Exception {
-        Bitmap lockImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_lock_button));
+        Bitmap lockImage = getBitmap(mContext.getDrawable(R.drawable.ic_lock));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
         when(mPrivateProfileManager.isPrivateSpaceSettingsAvailable()).thenReturn(false);
 
@@ -158,11 +171,18 @@ public class PrivateSpaceHeaderViewControllerTest {
             if (view.getId() == R.id.ps_container_header) {
                 totalContainerHeaderView += 1;
                 assertEquals(View.VISIBLE, view.getVisibility());
-            } else if (view.getId() == R.id.ps_lock_unlock_button
-                    && view instanceof ImageView imageView) {
+            } else if (view.getId() == R.id.settingsAndLockGroup) {
+                // Ensure there is no settings button.
+                ImageButton settingsImage = view.findViewById(R.id.ps_settings_button);
+                assertEquals(View.GONE, settingsImage.getVisibility());
+
+                // Check lock icon and lock text is there.
+                ImageView lockIcon = view.findViewById(R.id.lock_icon);
+                assertTrue(getBitmap(lockIcon.getDrawable()).sameAs(lockImage));
+                assertEquals(View.VISIBLE, lockIcon.getVisibility());
+                TextView lockText = view.findViewById(R.id.lock_text);
+                assertEquals(View.VISIBLE, lockText.getVisibility());
                 totalLockUnlockButtonView += 1;
-                assertEquals(View.VISIBLE, view.getVisibility());
-                getBitmap(imageView.getDrawable()).sameAs(lockImage);
             } else {
                 assertEquals(View.GONE, view.getVisibility());
             }
@@ -191,7 +211,10 @@ public class PrivateSpaceHeaderViewControllerTest {
                     && view instanceof ImageView imageView) {
                 totalLockUnlockButtonView += 1;
                 assertEquals(View.VISIBLE, view.getVisibility());
-                getBitmap(imageView.getDrawable()).sameAs(transitionImage);
+                assertTrue(getBitmap(imageView.getDrawable()).sameAs(transitionImage));
+            } else if (view.getId() == R.id.settingsAndLockGroup) {
+                LinearLayout lockUnlockButton = view.findViewById(R.id.ps_lock_unlock_button);
+                assertEquals(View.GONE, lockUnlockButton.getVisibility());
             } else {
                 assertEquals(View.GONE, view.getVisibility());
             }

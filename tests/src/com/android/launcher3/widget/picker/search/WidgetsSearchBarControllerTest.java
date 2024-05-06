@@ -78,7 +78,7 @@ public class WidgetsSearchBarControllerTest {
     public void afterTextChanged_shouldInformSearchModeListenerToEnterSearch() {
         mEditText.setText("abc");
 
-        verify(mSearchModeListener).enterSearchMode();
+        verify(mSearchModeListener).enterSearchMode(true);
         verifyNoMoreInteractions(mSearchModeListener);
     }
 

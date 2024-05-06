@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 /**
  * App icon on the workspace or all apps.
  */
-public abstract class HomeAppIcon extends AppIcon implements FolderDragTarget, WorkspaceDragSource {
+public abstract class HomeAppIcon extends AppIcon implements IconDragTarget, WorkspaceDragSource {
 
     private final String mAppName;
 
@@ -42,7 +42,7 @@ public abstract class HomeAppIcon extends AppIcon implements FolderDragTarget, W
      * @param target the destination icon.
      */
     @NonNull
-    public FolderIcon dragToIcon(FolderDragTarget target) {
+    public FolderIcon dragToIcon(IconDragTarget target) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer("want to drag icon")) {
             final Rect dropBounds = target.getDropLocationBounds();
@@ -51,12 +51,32 @@ public abstract class HomeAppIcon extends AppIcon implements FolderDragTarget, W
                     () -> {
                         final Rect bounds = target.getDropLocationBounds();
                         return new Point(bounds.centerX(), bounds.centerY());
-                    });
-            FolderIcon result = target.getTargetFolder(dropBounds);
+                    }, false);
+            FolderIcon result = target.getTargetIcon(dropBounds);
             mLauncher.assertTrue("Can't find the target folder.", result != null);
             return result;
         }
     }
+
+    /**
+     * Drag the AppIcon to the given position of a folder icon, and then inside that folder.
+     *
+     * @param target the destination folder.
+     */
+    @NonNull
+    public Folder dragToFolder(IconDragTarget target) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer("want to drag icon")) {
+            Workspace.dragIconToWorkspace(
+                    mLauncher, this,
+                    () -> {
+                        final Rect bounds = target.getDropLocationBounds();
+                        return new Point(bounds.centerX(), bounds.centerY());
+                    }, /* isDraggingToFolder */ true);
+        }
+        return new Folder(mLauncher);
+    }
+
 
     /** This method requires public access, however should not be called in tests. */
     @Override
@@ -66,7 +86,7 @@ public abstract class HomeAppIcon extends AppIcon implements FolderDragTarget, W
 
     /** This method requires public access, however should not be called in tests. */
     @Override
-    public FolderIcon getTargetFolder(Rect bounds) {
+    public FolderIcon getTargetIcon(Rect bounds) {
         for (FolderIcon folderIcon : mLauncher.getWorkspace().getFolderIcons()) {
             final Rect folderIconBounds = folderIcon.getDropLocationBounds();
             if (bounds.contains(folderIconBounds.centerX(), folderIconBounds.centerY())) {

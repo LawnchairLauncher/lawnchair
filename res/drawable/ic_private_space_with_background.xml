@@ -1,0 +1,29 @@
+<!-- Copyright (C) 2024 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt"
+    android:viewportWidth="48"
+    android:viewportHeight="48"
+    android:width="48dp"
+    android:height="48dp">
+    <path
+        android:pathData="M48 24A24 24 0 0 1 0 24A24 24 0 0 1 48 24Z"
+        android:fillColor="?attr/materialColorOutlineVariant" />
+    <path
+        android:pathData="M33.3333 14.6667V33.3333H14.6667V14.6667H33.3333ZM33.3333 12H14.6667C13.2 12 12 13.2 12 14.6667V33.3333C12 34.8 13.2 36 14.6667 36H33.3333C34.8 36 36 34.8 36 33.3333V14.6667C36 13.2 34.8 12 33.3333 12Z"
+        android:fillColor="?attr/materialColorOnSurface" />
+    <path
+        android:pathData="M25.2397 24.3597L25.9997 28.6663H21.9997L22.7597 24.3597C21.9063 23.9197 21.333 23.0263 21.333 21.9997C21.333 20.533 22.533 19.333 23.9997 19.333C25.4663 19.333 26.6663 20.533 26.6663 21.9997C26.6663 23.0263 26.093 23.9197 25.2397 24.3597Z"
+        android:fillColor="?attr/materialColorOnSurface" />
+</vector>

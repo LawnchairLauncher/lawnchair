@@ -10,9 +10,6 @@ twickham@google.com
 vadimt@google.com
 winsonc@google.com
 jonmiranda@google.com
-alexchau@google.com
-patmanning@google.com
-tsuharesu@google.com
 awickham@google.com
 
 # Launcher workspace eng team
@@ -25,6 +22,21 @@ fransebas@google.com
 pinyaoting@google.com
 andonian@google.com
 sihua@google.com
+
+# Multitasking eng team
+tracyzhou@google.com
+peanutbutter@google.com
+jeremysim@google.com
+
+# Overview eng team
+alexchau@google.com
+samcackett@google.com
+silvajordan@google.com
+uwaisashraf@google.com
+
+# Physical Keyboard & Trackpad eng team
+patmanning@google.com
+helencheuk@google.com
 
 per-file FeatureFlags.java, globs = set noparent
 per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com, captaincole@google.com

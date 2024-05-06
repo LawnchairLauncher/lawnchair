@@ -16,6 +16,13 @@ flag {
 }
 
 flag {
+    name: "enable_twoline_toggle"
+    namespace: "launcher"
+    description: "Enables visibility in home settings to see the toggle to turn on/off two lines in all apps."
+    bug: "316027081"
+}
+
+flag {
     name: "enable_grid_only_overview"
     namespace: "launcher"
     description: "Enable a grid-only overview without a focused task."
@@ -44,6 +51,13 @@ flag {
 }
 
 flag {
+    name: "enable_focus_outline"
+    namespace: "launcher"
+    description: "Enables focus states outline for launcher."
+    bug: "310953377"
+}
+
+flag {
     name: "enable_taskbar_no_recreate"
     namespace: "launcher"
     description: "Enables taskbar with no recreation from lifecycle changes of TaskbarActivityContext."
@@ -61,21 +75,7 @@ flag {
     name: "enable_taskbar_pinning"
     namespace: "launcher"
     description: "Enables taskbar pinning to allow user to switch between transient and persistent taskbar flavors."
-    bug: "270396583"
-}
-
-flag {
-    name: "enable_split_from_fullscreen_with_keyboard_shortcuts"
-    namespace: "launcher"
-    description: "Enables initiating split from a fullscreen app using keyboard shortcuts"
-    bug: "270394122"
-}
-
-flag {
-    name: "enable_launcher_br_metrics"
-    namespace: "launcher"
-    description: "Enables logging of Launcher restore metrics to the Backup & Restore team"
-    bug: "307527314"
+    bug: "296231746"
 }
 
 flag {
@@ -90,4 +90,119 @@ flag {
     namespace: "launcher"
     description: "Enables full width two pane widget picker for tablets in landscape and portrait"
     bug: "315055849"
+}
+
+flag {
+    name: "enable_two_pane_launcher_settings"
+    namespace: "launcher"
+    description: "Enables two panel settings when on large enough displays"
+    bug: "204463748"
+}
+
+flag {
+    name: "enable_predictive_back_gesture"
+    namespace: "launcher"
+    description: "Enable predictive back gesture on Launcher (including all apps and widget picker)."
+    bug: "238475505"
+}
+
+flag {
+    name: "enable_shortcut_dont_suggest_app"
+    namespace: "launcher"
+    description: "Enables don't suggest app shortcut for suggested apps"
+    bug: "319250810"
+}
+
+flag {
+    name: "enable_support_for_archiving"
+    namespace: "launcher"
+    description: "Enables support for archived apps in Launcher3, such as empty progress bar etc."
+    bug: "210590852"
+}
+
+flag {
+    name: "enable_private_space_install_shortcut"
+    namespace: "launcher"
+    description: "Enables long-press shortcut to install a copy of an app to Private space"
+    bug: "316118005"
+}
+
+flag {
+    name: "enable_launcher_br_metrics_fixed"
+    namespace: "launcher"
+    description: "Enables logging of Launcher restore metrics to the Backup & Restore team"
+    bug: "307527314"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "enable_reboot_unlock_animation"
+    namespace: "launcher"
+    description: "Enables unlock animation after device reboot"
+    bug: "298231234"
+}
+
+flag {
+    name: "enable_workspace_inflation"
+    namespace: "launcher"
+    description: "Enables asnc inflation of workspace icons"
+    bug: "318539160"
+}
+
+flag {
+    name: "enable_unfold_state_animation"
+    namespace: "launcher"
+    description: "Tie unfold animation with state animation"
+    bug: "297057373"
+}
+
+flag {
+    name: "enable_generated_previews"
+    namespace: "launcher"
+    description: "Enables support for RemoteViews previews in the widget picker."
+    bug: "306546610"
+}
+
+flag {
+  name: "enable_categorized_widget_suggestions"
+  namespace: "launcher"
+  description: "Enables widget suggestions in widget picker to be displayed in categories"
+  bug: "318410881"
+}
+
+flag {
+  name: "enable_add_app_widget_via_config_activity_v2"
+  namespace: "launcher"
+  description: "When adding app widget through config activity, directly add it to workspace to reduce flicker"
+  bug: "284236964"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
+    name: "use_activity_overlay"
+    namespace: "launcher"
+    description: "Use an activity for home screen overlay"
+    bug: "273828110"
+}
+
+flag {
+    name: "grid_migration_fix"
+    namespace: "launcher"
+    description: "Keep items in place when migrating to a bigger grid"
+    bug: "325286145"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "narrow_grid_restore"
+    namespace: "launcher"
+    description: "Using only the most recent workspace when restoring to avoid confusion."
+    bug: "325285743"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
 }

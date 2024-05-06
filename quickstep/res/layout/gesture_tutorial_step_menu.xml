@@ -157,7 +157,7 @@
             style="@style/TextAppearance.GestureTutorial.ButtonLabel"
             android:id="@+id/gesture_tutorial_menu_done_button"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_marginVertical="16dp"
             android:text="@string/gesture_tutorial_action_button_label"
             android:background="@drawable/gesture_tutorial_action_button_background"

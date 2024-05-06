@@ -18,7 +18,6 @@ package com.android.launcher3.popup;
 import android.content.Context;
 import android.view.View;
 
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -56,12 +55,4 @@ public abstract class PopupLiveUpdateHandler<T extends Context & ActivityContext
             popupDataProvider.setChangeListener(null);
         }
     }
-
-    @Override
-    public void onSystemShortcutsUpdated() {
-        mPopupContainerWithArrow.close(true);
-        showPopupContainerForIcon(mPopupContainerWithArrow.getOriginalIcon());
-    }
-
-    protected abstract void showPopupContainerForIcon(BubbleTextView originalIcon);
 }

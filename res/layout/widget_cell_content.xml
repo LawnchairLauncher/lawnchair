@@ -48,14 +48,15 @@
     <!-- The name of the widget. -->
     <TextView
         android:id="@+id/widget_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:fadingEdge="horizontal"
-        android:gravity="center_horizontal"
+        android:gravity="center_horizontal|center_vertical"
         android:singleLine="true"
         android:maxLines="1"
         android:textColor="?android:attr/textColorPrimary"
+        android:drawablePadding="@dimen/widget_cell_app_icon_padding"
         android:textSize="@dimen/widget_cell_font_size" />
 
     <!-- The original dimensions of the widget -->

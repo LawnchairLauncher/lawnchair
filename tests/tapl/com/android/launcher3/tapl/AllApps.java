@@ -21,6 +21,7 @@ import static android.view.KeyEvent.KEYCODE_META_RIGHT;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.DEFAULT_POLL_INTERVAL;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -260,7 +261,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
             int attempts = 0;
             final Rect margins = new Rect(
                     /* left= */ 0,
-                    getTopVisibleIconBounds(allAppsContainer).bottom,
+                    mHeight / 2,
                     /* right= */ 0,
                     /* bottom= */ getAppsListRecyclerBottomPadding());
 
@@ -362,6 +363,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
 
     /**
      * Taps outside bottom sheet to dismiss it. Available on tablets only.
+     *
      * @param tapRight Tap on the right of bottom sheet if true, or left otherwise.
      */
     public void dismissByTappingOutsideForTablet(boolean tapRight) {
@@ -375,7 +377,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
                     ? mLauncher.waitForLauncherObject(FAST_SCROLLER_RES_ID) :
                     mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
 
-            mLauncher.touchOutsideContainer(container, tapRight, false);
+            touchOutside(tapRight, container);
             try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
                     "tapped outside AllApps bottom sheet")) {
                 verifyVisibleContainerOnDismiss();
@@ -383,10 +385,14 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
         }
     }
 
+    protected void touchOutside(boolean tapRight, UiObject2 container) {
+        mLauncher.touchOutsideContainer(container, tapRight, false);
+    }
+
     /** Presses the meta keyboard shortcut to dismiss AllApps. */
     public void dismissByKeyboardShortcut() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
+            pressMetaKey();
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "pressed meta key")) {
                 verifyVisibleContainerOnDismiss();
@@ -394,12 +400,19 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
         }
     }
 
+    protected void pressMetaKey() {
+        mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
+    }
+
     /** Presses the esc key to dismiss AllApps. */
     public void dismissByEscKey() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
-            mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE);
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE),
+                    NORMAL_STATE_ORDINAL,
+                    "pressing esc key");
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "pressed esc key")) {
                 verifyVisibleContainerOnDismiss();
@@ -411,6 +424,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
 
     /**
      * Return the QSB UI object on the AllApps screen.
+     *
      * @return the QSB UI object.
      */
     @NonNull

@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ಗಾಗಿ ಆ್ಯಪ್ ಮಾಹಿತಿ"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ಆ್ಯಪ್ ಜೋಡಿ ಉಳಿಸಿ"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ವಿಜೆಟ್ ಸರಿಸಲು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ವಿಜೆಟ್ ಸರಿಸಲು ಅಥವಾ ಕಸ್ಟಮ್ ಕ್ರಿಯೆಗಳನ್ನು ಬಳಸಲು ಡಬಲ್-ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,6 +44,13 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಸೇರಿಸಿ"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"ಹೋಮ್‌ಸ್ಕ್ರೀನ್‌ಗೆ <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ವಿಜೆಟ್ ಅನ್ನು ಸೇರಿಸಲಾಗಿದೆ"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"ಸಲಹೆಗಳು"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"ನಿಮ್ಮ ದೈನಂದಿನ ಎಸೆನ್ಶಿಯಲ್‌ಗಳು"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"ನಿಮಗಾಗಿ ಸುದ್ದಿ"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"ನೀವು ವಿಶ್ರಾಂತಿ ಪಡೆಯುವ ಸ್ಥಳ"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"ನಿಮ್ಮ ಫಿಟ್‌ನೆಸ್ ಗುರಿಗಳನ್ನು ಸಾಧಿಸಿ"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"ಹವಾಮಾನದ ಕುರಿತು ಮುಂಚೆಯೇ ಅಪ್‌ಡೇಟ್‌ ಆಗಿರಿ"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"ನಿಮಗೆ ಇವು ಕೂಡ ಇಷ್ಟವಾಗಬಹುದು"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"ಬಲಭಾಗದಲ್ಲಿ <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> ವಿಜೆಟ್‌ಗಳು, ಎಡಭಾಗದಲ್ಲಿ ಹುಡುಕಾಟ ಮತ್ತು ಆಯ್ಕೆಗಳು"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# ವಿಜೆಟ್}one{# ವಿಜೆಟ್‌ಗಳು}other{# ವಿಜೆಟ್‌ಗಳು}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ಶಾರ್ಟ್‌ಕಟ್}one{# ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು}other{# ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -74,6 +85,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ತೆಗೆದುಹಾಕಿ"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ಅಪ್ಲಿಕೇಶನ್ ಮಾಹಿತಿ"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"ಖಾಸಗಿಯಾಗಿ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ಸ್ಥಾಪಿಸಿ"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ಆ್ಯಪ್ ಅನ್ನು ಸೂಚಿಸಬೇಡಿ"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"ಮುನ್ನೋಟ ಪಿನ್ ಮಾಡಿ"</string>
@@ -125,6 +137,8 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲಾಗುತ್ತಿದೆ, <xliff:g id="PROGRESS">%2$s</xliff:g> ಪೂರ್ಣಗೊಂಡಿದೆ"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ಡೌನ್‌ಲೋಡ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ, <xliff:g id="PROGRESS">%2$s</xliff:g> ಪೂರ್ಣಗೊಂಡಿದೆ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ಸ್ಥಾಪಿಸಲು ಕಾಯಲಾಗುತ್ತಿದೆ"</string>
+    <!-- no translation found for app_archived_title (9124290918876665128) -->
+    <skip />
     <string name="dialog_update_title" msgid="114234265740994042">"ಆ್ಯಪ್ ಅಪ್‌ಡೇಟ್ ಅಗತ್ಯವಿದೆ"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"ಈ ಐಕಾನ್‌ಗಾಗಿ ಆ್ಯಪ್ ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗಿಲ್ಲ. ಈ ಶಾರ್ಟ್‌ಕಟ್ ಅನ್ನು ಮರು-ಸಕ್ರಿಯಗೊಳಿಸಲು ನೀವು ಹಸ್ತಚಾಲಿತವಾಗಿ ಅಪ್‌ಡೇಟ್ ಮಾಡಬಹುದು ಅಥವಾ ಐಕಾನ್ ಅನ್ನು ತೆಗೆದುಹಾಕಬಹುದು."</string>
     <string name="dialog_update" msgid="2178028071796141234">"ಅಪ್‌ಡೇಟ್ ಮಾಡಿ"</string>
@@ -154,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ಎತ್ತರವನ್ನು ಕಡಿಮೆ ಮಾಡಿ"</string>
     <string name="widget_resized" msgid="9130327887929620">"ವಿಜೆಟ್ ಅನ್ನು <xliff:g id="NUMBER_0">%1$s</xliff:g> ಅಗಲ <xliff:g id="NUMBER_1">%2$s</xliff:g> ಎತ್ತರಕ್ಕೆ ಮರುಗಾತ್ರಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಮತ್ತು ಅಧಿಸೂಚನೆಗಳು"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ವಜಾಗೊಳಿಸಿ"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"ಮುಚ್ಚಿರಿ"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"ಅಧಿಸೂಚನೆಯನ್ನು ವಜಾಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ವೈಯಕ್ತಿಕ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ಕೆಲಸ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ಕೆಲಸದ ಪ್ರೊಫೈಲ್"</string>
@@ -174,9 +186,13 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ಫಿಲ್ಟರ್‌"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ವಿಫಲವಾಗಿದೆ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"ಖಾಸಗಿ ಸ್ಪೇಸ್"</string>
+    <string name="private_space_secondary_label" msgid="611902414159280263">"ಖಾಸಗಿ ಆ್ಯಪ್‌ಗಳನ್ನು ಲಾಕ್ ಮಾಡಿ ಮತ್ತು ಮರೆಮಾಡಿ"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"ಖಾಸಗಿ"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಅನ್ನು ಲಾಕ್/ಅನ್‌ಲಾಕ್ ಮಾಡಿ"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"ಲಾಕ್ ಮಾಡಿ"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಪರಿವರ್ತನೆಯಾಗುತ್ತಿದೆ"</string>
+    <string name="ps_add_button_label" msgid="8611055839242385935">"ಆ್ಯಪ್‌ಗಳನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"ಆ್ಯಪ್‌ಗಳನ್ನು ಪ್ರೈವೇಟ್ ಸ್ಪೇಸ್‌ನಲ್ಲಿ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ಓವರ್‌ಫ್ಲೋ"</string>
 </resources>

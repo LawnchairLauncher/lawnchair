@@ -84,7 +84,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(1f.dpToPx()),
                     endPadding = SizeSpec(1f.dpToPx()),
                     gutter = SizeSpec(8f.dpToPx()),
-                    cellSize = SizeSpec(ofRemainderSpace = .25f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f)
                 )
             )
 
@@ -97,7 +97,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(2f.dpToPx()),
                     endPadding = SizeSpec(2f.dpToPx()),
                     gutter = SizeSpec(8f.dpToPx()),
-                    cellSize = SizeSpec(ofRemainderSpace = .25f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f)
                 ),
             )
 
@@ -182,7 +182,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(22f.dpToPx()),
                     endPadding = SizeSpec(22f.dpToPx()),
                     gutter = sizeSpec16,
-                    cellSize = SizeSpec(ofRemainderSpace = .25f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f)
                 )
             )
 
@@ -231,7 +231,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(0f.dpToPx()),
                     endPadding = SizeSpec(36f.dpToPx()),
                     gutter = sizeSpec12,
-                    cellSize = SizeSpec(ofRemainderSpace = .25f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f)
                 ),
                 ResponsiveSpec(
                     maxAvailableSize = 716.dpToPx(),
@@ -240,7 +240,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(16f.dpToPx()),
                     endPadding = SizeSpec(64f.dpToPx()),
                     gutter = sizeSpec12,
-                    cellSize = SizeSpec(ofRemainderSpace = .25f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f)
                 ),
                 ResponsiveSpec(
                     maxAvailableSize = 9999.dpToPx(),
@@ -249,7 +249,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(36f.dpToPx()),
                     endPadding = SizeSpec(80f.dpToPx()),
                     gutter = sizeSpec12,
-                    cellSize = SizeSpec(ofRemainderSpace = .25f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f)
                 )
             )
 
@@ -262,7 +262,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(0f),
                     endPadding = SizeSpec(24f.dpToPx()),
                     gutter = sizeSpec12,
-                    cellSize = SizeSpec(ofRemainderSpace = .25f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f)
                 ),
                 ResponsiveSpec(
                     maxAvailableSize = 9999.dpToPx(),
@@ -271,7 +271,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
                     startPadding = SizeSpec(0f),
                     endPadding = SizeSpec(34f.dpToPx()),
                     gutter = sizeSpec12,
-                    cellSize = SizeSpec(ofRemainderSpace = .25f)
+                    cellSize = SizeSpec(ofRemainderSpace = 1f)
                 ),
             )
 

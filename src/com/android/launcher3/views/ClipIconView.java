@@ -25,7 +25,6 @@ import static java.lang.Math.max;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -36,7 +35,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
@@ -55,7 +53,6 @@ import com.android.launcher3.graphics.IconShape;
  * Supports springing just the foreground layer.
  * Supports clipping the icon to/from its icon shape.
  */
-@TargetApi(Build.VERSION_CODES.Q)
 public class ClipIconView extends View implements ClipPathView {
 
     private static final Rect sTmpRect = new Rect();
@@ -112,7 +109,7 @@ public class ClipIconView extends View implements ClipPathView {
         float scaleY = rect.height() / minSize;
         float scale = Math.max(1f, Math.min(scaleX, scaleY));
 
-        if (Float.isNaN(scale)) {
+        if (Float.isNaN(scale) || Float.isInfinite(scale)) {
             // Views are no longer laid out, do not update.
             return;
         }

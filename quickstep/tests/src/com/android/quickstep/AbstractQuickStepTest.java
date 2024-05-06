@@ -16,8 +16,6 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
-
 import static org.junit.Assert.assertTrue;
 
 import android.os.SystemProperties;
@@ -27,8 +25,6 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.tapl.LaunchedAppState;
-import com.android.launcher3.tapl.LauncherInstrumentation;
-import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.quickstep.views.RecentsView;
 
@@ -57,31 +53,6 @@ public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
         }
     }
 
-    @Override
-    protected void checkLauncherState(Launcher launcher, ContainerType expectedContainerType,
-            boolean isResumed, boolean isStarted) {
-        if (ENABLE_SHELL_TRANSITIONS || !isInLiveTileMode(launcher, expectedContainerType)) {
-            super.checkLauncherState(launcher, expectedContainerType, isResumed, isStarted);
-        } else {
-            assertTrue("[Live Tile] hasBeenResumed() == isStarted(), hasBeenResumed(): "
-                            + isResumed, isResumed != isStarted);
-        }
-    }
-
-    @Override
-    protected void checkLauncherStateInOverview(Launcher launcher,
-            ContainerType expectedContainerType, boolean isStarted, boolean isResumed) {
-        if (ENABLE_SHELL_TRANSITIONS || !isInLiveTileMode(launcher, expectedContainerType)) {
-            super.checkLauncherStateInOverview(launcher, expectedContainerType, isStarted,
-                    isResumed);
-        } else {
-            assertTrue(
-                    "[Live Tile] Launcher is not started or has been resumed in state: "
-                            + expectedContainerType,
-                    isStarted && !isResumed);
-        }
-    }
-
     protected void assertTestActivityIsRunning(int activityNumber, String message) {
         assertTrue(message, mDevice.wait(
                 Until.hasObject(By.pkg(getAppPackageName()).text("TestActivity" + activityNumber)),
@@ -95,16 +66,5 @@ public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
                         + "one",
                 isInLaunchedApp(launcher)));
         return launchedAppState;
-    }
-
-    private boolean isInLiveTileMode(Launcher launcher,
-            LauncherInstrumentation.ContainerType expectedContainerType) {
-        if (expectedContainerType != LauncherInstrumentation.ContainerType.OVERVIEW) {
-            return false;
-        }
-
-        RecentsView recentsView = launcher.getOverviewPanel();
-        return recentsView.getSizeStrategy().isInLiveTileMode()
-                && recentsView.getRunningTaskViewId() != -1;
     }
 }

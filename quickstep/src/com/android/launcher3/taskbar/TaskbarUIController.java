@@ -20,11 +20,13 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
+import static com.android.quickstep.OverviewCommandHelper.TYPE_HIDE;
 
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 import android.view.View;
+import android.window.RemoteTransition;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
@@ -37,7 +39,9 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.util.GroupTask;
+import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
@@ -92,6 +96,7 @@ public class TaskbarUIController {
     public void onTaskbarIconLaunched(ItemInfo item) {
         // When launching from Taskbar, e.g. from Overview, set FLAG_IN_APP immediately instead of
         // waiting for onPause, to reduce potential visual noise during the app open transition.
+        if (mControllers.taskbarStashController == null) return;
         mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP, true);
         mControllers.taskbarStashController.applyState();
     }
@@ -219,7 +224,7 @@ public class TaskbarUIController {
                 Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
                 false /* findExactPairMatch */,
                 foundTasks -> {
-                    @Nullable Task foundTask = foundTasks.get(0);
+                    @Nullable Task foundTask = foundTasks[0];
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
                             ? INVALID_TASK_ID
                             : foundTask.key.id;
@@ -238,7 +243,7 @@ public class TaskbarUIController {
                 Collections.singletonList(info.getComponentKey()),
                 false /* findExactPairMatch */,
                 foundTasks -> {
-                    @Nullable Task foundTask = foundTasks.get(0);
+                    @Nullable Task foundTask = foundTasks[0];
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
                         // TODO (b/266482558): This additional null check is needed because there
@@ -258,7 +263,8 @@ public class TaskbarUIController {
                                     taskAttributes.getThumbnailView(),
                                     taskAttributes.getThumbnailView().getThumbnail(),
                                     null /* intent */,
-                                    null /* user */);
+                                    null /* user */,
+                                    info);
                             return;
                         }
                     }
@@ -271,7 +277,8 @@ public class TaskbarUIController {
                             startingView,
                             null /* thumbnail */,
                             intent,
-                            info.user);
+                            info.user,
+                            info);
                 }
         );
     }
@@ -302,7 +309,8 @@ public class TaskbarUIController {
     /**
      * Launches the given task in split-screen.
      */
-    public void launchSplitTasks(@NonNull GroupTask groupTask) { }
+    public void launchSplitTasks(
+            @NonNull GroupTask groupTask, @Nullable RemoteTransition remoteTransition) { }
 
     /**
      * Returns the matching view (if any) in the taskbar.
@@ -355,4 +363,35 @@ public class TaskbarUIController {
 
     /** Adjusts the hotseat for the bubble bar. */
     public void adjustHotseatForBubbleBar(boolean isBubbleBarVisible) {}
+
+    @Nullable
+    protected TISBindHelper getTISBindHelper() {
+        return null;
+    }
+
+    /**
+     * Launches the focused task in the Keyboard Quick Switch view through the OverviewCommandHelper
+     * <p>
+     * Use this helper method when the focused task may be the overview task.
+     */
+    public void launchKeyboardFocusedTask() {
+        TISBindHelper tisBindHelper = getTISBindHelper();
+        if (tisBindHelper == null) {
+            return;
+        }
+        OverviewCommandHelper overviewCommandHelper = tisBindHelper.getOverviewCommandHelper();
+        if (overviewCommandHelper == null) {
+            return;
+        }
+        overviewCommandHelper.addCommand(TYPE_HIDE);
+    }
+
+    /**
+     * Adjusts the taskbar based on the visibility of the launcher.
+     * @param isVisible True if launcher is visible, false otherwise.
+     */
+    public void onLauncherVisibilityChanged(boolean isVisible) {
+        mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP, !isVisible);
+        mControllers.taskbarStashController.applyState();
+    }
 }

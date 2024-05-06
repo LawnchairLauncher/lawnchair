@@ -50,10 +50,18 @@ public class ViewGroupFocusHelper extends FocusIndicatorHelper {
     }
 
     private void computeLocationRelativeToContainer(View child, Rect outRect) {
-        View parent = (View) child.getParent();
+        if (child == null) {
+            return;
+        }
+
         outRect.left += child.getX();
         outRect.top += child.getY();
 
+        if (child.getParent() == null || !(child.getParent() instanceof View)) {
+            return;
+        }
+
+        View parent = (View) child.getParent();
         if (parent != mContainer) {
             if (parent instanceof PagedView) {
                 PagedView page = (PagedView) parent;

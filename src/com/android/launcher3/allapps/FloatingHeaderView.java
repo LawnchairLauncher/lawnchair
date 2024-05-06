@@ -225,10 +225,10 @@ public class FloatingHeaderView extends LinearLayout implements
         for (FloatingHeaderRow row : mAllRows) {
             row.setup(this, mAllRows, tabsHidden);
         }
-        updateExpectedHeight();
 
         mTabsHidden = tabsHidden;
         maybeSetTabVisibility(VISIBLE);
+        updateExpectedHeight();
         mMainRV = mainRV;
         mWorkRV = workRV;
         mSearchRV = searchRV;

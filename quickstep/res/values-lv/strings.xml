@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Jāvelk no pašas labās vai kreisās malas."</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Jāvelk no ekrāna labās vai kreisās malas uz vidu un jāatlaiž."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Jūs esat apguvis, kā vilkt no labās malas, lai pārietu atpakaļ. Tagad mācieties pārslēgt lietotnes."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Jūs sekmīgi veicāt atgriešanās žestu. Tagad varat iemācīties, kā pārslēgt lietotnes."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Jūs sekmīgi veicāt atgriešanās žestu."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Nevelciet pārāk tuvu ekrāna apakšdaļai."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Atgriešanās žesta jutīguma līmeni varat mainīt iestatījumos."</string>
@@ -95,6 +96,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Veikt ekrānuzņēmumu"</string>
     <string name="action_split" msgid="2098009717623550676">"Sadalīt"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Lai sadalītu ekrānu, pieskarieties citai lietotnei"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Izvēlieties citu lietotni, lai sadalītu ekrānu"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Atcelt"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Izejiet no ekrāna sadalīšanas režīma atlases."</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Izvēlieties citu lietotni, lai sadalītu ekrānu"</string>
@@ -111,6 +113,8 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Skatiet ieteiktās lietotnes, balstoties uz jūsu ieradumiem"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Nospiediet/turiet atdalītāju, lai piespraustu uzdevumu joslu"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Plašākas iespējas, izmantojot uzdevumu joslu"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Vienmēr rādīt uzdevumu joslu"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Lai uzdevumu joslu rādītu apakšdaļā, pieskarieties atdalītājam un turiet"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Aizvērt"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gatavs"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Sākums"</string>

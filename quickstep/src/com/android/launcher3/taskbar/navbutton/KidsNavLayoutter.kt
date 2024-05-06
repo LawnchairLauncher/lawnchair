@@ -21,11 +21,13 @@ import android.graphics.Color
 import android.graphics.drawable.PaintDrawable
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.android.launcher3.DeviceProfile
+import android.widget.Space
 import com.android.launcher3.R
+import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.*
 import com.android.systemui.shared.rotation.RotationButton
 
@@ -36,7 +38,8 @@ class KidsNavLayoutter(
         startContextualContainer: ViewGroup,
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
-        a11yButton: ImageView?
+        a11yButton: ImageView?,
+        space: Space?
 ) :
     AbstractNavButtonLayoutter(
             resources,
@@ -45,10 +48,11 @@ class KidsNavLayoutter(
             startContextualContainer,
             imeSwitcher,
             rotationButton,
-            a11yButton
+            a11yButton,
+            space
     ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean) {
+    override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
         val iconSize: Int = resources.getDimensionPixelSize(DIMEN_TASKBAR_ICON_SIZE_KIDS)
         val buttonWidth: Int = resources.getDimensionPixelSize(DIMEN_TASKBAR_NAV_BUTTONS_WIDTH_KIDS)
         val buttonHeight: Int =
@@ -103,8 +107,9 @@ class KidsNavLayoutter(
 
         val contextualMargin = resources.getDimensionPixelSize(
                 R.dimen.taskbar_contextual_button_padding)
-        repositionContextualContainer(endContextualContainer, 0, Gravity.END)
-        repositionContextualContainer(startContextualContainer, contextualMargin, Gravity.START)
+        repositionContextualContainer(endContextualContainer, WRAP_CONTENT, 0, 0, Gravity.END)
+        repositionContextualContainer(startContextualContainer, WRAP_CONTENT, contextualMargin,
+                contextualMargin, Gravity.START)
 
         if (imeSwitcher != null) {
             startContextualContainer.addView(imeSwitcher)
@@ -112,6 +117,7 @@ class KidsNavLayoutter(
         }
         if (a11yButton != null) {
             endContextualContainer.addView(a11yButton)
+            a11yButton.layoutParams = getParamsToCenterView()
         }
         if (rotationButton != null) {
             endContextualContainer.addView(rotationButton.currentView)

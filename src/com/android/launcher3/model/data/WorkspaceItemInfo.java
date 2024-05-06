@@ -25,10 +25,12 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.ContentWriter;
@@ -71,6 +73,12 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
      *
      */
     public static final int FLAG_START_FOR_RESULT = 1 << 4;
+
+    /**
+     * The app is flagged non-resizeable, meaning that it does not support multi-window on small
+     * screens.
+     */
+    public static final int FLAG_NON_RESIZEABLE = 1 << 5;
 
     /**
      * The intent used to start the application.
@@ -120,6 +128,11 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public WorkspaceItemInfo(ShortcutInfo shortcutInfo, Context context) {
         user = shortcutInfo.getUserHandle();
         itemType = Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+        if (Flags.privateSpaceRestrictAccessibilityDrag()) {
+            if (UserCache.INSTANCE.get(context).getUserInfo(user).isPrivate()) {
+                runtimeStatusFlags |= FLAG_NOT_PINNABLE;
+            }
+        }
         updateFromDeepShortcutInfo(shortcutInfo, context);
     }
 
@@ -148,9 +161,19 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
 
 
     public final boolean isPromise() {
-        return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON);
+        return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)
+                // For archived apps, promise icons are always ready to be displayed.
+                || isArchived();
     }
 
+    /**
+     * Returns true if the workspace item supports promise icon UI. There are a few cases where they
+     * are supported:
+     * 1. Icons to be restored via backup/restore.
+     * 2. Icons added as an auto-install app.
+     * 3. Icons added due to it being an active install session created by the user.
+     * 4. Icons for archived apps.
+     */
     public boolean hasPromiseIconUi() {
         return isPromise() && !hasStatusFlag(FLAG_SUPPORTS_WEB_UI);
     }
@@ -172,8 +195,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
             runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
-        if (Utilities.ATLEAST_P
-                && shortcutInfo.getDisabledReason() == ShortcutInfo.DISABLED_REASON_VERSION_LOWER) {
+        if (shortcutInfo.getDisabledReason() == ShortcutInfo.DISABLED_REASON_VERSION_LOWER) {
             runtimeStatusFlags |= FLAG_DISABLED_VERSION_LOWER;
         } else {
             runtimeStatusFlags &= ~FLAG_DISABLED_VERSION_LOWER;

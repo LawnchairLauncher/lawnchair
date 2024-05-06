@@ -16,6 +16,7 @@
 package com.android.launcher3.tapl;
 
 import static com.android.launcher3.tapl.Launchable.DEFAULT_DRAG_STEPS;
+
 import static org.junit.Assert.assertTrue;
 
 import android.graphics.Point;
@@ -56,16 +57,20 @@ public class WidgetResizeFrame {
             Rect originalWidgetSize = widget.getVisibleBounds();
             Point targetStart = bottomResizeHandle.getVisibleCenter();
             Point targetDest = bottomResizeHandle.getVisibleCenter();
-            targetDest.offset(0, originalWidgetSize.height());
+            targetDest.offset(0,
+                    originalWidgetSize.height() + mLauncher.getCellLayoutBoarderHeight());
 
             final long downTime = SystemClock.uptimeMillis();
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetStart,
                     LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
-            mLauncher.movePointer(targetStart, targetDest, DEFAULT_DRAG_STEPS,
-                    true, downTime, downTime, true,
-                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
-            mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, targetDest,
-                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+            try {
+                mLauncher.movePointer(targetStart, targetDest, DEFAULT_DRAG_STEPS,
+                        true, downTime, downTime, true,
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+            } finally {
+                mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, targetDest,
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+            }
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
                          "want to return resized widget resize frame")) {

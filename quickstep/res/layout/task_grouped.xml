@@ -24,6 +24,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/task"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"

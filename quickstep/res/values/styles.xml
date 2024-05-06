@@ -273,7 +273,7 @@
     </style>
 
     <style name="KeyboardQuickSwitchText.OnBackground" parent="KeyboardQuickSwitchText">
-        <item name="android:textColor">?androidprv:attr/materialColorOnSurfaceInverse</item>
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
     </style>
 
     <style name="GestureTutorialActivity" parent="@style/AppTheme">

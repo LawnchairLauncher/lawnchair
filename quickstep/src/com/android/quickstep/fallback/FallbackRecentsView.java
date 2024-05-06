@@ -24,9 +24,7 @@ import static com.android.quickstep.fallback.RecentsState.MODAL_TASK;
 import static com.android.quickstep.fallback.RecentsState.OVERVIEW_SPLIT_SELECT;
 
 import android.animation.AnimatorSet;
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -55,7 +53,6 @@ import com.android.systemui.shared.recents.model.Task;
 
 import java.util.ArrayList;
 
-@TargetApi(Build.VERSION_CODES.R)
 public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsState>
         implements StateListener<RecentsState> {
 
@@ -217,7 +214,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         } else {
             if (mActivity.isInState(RecentsState.MODAL_TASK)) {
                 mActivity.getStateManager().goToState(DEFAULT, animate);
-                resetModalVisuals();
             }
         }
     }
@@ -237,6 +233,8 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         setOverviewFullscreenEnabled(toState.isFullScreen());
         if (toState == MODAL_TASK) {
             setOverviewSelectEnabled(true);
+        } else {
+            resetModalVisuals();
         }
 
         // Set border after select mode changes to avoid showing border during state transition

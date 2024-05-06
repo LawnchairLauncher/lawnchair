@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Impormasyon ng app para sa %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"I-save ang pares ng app"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Pindutin nang matagal para ilipat ang widget."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"I-double tap at pindutin nang matagal para ilipat ang widget o gumamit ng mga custom na pagkilos."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,6 +44,13 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Idagdag sa home screen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Idinagdag sa home screen ang widget na <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Mga Suhestyon"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"Ang Pang-araw-araw Mong Mga Essential"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Balita para sa Iyo"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Ang Iyong Chill Zone"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Makamit ang Iyong Mga Layunin sa Fitness"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Manatiling Handa sa Lagay ng Panahon"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"Baka Magustuhan Mo Rin"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Mga widget ng <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> sa kanan, paghahanap at mga opsyon sa kaliwa"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}one{# widget}other{# na widget}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# shortcut}one{# shortcut}other{# na shortcut}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -74,6 +85,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Alisin"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"I-uninstall"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Impormasyon ng app"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Pribadong i-install"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"I-install"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Huwag magmungkahi ng app"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"I-pin ang Hula"</string>
@@ -125,6 +137,8 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Ini-install ang <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> kumpleto"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Dina-download na ang <xliff:g id="NAME">%1$s</xliff:g>, tapos na ang <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Hinihintay nang mag-install ang <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <!-- no translation found for app_archived_title (9124290918876665128) -->
+    <skip />
     <string name="dialog_update_title" msgid="114234265740994042">"Kinakailangang i-update ang app"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Hindi updated ang app para sa icon na ito. Puwede kang manual na mag-update para ma-enable ulit ang shortcut na ito, o alisin ang icon."</string>
     <string name="dialog_update" msgid="2178028071796141234">"I-update"</string>
@@ -154,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Bawasan ang taas"</string>
     <string name="widget_resized" msgid="9130327887929620">"Na-resize ang widget sa lapad <xliff:g id="NUMBER_0">%1$s</xliff:g> taas <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Mga Shortcut"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Mga shortcut at notification"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"I-dismiss"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Isara"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"Na-dismiss ang notification"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabaho"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profile sa trabaho"</string>
@@ -174,9 +186,13 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Hindi nagawa: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Pribadong space"</string>
+    <string name="private_space_secondary_label" msgid="611902414159280263">"Panatilihing naka-lock at nakatago ang mga pribadong app"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Pribado"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Mga Setting ng Pribadong Space"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"I-lock/I-unlock ang Pribadong Space"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"I-lock"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Pag-transition ng Pribadong Space"</string>
+    <string name="ps_add_button_label" msgid="8611055839242385935">"Mag-install ng mga app"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Mag-install ng mga app sa Pribadong Space"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Overflow"</string>
 </resources>

@@ -15,13 +15,14 @@
  */
 package com.android.launcher3.util;
 
+import static com.android.launcher3.testing.shared.TestProtocol.GET_FROM_RECENTS_FAILURE;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
+
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -40,6 +41,9 @@ public final class ActivityTracker<T extends BaseActivity> {
 
     public void onActivityDestroyed(T activity) {
         if (mCurrentActivity.get() == activity) {
+            testLogD(GET_FROM_RECENTS_FAILURE,
+                    String.format("ActivityTracker.onActivityDestroyed this=%s, activity=%s",
+                            this, activity));
             mCurrentActivity.clear();
         }
     }
@@ -71,6 +75,8 @@ public final class ActivityTracker<T extends BaseActivity> {
     }
 
     public boolean handleCreate(T activity) {
+        testLogD(GET_FROM_RECENTS_FAILURE,
+                String.format("ActivityTracker.handleCreate this=%s, activity=%s", this, activity));
         mCurrentActivity = new WeakReference<>(activity);
         return handleIntent(activity, false /* alreadyOnHome */);
     }

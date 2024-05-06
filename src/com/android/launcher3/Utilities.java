@@ -121,15 +121,6 @@ public final class Utilities {
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
     public static final Person[] EMPTY_PERSON_ARRAY = new Person[0];
 
-    @ChecksSdkIntAtLeast(api = VERSION_CODES.P)
-    public static final boolean ATLEAST_P = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
-
-    @ChecksSdkIntAtLeast(api = VERSION_CODES.Q)
-    public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
-
-    @ChecksSdkIntAtLeast(api = VERSION_CODES.R)
-    public static final boolean ATLEAST_R = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
-
     @ChecksSdkIntAtLeast(api = VERSION_CODES.S)
     public static final boolean ATLEAST_S = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
 
@@ -838,5 +829,11 @@ public final class Utilities {
             default:
                 // No-Op
         }
+    }
+
+    /** Encapsulates two flag checks into a single one. */
+    public static boolean enableSupportForArchiving() {
+        return Flags.enableSupportForArchiving()
+                || getSystemProperty("pm.archiving.enabled", "false").equals("true");
     }
 }

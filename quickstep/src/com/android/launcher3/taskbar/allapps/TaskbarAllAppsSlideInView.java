@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar.allapps;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.launcher3.Flags.enablePredictiveBackGesture;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -168,7 +169,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mActivityContext.addOnDeviceProfileChangeListener(this);
-        if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+        if (enablePredictiveBackGesture()) {
             mAppsView.getAppsRecyclerViewContainer().setOutlineProvider(mViewOutlineProvider);
             mAppsView.getAppsRecyclerViewContainer().setClipToOutline(true);
             OnBackInvokedDispatcher dispatcher = findOnBackInvokedDispatcher();
@@ -183,7 +184,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mActivityContext.removeOnDeviceProfileChangeListener(this);
-        if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+        if (enablePredictiveBackGesture()) {
             mAppsView.getAppsRecyclerViewContainer().setOutlineProvider(null);
             mAppsView.getAppsRecyclerViewContainer().setClipToOutline(false);
             OnBackInvokedDispatcher dispatcher = findOnBackInvokedDispatcher();

@@ -54,6 +54,8 @@ public class GestureSandboxActivity extends FragmentActivity {
     static final String KEY_TUTORIAL_TYPE = "tutorial_type";
     static final String KEY_GESTURE_COMPLETE = "gesture_complete";
     static final String KEY_USE_TUTORIAL_MENU = "use_tutorial_menu";
+    public static final double SQUARE_ASPECT_RATIO_BOTTOM_BOUND = 0.95;
+    public static final double SQUARE_ASPECT_RATIO_UPPER_BOUND = 1.05;
 
     @Nullable private TutorialType[] mTutorialSteps;
     private GestureSandboxFragment mCurrentFragment;
@@ -159,14 +161,20 @@ public class GestureSandboxActivity extends FragmentActivity {
      * Gesture animations are only in landscape for large screens and portrait for mobile. This
      * method enforces the following flows:
      *     1) phone / two-panel closed -> lock to portrait
-     *     2) two-panel open / tablet + portrait -> prompt the user to rotate the screen
-     *     3) two-panel open / tablet + landscape -> hide potential rotating prompt
+     *     2) Large screen + portrait -> prompt the user to rotate the screen
+     *     3) Large screen + landscape -> hide potential rotating prompt
+     *     4) Square aspect ratio -> no action taken as the animations will fit both orientations
      */
     private void correctUserOrientation() {
         DeviceProfile deviceProfile = InvariantDeviceProfile.INSTANCE.get(
                 getApplicationContext()).getDeviceProfile(this);
         if (deviceProfile.isTablet) {
-            boolean showRotationPrompt = getResources().getConfiguration().orientation
+            // The tutorial will work in either orientation if the height and width are similar
+            boolean isAspectRatioSquare =
+                    deviceProfile.aspectRatio > SQUARE_ASPECT_RATIO_BOTTOM_BOUND
+                            && deviceProfile.aspectRatio < SQUARE_ASPECT_RATIO_UPPER_BOUND;
+            boolean showRotationPrompt = !isAspectRatioSquare
+                    && getResources().getConfiguration().orientation
                     == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
             GestureSandboxFragment recreatedFragment =

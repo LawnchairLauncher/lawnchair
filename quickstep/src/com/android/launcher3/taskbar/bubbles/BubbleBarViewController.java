@@ -21,6 +21,7 @@ import static android.view.View.VISIBLE;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -289,7 +290,8 @@ public class BubbleBarViewController {
      */
     public void addBubble(BubbleBarItem b) {
         if (b != null) {
-            mBarView.addView(b.getView(), 0, new FrameLayout.LayoutParams(mIconSize, mIconSize));
+            mBarView.addView(b.getView(), 0,
+                    new FrameLayout.LayoutParams(mIconSize, mIconSize, Gravity.LEFT));
             b.getView().setOnClickListener(mBubbleClickListener);
             mBubbleDragController.setupBubbleView(b.getView());
         } else {

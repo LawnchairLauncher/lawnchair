@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
@@ -25,11 +24,11 @@ import static org.junit.Assert.assertTrue;
 import android.content.Intent;
 import android.platform.test.annotations.PlatinumTest;
 
+import com.android.launcher3.tapl.OverviewTask.OverviewSplitTask;
 import com.android.launcher3.tapl.OverviewTaskMenu;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -40,12 +39,6 @@ public class TaplOverviewIconTest extends AbstractLauncherUiTest {
 
     private static final String CALCULATOR_APP_PACKAGE =
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        initialize(this);
-    }
 
     @PlatinumTest(focusArea = "launcher")
     @Test
@@ -86,7 +79,8 @@ public class TaplOverviewIconTest extends AbstractLauncherUiTest {
         taskMenu.touchOutsideTaskMenuToDismiss();
 
         OverviewTaskMenu splitMenu =
-                mLauncher.goHome().switchToOverview().getCurrentTask().tapSplitTaskMenu();
+                mLauncher.goHome().switchToOverview().getCurrentTask().tapMenu(
+                        OverviewSplitTask.SPLIT_BOTTOM_OR_RIGHT);
         assertTrue("App info item not appearing in expanded split task's menu.",
                 splitMenu.hasMenuItem("App info"));
         splitMenu.touchOutsideTaskMenuToDismiss();

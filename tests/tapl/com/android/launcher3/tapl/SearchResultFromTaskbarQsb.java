@@ -50,4 +50,9 @@ public class SearchResultFromTaskbarQsb extends SearchResultFromQsb {
     protected void verifyVisibleContainerOnDismiss() {
         mLauncher.getLaunchedAppState().assertTaskbarVisible();
     }
+
+    @Override
+    protected void tapOutside(boolean tapRight, UiObject2 allAppsBottomSheet) {
+        mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
+    }
 }

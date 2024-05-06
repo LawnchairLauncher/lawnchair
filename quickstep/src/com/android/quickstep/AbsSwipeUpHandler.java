@@ -22,12 +22,15 @@ import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
+import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.app.animation.Interpolators.DECELERATE;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.app.animation.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.BaseActivity.EVENT_DESTROYED;
 import static com.android.launcher3.BaseActivity.EVENT_STARTED;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
 import static com.android.launcher3.PagedView.INVALID_PAGE;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
@@ -64,7 +67,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.TaskInfo;
 import android.app.WindowConfiguration;
@@ -75,7 +77,6 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
@@ -96,6 +97,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.internal.jank.Cuj;
 import com.android.internal.util.LatencyTracker;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -135,6 +137,7 @@ import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TaskViewSimulator;
+import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
@@ -160,7 +163,6 @@ import java.util.function.Consumer;
 /**
  * Handles the navigation gestures when Launcher is the default home activity.
  */
-@TargetApi(Build.VERSION_CODES.R)
 public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         Q extends RecentsView, S extends BaseState<S>>
         extends SwipeUpAnimationLogic implements OnApplyWindowInsetsListener,
@@ -168,6 +170,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private static final String TAG = "AbsSwipeUpHandler";
 
     private static final ArrayList<String> STATE_NAMES = new ArrayList<>();
+
+    // Fraction of the scroll and transform animation in which the current task fades out
+    private static final float KQS_TASK_FADE_ANIMATION_FRACTION = 0.4f;
 
     protected final BaseActivityInterface<S, T> mActivityInterface;
     protected final InputConsumerProxy mInputConsumerProxy;
@@ -902,7 +907,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return;
         }
         mLauncherTransitionController.setProgress(
-                Math.max(mCurrentShift.value, getScaleProgressDueToScroll()), mDragLengthFactor);
+                // Immediately finish the grid transition
+                isKeyboardTaskFocusPending()
+                        ? 1f : Math.max(mCurrentShift.value, getScaleProgressDueToScroll()),
+                mDragLengthFactor);
     }
 
     /**
@@ -1024,12 +1032,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     }
                     mHandled = true;
 
+                    InteractionJankMonitorWrapper.begin(mRecentsView, Cuj.CUJ_LAUNCHER_QUICK_SWITCH,
+                            2000 /* ms timeout */);
                     InteractionJankMonitorWrapper.begin(mRecentsView,
-                            InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH, 2000 /* ms timeout */);
+                            Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME);
                     InteractionJankMonitorWrapper.begin(mRecentsView,
-                            InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
-                    InteractionJankMonitorWrapper.begin(mRecentsView,
-                            InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
+                            Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
 
                     rv.post(() -> rv.getViewTreeObserver().removeOnDrawListener(this));
                 }
@@ -1145,16 +1153,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         View postResumeLastTask = mActivityInterface.onSettledOnEndTarget(endTarget);
 
         if (endTarget != NEW_TASK) {
-            InteractionJankMonitorWrapper.cancel(
-                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
         }
         if (endTarget != HOME) {
-            InteractionJankMonitorWrapper.cancel(
-                    InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME);
         }
         if (endTarget != RECENTS) {
-            InteractionJankMonitorWrapper.cancel(
-                    InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
         }
 
         switch (endTarget) {
@@ -1354,7 +1359,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
         Interpolator interpolator;
         S state = mActivityInterface.stateFromGestureEndTarget(endTarget);
-        if (state.displayOverviewTasksAsGrid(mDp)) {
+        if (isKeyboardTaskFocusPending()) {
+            interpolator = EMPHASIZED;
+        } else if (state.displayOverviewTasksAsGrid(mDp)) {
             interpolator = ACCELERATE_DECELERATE;
         } else if (endTarget == RECENTS) {
             interpolator = OVERSHOOT_1_2;
@@ -1574,7 +1581,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         mSwipePipToHomeAnimator.getTaskId(),
                         mSwipePipToHomeAnimator.getComponentName(),
                         mSwipePipToHomeAnimator.getDestinationBounds(),
-                        mSwipePipToHomeAnimator.getContentOverlay());
+                        mSwipePipToHomeAnimator.getContentOverlay(),
+                        mSwipePipToHomeAnimator.getAppBounds());
 
                 windowAnim = mSwipePipToHomeAnimators;
             } else {
@@ -1657,7 +1665,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             animatorSet.play(windowAnim);
             if (mRecentsView != null) {
                 mRecentsView.onPrepareGestureEndAnimation(
-                        animatorSet, mGestureState.getEndTarget(),
+                        mGestureState.isHandlingAtomicEvent() ? null : animatorSet,
+                        mGestureState.getEndTarget(),
                         getRemoteTaskViewSimulators());
             }
             animatorSet.setDuration(duration).setInterpolator(interpolator);
@@ -2229,6 +2238,14 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
     }
 
+    private boolean shouldLinkRecentsViewScroll() {
+        return mRecentsViewScrollLinked && !isKeyboardTaskFocusPending();
+    }
+
+    private boolean isKeyboardTaskFocusPending() {
+        return mRecentsView != null && mRecentsView.isKeyboardTaskFocusPending();
+    }
+
     private void onRecentsViewScroll() {
         if (moveWindowWithRecentsScroll()) {
             onCurrentShiftUpdated();
@@ -2461,6 +2478,44 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mActivityInitListener.register();
     }
 
+    private boolean shouldFadeOutTargetsForKeyboardQuickSwitch(
+            TransformParams transformParams,
+            TaskViewSimulator taskViewSimulator,
+            float progress) {
+        RemoteAnimationTargets targets = transformParams.getTargetSet();
+        boolean fadeAppTargets = isKeyboardTaskFocusPending()
+                && targets != null
+                && targets.apps != null
+                && targets.apps.length > 0;
+        float fadeProgress = Utilities.mapBoundToRange(
+                progress,
+                /* lowerBound= */ 0f,
+                /* upperBound= */ KQS_TASK_FADE_ANIMATION_FRACTION,
+                /* toMin= */ 0f,
+                /* toMax= */ 1f,
+                LINEAR);
+        if (!fadeAppTargets || Float.compare(fadeProgress, 1f) == 0) {
+            return false;
+        }
+        SurfaceTransaction surfaceTransaction =
+                transformParams.createSurfaceParams(taskViewSimulator);
+        SurfaceControl.Transaction transaction = surfaceTransaction.getTransaction();
+
+        for (RemoteAnimationTarget app : targets.apps) {
+            transaction.setAlpha(app.leash, 1f - fadeProgress);
+            transaction.setPosition(app.leash,
+                    /* x= */ app.startBounds.left
+                            + (mActivity.getDeviceProfile().overviewPageSpacing
+                            * (mRecentsView.isRtl() ? fadeProgress : -fadeProgress)),
+                    /* y= */ 0f);
+            transaction.setScale(app.leash, 1f, 1f);
+            taskViewSimulator.taskPrimaryTranslation.value =
+                    mRecentsView.getScrollOffsetForKeyboardTaskFocus();
+            taskViewSimulator.apply(transformParams, surfaceTransaction);
+        }
+        return true;
+    }
+
     /**
      * Applies the transform on the recents animation
      */
@@ -2470,7 +2525,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         //    swipe-to-icon animation is handled by RectFSpringAnim anim
         boolean notSwipingToHome = mRecentsAnimationTargets != null
                 && mGestureState.getEndTarget() != HOME;
-        boolean setRecentsScroll = mRecentsViewScrollLinked && mRecentsView != null;
+        boolean setRecentsScroll = shouldLinkRecentsViewScroll() && mRecentsView != null;
         float progress = Math.max(mCurrentShift.value, getScaleProgressDueToScroll());
         int scrollOffset = setRecentsScroll ? mRecentsView.getScrollOffset() : 0;
         if (!mStartMovingTasks && (progress > 0 || scrollOffset != 0)) {
@@ -2489,7 +2544,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 if (setRecentsScroll) {
                     taskViewSimulator.setScroll(scrollOffset);
                 }
-                taskViewSimulator.apply(remoteHandle.getTransformParams());
+                TransformParams transformParams = remoteHandle.getTransformParams();
+                if (shouldFadeOutTargetsForKeyboardQuickSwitch(
+                        transformParams, taskViewSimulator, progress)) {
+                    continue;
+                }
+                taskViewSimulator.apply(transformParams);
             }
         }
     }
@@ -2497,14 +2557,16 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     // Scaling of RecentsView during quick switch based on amount of recents scroll
     private float getScaleProgressDueToScroll() {
         if (mActivity == null || !mActivity.getDeviceProfile().isTablet || mRecentsView == null
-                || !mRecentsViewScrollLinked) {
+                || !shouldLinkRecentsViewScroll()) {
             return 0;
         }
 
         float scrollOffset = Math.abs(mRecentsView.getScrollOffset(mRecentsView.getCurrentPage()));
+        Rect carouselTaskSize = enableGridOnlyOverview()
+                ? mRecentsView.getLastComputedCarouselTaskSize()
+                : mRecentsView.getLastComputedTaskSize();
         int maxScrollOffset = mRecentsView.getPagedOrientationHandler().getPrimaryValue(
-                mRecentsView.getLastComputedTaskSize().width(),
-                mRecentsView.getLastComputedTaskSize().height());
+                carouselTaskSize.width(), carouselTaskSize.height());
         maxScrollOffset += mRecentsView.getPageSpacing();
 
         float maxScaleProgress =

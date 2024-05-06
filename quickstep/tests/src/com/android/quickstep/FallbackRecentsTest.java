@@ -28,10 +28,12 @@ import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT
 import static com.android.launcher3.ui.AbstractLauncherUiTest.resolveSystemApp;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.startAppFast;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.startTestActivity;
-import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+import static com.android.launcher3.ui.TaplTestsLauncher3Test.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -67,7 +69,6 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -76,6 +77,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -131,8 +133,7 @@ public class FallbackRecentsTest {
                     UiDevice.getInstance(getInstrumentation()).executeShellCommand(
                             getLauncherCommand(getLauncherInMyProcess()));
                     // b/143488140
-                    mDevice.pressHome();
-                    mDevice.waitForIdle();
+                    pressHomeAndWaitForOverviewClose();
                 }
             }
         };
@@ -186,12 +187,14 @@ public class FallbackRecentsTest {
         mLauncher.getLaunchedAppState().switchToOverview();
     }
 
-    // b/143488140
+    // Staging; will be promoted to presubmit if stable
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
+
     //@NavigationModeSwitch
-    @Ignore
     @Test
     public void goToOverviewFromApp() {
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        waitForRecentsActivityStop();
 
         mLauncher.getLaunchedAppState().switchToOverview();
     }
@@ -218,17 +221,43 @@ public class FallbackRecentsTest {
     }
 
     private BaseOverview pressHomeAndGoToOverview() {
-        mDevice.pressHome();
+        pressHomeAndWaitForOverviewClose();
         return mLauncher.getLaunchedAppState().switchToOverview();
+    }
+
+    private void pressHomeAndWaitForOverviewClose() {
+        mDevice.pressHome();
+        waitForRecentsActivityStop();
+    }
+
+    private void waitForRecentsActivityStop() {
+        try {
+            final boolean recentsActivityIsNull = MAIN_EXECUTOR.submit(
+                    () -> RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity() == null).get();
+            if (recentsActivityIsNull) {
+                // Null activity counts as a "stopped" one.
+                return;
+            }
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        Wait.atMost("Recents activity didn't stop",
+                () -> getFromRecents(recents -> !recents.isStarted()),
+                DEFAULT_UI_TIMEOUT, mLauncher);
     }
 
     // b/143488140
     //@NavigationModeSwitch
     @Test
+    @ScreenRecordRule.ScreenRecord // b/321775748
     public void testOverview() {
         startAppFast(getAppPackageName());
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
+        waitForRecentsActivityStop();
         Wait.atMost("Expected three apps in the task list",
                 () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
 

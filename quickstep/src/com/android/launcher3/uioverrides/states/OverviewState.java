@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides.states;
 
 import static com.android.app.animation.Interpolators.DECELERATE_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
+import static com.android.wm.shell.Flags.enableSplitContextual;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -120,7 +121,19 @@ public class OverviewState extends LauncherState {
         if (showFloatingSearch) {
             elements |= FLOATING_SEARCH_BAR;
         }
+        if (enableSplitContextual() && launcher.isSplitSelectionActive()) {
+            elements &= ~CLEAR_ALL_BUTTON;
+        }
         return elements;
+    }
+
+    @Override
+    public float getSplitSelectTranslation(Launcher launcher) {
+        if (!enableSplitContextual() || !launcher.isSplitSelectionActive()) {
+            return 0f;
+        }
+        RecentsView recentsView = launcher.getOverviewPanel();
+        return recentsView.getSplitSelectTranslation();
     }
 
     @Override

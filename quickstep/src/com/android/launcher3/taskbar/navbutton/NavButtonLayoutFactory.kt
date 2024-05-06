@@ -23,7 +23,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Space
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.*
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.Companion
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter
@@ -55,10 +57,11 @@ class NavButtonLayoutFactory {
          */
         fun getUiLayoutter(
                 deviceProfile: DeviceProfile,
-                navButtonsView: FrameLayout,
+                navButtonsView: NearestTouchFrame,
                 imeSwitcher: ImageView?,
                 rotationButton: RotationButton?,
                 a11yButton: ImageView?,
+                space: Space?,
                 resources: Resources,
                 isKidsMode: Boolean,
                 isInSetup: Boolean,
@@ -77,6 +80,7 @@ class NavButtonLayoutFactory {
             return when {
                 isPhoneNavMode -> {
                     if (!deviceProfile.isLandscape) {
+                        navButtonsView.setIsVertical(false)
                         PhonePortraitNavLayoutter(
                                 resources,
                                 navButtonContainer,
@@ -84,9 +88,11 @@ class NavButtonLayoutFactory {
                                 startContextualContainer,
                                 imeSwitcher,
                                 rotationButton,
-                                a11yButton
+                                a11yButton,
+                                space
                         )
                     } else if (surfaceRotation == ROTATION_90) {
+                        navButtonsView.setIsVertical(true)
                         PhoneLandscapeNavLayoutter(
                                 resources,
                                 navButtonContainer,
@@ -94,9 +100,11 @@ class NavButtonLayoutFactory {
                                 startContextualContainer,
                                 imeSwitcher,
                                 rotationButton,
-                                a11yButton
+                                a11yButton,
+                                space
                         )
                     } else {
+                        navButtonsView.setIsVertical(true)
                         PhoneSeascapeNavLayoutter(
                                 resources,
                                 navButtonContainer,
@@ -104,7 +112,8 @@ class NavButtonLayoutFactory {
                                 startContextualContainer,
                                 imeSwitcher,
                                 rotationButton,
-                                a11yButton
+                                a11yButton,
+                                space
                         )
                     }
                 }
@@ -116,7 +125,8 @@ class NavButtonLayoutFactory {
                             startContextualContainer,
                             imeSwitcher,
                             rotationButton,
-                            a11yButton
+                            a11yButton,
+                            space
                     )
                 }
                 deviceProfile.isTaskbarPresent -> {
@@ -129,7 +139,8 @@ class NavButtonLayoutFactory {
                                     startContextualContainer,
                                     imeSwitcher,
                                     rotationButton,
-                                    a11yButton
+                                    a11yButton,
+                                    space
                             )
                         }
                         isKidsMode -> {
@@ -140,7 +151,8 @@ class NavButtonLayoutFactory {
                                     startContextualContainer,
                                     imeSwitcher,
                                     rotationButton,
-                                    a11yButton
+                                    a11yButton,
+                                    space
                             )
                         }
                         else ->
@@ -151,7 +163,8 @@ class NavButtonLayoutFactory {
                                     startContextualContainer,
                                     imeSwitcher,
                                     rotationButton,
-                                    a11yButton
+                                    a11yButton,
+                                    space
                             )
                     }
                 }
@@ -162,6 +175,6 @@ class NavButtonLayoutFactory {
 
     /** Lays out and provides access to the home, recents, and back buttons for various mischief */
     interface NavButtonLayoutter {
-        fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean)
+        fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean)
     }
 }

@@ -16,6 +16,13 @@
 
 package com.android.launcher3.allapps;
 
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
+import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_DISABLED;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_ENABLED;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_TRANSITION;
@@ -23,31 +30,63 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP;
 
-import android.view.View;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.LayoutTransition;
+import android.animation.ValueAnimator;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.app.animation.Interpolators;
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.UserProfileManager.UserProfileState;
+import com.android.launcher3.anim.AnimatedPropertySetter;
+import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.views.RecyclerViewFastScroller;
+
+import java.util.List;
 
 /**
  * Controller which returns views to be added to Private Space Header based upon
  * {@link UserProfileState}
  */
 public class PrivateSpaceHeaderViewController {
+    private static final int EXPAND_SCROLL_DURATION = 2000;
+    private static final int EXPAND_COLLAPSE_DURATION = 800;
+    private static final int SETTINGS_OPACITY_DURATION = 160;
+    private final ActivityAllAppsContainerView mAllApps;
     private final PrivateProfileManager mPrivateProfileManager;
 
-    public PrivateSpaceHeaderViewController(PrivateProfileManager privateProfileManager) {
+    public PrivateSpaceHeaderViewController(ActivityAllAppsContainerView allApps,
+            PrivateProfileManager privateProfileManager) {
+        this.mAllApps = allApps;
         this.mPrivateProfileManager = privateProfileManager;
     }
 
     /** Add Private Space Header view elements based upon {@link UserProfileState} */
     public void addPrivateSpaceHeaderViewElements(RelativeLayout parent) {
+        // Set the transition duration for the settings and lock button to animate.
+        ViewGroup settingsAndLockGroup = parent.findViewById(R.id.settingsAndLockGroup);
+        LayoutTransition settingsAndLockTransition = settingsAndLockGroup.getLayoutTransition();
+        settingsAndLockTransition.enableTransitionType(LayoutTransition.CHANGING);
+        settingsAndLockTransition.setDuration(EXPAND_COLLAPSE_DURATION);
+
         //Add quietMode image and action for lock/unlock button
-        ImageButton quietModeButton = parent.findViewById(R.id.ps_lock_unlock_button);
-        assert quietModeButton != null;
-        addQuietModeButton(quietModeButton);
+        ViewGroup lockButton =
+                parent.findViewById(R.id.ps_lock_unlock_button);
+        assert lockButton != null;
+        addLockButton(parent, lockButton);
+
+        //Trigger lock/unlock action from header.
+        addHeaderOnClickListener(parent);
 
         //Add image and action for private space settings button
         ImageButton settingsButton = parent.findViewById(R.id.ps_settings_button);
@@ -60,53 +99,189 @@ public class PrivateSpaceHeaderViewController {
         addTransitionImage(transitionView);
     }
 
-    private void addQuietModeButton(ImageButton quietModeButton) {
+    /**
+     *  Adds the quietModeButton and attach onClickListener for the header to animate different
+     *  states when clicked.
+     */
+    private void addLockButton(ViewGroup psHeader, ViewGroup lockButton) {
+        TextView lockText = lockButton.findViewById(R.id.lock_text);
         switch (mPrivateProfileManager.getCurrentState()) {
             case STATE_ENABLED -> {
-                quietModeButton.setVisibility(View.VISIBLE);
-                quietModeButton.setImageResource(R.drawable.bg_ps_lock_button);
-                quietModeButton.setOnClickListener(
-                        view -> {
-                            mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_LOCK_TAP);
-                            mPrivateProfileManager.lockPrivateProfile();
-                        });
+                lockText.setVisibility(VISIBLE);
+                lockButton.setVisibility(VISIBLE);
+                lockButton.setOnClickListener(view -> lockAction(psHeader));
             }
             case STATE_DISABLED -> {
-                quietModeButton.setVisibility(View.VISIBLE);
-                quietModeButton.setImageResource(R.drawable.bg_ps_unlock_button);
-                quietModeButton.setOnClickListener(
-                        view -> {
-                            mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP);
-                            mPrivateProfileManager.unlockPrivateProfile();
-                        });
+                lockText.setVisibility(GONE);
+                lockButton.setVisibility(VISIBLE);
+                lockButton.setOnClickListener(view -> unlockAction(psHeader));
             }
-            default -> quietModeButton.setVisibility(View.GONE);
+            default -> lockButton.setVisibility(GONE);
+        }
+    }
+
+    private void addHeaderOnClickListener(RelativeLayout header) {
+        if (mPrivateProfileManager.getCurrentState() == STATE_DISABLED) {
+            header.setOnClickListener(view -> unlockAction(header));
+        } else {
+            header.setOnClickListener(null);
+        }
+    }
+
+    private void unlockAction(ViewGroup psHeader) {
+        mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP);
+        mPrivateProfileManager.unlockPrivateProfile((() -> onPrivateProfileUnlocked(psHeader)));
+    }
+
+    private void lockAction(ViewGroup psHeader) {
+        mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_LOCK_TAP);
+        if (Flags.enablePrivateSpace() && Flags.privateSpaceAnimation()) {
+            updatePrivateStateAnimator(false, psHeader);
+        } else {
+            mPrivateProfileManager.lockPrivateProfile();
         }
     }
 
     private void addPrivateSpaceSettingsButton(ImageButton settingsButton) {
         if (mPrivateProfileManager.getCurrentState() == STATE_ENABLED
                 && mPrivateProfileManager.isPrivateSpaceSettingsAvailable()) {
-            settingsButton.setVisibility(View.VISIBLE);
+            settingsButton.setVisibility(VISIBLE);
+            settingsButton.setAlpha(1f);
             settingsButton.setOnClickListener(
                     view -> {
                         mPrivateProfileManager.logEvents(LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP);
                         mPrivateProfileManager.openPrivateSpaceSettings();
                     });
         } else {
-            settingsButton.setVisibility(View.GONE);
+            settingsButton.setVisibility(GONE);
         }
     }
 
     private void addTransitionImage(ImageView transitionImage) {
         if (mPrivateProfileManager.getCurrentState() == STATE_TRANSITION) {
-            transitionImage.setVisibility(View.VISIBLE);
+            transitionImage.setVisibility(VISIBLE);
         } else {
-            transitionImage.setVisibility(View.GONE);
+            transitionImage.setVisibility(GONE);
+        }
+    }
+
+    private void onPrivateProfileUnlocked(ViewGroup header) {
+        // If we are on main adapter view, we apply the PS Container expansion animation and
+        // then scroll down to load the entire container, making animation visible.
+        ActivityAllAppsContainerView<?>.AdapterHolder mainAdapterHolder =
+                (ActivityAllAppsContainerView<?>.AdapterHolder) mAllApps.mAH.get(MAIN);
+        if (Flags.enablePrivateSpace() && Flags.privateSpaceAnimation()
+                && mAllApps.getActiveRecyclerView() == mainAdapterHolder.mRecyclerView) {
+            // Animate the text and settings icon.
+            updatePrivateStateAnimator(true, header);
+            mAllApps.getActiveRecyclerView().scrollToBottomWithMotion(EXPAND_SCROLL_DURATION);
+        }
+    }
+
+    /** Finds the private space header to scroll to and set the private space icons to GONE. */
+    private void collapse() {
+        AllAppsRecyclerView allAppsRecyclerView = mAllApps.getActiveRecyclerView();
+        for (int i = allAppsRecyclerView.getChildCount() - 1; i > 0; i--) {
+            int adapterPosition = allAppsRecyclerView.getChildAdapterPosition(
+                    allAppsRecyclerView.getChildAt(i));
+            List<BaseAllAppsAdapter.AdapterItem> allAppsAdapters = allAppsRecyclerView.getApps()
+                    .getAdapterItems();
+            if (adapterPosition < 0 || adapterPosition >= allAppsAdapters.size()) {
+                continue;
+            }
+            // Scroll to the private space header.
+            if (allAppsAdapters.get(adapterPosition).viewType == VIEW_TYPE_PRIVATE_SPACE_HEADER) {
+                // Note: SmoothScroller is meant to be used once.
+                RecyclerView.SmoothScroller smoothScroller =
+                        new LinearSmoothScroller(mAllApps.getContext()) {
+                            @Override protected int getVerticalSnapPreference() {
+                                return LinearSmoothScroller.SNAP_TO_END;
+                            }
+                        };
+                smoothScroller.setTargetPosition(adapterPosition);
+                RecyclerView.LayoutManager layoutManager = allAppsRecyclerView.getLayoutManager();
+                if (layoutManager != null) {
+                    layoutManager.startSmoothScroll(smoothScroller);
+                }
+                break;
+            }
+            // Make the private space apps gone to "collapse".
+            if (allAppsAdapters.get(adapterPosition).decorationInfo != null) {
+                allAppsRecyclerView.getChildAt(i).setVisibility(GONE);
+            }
         }
     }
 
     PrivateProfileManager getPrivateProfileManager() {
         return mPrivateProfileManager;
+    }
+
+    /**
+     * Scrolls up to the private space header and animates the collapsing of the text.
+     */
+    private ValueAnimator animateCollapseAnimation(ViewGroup lockButton) {
+        float from = 1;
+        float to = 0;
+        RecyclerViewFastScroller scrollBar = mAllApps.getActiveRecyclerView().getScrollbar();
+        ValueAnimator collapseAnim = ValueAnimator.ofFloat(from, to);
+        collapseAnim.setDuration(EXPAND_COLLAPSE_DURATION);
+        collapseAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (scrollBar != null) {
+                    scrollBar.setVisibility(INVISIBLE);
+                }
+                // scroll up
+                collapse();
+                // Animate the collapsing of the text.
+                lockButton.findViewById(R.id.lock_text).setVisibility(GONE);
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (scrollBar != null) {
+                    scrollBar.setThumbOffsetY(-1);
+                    scrollBar.setVisibility(VISIBLE);
+                }
+                mPrivateProfileManager.lockPrivateProfile();
+            }
+        });
+        return collapseAnim;
+    }
+
+    /**
+     * Using PropertySetter{@link PropertySetter}, we can update the view's attributes within an
+     * animation. At the moment, collapsing, setting alpha changes, and animating the text is done
+     * here.
+     */
+    private void updatePrivateStateAnimator(boolean expand, ViewGroup psHeader) {
+        PropertySetter setter = new AnimatedPropertySetter();
+        ViewGroup lockButton = psHeader.findViewById(R.id.ps_lock_unlock_button);
+        ImageButton settingsButton = psHeader.findViewById(R.id.ps_settings_button);
+        updateSettingsGearAlpha(settingsButton, expand, setter);
+        AnimatorSet animatorSet = setter.buildAnim();
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                // Animate the collapsing of the text at the same time while updating lock button.
+                lockButton.findViewById(R.id.lock_text).setVisibility(expand ? VISIBLE : GONE);
+            }
+        });
+        // Play the collapsing together of the stateAnimator to avoid being unable to scroll to the
+        // header. Otherwise the smooth scrolling will scroll higher when played with the state
+        // animator.
+        if (!expand) {
+            animatorSet.playTogether(animateCollapseAnimation(lockButton));
+        }
+        animatorSet.setDuration(EXPAND_COLLAPSE_DURATION);
+        animatorSet.start();
+     }
+
+    /** Change the settings gear alpha when expanded or collapsed. */
+     private void updateSettingsGearAlpha(ImageButton settingsButton, boolean expand,
+            PropertySetter setter) {
+        float toAlpha = expand ? 1 : 0;
+        setter.setFloat(settingsButton, VIEW_ALPHA, toAlpha, Interpolators.LINEAR)
+                .setDuration(SETTINGS_OPACITY_DURATION).setStartDelay(0);
     }
 }

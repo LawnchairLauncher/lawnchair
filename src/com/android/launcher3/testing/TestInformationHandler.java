@@ -15,19 +15,20 @@
  */
 package com.android.launcher3.testing;
 
-import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.Flags.enableGridOnlyOverview;
+import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
+import static com.android.launcher3.config.FeatureFlags.enableSplitContextually;
+import static com.android.launcher3.testing.shared.TestProtocol.TEST_INFO_RESPONSE_FIELD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowInsets;
 
@@ -60,7 +61,6 @@ import java.util.function.Supplier;
 /**
  * Class to handle requests from tests
  */
-@TargetApi(Build.VERSION_CODES.Q)
 public class TestInformationHandler implements ResourceBasedOverride {
 
     public static TestInformationHandler newInstance(Context context) {
@@ -153,11 +153,19 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 }, this::getCurrentActivity);
             }
 
-            case TestProtocol.REQUEST_IME_INSETS: {
+            case TestProtocol.REQUEST_CELL_LAYOUT_BOARDER_HEIGHT: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.cellLayoutBorderSpacePx.y);
+                return response;
+            }
+
+            case TestProtocol.REQUEST_SYSTEM_GESTURE_REGION: {
                 return getUIProperty(Bundle::putParcelable, activity -> {
                     WindowInsetsCompat insets = WindowInsetsCompat.toWindowInsetsCompat(
                             activity.getWindow().getDecorView().getRootWindowInsets());
-                    return insets.getInsets(WindowInsetsCompat.Type.ime()).toPlatformInsets();
+                    return insets.getInsets(WindowInsetsCompat.Type.ime()
+                            | WindowInsetsCompat.Type.systemGestures())
+                            .toPlatformInsets();
                 }, this::getCurrentActivity);
             }
 
@@ -173,6 +181,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_IS_TABLET:
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, mDeviceProfile.isTablet);
+                return response;
+
+            case TestProtocol.REQUEST_ENABLE_TASKBAR_NAVBAR_UNIFICATION:
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        ENABLE_TASKBAR_NAVBAR_UNIFICATION);
                 return response;
 
             case TestProtocol.REQUEST_NUM_ALL_APPS_COLUMNS:
@@ -202,6 +215,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
                                 + resources.getDimensionPixelSize(R.dimen.pre_drag_view_scale));
                 return response;
             }
+
+            case TestProtocol.REQUEST_GET_SPLIT_SELECTION_ACTIVE:
+                response.putBoolean(TEST_INFO_RESPONSE_FIELD, enableSplitContextually()
+                        && Launcher.ACTIVITY_TRACKER.getCreatedActivity().isSplitSelectionActive());
+                return response;
 
             case TestProtocol.REQUEST_ENABLE_ROTATION:
                 MAIN_EXECUTOR.submit(() ->
@@ -330,6 +348,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 return null;
             }
             T value = provider.apply(target);
+
             Bundle response = new Bundle();
             bundleSetter.set(response, TestProtocol.TEST_INFO_RESPONSE_FIELD, value);
             return response;

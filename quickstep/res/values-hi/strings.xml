@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"स्क्रीन पर बिलकुल दाएं या बाएं किनारे से स्वाइप करें"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"स्क्रीन पर दाएं या बाएं किनारे से बीच तक स्वाइप करें और फिर अपनी उंगली को स्क्रीन से हटा दें"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"आपने स्क्रीन के दाएं किनारे से स्वाइप करके, पिछली स्क्रीन पर वापस जाने का तरीका सीख लिया है. अब, एक ऐप से दूसरे ऐप पर जाने का तरीका सीखें."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"आपने पीछे ले जाने वाले हाथ के जेस्चर के बारे में जान लिया है. एक ऐप से दूसरे पर जाने का तरीका जानें."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"आपने जान लिया है कि हाथ का जेस्चर इस्तेमाल करके पिछली स्क्रीन पर वापस कैसे जाएं"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"स्क्रीन पर बिलकुल नीचे तक स्वाइप न करें"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'सेटिंग\' में जाकर, पीछे जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर (हाव-भाव) की संवेदनशीलता बदलें"</string>
@@ -95,6 +96,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट लें"</string>
     <string name="action_split" msgid="2098009717623550676">"स्प्लिट स्क्रीन मोड"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"स्प्लिट स्क्रीन के लिए दूसरे ऐप्लिकेशन पर टैप करें"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"स्प्लिट स्क्रीन इस्तेमाल करने के लिए, दूसरा ऐप्लिकेशन चुनें"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"अभी नहीं"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"स्प्लिट स्क्रीन मोड से बाहर निकलें"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"स्प्लिट स्क्रीन के लिए, दूसरा ऐप्लिकेशन चुनें"</string>
@@ -111,6 +113,8 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"डिवाइस के इस्तेमाल के आधार पर ऐप्लिकेशन के सुझाव पाएं"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"टास्कबार को पिन करने के लिए डिवाइडर को दबाकर रखें"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार की मदद से कई और काम करें"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"टास्कबार को हमेशा दिखाएं"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"स्क्रीन के नीचे टास्कबार दिखाने के लिए, डिवाइडर दबाकर रखें"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बंद करें"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"हो गया"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"होम"</string>

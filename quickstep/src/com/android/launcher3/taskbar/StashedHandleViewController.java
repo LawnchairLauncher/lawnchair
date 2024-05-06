@@ -15,11 +15,14 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.view.Display.DEFAULT_DISPLAY;
+
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Outline;
@@ -37,6 +40,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
+import com.android.quickstep.NavHandle;
 import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
 
 import java.io.PrintWriter;
@@ -44,7 +48,8 @@ import java.io.PrintWriter;
 /**
  * Handles properties/data collection, then passes the results to our stashed handle View to render.
  */
-public class StashedHandleViewController implements TaskbarControllers.LoggableTaskbarController {
+public class StashedHandleViewController implements TaskbarControllers.LoggableTaskbarController,
+        NavHandle {
 
     public static final int ALPHA_INDEX_STASHED = 0;
     public static final int ALPHA_INDEX_HOME_DISABLED = 1;
@@ -83,6 +88,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
 
     // States that affect whether region sampling is enabled or not
     private boolean mIsStashed;
+    private boolean mIsLumaSamplingEnabled;
     private boolean mTaskbarHidden;
 
     private float mTranslationYForSwipe;
@@ -107,7 +113,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         mControllers = controllers;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         Resources resources = mActivity.getResources();
-        if (isPhoneGestureNavMode(mActivity.getDeviceProfile())) {
+        if (mActivity.isPhoneGestureNavMode()) {
             mTaskbarSize = resources.getDimensionPixelSize(R.dimen.taskbar_phone_size);
             mStashedHandleWidth =
                     resources.getDimensionPixelSize(R.dimen.taskbar_stashed_small_screen);
@@ -120,7 +126,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         mStashedHandleView.getLayoutParams().height = mTaskbarSize + taskbarBottomMargin;
 
         mTaskbarStashedHandleAlpha.get(ALPHA_INDEX_STASHED).setValue(
-                isPhoneGestureNavMode(deviceProfile) ? 1 : 0);
+                mActivity.isPhoneGestureNavMode() ? 1 : 0);
         mTaskbarStashedHandleHintScale.updateValue(1f);
 
         final int stashedTaskbarHeight = mControllers.taskbarStashController.getStashedHeight();
@@ -148,7 +154,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
             view.setPivotY(stashedCenterY);
         });
         initRegionSampler();
-        if (isPhoneGestureNavMode(deviceProfile)) {
+        if (mActivity.isPhoneGestureNavMode()) {
             onIsStashedChanged(true);
         }
     }
@@ -182,10 +188,6 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     public void onDestroy() {
         mRegionSamplingHelper.stopAndDestroy();
         mRegionSamplingHelper = null;
-    }
-
-    private boolean isPhoneGestureNavMode(DeviceProfile deviceProfile) {
-        return TaskbarManager.isPhoneMode(deviceProfile) && !mActivity.isThreeButtonNav();
     }
 
     public MultiPropertyFactory<View> getStashedHandleAlpha() {
@@ -238,13 +240,30 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     /** Called when taskbar is stashed or unstashed. */
     public void onIsStashedChanged(boolean isStashed) {
         mIsStashed = isStashed;
+        updateSamplingState();
+    }
+
+    public void onNavigationBarLumaSamplingEnabled(int displayId, boolean enable) {
+        if (DEFAULT_DISPLAY != displayId) {
+            return;
+        }
+
+        mIsLumaSamplingEnabled = enable;
+        updateSamplingState();
+    }
+
+    private void updateSamplingState() {
         updateRegionSamplingWindowVisibility();
-        if (isStashed) {
+        if (shouldSample()) {
             mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
             mRegionSamplingHelper.start(mStashedHandleView.getSampledRegion());
         } else {
             mRegionSamplingHelper.stop();
         }
+    }
+
+    private boolean shouldSample() {
+        return mIsStashed && mIsLumaSamplingEnabled;
     }
 
     protected void updateStashedHandleHintScale() {
@@ -286,7 +305,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     }
 
     private void updateRegionSamplingWindowVisibility() {
-        mRegionSamplingHelper.setWindowVisible(mIsStashed && !mTaskbarHidden);
+        mRegionSamplingHelper.setWindowVisible(shouldSample() && !mTaskbarHidden);
     }
 
     public boolean isStashedHandleVisible() {
@@ -301,5 +320,25 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         pw.println(prefix + "\tmStashedHandleWidth=" + mStashedHandleWidth);
         pw.println(prefix + "\tmStashedHandleHeight=" + mStashedHandleHeight);
         mRegionSamplingHelper.dump(prefix, pw);
+    }
+
+    @Override
+    public void animateNavBarLongPress(boolean isTouchDown, boolean shrink, long durationMs) {
+        // TODO(b/308693847): Animate similarly to NavigationHandle.java (SysUI).
+    }
+
+    @Override
+    public boolean isNavHandleStashedTaskbar() {
+        return true;
+    }
+
+    @Override
+    public boolean canNavHandleBeLongPressed() {
+        return isStashedHandleVisible();
+    }
+
+    @Override
+    public int getNavHandleWidth(Context context) {
+        return mStashedHandleWidth;
     }
 }

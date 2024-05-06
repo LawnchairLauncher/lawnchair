@@ -16,6 +16,7 @@
 package com.android.launcher3.widget;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
 import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_TIP_SEEN;
 
@@ -62,8 +63,10 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     protected final Rect mInsets = new Rect();
 
-    @Px protected int mContentHorizontalMargin;
-    @Px protected int mWidgetCellHorizontalPadding;
+    @Px
+    protected int mContentHorizontalMargin;
+    @Px
+    protected int mWidgetCellHorizontalPadding;
 
     protected int mNavBarScrimHeight;
     private final Paint mNavBarScrimPaint;
@@ -72,12 +75,19 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mContentHorizontalMargin = getResources().getDimensionPixelSize(
-                R.dimen.widget_list_horizontal_margin);
+        mContentHorizontalMargin = getWidgetListHorizontalMargin();
         mWidgetCellHorizontalPadding = getResources().getDimensionPixelSize(
                 R.dimen.widget_cell_horizontal_padding);
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getNavBarScrimColor(mActivityContext));
+    }
+
+    /**
+     * Returns the margins to be applied to the left and right of the widget apps list.
+     */
+    protected int getWidgetListHorizontalMargin() {
+        return getResources().getDimensionPixelSize(
+                R.dimen.widget_list_horizontal_margin);
     }
 
     protected int getScrimColor(Context context) {
@@ -142,8 +152,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        @Px int contentHorizontalMargin = getResources().getDimensionPixelSize(
-                R.dimen.widget_list_horizontal_margin);
+        @Px int contentHorizontalMargin = getWidgetListHorizontalMargin();
         if (contentHorizontalMargin != mContentHorizontalMargin) {
             onContentHorizontalMarginChanged(contentHorizontalMargin);
             mContentHorizontalMargin = contentHorizontalMargin;
@@ -158,10 +167,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     private int getNavBarScrimHeight(WindowInsets insets) {
         if (mDisableNavBarScrim) {
             return 0;
-        } else if (Utilities.ATLEAST_Q) {
-            return insets.getTappableElementInsets().bottom;
         } else {
-            return insets.getStableInsetBottom();
+            return insets.getTappableElementInsets().bottom;
         }
     }
 
@@ -192,7 +199,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         int widthUsed;
         if (deviceProfile.isTablet) {
-            widthUsed = Math.max(2 * getTabletMargin(deviceProfile),
+            widthUsed = Math.max(2 * getTabletHorizontalMargin(deviceProfile),
                     2 * (mInsets.left + mInsets.right));
         } else if (mInsets.bottom > 0) {
             widthUsed = mInsets.left + mInsets.right;
@@ -208,7 +215,11 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
                 MeasureSpec.getSize(heightMeasureSpec));
     }
 
-    private int getTabletMargin(DeviceProfile deviceProfile) {
+    private int getTabletHorizontalMargin(DeviceProfile deviceProfile) {
+        // All bottom-sheets showing widgets will be full-width across all devices.
+        if (enableCategorizedWidgetSuggestions()) {
+            return 0;
+        }
         if (deviceProfile.isLandscape && !deviceProfile.isTwoPanels) {
             return getResources().getDimensionPixelSize(
                     R.dimen.widget_picker_landscape_tablet_left_right_margin);

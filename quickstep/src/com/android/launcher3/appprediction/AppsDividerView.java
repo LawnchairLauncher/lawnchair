@@ -77,19 +77,15 @@ public class AppsDividerView extends View implements FloatingHeaderRow {
     public AppsDividerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        boolean isMainColorDark = Themes.getAttrBoolean(context, R.attr.isMainColorDark);
         mDividerSize = new int[]{
                 getResources().getDimensionPixelSize(R.dimen.all_apps_divider_width),
                 getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height)
         };
 
-        mStrokeColor = ContextCompat.getColor(context, isMainColorDark
-                ? R.color.all_apps_prediction_row_separator_dark
-                : R.color.all_apps_prediction_row_separator);
+        mStrokeColor = ContextCompat.getColor(context, R.color.material_color_outline_variant);
 
-        mAllAppsLabelTextColor = ContextCompat.getColor(context, isMainColorDark
-                ? R.color.all_apps_label_text_dark
-                : R.color.all_apps_label_text);
+        mAllAppsLabelTextColor = ContextCompat.getColor(context,
+                R.color.material_color_on_surface_variant);
 
         mShowAllAppsLabel = !ALL_APPS_VISITED_COUNT.hasReachedMax(context);
     }

@@ -23,6 +23,8 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.Flags.enableCursorHoverStates;
+import static com.android.launcher3.Flags.useActivityOverlay;
 import static com.android.launcher3.Launcher.INTENT_ACTION_ALL_APPS_TOGGLE;
 import static com.android.launcher3.LauncherPrefs.backedUpItem;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
@@ -38,12 +40,14 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_DOWN;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_MOVE;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_UP;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.RECENTS_ANIMATION_START_PENDING;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNFOLD_ANIMATION_FORWARDER;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNLOCK_ANIMATION_CONTROLLER;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+import static com.android.wm.shell.Flags.enableBubblesLongPressNavHandle;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BACK_ANIMATION;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BUBBLES;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_DESKTOP_MODE;
@@ -55,7 +59,6 @@ import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_SH
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_SPLIT_SCREEN;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_STARTING_WINDOW;
 
-import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.app.Service;
@@ -65,7 +68,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Region;
 import android.graphics.drawable.Icon;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
@@ -76,7 +78,6 @@ import android.view.Choreographer;
 import android.view.InputDevice;
 import android.view.InputEvent;
 import android.view.MotionEvent;
-import android.view.SurfaceControl;
 import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.BinderThread;
@@ -86,7 +87,6 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ConstantItem;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.EncryptionType;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
@@ -135,10 +135,10 @@ import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationContro
 import com.android.systemui.unfold.progress.IUnfoldAnimation;
 import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.bubbles.IBubbles;
+import com.android.wm.shell.common.pip.IPip;
 import com.android.wm.shell.desktopmode.IDesktopMode;
 import com.android.wm.shell.draganddrop.IDragAndDrop;
 import com.android.wm.shell.onehanded.IOneHanded;
-import com.android.wm.shell.pip.IPip;
 import com.android.wm.shell.recents.IRecentTasks;
 import com.android.wm.shell.splitscreen.ISplitScreen;
 import com.android.wm.shell.startingsurface.IStartingWindow;
@@ -153,7 +153,6 @@ import java.util.function.Function;
 /**
  * Service connected by system-UI for handling touch interaction.
  */
-@TargetApi(Build.VERSION_CODES.R)
 public class TouchInteractionService extends Service {
 
     private static final String SUBSTRING_PREFIX = "; ";
@@ -303,15 +302,6 @@ public class TouchInteractionService extends Service {
             });
         }
 
-        @Override
-        public void onNavigationBarSurface(SurfaceControl surface) {
-            // TODO: implement
-            if (surface != null) {
-                surface.release();
-                surface = null;
-            }
-        }
-
         @BinderThread
         public void onSystemUiStateChanged(int stateFlags) {
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
@@ -373,6 +363,12 @@ public class TouchInteractionService extends Service {
                     taskbarManager.onNavButtonsDarkIntensityChanged(darkIntensity));
         }
 
+        @Override
+        public void onNavigationBarLumaSamplingEnabled(int displayId, boolean enable) {
+            executeForTaskbarManager(taskbarManager ->
+                    taskbarManager.onNavigationBarLumaSamplingEnabled(displayId, enable));
+        }
+
         private void executeForTouchInteractionService(
                 @NonNull Consumer<TouchInteractionService> tisConsumer) {
             TouchInteractionService tis = mTis.get();
@@ -399,6 +395,14 @@ public class TouchInteractionService extends Service {
             TouchInteractionService tis = mTis.get();
             if (tis == null) return null;
             return tis.mTaskbarManager;
+        }
+
+        /**
+         * Sets whether a predictive back-to-home animation is in progress in the device state
+         */
+        public void setPredictiveBackToHomeInProgress(boolean isInProgress) {
+            executeForTouchInteractionService(tis ->
+                    tis.mDeviceState.setPredictiveBackToHomeInProgress(isInProgress));
         }
 
         /**
@@ -496,6 +500,7 @@ public class TouchInteractionService extends Service {
         mDeviceState = new RecentsAnimationDeviceState(this, true);
         mTaskbarManager = new TaskbarManager(this);
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
+        mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         BootAwarePreloader.start(this);
 
         // Call runOnUserUnlocked() before any other callbacks to ensure everything is initialized.
@@ -543,13 +548,13 @@ public class TouchInteractionService extends Service {
 
     @UiThread
     public void onUserUnlocked() {
+        Log.d(TAG, "onUserUnlocked: userId=" + getUserId());
         mTaskAnimationManager = new TaskAnimationManager(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
         mOverviewCommandHelper = new OverviewCommandHelper(this,
                 mOverviewComponentObserver, mTaskAnimationManager);
         mResetGestureInputConsumer = new ResetGestureInputConsumer(
                 mTaskAnimationManager, mTaskbarManager::getCurrentActivityContext);
-        mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
         mInputConsumer.registerInputConsumer();
         onSystemUiFlagsChanged(mDeviceState.getSystemUiStateFlags());
         onAssistantVisibilityChanged();
@@ -704,7 +709,7 @@ public class TouchInteractionService extends Service {
     private void onInputEvent(InputEvent ev) {
         if (!(ev instanceof MotionEvent)) {
             ActiveGestureLog.INSTANCE.addLog(new CompoundString("TIS.onInputEvent: ")
-                    .append("Cannot process input event, received unknown event ")
+                    .append("Cannot process input event: received unknown event ")
                     .append(ev.toString()));
             return;
         }
@@ -717,22 +722,32 @@ public class TouchInteractionService extends Service {
         if (!isUserUnlocked || (mDeviceState.isButtonNavMode()
                 && !isTrackpadMotionEvent(event))) {
             ActiveGestureLog.INSTANCE.addLog(new CompoundString("TIS.onInputEvent: ")
-                    .append("Cannot process input event, ")
+                    .append("Cannot process input event: ")
                     .append(!isUserUnlocked
                             ? "user is locked"
                             : "using 3-button nav and event is not a trackpad event"));
             return;
         }
 
-        SafeCloseable traceToken = TraceHelper.INSTANCE.allowIpcs("TIS.onInputEvent");
-
         final int action = event.getActionMasked();
         // Note this will create a new consumer every mouse click, as after ACTION_UP from the click
         // an ACTION_HOVER_ENTER will fire as well.
-        boolean isHoverActionWithoutConsumer =
-                event.isHoverEvent() && (mUncheckedConsumer.getType() & TYPE_CURSOR_HOVER) == 0;
+        boolean isHoverActionWithoutConsumer = enableCursorHoverStates()
+                && isHoverActionWithoutConsumer(event);
+        if (mTaskAnimationManager.isRecentsAnimationStartPending()
+                && (action == ACTION_DOWN || isHoverActionWithoutConsumer)) {
+            ActiveGestureLog.INSTANCE.addLog(
+                    new CompoundString("TIS.onInputEvent: ")
+                            .append("Cannot process input event: a recents animation has been ")
+                            .append("requested, but hasn't started."),
+                    RECENTS_ANIMATION_START_PENDING);
+            return;
+        }
+
+        SafeCloseable traceToken = TraceHelper.INSTANCE.allowIpcs("TIS.onInputEvent");
+
         CompoundString reasonString = action == ACTION_DOWN
-                ? new CompoundString("onMotionEvent: ") : CompoundString.NO_OP;
+                ? new CompoundString("TIS.onMotionEvent: ") : CompoundString.NO_OP;
         if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
@@ -848,6 +863,15 @@ public class TouchInteractionService extends Service {
             reset();
         }
         traceToken.close();
+    }
+
+    private boolean isHoverActionWithoutConsumer(MotionEvent event) {
+        // Only process these events when taskbar is present.
+        TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
+        boolean isTaskbarPresent = tac != null && tac.getDeviceProfile().isTaskbarPresent
+                && !tac.isPhoneMode();
+        return event.isHoverEvent() && (mUncheckedConsumer.getType() & TYPE_CURSOR_HOVER) == 0
+                && isTaskbarPresent;
     }
 
     // Talkback generates hover events on touch, which we do not want to consume.
@@ -978,8 +1002,8 @@ public class TouchInteractionService extends Service {
             TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
             if (tac != null && !(base instanceof AssistantInputConsumer)) {
                 // Present always on large screen or on small screen w/ flag
-                DeviceProfile dp = tac.getDeviceProfile();
-                boolean useTaskbarConsumer = dp.isTaskbarPresent && !TaskbarManager.isPhoneMode(dp)
+                boolean useTaskbarConsumer = tac.getDeviceProfile().isTaskbarPresent
+                        && !tac.isPhoneMode()
                         && !tac.isInStashedLauncherState();
                 if (canStartSystemGesture && useTaskbarConsumer) {
                     reasonString.append(NEWLINE_PREFIX)
@@ -990,22 +1014,44 @@ public class TouchInteractionService extends Service {
                     base = new TaskbarUnstashInputConsumer(this, base, mInputMonitorCompat, tac,
                             mOverviewCommandHelper);
                 }
-            } else if (canStartSystemGesture && !previousGestureState.isRecentsAnimationRunning()) {
+            }
+            if (enableBubblesLongPressNavHandle()) {
+                // Create bubbles input consumer before NavHandleLongPressInputConsumer.
+                // This allows for nav handle to fall back to bubbles.
+                if (mDeviceState.isBubblesExpanded()) {
+                    reasonString = newCompoundString(reasonPrefix)
+                            .append(SUBSTRING_PREFIX)
+                            .append("bubbles expanded, trying to use default input consumer");
+                    // Bubbles can handle home gesture itself.
+                    base = getDefaultInputConsumer(reasonString);
+                }
+            }
+
+            NavHandle navHandle = tac != null ? tac.getNavHandle()
+                    : SystemUiProxy.INSTANCE.get(this);
+            if (canStartSystemGesture && !previousGestureState.isRecentsAnimationRunning()
+                    && navHandle.canNavHandleBeLongPressed()) {
                 reasonString.append(NEWLINE_PREFIX)
                         .append(reasonPrefix)
                         .append(SUBSTRING_PREFIX)
-                        .append("Not running recents animation, ")
-                        .append("using NavHandleLongPressInputConsumer");
+                        .append("Not running recents animation, ");
+                if (tac != null && tac.getNavHandle().canNavHandleBeLongPressed()) {
+                    reasonString.append("stashed handle is long-pressable, ");
+                }
+                reasonString.append("using NavHandleLongPressInputConsumer");
                 base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat,
-                        mDeviceState);
+                        mDeviceState, navHandle);
             }
 
-            if (mDeviceState.isBubblesExpanded()) {
-                reasonString = newCompoundString(reasonPrefix)
-                        .append(SUBSTRING_PREFIX)
-                        .append("bubbles expanded, trying to use default input consumer");
-                // Bubbles can handle home gesture itself.
-                base = getDefaultInputConsumer(reasonString);
+            if (!enableBubblesLongPressNavHandle()) {
+                // Continue overriding nav handle input consumer with bubbles
+                if (mDeviceState.isBubblesExpanded()) {
+                    reasonString = newCompoundString(reasonPrefix)
+                            .append(SUBSTRING_PREFIX)
+                            .append("bubbles expanded, trying to use default input consumer");
+                    // Bubbles can handle home gesture itself.
+                    base = getDefaultInputConsumer(reasonString);
+                }
             }
 
             if (mDeviceState.isSystemUiDialogShowing()) {
@@ -1132,12 +1178,21 @@ public class TouchInteractionService extends Service {
         }
 
         boolean previousGestureAnimatedToLauncher =
-                previousGestureState.isRunningAnimationToLauncher();
+                previousGestureState.isRunningAnimationToLauncher()
+                        || mDeviceState.isPredictiveBackToHomeInProgress();
         // with shell-transitions, home is resumed during recents animation, so
         // explicitly check against recents animation too.
         boolean launcherResumedThroughShellTransition =
                 gestureState.getActivityInterface().isResumed()
                         && !previousGestureState.isRecentsAnimationRunning();
+        // If a task fragment within Launcher is resumed
+        boolean launcherChildActivityResumed = useActivityOverlay()
+                && runningTask != null
+                && runningTask.isHomeTask()
+                && mOverviewComponentObserver.isHomeAndOverviewSame()
+                && !launcherResumedThroughShellTransition
+                && !previousGestureState.isRecentsAnimationRunning();
+
         if (gestureState.getActivityInterface().isInLiveTileMode()) {
             return createOverviewInputConsumer(
                     previousGestureState,
@@ -1164,9 +1219,11 @@ public class TouchInteractionService extends Service {
                                             ? "launcher resumed through a shell transition"
                                             : "forceOverviewInputConsumer == true"))
                             .append(", trying to use overview input consumer"));
-        } else if (mDeviceState.isGestureBlockedTask(runningTask)) {
+        } else if (mDeviceState.isGestureBlockedTask(runningTask) || launcherChildActivityResumed) {
             return getDefaultInputConsumer(reasonString.append(SUBSTRING_PREFIX)
-                    .append("is gesture-blocked task, trying to use default input consumer"));
+                    .append(launcherChildActivityResumed
+                            ? "is launcher child-task, trying to use default input consumer"
+                            : "is gesture-blocked task, trying to use default input consumer"));
         } else {
             reasonString.append(SUBSTRING_PREFIX)
                     .append("using OtherActivityInputConsumer");
@@ -1227,7 +1284,8 @@ public class TouchInteractionService extends Service {
 
         boolean hasWindowFocus = activity.getRootView().hasWindowFocus();
         boolean isPreviousGestureAnimatingToLauncher =
-                previousGestureState.isRunningAnimationToLauncher();
+                previousGestureState.isRunningAnimationToLauncher()
+                        || mDeviceState.isPredictiveBackToHomeInProgress();
         boolean isInLiveTileMode = gestureState.getActivityInterface().isInLiveTileMode();
         reasonString.append(SUBSTRING_PREFIX)
                 .append(hasWindowFocus

@@ -105,6 +105,8 @@
     <string name="back_gesture_feedback_cancelled">Make sure you swipe from the right or left edge to the middle of the screen and let go</string>
     <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_complete_with_overview_follow_up">You learned how to swipe from the right to go back. Next up, learn how to switch apps.</string>
+    <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_complete_with_follow_up">You completed the go back gesture. Next up, learn how to switch apps.</string>
     <!-- Feedback shown after completing the back gesture step if the user started this tutorial individually. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_complete_without_follow_up">You completed the go back gesture</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial when the gesture is within the nav bar region. [CHAR LIMIT=100] -->
@@ -230,6 +232,7 @@
     <string name="action_split">Split</string>
     <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
     <string name="toast_split_select_app">Tap another app to use split screen</string>
+    <string name="toast_contextual_split_select_app">Choose another app to use split screen</string>
     <string name="toast_split_select_app_cancel"><b>Cancel</b></string>
     <string name="toast_split_select_cont_desc">Exit split screen selection</string>
     <!-- Label for toast when app selected for split isn't supported. [CHAR_LIMIT=50] -->
@@ -264,6 +267,10 @@
     <string name="taskbar_edu_pinning">Long press on the divider to pin the Taskbar</string>
     <!-- Title in dialog that shows a user what they can do with the Taskbar. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_features">Do more with the Taskbar</string>
+    <!-- Title in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 60] -->
+    <string name="taskbar_edu_pinning_title">Always show the Taskbar</string>
+    <!-- Text in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 150] -->
+    <string name="taskbar_edu_pinning_standalone">To always show the Taskbar on the bottom of your screen, touch &amp; hold the divider</string>
     <!-- Text on button to exit a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_close">Close</string>
     <!-- Text on button to finish a tutorial [CHAR_LIMIT=16] -->

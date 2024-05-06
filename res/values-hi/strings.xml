@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s के लिए ऐप्लिकेशन की जानकारी"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"साथ में इस्तेमाल किए जा सकने वाले ऐप्लिकेशन की जानकारी सेव करें"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"किसी विजेट को एक से दूसरी जगह ले जाने के लिए, उसे दबाकर रखें."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"किसी विजेट को एक से दूसरी जगह ले जाने के लिए, उस पर दो बार टैप करके दबाकर रखें या पसंद के मुताबिक कार्रवाइयां इस्तेमाल करें."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,6 +44,13 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"होम स्क्रीन पर जोड़ें"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट को होम स्क्रीन पर जोड़ा गया"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"सुझाव"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"रोज़ाना इस्तेमाल होने वाले ज़रूरी ऐप्लिकेशन"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"आपके लिए खबरें"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"आपके मनोरंजन के लिए"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"फ़िटनेस के लक्ष्य हासिल करें"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"मौसम की अप-टू-डेट जानकारी पाएं"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"शायद आपको ये भी पसंद आएं"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> के विजेट दाईं ओर, खोज का विजेट और अन्य विकल्प बाईं ओर"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# विजेट}one{# विजेट}other{# विजेट}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# शॉर्टकट}one{# शॉर्टकट}other{# शॉर्टकट}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -74,6 +85,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"हटाएं"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइंस्टॉल करें"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ऐप्लिकेशन की जानकारी"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"निजी तौर पर इंस्टॉल करें"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"इंस्‍टॉल करें"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ऐप्लिकेशन का सुझाव न दें"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"सुझाए गए ऐप्लिकेशन को पिन करें"</string>
@@ -125,6 +137,8 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल किया जा रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूरा हो गया"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड हो रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूरी हुई"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> के इंस्टॉल होने की प्रतीक्षा की जा रही है"</string>
+    <!-- no translation found for app_archived_title (9124290918876665128) -->
+    <skip />
     <string name="dialog_update_title" msgid="114234265740994042">"ऐप्लिकेशन को अपडेट करना ज़रूरी है"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"इस आइकॉन का ऐप्लिकेशन अपडेट नहीं है. इस शॉर्टकट को फिर से चालू करने या आइकॉन को हटाने के लिए, ऐप्लिकेशन को मैन्युअल रूप से अपडेट किया जा सकता है."</string>
     <string name="dialog_update" msgid="2178028071796141234">"अपडेट करें"</string>
@@ -154,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ऊंचाई घटाएं"</string>
     <string name="widget_resized" msgid="9130327887929620">"विजेट का आकार बदलकर उसकी चौड़ाई <xliff:g id="NUMBER_0">%1$s</xliff:g> और ऊंचाई <xliff:g id="NUMBER_1">%2$s</xliff:g> कर दी गई"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"शॉर्टकट"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"शॉर्टकट और सूचनाएं"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारिज करें"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"बंद करें"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"सूचना को खारिज किया गया"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप्लिकेशन"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"वर्क ऐप्लिकेशन"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"वर्क प्रोफ़ाइल"</string>
@@ -174,9 +186,13 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फ़िल्टर"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"पूरा नहीं हुआ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"प्राइवेट स्पेस"</string>
+    <string name="private_space_secondary_label" msgid="611902414159280263">"निजी ऐप्लिकेशन, लॉक करें और छिपाकर रखें"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"निजी"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"प्राइवेट स्पेस सेटिंग"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"प्राइवेट स्पेस को लॉक करें/अनलॉक करें"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"लॉक"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"प्राइवेट स्पेस की सेटिंग में बदलाव किया जा रहा है"</string>
+    <string name="ps_add_button_label" msgid="8611055839242385935">"ऐप्लिकेशन इंस्टॉल करें"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"प्राइवेट स्पेस में ऐप्लिकेशन इंस्टॉल करें"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ओवरफ़्लो"</string>
 </resources>

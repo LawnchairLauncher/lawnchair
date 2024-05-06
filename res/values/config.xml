@@ -43,6 +43,9 @@
     <!-- The duration of the PagedView page snap animation -->
     <integer name="config_pageSnapAnimationDuration">750</integer>
 
+    <!-- The duration of the PagedView page snap animation -->
+    <integer name="config_keyboardTaskFocusSnapAnimationDuration">750</integer>
+
     <!-- View tag key used to store SpringAnimation data. -->
     <item type="id" name="spring_animation_tag" />
 
@@ -86,6 +89,7 @@
     <string name="widget_holder_factory_class" translatable="false"></string>
     <string name="taskbar_search_session_controller_class" translatable="false"></string>
     <string name="taskbar_model_callbacks_factory_class" translatable="false"></string>
+    <string name="taskbar_view_callbacks_factory_class" translatable="false"></string>
     <string name="launcher_restore_event_logger_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
@@ -119,8 +123,6 @@
     <item type="id" name="action_move_screen_forwards" />
     <item type="id" name="action_resize" />
     <item type="id" name="action_deep_shortcuts" />
-    <item type="id" name="action_shortcuts_and_notifications"/>
-    <item type="id" name="action_dismiss_notification" />
     <item type="id" name="action_remote_action_shortcut" />
     <item type="id" name="action_dismiss_prediction" />
     <item type="id" name="action_pin_prediction"/>
@@ -196,12 +198,16 @@
 
     <string-array name="filtered_components" ></string-array>
 
+    <!-- Widget component names to be included in weather category of widget suggestions. -->
+    <string-array name="weather_recommendations"></string-array>
+    <!-- Widget component names to be included in fitness category of widget suggestions. -->
+    <string-array name="fitness_recommendations"></string-array>
+
     <!-- Name of the class used to generate colors from the wallpaper colors. Must be implementing the LauncherAppWidgetHostView.ColorGenerator interface. -->
     <string name="color_generator_class" translatable="false"/>
 
     <!-- Swipe back to home related -->
     <dimen name="swipe_back_window_scale_x_margin">10dp</dimen>
-    <dimen name="swipe_back_window_max_delta_y">160dp</dimen>
     <dimen name="swipe_back_window_corner_radius">40dp</dimen>
 
     <!-- The duration of the bottom sheet opening and closing animation -->
@@ -254,4 +260,16 @@
 
     <!--  Used for custom widgets  -->
     <array name="custom_widget_providers"/>
+
+    <!--  Used for determining category of a widget presented in widget recommendations. -->
+    <string name="widget_recommendation_category_provider_class" translatable="false"></string>
+
+    <!-- Embed parameters -->
+    <dimen name="activity_split_ratio"  format="float">0.5</dimen>
+    <integer name="min_width_split">720</integer>
+
+    <!-- Skip "Install to private" long-press shortcut packages name -->
+    <string-array name="skip_private_profile_shortcut_packages" translatable="false">
+        <item>com.android.settings</item>
+    </string-array>
 </resources>

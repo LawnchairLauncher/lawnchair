@@ -18,6 +18,7 @@ package com.android.launcher3.model;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_WORK_PROFILE_QUIET_MODE_ENABLED;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ARCHIVED;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_RESTORED_ICON;
 
@@ -37,6 +38,7 @@ import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.FileLog;
@@ -46,6 +48,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -67,6 +70,7 @@ import java.util.stream.Collectors;
  * Handles updates due to changes in package manager (app installed/updated/removed)
  * or when a user availability changes.
  */
+@SuppressWarnings("NewApi")
 public class PackageUpdatedTask extends BaseModelUpdateTask {
 
     // TODO(b/290090023): Set to false after root causing is done.
@@ -237,8 +241,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 isTargetValid = context.getSystemService(LauncherApps.class)
                                         .isActivityEnabled(cn, mUser);
                             }
-                            if (!isTargetValid && si.hasStatusFlag(
-                                    FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)) {
+                            if (!isTargetValid && (si.hasStatusFlag(
+                                    FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)
+                                    || si.isArchived())) {
                                 if (updateWorkspaceItemIntent(context, si, packageName)) {
                                     infoUpdated = true;
                                 } else if (si.hasPromiseIconUi()) {
@@ -269,7 +274,23 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                             : PackageManagerHelper.getLoadingProgress(
                                                     activities.get(0)),
                                     PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
+                            // In case an app is archived, we need to make sure that archived state
+                            // in WorkspaceItemInfo is refreshed.
+                            if (Utilities.enableSupportForArchiving() && !activities.isEmpty()) {
+                                boolean newArchivalState = activities.get(
+                                        0).getActivityInfo().isArchived;
+                                if (newArchivalState != si.isArchived()) {
+                                    si.runtimeStatusFlags ^= FLAG_ARCHIVED;
+                                    infoUpdated = true;
+                                }
+                            }
                             if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
+                                if (activities != null && !activities.isEmpty()) {
+                                    si.status = ApiWrapper
+                                            .isNonResizeableActivity(activities.get(0))
+                                            ? si.status | WorkspaceItemInfo.FLAG_NON_RESIZEABLE
+                                            : si.status & ~WorkspaceItemInfo.FLAG_NON_RESIZEABLE;
+                                }
                                 iconCache.getTitleAndIcon(si, si.usingLowResIcon());
                                 infoUpdated = true;
                             }
@@ -340,9 +361,17 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         }
 
         if (!removedPackages.isEmpty() || !removedComponents.isEmpty()) {
-            Predicate<ItemInfo> removeMatch = ItemInfoMatcher.ofPackages(removedPackages, mUser)
-                    .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
-                    .and(ItemInfoMatcher.ofItemIds(forceKeepShortcuts).negate());
+            // This predicate is used to mark an ItemInfo for removal if its package or component
+            // is marked for removal.
+            Predicate<ItemInfo> removeAppMatch =
+                    ItemInfoMatcher.ofPackages(removedPackages, mUser)
+                            .or(ItemInfoMatcher.ofComponents(removedComponents, mUser))
+                            .and(ItemInfoMatcher.ofItemIds(forceKeepShortcuts).negate());
+            // This predicate is used to mark an app pair for removal if it contains an app marked
+            // for removal.
+            Predicate<ItemInfo> removeAppPairMatch =
+                    ItemInfoMatcher.forAppPairMatch(removeAppMatch);
+            Predicate<ItemInfo> removeMatch = removeAppMatch.or(removeAppPairMatch);
             deleteAndBindComponentsRemoved(removeMatch,
                     "removed because the corresponding package or component is removed. "
                             + "mOp=" + mOp + " removedPackages=" + removedPackages.stream().collect(

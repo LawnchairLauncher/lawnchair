@@ -17,6 +17,7 @@ package com.android.launcher3.util;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
 
 import android.util.Log;
@@ -27,6 +28,7 @@ import android.view.Menu;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
@@ -118,15 +120,20 @@ public class KeyboardShortcutsDelegate {
                 return true;
             } else if (mLauncher.getAppsView().isInAllApps()) {
                 // Close all apps if there are no open floating views.
-                closeAllApps();
+                mLauncher.getStateManager().goToState(NORMAL, true);
+                return true;
+            } else if (mLauncher.isInState(LauncherState.OVERVIEW)
+                    || mLauncher.isInState(LauncherState.OVERVIEW_SPLIT_SELECT)) {
+                // Close Overview and return to home.
+                mLauncher.getStateManager().goToState(NORMAL, true);
+                return true;
+            } else if (mLauncher.isInState(LauncherState.OVERVIEW_MODAL_TASK)) {
+                // Return to the previous state (Overview) when the modal task is open.
+                mLauncher.getStateManager().goToState(OVERVIEW, true);
                 return true;
             }
         }
         return null;
-    }
-
-    private void closeAllApps() {
-        mLauncher.getStateManager().goToState(NORMAL, true);
     }
 
     /**

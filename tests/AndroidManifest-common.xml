@@ -88,6 +88,14 @@
                 android:resource="@xml/appwidget_dynamic_colors"/>
         </receiver>
 
+        <receiver android:name="com.android.launcher3.testcomponent.UnarchiveBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.UNARCHIVE_PACKAGE"/>
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name="com.android.launcher3.testcomponent.WidgetConfigActivity"
             android:exported="true">
@@ -149,7 +157,8 @@
             android:name="com.android.launcher3.testcomponent.BaseTestingActivity"
             android:label="LauncherTestApp"
             android:exported="true"
-            android:taskAffinity="com.android.launcher3.testcomponent.Affinity1">
+            android:taskAffinity="com.android.launcher3.testcomponent.Affinity1"
+            android:theme="@style/Theme.TestActivities">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -292,6 +301,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+        <activity-alias android:name="SplitTask1"
+            android:label="1st TopLeft"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="SplitTask2"
+            android:label="2nd BottomRight"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
         <activity-alias android:name="MaxShortcutsActivity"
             android:label="TestActivityMaxShortcuts"
             android:exported="true"
@@ -341,6 +368,24 @@
             <intent-filter>
                 <action android:name="android.intent.action.WEB_SEARCH" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="AAAActivity"
+            android:label="AAA"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="ZZZActivity"
+            android:label="ZZZ"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity-alias>
 

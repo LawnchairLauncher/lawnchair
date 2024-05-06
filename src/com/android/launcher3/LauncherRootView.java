@@ -2,11 +2,9 @@ package com.android.launcher3;
 
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.ViewDebug;
 import android.view.WindowInsets;
@@ -112,15 +110,13 @@ public class LauncherRootView extends InsettableFrameLayout {
         mSysUiScrim.setSize(r - l, b - t);
     }
 
-    @TargetApi(Build.VERSION_CODES.Q)
     public void setForceHideBackArrow(boolean forceHideBackArrow) {
         this.mForceHideBackArrow = forceHideBackArrow;
         setDisallowBackGesture(mDisallowBackGesture);
     }
 
-    @TargetApi(Build.VERSION_CODES.Q)
     public void setDisallowBackGesture(boolean disallowBackGesture) {
-        if (!Utilities.ATLEAST_Q || SEPARATE_RECENTS_ACTIVITY.get()) {
+        if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
         mDisallowBackGesture = disallowBackGesture;

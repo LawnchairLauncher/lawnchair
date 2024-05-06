@@ -15,7 +15,6 @@ import android.os.UserHandle;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -206,11 +205,7 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
     }
 
     public int getWidgetFeatures() {
-        if (Utilities.ATLEAST_P) {
-            return widgetFeatures;
-        } else {
-            return 0;
-        }
+        return widgetFeatures;
     }
 
     public boolean isReconfigurable() {

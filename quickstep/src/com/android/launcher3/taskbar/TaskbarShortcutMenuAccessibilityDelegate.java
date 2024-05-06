@@ -16,7 +16,6 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DEEP_SHORTCUTS;
-import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.SHORTCUTS_AND_NOTIFICATIONS;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
@@ -36,7 +35,6 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.LogUtils;
@@ -63,8 +61,6 @@ public class TaskbarShortcutMenuAccessibilityDelegate
 
         mActions.put(DEEP_SHORTCUTS, new LauncherAction(DEEP_SHORTCUTS,
                 R.string.action_deep_shortcut, KeyEvent.KEYCODE_S));
-        mActions.put(SHORTCUTS_AND_NOTIFICATIONS, new LauncherAction(DEEP_SHORTCUTS,
-                R.string.shortcuts_menu_with_notifications_description, KeyEvent.KEYCODE_S));
         mActions.put(MOVE_TO_TOP_OR_LEFT, new LauncherAction(
                 MOVE_TO_TOP_OR_LEFT, R.string.move_drop_target_top_or_left, KeyEvent.KEYCODE_L));
         mActions.put(MOVE_TO_BOTTOM_OR_RIGHT, new LauncherAction(
@@ -76,8 +72,7 @@ public class TaskbarShortcutMenuAccessibilityDelegate
     @Override
     protected void getSupportedActions(View host, ItemInfo item, List<LauncherAction> out) {
         if (ShortcutUtil.supportsShortcuts(item)) {
-            out.add(mActions.get(NotificationListener.getInstanceIfConnected() != null
-                    ? SHORTCUTS_AND_NOTIFICATIONS : DEEP_SHORTCUTS));
+            out.add(mActions.get(DEEP_SHORTCUTS));
         }
         out.add(mActions.get(MOVE_TO_TOP_OR_LEFT));
         out.add(mActions.get(MOVE_TO_BOTTOM_OR_RIGHT));
@@ -117,7 +112,7 @@ public class TaskbarShortcutMenuAccessibilityDelegate
                         instanceIds.first);
             }
             return true;
-        } else if (action == DEEP_SHORTCUTS || action == SHORTCUTS_AND_NOTIFICATIONS) {
+        } else if (action == DEEP_SHORTCUTS) {
             mContext.showPopupMenuForIcon((BubbleTextView) host);
 
             return true;

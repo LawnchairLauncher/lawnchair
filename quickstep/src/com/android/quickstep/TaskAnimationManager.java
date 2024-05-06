@@ -38,6 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.internal.util.ArrayUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
@@ -64,6 +65,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     private RemoteAnimationTarget[] mLastAppearedTaskTargets;
     private Runnable mLiveTileCleanUpHandler;
     private Context mCtx;
+
+    private boolean mRecentsAnimationStartPending = false;
 
     private final TaskStackChangeListener mLiveTileRestartListener = new TaskStackChangeListener() {
         @Override
@@ -97,6 +100,10 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         // Pass null animation handler to indicate this start is for preloading
         UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
                 .startRecentsActivity(intent, 0, null, null, null));
+    }
+
+    public boolean isRecentsAnimationStartPending() {
+        return mRecentsAnimationStartPending;
     }
 
     /**
@@ -137,6 +144,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             @Override
             public void onRecentsAnimationStart(RecentsAnimationController controller,
                     RecentsAnimationTargets targets) {
+                mRecentsAnimationStartPending = false;
                 if (mCallbacks == null) {
                     // It's possible for the recents animation to have finished and be cleaned up
                     // by the time we process the start callback, and in that case, just we can skip
@@ -177,12 +185,24 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
             @Override
             public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
+                mRecentsAnimationStartPending = false;
                 cleanUpRecentsAnimation(newCallbacks);
             }
 
             @Override
             public void onRecentsAnimationFinished(RecentsAnimationController controller) {
+                mRecentsAnimationStartPending = false;
                 cleanUpRecentsAnimation(newCallbacks);
+            }
+
+            private boolean isNonRecentsStartedTasksAppeared(
+                    RemoteAnimationTarget[] appearedTaskTargets) {
+                // For example, right after swiping from task X to task Y (e.g. from
+                // AbsSwipeUpHandler#startNewTask), and then task Y starts X immediately
+                // (e.g. in Y's onResume). The case will be: lastStartedTask=Y and appearedTask=X.
+                return mLastGestureState.getEndTarget() == GestureState.GestureEndTarget.NEW_TASK
+                        && ArrayUtils.find(appearedTaskTargets,
+                                mLastGestureState.mLastStartedTaskIdPredicate) == null;
             }
 
             @Override
@@ -206,13 +226,15 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     }
                 }
 
-                RemoteAnimationTarget[] nonAppTargets = SystemUiProxy.INSTANCE.get(mCtx)
-                        .onStartingSplitLegacy(appearedTaskTargets);
+                RemoteAnimationTarget[] nonAppTargets = ENABLE_SHELL_TRANSITIONS
+                        ? null : SystemUiProxy.INSTANCE.get(mCtx).onStartingSplitLegacy(
+                                appearedTaskTargets);
                 if (nonAppTargets == null) {
                     nonAppTargets = new RemoteAnimationTarget[0];
                 }
                 if ((activityInterface.isInLiveTileMode()
-                            || mLastGestureState.getEndTarget() == RECENTS)
+                            || mLastGestureState.getEndTarget() == RECENTS
+                            || isNonRecentsStartedTasksAppeared(appearedTaskTargets))
                         && activityInterface.getCreatedActivity() != null) {
                     RecentsView recentsView =
                             activityInterface.getCreatedActivity().getOverviewPanel();
@@ -277,10 +299,16 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 options.setTransientLaunch();
             }
             options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
-            SystemUiProxy.INSTANCE.getNoCreate().startRecentsActivity(intent, options, mCallbacks);
+            mRecentsAnimationStartPending = SystemUiProxy.INSTANCE.getNoCreate()
+                    .startRecentsActivity(intent, options, mCallbacks);
         } else {
-            UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
-                    .startRecentsActivity(intent, eventTime, mCallbacks, null, null));
+            UI_HELPER_EXECUTOR.execute(
+                    () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
+                            intent,
+                            eventTime,
+                            mCallbacks,
+                            result -> mRecentsAnimationStartPending = result,
+                            MAIN_EXECUTOR.getHandler()));
         }
         gestureState.setState(STATE_RECENTS_ANIMATION_INITIALIZED);
         return mCallbacks;

@@ -19,8 +19,10 @@ import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_PER
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_TRANSIENT;
 
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.SystemProperties;
 import android.view.ViewTreeObserver;
 
 import com.android.launcher3.DeviceProfile;
@@ -38,6 +40,15 @@ import java.io.PrintWriter;
  */
 public class TaskbarDragLayerController implements TaskbarControllers.LoggableTaskbarController,
         TaskbarControllers.BackgroundRendererController {
+
+    private static final boolean DEBUG = SystemProperties.getBoolean(
+            "persist.debug.draw_taskbar_debug_ui", false);
+
+    // Delay to reset the task bar alpha back to 1 after fading it for transition from unfold to
+    // fold. Normally this is not needed since the new task bar is recreated after fading, but in
+    // case something goes wrong this provides a fallback mechanism to make sure the task bar is
+    // visible after the transition finishes.
+    public static final long TASKBAR_REAPPEAR_DELAY_MS = 2000;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mTaskbarDragLayer;
@@ -265,6 +276,13 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         }
 
         /**
+         * Called when an IME inset is changed.
+         */
+        public void onImeInsetChanged() {
+            mControllers.taskbarStashController.onImeInsetChanged();
+        }
+
+        /**
          * Called when a child is removed from TaskbarDragLayer.
          */
         public void onDragLayerViewRemoved() {
@@ -276,11 +294,10 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
          */
         public int getTaskbarBackgroundHeight() {
             DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-            if (TaskbarManager.isPhoneMode(deviceProfile)) {
+            if (mActivity.isPhoneMode()) {
                 Resources resources = mActivity.getResources();
-                Point taskbarDimensions =
-                        DimensionUtils.getTaskbarPhoneDimensions(deviceProfile, resources,
-                                TaskbarManager.isPhoneMode(deviceProfile));
+                Point taskbarDimensions = DimensionUtils.getTaskbarPhoneDimensions(deviceProfile,
+                        resources, true /* isPhoneMode */);
                 return taskbarDimensions.y == -1 ?
                         deviceProfile.getDisplayInfo().currentSize.y :
                         taskbarDimensions.y;
@@ -299,6 +316,16 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
                     mControllers.navbarButtonsViewController.getTouchController(),
                     mTaskbarStashViaTouchController,
             };
+        }
+
+        /**
+         * Draws debug UI on top of everything in TaskbarDragLayer.
+         */
+        public void drawDebugUi(Canvas canvas) {
+            if (!DEBUG) {
+                return;
+            }
+            mControllers.taskbarInsetsController.drawDebugTouchableRegionBounds(canvas);
         }
     }
 }

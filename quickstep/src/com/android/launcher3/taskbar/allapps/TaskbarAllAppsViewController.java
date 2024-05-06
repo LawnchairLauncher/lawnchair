@@ -20,6 +20,7 @@ import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
 import androidx.annotation.Nullable;
 
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.allapps.AllAppsTransitionListener;
 import com.android.launcher3.anim.PendingAnimation;
@@ -31,6 +32,7 @@ import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 import com.android.launcher3.util.DisplayController;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 import java.util.Optional;
 
@@ -135,6 +137,9 @@ final class TaskbarAllAppsViewController {
                     && mShowKeyboard
                     && mAppsView.getSearchUiManager().getEditText() != null) {
                 mAppsView.getSearchUiManager().getEditText().requestFocus();
+            }
+            if (toAllApps) {
+                InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_OPEN_ALL_APPS);
             }
         }
 

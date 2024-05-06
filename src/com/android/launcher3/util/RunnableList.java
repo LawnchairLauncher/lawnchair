@@ -69,4 +69,11 @@ public class RunnableList {
             }
         }
     }
+
+    /**
+     * Returns true if the list has been destroyed
+     */
+    public boolean isDestroyed() {
+        return mDestroyed;
+    }
 }

@@ -31,6 +31,10 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Информация за приложението за %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Запазване на двойката приложения"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
+    <skip />
+    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Докоснете и задръжте за преместване на приспособление"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Докоснете двукратно и задръжте за преместване на приспособление или използвайте персонал. действия."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -40,6 +44,13 @@
     <string name="add_to_home_screen" msgid="9168649446635919791">"Добавяне към началния екран"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Приспособлението <xliff:g id="WIDGET_NAME">%1$s</xliff:g> е добавено към началния екран"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Предложения"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="1722113555721820766">"Основните за деня ви"</string>
+    <string name="news_widget_recommendation_category_label" msgid="3908242346768119070">"Новини за вас"</string>
+    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Зоната ви за разпускане"</string>
+    <string name="fitness_widget_recommendation_category_label" msgid="2657652999128882431">"Постигнете фитнес целите си"</string>
+    <string name="weather_widget_recommendation_category_label" msgid="6712678763480668598">"Бъдете една крачка напред с прогнозата за времето"</string>
+    <string name="others_widget_recommendation_category_label" msgid="897876078077284733">"Може също да харесате"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Приспособленията за <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> са отдясно, търсенето и опциите – отляво"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# приспособление}other{# приспособления}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# пряк път}other{# преки пътя}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -74,6 +85,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Премахване"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Деинсталиране"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Информация за прилож."</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Инстал. в частно простр."</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Инсталиране"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Без предлагане на приложение"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Фиксиране на предвиждането"</string>
@@ -125,6 +137,8 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> се инсталира, <xliff:g id="PROGRESS">%2$s</xliff:g> завършено"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> се изтегля. Завършено: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> изчаква инсталиране"</string>
+    <!-- no translation found for app_archived_title (9124290918876665128) -->
+    <skip />
     <string name="dialog_update_title" msgid="114234265740994042">"Изисква се актуализация на приложението"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Приложението за тази икона не е актуализирано. Можете да го актуализирате ръчно, за да активирате отново този пряк път, или да премахнете иконата."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Актуализиране"</string>
@@ -154,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Намаляване на височината"</string>
     <string name="widget_resized" msgid="9130327887929620">"Приспособлението е преоразмерено към ширина <xliff:g id="NUMBER_0">%1$s</xliff:g> и височина <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Преки пътища"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Преки пътища и известия"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Отхвърляне"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Затваряне"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"Известието е отхвърлено"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Лични"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Служебни"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Служебен потребителски профил"</string>
@@ -174,9 +186,13 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Филтър"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Неуспешно: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Лично пространство"</string>
+    <string name="private_space_secondary_label" msgid="611902414159280263">"Заключване и скриване на частните приложения"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Лично"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Настройки за личното пространство"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Заключване/отключване на личното пространство"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"Заключване"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Преминаване към личното пространство"</string>
+    <string name="ps_add_button_label" msgid="8611055839242385935">"Инсталиране на приложения"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Инсталиране на приложения в частно пространство"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Препълване"</string>
 </resources>

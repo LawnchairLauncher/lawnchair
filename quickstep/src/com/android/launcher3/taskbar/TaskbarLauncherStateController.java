@@ -17,7 +17,6 @@ package com.android.launcher3.taskbar;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
-import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_OVERVIEW;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
@@ -208,7 +207,7 @@ public class TaskbarLauncherStateController {
                     applyState();
                     boolean disallowLongClick =
                             FeatureFlags.enableSplitContextually()
-                                    ? mLauncher.isSplitSelectionEnabled()
+                                    ? mLauncher.isSplitSelectionActive()
                                     : finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
                     com.android.launcher3.taskbar.Utilities.setOverviewDragState(
                             mControllers, finalState.disallowTaskbarGlobalDrag(),
@@ -223,8 +222,7 @@ public class TaskbarLauncherStateController {
     public void onStateTransitionCompletedAfterSwipeToHome(LauncherState finalState) {
         // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
         // taskbar on top of transparent activity.
-        if (!FeatureFlags.enableHomeTransitionListener()
-                && (finalState == LauncherState.NORMAL)
+        if ((finalState == LauncherState.NORMAL)
                 && mLauncher.hasBeenResumed()) {
             updateStateForFlag(FLAG_VISIBLE, true);
             applyState();
@@ -305,6 +303,10 @@ public class TaskbarLauncherStateController {
         callbacks.addListener(mTaskBarRecentsAnimationListener);
         ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(() ->
                 mTaskBarRecentsAnimationListener.endGestureStateOverride(true));
+
+        ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchCancelledRunnable(() -> {
+            updateStateForUserFinishedToApp(false /* finishedToApp */);
+        });
         return animatorSet;
     }
 
@@ -734,7 +736,7 @@ public class TaskbarLauncherStateController {
         }
         mIconAlphaForHome.setValue(alpha);
         boolean hotseatVisible = alpha == 0
-                || isPhoneMode(mLauncher.getDeviceProfile())
+                || mControllers.taskbarActivityContext.isPhoneMode()
                 || (!mControllers.uiController.isHotseatIconOnTopWhenAligned()
                 && mIconAlignment.value > 0);
         /*
@@ -771,19 +773,27 @@ public class TaskbarLauncherStateController {
             mTaskBarRecentsAnimationListener = null;
             ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(null);
 
-            // Update the visible state immediately to ensure a seamless handoff
-            boolean launcherVisible = !finishedToApp;
-            updateStateForFlag(FLAG_TRANSITION_TO_VISIBLE, false);
-            updateStateForFlag(FLAG_VISIBLE, launcherVisible);
-            applyState();
-
-            TaskbarStashController controller = mControllers.taskbarStashController;
-            if (DEBUG) {
-                Log.d(TAG, "endGestureStateOverride - FLAG_IN_APP: " + finishedToApp);
-            }
-            controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
-            controller.applyState();
+            updateStateForUserFinishedToApp(finishedToApp);
         }
+    }
+
+    /**
+     * Updates the visible state immediately to ensure a seamless handoff.
+     * @param finishedToApp True iff user is in an app.
+     */
+    private void updateStateForUserFinishedToApp(boolean finishedToApp) {
+        // Update the visible state immediately to ensure a seamless handoff
+        boolean launcherVisible = !finishedToApp;
+        updateStateForFlag(FLAG_TRANSITION_TO_VISIBLE, false);
+        updateStateForFlag(FLAG_VISIBLE, launcherVisible);
+        applyState();
+
+        TaskbarStashController controller = mControllers.taskbarStashController;
+        if (DEBUG) {
+            Log.d(TAG, "endGestureStateOverride - FLAG_IN_APP: " + finishedToApp);
+        }
+        controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
+        controller.applyState();
     }
 
     private static String getStateString(int flags) {

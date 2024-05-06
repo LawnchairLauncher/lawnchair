@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.statehandlers;
 
+import static android.view.View.VISIBLE;
+
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
@@ -47,7 +49,7 @@ public class DesktopVisibilityController {
             "persist.wm.debug.desktop_stashing", false);
     private final Launcher mLauncher;
 
-    private boolean mFreeformTasksVisible;
+    private int mVisibleFreeformTasksCount;
     private boolean mInOverviewState;
     private boolean mBackgroundStateEnabled;
     private boolean mGestureInProgress;
@@ -66,13 +68,13 @@ public class DesktopVisibilityController {
     public void registerSystemUiListener() {
         mDesktopTaskListener = new IDesktopTaskListener.Stub() {
             @Override
-            public void onVisibilityChanged(int displayId, boolean visible) {
+            public void onTasksVisibilityChanged(int displayId, int visibleTasksCount) {
                 MAIN_EXECUTOR.execute(() -> {
                     if (displayId == mLauncher.getDisplayId()) {
                         if (DEBUG) {
-                            Log.d(TAG, "desktop visibility changed value=" + visible);
+                            Log.d(TAG, "desktop visible tasks count changed=" + visibleTasksCount);
                         }
-                        setFreeformTasksVisible(visible);
+                        setVisibleFreeformTasksCount(visibleTasksCount);
                     }
                 });
             }
@@ -110,39 +112,53 @@ public class DesktopVisibilityController {
      * Whether freeform windows are visible in desktop mode.
      */
     public boolean areFreeformTasksVisible() {
+        boolean freeformTasksVisible = mVisibleFreeformTasksCount > 0;
         if (DEBUG) {
-            Log.d(TAG, "areFreeformTasksVisible: freeformVisible=" + mFreeformTasksVisible
+            Log.d(TAG, "areFreeformTasksVisible: freeformVisible=" + freeformTasksVisible
                     + " overview=" + mInOverviewState);
         }
-        return mFreeformTasksVisible && !mInOverviewState;
+        return freeformTasksVisible && !mInOverviewState;
     }
 
     /**
-     * Sets whether freeform windows are visible and updates launcher visibility based on that.
+     * Number of visible freeform windows in desktop mode.
      */
-    public void setFreeformTasksVisible(boolean freeformTasksVisible) {
+    public int getVisibleFreeformTasksCount() {
+        return mVisibleFreeformTasksCount;
+    }
+
+    /**
+     * Sets the number of freeform windows that are visible and updates launcher visibility based on
+     * it.
+     */
+    public void setVisibleFreeformTasksCount(int visibleTasksCount) {
         if (DEBUG) {
-            Log.d(TAG, "setFreeformTasksVisible: visible=" + freeformTasksVisible
-                    + " currentValue=" + mFreeformTasksVisible);
+            Log.d(TAG, "setVisibleFreeformTasksCount: visibleTasksCount=" + visibleTasksCount
+                    + " currentValue=" + mVisibleFreeformTasksCount);
         }
         if (!isDesktopModeSupported()) {
             return;
         }
 
-        if (freeformTasksVisible != mFreeformTasksVisible) {
-            mFreeformTasksVisible = freeformTasksVisible;
-            if (mFreeformTasksVisible) {
-                setLauncherViewsVisibility(View.INVISIBLE);
-                if (!mInOverviewState) {
-                    // When freeform is visible & we're not in overview, we want launcher to appear
-                    // paused, this ensures that taskbar displays.
-                    markLauncherPaused();
+        if (visibleTasksCount != mVisibleFreeformTasksCount) {
+            final boolean wasVisible = mVisibleFreeformTasksCount > 0;
+            final boolean isVisible = visibleTasksCount > 0;
+            mVisibleFreeformTasksCount = visibleTasksCount;
+
+            if (wasVisible != isVisible) {
+                if (mVisibleFreeformTasksCount > 0) {
+                    setLauncherViewsVisibility(View.INVISIBLE);
+                    if (!mInOverviewState) {
+                        // When freeform is visible & we're not in overview, we want launcher to
+                        // appear paused, this ensures that taskbar displays.
+                        markLauncherPaused();
+                    }
+                } else {
+                    setLauncherViewsVisibility(View.VISIBLE);
+                    // If freeform isn't visible ensure that launcher appears resumed to behave
+                    // normally.
+                    markLauncherResumed();
                 }
-            } else {
-                setLauncherViewsVisibility(View.VISIBLE);
-                // If freeform isn't visible ensure that launcher appears resumed to behave
-                // normally.
-                markLauncherResumed();
             }
         }
     }
@@ -268,6 +284,10 @@ public class DesktopVisibilityController {
         View dragLayer = mLauncher.getDragLayer();
         if (dragLayer != null) {
             dragLayer.setVisibility(visibility);
+        }
+        if (mLauncher instanceof QuickstepLauncher ql && ql.getTaskbarUIController() != null
+                && mVisibleFreeformTasksCount != 0) {
+            ql.getTaskbarUIController().onLauncherVisibilityChanged(visibility == VISIBLE);
         }
     }
 

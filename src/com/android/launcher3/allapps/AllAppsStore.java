@@ -40,6 +40,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -93,11 +94,14 @@ public class AllAppsStore<T extends Context & ActivityContext> {
      * Sets the current set of apps and sets mapping for {@link PackageUserKey} to Uid for
      * the current set of apps.
      *
-     * <p> Note that shouldPreinflate param should be set to {@code false} for taskbar, because this
-     * method is too late to preinflate all apps, as user will open all apps in the same frame.
+     * <p> Note that shouldPreinflate param should be set to {@code false} for taskbar, because
+     * this method is too late to preinflate all apps, as user will open all apps in the frame
+     *
+     * <p>Param: apps are required to be sorted using the comparator COMPONENT_KEY_COMPARATOR
+     * in order to enable binary search on the mApps store
      */
     public void setApps(@Nullable AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map,
-            boolean shouldPreinflate)  {
+            boolean shouldPreinflate) {
         mApps = apps == null ? EMPTY_ARRAY : apps;
         mModelFlags = flags;
         notifyUpdate();
@@ -135,12 +139,22 @@ public class AllAppsStore<T extends Context & ActivityContext> {
     /**
      * Returns {@link AppInfo} if any apps matches with provided {@link ComponentKey}, otherwise
      * null.
+     *
+     * Uses {@link AppInfo#COMPONENT_KEY_COMPARATOR} as a default comparator.
      */
     @Nullable
     public AppInfo getApp(ComponentKey key) {
+        return getApp(key, COMPONENT_KEY_COMPARATOR);
+    }
+
+    /**
+     * Generic version of {@link #getApp(ComponentKey)} that allows comparator to be specified.
+     */
+    @Nullable
+    public AppInfo getApp(ComponentKey key, Comparator<AppInfo> comparator) {
         mTempInfo.componentName = key.componentName;
         mTempInfo.user = key.user;
-        int index = Arrays.binarySearch(mApps, mTempInfo, COMPONENT_KEY_COMPARATOR);
+        int index = Arrays.binarySearch(mApps, mTempInfo, comparator);
         return index < 0 ? null : mApps[index];
     }
 

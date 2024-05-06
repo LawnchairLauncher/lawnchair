@@ -24,14 +24,12 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.views.IconLabelDotView.setIconAndDotVisible;
 
 import android.animation.Animator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.CancellationSignal;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -67,7 +65,6 @@ import java.util.function.Supplier;
 /**
  * A view that is created to look like another view with the purpose of creating fluid animations.
  */
-@TargetApi(Build.VERSION_CODES.Q)
 public class FloatingIconView extends FrameLayout implements
         Animator.AnimatorListener, OnGlobalLayoutListener, FloatingView {
 

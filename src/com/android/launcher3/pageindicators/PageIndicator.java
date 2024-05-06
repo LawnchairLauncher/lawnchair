@@ -27,10 +27,12 @@ public interface PageIndicator {
     void setMarkersCount(int numMarkers);
 
     /**
-     * Sets flag to indicate when the screens are in the process of binding so that we don't animate
-     * during that period.
+     * Sets a flag indicating whether to pause scroll.
+     * <p>Should be set to {@code true} while the screen is binding or new data is being applied,
+     * and to {@code false} once done. This prevents animation conflicts due to scrolling during
+     * those periods.</p>
      */
-    default void setAreScreensBinding(boolean areScreensBinding, boolean isTwoPanels) {
+    default void setPauseScroll(boolean pause, boolean isTwoPanels) {
         // No-op by default
     }
 

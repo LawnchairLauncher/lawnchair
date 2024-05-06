@@ -20,11 +20,8 @@ import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.ActionMode;
-import android.view.Display;
 import android.view.View;
 
 import androidx.annotation.MainThread;
@@ -39,7 +36,6 @@ import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.OnColorHintListener;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.WallpaperColorHints;
 import com.android.launcher3.util.WindowBounds;
 
@@ -55,16 +51,12 @@ public abstract class BaseDraggingActivity extends BaseActivity
     public static final Object AUTO_CANCEL_ACTION_MODE = new Object();
 
     private ActionMode mCurrentActionMode;
-    protected boolean mIsSafeModeEnabled;
 
     private int mThemeRes = R.style.AppTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
-                () -> getPackageManager().isSafeMode());
         DisplayController.INSTANCE.get(this).addChangeListener(this);
 
         // Update theme
@@ -170,19 +162,11 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected abstract void reapplyUi();
 
     protected WindowBounds getMultiWindowDisplaySize() {
-        if (Utilities.ATLEAST_R) {
-            return WindowBounds.fromWindowMetrics(getWindowManager().getCurrentWindowMetrics());
-        }
-        // Note: Calls to getSize() can't rely on our cached DefaultDisplay since it can return
-        // the app window size
-        Display display = getWindowManager().getDefaultDisplay();
-        Point mwSize = new Point();
-        display.getSize(mwSize);
-        return new WindowBounds(new Rect(0, 0, mwSize.x, mwSize.y), new Rect());
+        return WindowBounds.fromWindowMetrics(getWindowManager().getCurrentWindowMetrics());
     }
 
     @Override
     public boolean isAppBlockedForSafeMode() {
-        return mIsSafeModeEnabled;
+        return LauncherAppState.getInstance(this).isSafeModeEnabled();
     }
 }

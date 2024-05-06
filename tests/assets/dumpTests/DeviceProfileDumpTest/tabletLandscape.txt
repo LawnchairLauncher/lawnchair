@@ -55,7 +55,7 @@ DeviceProfile:
 	bottomSheetCloseDuration: 500
 	bottomSheetWorkspaceScale: 0.97
 	bottomSheetDepth: 0.0
-	allAppsShiftRange: 1496.0px (748.0dp)
+	allAppsShiftRange: 1600.0px (800.0dp)
 	allAppsOpenDuration: 500
 	allAppsCloseDuration: 500
 	allAppsIconSizePx: 120.0px (60.0dp)
@@ -87,7 +87,7 @@ DeviceProfile:
 	numShownHotseatIcons: 6
 	hotseatBorderSpace: 100.0px (50.0dp)
 	isQsbInline: false
-	hotseatQsbWidth: 1224.0px (612.0dp)
+	hotseatQsbWidth: 1214.0px (607.0dp)
 	isTaskbarPresent:false
 	isTaskbarPresentInApps:true
 	taskbarHeight: 0.0px (0.0dp)
@@ -110,7 +110,6 @@ DeviceProfile:
 	overviewTaskIconSizePx: 0.0px (0.0dp)
 	overviewTaskIconDrawableSizePx: 0.0px (0.0dp)
 	overviewTaskIconDrawableSizeGridPx: 0.0px (0.0dp)
-	overviewTaskIconAppChipMenuDrawableSizePx: 0.0px (0.0dp)
 	overviewTaskThumbnailTopMarginPx: 0.0px (0.0dp)
 	overviewActionsTopMarginPx: 0.0px (0.0dp)
 	overviewActionsHeight: 0.0px (0.0dp)

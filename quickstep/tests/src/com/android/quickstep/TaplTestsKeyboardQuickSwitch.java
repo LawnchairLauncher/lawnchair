@@ -22,7 +22,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.tapl.KeyboardQuickSwitch;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.taskbar.KeyboardQuickSwitchController;
 
 import org.junit.Assume;
 import org.junit.Test;
@@ -33,14 +33,23 @@ import org.junit.runner.RunWith;
 public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
 
     private enum TestSurface {
-        HOME, LAUNCHED_APP, HOME_ALL_APPS, WIDGETS,
+        HOME(true),
+        LAUNCHED_APP(false),
+        HOME_ALL_APPS(true),
+        WIDGETS(true);
+
+        private final boolean mInitialFocusAtZero;
+
+        TestSurface(boolean initialFocusAtZero) {
+            mInitialFocusAtZero = initialFocusAtZero;
+        }
     }
 
     private enum TestCase {
         DISMISS(0),
         LAUNCH_LAST_APP(0),
         LAUNCH_SELECTED_APP(1),
-        LAUNCH_OVERVIEW(5);
+        LAUNCH_OVERVIEW(KeyboardQuickSwitchController.MAX_TASKS - 1);
 
         private final int mNumAdditionalRunningTasks;
 
@@ -56,7 +65,6 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
     public void setUp() throws Exception {
         Assume.assumeTrue(mLauncher.isTablet());
         super.setUp();
-        AbstractLauncherUiTest.initialize(this);
         startAppFast(CALCULATOR_APP_PACKAGE);
         startTestActivity(2);
     }
@@ -172,13 +180,24 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
                 kqs.dismiss();
                 break;
             case LAUNCH_LAST_APP:
-                kqs.launchFocusedAppTask(CALCULATOR_APP_PACKAGE);
+                kqs.launchFocusedAppTask(testSurface.mInitialFocusAtZero
+                        ? getAppPackageName() : CALCULATOR_APP_PACKAGE);
                 break;
             case LAUNCH_SELECTED_APP:
-                kqs.moveFocusForward().launchFocusedAppTask(CALCULATOR_APP_PACKAGE);
+                kqs.moveFocusForward();
+                if (testSurface.mInitialFocusAtZero) {
+                    kqs.moveFocusForward();
+                }
+                kqs.launchFocusedAppTask(CALCULATOR_APP_PACKAGE);
                 break;
             case LAUNCH_OVERVIEW:
-                kqs.moveFocusBackward().moveFocusBackward().launchFocusedOverviewTask();
+                kqs.moveFocusBackward();
+                if (!testSurface.mInitialFocusAtZero) {
+                    kqs.moveFocusBackward();
+                }
+                kqs.launchFocusedOverviewTask()
+                        // Check that the correct task was focused
+                        .launchFocusedTaskByEnterKey(CALCULATOR_APP_PACKAGE);
                 break;
             default:
                 throw new IllegalStateException("Cannot run test case: " + testCase);

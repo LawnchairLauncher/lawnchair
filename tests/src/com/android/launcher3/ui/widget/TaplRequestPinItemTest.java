@@ -74,7 +74,6 @@ public class TaplRequestPinItemTest extends AbstractLauncherUiTest {
         super.setUp();
         mCallbackAction = UUID.randomUUID().toString();
         mShortcutId = UUID.randomUUID().toString();
-        AbstractLauncherUiTest.initialize(this);
     }
 
     @Test

@@ -17,13 +17,17 @@
 package com.android.launcher3.uioverrides;
 
 import android.app.ActivityOptions;
+import android.app.PendingIntent;
 import android.app.Person;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherUserInfo;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.ArrayMap;
@@ -31,9 +35,12 @@ import android.window.RemoteTransition;
 
 import com.android.launcher3.Flags;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.proxy.ProxyActivityStarter;
+import com.android.launcher3.util.StartActivityParams;
 import com.android.launcher3.util.UserIconInfo;
 import com.android.quickstep.util.FadeOutRemoteTransition;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +81,9 @@ public class ApiWrapper {
                 if (android.os.Flags.allowPrivateProfile() && Flags.enablePrivateSpace()) {
                     LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
                     LauncherUserInfo launcherUserInfo = launcherApps.getLauncherUserInfo(user);
+                    if (launcherUserInfo == null) {
+                        continue;
+                    }
                     // UserTypes not supported in Launcher are deemed to be the current
                     // Foreground User.
                     int userType = switch (launcherUserInfo.getUserType()) {
@@ -100,6 +110,58 @@ public class ApiWrapper {
             }
         }
         return users;
+    }
+
+    /**
+     * Returns the list of the system packages that are installed at user creation.
+     * An empty list denotes that all system packages are installed for that user at creation.
+     */
+    public static List<String> getPreInstalledSystemPackages(Context context, UserHandle user) {
+        LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
+        if (android.os.Flags.allowPrivateProfile() && Flags.enablePrivateSpace()
+                && Flags.privateSpaceSysAppsSeparation()) {
+            return launcherApps.getPreInstalledSystemPackages(user);
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Returns an intent which can be used to start the App Market activity (Installer
+     * Activity).
+     */
+    public static Intent getAppMarketActivityIntent(Context context, String packageName,
+            UserHandle user) {
+        LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
+        if (android.os.Flags.allowPrivateProfile()
+                && Flags.enablePrivateSpace()
+                && (Flags.privateSpaceAppInstallerButton()
+                        || Flags.enablePrivateSpaceInstallShortcut())) {
+            StartActivityParams params = new StartActivityParams((PendingIntent) null, 0);
+            params.intentSender = launcherApps.getAppMarketActivityIntent(packageName, user);
+            ActivityOptions options = ActivityOptions.makeBasic()
+                    .setPendingIntentBackgroundActivityStartMode(ActivityOptions
+                            .MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
+            params.options = options.toBundle();
+            params.requireActivityResult = false;
+            return ProxyActivityStarter.getLaunchIntent(context, params);
+        } else {
+            return new Intent(Intent.ACTION_VIEW)
+                    .setData(new Uri.Builder()
+                            .scheme("market")
+                            .authority("details")
+                            .appendQueryParameter("id", packageName)
+                            .build())
+                    .putExtra(Intent.EXTRA_REFERRER, new Uri.Builder().scheme("android-app")
+                            .authority(context.getPackageName()).build());
+        }
+    }
+
+    /**
+     * Checks if an activity is flagged as non-resizeable.
+     */
+    public static boolean isNonResizeableActivity(LauncherActivityInfo lai) {
+        return lai.getActivityInfo().resizeMode == ActivityInfo.RESIZE_MODE_UNRESIZEABLE;
     }
 
     private static class NoopDrawable extends ColorDrawable {

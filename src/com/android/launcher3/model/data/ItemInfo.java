@@ -160,6 +160,13 @@ public class ItemInfo {
     public CharSequence title;
 
     /**
+     * Optionally set: The appTitle might e.g. be different if {@code title} is used to
+     * display progress (e.g. Downloading..).
+     */
+    @Nullable
+    public CharSequence appTitle;
+
+    /**
      * Content description of the item.
      */
     @Nullable

@@ -64,7 +64,7 @@ public class FavoriteItemsTransaction {
         runOnExecutorSync(MODEL_EXECUTOR, () -> {
             ModelDbController controller = model.getModelDbController();
             // Migrate any previous data so that the DB state is correct
-            controller.tryMigrateDB();
+            controller.tryMigrateDB(null /* restoreEventLogger */);
 
             // Create DB again to load fresh data
             controller.createEmptyDB();

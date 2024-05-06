@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 
+import static com.android.launcher3.config.FeatureFlags.enableSplitContextually;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
@@ -32,7 +33,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.Taskbar;
 import com.android.launcher3.tapl.TaskbarAppIcon;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
@@ -57,7 +57,6 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        AbstractLauncherUiTest.initialize(this);
 
         if (mLauncher.isTablet()) {
             mLauncher.enableBlockTimeout(true);
@@ -103,10 +102,18 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
                 .getSplitScreenMenuItem()
                 .click();
 
-        mLauncher.getLaunchedAppState()
-                .getTaskbar()
-                .getAppIcon(CALCULATOR_APP_NAME)
-                .launchIntoSplitScreen();
+        if (enableSplitContextually()) {
+            // We're staying in all apps, use same instance
+            mLauncher.getAllApps()
+                    .getAppIcon(CALCULATOR_APP_NAME)
+                    .launchIntoSplitScreen();
+        } else {
+            // We're in overview, use taskbar instance
+            mLauncher.getLaunchedAppState()
+                    .getTaskbar()
+                    .getAppIcon(CALCULATOR_APP_NAME)
+                    .launchIntoSplitScreen();
+        }
     }
 
     @Test

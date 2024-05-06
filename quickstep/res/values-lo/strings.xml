@@ -49,6 +49,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ກະລຸນາກວດສອບວ່າທ່ານປັດຈາກຂອບຂວາສຸດ ຫຼື ຊ້າຍສຸດ"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ກະລຸນາກວດສອບວ່າທ່ານປັດຈາກຂອບຂວາ ຫຼື ຊ້າຍໄປຫາທາງກາງຂອງໜ້າຈໍແລ້ວປ່ອຍນິ້ວ"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ທ່ານຮຽນຮູ້ວິທີປັດຈາກຂວາເພື່ອກັບຄືນແລ້ວ. ຕໍ່ໄປ, ມາສຶກສາວິທີສະຫຼັບແອັບ."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"ທ່ານໃຊ້ທ່າທາງກັບຄືນສຳເລັດແລ້ວ. ຕໍ່ໄປ, ມາສຶກສາວິທີສະຫຼັບແອັບ."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"ທ່ານໃຊ້ທ່າທາງກັບຄືນສຳເລັດແລ້ວ"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ກະລຸນາກວດສອບວ່າທ່ານບໍ່ໄດ້ປັດໃກ້ກັບທາງລຸ່ມຂອງໜ້າຈໍເກີນໄປ"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ເພື່ອປ່ຽນຄວາມລະອຽດອ່ອນຂອງທ່າທາງກັບຄືນ, ໃຫ້ໄປຫາການຕັ້ງຄ່າ"</string>
@@ -95,6 +96,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ຮູບໜ້າຈໍ"</string>
     <string name="action_split" msgid="2098009717623550676">"ແບ່ງ"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"ແຕະແອັບອື່ນເພື່ອໃຊ້ໜ້າຈໍແຍກ"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"ເລືອກແອັບອື່ນເພື່ອໃຊ້ການແບ່ງໜ້າຈໍ"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"ຍົກເລີກ"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"ອອກຈາກາກນເລືອກການແບ່ງໜ້າຈໍ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"ເລືອກແອັບອື່ນເພື່ອໃຊ້ການແບ່ງໜ້າຈໍ"</string>
@@ -111,6 +113,8 @@
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ຮັບການແນະນຳແອັບໂດຍອີງໃສ່ສິ່ງທີ່ເຮັດປະຈຳຂອງທ່ານ"</string>
     <string name="taskbar_edu_pinning" msgid="6708550858580071558">"ກົດຕົວຂັ້ນຄ້າງໄວ້ເພື່ອປັກໝຸດແຖບໜ້າວຽກ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ເຮັດສິ່ງຕ່າງໆໄດ້ຫຼາຍຂຶ້ນດ້ວຍແຖບໜ້າວຽກ"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"ສະແດງແຖບໜ້າວຽກສະເໝີ"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ເພື່ອໃຫ້ແຖບໜ້າວຽກສະແດງຢູ່ລຸ່ມໜ້າຈໍຂອງທ່ານຢູ່ສະເໝີ, ໃຫ້ແຕະຕົວແບ່ງຄ້າງໄວ້"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ປິດ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ແລ້ວໆ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ໜ້າຫຼັກ"</string>

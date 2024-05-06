@@ -17,6 +17,7 @@ package com.android.quickstep.util;
 
 import static com.android.app.animation.Interpolators.DECELERATE;
 import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
@@ -43,7 +44,7 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.AllAppsSwipeController;
-import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -58,6 +59,7 @@ public class AnimatorControllerWithResistance {
         FROM_APP(0.75f, 0.5f, 1f, false),
         FROM_APP_TO_ALL_APPS(1f, 0.6f, 0.8f, false),
         FROM_APP_TABLET(1f, 0.7f, 1f, true),
+        FROM_APP_TABLET_GRID_ONLY(1f, 1f, 1f, true),
         FROM_APP_TO_ALL_APPS_TABLET(1f, 0.5f, 0.5f, false),
         FROM_OVERVIEW(1f, 0.75f, 0.5f, false);
 
@@ -200,7 +202,7 @@ public class AnimatorControllerWithResistance {
     public static <SCALE, TRANSLATION> PendingAnimation createRecentsResistanceAnim(
             RecentsParams<SCALE, TRANSLATION> params) {
         Rect startRect = new Rect();
-        PagedOrientationHandler orientationHandler = params.recentsOrientedState
+        RecentsPagedOrientationHandler orientationHandler = params.recentsOrientedState
                 .getOrientationHandler();
         params.recentsOrientedState.getActivityInterface()
                 .calculateTaskSize(params.context, params.dp, startRect, orientationHandler);
@@ -239,10 +241,10 @@ public class AnimatorControllerWithResistance {
         float stopResist =
                 params.resistanceParams.stopScalingAtTop ? 1f - startRect.top / endRectF.top : 1f;
         final TimeInterpolator scaleInterpolator = t -> {
-            if (t < startResist) {
+            if (t <= startResist) {
                 return t;
             }
-            if (t > stopResist) {
+            if (t >= stopResist) {
                 return maxResist;
             }
             float resistProgress = Utilities.getProgress(t, startResist, stopResist);
@@ -304,7 +306,9 @@ public class AnimatorControllerWithResistance {
                 resistanceParams =
                         recentsOrientedState.getActivityInterface().allowAllAppsFromOverview()
                                 ? RecentsResistanceParams.FROM_APP_TO_ALL_APPS_TABLET
-                                : RecentsResistanceParams.FROM_APP_TABLET;
+                                : enableGridOnlyOverview()
+                                        ? RecentsResistanceParams.FROM_APP_TABLET_GRID_ONLY
+                                        : RecentsResistanceParams.FROM_APP_TABLET;
             } else {
                 resistanceParams =
                         recentsOrientedState.getActivityInterface().allowAllAppsFromOverview()

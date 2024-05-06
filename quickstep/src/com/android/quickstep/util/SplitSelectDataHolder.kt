@@ -87,6 +87,7 @@ class SplitSelectDataHolder(
     @StagePosition
     private var initialStagePosition: Int = STAGE_POSITION_UNDEFINED
     private var itemInfo: ItemInfo? = null
+    private var secondItemInfo: ItemInfo? = null
     private var splitEvent: EventEnum? = null
 
     private var initialTaskId: Int = INVALID_TASK_ID
@@ -144,8 +145,9 @@ class SplitSelectDataHolder(
      * To be called as soon as user selects the second task (even if animations aren't complete)
      * @param taskId The second task that will be launched.
      */
-    fun setSecondTask(taskId: Int) {
+    fun setSecondTask(taskId: Int, itemInfo: ItemInfo) {
         secondTaskId = taskId
+        secondItemInfo = itemInfo
     }
 
     /**
@@ -153,9 +155,10 @@ class SplitSelectDataHolder(
      * @param intent The second intent that will be launched.
      * @param user The user of that intent.
      */
-    fun setSecondTask(intent: Intent, user: UserHandle) {
+    fun setSecondTask(intent: Intent, user: UserHandle, itemInfo: ItemInfo) {
         secondIntent = intent
         secondUser = user
+        secondItemInfo = itemInfo
     }
 
     /**
@@ -163,9 +166,10 @@ class SplitSelectDataHolder(
      * Sets [secondUser] from that of the pendingIntent
      * @param pendingIntent The second PendingIntent that will be launched.
      */
-    fun setSecondTask(pendingIntent: PendingIntent) {
+    fun setSecondTask(pendingIntent: PendingIntent, itemInfo: ItemInfo) {
         secondPendingIntent = pendingIntent
         secondUser = pendingIntent.creatorUserHandle
+        secondItemInfo = itemInfo
     }
 
     /**
@@ -173,8 +177,8 @@ class SplitSelectDataHolder(
      * an extra intent from their RemoteResponse.
      * See [android.widget.RemoteViews.RemoteResponse.getLaunchOptions].first
      */
-    fun setSecondWidget(pendingIntent: PendingIntent, widgetIntent: Intent?) {
-        setSecondTask(pendingIntent)
+    fun setSecondWidget(pendingIntent: PendingIntent, widgetIntent: Intent?, itemInfo: ItemInfo) {
+        setSecondTask(pendingIntent, itemInfo)
         widgetSecondIntent = widgetIntent
     }
 
@@ -405,6 +409,10 @@ class SplitSelectDataHolder(
 
     fun getItemInfo(): ItemInfo? {
         return itemInfo
+    }
+
+    fun getSecondItemInfo(): ItemInfo? {
+        return secondItemInfo
     }
 
     private fun isSecondTaskIntentSet(): Boolean {

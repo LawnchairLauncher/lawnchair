@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
+import static com.android.launcher3.Flags.enableUnfoldStateAnimation;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
@@ -67,6 +68,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistUtils;
+import com.android.quickstep.util.unfold.ProxyUnfoldTransitionProvider;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -74,18 +76,19 @@ import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.SmartspaceState;
+import com.android.systemui.unfold.config.ResourceUnfoldTransitionConfig;
 import com.android.systemui.unfold.progress.IUnfoldAnimation;
 import com.android.systemui.unfold.progress.IUnfoldTransitionListener;
 import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.bubbles.IBubbles;
 import com.android.wm.shell.bubbles.IBubblesListener;
+import com.android.wm.shell.common.pip.IPip;
+import com.android.wm.shell.common.pip.IPipAnimationListener;
 import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 import com.android.wm.shell.desktopmode.IDesktopMode;
 import com.android.wm.shell.desktopmode.IDesktopTaskListener;
 import com.android.wm.shell.draganddrop.IDragAndDrop;
 import com.android.wm.shell.onehanded.IOneHanded;
-import com.android.wm.shell.pip.IPip;
-import com.android.wm.shell.pip.IPipAnimationListener;
 import com.android.wm.shell.recents.IRecentTasks;
 import com.android.wm.shell.recents.IRecentTasksListener;
 import com.android.wm.shell.splitscreen.ISplitScreen;
@@ -106,7 +109,7 @@ import java.util.List;
 /**
  * Holds the reference to SystemUI.
  */
-public class SystemUiProxy implements ISystemUiProxy {
+public class SystemUiProxy implements ISystemUiProxy, NavHandle {
     private static final String TAG = SystemUiProxy.class.getSimpleName();
 
     public static final MainThreadInitializedObject<SystemUiProxy> INSTANCE =
@@ -177,7 +180,10 @@ public class SystemUiProxy implements ISystemUiProxy {
      */
     private final PendingIntent mRecentsPendingIntent;
 
-    public SystemUiProxy(Context context) {
+    @Nullable
+    private final ProxyUnfoldTransitionProvider mUnfoldTransitionProvider;
+
+    private SystemUiProxy(Context context) {
         mContext = context;
         mAsyncHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(), this::handleMessageAsync);
         final Intent baseIntent = new Intent().setPackage(mContext.getPackageName());
@@ -187,6 +193,10 @@ public class SystemUiProxy implements ISystemUiProxy {
         mRecentsPendingIntent = PendingIntent.getActivity(mContext, 0, baseIntent,
                 PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT
                         | Intent.FILL_IN_COMPONENT, options.toBundle());
+
+        mUnfoldTransitionProvider =
+                (enableUnfoldStateAnimation() && new ResourceUnfoldTransitionConfig().isEnabled())
+                         ? new ProxyUnfoldTransitionProvider() : null;
     }
 
     @Override
@@ -251,7 +261,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         mRecentTasks = recentTasks;
         mBackAnimation = backAnimation;
         mDesktopMode = desktopMode;
-        mUnfoldAnimation = unfoldAnimation;
+        mUnfoldAnimation = enableUnfoldStateAnimation() ? null : unfoldAnimation;
         mDragAndDrop = dragAndDrop;
         linkToDeath();
         // re-attach the listeners once missing due to setProxy has not been initialized yet.
@@ -272,6 +282,19 @@ public class SystemUiProxy implements ISystemUiProxy {
         setAssistantOverridesRequested(
                 AssistUtils.newInstance(mContext).getSysUiAssistOverrideInvocationTypes());
         mStateChangeCallbacks.forEach(Runnable::run);
+
+        if (mUnfoldTransitionProvider != null) {
+            if (unfoldAnimation != null) {
+                try {
+                    unfoldAnimation.setListener(mUnfoldTransitionProvider);
+                    mUnfoldTransitionProvider.setActive(true);
+                } catch (RemoteException e) {
+                    // Ignore
+                }
+            } else {
+                mUnfoldTransitionProvider.setActive(false);
+            }
+        }
     }
 
     /**
@@ -630,10 +653,11 @@ public class SystemUiProxy implements ISystemUiProxy {
      * should be responsible for cleaning up the overlay.
      */
     public void stopSwipePipToHome(int taskId, ComponentName componentName, Rect destinationBounds,
-            SurfaceControl overlay) {
+            SurfaceControl overlay, Rect appBounds) {
         if (mPip != null) {
             try {
-                mPip.stopSwipePipToHome(taskId, componentName, destinationBounds, overlay);
+                mPip.stopSwipePipToHome(taskId, componentName, destinationBounds, overlay,
+                        appBounds);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call stopSwipePipToHome");
             }
@@ -707,15 +731,12 @@ public class SystemUiProxy implements ISystemUiProxy {
     /**
      * Tells SysUI to show the bubble with the provided key.
      * @param key the key of the bubble to show.
-     * @param bubbleBarOffsetX the offset of the bubble bar from the edge of the screen on the X
-     *                         axis.
-     * @param bubbleBarOffsetY the offset of the bubble bar from the edge of the screen on the Y
-     *                         axis.
+     * @param bubbleBarBounds bounds of the bubble bar in display coordinates
      */
-    public void showBubble(String key, int bubbleBarOffsetX, int bubbleBarOffsetY) {
+    public void showBubble(String key, Rect bubbleBarBounds) {
         if (mBubbles != null) {
             try {
-                mBubbles.showBubble(key, bubbleBarOffsetX, bubbleBarOffsetY);
+                mBubbles.showBubble(key, bubbleBarBounds);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call showBubble");
             }
@@ -1448,6 +1469,11 @@ public class SystemUiProxy implements ISystemUiProxy {
         } catch (RemoteException e) {
             Log.e(TAG, "Failed call setUnfoldAnimationListener", e);
         }
+    }
+
+    @Nullable
+    public ProxyUnfoldTransitionProvider getUnfoldTransitionProvider() {
+        return mUnfoldTransitionProvider;
     }
 
     //

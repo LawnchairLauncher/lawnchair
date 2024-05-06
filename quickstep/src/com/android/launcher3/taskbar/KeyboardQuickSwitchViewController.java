@@ -15,23 +15,29 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_UNDEFINED;
+
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.animation.Animator;
+import android.app.ActivityOptions;
 import android.view.KeyEvent;
-import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.window.RemoteTransition;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
-import com.android.launcher3.taskbar.overlay.TaskbarOverlayDragLayer;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.GroupTask;
+import com.android.quickstep.util.SlideInRemoteTransition;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.QuickStepContract;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -76,9 +82,7 @@ public class KeyboardQuickSwitchViewController {
             boolean updateTasks,
             int currentFocusIndexOverride,
             boolean onDesktop) {
-        TaskbarOverlayDragLayer dragLayer = mOverlayContext.getDragLayer();
-        dragLayer.addView(mKeyboardQuickSwitchView);
-        dragLayer.runOnClickOnce(v -> closeQuickSwitchView(true));
+        mOverlayContext.getDragLayer().addView(mKeyboardQuickSwitchView);
         mOnDesktop = onDesktop;
 
         mKeyboardQuickSwitchView.applyLoadPlan(
@@ -117,9 +121,12 @@ public class KeyboardQuickSwitchViewController {
      * index will be focused.
      */
     protected int launchFocusedTask() {
-        // Launch the second-most recent task if the user quick switches too quickly, if possible.
-        return launchTaskAt(mCurrentFocusIndex == -1
-                ? (mControllerCallbacks.getTaskCount() > 1 ? 1 : 0) : mCurrentFocusIndex);
+        if (mCurrentFocusIndex != -1) {
+            return launchTaskAt(mCurrentFocusIndex);
+        }
+        // If the user quick switches too quickly, updateCurrentFocusIndex might not have run.
+        return launchTaskAt(mControllerCallbacks.isFirstTaskRunning()
+                && mControllerCallbacks.getTaskCount() > 1 ? 1 : 0);
     }
 
     private int launchTaskAt(int index) {
@@ -129,32 +136,37 @@ public class KeyboardQuickSwitchViewController {
         }
         // Even with a valid index, this can be null if the user tries to quick switch before the
         // views have been added in the KeyboardQuickSwitchView.
-        View taskView = mKeyboardQuickSwitchView.getTaskAt(index);
         GroupTask task = mControllerCallbacks.getTaskAt(index);
         if (task == null) {
             return Math.max(0, index);
         }
-        Task task2 = task.task2;
-        int runningTaskId = ActivityManagerWrapper.getInstance().getRunningTask().taskId;
-        if (runningTaskId == task.task1.key.id
-                || (task2 != null && runningTaskId == task2.key.id)) {
+        if (mControllerCallbacks.isTaskRunning(task)) {
             // Ignore attempts to run the selected task if it is already running.
             return -1;
         }
 
+        TaskbarActivityContext context = mControllers.taskbarActivityContext;
+        RemoteTransition remoteTransition = new RemoteTransition(new SlideInRemoteTransition(
+                Utilities.isRtl(mControllers.taskbarActivityContext.getResources()),
+                context.getDeviceProfile().overviewPageSpacing,
+                QuickStepContract.getWindowCornerRadius(context),
+                AnimationUtils.loadInterpolator(
+                        context, android.R.interpolator.fast_out_extra_slow_in)));
         if (mOnDesktop) {
             UI_HELPER_EXECUTOR.execute(() ->
                     SystemUiProxy.INSTANCE.get(mKeyboardQuickSwitchView.getContext())
                             .showDesktopApp(task.task1.key.id));
-        } else if (task2 == null) {
-            UI_HELPER_EXECUTOR.execute(() ->
-                    ActivityManagerWrapper.getInstance().startActivityFromRecents(
-                            task.task1.key,
-                            mControllers.taskbarActivityContext.getActivityLaunchOptions(
-                                    taskView == null ? mKeyboardQuickSwitchView : taskView, null)
-                                    .options));
+        } else if (task.task2 == null) {
+            UI_HELPER_EXECUTOR.execute(() -> {
+                ActivityOptions activityOptions = mControllers.taskbarActivityContext
+                        .makeDefaultActivityOptions(SPLASH_SCREEN_STYLE_UNDEFINED).options;
+                activityOptions.setRemoteTransition(remoteTransition);
+
+                ActivityManagerWrapper.getInstance().startActivityFromRecents(
+                        task.task1.key, activityOptions);
+            });
         } else {
-            mControllers.uiController.launchSplitTasks(task);
+            mControllers.uiController.launchSplitTasks(task, remoteTransition);
         }
         return -1;
     }
@@ -184,11 +196,16 @@ public class KeyboardQuickSwitchViewController {
                     && keyCode != KeyEvent.KEYCODE_DPAD_RIGHT
                     && keyCode != KeyEvent.KEYCODE_DPAD_LEFT
                     && keyCode != KeyEvent.KEYCODE_GRAVE
-                    && keyCode != KeyEvent.KEYCODE_ESCAPE) {
+                    && keyCode != KeyEvent.KEYCODE_ESCAPE
+                    && keyCode != KeyEvent.KEYCODE_ENTER) {
                 return false;
             }
             if (keyCode == KeyEvent.KEYCODE_GRAVE || keyCode == KeyEvent.KEYCODE_ESCAPE) {
                 closeQuickSwitchView(true);
+                return true;
+            }
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                launchTaskAt(mCurrentFocusIndex);
                 return true;
             }
             if (!allowTraversal) {
@@ -220,9 +237,10 @@ public class KeyboardQuickSwitchViewController {
             mCurrentFocusIndex = index;
         }
 
-        void launchTappedTask(int index) {
-            KeyboardQuickSwitchViewController.this.launchTaskAt(index);
-            closeQuickSwitchView(true);
+        void launchTaskAt(int index) {
+            mCurrentFocusIndex = Utilities.boundToRange(
+                    index, 0, mKeyboardQuickSwitchView.getChildCount() - 1);
+            mControllers.taskbarActivityContext.launchKeyboardFocusedTask();
         }
 
         void updateThumbnailInBackground(Task task, Consumer<ThumbnailData> callback) {

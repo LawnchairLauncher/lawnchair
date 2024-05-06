@@ -23,6 +23,7 @@
     android:importantForAccessibility="yes"
     android:focusable="true"
     launcher:appIconSize="48dp"
+    launcher:collapsable="false"
     android:descendantFocusability="afterDescendants"
     android:background="@drawable/bg_widgets_header_two_pane" >
 

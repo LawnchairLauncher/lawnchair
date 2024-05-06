@@ -29,8 +29,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.LayoutInflater;
@@ -120,7 +122,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     boolean mAnimating = false;
 
-    private Alarm mOpenAlarm = new Alarm();
+    private Alarm mOpenAlarm = new Alarm(Looper.getMainLooper());
 
     private boolean mForceHideDot;
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
@@ -631,6 +633,20 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             mDotParams.dotColor = mBackground.getDotColor();
             mDotRenderer.draw(canvas, mDotParams);
         }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        boolean shouldCenterIcon = mActivity.getDeviceProfile().iconCenterVertically;
+        if (shouldCenterIcon) {
+            int iconSize = mActivity.getDeviceProfile().iconSizePx;
+            Paint.FontMetrics fm = mFolderName.getPaint().getFontMetrics();
+            int cellHeightPx = iconSize + mFolderName.getCompoundDrawablePadding()
+                    + (int) Math.ceil(fm.bottom - fm.top);
+            setPadding(getPaddingLeft(), (MeasureSpec.getSize(heightMeasureSpec)
+                    - cellHeightPx) / 2, getPaddingRight(), getPaddingBottom());
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     /** Sets the visibility of the icon's title text */

@@ -28,8 +28,13 @@ import android.os.UserManager;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.UserBadgeDrawable;
+import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -154,10 +159,25 @@ public class UserCache implements SafeCloseable {
                 .orElse(Process.myUserHandle());
     }
 
+    @VisibleForTesting
+    public void putToCache(UserHandle userHandle, UserIconInfo info) {
+        mUserToSerialMap.put(userHandle, info);
+    }
+
     /**
      * @see UserManager#getUserProfiles()
      */
     public List<UserHandle> getUserProfiles() {
         return List.copyOf(mUserToSerialMap.keySet());
+    }
+
+    /**
+     * Get a non-themed {@link UserBadgeDrawable} based on the provided {@link UserHandle}.
+     */
+    @Nullable
+    public static UserBadgeDrawable getBadgeDrawable(Context context, UserHandle userHandle) {
+        return (UserBadgeDrawable) BitmapInfo.LOW_RES_INFO.withFlags(UserCache.getInstance(context)
+                        .getUserInfo(userHandle).applyBitmapInfoFlags(FlagOp.NO_OP))
+                .getBadgeDrawable(context, false /* isThemed */);
     }
 }

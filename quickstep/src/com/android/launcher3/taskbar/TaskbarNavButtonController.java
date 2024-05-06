@@ -102,6 +102,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     static final int BUTTON_A11Y = BUTTON_IME_SWITCH << 1;
     static final int BUTTON_QUICK_SETTINGS = BUTTON_A11Y << 1;
     static final int BUTTON_NOTIFICATIONS = BUTTON_QUICK_SETTINGS << 1;
+    static final int BUTTON_SPACE = BUTTON_NOTIFICATIONS << 1;
 
     private static final int SCREEN_UNPIN_COMBO = BUTTON_BACK | BUTTON_RECENTS;
     private int mLongPressedButtons = 0;
@@ -123,6 +124,9 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     }
 
     public void onButtonClick(@TaskbarButton int buttonType, View view) {
+        if (buttonType == BUTTON_SPACE) {
+            return;
+        }
         // Provide the same haptic feedback that the system offers for virtual keys.
         view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         switch (buttonType) {
@@ -156,6 +160,9 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     }
 
     public boolean onButtonLongClick(@TaskbarButton int buttonType, View view) {
+        if (buttonType == BUTTON_SPACE) {
+            return false;
+        }
         // Provide the same haptic feedback that the system offers for virtual keys.
         view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         switch (buttonType) {

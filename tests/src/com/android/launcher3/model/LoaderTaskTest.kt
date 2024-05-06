@@ -1,11 +1,10 @@
 package com.android.launcher3.model
 
-import android.content.Context
+import android.appwidget.AppWidgetManager
 import android.os.UserHandle
 import android.platform.test.flag.junit.SetFlagsRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.Flags
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
@@ -15,17 +14,20 @@ import com.android.launcher3.icons.IconCache
 import com.android.launcher3.icons.cache.CachingLogic
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler
 import com.android.launcher3.pm.UserCache
+import com.android.launcher3.ui.TestViewHelpers
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
+import com.android.launcher3.util.LauncherModelHelper.SandboxModelContext
 import com.android.launcher3.util.LooperIdleLock
 import com.android.launcher3.util.UserIconInfo
-import com.android.launcher3.util.rule.StaticMockitoRule
 import com.google.common.truth.Truth
 import java.util.concurrent.CountDownLatch
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.times
@@ -33,12 +35,14 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.Spy
+import org.mockito.kotlin.doReturn
 
 private const val INSERTION_STATEMENT_FILE = "databases/workspace_items.sql"
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class LoaderTaskTest {
+    private var context = SandboxModelContext()
     @Mock private lateinit var app: LauncherAppState
     @Mock private lateinit var bgAllAppsList: AllAppsList
     @Mock private lateinit var modelDelegate: ModelDelegate
@@ -52,21 +56,24 @@ class LoaderTaskTest {
 
     @Spy private var userManagerState: UserManagerState? = UserManagerState()
 
-    @get:Rule(order = 0) val staticMockitoRule = StaticMockitoRule(UserCache::class.java)
-    @get:Rule(order = 1)
-    val setFlagsRule = SetFlagsRule()
+    @get:Rule val setFlagsRule = SetFlagsRule()
 
     @Before
     fun setup() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        MockitoAnnotations.initMocks(this)
+
         val idp =
-            InvariantDeviceProfile.INSTANCE[context].apply {
+            InvariantDeviceProfile().apply {
                 numRows = 5
                 numColumns = 6
                 numDatabaseHotseatIcons = 5
             }
+        context.putObject(InvariantDeviceProfile.INSTANCE, idp)
+        context.putObject(LauncherAppState.INSTANCE, app)
 
-        MockitoAnnotations.initMocks(this)
+        doReturn(TestViewHelpers.findWidgetProvider(false))
+            .`when`(context.spyService(AppWidgetManager::class.java))
+            .getAppWidgetInfo(anyInt())
         `when`(app.context).thenReturn(context)
         `when`(app.model).thenReturn(launcherModel)
         `when`(launcherModel.beginLoader(any(LoaderTask::class.java))).thenReturn(transaction)
@@ -77,12 +84,21 @@ class LoaderTaskTest {
         `when`(launcherBinder.newIdleLock(any(LoaderTask::class.java))).thenReturn(idleLock)
         `when`(idleLock.awaitLocked(1000)).thenReturn(false)
         `when`(iconCache.updateHandler).thenReturn(iconCacheUpdateHandler)
-        `when`(UserCache.getInstance(any(Context::class.java))).thenReturn(userCache)
+        context.putObject(UserCache.INSTANCE, userCache)
+    }
+
+    @After
+    fun tearDown() {
+        context.onDestroy()
     }
 
     @Test
     fun loadsDataProperly() =
         with(BgDataModel()) {
+            val MAIN_HANDLE = UserHandle.of(0)
+            val mockUserHandles = arrayListOf<UserHandle>(MAIN_HANDLE)
+            `when`(userCache.userProfiles).thenReturn(mockUserHandles)
+            `when`(userCache.getUserInfo(MAIN_HANDLE)).thenReturn(UserIconInfo(MAIN_HANDLE, 1))
             LoaderTask(app, bgAllAppsList, this, modelDelegate, launcherBinder)
                 .runSyncOnBackgroundThread()
             Truth.assertThat(workspaceItems.size).isAtLeast(25)

@@ -22,7 +22,7 @@
             <startPadding launcher:fixedSize="0dp" />
             <endPadding launcher:fixedSize="34dp" />
             <gutter launcher:fixedSize="12dp" />
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <cellSize launcher:ofRemainderSpace="1" />
         </workspaceSpec>
 
         <!-- Height spec -->
@@ -32,7 +32,7 @@
             <startPadding launcher:fixedSize="0dp" />
             <endPadding launcher:fixedSize="24dp" />
             <gutter launcher:fixedSize="12dp" />
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <cellSize launcher:ofRemainderSpace="1" />
         </workspaceSpec>
 
         <!-- Width spec -->
@@ -42,7 +42,7 @@
             <startPadding launcher:fixedSize="16dp" />
             <endPadding launcher:fixedSize="64dp" />
             <gutter launcher:fixedSize="12dp" />
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <cellSize launcher:ofRemainderSpace="1" />
         </workspaceSpec>
         <workspaceSpec
             launcher:dimensionType="width"
@@ -50,7 +50,7 @@
             <startPadding launcher:fixedSize="36dp" />
             <endPadding launcher:fixedSize="80dp" />
             <gutter launcher:fixedSize="12dp" />
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <cellSize launcher:ofRemainderSpace="1" />
         </workspaceSpec>
         <workspaceSpec
             launcher:dimensionType="width"
@@ -58,7 +58,7 @@
             <startPadding launcher:fixedSize="0dp" />
             <endPadding launcher:fixedSize="36dp" />
             <gutter launcher:fixedSize="12dp" />
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <cellSize launcher:ofRemainderSpace="1" />
         </workspaceSpec>
     </specs>
 
@@ -71,7 +71,7 @@
             <startPadding launcher:fixedSize="2dp" />
             <endPadding launcher:fixedSize="2dp" />
             <gutter launcher:fixedSize="8dp" />
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <cellSize launcher:ofRemainderSpace="1" />
         </workspaceSpec>
 
         <!-- Width spec -->
@@ -81,7 +81,7 @@
             <startPadding launcher:fixedSize="1dp" />
             <endPadding launcher:fixedSize="1dp" />
             <gutter launcher:fixedSize="8dp" />
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <cellSize launcher:ofRemainderSpace="1" />
         </workspaceSpec>
     </specs>
 
@@ -122,7 +122,7 @@
             <startPadding launcher:fixedSize="22dp" />
             <endPadding launcher:fixedSize="22dp" />
             <gutter launcher:fixedSize="16dp" />
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <cellSize launcher:ofRemainderSpace="1" />
         </workspaceSpec>
     </specs>
 </workspaceSpecs>

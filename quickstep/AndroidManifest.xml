@@ -43,6 +43,12 @@
 
     <uses-permission android:name="android.permission.SYSTEM_APPLICATION_OVERLAY" />
 
+    <!--
+    Permission required to access profiles which are otherwise hidden
+    from being visible via APIs, e.g. private profile.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_HIDDEN_PROFILES_FULL" />
+
     <!-- Permission required to start a WidgetPickerActivity. -->
     <permission android:name="${packageName}.permission.START_WIDGET_PICKER_ACTIVITY"
         android:protectionLevel="signature|privileged" />
@@ -73,7 +79,7 @@
              android:clearTaskOnLaunch="true"
              android:stateNotNeeded="true"
              android:theme="@style/LauncherTheme"
-             android:screenOrientation="unspecified"
+             android:screenOrientation="behind"
              android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
              android:resizeableActivity="true"
              android:resumeWhilePausing="true"

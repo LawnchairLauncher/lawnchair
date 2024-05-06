@@ -41,7 +41,7 @@ public class CellLayoutTestUtils {
 
                 CellPosMapper.CellPos pos = launcher.getCellPosMapper().mapPresenterToModel(
                         params.getCellX(), params.getCellY(),
-                        launcher.getWorkspace().getIdForScreen(cellLayout), CONTAINER_DESKTOP);
+                        launcher.getWorkspace().getCellLayoutId(cellLayout), CONTAINER_DESKTOP);
                 int screenId = pos.screenId;
                 for (int j = boards.size(); j <= screenId; j++) {
                     boards.add(new CellLayoutBoard(cellLayout.getCountX(), cellLayout.getCountY()));

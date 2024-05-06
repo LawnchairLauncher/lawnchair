@@ -89,8 +89,7 @@ public class OverviewActions {
     private SelectModeButtons getSelectModeButtons() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get select mode buttons")) {
-            UiObject2 selectModeButtons = mLauncher.waitForLauncherObject("select_mode_buttons");
-            return new SelectModeButtons(selectModeButtons, mLauncher);
+            return new SelectModeButtons(mLauncher);
         }
     }
 

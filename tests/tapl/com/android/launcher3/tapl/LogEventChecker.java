@@ -18,6 +18,8 @@ package com.android.launcher3.tapl;
 import static com.android.launcher3.testing.shared.TestProtocol.SEQUENCE_MAIN;
 import static com.android.launcher3.testing.shared.TestProtocol.SEQUENCE_PILFER;
 import static com.android.launcher3.testing.shared.TestProtocol.SEQUENCE_TIS;
+import static com.android.launcher3.testing.shared.TestProtocol.SUCCESSFUL_GESTURE_MISMATCH_EVENTS;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 
 import android.os.SystemClock;
 
@@ -88,6 +90,7 @@ public class LogEventChecker {
     }
 
     String verify(long waitForExpectedCountMs, boolean successfulGesture) {
+        testLogD(SUCCESSFUL_GESTURE_MISMATCH_EVENTS, "LogEventChecker.java - verify");
         final ListMap<String> actualEvents = finishSync(waitForExpectedCountMs);
         if (actualEvents == null) return "null event sequences because launcher likely died";
 

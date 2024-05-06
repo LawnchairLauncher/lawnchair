@@ -16,7 +16,6 @@
 package com.android.launcher3.appiconmenu;
 
 import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
-import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +31,6 @@ import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -41,12 +39,6 @@ import org.junit.Test;
  * we can launch a shortcut from it.
  */
 public class TaplAppIconMenuTest extends AbstractLauncherUiTest {
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        initialize(this);
-    }
 
     private boolean isOptionsPopupVisible(Launcher launcher) {
         final ArrowPopup<?> popup = launcher.getOptionsPopup();

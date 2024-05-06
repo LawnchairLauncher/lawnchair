@@ -27,6 +27,7 @@ import android.os.UserHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.LauncherState
 import com.android.launcher3.logging.StatsLogManager
+import com.android.launcher3.logging.StatsLogManager.StatsLogger
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
@@ -45,6 +46,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.any
+import org.mockito.Mockito.`when`
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -56,13 +59,14 @@ class SplitSelectStateControllerTest {
     private val systemUiProxy: SystemUiProxy = mock()
     private val depthController: DepthController = mock()
     private val statsLogManager: StatsLogManager = mock()
+    private val statsLogger: StatsLogger = mock()
     private val stateManager: StateManager<LauncherState> = mock()
     private val handler: Handler = mock()
     private val context: StatefulActivity<*> = mock()
     private val recentsModel: RecentsModel = mock()
     private val pendingIntent: PendingIntent = mock()
 
-    lateinit var splitSelectStateController: SplitSelectStateController
+    private lateinit var splitSelectStateController: SplitSelectStateController
 
     private val primaryUserHandle = UserHandle(ActivityManager.RunningTaskInfo().userId)
     private val nonPrimaryUserHandle = UserHandle(ActivityManager.RunningTaskInfo().userId + 10)
@@ -74,6 +78,9 @@ class SplitSelectStateControllerTest {
 
     @Before
     fun setup() {
+        `when`(statsLogManager.logger()).thenReturn(statsLogger)
+        `when`(statsLogger.withInstanceId(any())).thenReturn(statsLogger)
+        `when`(statsLogger.withItemInfo(any())).thenReturn(statsLogger)
         splitSelectStateController =
             SplitSelectStateController(
                 context,
@@ -107,7 +114,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> { assertNull("No tasks should have matched", it[0] /*task*/) }
+            Consumer<Array<Task>> { assertNull("No tasks should have matched", it[0] /*task*/) }
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
@@ -148,7 +155,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals(
                     "ComponentName package mismatched",
                     it[0].key.baseIntent.component?.packageName,
@@ -201,7 +208,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> { assertNull("No tasks should have matched", it[0] /*task*/) }
+            Consumer<Array<Task>> { assertNull("No tasks should have matched", it[0] /*task*/) }
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
@@ -244,7 +251,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals(
                     "ComponentName package mismatched",
                     it[0].key.baseIntent.component?.packageName,
@@ -298,7 +305,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals(
                     "ComponentName package mismatched",
                     it[0].key.baseIntent.component?.packageName,
@@ -350,7 +357,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals("Expected array length 2", 2, it.size)
                 assertNull("No tasks should have matched", it[0] /*task*/)
                 assertEquals(
@@ -403,7 +410,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals("Expected array length 2", 2, it.size)
                 assertEquals(
                     "ComponentName package mismatched",
@@ -459,7 +466,7 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
+            Consumer<Array<Task>> {
                 assertEquals("Expected array length 2", 2, it.size)
                 assertEquals(
                     "ComponentName package mismatched",
@@ -532,8 +539,8 @@ class SplitSelectStateControllerTest {
         // Assertions happen in the callback we get from what we pass into
         // #findLastActiveTasksAndRunCallback
         val taskConsumer =
-            Consumer<List<Task>> {
-                assertEquals("Expected array length 1", 1, it.size)
+            Consumer<Array<Task>> {
+                assertEquals("Expected array length 2", 2, it.size)
                 assertEquals("Found wrong task", it[0], groupTask2.task1)
             }
 
@@ -593,9 +600,10 @@ class SplitSelectStateControllerTest {
     @Test
     fun secondPendingIntentSet() {
         val itemInfo = ItemInfo()
+        val itemInfo2 = ItemInfo()
         whenever(pendingIntent.creatorUserHandle).thenReturn(primaryUserHandle)
         splitSelectStateController.setInitialTaskSelect(null, 0, itemInfo, null, 1)
-        splitSelectStateController.setSecondTask(pendingIntent)
+        splitSelectStateController.setSecondTask(pendingIntent, itemInfo2)
         assertTrue(splitSelectStateController.isBothSplitAppsConfirmed)
     }
 

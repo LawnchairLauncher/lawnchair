@@ -17,6 +17,7 @@ package com.android.launcher3;
 
 import static com.android.app.animation.Interpolators.ACCELERATE_2;
 import static com.android.app.animation.Interpolators.DECELERATE_2;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
@@ -427,8 +428,17 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         if (this != NORMAL) {
             StateManager<LauncherState> lsm = launcher.getStateManager();
             LauncherState lastState = lsm.getLastState();
-            lsm.goToState(lastState);
+            lsm.goToState(lastState, forEndCallback(this::onBackPressCompleted));
         }
+    }
+
+    /**
+     * To be called if back press is completed in a launcher state.
+     *
+     * @param success whether back press animation was successful or canceled.
+     */
+    protected void onBackPressCompleted(boolean success) {
+        // Do nothing. To be overridden by child class.
     }
 
     /**

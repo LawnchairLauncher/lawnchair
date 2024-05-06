@@ -31,6 +31,7 @@
     <!-- Hotseat -->
     <dimen name="dynamic_grid_hotseat_bottom_tall_padding">0dp</dimen>
     <dimen name="spring_loaded_hotseat_top_margin">76dp</dimen>
+    <dimen name="spring_loaded_hotseat_top_margin_wide_portrait">64dp</dimen>
 
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 
@@ -47,6 +48,7 @@
     <dimen name="drop_target_vertical_gap">20dp</dimen>
     <dimen name="drop_target_top_margin">32dp</dimen>
     <dimen name="drop_target_bottom_margin">16dp</dimen>
+    <dimen name="drop_target_bottom_margin_wide_portrait">32dp</dimen>
 
     <!-- App Widget resize frame -->
     <!-- Button drop target bar -->
@@ -56,7 +58,7 @@
     <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
-    <dimen name="resize_frame_margin">22dp</dimen>
+    <dimen name="resize_frame_margin">23dp</dimen>
     <dimen name="resize_frame_invalid_drag_across_two_panel_opacity_margin">24dp</dimen>
 
     <!-- App widget reconfigure button -->
@@ -103,6 +105,7 @@
     <dimen name="all_apps_search_bar_content_overlap">24dp</dimen>
     <dimen name="all_apps_search_bar_bottom_padding">30dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
+    <dimen name="all_apps_search_top_row_extra_height">4dp</dimen>
     <dimen name="all_apps_header_pill_height">48dp</dimen>
     <dimen name="all_apps_header_pill_corner_radius">12dp</dimen>
     <dimen name="all_apps_header_tab_height">48dp</dimen>
@@ -155,6 +158,7 @@
     <dimen name="work_edu_card_margin">16dp</dimen>
     <dimen name="work_edu_card_radius">16dp</dimen>
     <dimen name="work_edu_card_bottom_margin">26dp</dimen>
+    <dimen name="work_edu_card_text_end_margin">32dp</dimen>
     <dimen name="work_apps_paused_button_stroke">1dp</dimen>
 
     <dimen name="work_card_margin">24dp</dimen>
@@ -174,15 +178,16 @@
     <dimen name="widget_cell_vertical_padding">8dp</dimen>
     <dimen name="widget_cell_horizontal_padding">16dp</dimen>
     <dimen name="widget_cell_font_size">14sp</dimen>
+    <dimen name="widget_cell_app_icon_size">24dp</dimen>
+    <dimen name="widget_cell_app_icon_padding">8dp</dimen>
 
     <dimen name="widget_tabs_button_horizontal_padding">4dp</dimen>
     <dimen name="widget_tabs_horizontal_padding">16dp</dimen>
     <dimen name="widget_apps_tabs_vertical_padding">6dp</dimen>
     <dimen name="widget_picker_landscape_tablet_left_right_margin">117dp</dimen>
     <dimen name="widget_picker_two_panels_left_right_margin">0dp</dimen>
-
-    <dimen name="recommended_widgets_table_vertical_padding">8dp</dimen>
-
+    <dimen name="widget_recommendations_table_vertical_padding">8dp</dimen>
+    <dimen name="widget_recommendations_table_horizontal_padding">16dp</dimen>
     <!-- Bottom margin for the search and recommended widgets container without work profile -->
     <dimen name="search_and_recommended_widgets_container_bottom_margin">16dp</dimen>
     <!-- Bottom margin for the search and recommended widgets container with work profile -->
@@ -194,6 +199,8 @@
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
     <dimen name="widget_list_entry_spacing">2dp</dimen>
     <dimen name="widget_list_horizontal_margin">16dp</dimen>
+    <!-- Margin applied to the recycler view with search bar & the list of widget apps below it. -->
+    <dimen name="widget_list_left_pane_horizontal_margin">0dp</dimen>
     <dimen name="widget_list_horizontal_margin_two_pane">24dp</dimen>
 
     <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
@@ -368,6 +375,11 @@
     <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
     <dimen name="taskbar_phone_size">@*android:dimen/navigation_bar_frame_height</dimen>
+    <dimen name="taskbar_phone_home_button_size">80dp</dimen>
+    <dimen name="taskbar_phone_content_padding">8dp</dimen>
+    <dimen name="taskbar_phone_rounded_corner_content_margin">
+        @*android:dimen/rounded_corner_content_padding
+    </dimen>
     <dimen name="taskbar_stashed_size">0dp</dimen>
     <dimen name="qsb_widget_height">0dp</dimen>
     <dimen name="qsb_shadow_height">0dp</dimen>
@@ -392,6 +404,9 @@
     <dimen name="taskbar_button_margin_split">0dp</dimen>
     <dimen name="taskbar_button_margin_6_5">0dp</dimen>
 
+    <!--- Floating Ime Inset height-->
+    <dimen name="floating_ime_inset_height">0dp</dimen>
+
     <!-- Bubble bar (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="bubblebar_hotseat_adjustment_threshold">0dp</dimen>
 
@@ -405,11 +420,6 @@
     <dimen name="task_thumbnail_icon_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
-    <dimen name="task_thumbnail_icon_menu_max_width">0dp</dimen>
-    <dimen name="task_thumbnail_icon_menu_start_margin">0dp</dimen>
-    <dimen name="task_thumbnail_icon_menu_background_max_width">0dp</dimen>
-    <dimen name="task_thumbnail_icon_menu_corner_radius">0dp</dimen>
-    <dimen name="task_thumbnail_icon_menu_drawable_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_menu_drawable_touch_size">0dp</dimen>
     <dimen name="task_menu_edge_padding">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
@@ -436,6 +446,9 @@
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
     <dimen name="split_instructions_start_margin_cancel">8dp</dimen>
 
+    <dimen name="focus_outline_radius">16dp</dimen>
+    <dimen name="focus_outline_stroke_width">3dp</dimen>
+
     <!-- Workspace grid visualization parameters -->
     <dimen name="grid_visualization_rounding_radius">16dp</dimen>
     <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>
@@ -447,7 +460,6 @@
     <dimen name="padded_rounded_button_padding">8dp</dimen>
 
     <!-- Bottom sheet related parameters -->
-    <dimen name="bottom_sheet_extra_top_padding">0dp</dimen>
     <dimen name="bottom_sheet_handle_area_height">36dp</dimen>
     <dimen name="bottom_sheet_handle_width">32dp</dimen>
     <dimen name="bottom_sheet_handle_height">4dp</dimen>
@@ -469,12 +481,23 @@
     <dimen name="ps_container_corner_radius">24dp</dimen>
     <dimen name="ps_header_height">64dp</dimen>
     <dimen name="ps_header_relative_layout_height">48dp</dimen>
-    <dimen name="ps_header_image_height">36dp</dimen>
+    <dimen name="ps_header_image_height">48dp</dimen>
     <dimen name="ps_header_text_height">24dp</dimen>
     <dimen name="ps_header_layout_margin">16dp</dimen>
     <dimen name="ps_header_settings_icon_margin_end">8dp</dimen>
     <dimen name="ps_header_text_size">16sp</dimen>
-    <dimen name="ps_button_height">36dp</dimen>
-    <dimen name="ps_button_width">36dp</dimen>
+    <dimen name="ps_button_height">40dp</dimen>
+    <dimen name="ps_button_width">40dp</dimen>
     <dimen name="ps_lock_button_width">89dp</dimen>
+    <dimen name="ps_app_divider_padding">16dp</dimen>
+    <dimen name="ps_lock_corner_radius">20dp</dimen>
+    <dimen name="ps_lock_icon_size">20dp</dimen>
+    <dimen name="ps_lock_icon_margin_top">10dp</dimen>
+    <dimen name="ps_lock_icon_margin_bottom">10dp</dimen>
+    <dimen name="ps_lock_icon_text_margin_start_expanded">8dp</dimen>
+    <dimen name="ps_lock_icon_text_margin_end_expanded">6dp</dimen>
+    <dimen name="ps_lock_button_background_padding">10dp</dimen>
+
+    <!-- WindowManagerProxy -->
+    <dimen name="max_width_and_height_of_small_display_cutout">136px</dimen>
 </resources>

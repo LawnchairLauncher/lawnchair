@@ -43,6 +43,11 @@ public interface TaskViewIcon {
     void setContentAlpha(float alpha);
 
     /**
+     * Sets the opacity of the view for modal state.
+     */
+    void setModalAlpha(float alpha);
+
+    /**
      * Returns this icon view's drawable.
      */
     @Nullable Drawable getDrawable();

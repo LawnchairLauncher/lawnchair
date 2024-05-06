@@ -42,6 +42,7 @@
     <attr name="overviewScrimColor" format="color" />
     <attr name="popupNotificationDotColor" format="color" />
     <attr name="notificationDotColor" format="color" />
+    <attr name="focusOutlineColor" format="color" />
 
     <attr name="folderPaginationColor" format="color" />
     <attr name="folderPreviewColor" format="color" />
@@ -189,6 +190,10 @@
          defaults to 2 * numAllAppsColumns -->
         <attr name="numExtendedAllAppsColumns" format="integer" />
 
+        <!-- Number of rows to calculate the cell height for all apps when it's necessary.
+          Defaults to numRows. Requires FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE to be enabled. -->
+        <attr name="numAllAppsRowsForCellHeightCalculation" format="integer" />
+
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
         <!-- Number of icons to use when extending the hotseat size,
@@ -219,26 +224,32 @@
         <!-- File that contains the specs for the workspace.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="workspaceSpecsId" format="reference" />
+        <!-- defaults to workspaceSpecsId, if not specified -->
         <attr name="workspaceSpecsTwoPanelId" format="reference" />
         <!-- File that contains the specs for all apps.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="allAppsSpecsId" format="reference" />
+        <!-- defaults to allAppsSpecsId, if not specified -->
         <attr name="allAppsSpecsTwoPanelId" format="reference" />
         <!-- File that contains the specs for the workspace.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="folderSpecsId" format="reference" />
+        <!-- defaults to folderSpecsId, if not specified -->
         <attr name="folderSpecsTwoPanelId" format="reference" />
         <!-- File that contains the specs for hotseat bar.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="hotseatSpecsId" format="reference" />
+        <!-- defaults to hotseatSpecsId, if not specified -->
         <attr name="hotseatSpecsTwoPanelId" format="reference" />
         <!-- File that contains the specs for workspace icon and text size.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="workspaceCellSpecsId" format="reference" />
+        <!-- defaults to workspaceCellSpecsId, if not specified -->
         <attr name="workspaceCellSpecsTwoPanelId" format="reference" />
         <!-- File that contains the specs for all apps icon and text size.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="allAppsCellSpecsId" format="reference" />
+        <!-- defaults to allAppsCellSpecsId, if not specified -->
         <attr name="allAppsCellSpecsTwoPanelId" format="reference" />
 
         <!-- By default all categories are enabled -->
@@ -571,6 +582,7 @@
 
     <declare-styleable name="WidgetsListRowHeader">
         <attr name="appIconSize" format="dimension" />
+        <attr name="collapsable" format="boolean" />
     </declare-styleable>
 
     <attr name="materialColorOnSecondaryFixedVariant" format="color" />

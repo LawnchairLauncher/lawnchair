@@ -28,7 +28,6 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.platform.test.annotations.PlatinumTest;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -36,15 +35,16 @@ import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Until;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.tapl.LaunchedAppState;
 import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.tapl.SelectModeButtons;
+import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
@@ -55,7 +55,6 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -71,7 +70,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        AbstractLauncherUiTest.initialize(this);
         executeOnLauncher(launcher -> {
             RecentsView recentsView = launcher.getOverviewPanel();
             recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(true);
@@ -112,7 +110,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
-    @PlatinumTest(focusArea = "launcher")
     public void testOverview() throws Exception {
         startTestAppsWithCheck();
         // mLauncher.pressHome() also tests an important case of pressing home while in background.
@@ -194,6 +191,69 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         actionsView.clickAndDismissScreenshot();
     }
 
+    @Test
+    public void testDismissOverviewWithEscKey() throws Exception {
+        startTestAppsWithCheck();
+        final Overview overview = mLauncher.goHome().switchToOverview();
+        assertTrue("Launcher internal state is not Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+
+        overview.dismissByEscKey();
+        assertTrue("Launcher internal state is not Home",
+                isInState(() -> LauncherState.NORMAL));
+    }
+
+    @Test
+    public void testDismissModalTaskAndOverviewWithEscKey() throws Exception {
+        startTestAppsWithCheck();
+        final Overview overview = mLauncher.goHome().switchToOverview();
+
+        final SelectModeButtons selectModeButtons;
+
+        if (mLauncher.isTablet() && mLauncher.isGridOnlyOverviewEnabled()) {
+            selectModeButtons = overview.getCurrentTask().tapMenu().tapSelectMenuItem();
+        } else {
+            selectModeButtons = overview.getOverviewActions().clickSelect();
+        }
+
+        assertTrue("Launcher internal state is not Overview Modal Task",
+                isInState(() -> LauncherState.OVERVIEW_MODAL_TASK));
+
+        selectModeButtons.dismissByEscKey();
+
+        assertTrue("Launcher internal state is not Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+        overview.dismissByEscKey();
+        assertTrue("Launcher internal state is not Home",
+                isInState(() -> LauncherState.NORMAL));
+    }
+
+    @Test
+    public void testOpenOverviewWithActionPlusTabKeys() throws Exception {
+        startTestAppsWithCheck();
+        startAppFast(CALCULATOR_APP_PACKAGE); // Ensure Calculator is last opened app.
+        Workspace home = mLauncher.goHome();
+        assertTrue("Launcher state is not Home", isInState(() -> LauncherState.NORMAL));
+
+        Overview overview = home.openOverviewFromActionPlusTabKeyboardShortcut();
+
+        assertTrue("Launcher state is not Overview", isInState(() -> LauncherState.OVERVIEW));
+        overview.launchFocusedTaskByEnterKey(CALCULATOR_APP_PACKAGE); // Assert app is focused.
+    }
+
+    @Test
+    public void testOpenOverviewWithRecentsKey() throws Exception {
+        startTestAppsWithCheck();
+        startAppFast(CALCULATOR_APP_PACKAGE); // Ensure Calculator is last opened app.
+        Workspace home = mLauncher.goHome();
+        assertTrue("Launcher state is not Home", isInState(() -> LauncherState.NORMAL));
+
+        Overview overview = home.openOverviewFromRecentsKeyboardShortcut();
+
+        assertTrue("Launcher state is not Overview", isInState(() -> LauncherState.OVERVIEW));
+        overview.launchFocusedTaskByEnterKey(CALCULATOR_APP_PACKAGE); // Assert app is focused.
+    }
+
     private int getCurrentOverviewPage(Launcher launcher) {
         return launcher.<RecentsView>getOverviewPanel().getCurrentPage();
     }
@@ -210,11 +270,12 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         return launcher.<RecentsView>getOverviewPanel().getBottomRowTaskCountForTablet();
     }
 
-    @Ignore
+    // Staging; will be promoted to presubmit if stable
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
+
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    @ScreenRecord // b/238461765
     public void testSwitchToOverview() throws Exception {
         startTestAppsWithCheck();
         assertNotNull("Workspace.switchToOverview() returned null",
@@ -236,7 +297,9 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         }
     }
 
-    @Ignore
+    // Staging; will be promoted to presubmit if stable
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
+
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
@@ -266,6 +329,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @ScreenRecord // b/313464374
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/325659406
     public void testQuickSwitchFromApp() throws Exception {
         startTestActivity(2);
         startTestActivity(3);
@@ -295,7 +360,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @TaskbarModeSwitch
-    @Ignore // b/314873201
     public void testQuickSwitchToPreviousAppForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
         startTestActivity(2);
@@ -309,7 +373,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
             boolean isTransientTaskbar = mLauncher.isTransientTaskbar();
             // Expect task bar invisible when the launched app was the IME activity.
             LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
-            if (!isTransientTaskbar && isHardwareKeyboard()) {
+            if (!isTransientTaskbar && isHardwareKeyboard() && !mLauncher.isImeDocked()) {
                 launchedAppState.assertTaskbarVisible();
             } else {
                 launchedAppState.assertTaskbarHidden();
@@ -357,22 +421,18 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 READ_DEVICE_CONFIG_PERMISSION);
         // Debug if we need to goHome to prevent wrong previous state b/315525621
         mLauncher.goHome();
-        assumeFalse(FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get());
-        mLauncher.getWorkspace().switchToAllApps();
-        mLauncher.pressBack();
-        mLauncher.getWorkspace();
+        assumeFalse(Flags.enablePredictiveBackGesture());
+        mLauncher.getWorkspace().switchToAllApps().pressBackToWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
 
         startAppFast(CALCULATOR_APP_PACKAGE);
-        mLauncher.pressBack();
-        mLauncher.getWorkspace();
+        mLauncher.getLaunchedAppState().pressBackToWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
     }
 
     @Test
     @PortraitLandscape
     @TaskbarModeSwitch()
-    @PlatinumTest(focusArea = "launcher")
     @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/309820115
     @ScreenRecord // b/309820115
     public void testOverviewForTablet() throws Exception {
@@ -443,6 +503,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
+    @ScreenRecord // b/326839375
     public void testOverviewDeadzones() throws Exception {
         startTestAppsWithCheck();
 

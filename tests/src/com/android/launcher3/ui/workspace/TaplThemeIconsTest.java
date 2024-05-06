@@ -57,7 +57,7 @@ public class TaplThemeIconsTest extends AbstractLauncherUiTest {
     @Test
     public void testIconWithoutTheme() throws Exception {
         setThemeEnabled(false);
-        AbstractLauncherUiTest.initialize(this);
+        initialize(this);
 
         HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
@@ -75,7 +75,7 @@ public class TaplThemeIconsTest extends AbstractLauncherUiTest {
     @Test
     public void testShortcutIconWithoutTheme() throws Exception {
         setThemeEnabled(false);
-        AbstractLauncherUiTest.initialize(this);
+        initialize(this);
 
         HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
@@ -94,7 +94,7 @@ public class TaplThemeIconsTest extends AbstractLauncherUiTest {
     @Test
     public void testIconWithTheme() throws Exception {
         setThemeEnabled(true);
-        AbstractLauncherUiTest.initialize(this);
+        initialize(this);
 
         HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
@@ -112,7 +112,7 @@ public class TaplThemeIconsTest extends AbstractLauncherUiTest {
     @Test
     public void testShortcutIconWithTheme() throws Exception {
         setThemeEnabled(true);
-        AbstractLauncherUiTest.initialize(this);
+        initialize(this);
 
         HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();

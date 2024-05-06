@@ -20,10 +20,13 @@ import android.annotation.SuppressLint
 import android.view.View
 import androidx.annotation.VisibleForTesting
 import androidx.core.animation.doOnEnd
+import com.android.app.animation.Interpolators
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_OPEN
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_PINNED
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_UNPINNED
 import com.android.launcher3.taskbar.TaskbarDividerPopupView.Companion.createAndPopulate
 import java.io.PrintWriter
 
@@ -53,8 +56,10 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
                 }
                 val animateToValue =
                     if (!launcherPrefs.get(TASKBAR_PINNING)) {
+                        statsLogManager.logger().log(LAUNCHER_TASKBAR_PINNED)
                         PINNING_PERSISTENT
                     } else {
+                        statsLogManager.logger().log(LAUNCHER_TASKBAR_UNPINNED)
                         PINNING_TRANSIENT
                     }
                 taskbarSharedState.taskbarWasPinned = animateToValue == PINNING_TRANSIENT
@@ -106,6 +111,7 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
             taskbarViewController.taskbarIconTranslationXForPinning.animateToValue(animateToValue)
         )
 
+        animatorSet.interpolator = Interpolators.EMPHASIZED
         return animatorSet
     }
 
@@ -129,6 +135,6 @@ class TaskbarPinningController(private val context: TaskbarActivityContext) :
     companion object {
         const val PINNING_PERSISTENT = 1f
         const val PINNING_TRANSIENT = 0f
-        const val PINNING_ANIMATION_DURATION = 500L
+        const val PINNING_ANIMATION_DURATION = 600L
     }
 }

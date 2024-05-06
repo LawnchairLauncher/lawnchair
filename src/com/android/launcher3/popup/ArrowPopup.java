@@ -636,10 +636,10 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         return getResources().getDimensionPixelSize(R.dimen.popup_vertical_padding);
     }
 
-    protected AnimatorSet getOpenCloseAnimator(boolean isOpening, int scaleDuration,
-            int fadeStartDelay, int fadeDuration, int childFadeStartDelay, int childFadeDuration,
-            Interpolator interpolator) {
-
+    /**
+     * Sets X and Y pivots for the view animation considering arrow position.
+     */
+    protected void setPivotForOpenCloseAnimation() {
         int arrowCenter = mArrowOffsetHorizontal + mArrowWidth / 2;
         if (mIsArrowRotated) {
             setPivotX(mIsLeftAligned ? 0f : getMeasuredWidth());
@@ -648,6 +648,14 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
             setPivotX(mIsLeftAligned ? arrowCenter : getMeasuredWidth() - arrowCenter);
             setPivotY(mIsAboveIcon ? getMeasuredHeight() : 0f);
         }
+    }
+
+
+    protected AnimatorSet getOpenCloseAnimator(boolean isOpening, int scaleDuration,
+            int fadeStartDelay, int fadeDuration, int childFadeStartDelay, int childFadeDuration,
+            Interpolator interpolator) {
+
+        setPivotForOpenCloseAnimation();
 
         float[] alphaValues = isOpening ? new float[] {0, 1} : new float[] {1, 0};
         float[] scaleValues = isOpening ? new float[] {0.5f, 1.02f} : new float[] {1f, 0.5f};

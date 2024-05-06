@@ -22,9 +22,7 @@ import android.os.UserHandle;
 import android.os.UserManager;
 
 import androidx.annotation.IntDef;
-import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.UserCache;
@@ -71,16 +69,13 @@ public abstract class UserProfileManager {
 
     /** Sets quiet mode as enabled/disabled for the profile type. */
     protected void setQuietMode(boolean enabled) {
-        if (Utilities.ATLEAST_P) {
-            UI_HELPER_EXECUTOR.post(() -> {
+        UI_HELPER_EXECUTOR.post(() ->
                 mUserCache.getUserProfiles()
                         .stream()
                         .filter(getUserMatcher())
                         .findFirst()
                         .ifPresent(userHandle ->
-                                mUserManager.requestQuietModeEnabled(enabled, userHandle));
-            });
-        }
+                                mUserManager.requestQuietModeEnabled(enabled, userHandle)));
     }
 
     /** Sets current state for the profile type. */
@@ -89,9 +84,21 @@ public abstract class UserProfileManager {
     }
 
     /** Returns current state for the profile type. */
-    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     public int getCurrentState() {
         return mCurrentState;
+    }
+
+    /** Returns if user profile is enabled. */
+    public boolean isEnabled() {
+        return mCurrentState == STATE_ENABLED;
+    }
+
+    /** Returns the UserHandle corresponding to the profile type, null in case no matches found. */
+    public UserHandle getProfileUser() {
+        return mUserCache.getUserProfiles().stream()
+                .filter(getUserMatcher())
+                .findAny()
+                .orElse(null);
     }
 
     /** Logs Event to StatsLogManager. */

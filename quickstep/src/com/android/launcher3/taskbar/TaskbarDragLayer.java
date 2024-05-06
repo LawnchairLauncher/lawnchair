@@ -30,9 +30,12 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
@@ -106,8 +109,20 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     public void init(TaskbarDragLayerController.TaskbarDragLayerCallbacks callbacks) {
         mControllerCallbacks = callbacks;
-        mBackgroundRenderer.updateStashedHandleWidth(mActivity.getDeviceProfile(), getResources());
+        mBackgroundRenderer.updateStashedHandleWidth(mActivity, getResources());
         recreateControllers();
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        if (insets != null) {
+            WindowInsetsCompat insetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets, this);
+            Insets imeInsets = insetsCompat.getInsets(WindowInsetsCompat.Type.ime());
+            if (imeInsets != null) {
+                mControllerCallbacks.onImeInsetChanged();
+            }
+        }
+        return insets;
     }
 
     @Override
@@ -147,6 +162,15 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     }
 
     @Override
+    protected boolean isEventWithinSystemGestureRegion(MotionEvent ev) {
+        final float x = ev.getX();
+        final float y = ev.getY();
+
+        return x >= mSystemGestureRegion.left && x < getWidth() - mSystemGestureRegion.right
+                && y >= mSystemGestureRegion.top;
+    }
+
+    @Override
     protected boolean canFindActiveController() {
         // Unlike super class, we want to be able to find controllers when touches occur in the
         // gesture area. For example, this allows Folder to close itself when touching the Taskbar.
@@ -169,6 +193,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         mBackgroundRenderer.setBackgroundProgress(mTaskbarBackgroundProgress);
         mBackgroundRenderer.draw(canvas);
         super.dispatchDraw(canvas);
+        mControllerCallbacks.drawDebugUi(canvas);
     }
 
     /**

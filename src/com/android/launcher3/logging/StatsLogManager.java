@@ -117,6 +117,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "Task launched from overview using SWIPE DOWN")
         LAUNCHER_TASK_LAUNCH_SWIPE_DOWN(340),
 
+        @UiEvent(doc = "App launched by dragging and dropping, probably from taskbar")
+        LAUNCHER_APP_LAUNCH_DRAGDROP(1552),
+
         @UiEvent(doc = "TASK dismissed from overview using SWIPE UP")
         LAUNCHER_TASK_DISMISS_SWIPE_UP(341),
 
@@ -196,6 +199,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped on app info system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP(515),
 
+        /**
+         * @deprecated Use {@link #LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP} or
+         *             {@link #LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM}
+         */
+        @Deprecated
         @UiEvent(doc = "User tapped on split screen icon on a task menu.")
         LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP(518),
 
@@ -207,6 +215,9 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User tapped on pin system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP(522),
+
+        @UiEvent(doc = "User tapped on don't suggest app system shortcut.")
+        LAUNCHER_SYSTEM_SHORTCUT_DONT_SUGGEST_APP_TAP(1603),
 
         @UiEvent(doc = "User is shown All Apps education view.")
         LAUNCHER_ALL_APPS_EDU_SHOWN(523),
@@ -280,6 +291,12 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User long presses on the bottom bezel area.")
         LAUNCHER_LONG_PRESS_NAVBAR(1544),
+
+        @UiEvent(doc = "User deep presses on the stashed taskbar")
+        LAUNCHER_DEEP_PRESS_STASHED_TASKBAR(1602),
+
+        @UiEvent(doc = "User long presses on the stashed taskbar")
+        LAUNCHER_LONG_PRESS_STASHED_TASKBAR(1592),
 
         @UiEvent(doc = "User swipes or fling in UP direction from bottom bazel area.")
         LAUNCHER_HOME_GESTURE(574),
@@ -624,6 +641,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped taskbar All Apps button.")
         LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP(1057),
 
+        @UiEvent(doc = "User long pressed taskbar All Apps button.")
+        LAUNCHER_TASKBAR_ALLAPPS_BUTTON_LONG_PRESS(1607),
+
         @UiEvent(doc = "User tapped on Share app system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP(1075),
 
@@ -697,6 +717,39 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User tapped private space settings button")
         LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP(1550),
+
+        @UiEvent(doc = "User tapped on install to private space system shortcut.")
+        LAUNCHER_PRIVATE_SPACE_INSTALL_SYSTEM_SHORTCUT_TAP(1565),
+
+        @UiEvent(doc = "User tapped private space install app button.")
+        LAUNCHER_PRIVATE_SPACE_INSTALL_APP_BUTTON_TAP(1605),
+
+        @UiEvent(doc = "User attempted to create split screen with a widget")
+        LAUNCHER_SPLIT_WIDGET_ATTEMPT(1604),
+
+        @UiEvent(doc = "User tapped on private space uninstall system shortcut.")
+        LAUNCHER_PRIVATE_SPACE_UNINSTALL_SYSTEM_SHORTCUT_TAP(1608),
+
+        @UiEvent(doc = "User initiated split selection")
+        LAUNCHER_SPLIT_SELECTION_INITIATED(1618),
+
+        @UiEvent(doc = "User finished a split selection session")
+        LAUNCHER_SPLIT_SELECTION_COMPLETE(1619),
+
+        @UiEvent(doc = "User selected both apps for split screen")
+        LAUNCHER_SPLIT_SELECTED_SECOND_APP(1609),
+
+        @UiEvent(doc = "User exited split selection by going home via swipe, button, or state "
+                + "transition")
+        LAUNCHER_SPLIT_SELECTION_EXIT_HOME(1610),
+
+        @UiEvent(doc = "User exited split selection by tapping cancel in split instructions view")
+        LAUNCHER_SPLIT_SELECTION_EXIT_CANCEL_BUTTON(1611),
+
+        @UiEvent(doc = "User exited split selection when another activity/app came to foreground"
+                + " after first app had been selected OR if user long-pressed on home. Default exit"
+                + " metric.")
+        LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED(1612),
 
         // ADD MORE
         ;

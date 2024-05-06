@@ -19,7 +19,10 @@ import static com.android.launcher3.LauncherPrefs.WORK_EDU_STEP;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.util.TestUtil.installDummyAppForUser;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -29,6 +32,8 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
 
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
@@ -39,15 +44,20 @@ import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.TestUtil;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
+import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+@LargeTest
+@RunWith(AndroidJUnit4.class)
 public class TaplWorkProfileTest extends AbstractLauncherUiTest {
 
     private static final int WORK_PAGE = ActivityAllAppsContainerView.AdapterHolder.WORK;
@@ -60,6 +70,7 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        initialize(this);
         String output =
                 mDevice.executeShellCommand(
                         "pm create-user --profileOf 0 --managed TestProfile");
@@ -98,7 +109,17 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest {
             launcher.getAppsView().getAppsStore().disableDeferUpdates(DEFER_UPDATES_TEST);
         });
         TestUtil.uninstallDummyApp();
-        mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
+
+        mLauncher.runToState(
+                () -> {
+                    try {
+                        mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                NORMAL_STATE_ORDINAL,
+                "executing pm 'remove-user' command");
     }
 
     private void waitForWorkTabSetup() {
@@ -112,6 +133,7 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord // b/325383911
     public void workTabExists() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();
@@ -123,8 +145,10 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest {
                 LauncherInstrumentation.WAIT_TIME_MS);
     }
 
+    // Staging; will be promoted to presubmit if stable
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
+    @ScreenRecord
     @Test
-    @Ignore("b/243855320")
     public void toggleWorks() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();
