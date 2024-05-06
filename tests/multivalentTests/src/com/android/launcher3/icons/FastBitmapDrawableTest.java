@@ -37,15 +37,12 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.PathInterpolator;
 
 import androidx.test.annotation.UiThreadTest;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import com.android.launcher3.util.rule.RobolectricUiThreadRule;
+import com.android.launcher3.util.LauncherMultivalentJUnit;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -55,13 +52,10 @@ import org.mockito.Spy;
  * Tests for FastBitmapDrawable.
  */
 @SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(LauncherMultivalentJUnit.class)
 @UiThreadTest
 public class FastBitmapDrawableTest {
     private static final float EPSILON = 0.00001f;
-
-    @Rule
-    public final TestRule roboUiThreadRule = new RobolectricUiThreadRule();
 
     @Spy
     FastBitmapDrawable mFastBitmapDrawable =
