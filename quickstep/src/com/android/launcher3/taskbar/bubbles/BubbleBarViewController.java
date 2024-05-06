@@ -173,6 +173,13 @@ public class BubbleBarViewController {
         }
     }
 
+    /** Notifies that the stash state is changing. */
+    public void onStashStateChanging() {
+        if (isAnimatingNewBubble()) {
+            mBubbleBarViewAnimator.onStashStateChangingWhileAnimating();
+        }
+    }
+
     //
     // The below animators are exposed to BubbleStashController so it can manage the stashing
     // animation.
