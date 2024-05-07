@@ -4,7 +4,7 @@
 
 First and foremost, welcome to the **Lawnchair Launcher** Contributing Guidelines! This document will contain everything you'll need to contribute to the **Lawnchair Launcher** project.
 
-## Before you start!
+## 👋 Before you start!
 
 We would like you to be familiar with the tools we are using. The tool(s) you will be using depend on the type of contribution you are going to make.
 
@@ -18,23 +18,20 @@ If applicable attach logs.
 
 Please make sure to be civil during discussion (refer to the [Code of Conduct](CODE_OF_CONDUCT.md))
 
-### Translation
+### 🌐 Translation
 
 For translation, you only need to know one tool, [Crowdin](https://lawnchair.crowdin.com), which allows us to collaborate with multiple translators & proofreaders.
 
 Here are few tips for starters:
 
 -   When using quotation marks, insert the symbols specific to the target language, as listed in this [this summary table](https://en.wikipedia.org/wiki/Quotation_mark#Summary_table);
-
 -   Lawnchair uses title case for some English UI text while other languages do not use title case; opt for sentence case instead;
-
 -   Some English terminology may have not have commonly-used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of _bottom row_ for _dock_;
-
 -   Some languages (e.g. French) has variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
 
-### Code
+### 🧑‍💻 Code
 
-For code, it's highly recommended that you use an IDE (e.g. [Android Studio](https://developer.android.com/studio)), know [Java](https://www.java.com) (or preferably [Kotlin](https://kotlinlang.org/)), and [Git](https://git-scm.com/) which is a powerful source management control tool for collaborating with multiple programmers.
+For code, it's highly recommended that you use an IDE (e.g. [Android Studio](https://developer.android.com/studio)), know [Java](https://www.java.com) or preferably [Kotlin](https://kotlinlang.org/), and [Git](https://git-scm.com/) which is a powerful source management control tool for collaborating with multiple programmers.
 
 To clone the repository, you must clone the repository and its submodules using the recursive flag:
 
@@ -47,21 +44,20 @@ To build **Lawnchair Launcher**, select the `lawnWithQuickstepDebug` build type.
 Here are some contribution tips to help you get started:
 
 -   Always make sure that you're up-to-date with **Lawnchair Launcher** by setting your branch to `14-dev` or newer;
-
 -   Make sure your code is logical and well-formatted. If using Kotlin, see [“Coding conventions” in the Kotlin documentation](https://kotlinlang.org/docs/coding-conventions.html);
-
 -   [The `lawnchair` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/lawnchair) houses Lawnchair’s own code, whereas [the `src` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/src) includes a clone of the Launcher3 codebase with modifications. Generally, place new files in the former, keeping changes to the latter to a minimum.
 
-#### Version
+#### Versioning scheme
 
 As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361), the **Lawnchair Launcher** version code is separated by four sectors:
 
+<p align="center">
+    <img alt="" src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/.github/version.svg" width="100%">
+</p>
+
 1. Android's major version
-
 2. Android's minor version
-
 3. Lawnchair Launcher's development status
-
 4. Lawnchair Launcher's development version
 
 ##### Android's major & minor versions
@@ -74,7 +70,7 @@ Depending on which status the **Lawnchair Launcher** is on, it will have an impa
 
 Below is a table explaining the third field (release type):
 
-| Status            | Value |
+| Status            | Stage |
 |-------------------|-------|
 | Alpha             | 01    |
 | Beta              | 02    |
