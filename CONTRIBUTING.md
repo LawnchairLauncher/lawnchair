@@ -25,12 +25,11 @@ Please make sure to be civil during discussion (refer to the [Code of Conduct](C
 For translation, you only need to know one tool, [Crowdin](https://lawnchair.crowdin.com), 
 which allows us to collaborate with multiple translators & proofreaders.
 
-Here are few tips for starters:
-
-- When using quotation marks, insert the symbols specific to the target language, as listed in this [this summary table](https://en.wikipedia.org/wiki/Quotation_mark#Summary_table);
-- Lawnchair uses title case for some English UI text while other languages do not use title case; opt for sentence case instead;
-- Some English terminology may have not have commonly-used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of _bottom row_ for _dock_;
-- Some languages (e.g. French) has variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
+> [!TIP]
+> - When using quotation marks, insert the symbols specific to the target language, as listed in this [this summary table](https://en.wikipedia.org/wiki/Quotation_mark#Summary_table);
+> - Lawnchair uses title case for some English UI text while other languages do not use title case; opt for sentence case instead;
+> - Some English terminology may have not have commonly-used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of _bottom row_ for _dock_;
+> - Some languages (e.g. French) has variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
 
 ### 🧑‍💻 Code
 
@@ -51,11 +50,10 @@ To build **Lawnchair Launcher**, select the `lawnWithQuickstepDebug` build type.
 Should you face errors relating to the `iconloaderlib` and `searchuilib` projects, 
 run `git submodule update --init --recursive`.
 
-Here are some contribution tips to help you get started:
-
-- Always make sure that you're up-to-date with **Lawnchair Launcher** by setting your branch to `14-dev` or newer;
-- Make sure your code is logical and well-formatted. If using Kotlin, see [“Coding conventions” in the Kotlin documentation](https://kotlinlang.org/docs/coding-conventions.html);
-- [The `lawnchair` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/lawnchair) houses Lawnchair’s own code, whereas [the `src` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/src) includes a clone of the Launcher3 codebase with modifications. Generally, place new files in the former, keeping changes to the latter to a minimum.
+> [!TIP]
+> - Always make sure that you're up-to-date with **Lawnchair Launcher** by setting your branch to `14-dev` or newer;
+> - Make sure your code is logical and well-formatted. If using Kotlin, see [“Coding conventions” in the Kotlin documentation](https://kotlinlang.org/docs/coding-conventions.html);
+> - [The `lawnchair` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/lawnchair) houses Lawnchair’s own code, whereas [the `src` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/src) includes a clone of the Launcher3 codebase with modifications. Generally, place new files in the former, keeping changes to the latter to a minimum.
 
 #### Versioning scheme
 
@@ -82,7 +80,7 @@ Depending on which status the **Lawnchair Launcher** is on,
 it will have an impact on the 3rd and 4th sectors of the version code. 
 For example, alpha 4 for the **Lawnchair Launcher** will be `XX_XX_01_04`. 
 
-Below is a table explaining the third field (release type):
+Below is a table explaining the third sector (release type):
 
 | Status            | Stage |
 |-------------------|-------|
