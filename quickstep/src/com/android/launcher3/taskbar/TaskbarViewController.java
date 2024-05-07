@@ -79,7 +79,7 @@ import java.util.function.Predicate;
  */
 public class TaskbarViewController implements TaskbarControllers.LoggableTaskbarController {
 
-    private static final String TAG = TaskbarViewController.class.getSimpleName();
+    private static final String TAG = "TaskbarViewController";
 
     private static final Runnable NO_OP = () -> { };
 

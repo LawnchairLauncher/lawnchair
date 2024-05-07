@@ -68,7 +68,7 @@ import java.util.function.Supplier;
 public class FloatingIconView extends FrameLayout implements
         Animator.AnimatorListener, OnGlobalLayoutListener, FloatingView {
 
-    private static final String TAG = FloatingIconView.class.getSimpleName();
+    private static final String TAG = "FloatingIconView";
 
     // Manages loading the icon on a worker thread
     private static @Nullable IconLoadResult sIconLoadResult;

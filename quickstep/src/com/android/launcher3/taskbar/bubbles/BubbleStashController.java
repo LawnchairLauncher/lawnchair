@@ -42,7 +42,7 @@ import com.android.wm.shell.shared.animation.PhysicsAnimator;
  */
 public class BubbleStashController {
 
-    private static final String TAG = BubbleStashController.class.getSimpleName();
+    private static final String TAG = "BubbleStashController";
 
     /**
      * How long to stash/unstash.

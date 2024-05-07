@@ -55,7 +55,7 @@ import java.util.function.Consumer;
  */
 public class BubbleBarViewController {
 
-    private static final String TAG = BubbleBarViewController.class.getSimpleName();
+    private static final String TAG = "BubbleBarViewController";
     private static final float APP_ICON_SMALL_DP = 44f;
     private static final float APP_ICON_MEDIUM_DP = 48f;
     private static final float APP_ICON_LARGE_DP = 52f;

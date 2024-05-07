@@ -84,7 +84,7 @@ import java.util.function.Consumer;
  */
 public class ItemClickHandler {
 
-    private static final String TAG = ItemClickHandler.class.getSimpleName();
+    private static final String TAG = "ItemClickHandler";
 
     /**
      * Instance used for click handling on items

@@ -94,7 +94,7 @@ import java.util.concurrent.Executors;
  */
 public class BubbleBarController extends IBubblesListener.Stub {
 
-    private static final String TAG = BubbleBarController.class.getSimpleName();
+    private static final String TAG = "BubbleBarController";
     private static final boolean DEBUG = false;
 
     /**

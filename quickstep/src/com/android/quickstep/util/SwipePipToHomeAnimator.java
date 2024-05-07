@@ -46,7 +46,7 @@ import com.android.wm.shell.pip.PipContentOverlay;
  * when swiping up (in gesture navigation mode).
  */
 public class SwipePipToHomeAnimator extends RectFSpringAnim {
-    private static final String TAG = SwipePipToHomeAnimator.class.getSimpleName();
+    private static final String TAG = "SwipePipToHomeAnimator";
 
     private static final float END_PROGRESS = 1.0f;
 

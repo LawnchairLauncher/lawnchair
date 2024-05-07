@@ -71,7 +71,7 @@ import java.util.function.Predicate;
  */
 public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconParent, Insettable,
         DeviceProfile.OnDeviceProfileChangeListener {
-    private static final String TAG = TaskbarView.class.getSimpleName();
+    private static final String TAG = "TaskbarView";
 
     private static final Rect sTmpRect = new Rect();
 

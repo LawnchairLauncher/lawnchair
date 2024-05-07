@@ -788,7 +788,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (mScroller.isFinished() && pageScrollChanged) {
             // TODO(b/246283207): Remove logging once root cause of flake detected.
             if (Utilities.isRunningInTestHarness() && !(this instanceof Workspace)) {
-                Log.d("b/246283207", this.getClass().getSimpleName() + "#onLayout() -> "
+                Log.d("b/246283207", TAG + "#onLayout() -> "
                         + "if(mScroller.isFinished() && pageScrollChanged) -> getNextPage(): "
                         + getNextPage() + ", getScrollForPage(getNextPage()): "
                         + getScrollForPage(getNextPage()));

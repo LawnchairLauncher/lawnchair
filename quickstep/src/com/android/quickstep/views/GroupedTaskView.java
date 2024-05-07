@@ -63,7 +63,7 @@ import java.util.function.Consumer;
  */
 public class GroupedTaskView extends TaskView {
 
-    private static final String TAG = GroupedTaskView.class.getSimpleName();
+    private static final String TAG = "GroupedTaskView";
     // TODO(b/336612373): Support new TTV for GroupedTaskView
     private TaskThumbnailViewDeprecated mSnapshotView2;
     private TaskViewIcon mIconView2;
