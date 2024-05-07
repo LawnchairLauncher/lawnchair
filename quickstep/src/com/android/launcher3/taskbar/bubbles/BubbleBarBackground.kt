@@ -158,6 +158,7 @@ class BubbleBarBackground(context: Context, private var backgroundHeight: Float)
     override fun setAlpha(alpha: Int) {
         paint.alpha = alpha
         arrowDrawable.alpha = alpha
+        invalidateSelf()
     }
 
     override fun getAlpha(): Int {

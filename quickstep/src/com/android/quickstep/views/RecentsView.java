@@ -204,7 +204,7 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TaskVisualsChangeListener;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.VibrationConstants;
-import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
+import com.android.quickstep.views.TaskView.TaskContainer;
 import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -591,7 +591,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             if (taskView == null) {
                 return;
             }
-            Task.TaskKey taskKey = taskView.getTask().key;
+            Task.TaskKey taskKey = taskView.getFirstTask().key;
             UI_HELPER_EXECUTOR.execute(new CancellableTask<>(
                     () -> PackageManagerWrapper.getInstance()
                             .getActivityInfo(taskKey.getComponent(), taskKey.userId) == null,
@@ -991,8 +991,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         if (mHandleTaskStackChanges) {
             TaskView taskView = getTaskViewByTaskId(taskId);
             if (taskView != null) {
-                for (TaskIdAttributeContainer container :
-                        taskView.getTaskIdAttributeContainers()) {
+                for (TaskContainer container : taskView.getTaskContainers()) {
                     if (container == null || taskId != container.getTask().key.id) {
                         continue;
                     }
@@ -1007,11 +1006,12 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     public void onTaskIconChanged(String pkg, UserHandle user) {
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView tv = requireTaskViewAt(i);
-            Task task = tv.getTask();
+            Task task = tv.getFirstTask();
             if (task != null && task.key != null && pkg.equals(task.key.getPackageName())
                     && task.key.userId == user.getIdentifier()) {
                 task.icon = null;
-                if (tv.getIconView().getDrawable() != null) {
+                TaskViewIcon firstIconView = tv.getFirstIconView();
+                if (firstIconView != null && firstIconView.getDrawable() != null) {
                     tv.onTaskListVisibilityChanged(true /* visible */);
                 }
             }
@@ -1042,7 +1042,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                 continue;
             }
             // taskView could be a GroupedTaskView, so select the relevant task by ID
-            TaskIdAttributeContainer taskAttributes = taskView.getTaskAttributesById(id);
+            TaskContainer taskAttributes = taskView.getTaskContainerById(id);
             if (taskAttributes == null) {
                 continue;
             }
@@ -1731,7 +1731,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
 
         int[] currentTaskIds;
         TaskView currentTaskView = getTaskViewAt(mCurrentPage);
-        if (currentTaskView != null && currentTaskView.getTask() != null) {
+        if (currentTaskView != null && currentTaskView.getFirstTask() != null) {
             currentTaskIds = currentTaskView.getTaskIds();
         } else {
             currentTaskIds = new int[0];
@@ -2354,7 +2354,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         // Update the task data for the in/visible children
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = requireTaskViewAt(i);
-            TaskIdAttributeContainer[] containers = taskView.getTaskIdAttributeContainers();
+            TaskContainer[] containers = taskView.getTaskContainers();
             if (containers.length == 0) {
                 continue;
             }
@@ -2368,7 +2368,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             if (visible) {
                 // Default update all non-null tasks, then remove running ones
                 List<Task> tasksToUpdate = Arrays.stream(containers).filter(Objects::nonNull)
-                        .map(TaskIdAttributeContainer::getTask)
+                        .map(TaskContainer::getTask)
                         .collect(Collectors.toCollection(ArrayList::new));
                 if (mTmpRunningTasks != null) {
                     for (Task t : mTmpRunningTasks) {
@@ -2393,7 +2393,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                     mHasVisibleTaskData.put(task.key.id, visible);
                 }
             } else {
-                for (TaskIdAttributeContainer container : containers) {
+                for (TaskContainer container : containers) {
                     if (container == null) {
                         continue;
                     }
@@ -3816,7 +3816,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
 
                 if (success) {
                     if (shouldRemoveTask) {
-                        if (dismissedTaskView.getTask() != null) {
+                        if (dismissedTaskView.getFirstTask() != null) {
                             if (dismissedTaskView.isRunningTask()) {
                                 finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
                                         () -> removeTaskInternal(dismissedTaskViewId));
@@ -4730,7 +4730,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      */
     public void resetModalVisuals() {
         if (mSelectedTask != null) {
-            mSelectedTask.getThumbnail().getTaskOverlay().resetModalVisuals();
+            mSelectedTask.getFirstThumbnailView().getTaskOverlay().resetModalVisuals();
         }
     }
 
@@ -4749,7 +4749,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             StatsLogManager.EventEnum splitEvent) {
         mSplitHiddenTaskView = taskView;
         mSplitSelectStateController.setInitialTaskSelect(null /*intent*/,
-                stagePosition, taskView.getItemInfo(), splitEvent, taskView.mTask.key.id);
+                stagePosition, taskView.getItemInfo(), splitEvent, taskView.getFirstTask().key.id);
         mSplitSelectStateController.setAnimateCurrentTaskDismissal(
                 true /*animateCurrentTaskDismissal*/);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
@@ -4800,11 +4800,11 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             // Animate pair thumbnail into full thumbnail
             boolean primaryTaskSelected = mSplitHiddenTaskView.getTaskIds()[0]
                     == mSplitSelectStateController.getInitialTaskId();
-            TaskIdAttributeContainer taskIdAttributeContainer = mSplitHiddenTaskView
-                    .getTaskIdAttributeContainers()[primaryTaskSelected ? 1 : 0];
-            TaskThumbnailViewDeprecated thumbnail = taskIdAttributeContainer.getThumbnailView();
+            TaskContainer taskContainer = mSplitHiddenTaskView
+                    .getTaskContainers()[primaryTaskSelected ? 1 : 0];
+            TaskThumbnailViewDeprecated thumbnail = taskContainer.getThumbnailView();
             mSplitSelectStateController.getSplitAnimationController()
-                    .addInitialSplitFromPair(taskIdAttributeContainer, builder,
+                    .addInitialSplitFromPair(taskContainer, builder,
                             mContainer.getDeviceProfile(),
                             mSplitHiddenTaskView.getWidth(), mSplitHiddenTaskView.getHeight(),
                             primaryTaskSelected);
@@ -5202,7 +5202,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         updateGridProperties();
         updateScrollSynchronously();
 
-        int targetSysUiFlags = tv.getThumbnail().getSysUiStatusNavFlags();
+        int targetSysUiFlags = tv.getFirstThumbnailView().getSysUiStatusNavFlags();
         final boolean[] passedOverviewThreshold = new boolean[] {false};
         ValueAnimator progressAnim = ValueAnimator.ofFloat(0, 1);
         progressAnim.addUpdateListener(animator -> {
@@ -5266,7 +5266,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                 } else {
                     tv.launchTask(this::onTaskLaunchAnimationEnd);
                 }
-                Task task = tv.getTask();
+                Task task = tv.getFirstTask();
                 if (task != null) {
                     mContainer.getStatsLogManager().logger().withItemInfo(tv.getItemInfo())
                             .log(LAUNCHER_TASK_LAUNCH_SWIPE_DOWN);
@@ -5899,7 +5899,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         }
 
         taskView.setShowScreenshot(true);
-        for (TaskIdAttributeContainer container : taskView.getTaskIdAttributeContainers()) {
+        for (TaskContainer container : taskView.getTaskContainers()) {
             if (container == null) {
                 continue;
             }
@@ -6269,7 +6269,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     /**
      * Moves the provided task into desktop mode, and invoke {@code successCallback} if succeeded.
      */
-    public void moveTaskToDesktop(TaskIdAttributeContainer taskContainer,
+    public void moveTaskToDesktop(TaskContainer taskContainer,
             Runnable successCallback) {
         if (!DesktopModeStatus.canEnterDesktopMode(mContext)) {
             return;
@@ -6278,7 +6278,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                 () -> moveTaskToDesktopInternal(taskContainer, successCallback)));
     }
 
-    private void moveTaskToDesktopInternal(TaskIdAttributeContainer taskContainer,
+    private void moveTaskToDesktopInternal(TaskContainer taskContainer,
             Runnable successCallback) {
         if (mDesktopRecentsTransitionController == null) {
             return;

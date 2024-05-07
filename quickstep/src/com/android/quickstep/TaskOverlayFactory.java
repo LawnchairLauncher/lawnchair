@@ -46,7 +46,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskThumbnailViewDeprecated;
 import com.android.quickstep.views.TaskView;
-import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
+import com.android.quickstep.views.TaskView.TaskContainer;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -59,7 +59,7 @@ import java.util.List;
 public class TaskOverlayFactory implements ResourceBasedOverride {
 
     public static List<SystemShortcut> getEnabledShortcuts(TaskView taskView,
-            TaskIdAttributeContainer taskContainer) {
+            TaskContainer taskContainer) {
         final ArrayList<SystemShortcut> shortcuts = new ArrayList<>();
         final RecentsViewContainer container =
                 RecentsViewContainer.containerFromContext(taskView.getContext());
@@ -292,7 +292,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
             @Override
             public void onClick(View view) {
-                saveScreenshot(mThumbnailView.getTaskView().getTask());
+                saveScreenshot(mThumbnailView.getTaskView().getFirstTask());
                 dismissTaskMenuView();
             }
         }

@@ -44,7 +44,7 @@ import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
+import com.android.quickstep.views.TaskView.TaskContainer;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
@@ -259,14 +259,14 @@ public class TaskbarUIController {
                         if (foundTaskView != null) {
                             // There is already a running app of this type, use that as second app.
                             // Get index of task (0 or 1), in case it's a GroupedTaskView
-                            TaskIdAttributeContainer taskAttributes =
-                                    foundTaskView.getTaskAttributesById(foundTask.key.id);
+                            TaskContainer taskContainer =
+                                    foundTaskView.getTaskContainerById(foundTask.key.id);
                             recents.confirmSplitSelect(
                                     foundTaskView,
                                     foundTask,
-                                    taskAttributes.getIconView().getDrawable(),
-                                    taskAttributes.getThumbnailView(),
-                                    taskAttributes.getThumbnailView().getThumbnail(),
+                                    taskContainer.getIconView().getDrawable(),
+                                    taskContainer.getThumbnailView(),
+                                    taskContainer.getThumbnailView().getThumbnail(),
                                     null /* intent */,
                                     null /* user */,
                                     info);

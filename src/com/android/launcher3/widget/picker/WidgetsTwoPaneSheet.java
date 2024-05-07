@@ -64,7 +64,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
     // This ratio defines the max percentage of content area that the recommendations can display
     // with respect to the bottom sheet's height.
-    private static final float RECOMMENDATION_SECTION_HEIGHT_RATIO_TWO_PANE = 0.75f;
+    private static final float RECOMMENDATION_SECTION_HEIGHT_RATIO_TWO_PANE = 0.60f;
     private FrameLayout mSuggestedWidgetsContainer;
     private WidgetsListHeader mSuggestedWidgetsHeader;
     private PackageUserKey mSuggestedWidgetsPackageUserKey;
