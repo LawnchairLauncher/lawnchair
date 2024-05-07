@@ -327,11 +327,6 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
-    public boolean isDesktopTask() {
-        return true;
-    }
-
-    @Override
     void refreshThumbnails(@Nullable HashMap<Integer, ThumbnailData> thumbnailDatas) {
         // Sets new thumbnails based on the incoming data and refreshes the rest.
         // Create a copy of the thumbnail map, so we can track thumbnails that need refreshing.
