@@ -27,6 +27,7 @@ import android.util.Log;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import com.android.launcher3.allapps.PrivateProfileManager;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.PrivateSpaceContainer;
@@ -162,6 +163,59 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
             // UnFreeze
             homeAllApps.unfreeze();
         }
+    }
+
+    @Test
+    @ScreenRecordRule.ScreenRecord // b/334946529
+    public void testPrivateSpaceLockingBehaviour() throws IOException {
+        // Scroll to the bottom of All Apps
+        executeOnLauncher(launcher -> launcher.getAppsView().resetAndScrollToPrivateSpaceHeader());
+        HomeAllApps homeAllApps = mLauncher.getAllApps();
+
+        // Disable Private Space
+        togglePrivateSpace(PrivateProfileManager.STATE_DISABLED, homeAllApps);
+
+        homeAllApps.freeze();
+        try {
+            // Verify Locked View elements are present.
+            homeAllApps.getPrivateSpaceLockedView();
+        } finally {
+            // UnFreeze
+            homeAllApps.unfreeze();
+        }
+
+        // Enable Private Space
+        togglePrivateSpace(PrivateProfileManager.STATE_ENABLED, homeAllApps);
+
+        homeAllApps.freeze();
+        try {
+            // Verify UnLocked View elements are present.
+            homeAllApps.getPrivateSpaceUnlockedView();
+        } finally {
+            // UnFreeze
+            homeAllApps.unfreeze();
+        }
+    }
+
+    private void togglePrivateSpace(int state, HomeAllApps homeAllApps) {
+        homeAllApps.freeze();
+        try {
+            // Try Toggling Private Space
+            homeAllApps.togglePrivateSpace();
+        }  finally {
+            // UnFreeze
+            homeAllApps.unfreeze();
+        }
+        PrivateProfileManager manager = getFromLauncher(l -> l.getAppsView()
+                .getPrivateProfileManager());
+        waitForLauncherCondition("Private profile toggle to state: " + state + " failed",
+                launcher -> {
+                    manager.reset();
+                    return manager.getCurrentState() == state;
+                },
+                LauncherInstrumentation.WAIT_TIME_MS);
+        // Wait for Launcher UI to be updated with Private Space Items.
+        waitForLauncherUIUpdate();
     }
 
     private void waitForPrivateSpaceSetup() {

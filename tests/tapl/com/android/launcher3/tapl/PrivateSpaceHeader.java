@@ -45,7 +45,7 @@ public class PrivateSpaceHeader {
         if (mPrivateSpaceEnabled) {
             verifyUnlockedState();
         } else {
-            mLauncher.fail("Private Space found in non enabled state");
+            verifyLockedState();
         }
     }
 
@@ -73,5 +73,24 @@ public class PrivateSpaceHeader {
                 LOCK_TEXT_RES_ID);
         mLauncher.assertEquals("PS lock text is incorrect", "Lock", lockText.getText());
 
+    }
+
+    /** Verify Locked State elements in Private Space Header */
+    private void verifyLockedState() {
+        UiObject2 headerText = mLauncher.waitForObjectInContainer(mPrivateSpaceHeader,
+                PS_HEADER_TEXT_RES_ID);
+        mLauncher.assertEquals("PS Header Text is incorrect ",
+                "Private", headerText.getText());
+
+        UiObject2 unLockButtonView = mLauncher.waitForObjectInContainer(mPrivateSpaceHeader,
+                UNLOCK_BUTTON_VIEW_RES_ID);
+        mLauncher.waitForObjectEnabled(unLockButtonView, "Private Space Unlock Button");
+        mLauncher.assertTrue("PS Unlock Button is non-clickable", unLockButtonView.isClickable());
+
+        mLauncher.waitForObjectInContainer(mPrivateSpaceHeader,
+                LOCK_ICON_RES_ID);
+
+        mLauncher.waitUntilLauncherObjectGone(SETTINGS_BUTTON_RES_ID);
+        mLauncher.waitUntilLauncherObjectGone(LOCK_TEXT_RES_ID);
     }
 }
