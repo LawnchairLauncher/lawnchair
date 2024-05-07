@@ -1,4 +1,4 @@
-<h1><img src="docs/lawnchair_round.png" alt="" height="48" valign="middle"> Lawnchair</h1>
+<h1><img src="docs/lawnchair_round.png" alt="" height="35" valign="middle"> Lawnchair</h1>
     
 [![Build debug APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml)
 [![Build release APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml)
@@ -9,7 +9,6 @@
 **Lawnchair** is a free, open-source home app for Android. 
 Taking Launcher3 — Android’s default home app — as a starting point, 
 it ports Pixel Launcher features and introduces rich options for customization.
-
 
 ## Download
 
