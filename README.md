@@ -12,6 +12,8 @@
 Taking Launcher3 — Android’s default home app — as a starting point, 
 it ports Pixel Launcher features and introduces rich options for customization.
 
+![](docs/lawnchair_frame.png)
+
 ## Download
 
 See the [Releases](https://github.com/LawnchairLauncher/lawnchair/releases) section for the latest 
@@ -20,7 +22,7 @@ stable build. For development builds with new icons, use the Nightly build
 ## Contributing
 
 Please see the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) as it will contain everything
-you'd possibly need to contribute to Lawnchair Launcher.
+you'd possibly need to contribute to Lawnchair.
 
 ## Quick links
 
