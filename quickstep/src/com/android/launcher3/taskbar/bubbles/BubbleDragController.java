@@ -104,7 +104,9 @@ public class BubbleDragController {
             }
 
             @Override
-            protected void onDragUpdate(float x, float y) {
+            protected void onDragUpdate(float x, float y, float newTx, float newTy) {
+                bubbleView.setDragTranslationX(newTx);
+                bubbleView.setTranslationY(newTy);
                 mBubblePinController.onDragUpdate(x, y);
             }
 
@@ -145,12 +147,7 @@ public class BubbleDragController {
             private BubbleBarLocation mReleasedLocation = BubbleBarLocation.DEFAULT;
 
             private final LocationChangeListener mLocationChangeListener =
-                    new LocationChangeListener() {
-                        @Override
-                        public void onRelease(@NonNull BubbleBarLocation location) {
-                            mReleasedLocation = location;
-                        }
-                    };
+                    location -> mReleasedLocation = location;
 
             @Override
             protected boolean onTouchDown(@NonNull View view, @NonNull MotionEvent event) {
@@ -172,7 +169,9 @@ public class BubbleDragController {
             }
 
             @Override
-            protected void onDragUpdate(float x, float y) {
+            protected void onDragUpdate(float x, float y, float newTx, float newTy) {
+                bubbleBarView.setTranslationX(newTx);
+                bubbleBarView.setTranslationY(newTy);
                 mBubbleBarPinController.onDragUpdate(x, y);
             }
 
@@ -265,8 +264,7 @@ public class BubbleDragController {
          * Called when bubble is dragged to new coordinates.
          * Not called while bubble is stuck to the dismiss target.
          */
-        protected void onDragUpdate(float x, float y) {
-        }
+        protected abstract void onDragUpdate(float x, float y, float newTx, float newTy);
 
         /**
          * Called when the dragging interaction has ended and all the animations have completed
@@ -411,9 +409,9 @@ public class BubbleDragController {
         private void drag(@NonNull View view, @NonNull MotionEvent event, float dx, float dy,
                 float x, float y) {
             if (mBubbleDismissController.handleTouchEvent(event)) return;
-            view.setTranslationX(mViewInitialPosition.x + dx);
-            view.setTranslationY(mViewInitialPosition.y + dy);
-            onDragUpdate(x, y);
+            final float newTx = mViewInitialPosition.x + dx;
+            final float newTy = mViewInitialPosition.y + dy;
+            onDragUpdate(x, y, newTx, newTy);
         }
 
         private void stopDragging(@NonNull View view, @NonNull MotionEvent event) {

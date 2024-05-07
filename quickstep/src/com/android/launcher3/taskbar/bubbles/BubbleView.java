@@ -22,11 +22,13 @@ import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.launcher3.R;
@@ -45,6 +47,25 @@ import java.util.EnumSet;
 public class BubbleView extends ConstraintLayout {
 
     public static final int DEFAULT_PATH_SIZE = 100;
+
+    /**
+     * Property to update drag translation value.
+     *
+     * @see BubbleView#getDragTranslationX()
+     * @see BubbleView#setDragTranslationX(float)
+     */
+    public static final FloatProperty<BubbleView> DRAG_TRANSLATION_X = new FloatProperty<>(
+            "dragTranslationX") {
+        @Override
+        public void setValue(@NonNull BubbleView bubbleView, float value) {
+            bubbleView.setDragTranslationX(value);
+        }
+
+        @Override
+        public Float get(BubbleView bubbleView) {
+            return bubbleView.getDragTranslationX();
+        }
+    };
 
     /**
      * Flags that suppress the visibility of the 'new' dot or the app badge, for one reason or
@@ -66,8 +87,8 @@ public class BubbleView extends ConstraintLayout {
     private final ImageView mAppIcon;
     private final int mBubbleSize;
 
-    private float mBubbleBarTranslationX = 0f;
-    private float mTranslationX = 0f;
+    private float mDragTranslationX;
+    private float mOffsetX;
 
     private DotRenderer mDotRenderer;
     private DotRenderer.DrawParams mDrawParams;
@@ -129,33 +150,37 @@ public class BubbleView extends ConstraintLayout {
         outline.setOval(inset, inset, inset + normalizedSize, inset + normalizedSize);
     }
 
-    @Override
-    public void setTranslationX(float translationX) {
-        // Overriding setting translationX as it can be a combination of the parent translation
-        // and current view translation.
-        // When a BubbleView is being dragged to pin the bubble bar to other side, we animate the
-        // bar to the new location during the drag.
-        // One part of the animation is updating the translation of the bubble bar. But doing
-        // that also updates the translation for the child views, like the dragged bubble.
-        // To get around that, we instead apply translation on each child view of bubble bar. It
-        // is applied as bubble bar translation. This results in BubbleView's translation being a
-        // sum of the translation it has and the parent bubble bar translation.
-        mTranslationX = translationX;
-        applyTranslation();
+    /**
+     * Set translation-x while this bubble is being dragged.
+     * Translation applied to the view is a sum of {@code translationX} and offset defined by
+     * {@link #setOffsetX(float)}.
+     */
+    public void setDragTranslationX(float translationX) {
+        mDragTranslationX = translationX;
+        applyDragTranslation();
     }
 
     /**
-     * Translation of the bubble bar that hosts this bubble.
-     * Is applied together with translation applied on the view through
-     * {@link #setTranslationX(float)}.
+     * Get translation value applied via {@link #setDragTranslationX(float)}.
      */
-    void setBubbleBarTranslationX(float translationX) {
-        mBubbleBarTranslationX = translationX;
-        applyTranslation();
+    public float getDragTranslationX() {
+        return mDragTranslationX;
     }
 
-    private void applyTranslation() {
-        super.setTranslationX(mTranslationX + mBubbleBarTranslationX);
+    /**
+     * Set offset on x-axis while dragging.
+     * Used to counter parent translation in order to keep the dragged view at the current position
+     * on screen.
+     * Translation applied to the view is a sum of {@code offsetX} and translation defined by
+     * {@link #setDragTranslationX(float)}
+     */
+    public void setOffsetX(float offsetX) {
+        mOffsetX = offsetX;
+        applyDragTranslation();
+    }
+
+    private void applyDragTranslation() {
+        setTranslationX(mDragTranslationX + mOffsetX);
     }
 
     @Override
