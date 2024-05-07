@@ -16,12 +16,12 @@
 
 package com.android.quickstep
 
-import com.android.dx.mockito.inline.extended.ExtendedMockito.doReturn
-import com.android.dx.mockito.inline.extended.ExtendedMockito.mockitoSession
-import com.android.dx.mockito.inline.extended.StaticMockitoSession
 import android.content.ComponentName
 import android.content.Intent
 import android.platform.test.flag.junit.SetFlagsRule
+import com.android.dx.mockito.inline.extended.ExtendedMockito.doReturn
+import com.android.dx.mockito.inline.extended.ExtendedMockito.mockitoSession
+import com.android.dx.mockito.inline.extended.StaticMockitoSession
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingViewHelper
 import com.android.launcher3.logging.StatsLogManager
@@ -39,12 +39,12 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.quality.Strictness
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.mockito.quality.Strictness
 
 /** Test for DesktopSystemShortcut */
 class DesktopSystemShortcutTest {
@@ -64,15 +64,18 @@ class DesktopSystemShortcutTest {
     private lateinit var mockitoSession: StaticMockitoSession
 
     @Before
-    fun setUp(){
-        mockitoSession = mockitoSession().strictness(Strictness.LENIENT)
-                .spyStatic(DesktopModeStatus::class.java).startMocking()
+    fun setUp() {
+        mockitoSession =
+            mockitoSession()
+                .strictness(Strictness.LENIENT)
+                .spyStatic(DesktopModeStatus::class.java)
+                .startMocking()
         doReturn(true).`when` { DesktopModeStatus.enforceDeviceRestrictions() }
         doReturn(true).`when` { DesktopModeStatus.isDesktopModeSupported(any()) }
     }
 
     @After
-    fun tearDown(){
+    fun tearDown() {
         mockitoSession.finishMocking()
     }
 
@@ -85,11 +88,12 @@ class DesktopSystemShortcutTest {
                 isDockable = true
             }
         val taskContainer =
-            taskView.TaskIdAttributeContainer(
+            taskView.TaskContainer(
                 task,
                 null,
                 null,
-                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
+                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED,
+                null
             )
 
         val shortcuts = factory.getShortcuts(launcher, taskContainer)
@@ -106,11 +110,12 @@ class DesktopSystemShortcutTest {
                 isDockable = true
             }
         val taskContainer =
-            taskView.TaskIdAttributeContainer(
+            taskView.TaskContainer(
                 task,
                 null,
                 null,
-                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
+                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED,
+                null
             )
 
         val shortcuts = factory.getShortcuts(launcher, taskContainer)
@@ -128,11 +133,12 @@ class DesktopSystemShortcutTest {
                 isDockable = true
             }
         val taskContainer =
-            taskView.TaskIdAttributeContainer(
+            taskView.TaskContainer(
                 task,
                 null,
                 null,
-                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
+                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED,
+                null
             )
 
         val shortcuts = factory.getShortcuts(launcher, taskContainer)
@@ -148,11 +154,12 @@ class DesktopSystemShortcutTest {
                 isDockable = false
             }
         val taskContainer =
-            taskView.TaskIdAttributeContainer(
+            taskView.TaskContainer(
                 task,
                 null,
                 null,
-                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
+                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED,
+                null
             )
 
         val shortcuts = factory.getShortcuts(launcher, taskContainer)
@@ -168,11 +175,12 @@ class DesktopSystemShortcutTest {
                 isDockable = true
             }
         val taskContainer =
-            taskView.TaskIdAttributeContainer(
+            taskView.TaskContainer(
                 task,
                 null,
                 null,
-                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
+                SplitConfigurationOptions.STAGE_POSITION_UNDEFINED,
+                null
             )
 
         whenever(launcher.getOverviewPanel<LauncherRecentsView>()).thenReturn(recentsView)

@@ -139,7 +139,7 @@ import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskView;
-import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
+import com.android.quickstep.views.TaskView.TaskContainer;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -923,7 +923,7 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
             TaskView runningTask = mRecentsView.getRunningTaskView();
             TaskView centermostTask = mRecentsView.getTaskViewNearestToCenterOfScreen();
             int centermostTaskFlags = centermostTask == null ? 0
-                    : centermostTask.getThumbnail().getSysUiStatusNavFlags();
+                    : centermostTask.getFirstThumbnailView().getSysUiStatusNavFlags();
             boolean swipeUpThresholdPassed = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
             boolean quickswitchThresholdPassed = centermostTask != runningTask;
 
@@ -2286,15 +2286,15 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                 int[] taskIds = nextTask.getTaskIds();
                 ActiveGestureLog.CompoundString nextTaskLog = new ActiveGestureLog.CompoundString(
                         "Launching task: ");
-                for (TaskIdAttributeContainer c : nextTask.getTaskIdAttributeContainers()) {
-                    if (c == null) {
+                for (TaskContainer container : nextTask.getTaskContainers()) {
+                    if (container == null) {
                         continue;
                     }
                     nextTaskLog
                             .append("[id: ")
-                            .append(c.getTask().key.id)
+                            .append(container.getTask().key.id)
                             .append(", pkg: ")
-                            .append(c.getTask().key.getPackageName())
+                            .append(container.getTask().key.getPackageName())
                             .append("] | ");
                 }
                 mGestureState.updateLastStartedTaskIds(taskIds);
@@ -2406,7 +2406,7 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
         RemoteAnimationTarget taskTarget = taskTargetOptional.get();
         TaskView taskView = mRecentsView == null
                 ? null : mRecentsView.getTaskViewByTaskId(taskTarget.taskId);
-        if (taskView == null || !taskView.getThumbnail().shouldShowSplashView()) {
+        if (taskView == null || !taskView.getFirstThumbnailView().shouldShowSplashView()) {
             ActiveGestureLog.INSTANCE.addLog("Invalid task view splash state");
             finishRecentsAnimationOnTasksAppeared(null /* onFinishComplete */);
             return;

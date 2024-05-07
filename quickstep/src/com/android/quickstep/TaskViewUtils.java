@@ -121,7 +121,7 @@ public final class TaskViewUtils {
                 for (int i = 0; i < recentsView.getTaskViewCount(); i++) {
                     TaskView taskView = recentsView.getTaskViewAt(i);
                     if (recentsView.isTaskViewVisible(taskView)) {
-                        Task.TaskKey key = taskView.getTask().key;
+                        Task.TaskKey key = taskView.getFirstTask().key;
                         if (componentName.equals(key.getComponent()) && userId == key.userId) {
                             return taskView;
                         }
@@ -334,7 +334,7 @@ public final class TaskViewUtils {
             // During animation we apply transformation on the thumbnailView (and not the rootView)
             // to follow the TaskViewSimulator. So the final matrix applied on the thumbnailView is:
             //    Mt K(0)` K(t) Mt`
-            TaskThumbnailViewDeprecated[] thumbnails = v.getThumbnails();
+            TaskThumbnailViewDeprecated[] thumbnails = v.getThumbnailViews();
 
             // In case simulator copies and thumbnail size do no match, ensure we get the lesser.
             // This ensures we do not create arrays with empty elements or attempt to references

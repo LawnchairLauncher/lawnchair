@@ -23,12 +23,12 @@ import com.android.launcher3.logging.StatsLogManager.LauncherEvent
 import com.android.launcher3.popup.SystemShortcut
 import com.android.quickstep.views.RecentsView
 import com.android.quickstep.views.RecentsViewContainer
-import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
+import com.android.quickstep.views.TaskView.TaskContainer
 
 /** A menu item, "Desktop", that allows the user to bring the current app into Desktop Windowing. */
 class DesktopSystemShortcut(
     container: RecentsViewContainer,
-    private val mTaskContainer: TaskIdAttributeContainer,
+    private val mTaskContainer: TaskContainer,
     abstractFloatingViewHelper: AbstractFloatingViewHelper
 ) :
     SystemShortcut<RecentsViewContainer>(
@@ -59,7 +59,7 @@ class DesktopSystemShortcut(
             return object : TaskShortcutFactory {
                 override fun getShortcuts(
                     container: RecentsViewContainer,
-                    taskContainer: TaskIdAttributeContainer
+                    taskContainer: TaskContainer
                 ): List<DesktopSystemShortcut>? {
                     return if (!DesktopModeStatus.canEnterDesktopMode(container.asContext())) null
                     else if (!taskContainer.task.isDockable) null
