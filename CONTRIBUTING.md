@@ -1,14 +1,17 @@
 # Lawnchair Launcher Contributing Guidelines
+
 <img alt="" src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/docs/lawnchair_round.png" width="100" data-align="inline">
 
 First and foremost, welcome to the **Lawnchair Launcher** Contributing Guidelines! 
 This document will contain everything you'll need to contribute to the **Lawnchair Launcher** project.
 
 ## 👋 Before you start!
+
 We would like you to be familiar with the tools we are using. 
 The tool(s) you will be using depend on the type of contribution you are going to make.
 
 ### 💫 Bug report & Feature request
+
 For Bug report, please describe the bug in detail to the best of your ability and how to reproduce step,
 If applicable attach logs.
 
@@ -18,6 +21,7 @@ If applicable attach logs.
 Please make sure to be civil during discussion (refer to the [Code of Conduct](CODE_OF_CONDUCT.md))
 
 ### 🌐 Translation
+
 For translation, you only need to know one tool, [Crowdin](https://lawnchair.crowdin.com), 
 which allows us to collaborate with multiple translators & proofreaders.
 
@@ -27,6 +31,7 @@ which allows us to collaborate with multiple translators & proofreaders.
 - Some languages (e.g. French) has variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
 
 ### 🧑‍💻 Code
+
 > [!NOTE]
 > For Lawnchair Launcher 9 to 13, see the branches with the `9-` to `13-` prefixes, respectively.
 
@@ -50,7 +55,16 @@ Here are some contribution tips to help you get started:
 - Make sure your code is logical and well-formatted. If using Kotlin, see [“Coding conventions” in the Kotlin documentation](https://kotlinlang.org/docs/coding-conventions.html);
 - [The `lawnchair` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/lawnchair) houses Lawnchair’s own code, whereas [the `src` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/src) includes a clone of the Launcher3 codebase with modifications. Generally, place new files in the former, keeping changes to the latter to a minimum.
 
+#### Additional documentation
+
+- Lawnchair Lawnchair Quickstep Compat Lib ([README.md](compatLib/README.md))
+- Lawnchair Lawnchair Preferences Components ([README.md](lawnchair/src/app/lawnchair/ui/preferences/components/README.md))
+- SystemUI ViewCapture ([README.md](systemUIViewCapture/README.md))
+- SystemUI Common ([README.md](systemUICommon/README.md))
+- Prebuilt Library ([README.md](prebuilts/libs/README.md))
+
 #### Versioning scheme
+
 As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361), 
 the **Lawnchair Launcher** version code is separated by four sectors:
 
@@ -65,10 +79,12 @@ the **Lawnchair Launcher** version code is separated by four sectors:
 4. Lawnchair Launcher's development version
 
 ##### Android's major & minor versions
+
 These makes up the first two sectors of the version code, 
 Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
 
 ##### Development status & version
+
 Depending on which status the **Lawnchair Launcher** is on, 
 it will have an impact on the 3rd and 4th sectors of the version code. 
 For example, alpha 4 for the **Lawnchair Launcher** will be `XX_XX_01_04`. 
@@ -83,6 +99,7 @@ Below is a table explaining the third sector (release type):
 | Release           | 04    |
 
 ## Quick links
+
 - [News](https://t.me/lawnchairci)
 - [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
 - [Website](https://lawnchair.app)
