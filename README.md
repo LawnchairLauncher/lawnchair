@@ -1,4 +1,4 @@
-# Lawnchair Launcher
+# Lawnchair
 
 [![Build debug APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml)
 [![Build release APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml)
@@ -8,7 +8,7 @@
 
 <img alt="" src="https://lawnchair.app/images/lawnchair.webp" width="100">
 
-**Lawnchair Launcher** is a free, open-source home app for Android. 
+**Lawnchair** is a free, open-source home app for Android. 
 Taking Launcher3 — Android’s default home app — as a starting point, 
 it ports Pixel Launcher features and introduces rich options for customization.
 
@@ -19,7 +19,7 @@ stable build. For development builds with new icons, use the Nightly build
 
 ## Contributing
 
-Please see the [Lawnchair Launcher Contributing Guidelines](CONTRIBUTING.md) as it will contain everything
+Please see the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) as it will contain everything
 you'd possibly need to contribute to Lawnchair Launcher.
 
 ## Quick links

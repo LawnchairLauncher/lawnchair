@@ -1,9 +1,9 @@
-# Lawnchair Launcher Contributing Guidelines
+# Lawnchair Contributing Guidelines
 
 <img alt="" src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/docs/lawnchair_round.png" width="100" data-align="inline">
 
-First and foremost, welcome to the **Lawnchair Launcher** Contributing Guidelines! 
-This document will contain everything you'll need to contribute to the **Lawnchair Launcher** project.
+First and foremost, welcome to the **Lawnchair** Contributing Guidelines! 
+This document will contain everything you'll need to contribute to the **Lawnchair** project.
 
 ## 👋 Before you start!
 
@@ -15,7 +15,7 @@ The tool(s) you will be using depend on the type of contribution you are going t
 For Bug report, please describe the bug in detail to the best of your ability and how to reproduce step,
 If applicable attach logs.
 
-For Feature request, please describe the feature you'd like to see added to Lawnchair Launcher, 
+For Feature request, please describe the feature you'd like to see added to Lawnchair, 
 If applicable attach logs.
 
 Please make sure to be civil during discussion (refer to the [Code of Conduct](CODE_OF_CONDUCT.md))
@@ -45,20 +45,20 @@ which is a powerful source management control tool for collaborating with multip
 > git clone --recursive https://github.com/LawnchairLauncher/lawnchair.git
 > ```
 
-To build **Lawnchair Launcher**, select the `lawnWithQuickstepDebug` build type. 
+To build **Lawnchair**, select the `lawnWithQuickstepDebug` build type. 
 Should you face errors relating to the `iconloaderlib` and `searchuilib` projects, 
 run `git submodule update --init --recursive`.
 
 Here are some contribution tips to help you get started:
 
-- Always make sure that you're up-to-date with **Lawnchair Launcher** by setting your branch to `14-dev` or newer;
+- Always make sure that you're up-to-date with **Lawnchair** by setting your branch to `14-dev` or newer;
 - Make sure your code is logical and well-formatted. If using Kotlin, see [“Coding conventions” in the Kotlin documentation](https://kotlinlang.org/docs/coding-conventions.html);
 - [The `lawnchair` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/lawnchair) houses Lawnchair’s own code, whereas [the `src` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/src) includes a clone of the Launcher3 codebase with modifications. Generally, place new files in the former, keeping changes to the latter to a minimum.
 
 #### Additional documentation
 
-- Lawnchair Lawnchair Quickstep Compat Lib ([README.md](compatLib/README.md))
-- Lawnchair Lawnchair Preferences Components ([README.md](lawnchair/src/app/lawnchair/ui/preferences/components/README.md))
+- Lawnchair Quickstep Compat Lib ([README.md](compatLib/README.md))
+- Lawnchair Preferences Components ([README.md](lawnchair/src/app/lawnchair/ui/preferences/components/README.md))
 - SystemUI ViewCapture ([README.md](systemUIViewCapture/README.md))
 - SystemUI Common ([README.md](systemUICommon/README.md))
 - Prebuilt Library ([README.md](prebuilts/libs/README.md))
@@ -66,7 +66,7 @@ Here are some contribution tips to help you get started:
 #### Versioning scheme
 
 As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361), 
-the **Lawnchair Launcher** version code is separated by four sectors:
+the **Lawnchair** version code is separated by four sectors:
 
 <p align="center">
     <!-- Direct the accessibility reader to read the point below --->
@@ -75,8 +75,8 @@ the **Lawnchair Launcher** version code is separated by four sectors:
 
 1. Android's major version
 2. Android's minor version
-3. Lawnchair Launcher's development status
-4. Lawnchair Launcher's development version
+3. Lawnchair's development status
+4. Lawnchair's development version
 
 ##### Android's major & minor versions
 
@@ -85,9 +85,9 @@ Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
 
 ##### Development status & version
 
-Depending on which status the **Lawnchair Launcher** is on, 
+Depending on which status the **Lawnchair** is on, 
 it will have an impact on the 3rd and 4th sectors of the version code. 
-For example, alpha 4 for the **Lawnchair Launcher** will be `XX_XX_01_04`. 
+For example, alpha 4 for the **Lawnchair** will be `XX_XX_01_04`. 
 
 Below is a table explaining the third sector (release type):
 
