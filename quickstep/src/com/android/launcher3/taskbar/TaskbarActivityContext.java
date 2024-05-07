@@ -1452,7 +1452,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             ((LauncherTaskbarUIController) uiController).addLauncherVisibilityChangedAnimation(
                     fullAnimation, duration);
         }
-        mControllers.taskbarStashController.addUnstashToHotseatAnimation(fullAnimation, duration);
+        mControllers.taskbarStashController.addUnstashToHotseatAnimationFromSuw(fullAnimation,
+                duration);
 
         View allAppsButton = mControllers.taskbarViewController.getAllAppsButtonView();
         if (allAppsButton != null && !FeatureFlags.ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT.get()) {
