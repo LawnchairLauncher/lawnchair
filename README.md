@@ -1,5 +1,4 @@
 # Lawnchair Launcher
-
 [![Build debug APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml)
 [![Build release APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml)
 [![Crowdin](https://badges.crowdin.net/e/188ba69d884418987f0b7f1dd55e3a4e/localized.svg)](https://lawnchair.crowdin.com/lawnchair)
@@ -12,17 +11,14 @@ Taking Launcher3 — Android’s default home app — as a starting point,
 it ports Pixel Launcher features and introduces rich options for customization.
 
 ## Download
-
 See the [Releases](https://github.com/LawnchairLauncher/lawnchair/releases) section for the latest 
 stable build. For development builds with new icons, use the Nightly build
 
 ## Contributing
-
 Please see the [Lawnchair Launcher Contributing Guidelines](CONTRIBUTING.md) as it will contain everything
 you'd possibly need to contribute to Lawnchair Launcher.
 
 ## Quick links
-
 - [News](https://t.me/lawnchairci)
 - [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
 - [Website](https://lawnchair.app)
