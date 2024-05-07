@@ -25,7 +25,7 @@ import androidx.test.uiautomator.UiObject2;
  */
 public class PrivateSpaceContainer {
     private static final String PS_HEADER_RES_ID = "ps_header_layout";
-    private static final String INSTALL_APP_TITLE = "Install apps";
+    private static final String INSTALL_APP_TITLE = "Install";
     private static final String DIVIDER_RES_ID = "private_space_divider";
 
     private final LauncherInstrumentation mLauncher;
