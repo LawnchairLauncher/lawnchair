@@ -93,15 +93,15 @@ constructor(
         if (animator.isRunning()) animator.cancel()
         // the animation of a new bubble is divided into 2 parts. The first part shows the bubble
         // and the second part hides it after a delay.
-        val showAnimation = buildShowAnimation()
-        val hideAnimation = buildHideAnimation()
+        val showAnimation = buildHandleToBubbleBarAnimation()
+        val hideAnimation = buildBubbleBarToHandleAnimation()
         animatingBubble = AnimatingBubble(bubbleView, showAnimation, hideAnimation)
         scheduler.post(showAnimation)
         scheduler.postDelayed(FLYOUT_DELAY_MS, hideAnimation)
     }
 
     /**
-     * Returns a [Runnable] that starts the animation that shows the new or updated bubble.
+     * Returns a [Runnable] that starts the animation that morphs the handle to the bubble bar.
      *
      * Visually, the animation is divided into 2 parts. The stash handle starts animating up and
      * fading out and then the bubble bar starts animating up and fading in.
@@ -114,7 +114,7 @@ constructor(
      * 3. The third part is the overshoot of the spring animation, where we make the bubble fully
      *    visible which helps avoiding further updates when we re-enter the second part.
      */
-    private fun buildShowAnimation() = Runnable {
+    private fun buildHandleToBubbleBarAnimation() = Runnable {
         // prepare the bubble bar for the animation
         bubbleBarView.onAnimatingBubbleStarted()
         bubbleBarView.visibility = VISIBLE
@@ -197,7 +197,8 @@ constructor(
     }
 
     /**
-     * Returns a [Runnable] that starts the animation that hides the bubble bar.
+     * Returns a [Runnable] that starts the animation that hides the bubble bar and morphs it into
+     * the stashed handle.
      *
      * Similarly to the show animation, this is visually divided into 2 parts. We first animate the
      * bubble bar out, and then animate the stash handle in. At the end of the animation we reset
@@ -209,13 +210,14 @@ constructor(
      * 2. In the second part the bubble bar is fully hidden and the handle animates in.
      * 3. The third part is the overshoot. The handle is made fully visible.
      */
-    private fun buildHideAnimation() = Runnable {
+    private fun buildBubbleBarToHandleAnimation() = Runnable {
         if (animatingBubble == null) return@Runnable
         val offset = bubbleStashController.diffBetweenHandleAndBarCenters
         val stashedHandleTranslationY =
             bubbleStashController.stashedHandleTranslationForNewBubbleAnimation
         // this is the total distance that both the stashed handle and the bar will be traveling
         val totalTranslationY = bubbleStashController.bubbleBarTranslationYForTaskbar + offset
+        bubbleStashController.setHandleTranslationY(totalTranslationY)
         val animator = bubbleStashController.stashedHandlePhysicsAnimator
         animator.setDefaultSpringConfig(springConfig)
         animator.spring(DynamicAnimation.TRANSLATION_Y, 0f)
@@ -254,6 +256,50 @@ constructor(
             if (!canceled) bubbleStashController.stashBubbleBarImmediate()
             bubbleBarView.onAnimatingBubbleCompleted()
             bubbleBarView.relativePivotY = 1f
+            bubbleStashController.updateTaskbarTouchRegion()
+        }
+        animator.start()
+    }
+
+    /** Animates to the initial state of the bubble bar, when there are no previous bubbles. */
+    fun animateToInitialState(b: BubbleBarBubble, isInApp: Boolean, isExpanding: Boolean) {
+        val bubbleView = b.view
+        val animator = PhysicsAnimator.getInstance(bubbleView)
+        if (animator.isRunning()) animator.cancel()
+        // the animation of a new bubble is divided into 2 parts. The first part shows the bubble
+        // and the second part hides it after a delay if we are in an app.
+        val showAnimation = buildBubbleBarBounceAnimation()
+        val hideAnimation =
+            if (isInApp && !isExpanding) {
+                buildBubbleBarToHandleAnimation()
+            } else {
+                // in this case the bubble bar remains visible so not much to do. once we implement
+                // the flyout we'll update this runnable to hide it.
+                Runnable {
+                    animatingBubble = null
+                    bubbleStashController.showBubbleBarImmediate()
+                    bubbleBarView.onAnimatingBubbleCompleted()
+                }
+            }
+        animatingBubble = AnimatingBubble(bubbleView, showAnimation, hideAnimation)
+        scheduler.post(showAnimation)
+        scheduler.postDelayed(FLYOUT_DELAY_MS, hideAnimation)
+    }
+
+    private fun buildBubbleBarBounceAnimation() = Runnable {
+        // prepare the bubble bar for the animation
+        bubbleBarView.onAnimatingBubbleStarted()
+        bubbleBarView.translationY = bubbleBarView.height.toFloat()
+        bubbleBarView.visibility = VISIBLE
+        bubbleBarView.alpha = 1f
+        bubbleBarView.scaleX = 1f
+        bubbleBarView.scaleY = 1f
+
+        val animator = PhysicsAnimator.getInstance(bubbleBarView)
+        animator.setDefaultSpringConfig(springConfig)
+        animator.spring(DynamicAnimation.TRANSLATION_Y, bubbleStashController.bubbleBarTranslationY)
+        animator.addEndListener { _, _, _, _, _, _, _ ->
+            // the bubble bar is now fully settled in. update taskbar touch region so it's touchable
             bubbleStashController.updateTaskbarTouchRegion()
         }
         animator.start()
