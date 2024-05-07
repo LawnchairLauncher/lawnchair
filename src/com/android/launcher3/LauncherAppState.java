@@ -206,7 +206,7 @@ public class LauncherAppState implements SafeCloseable {
     }
 
     private void refreshAndReloadLauncher() {
-        LauncherIcons.clearPool();
+        LauncherIcons.clearPool(mContext);
         mIconCache.updateIconParams(
                 mInvariantDeviceProfile.fillResIconDpi, mInvariantDeviceProfile.iconBitmapSize);
         mModel.forceReload();

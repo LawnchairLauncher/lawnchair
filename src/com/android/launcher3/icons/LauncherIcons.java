@@ -25,10 +25,13 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.graphics.IconShape;
-import com.android.launcher3.graphics.LauncherPreviewRenderer;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.UserIconInfo;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Wrapper class to provide access to {@link BaseIconFactory} and also to provide pool of this class
@@ -36,68 +39,39 @@ import com.android.launcher3.util.UserIconInfo;
  */
 public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
 
-    private static final Object sPoolSync = new Object();
-    private static LauncherIcons sPool;
-    private static int sPoolId = 0;
+    private static final MainThreadInitializedObject<Pool> POOL =
+            new MainThreadInitializedObject<>(Pool::new);
 
     /**
      * Return a new Message instance from the global pool. Allows us to
      * avoid allocating new objects in many cases.
      */
     public static LauncherIcons obtain(Context context) {
-        if (context instanceof LauncherPreviewRenderer.PreviewContext) {
-            return ((LauncherPreviewRenderer.PreviewContext) context).newLauncherIcons(context);
-        }
-
-        int poolId;
-        synchronized (sPoolSync) {
-            if (sPool != null) {
-                LauncherIcons m = sPool;
-                sPool = m.next;
-                m.next = null;
-                return m;
-            }
-            poolId = sPoolId;
-        }
-
-        InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(context);
-        return new LauncherIcons(context, idp.fillResIconDpi, idp.iconBitmapSize, poolId);
+        return POOL.get(context).obtain();
     }
 
-    public static void clearPool() {
-        synchronized (sPoolSync) {
-            sPool = null;
-            sPoolId++;
-        }
+    public static void clearPool(Context context) {
+        POOL.get(context).close();
     }
 
-    private final int mPoolId;
-
-    private LauncherIcons next;
+    private final ConcurrentLinkedQueue<LauncherIcons> mPool;
 
     private MonochromeIconFactory mMonochromeIconFactory;
 
-    protected LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize, int poolId) {
+    protected LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize,
+            ConcurrentLinkedQueue<LauncherIcons> pool) {
         super(context, fillResIconDpi, iconBitmapSize,
                 IconShape.INSTANCE.get(context).getShape().enableShapeDetection());
         mMonoIconEnabled = Themes.isThemedIconEnabled(context);
-        mPoolId = poolId;
+        mPool = pool;
     }
 
     /**
      * Recycles a LauncherIcons that may be in-use.
      */
     public void recycle() {
-        synchronized (sPoolSync) {
-            if (sPoolId != mPoolId) {
-                return;
-            }
-            // Clear any temporary state variables
-            clear();
-
-            next = sPool;
-            sPool = this;
-        }
+        clear();
+        mPool.add(this);
     }
 
     @Override
@@ -121,5 +95,34 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     @Override
     public void close() {
         recycle();
+    }
+
+    private static class Pool implements SafeCloseable {
+
+        private final Context mContext;
+
+        @NonNull
+        private ConcurrentLinkedQueue<LauncherIcons> mPool = new ConcurrentLinkedQueue<>();
+
+        private Pool(Context context) {
+            mContext = context;
+        }
+
+        public LauncherIcons obtain() {
+            ConcurrentLinkedQueue<LauncherIcons> pool = mPool;
+            LauncherIcons m = pool.poll();
+
+            if (m == null) {
+                InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(mContext);
+                return new LauncherIcons(mContext, idp.fillResIconDpi, idp.iconBitmapSize, pool);
+            } else {
+                return m;
+            }
+        }
+
+        @Override
+        public void close() {
+            mPool = new ConcurrentLinkedQueue<>();
+        }
     }
 }
