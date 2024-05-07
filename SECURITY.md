@@ -1,7 +1,7 @@
 # Security Policy
 
 ## Supported Versions
-> [!NOTE]
+> [!IMPORTANT]
 > Lawnchair v2 (Play Store version) is **unsupported**. Use the newer alphas instead. See [this FAQ page](https://lawnchair.app/faq#do-you-still-support-the-play-store-version) for additional information.
 
 The latest version of Lawnchair is the only supported version.

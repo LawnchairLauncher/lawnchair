@@ -8,6 +8,16 @@ First and foremost, welcome to the **Lawnchair Launcher** Contributing Guideline
 
 We would like you to be familiar with the tools we are using. The tool(s) you will be using depend on the type of contribution you are going to make.
 
+### 💫 Bug report & Feature request
+
+For Bug report, please describe the bug in detail to the best of your ability and how to reproduce step,
+If applicable attach logs.
+
+For Feature request, please describe the feature you'd like to see added to Lawnchair Launcher, 
+If applicable attach logs.
+
+Please make sure to be civil during discussion (refer to the [Code of Conduct](CODE_OF_CONDUCT.md))
+
 ### Translation
 
 For translation, you only need to know one tool, [Crowdin](https://lawnchair.crowdin.com), which allows us to collaborate with multiple translators & proofreaders.
@@ -64,18 +74,18 @@ Depending on which status the **Lawnchair Launcher** is on, it will have an impa
 
 Below is a table explaining the third field (release type):
 
-| Status            | Value    |
-| ----------------- | -------- |
-| Alpha             | 01       |
-| Beta              | 02       |
-| Release Candidate | 03       |
-| Release           | 04       |
+| Status            | Value |
+|-------------------|-------|
+| Alpha             | 01    |
+| Beta              | 02    |
+| Release Candidate | 03    |
+| Release           | 04    |
 
 ## Quick links
 
--   [News](https://t.me/lawnchairci)
--   [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
--   [Website](https://lawnchair.app)
--   [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
+- [News](https://t.me/lawnchairci)
+- [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
+- [Website](https://lawnchair.app)
+- [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
 
 You can view all our links in the [Lawnchair Wiki](https://github.com/LawnchairLauncher/lawnchair/wiki).
