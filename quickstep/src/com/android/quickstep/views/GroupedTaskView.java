@@ -98,7 +98,7 @@ public class GroupedTaskView extends TaskView {
     @Deprecated
     @Nullable
     private Task getSecondTask() {
-        return mTaskContainers.length > 1 ? mTaskContainers[1].getTask() : null;
+        return mTaskContainers.size() > 1 ? mTaskContainers.get(1).getTask() : null;
     }
 
     @Override
@@ -150,11 +150,11 @@ public class GroupedTaskView extends TaskView {
     public void bind(Task primary, Task secondary, RecentsOrientedState orientedState,
             @Nullable SplitBounds splitBoundsConfig) {
         super.bind(primary, orientedState);
-        mTaskContainers = new TaskContainer[]{
-                mTaskContainers[0],
+        mTaskContainers = Arrays.asList(
+                mTaskContainers.get(0),
                 new TaskContainer(secondary, findViewById(R.id.bottomright_snapshot),
-                        mIconView2, STAGE_POSITION_BOTTOM_OR_RIGHT, mDigitalWellBeingToast2)};
-        mTaskContainers[0].setStagePosition(
+                        mIconView2, STAGE_POSITION_BOTTOM_OR_RIGHT, mDigitalWellBeingToast2));
+        mTaskContainers.get(0).setStagePosition(
                 SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT);
         mSnapshotView2.bind(secondary);
         mSplitBoundsConfig = splitBoundsConfig;
@@ -176,12 +176,12 @@ public class GroupedTaskView extends TaskView {
     public void setUpShowAllInstancesListener() {
         // sets up the listener for the left/top task
         super.setUpShowAllInstancesListener();
-        if (mTaskContainers.length < 2) {
+        if (mTaskContainers.size() < 2) {
             return;
         }
 
         // right/bottom task's base package name
-        String taskPackageName = mTaskContainers[1].getTask().key.getPackageName();
+        String taskPackageName = mTaskContainers.get(1).getTask().key.getPackageName();
 
         // icon of the right/bottom task
         View showWindowsView = findViewById(R.id.show_windows_right);
@@ -279,7 +279,7 @@ public class GroupedTaskView extends TaskView {
     @Nullable
     @Override
     public RunnableList launchTaskAnimated() {
-        if (mTaskContainers.length == 0) {
+        if (mTaskContainers.isEmpty()) {
             return null;
         }
 
@@ -407,9 +407,8 @@ public class GroupedTaskView extends TaskView {
         } else {
             // Currently being split with this taskView, let the non-split selected thumbnail
             // take up full thumbnail area
-            Optional<TaskContainer> nonSplitContainer = Arrays.stream(
-                    mTaskContainers).filter(
-                            container -> container.getTask().key.id != initSplitTaskId).findAny();
+            Optional<TaskContainer> nonSplitContainer = mTaskContainers.stream().filter(
+                    container -> container.getTask().key.id != initSplitTaskId).findAny();
             nonSplitContainer.ifPresent(
                     taskIdAttributeContainer -> taskIdAttributeContainer.getThumbnailView().measure(
                             widthMeasureSpec, MeasureSpec.makeMeasureSpec(

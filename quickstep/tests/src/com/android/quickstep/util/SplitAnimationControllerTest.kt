@@ -91,7 +91,7 @@ class SplitAnimationControllerTest {
         whenever(mockThumbnailView.thumbnail).thenReturn(mockBitmap)
         whenever(mockTaskContainer.iconView).thenReturn(mockIconView)
         whenever(mockIconView.drawable).thenReturn(mockTaskViewDrawable)
-        whenever(mockTaskView.taskContainers).thenReturn(Array(1) { mockTaskContainer })
+        whenever(mockTaskView.taskContainers).thenReturn(List(1) { mockTaskContainer })
 
         whenever(splitSelectSource.drawable).thenReturn(mockSplitSourceDrawable)
         whenever(splitSelectSource.view).thenReturn(mockSplitSourceView)
@@ -184,7 +184,7 @@ class SplitAnimationControllerTest {
         whenever(mockTask.getKey()).thenReturn(mockTaskKey)
         whenever(mockTaskKey.getId()).thenReturn(taskId)
         whenever(mockSplitSelectStateController.initialTaskId).thenReturn(taskId)
-        whenever(mockGroupedTaskView.taskContainers).thenReturn(Array(1) { mockTaskContainer })
+        whenever(mockGroupedTaskView.taskContainers).thenReturn(List(1) { mockTaskContainer })
         val splitAnimInitProps: SplitAnimationController.Companion.SplitAnimInitProps =
             splitAnimationController.getFirstAnimInitViews(
                 { mockGroupedTaskView },
