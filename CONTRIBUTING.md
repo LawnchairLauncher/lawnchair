@@ -52,7 +52,7 @@ Here are some contribution tips to help you get started:
 As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361), the **Lawnchair Launcher** version code is separated by four sectors:
 
 <p align="center">
-    <img alt="" src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/.github/version.svg" width="100%">
+    <img alt="" src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/.github/version.svg" width="98%">
 </p>
 
 1. Android's major version
