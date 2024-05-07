@@ -7,6 +7,7 @@
 [![Discord](https://img.shields.io/discord/803299970169700402?label=server&logo=discord)](https://discord.gg/3x8qNWxgGZ)
 
 <img alt="" src="https://lawnchair.app/images/lawnchair.webp" width="100">
+
 **Lawnchair Launcher** is a free, open-source home app for Android. 
 Taking Launcher3 — Android’s default home app — as a starting point, 
 it ports Pixel Launcher features and introduces rich options for customization.
