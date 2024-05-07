@@ -17,6 +17,8 @@ package com.android.launcher3.widget;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.Flags.enableWidgetTapToAdd;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP;
 
 import android.content.Context;
@@ -174,7 +176,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     }
 
     /**
-     * Click handler for tap to add button.
+     * Click handler for tap to add button. This handler assumes we are in the Launcher activity and
+     * should not be used when the widget sheet is displayed elsewhere.
      */
     private void addWidget(@NonNull PendingAddItemInfo info) {
         // Using a boolean flag here to make sure the callback is only run once. This should never
@@ -182,19 +185,23 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         // needed.
         final AtomicBoolean hasRun = new AtomicBoolean(false);
         addOnCloseListener(() -> {
-            if (!hasRun.get()) {
-                Launcher.getLauncher(mActivityContext).getAccessibilityDelegate().addToWorkspace(
-                        info, /*accessibility=*/ false,
+            if (hasRun.get()) return;
+            hasRun.set(true);
+
+            // Going to NORMAL state will also dismiss the All Apps view if it is showing.
+            Launcher launcher = Launcher.getLauncher(mActivityContext);
+            launcher.getStateManager().goToState(NORMAL, forSuccessCallback(() -> {
+                launcher.getAccessibilityDelegate().addToWorkspace(info,
+                        /*accessibility=*/ false,
                         /*finishCallback=*/ (success) -> {
                             mActivityContext.getStatsLogManager()
                                     .logger()
                                     .withItemInfo(info)
                                     .log(LAUNCHER_WIDGET_ADD_BUTTON_TAP);
                         });
-                hasRun.set(true);
-            }
+            }));
         });
-        handleClose(true);
+        close(/* animate= */ true);
     }
 
     /**
