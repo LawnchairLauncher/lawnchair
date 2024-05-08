@@ -1,6 +1,6 @@
 # Lawnchair Contributing Guidelines
 
-<img alt="" src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/docs/lawnchair_round.png" width="100" data-align="inline">
+<img alt="" src="docs/lawnchair-round.webp" width="100" data-align="inline">
 
 First and foremost, welcome to the **Lawnchair** Contributing Guidelines! 
 This document will contain everything you'll need to contribute to the **Lawnchair** project.
