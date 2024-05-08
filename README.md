@@ -1,4 +1,4 @@
-<h1><img src="docs/lawnchair_round.png" alt="" height="35" valign="middle"> Lawnchair</h1>
+<h1><img src="docs/lawnchair-round.webp" alt="" height="35" valign="middle"> Lawnchair</h1>
     
 [![Build debug APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml)
 [![Build release APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml)
