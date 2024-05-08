@@ -33,7 +33,7 @@ which allows us to collaborate with multiple translators & proofreaders.
 ### 🧑‍💻 Code
 
 > [!NOTE]
-> For Lawnchair Launcher 9 or 13, see the branches with the `9-` to `13-` prefixes respectively.
+> For Lawnchair 9 to 13, see the branches with the `9-` to `13-` prefixes respectively.
 
 For code, it's highly recommended that you use an IDE (e.g. [Android Studio](https://developer.android.com/studio)),
 know [Java](https://www.java.com) or preferably [Kotlin](https://kotlinlang.org/), and [Git](https://git-scm.com/)
