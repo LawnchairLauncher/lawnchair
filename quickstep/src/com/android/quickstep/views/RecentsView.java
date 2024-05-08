@@ -2354,8 +2354,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         // Update the task data for the in/visible children
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = requireTaskViewAt(i);
-            TaskContainer[] containers = taskView.getTaskContainers();
-            if (containers.length == 0) {
+            List<TaskContainer> containers = taskView.getTaskContainers();
+            if (containers.isEmpty()) {
                 continue;
             }
             int index = indexOfChild(taskView);
@@ -2367,7 +2367,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             }
             if (visible) {
                 // Default update all non-null tasks, then remove running ones
-                List<Task> tasksToUpdate = Arrays.stream(containers).filter(Objects::nonNull)
+                List<Task> tasksToUpdate = containers.stream()
                         .map(TaskContainer::getTask)
                         .collect(Collectors.toCollection(ArrayList::new));
                 if (mTmpRunningTasks != null) {
@@ -4801,7 +4801,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             boolean primaryTaskSelected = mSplitHiddenTaskView.getTaskIds()[0]
                     == mSplitSelectStateController.getInitialTaskId();
             TaskContainer taskContainer = mSplitHiddenTaskView
-                    .getTaskContainers()[primaryTaskSelected ? 1 : 0];
+                    .getTaskContainers().get(primaryTaskSelected ? 1 : 0);
             TaskThumbnailViewDeprecated thumbnail = taskContainer.getThumbnailView();
             mSplitSelectStateController.getSplitAnimationController()
                     .addInitialSplitFromPair(taskContainer, builder,

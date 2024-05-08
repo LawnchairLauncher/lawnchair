@@ -16,7 +16,7 @@
 
 package com.android.quickstep.views;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import  static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
@@ -42,6 +42,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskThumbnailCache;
@@ -69,8 +70,6 @@ public class DesktopTaskView extends TaskView {
 
     private static final boolean DEBUG = false;
 
-    private final ArrayList<TaskThumbnailViewDeprecated> mSnapshotViews = new ArrayList<>();
-
     private final ArrayList<CancellableTask<?>> mPendingThumbnailRequests = new ArrayList<>();
 
     private final TaskView.FullscreenDrawParams mSnapshotDrawParams;
@@ -80,6 +79,8 @@ public class DesktopTaskView extends TaskView {
     private int mChildCountAtInflation;
 
     private final PointF mTempPointF = new PointF();
+
+    private final ViewPool<TaskThumbnailViewDeprecated> mTaskthumbnailViewPool;
 
     public DesktopTaskView(Context context) {
         this(context, null);
@@ -103,6 +104,10 @@ public class DesktopTaskView extends TaskView {
                 return QuickStepContract.getWindowCornerRadius(context);
             }
         };
+        // As DesktopTaskView is inflated in background, use initialSize=0 to avoid initPool.
+        mTaskthumbnailViewPool = new ViewPool<>(context, this, R.layout.task_thumbnail,
+                /* maxSize= */10, /* initialSize= */ 0);
+        mTaskContainers = new ArrayList<>();
     }
 
     @Override
@@ -163,43 +168,34 @@ public class DesktopTaskView extends TaskView {
         }
         cancelPendingLoadTasks();
 
-        mTaskContainers = new TaskContainer[tasks.size()];
-
-        // Ensure there are equal number of snapshot views and tasks.
-        // More tasks than views, add views. More views than tasks, remove views.
-        // TODO(b/251586230): use a ViewPool for creating TaskThumbnailViews
-        if (mSnapshotViews.size() > tasks.size()) {
-            int diff = mSnapshotViews.size() - tasks.size();
-            for (int i = 0; i < diff; i++) {
-                TaskThumbnailViewDeprecated snapshotView = mSnapshotViews.remove(0);
-                removeView(snapshotView);
-            }
-        } else if (mSnapshotViews.size() < tasks.size()) {
-            int diff = tasks.size() - mSnapshotViews.size();
-            for (int i = 0; i < diff; i++) {
-                TaskThumbnailViewDeprecated snapshotView =
-                        new TaskThumbnailViewDeprecated(getContext());
-                mSnapshotViews.add(snapshotView);
-                // Add snapshots from to position after the initial child views.
-                addView(snapshotView, mChildCountAtInflation,
-                        new LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
-            }
-        }
-
+        ((ArrayList<TaskContainer>) mTaskContainers).ensureCapacity(tasks.size());
         for (int i = 0; i < tasks.size(); i++) {
             Task task = tasks.get(i);
-            TaskThumbnailViewDeprecated thumbnailView = mSnapshotViews.get(i);
+            TaskThumbnailViewDeprecated thumbnailView;
+            if (i >= mTaskContainers.size()) {
+                thumbnailView = mTaskthumbnailViewPool.getView();
+                // Add thumbnailView from to position after the initial child views.
+                addView(thumbnailView, mChildCountAtInflation,
+                        new LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+            } else {
+                thumbnailView = mTaskContainers.get(i).getThumbnailView();
+            }
             thumbnailView.bind(task);
-            mTaskContainers[i] = createAttributeContainer(task, thumbnailView);
+            TaskContainer taskContainer = new TaskContainer(task, thumbnailView, mIconView,
+                    STAGE_POSITION_UNDEFINED, /*digitalWellBeingToast=*/ null);
+            if (i >= mTaskContainers.size()) {
+                mTaskContainers.add(taskContainer);
+            } else {
+                mTaskContainers.set(i, taskContainer);
+            }
+        }
+        while (mTaskContainers.size() > tasks.size()) {
+            TaskContainer taskContainer = mTaskContainers.remove(mTaskContainers.size() - 1);
+            removeView(taskContainer.getThumbnailView());
+            mTaskthumbnailViewPool.recycle(taskContainer.getThumbnailView());
         }
 
         setOrientationState(orientedState);
-    }
-
-    private TaskContainer createAttributeContainer(Task task,
-            TaskThumbnailViewDeprecated thumbnailView) {
-        return new TaskContainer(task, thumbnailView, mIconView,
-                STAGE_POSITION_UNDEFINED, /*digitalWellBeingToast=*/ null);
     }
 
     @Override
@@ -314,7 +310,7 @@ public class DesktopTaskView extends TaskView {
         int thumbnailTopMarginPx = mContainer.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
         containerHeight -= thumbnailTopMarginPx;
 
-        if (mTaskContainers.length == 0) {
+        if (mTaskContainers.isEmpty()) {
             return;
         }
 

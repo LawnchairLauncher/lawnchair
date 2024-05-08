@@ -53,6 +53,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.SystemUiController.SystemUiControllerFlags;
+import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
@@ -66,7 +67,7 @@ import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
  * @deprecated This class will be replaced by the new [TaskThumbnailView].
  */
 @Deprecated
-public class TaskThumbnailViewDeprecated extends View {
+public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusable {
     private static final MainThreadInitializedObject<FullscreenDrawParams> TEMP_PARAMS =
             new MainThreadInitializedObject<>(FullscreenDrawParams::new);
 
@@ -605,5 +606,10 @@ public class TaskThumbnailViewDeprecated extends View {
             return false;
         }
         return mThumbnailData.isRealSnapshot && !mTask.isLocked;
+    }
+
+    @Override
+    public void onRecycle() {
+        // Do nothing
     }
 }

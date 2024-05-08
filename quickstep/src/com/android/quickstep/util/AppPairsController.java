@@ -116,9 +116,9 @@ public class AppPairsController {
      */
     public void saveAppPair(GroupedTaskView gtv) {
         InteractionJankMonitorWrapper.begin(gtv, Cuj.CUJ_LAUNCHER_SAVE_APP_PAIR);
-        TaskView.TaskContainer[] containers = gtv.getTaskContainers();
-        WorkspaceItemInfo recentsInfo1 = containers[0].getItemInfo();
-        WorkspaceItemInfo recentsInfo2 = containers[1].getItemInfo();
+        List<TaskView.TaskContainer> containers = gtv.getTaskContainers();
+        WorkspaceItemInfo recentsInfo1 = containers.get(0).getItemInfo();
+        WorkspaceItemInfo recentsInfo2 = containers.get(1).getItemInfo();
         WorkspaceItemInfo app1 = lookupLaunchableItem(recentsInfo1.getComponentKey());
         WorkspaceItemInfo app2 = lookupLaunchableItem(recentsInfo2.getComponentKey());
 
