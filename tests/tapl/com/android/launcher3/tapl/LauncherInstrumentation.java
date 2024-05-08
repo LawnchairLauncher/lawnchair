@@ -108,7 +108,7 @@ import java.util.stream.Collectors;
 public final class LauncherInstrumentation {
 
     private static final String TAG = "Tapl";
-    private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 15;
+    private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 5;
     private static final int GESTURE_STEP_MS = 16;
 
     static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
