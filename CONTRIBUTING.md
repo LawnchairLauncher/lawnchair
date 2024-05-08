@@ -10,15 +10,15 @@ This document will contain everything you'll need to contribute to the **Lawncha
 We would like you to be familiar with the tools we are using. 
 The tool(s) you will be using depend on the type of contribution you are going to make.
 
-### 💫 Bug report & Feature request
+### 💫 Bug report & feature requests
 
-For Bug report, please describe the bug in detail to the best of your ability and how to reproduce step,
-If applicable attach logs.
+For bug reports, please describe the bug in detail to the best of your ability
+and steps on how to reproduce it. If applicable, attach log files.
 
-For Feature request, please describe the feature you'd like to see added to Lawnchair, 
-If applicable attach logs.
+For feature requests, please describe the feature you'd like to see added to Lawnchair.
+If applicable, attach log files.
 
-Please make sure to be civil during discussion (refer to the [Code of Conduct](CODE_OF_CONDUCT.md))
+Please make sure to be civil during discussion of your contribution (refer to the [Code of Conduct](CODE_OF_CONDUCT.md))
 
 ### 🌐 Translation
 
@@ -28,12 +28,12 @@ which allows us to collaborate with multiple translators & proofreaders.
 - When using quotation marks, insert the symbols specific to the target language, as listed in this [this summary table](https://en.wikipedia.org/wiki/Quotation_mark#Summary_table);
 - Lawnchair uses title case for some English UI text while other languages do not use title case; opt for sentence case instead;
 - Some English terminology may have not have commonly-used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of _bottom row_ for _dock_;
-- Some languages (e.g. French) has variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
+- Some languages (e.g. French) have variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
 
 ### 🧑‍💻 Code
 
 > [!NOTE]
-> For Lawnchair Launcher 9 to 13, see the branches with the `9-` to `13-` prefixes, respectively.
+> For Lawnchair Launcher 9 or 13, see the branches with the `9-` to `13-` prefixes respectively.
 
 For code, it's highly recommended that you use an IDE (e.g. [Android Studio](https://developer.android.com/studio)), 
 know [Java](https://www.java.com) or preferably [Kotlin](https://kotlinlang.org/), and [Git](https://git-scm.com/) 
@@ -80,13 +80,13 @@ the **Lawnchair** version code is separated by four sectors:
 
 ##### Android's major & minor versions
 
-These makes up the first two sectors of the version code, 
+These makes up the first two sectors of the version code; 
 Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
 
 ##### Development status & version
 
 Depending on which status the **Lawnchair** is on, 
-it will have an impact on the 3rd and 4th sectors of the version code. 
+it will change what the 3rd and 4th sectors of the version code are. 
 For example, alpha 4 for the **Lawnchair** will be `XX_XX_01_04`. 
 
 Below is a table explaining the third sector (release type):
