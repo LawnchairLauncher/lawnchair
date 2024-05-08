@@ -154,7 +154,7 @@ class DeviceConfigWrapper private constructor(propReader: PropReader) {
     }
 
     companion object {
-        val configHelper by lazy { DeviceConfigHelper(::DeviceConfigWrapper) }
+        @JvmStatic val configHelper by lazy { DeviceConfigHelper(::DeviceConfigWrapper) }
 
         @JvmStatic fun get() = configHelper.config
     }
