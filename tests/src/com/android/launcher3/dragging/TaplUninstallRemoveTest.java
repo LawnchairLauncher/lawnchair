@@ -177,6 +177,8 @@ public class TaplUninstallRemoveTest extends AbstractLauncherUiTest<Launcher> {
      */
     @Test
     @PortraitLandscape
+    @ScreenRecordRule.ScreenRecord // b/338869019
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/338869019
     public void testAddDeleteShortcutOnHotseat() {
         mLauncher.getWorkspace()
                 .deleteAppIcon(mLauncher.getWorkspace().getHotseatAppIcon(0))
