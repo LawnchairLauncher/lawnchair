@@ -148,6 +148,7 @@ import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.SysUiStatsLog;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
+import com.android.window.flags.Flags;
 import com.android.wm.shell.common.TransactionPool;
 import com.android.wm.shell.startingsurface.SplashScreenExitAnimationUtils;
 
@@ -1259,13 +1260,16 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                 ? mRecentsView.getNextPageTaskView() : null;
         TaskView currentPageTaskView = mRecentsView != null
                 ? mRecentsView.getCurrentPageTaskView() : null;
-        if ((nextPageTaskView instanceof DesktopTaskView
-                || currentPageTaskView instanceof DesktopTaskView)
-                && endTarget == NEW_TASK) {
-            // TODO(b/268075592): add support for quickswitch to/from desktop
-            return LAST_TASK;
-        }
 
+        if (Flags.enableDesktopWindowingMode()
+                && !(Flags.enableDesktopWindowingWallpaperActivity()
+                && Flags.enableDesktopWindowingQuickSwitch())) {
+            if ((nextPageTaskView instanceof DesktopTaskView
+                    || currentPageTaskView instanceof DesktopTaskView)
+                    && endTarget == NEW_TASK) {
+                return LAST_TASK;
+            }
+        }
         return endTarget;
     }
 
@@ -1422,14 +1426,27 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
             mGestureState.setState(STATE_RECENTS_SCROLLING_FINISHED);
             setClampScrollOffset(false);
         };
-        if (mRecentsView != null && (mRecentsView.getCurrentPageTaskView() != null
-                && !(mRecentsView.getCurrentPageTaskView() instanceof DesktopTaskView))) {
-            ActiveGestureLog.INSTANCE.trackEvent(ActiveGestureErrorDetector.GestureEvent
-                    .SET_ON_PAGE_TRANSITION_END_CALLBACK);
-            // TODO(b/268075592): add support for quickswitch to/from desktop
-            mRecentsView.setOnPageTransitionEndCallback(onPageTransitionEnd);
+
+        if (Flags.enableDesktopWindowingMode()
+                && !(Flags.enableDesktopWindowingWallpaperActivity()
+                && Flags.enableDesktopWindowingQuickSwitch())) {
+            if (mRecentsView != null && (mRecentsView.getCurrentPageTaskView() != null
+                    && !(mRecentsView.getCurrentPageTaskView() instanceof DesktopTaskView))) {
+                ActiveGestureLog.INSTANCE.trackEvent(ActiveGestureErrorDetector.GestureEvent
+                        .SET_ON_PAGE_TRANSITION_END_CALLBACK);
+                mRecentsView.setOnPageTransitionEndCallback(onPageTransitionEnd);
+            } else {
+                onPageTransitionEnd.run();
+            }
         } else {
-            onPageTransitionEnd.run();
+            if (mRecentsView != null) {
+                ActiveGestureLog.INSTANCE.trackEvent(
+                        ActiveGestureErrorDetector
+                                .GestureEvent.SET_ON_PAGE_TRANSITION_END_CALLBACK);
+                mRecentsView.setOnPageTransitionEndCallback(onPageTransitionEnd);
+            } else {
+                onPageTransitionEnd.run();
+            }
         }
 
         animateToProgress(startShift, endShift, duration, interpolator, endTarget, velocityPxPerMs);
@@ -2251,11 +2268,14 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                     mRecentsAnimationController, mRecentsAnimationTargets);
         });
 
-        if (mRecentsView.getNextPageTaskView() instanceof DesktopTaskView
-                || mRecentsView.getCurrentPageTaskView() instanceof DesktopTaskView) {
-            // TODO(b/268075592): add support for quickswitch to/from desktop
-            mRecentsViewScrollLinked = false;
-            return;
+        if (Flags.enableDesktopWindowingMode()
+                && !(Flags.enableDesktopWindowingWallpaperActivity()
+                        && Flags.enableDesktopWindowingQuickSwitch())) {
+            if (mRecentsView.getNextPageTaskView() instanceof DesktopTaskView
+                    || mRecentsView.getCurrentPageTaskView() instanceof DesktopTaskView) {
+                mRecentsViewScrollLinked = false;
+                return;
+            }
         }
 
         // Disable scrolling in RecentsView for trackpad 3-finger swipe up gesture.

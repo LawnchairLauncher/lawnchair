@@ -392,6 +392,20 @@ public class StatsLogCompatManager extends StatsLogManager {
                 case LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END:
                     InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_ALL_APPS_SCROLL);
                     break;
+                case LAUNCHER_PRIVATE_SPACE_LOCK_ANIMATION_BEGIN:
+                    InteractionJankMonitorWrapper.begin(view, Cuj.CUJ_LAUNCHER_PRIVATE_SPACE_LOCK);
+                    break;
+                case LAUNCHER_PRIVATE_SPACE_LOCK_ANIMATION_END:
+                    InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_PRIVATE_SPACE_LOCK);
+                    break;
+                case LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_BEGIN:
+                    InteractionJankMonitorWrapper.begin(
+                            view,
+                            Cuj.CUJ_LAUNCHER_PRIVATE_SPACE_UNLOCK);
+                    break;
+                case LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_END:
+                    InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_PRIVATE_SPACE_UNLOCK);
+                    break;
                 default:
                     break;
             }
