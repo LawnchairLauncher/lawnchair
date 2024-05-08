@@ -322,14 +322,13 @@ public interface TaskShortcutFactory {
                     isLargeTileFocusedTask && isInExpectedScrollPosition;
 
             // No "save app pair" menu item if:
-            // - app pairs feature is not enabled
             // - we are in 3p launcher
-            // - the task in question is a single task
             // - the Overview Actions Button should be visible
-            if (!FeatureFlags.enableAppPairs()
-                    || !recentsView.supportsAppPairs()
-                    || !taskView.containsMultipleTasks()
-                    || shouldShowActionsButtonInstead) {
+            // - the task view is not a valid save-able split pair
+            if (!recentsView.supportsAppPairs()
+                    || shouldShowActionsButtonInstead
+                    || !recentsView.getSplitSelectController().getAppPairsController()
+                            .canSaveAppPair(taskView)) {
                 return null;
             }
 
