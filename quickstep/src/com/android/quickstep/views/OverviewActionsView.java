@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -33,9 +34,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.TaskOverlayFactory.OverlayUICallbacks;
@@ -43,12 +42,26 @@ import com.android.quickstep.util.LayoutUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 /**
  * View for showing action buttons in Overview
  */
 public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayout
         implements OnClickListener, Insettable {
+    public static final FloatProperty<Consumer<Float>> FLOAT_SETTER =
+            new FloatProperty<>("floatSetter") {
+                @Override
+                public void setValue(Consumer<Float> consumer, float v) {
+                    consumer.accept(v);
+                }
+
+                @Override
+                public Float get(Consumer<Float> consumer) {
+                    return -1f;
+                }
+            };
 
     private final Rect mInsets = new Rect();
 
@@ -89,30 +102,24 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_HIDDEN_FLAGS_ALPHA = 3;
     private static final int INDEX_SHARE_TARGET_ALPHA = 4;
     private static final int INDEX_SCROLL_ALPHA = 5;
-    private static final int NUM_ALPHAS = 6;
-
-    public @interface ScreenshotButtonHiddenFlags { }
-    public static final int FLAG_MULTIPLE_TASKS_HIDE_SCREENSHOT = 1 << 0;
+    private static final int INDEX_GROUPED_ALPHA = 6;
+    private static final int INDEX_3P_LAUNCHER = 7;
+    private static final int NUM_ALPHAS = 8;
 
     public @interface SplitButtonHiddenFlags { }
     public static final int FLAG_SMALL_SCREEN_HIDE_SPLIT = 1 << 0;
-    public static final int FLAG_MULTIPLE_TASKS_HIDE_SPLIT = 1 << 1;
 
-    public @interface SplitButtonDisabledFlags { }
-    public static final int FLAG_SINGLE_TASK_DISABLE_SPLIT = 1 << 0;
+    /** Holds MultiValueAlpha values for all actions buttons */
+    private final MultiValueAlpha[] mMultiValueAlphas = new MultiValueAlpha[2];
+    /** Index used for single-task actions in the mMultiValueAlphas array */
+    private static final int ACTIONS_ALPHAS = 0;
+    /** Index used for grouped-task actions in the mMultiValueAlphas array */
+    private static final int GROUP_ACTIONS_ALPHAS = 1;
 
-    public @interface AppPairButtonHiddenFlags { }
-    public static final int FLAG_SINGLE_TASK_HIDE_APP_PAIR = 1 << 0;
-    public static final int FLAG_SMALL_SCREEN_HIDE_APP_PAIR = 1 << 1;
-    public static final int FLAG_3P_LAUNCHER_HIDE_APP_PAIR = 1 << 2;
-
-    private MultiValueAlpha mMultiValueAlpha;
-
+    /** Container for the action buttons below a focused, non-split Overview tile. */
     protected LinearLayout mActionButtons;
-    // The screenshot button is implemented as a Button in launcher3 and NexusLauncher, but is an
-    // ImageButton in go launcher (does not share a common class with Button). Take care when
-    // casting this.
-    private View mScreenshotButton;
+    /** Container for the action buttons below a focused, split Overview tile. */
+    protected LinearLayout mGroupActionButtons;
     private Button mSplitButton;
     private Button mSaveAppPairButton;
 
@@ -122,14 +129,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @ActionsDisabledFlags
     protected int mDisabledFlags;
 
-    @ScreenshotButtonHiddenFlags
-    private int mScreenshotButtonHiddenFlags;
-
     @SplitButtonHiddenFlags
     private int mSplitButtonHiddenFlags;
-
-    @AppPairButtonHiddenFlags
-    private int mAppPairButtonHiddenFlags;
 
     @Nullable
     protected T mCallbacks;
@@ -137,6 +138,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Nullable
     protected DeviceProfile mDp;
     private final Rect mTaskSize = new Rect();
+    private boolean mIsGroupedTask = false;
 
     public OverviewActionsView(Context context) {
         this(context, null);
@@ -153,12 +155,21 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        // Initialize 2 view containers: one for single tasks, one for grouped tasks.
+        // These will take up the same space on the screen and alternate visibility as needed.
         mActionButtons = findViewById(R.id.action_buttons);
-        mMultiValueAlpha = new MultiValueAlpha(mActionButtons, NUM_ALPHAS);
-        mMultiValueAlpha.setUpdateVisibility(true);
+        mGroupActionButtons = findViewById(R.id.group_action_buttons);
+        // Initialize a list to set alpha on mActionButtons and mGroupActionButtons simultaneously.
+        mMultiValueAlphas[ACTIONS_ALPHAS] = new MultiValueAlpha(mActionButtons, NUM_ALPHAS);
+        mMultiValueAlphas[GROUP_ACTIONS_ALPHAS] =
+                new MultiValueAlpha(mGroupActionButtons, NUM_ALPHAS);
+        Arrays.stream(mMultiValueAlphas).forEach(a -> a.setUpdateVisibility(true));
 
-        mScreenshotButton = findViewById(R.id.action_screenshot);
-        mScreenshotButton.setOnClickListener(this);
+        // The screenshot button is implemented as a Button in launcher3 and NexusLauncher, but is
+        // an ImageButton in go launcher (does not share a common class with Button). Take care when
+        // casting this.
+        View screenshotButton = findViewById(R.id.action_screenshot);
+        screenshotButton.setOnClickListener(this);
         mSplitButton = findViewById(R.id.action_split);
         mSplitButton.setOnClickListener(this);
         mSaveAppPairButton = findViewById(R.id.action_save_app_pair);
@@ -209,7 +220,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mHiddenFlags &= ~visibilityFlags;
         }
         boolean isHidden = mHiddenFlags != 0;
-        mMultiValueAlpha.get(INDEX_HIDDEN_FLAGS_ALPHA).setValue(isHidden ? 0 : 1);
+        setActionsAlpha(INDEX_HIDDEN_FLAGS_ALPHA, isHidden ? 0 : 1);
     }
 
     /**
@@ -236,12 +247,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      * @param isGroupedTask True if the focused task is a grouped task.
      */
     public void updateForGroupedTask(boolean isGroupedTask) {
-        // Update flags to see if split button should be hidden.
-        updateSplitButtonHiddenFlags(FLAG_MULTIPLE_TASKS_HIDE_SPLIT, isGroupedTask);
-        // Update flags to see if screenshot button should be hidden.
-        updateScreenshotButtonHiddenFlags(FLAG_MULTIPLE_TASKS_HIDE_SCREENSHOT, isGroupedTask);
-        // Update flags to see if save app pair button should be hidden.
-        updateAppPairButtonHiddenFlags(FLAG_SINGLE_TASK_HIDE_APP_PAIR, !isGroupedTask);
+        mIsGroupedTask = isGroupedTask;
+        updateActionButtonsVisibility();
     }
 
     /**
@@ -251,36 +258,30 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         assert mDp != null;
         // Update flags to see if split button should be hidden.
         updateSplitButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_SPLIT, !mDp.isTablet);
-        // Update flags to see if save app pair button should be hidden.
-        updateAppPairButtonHiddenFlags(FLAG_SMALL_SCREEN_HIDE_APP_PAIR, !mDp.isTablet);
+        updateActionButtonsVisibility();
+    }
+
+    private void updateActionButtonsVisibility() {
+        assert mDp != null;
+        boolean showSingleTaskActions = !mIsGroupedTask;
+        boolean showGroupActions = mIsGroupedTask && mDp.isTablet;
+        getActionsAlphas().get(INDEX_GROUPED_ALPHA).setValue(showSingleTaskActions ? 1 : 0);
+        getGroupActionsAlphas().get(INDEX_GROUPED_ALPHA).setValue(showGroupActions ? 1 : 0);
     }
 
     /**
      * Updates flags to hide and show actions buttons for 1p/3p launchers.
      */
     public void updateFor3pLauncher(boolean is3pLauncher) {
-        updateAppPairButtonHiddenFlags(FLAG_3P_LAUNCHER_HIDE_APP_PAIR, is3pLauncher);
+        getGroupActionsAlphas().get(INDEX_3P_LAUNCHER).setValue(is3pLauncher ? 0 : 1);
     }
 
-    /**
-     * Updates the proper flags to indicate whether the "Screenshot" button should be hidden.
-     *
-     * @param flag   The flag to update.
-     * @param enable Whether to enable the hidden flag: True will cause view to be hidden.
-     */
-    private void updateScreenshotButtonHiddenFlags(@ScreenshotButtonHiddenFlags int flag,
-            boolean enable) {
-        if (mScreenshotButton == null) return;
-        if (enable) {
-            mScreenshotButtonHiddenFlags |= flag;
-        } else {
-            mScreenshotButtonHiddenFlags &= ~flag;
-        }
-        int desiredVisibility = mScreenshotButtonHiddenFlags == 0 ? VISIBLE : GONE;
-        if (mScreenshotButton.getVisibility() != desiredVisibility) {
-            mScreenshotButton.setVisibility(desiredVisibility);
-            mActionButtons.requestLayout();
-        }
+    private MultiValueAlpha getActionsAlphas() {
+        return mMultiValueAlphas[ACTIONS_ALPHAS];
+    }
+
+    private MultiValueAlpha getGroupActionsAlphas() {
+        return mMultiValueAlphas[GROUP_ACTIONS_ALPHAS];
     }
 
     /**
@@ -304,56 +305,36 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
     }
 
-    /**
-     * Updates the proper flags to indicate whether the "Save app pair" button should be disabled.
-     *
-     * @param flag   The flag to update.
-     * @param enable Whether to enable the hidden flag: True will cause view to be hidden.
-     */
-    private void updateAppPairButtonHiddenFlags(
-            @AppPairButtonHiddenFlags int flag, boolean enable) {
-        if (!FeatureFlags.enableAppPairs()) {
-            return;
-        }
-
-        if (mSaveAppPairButton == null) return;
-        if (enable) {
-            mAppPairButtonHiddenFlags |= flag;
-        } else {
-            mAppPairButtonHiddenFlags &= ~flag;
-        }
-        int desiredVisibility = mAppPairButtonHiddenFlags == 0 ? VISIBLE : GONE;
-        if (mSaveAppPairButton.getVisibility() != desiredVisibility) {
-            mSaveAppPairButton.setVisibility(desiredVisibility);
-            mActionButtons.requestLayout();
-        }
+    private void setActionsAlpha(int index, float value) {
+        Arrays.stream(mMultiValueAlphas).forEach(a -> a.get(index).setValue(value));
     }
 
-    public MultiProperty getContentAlpha() {
-        return mMultiValueAlpha.get(INDEX_CONTENT_ALPHA);
+    public Consumer<Float> getContentAlphaSetter() {
+        return v -> setActionsAlpha(INDEX_CONTENT_ALPHA, v);
     }
 
-    public MultiProperty getVisibilityAlpha() {
-        return mMultiValueAlpha.get(INDEX_VISIBILITY_ALPHA);
+    public Consumer<Float> getVisibilityAlphaSetter() {
+        return v -> setActionsAlpha(INDEX_VISIBILITY_ALPHA, v);
     }
 
-    public MultiProperty getFullscreenAlpha() {
-        return mMultiValueAlpha.get(INDEX_FULLSCREEN_ALPHA);
+    public Consumer<Float> getFullscreenAlphaSetter() {
+        return v -> setActionsAlpha(INDEX_FULLSCREEN_ALPHA, v);
     }
 
-    public MultiProperty getShareTargetAlpha() {
-        return mMultiValueAlpha.get(INDEX_SHARE_TARGET_ALPHA);
+    public Consumer<Float> getShareTargetAlphaSetter() {
+        return v -> setActionsAlpha(INDEX_SHARE_TARGET_ALPHA, v);
     }
 
-    public MultiProperty getIndexScrollAlpha() {
-        return mMultiValueAlpha.get(INDEX_SCROLL_ALPHA);
+    public Consumer<Float> getIndexScrollAlphaSetter() {
+        return v -> setActionsAlpha(INDEX_SCROLL_ALPHA, v);
     }
 
     /**
      * Returns the visibility of the overview actions buttons.
      */
-    public @Visibility int getActionsButtonVisibility() {
-        return mActionButtons.getVisibility();
+    public boolean areActionsButtonsVisible() {
+        return mActionButtons.getVisibility() == View.VISIBLE
+                || mGroupActionButtons.getVisibility() == View.VISIBLE;
     }
 
     /**
@@ -366,10 +347,17 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     /** Updates vertical margins for different navigation mode or configuration changes. */
     public void updateVerticalMargin(NavigationMode mode) {
+        updateActionBarPosition(mActionButtons);
+        updateActionBarPosition(mGroupActionButtons);
+    }
+
+    /** Positions actions buttons according to device settings and insets. */
+    private void updateActionBarPosition(LinearLayout actionBar) {
         if (mDp == null) {
             return;
         }
-        LayoutParams actionParams = (LayoutParams) mActionButtons.getLayoutParams();
+
+        LayoutParams actionParams = (LayoutParams) actionBar.getLayoutParams();
         actionParams.setMargins(
                 actionParams.leftMargin, mDp.overviewActionsTopMarginPx,
                 actionParams.rightMargin, getBottomMargin());
