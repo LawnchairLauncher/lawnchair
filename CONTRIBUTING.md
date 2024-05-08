@@ -66,7 +66,7 @@ Here are some contribution tips to help you get started:
 #### Versioning scheme
 
 As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361), 
-the **Lawnchair** version code is separated by four sectors:
+the **Lawnchair** version code is separated by four parts:
 
 <p align="center">
     <picture>
@@ -83,16 +83,16 @@ the **Lawnchair** version code is separated by four sectors:
 
 ##### Android's major & minor versions
 
-These makes up the first two sectors of the version code, 
+These makes up the first two parts of the version code, 
 Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
 
 ##### Development status & version
 
 Depending on which status the **Lawnchair** is on, 
-it will have an impact on the 3rd and 4th sectors of the version code. 
+it will have an impact on the third and fourth parts of the version code. 
 For example, alpha 4 for the **Lawnchair** will be `XX_XX_01_04`. 
 
-Below is a table explaining the third sector (release type):
+Below is a table explaining the third part (release type):
 
 | Status            | Stage |
 |-------------------|-------|
