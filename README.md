@@ -12,19 +12,19 @@ it ports Pixel Launcher features and introduces rich options for customization.
 
 ## Download
 
-See the [Releases](https://github.com/LawnchairLauncher/lawnchair/releases) section for the latest 
-stable build. For development builds with new icons, use the Nightly build
+See the [Releases](https://github.com/LawnchairLauncher/lawnchair/releases) section for the latest
+stable build. For development builds with new icons, use the nightly builds.
 
 ## Contributing
 
-Please see the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) as it will contain everything
+Please see the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) as it contains everything
 you'd possibly need to contribute to Lawnchair.
 
 ## Quick links
 
-- [News](https://t.me/lawnchairci)
-- [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
-- [Website](https://lawnchair.app)
-- [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
+-   [News](https://t.me/lawnchairci)
+-   [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
+-   [Website](https://lawnchair.app)
+-   [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
 
 You can view all our links in the [Lawnchair Wiki](https://github.com/LawnchairLauncher/lawnchair/wiki).
