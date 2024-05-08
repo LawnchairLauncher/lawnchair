@@ -105,6 +105,7 @@ android_library {
 android_library {
     name: "Launcher3TestResources",
     resource_dirs: ["res"],
+    asset_dirs: ["assets"],
     // TODO(b/319712088): re-enable use_resource_processor
     use_resource_processor: false,
 }
