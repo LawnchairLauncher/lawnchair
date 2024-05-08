@@ -38,6 +38,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.TaskOverlayFactory.OverlayUICallbacks;
+import com.android.quickstep.util.AppPairsController;
 import com.android.quickstep.util.LayoutUtils;
 
 import java.lang.annotation.Retention;
@@ -139,6 +140,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     protected DeviceProfile mDp;
     private final Rect mTaskSize = new Rect();
     private boolean mIsGroupedTask = false;
+    private boolean mCanSaveAppPair = false;
 
     public OverviewActionsView(Context context) {
         this(context, null);
@@ -245,9 +247,12 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      * Updates a batch of flags to hide and show actions buttons when a grouped task (split screen)
      * is focused.
      * @param isGroupedTask True if the focused task is a grouped task.
+     * @param canSaveAppPair True if the focused task is a grouped task and can be saved as an app
+     *                      pair.
      */
-    public void updateForGroupedTask(boolean isGroupedTask) {
+    public void updateForGroupedTask(boolean isGroupedTask, boolean canSaveAppPair) {
         mIsGroupedTask = isGroupedTask;
+        mCanSaveAppPair = canSaveAppPair;
         updateActionButtonsVisibility();
     }
 
@@ -264,7 +269,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private void updateActionButtonsVisibility() {
         assert mDp != null;
         boolean showSingleTaskActions = !mIsGroupedTask;
-        boolean showGroupActions = mIsGroupedTask && mDp.isTablet;
+        boolean showGroupActions = mIsGroupedTask && mDp.isTablet && mCanSaveAppPair;
         getActionsAlphas().get(INDEX_GROUPED_ALPHA).setValue(showSingleTaskActions ? 1 : 0);
         getGroupActionsAlphas().get(INDEX_GROUPED_ALPHA).setValue(showGroupActions ? 1 : 0);
     }

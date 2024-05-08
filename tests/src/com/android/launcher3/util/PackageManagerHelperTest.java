@@ -34,6 +34,7 @@ import android.platform.test.flag.junit.DeviceFlagsValueProvider;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -63,6 +64,8 @@ public final class PackageManagerHelperTest {
         mContext = mock(Context.class);
         mLauncherApps = mock(LauncherApps.class);
         when(mContext.getSystemService(eq(LauncherApps.class))).thenReturn(mLauncherApps);
+        when(mContext.getResources()).thenReturn(
+                InstrumentationRegistry.getInstrumentation().getTargetContext().getResources());
         mPackageManagerHelper = new PackageManagerHelper(mContext);
     }
 

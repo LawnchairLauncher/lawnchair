@@ -73,6 +73,7 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PersistedItemArray;
 import com.android.quickstep.logging.SettingsChangeLogger;
 import com.android.quickstep.logging.StatsLogCompatManager;
@@ -150,7 +151,8 @@ public class QuickstepModelDelegate extends ModelDelegate {
         // TODO: Implement caching and preloading
 
         WorkspaceItemFactory factory =
-                new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, numColumns, state.containerId);
+                new WorkspaceItemFactory(mApp, ums, mPmHelper, pinnedShortcuts, numColumns,
+                        state.containerId);
         FixedContainerItems fci = new FixedContainerItems(state.containerId,
                 state.storage.read(mApp.getContext(), factory, ums.allUsers::get));
         if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
@@ -530,6 +532,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
         private final LauncherAppState mAppState;
         private final UserManagerState mUMS;
+        private final PackageManagerHelper mPmHelper;
         private final Map<ShortcutKey, ShortcutInfo> mPinnedShortcuts;
         private final int mMaxCount;
         private final int mContainer;
@@ -537,9 +540,11 @@ public class QuickstepModelDelegate extends ModelDelegate {
         private int mReadCount = 0;
 
         protected WorkspaceItemFactory(LauncherAppState appState, UserManagerState ums,
-                Map<ShortcutKey, ShortcutInfo> pinnedShortcuts, int maxCount, int container) {
+                PackageManagerHelper pmHelper, Map<ShortcutKey, ShortcutInfo> pinnedShortcuts,
+                int maxCount, int container) {
             mAppState = appState;
             mUMS = ums;
+            mPmHelper = pmHelper;
             mPinnedShortcuts = pinnedShortcuts;
             mMaxCount = maxCount;
             mContainer = container;
@@ -563,6 +568,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
                             lai,
                             UserCache.INSTANCE.get(mAppState.getContext()).getUserInfo(user),
                             ApiWrapper.INSTANCE.get(mAppState.getContext()),
+                            mPmHelper,
                             mUMS.isUserQuiet(user));
                     info.container = mContainer;
                     mAppState.getIconCache().getTitleAndIcon(info, lai, false);

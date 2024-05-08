@@ -79,6 +79,7 @@ public class LoaderCursorTest {
 
     private LauncherModelHelper mModelHelper;
     private LauncherAppState mApp;
+    private PackageManagerHelper mPmHelper;
 
     private MatrixCursor mCursor;
     private InvariantDeviceProfile mIDP;
@@ -92,6 +93,7 @@ public class LoaderCursorTest {
         mContext = mModelHelper.sandboxContext;
         mIDP = InvariantDeviceProfile.INSTANCE.get(mContext);
         mApp = LauncherAppState.getInstance(mContext);
+        mPmHelper = PackageManagerHelper.INSTANCE.get(mContext);
 
         mCursor = new MatrixCursor(new String[] {
                 ICON, TITLE, _ID, CONTAINER, ITEM_TYPE,
@@ -101,7 +103,7 @@ public class LoaderCursorTest {
         });
 
         UserManagerState ums = new UserManagerState();
-        mLoaderCursor = new LoaderCursor(mCursor, mApp, ums, null);
+        mLoaderCursor = new LoaderCursor(mCursor, mApp, ums, mPmHelper, null);
         ums.allUsers.put(0, Process.myUserHandle());
     }
 

@@ -26,6 +26,7 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.io.FileDescriptor;
@@ -41,15 +42,16 @@ public class ModelDelegate implements ResourceBasedOverride {
      * Creates and initializes a new instance of the delegate
      */
     public static ModelDelegate newInstance(
-            Context context, LauncherAppState app, AllAppsList appsList, BgDataModel dataModel,
-            boolean isPrimaryInstance) {
+            Context context, LauncherAppState app, PackageManagerHelper pmHelper,
+            AllAppsList appsList, BgDataModel dataModel, boolean isPrimaryInstance) {
         ModelDelegate delegate = Overrides.getObject(
                 ModelDelegate.class, context, R.string.model_delegate_class);
-        delegate.init(app, appsList, dataModel, isPrimaryInstance);
+        delegate.init(app, pmHelper, appsList, dataModel, isPrimaryInstance);
         return delegate;
     }
 
     protected final Context mContext;
+    protected PackageManagerHelper mPmHelper;
     protected LauncherAppState mApp;
     protected AllAppsList mAppsList;
     protected BgDataModel mDataModel;
@@ -62,9 +64,10 @@ public class ModelDelegate implements ResourceBasedOverride {
     /**
      * Initializes the object with the given params.
      */
-    private void init(LauncherAppState app, AllAppsList appsList,
+    private void init(LauncherAppState app, PackageManagerHelper pmHelper, AllAppsList appsList,
             BgDataModel dataModel, boolean isPrimaryInstance) {
         this.mApp = app;
+        this.mPmHelper = pmHelper;
         this.mAppsList = appsList;
         this.mDataModel = dataModel;
         this.mIsPrimaryInstance = isPrimaryInstance;
