@@ -26,6 +26,7 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -47,8 +48,11 @@ import java.util.stream.Collectors;
 /**
  * Class to manage transitions between different states for a StatefulActivity based on different
  * states
+ * @param STATE_TYPE Basestate used by the state manager
+ * @param STATEFUL_CONTAINER container object used to manage state
  */
-public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
+public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>,
+        STATEFUL_CONTAINER extends Context & StatefulContainer<STATE_TYPE>> {
 
     public static final String TAG = "StateManager";
     // b/279059025, b/325463989
@@ -56,7 +60,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     private final AnimationState mConfig = new AnimationState();
     private final Handler mUiHandler;
-    private final StatefulActivity<STATE_TYPE> mActivity;
+    private final STATEFUL_CONTAINER mStatefulContainer;
     private final ArrayList<StateListener<STATE_TYPE>> mListeners = new ArrayList<>();
     private final STATE_TYPE mBaseState;
 
@@ -71,12 +75,12 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     private STATE_TYPE mRestState;
 
-    public StateManager(StatefulActivity<STATE_TYPE> l, STATE_TYPE baseState) {
+    public StateManager(STATEFUL_CONTAINER container, STATE_TYPE baseState) {
         mUiHandler = new Handler(Looper.getMainLooper());
-        mActivity = l;
+        mStatefulContainer = container;
         mBaseState = baseState;
         mState = mLastStableState = mCurrentStableState = baseState;
-        mAtomicAnimationFactory = l.createAtomicAnimationFactory();
+        mAtomicAnimationFactory = container.createAtomicAnimationFactory();
     }
 
     public STATE_TYPE getState() {
@@ -109,10 +113,10 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         writer.println(prefix + "\tisInTransition:" + isInTransition());
     }
 
-    public StateHandler[] getStateHandlers() {
+    public StateHandler<STATE_TYPE>[] getStateHandlers() {
         if (mStateHandlers == null) {
-            ArrayList<StateHandler> handlers = new ArrayList<>();
-            mActivity.collectStateHandlers(handlers);
+            ArrayList<StateHandler<STATE_TYPE>> handlers = new ArrayList<>();
+            mStatefulContainer.collectStateHandlers(handlers);
             mStateHandlers = handlers.toArray(new StateHandler[handlers.size()]);
         }
         return mStateHandlers;
@@ -130,7 +134,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      * Returns true if the state changes should be animated.
      */
     public boolean shouldAnimateStateChange() {
-        return !mActivity.isForceInvisible() && mActivity.isStarted();
+        return mStatefulContainer.shouldAnimateStateChange();
     }
 
     /**
@@ -245,7 +249,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         }
 
         animated &= areAnimatorsEnabled();
-        if (mActivity.isInState(state)) {
+        if (mStatefulContainer.isInState(state)) {
             if (mConfig.currentAnimation == null) {
                 // Run any queued runnable
                 if (listener != null) {
@@ -302,8 +306,8 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         // Since state mBaseState can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == mBaseState
-                ? fromState.getTransitionDuration(mActivity, false /* isToState */)
-                : state.getTransitionDuration(mActivity, true /* isToState */);
+                ? fromState.getTransitionDuration(mStatefulContainer, false /* isToState */)
+                : state.getTransitionDuration(mStatefulContainer, true /* isToState */);
         prepareForAtomicAnimation(fromState, state, mConfig);
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(state).buildAnim();
         if (listener != null) {
@@ -336,7 +340,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         PendingAnimation builder = new PendingAnimation(config.duration);
         prepareForAtomicAnimation(fromState, toState, config);
 
-        for (StateHandler handler : mActivity.getStateManager().getStateHandlers()) {
+        for (StateHandler handler : mStatefulContainer.getStateManager().getStateHandlers()) {
             handler.setStateWithAnimation(toState, config, builder);
         }
         return builder.buildAnim();
@@ -402,7 +406,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     private void onStateTransitionStart(STATE_TYPE state) {
         mState = state;
-        mActivity.onStateSetStart(mState);
+        mStatefulContainer.onStateSetStart(mState);
 
         if (DEBUG) {
             Log.d(TAG, "onStateTransitionStart - state: " + state);
@@ -419,7 +423,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
             mCurrentStableState = state;
         }
 
-        mActivity.onStateSetEnd(state);
+        mStatefulContainer.onStateSetEnd(state);
         if (state == mBaseState) {
             setRestState(null);
         }

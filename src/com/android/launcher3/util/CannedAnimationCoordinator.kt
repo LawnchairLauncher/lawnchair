@@ -113,10 +113,9 @@ class CannedAnimationCoordinator(private val activity: StatefulActivity<*>) {
         // flags accordingly
         animationController =
             controller.apply {
-                activity.stateManager.setCurrentAnimation(
-                    this,
-                    USER_CONTROLLED or HANDLE_STATE_APPLY
-                )
+                activity
+                    .stateManager
+                    .setCurrentAnimation(this, USER_CONTROLLED or HANDLE_STATE_APPLY)
             }
         recreateAnimation(provider)
     }

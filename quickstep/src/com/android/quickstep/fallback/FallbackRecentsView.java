@@ -93,7 +93,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public StateManager<RecentsState> getStateManager() {
+    public StateManager<RecentsState, RecentsActivity> getStateManager() {
         return mContainer.getStateManager();
     }
 

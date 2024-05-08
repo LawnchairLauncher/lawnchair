@@ -56,7 +56,7 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
             return false;
         }
         Launcher launcher = mActivityContext;
-        StateManager<LauncherState> manager = launcher.getStateManager();
+        StateManager<LauncherState, Launcher> manager = launcher.getStateManager();
         if (manager.isInTransition() && manager.getTargetState() != null) {
             return manager.getTargetState().shouldFloatingSearchBarUsePillWhenUnfocused(launcher);
         }
@@ -70,7 +70,7 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
             return super.getFloatingSearchBarRestingMarginBottom();
         }
         Launcher launcher = mActivityContext;
-        StateManager<LauncherState> stateManager = launcher.getStateManager();
+        StateManager<LauncherState, Launcher> stateManager = launcher.getStateManager();
 
         // We want to rest at the current state's resting position, unless we are in transition and
         // the target state's resting position is higher (that way if we are closing the keyboard,
@@ -95,7 +95,7 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
             return super.getFloatingSearchBarRestingMarginStart();
         }
 
-        StateManager<LauncherState> stateManager = mActivityContext.getStateManager();
+        StateManager<LauncherState, Launcher> stateManager = mActivityContext.getStateManager();
 
         // Special case to not expand the search bar when exiting All Apps on phones.
         if (stateManager.getCurrentStableState() == LauncherState.ALL_APPS
@@ -117,7 +117,7 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
             return super.getFloatingSearchBarRestingMarginEnd();
         }
 
-        StateManager<LauncherState> stateManager = mActivityContext.getStateManager();
+        StateManager<LauncherState, Launcher> stateManager = mActivityContext.getStateManager();
 
         // Special case to not expand the search bar when exiting All Apps on phones.
         if (stateManager.getCurrentStableState() == LauncherState.ALL_APPS

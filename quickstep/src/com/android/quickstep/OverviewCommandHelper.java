@@ -228,8 +228,9 @@ public class OverviewCommandHelper {
         }
         BaseActivityInterface<?, T> activityInterface =
                 mOverviewComponentObserver.getActivityInterface();
-        RecentsView visibleRecentsView = activityInterface.getVisibleRecentsView();
-        RecentsView createdRecentsView;
+
+        RecentsView<?, ?> visibleRecentsView = activityInterface.getVisibleRecentsView();
+        RecentsView<?, ?> createdRecentsView;
 
         Log.d(TAG, "executeCommand: " + cmd
                 + " - visibleRecentsView: " + visibleRecentsView);

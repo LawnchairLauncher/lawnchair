@@ -152,6 +152,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.statemanager.StatefulContainer;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.OverScroll;
@@ -2487,7 +2488,9 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     /** Returns whether user can start home based on state in {@link OverviewCommandHelper}. */
     protected abstract boolean canStartHomeSafely();
 
-    public abstract StateManager<STATE_TYPE> getStateManager();
+    /** Returns the state manager used in RecentsView **/
+    public abstract StateManager<STATE_TYPE,
+            ? extends StatefulContainer<STATE_TYPE>> getStateManager();
 
     public void reset() {
         setCurrentTask(-1);
