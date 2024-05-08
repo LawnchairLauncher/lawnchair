@@ -69,8 +69,11 @@ As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361),
 the **Lawnchair** version code is separated by four sectors:
 
 <p align="center">
-    <!-- Direct the accessibility reader to read the point below --->
-    <img alt="" src="https://raw.githubusercontent.com/validcube/lawnchair/pave-path/docs/version.svg" width="98%">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/version-dark.svg" width="98%">
+        <img alt="" src="docs/version-light.svg" width="98%">
+        <!-- Direct the accessibility reader to read the point below --->
+    </picture>
 </p>
 
 1. Android's major version
