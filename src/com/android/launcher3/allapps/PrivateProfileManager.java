@@ -20,7 +20,6 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PRIVATESPACE;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ICON;
@@ -635,8 +634,6 @@ public class PrivateProfileManager extends UserProfileManager {
             return;
         }
         ViewGroup settingsAndLockGroup = mPSHeader.findViewById(R.id.settingsAndLockGroup);
-        ViewGroup lockButton = mPSHeader.findViewById(R.id.ps_lock_unlock_button);
-        TextView lockText = lockButton.findViewById(R.id.lock_text);
         if (settingsAndLockGroup.getLayoutTransition() == null) {
             // Set a new transition if the current ViewGroup does not already contain one as each
             // transition should only happen once when applied.
@@ -646,15 +643,14 @@ public class PrivateProfileManager extends UserProfileManager {
                 LayoutTransition.CHANGING,
                 expand ? SETTINGS_AND_LOCK_GROUP_TRANSITION_DELAY : NO_DELAY);
         PropertySetter headerSetter = new AnimatedPropertySetter();
-        ImageButton settingsButton = mPSHeader.findViewById(R.id.ps_settings_button);
-        updateSettingsGearAlpha(settingsButton, expand, headerSetter);
-        updateLockTextAlpha(lockText, expand, headerSetter);
+        headerSetter.add(updateSettingsGearAlpha(expand));
+        headerSetter.add(updateLockTextAlpha(expand));
         AnimatorSet animatorSet = headerSetter.buildAnim();
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
                 // Animate the collapsing of the text at the same time while updating lock button.
-                lockText.setVisibility(expand ? VISIBLE : GONE);
+                mPSHeader.findViewById(R.id.lock_text).setVisibility(expand ? VISIBLE : GONE);
                 setAnimationRunning(true);
             }
         });
@@ -728,19 +724,44 @@ public class PrivateProfileManager extends UserProfileManager {
     }
 
     /** Change the settings gear alpha when expanded or collapsed. */
-    private void updateSettingsGearAlpha(ImageButton settingsButton, boolean expand,
-            PropertySetter setter) {
-        float toAlpha = expand ? 1 : 0;
-        setter.setFloat(settingsButton, VIEW_ALPHA, toAlpha, Interpolators.LINEAR)
-                .setDuration(SETTINGS_OPACITY_DURATION).setStartDelay(expand ?
-                        SETTINGS_OPACITY_DELAY : NO_DELAY);
+    private ValueAnimator updateSettingsGearAlpha(boolean expand) {
+        if (mPSHeader == null) {
+            return new ValueAnimator();
+        }
+        float from = expand ? 0 : 1;
+        float to = expand ? 1 : 0;
+        ValueAnimator settingsAlphaAnim = ObjectAnimator.ofFloat(from, to);
+        settingsAlphaAnim.setDuration(SETTINGS_OPACITY_DURATION);
+        settingsAlphaAnim.setStartDelay(expand ? SETTINGS_OPACITY_DELAY : NO_DELAY);
+        settingsAlphaAnim.setInterpolator(Interpolators.LINEAR);
+        settingsAlphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                mPSHeader.findViewById(R.id.ps_settings_button)
+                        .setAlpha((float) valueAnimator.getAnimatedValue());
+            }
+        });
+        return settingsAlphaAnim;
     }
 
-    private void updateLockTextAlpha(TextView textView, boolean expand, PropertySetter setter) {
-        float toAlpha = expand ? 1 : 0;
-        setter.setFloat(textView, VIEW_ALPHA, toAlpha, Interpolators.LINEAR)
-                .setDuration(expand ? TEXT_UNLOCK_OPACITY_DURATION : TEXT_LOCK_OPACITY_DURATION)
-                .setStartDelay(expand ? LOCK_TEXT_OPACITY_DELAY : NO_DELAY);
+    private ValueAnimator updateLockTextAlpha(boolean expand) {
+        if (mPSHeader == null) {
+            return new ValueAnimator();
+        }
+        float from = expand ? 0 : 1;
+        float to = expand ? 1 : 0;
+        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(from, to);
+        alphaAnim.setDuration(expand ? TEXT_UNLOCK_OPACITY_DURATION : TEXT_LOCK_OPACITY_DURATION);
+        alphaAnim.setStartDelay(expand ? LOCK_TEXT_OPACITY_DELAY : NO_DELAY);
+        alphaAnim.setInterpolator(Interpolators.LINEAR);
+        alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                mPSHeader.findViewById(R.id.lock_text).setAlpha(
+                        (float) valueAnimator.getAnimatedValue());
+            }
+        });
+        return alphaAnim;
     }
 
     void expandPrivateSpace() {
