@@ -150,6 +150,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
     private BubbleBarViewController mBubbleBarViewController;
     private BubbleStashController mBubbleStashController;
     private BubbleStashedHandleViewController mBubbleStashedHandleViewController;
+    private BubblePinController mBubblePinController;
 
     // Keep track of bubble bar bounds sent to shell to avoid sending duplicate updates
     private final Rect mLastSentBubbleBarBounds = new Rect();
@@ -169,6 +170,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
         BubbleBarLocation bubbleBarLocation;
         List<RemovedBubble> removedBubbles;
         List<String> bubbleKeysInOrder;
+        Point expandedViewDropTargetSize;
 
         // These need to be loaded in the background
         BubbleBarBubble addedBubble;
@@ -186,6 +188,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
             bubbleBarLocation = update.bubbleBarLocation;
             removedBubbles = update.removedBubbles;
             bubbleKeysInOrder = update.bubbleKeysInOrder;
+            expandedViewDropTargetSize = update.expandedViewDropTargetSize;
         }
     }
 
@@ -216,6 +219,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
         mBubbleBarViewController = bubbleControllers.bubbleBarViewController;
         mBubbleStashController = bubbleControllers.bubbleStashController;
         mBubbleStashedHandleViewController = bubbleControllers.bubbleStashedHandleViewController;
+        mBubblePinController = bubbleControllers.bubblePinController;
 
         bubbleControllers.runAfterInit(() -> {
             mBubbleBarViewController.setHiddenForBubbles(
@@ -418,6 +422,9 @@ public class BubbleBarController extends IBubblesListener.Stub {
             if (update.bubbleBarLocation != mBubbleBarViewController.getBubbleBarLocation()) {
                 updateBubbleBarLocationInternal(update.bubbleBarLocation);
             }
+        }
+        if (update.expandedViewDropTargetSize != null) {
+            mBubblePinController.setDropTargetSize(update.expandedViewDropTargetSize);
         }
     }
 

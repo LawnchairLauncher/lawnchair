@@ -37,12 +37,17 @@ class BubblePinController(
     screenSizeProvider: () -> Point
 ) : BaseBubblePinController(screenSizeProvider) {
 
+    var dropTargetSize: Point? = null
+
     private lateinit var bubbleBarViewController: BubbleBarViewController
     private lateinit var bubbleStashController: BubbleStashController
     private var exclRectWidth: Float = 0f
     private var exclRectHeight: Float = 0f
 
     private var dropTargetView: View? = null
+    // Fallback width and height in case shell has not sent the size over
+    private var dropTargetDefaultWidth: Int = 0
+    private var dropTargetDefaultHeight: Int = 0
     private var dropTargetMargin: Int = 0
 
     fun init(bubbleControllers: BubbleControllers) {
@@ -50,6 +55,14 @@ class BubblePinController(
         bubbleStashController = bubbleControllers.bubbleStashController
         exclRectWidth = context.resources.getDimension(R.dimen.bubblebar_dismiss_zone_width)
         exclRectHeight = context.resources.getDimension(R.dimen.bubblebar_dismiss_zone_height)
+        dropTargetDefaultWidth =
+            context.resources.getDimensionPixelSize(
+                R.dimen.bubble_expanded_view_drop_target_default_width
+            )
+        dropTargetDefaultHeight =
+            context.resources.getDimensionPixelSize(
+                R.dimen.bubble_expanded_view_drop_target_default_height
+            )
         dropTargetMargin =
             context.resources.getDimensionPixelSize(R.dimen.bubble_expanded_view_drop_target_margin)
     }
@@ -75,7 +88,6 @@ class BubblePinController(
         return LayoutInflater.from(context)
             .inflate(R.layout.bubble_expanded_view_drop_target, container, false)
             .also { view ->
-                // TODO(b/330585402): dynamic height for the drop target based on actual height
                 dropTargetView = view
                 container.addView(view)
             }
@@ -88,6 +100,8 @@ class BubblePinController(
         val bubbleBarBounds = bubbleBarViewController.bubbleBarBounds
         dropTargetView?.updateLayoutParams<FrameLayout.LayoutParams> {
             gravity = BOTTOM or (if (onLeft) LEFT else RIGHT)
+            width = dropTargetSize?.x ?: dropTargetDefaultWidth
+            height = dropTargetSize?.y ?: dropTargetDefaultHeight
             bottomMargin =
                 -bubbleStashController.bubbleBarTranslationY.toInt() +
                     bubbleBarBounds.height() +
