@@ -446,4 +446,9 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         mTaskbarLauncherStateController.dumpLogs(prefix + "\t", pw);
     }
+
+    @Override
+    protected String getTaskbarUIControllerName() {
+        return "LauncherTaskbarUIController";
+    }
 }

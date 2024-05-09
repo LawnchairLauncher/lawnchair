@@ -182,7 +182,7 @@ public class DepthController extends BaseDepthController implements StateHandler
     }
 
     public void dump(String prefix, PrintWriter writer) {
-        writer.println(prefix + this.getClass().getSimpleName());
+        writer.println(prefix + "DepthController");
         writer.println(prefix + "\tmMaxBlurRadius=" + mMaxBlurRadius);
         writer.println(prefix + "\tmCrossWindowBlursEnabled=" + mCrossWindowBlursEnabled);
         writer.println(prefix + "\tmSurface=" + mSurface);

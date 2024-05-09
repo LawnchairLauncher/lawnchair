@@ -286,7 +286,7 @@ public class PredictionRowView<T extends Context & ActivityContext>
     }
 
     public void dump(String prefix, PrintWriter writer) {
-        writer.println(prefix + this.getClass().getSimpleName());
+        writer.println(prefix + "PredictionRowView");
         writer.println(prefix + "\tmPredictionsEnabled: " + mPredictionsEnabled);
         writer.println(prefix + "\tmPredictionUiUpdatePaused: " + mPredictionUiUpdatePaused);
         writer.println(prefix + "\tmNumPredictedAppsPerRow: " + mNumPredictedAppsPerRow);

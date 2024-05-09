@@ -66,7 +66,7 @@ import java.util.function.Consumer;
 // TODO(b/249371338): TaskView needs to be refactored to have better support for N tasks.
 public class DesktopTaskView extends TaskView {
 
-    private static final String TAG = DesktopTaskView.class.getSimpleName();
+    private static final String TAG = "DesktopTaskView";
 
     private static final boolean DEBUG = false;
 

@@ -133,4 +133,9 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
     protected TISBindHelper getTISBindHelper() {
         return mRecentsActivity.getTISBindHelper();
     }
+
+    @Override
+    protected String getTaskbarUIControllerName() {
+        return "FallbackTaskbarUIController";
+    }
 }

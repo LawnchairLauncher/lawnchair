@@ -54,7 +54,7 @@ import com.android.launcher3.graphics.TriangleShape;
  */
 public class ArrowTipView extends AbstractFloatingView {
 
-    private static final String TAG = ArrowTipView.class.getSimpleName();
+    private static final String TAG = "ArrowTipView";
     private static final long AUTO_CLOSE_TIMEOUT_MILLIS = 10 * 1000;
     private static final long SHOW_DELAY_MS = 200;
     private static final long SHOW_DURATION_MS = 300;

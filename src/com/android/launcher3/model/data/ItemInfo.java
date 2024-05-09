@@ -73,6 +73,7 @@ import java.util.Optional;
  * Represents an item in the launcher.
  */
 public class ItemInfo {
+    private static final String TAG = "ItemInfo";
 
     public static final boolean DEBUG = false;
     public static final int NO_ID = -1;
@@ -285,7 +286,7 @@ public class ItemInfo {
     @Override
     @NonNull
     public final String toString() {
-        return getClass().getSimpleName() + "(" + dumpProperties() + ")";
+        return TAG + "(" + dumpProperties() + ")";
     }
 
     @NonNull

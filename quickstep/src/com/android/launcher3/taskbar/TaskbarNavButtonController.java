@@ -66,7 +66,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     /** Allow some time in between the long press for back and recents. */
     static final int SCREEN_PIN_LONG_PRESS_THRESHOLD = 200;
     static final int SCREEN_PIN_LONG_PRESS_RESET = SCREEN_PIN_LONG_PRESS_THRESHOLD + 100;
-    private static final String TAG = TaskbarNavButtonController.class.getSimpleName();
+    private static final String TAG = "TaskbarNavButtonController";
 
     private long mLastScreenPinLongPress;
     private boolean mScreenPinned;

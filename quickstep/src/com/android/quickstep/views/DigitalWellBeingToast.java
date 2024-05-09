@@ -79,7 +79,7 @@ public final class DigitalWellBeingToast {
     static final Intent OPEN_APP_USAGE_SETTINGS_TEMPLATE = new Intent(ACTION_APP_USAGE_SETTINGS);
     static final int MINUTE_MS = 60000;
 
-    private static final String TAG = DigitalWellBeingToast.class.getSimpleName();
+    private static final String TAG = "DigitalWellBeingToast";
 
     private final RecentsViewContainer mContainer;
     private final TaskView mTaskView;

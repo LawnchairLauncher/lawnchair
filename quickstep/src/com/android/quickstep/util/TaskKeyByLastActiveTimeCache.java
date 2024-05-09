@@ -37,7 +37,7 @@ import java.util.function.Predicate;
  * @param <V> Type of object stored in the cache
  */
 public class TaskKeyByLastActiveTimeCache<V> implements TaskKeyCache<V> {
-    private static final String TAG = TaskKeyByLastActiveTimeCache.class.getSimpleName();
+    private static final String TAG = "TaskKeyByLastActiveTimeCache";
     private final AtomicInteger mMaxSize;
     private final Map<Integer, Entry<V>> mMap;
     // To sort task id by last active time
