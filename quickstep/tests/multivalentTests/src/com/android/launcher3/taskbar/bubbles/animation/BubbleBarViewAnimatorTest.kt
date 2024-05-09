@@ -44,6 +44,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -139,12 +140,12 @@ class BubbleBarViewAnimatorTest {
         assertThat(bubbleBarView.translationY).isEqualTo(BAR_TRANSLATION_Y_FOR_TASKBAR)
         assertThat(bubbleBarView.isAnimatingNewBubble).isTrue()
 
-        verify(bubbleStashController).updateTaskbarTouchRegion()
+        verify(bubbleStashController, atLeastOnce()).updateTaskbarTouchRegion()
 
         // verify the hide bubble animation is pending
         assertThat(animatorScheduler.delayedBlock).isNotNull()
 
-        animator.onBubbleClickedWhileAnimating()
+        animator.onBubbleBarTouchedWhileAnimating()
 
         assertThat(animatorScheduler.delayedBlock).isNull()
         assertThat(bubbleBarView.alpha).isEqualTo(1)

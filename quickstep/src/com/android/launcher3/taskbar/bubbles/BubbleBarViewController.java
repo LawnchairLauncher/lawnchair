@@ -132,20 +132,23 @@ public class BubbleBarViewController {
                 });
 
         mBubbleBarViewAnimator = new BubbleBarViewAnimator(mBarView, mBubbleStashController);
+        mBarView.setController(new BubbleBarView.Controller() {
+            @Override
+            public float getBubbleBarTranslationY() {
+                return mBubbleStashController.getBubbleBarTranslationY();
+            }
+
+            @Override
+            public void onBubbleBarTouchedWhileAnimating() {
+                BubbleBarViewController.this.onBubbleBarTouchedWhileAnimating();
+            }
+        });
     }
 
     private void onBubbleClicked(View v) {
         BubbleBarItem bubble = ((BubbleView) v).getBubble();
         if (bubble == null) {
             Log.e(TAG, "bubble click listener, bubble was null");
-        }
-
-        if (mBarView.isAnimatingNewBubble()) {
-            mBubbleBarViewAnimator.onBubbleClickedWhileAnimating();
-            mBubbleStashController.showBubbleBarImmediate();
-            setExpanded(true);
-            mBubbleBarController.showAndSelectBubble(bubble);
-            return;
         }
 
         final String currentlySelected = mBubbleBarController.getSelectedBubbleKey();
@@ -156,6 +159,11 @@ public class BubbleBarViewController {
         } else {
             mBubbleBarController.showAndSelectBubble(bubble);
         }
+    }
+
+    private void onBubbleBarTouchedWhileAnimating() {
+        mBubbleBarViewAnimator.onBubbleBarTouchedWhileAnimating();
+        mBubbleStashController.onNewBubbleAnimationInterrupted(false, mBarView.getTranslationY());
     }
 
     private void onBubbleBarClicked() {
@@ -169,6 +177,10 @@ public class BubbleBarViewController {
             // Show user education relative to the reference point
             mSystemUiProxy.showUserEducation(position);
         } else {
+            // ensure that the bubble bar has the correct translation. we may have just interrupted
+            // the animation by touching the bubble bar.
+            mBubbleBarTranslationY.animateToValue(mBubbleStashController.getBubbleBarTranslationY())
+                    .start();
             setExpanded(true);
         }
     }
@@ -505,8 +517,15 @@ public class BubbleBarViewController {
     /**
      * Notifies {@link BubbleBarView} that drag and all animations are finished.
      */
-    public void onDragEnd() {
+    public void onDragBubbleEnded() {
         mBarView.setDraggedBubble(null);
+    }
+
+    /** Notifies that dragging the bubble bar ended. */
+    public void onDragBubbleBarEnded() {
+        // we may have changed the bubble bar translation Y value from the value it had at the
+        // beginning of the drag, so update the translation Y animator state
+        mBubbleBarTranslationY.updateValue(mBarView.getTranslationY());
     }
 
     /**
@@ -516,9 +535,6 @@ public class BubbleBarViewController {
      */
     public PointF getBubbleBarDragReleaseTranslation(PointF initialTranslation,
             BubbleBarLocation location) {
-        if (location == mBarView.getBubbleBarLocation()) {
-            return initialTranslation;
-        }
         return mBarView.getBubbleBarDragReleaseTranslation(initialTranslation, location);
     }
 
