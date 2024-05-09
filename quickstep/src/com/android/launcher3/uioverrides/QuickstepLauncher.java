@@ -390,6 +390,12 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
+    public void startBinding() {
+        super.startBinding();
+        mHotseatPredictionController.verifyUIUpdateNotPaused();
+    }
+
+    @Override
     protected void onActivityFlagsChanged(int changeBits) {
         if ((changeBits & ACTIVITY_STATE_STARTED) != 0) {
             mDepthController.setActivityStarted(isStarted());
