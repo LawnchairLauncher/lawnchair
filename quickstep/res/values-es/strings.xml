@@ -118,7 +118,7 @@
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Mostrar siempre la barra de tareas"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Para mostrar siempre la barra de tareas en la parte inferior, mantén pulsada la línea divisoria"</string>
     <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Mantén pulsada la tecla de acción para buscar lo que ves en pantalla"</string>
-    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"El producto usa la parte seleccionada de tu pantalla para hacer búsquedas. Se aplican la <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Política de Privacidad<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> y los <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Términos del Servicio<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> de Google."</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Este producto usa la parte seleccionada de tu pantalla para hacer búsquedas. Se aplican la <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Política de Privacidad<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> y los <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Términos del Servicio<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> de Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Cerrar"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Hecho"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Inicio"</string>

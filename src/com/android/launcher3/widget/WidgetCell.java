@@ -503,6 +503,15 @@ public class WidgetCell extends LinearLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+
+        if (changed && isShowingAddButton()) {
+            post(this::setupIconOrTextButton);
+        }
+    }
+
     /**
      * Loads a high resolution package icon to show next to the widget title.
      */
@@ -626,5 +635,20 @@ public class WidgetCell extends LinearLayout {
         AnimatorSet set = new AnimatorSet();
         set.playSequentially(hideAnim, showAnim);
         set.start();
+    }
+
+    /**
+     * Returns true if this WidgetCell is displaying the same item as info.
+     */
+    public boolean matchesItem(WidgetItem info) {
+        if (info == null || mItem == null) return false;
+        if (info.widgetInfo != null && mItem.widgetInfo != null) {
+            return info.widgetInfo.getUser().equals(mItem.widgetInfo.getUser())
+                    && info.widgetInfo.getComponent().equals(mItem.widgetInfo.getComponent());
+        } else if (info.activityInfo != null && mItem.activityInfo != null) {
+            return info.activityInfo.getUser().equals(mItem.activityInfo.getUser())
+                    && info.activityInfo.getComponent().equals(mItem.activityInfo.getComponent());
+        }
+        return false;
     }
 }

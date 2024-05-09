@@ -22,6 +22,8 @@ import android.util.Log
 import android.view.View
 import androidx.core.view.get
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.SmallTest
 import com.android.launcher3.CellLayout
 import com.android.launcher3.celllayout.board.CellLayoutBoard
 import com.android.launcher3.celllayout.board.IconPoint
@@ -34,6 +36,7 @@ import java.util.Random
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 
 private class HotseatReorderTestCase(
     val startBoard: CellLayoutBoard,
@@ -44,6 +47,8 @@ private class HotseatReorderTestCase(
     }
 }
 
+@SmallTest
+@RunWith(AndroidJUnit4::class)
 class HotseatReorderUnitTest {
 
     private val applicationContext: Context =

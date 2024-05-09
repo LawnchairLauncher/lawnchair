@@ -175,7 +175,6 @@ public final class TestProtocol {
     public static final String OVERVIEW_OVER_HOME = "b/279059025";
     public static final String UIOBJECT_STALE_ELEMENT = "b/319501259";
     public static final String TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE = "b/326908466";
-    public static final String TEST_TAPL_OVERVIEW_ACTIONS_MENU_FAILURE = "b/326073471";
     public static final String WIDGET_CONFIG_NULL_EXTRA_INTENT = "b/324419890";
     public static final String ACTIVITY_NOT_RESUMED_AFTER_BACK = "b/322823209";
     public static final String OVERVIEW_SELECT_TOOLTIP_MISALIGNED = "b/332485341";

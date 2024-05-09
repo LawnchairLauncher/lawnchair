@@ -33,15 +33,10 @@
     launcher:focusBorderColor="?androidprv:attr/materialColorOutline"
     launcher:hoverBorderColor="?androidprv:attr/materialColorPrimary">
 
-    <com.android.quickstep.views.TaskThumbnailViewDeprecated
-        android:id="@+id/snapshot"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <include layout="@layout/task_thumbnail"/>
 
-    <com.android.quickstep.views.TaskThumbnailViewDeprecated
-        android:id="@+id/bottomright_snapshot"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <include layout="@layout/task_thumbnail"
+        android:id="@+id/bottomright_snapshot" />
 
     <!-- Filtering affects only alpha instead of the visibility since visibility can be altered
          separately through RecentsView#resetFromSplitSelectionState() -->

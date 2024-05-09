@@ -17,6 +17,8 @@ package com.android.launcher3.widget;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.Flags.enableWidgetTapToAdd;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_ADD_BUTTON_TAP;
 
 import android.content.Context;
@@ -42,6 +44,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -74,6 +77,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     private boolean mDisableNavBarScrim = false;
 
     @Nullable private WidgetCell mWidgetCellWithAddButton = null;
+    @Nullable private WidgetItem mLastSelectedWidgetItem = null;
 
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -161,6 +165,11 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
             }
 
             mWidgetCellWithAddButton = mWidgetCellWithAddButton != wc ? wc : null;
+            if (mWidgetCellWithAddButton != null) {
+                mLastSelectedWidgetItem = mWidgetCellWithAddButton.getWidgetItem();
+            } else {
+                mLastSelectedWidgetItem = null;
+            }
         } else {
             mActivityContext.getItemOnClickListener().onClick(wc);
         }
@@ -174,7 +183,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     }
 
     /**
-     * Click handler for tap to add button.
+     * Click handler for tap to add button. This handler assumes we are in the Launcher activity and
+     * should not be used when the widget sheet is displayed elsewhere.
      */
     private void addWidget(@NonNull PendingAddItemInfo info) {
         // Using a boolean flag here to make sure the callback is only run once. This should never
@@ -182,19 +192,23 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         // needed.
         final AtomicBoolean hasRun = new AtomicBoolean(false);
         addOnCloseListener(() -> {
-            if (!hasRun.get()) {
-                Launcher.getLauncher(mActivityContext).getAccessibilityDelegate().addToWorkspace(
-                        info, /*accessibility=*/ false,
+            if (hasRun.get()) return;
+            hasRun.set(true);
+
+            // Going to NORMAL state will also dismiss the All Apps view if it is showing.
+            Launcher launcher = Launcher.getLauncher(mActivityContext);
+            launcher.getStateManager().goToState(NORMAL, forSuccessCallback(() -> {
+                launcher.getAccessibilityDelegate().addToWorkspace(info,
+                        /*accessibility=*/ false,
                         /*finishCallback=*/ (success) -> {
                             mActivityContext.getStatsLogManager()
                                     .logger()
                                     .withItemInfo(info)
                                     .log(LAUNCHER_WIDGET_ADD_BUTTON_TAP);
                         });
-                hasRun.set(true);
-            }
+            }));
         });
-        handleClose(true);
+        close(/* animate= */ true);
     }
 
     /**
@@ -241,6 +255,14 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
      */
     protected int getHeaderTopClip(@NonNull WidgetCell cell) {
         return 0;
+    }
+
+    /**
+     * Returns the component of the widget that is currently showing an add button, if any.
+     */
+    @Nullable
+    protected WidgetItem getLastSelectedWidgetItem() {
+        return mLastSelectedWidgetItem;
     }
 
     @Override

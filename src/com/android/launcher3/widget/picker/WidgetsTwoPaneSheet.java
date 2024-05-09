@@ -29,6 +29,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -40,6 +41,7 @@ import androidx.annotation.Px;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.PackageUserKey;
@@ -194,15 +196,21 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                 layoutParams.width = 0;
             }
             layoutParams.weight = layoutParams.width == 0 ? 0.33F : 0;
-            leftPane.setLayoutParams(layoutParams);
-            requestApplyInsets();
-            if (mSelectedHeader != null) {
-                if (mSelectedHeader.equals(mSuggestedWidgetsPackageUserKey)) {
-                    mSuggestedWidgetsHeader.callOnClick();
-                } else {
-                    getHeaderChangeListener().onHeaderChanged(mSelectedHeader);
+
+            post(() -> {
+                // The following calls all trigger requestLayout, so we post them to avoid
+                // calling requestLayout during a layout pass. This also fixes the related warnings
+                // in logcat.
+                leftPane.setLayoutParams(layoutParams);
+                requestApplyInsets();
+                if (mSelectedHeader != null) {
+                    if (mSelectedHeader.equals(mSuggestedWidgetsPackageUserKey)) {
+                        mSuggestedWidgetsHeader.callOnClick();
+                    } else {
+                        getHeaderChangeListener().onHeaderChanged(mSelectedHeader);
+                    }
                 }
-            }
+            });
         }
     }
 
@@ -222,6 +230,9 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         if (mSuggestedWidgetsContainer == null && mRecommendedWidgetsCount > 0) {
             setupSuggestedWidgets(LayoutInflater.from(getContext()));
             mSuggestedWidgetsHeader.callOnClick();
+        } else if (mSelectedHeader.equals(mSuggestedWidgetsPackageUserKey)) {
+            // Reselect widget if we are reloading recommendations while it is currently showing.
+            selectWidgetCell(mWidgetRecommendationsContainer, getLastSelectedWidgetItem());
         }
     }
 
@@ -269,6 +280,16 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
             mRightPaneScrollView.setScrollY(0);
             mRightPane.setAccessibilityPaneTitle(suggestionsRightPaneTitle);
             mSuggestedWidgetsPackageUserKey = PackageUserKey.fromPackageItemInfo(packageItemInfo);
+            final boolean isChangingHeaders =
+                    !mSelectedHeader.equals(mSuggestedWidgetsPackageUserKey);
+            if (isChangingHeaders)  {
+                // If switching from another header, unselect any WidgetCells. This is necessary
+                // because we do not clear/recycle the WidgetCells in the recommendations container
+                // when the header is clicked, only when onRecommendationsBound is called. That
+                // means a WidgetCell in the recommendations container may still be selected from
+                // the last time the recommendations were shown.
+                unselectWidgetCell(mWidgetRecommendationsContainer, getLastSelectedWidgetItem());
+            }
             mSelectedHeader = mSuggestedWidgetsPackageUserKey;
         });
         mSuggestedWidgetsContainer.addView(mSuggestedWidgetsHeader);
@@ -357,6 +378,8 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         return new HeaderChangeListener() {
             @Override
             public void onHeaderChanged(@NonNull PackageUserKey selectedHeader) {
+                final boolean isSameHeader = mSelectedHeader != null
+                        && mSelectedHeader.equals(selectedHeader);
                 mSelectedHeader = selectedHeader;
                 WidgetsListContentEntry contentEntry = mActivityContext.getPopupDataProvider()
                         .getSelectedAppWidgets(selectedHeader);
@@ -384,11 +407,20 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                         contentEntryToBind,
                         ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
                         Collections.EMPTY_LIST);
+                if (isSameHeader) {
+                    // Reselect the last selected widget if we are reloading the same header.
+                    selectWidgetCell(widgetsRowViewHolder.tableContainer,
+                            getLastSelectedWidgetItem());
+                }
                 widgetsRowViewHolder.mDataCallback = data -> {
                     mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
                             contentEntryToBind,
                             ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
                             Collections.singletonList(data));
+                    if (isSameHeader) {
+                        selectWidgetCell(widgetsRowViewHolder.tableContainer,
+                                getLastSelectedWidgetItem());
+                    }
                 };
                 mRightPane.removeAllViews();
                 mRightPane.addView(widgetsRowViewHolder.itemView);
@@ -399,6 +431,24 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                                 contentEntry.mPkgItem.title));
             }
         };
+    }
+
+    private static void selectWidgetCell(ViewGroup parent, WidgetItem item) {
+        if (parent == null || item == null) return;
+        WidgetCell cell = Utilities.findViewByPredicate(parent, v -> v instanceof WidgetCell wc
+                && wc.matchesItem(item));
+        if (cell != null && !cell.isShowingAddButton()) {
+            cell.callOnClick();
+        }
+    }
+
+    private static void unselectWidgetCell(ViewGroup parent, WidgetItem item) {
+        if (parent == null || item == null) return;
+        WidgetCell cell = Utilities.findViewByPredicate(parent, v -> v instanceof WidgetCell wc
+                && wc.matchesItem(item));
+        if (cell != null && cell.isShowingAddButton()) {
+            cell.hideAddButton(/* animate= */ false);
+        }
     }
 
     @Override

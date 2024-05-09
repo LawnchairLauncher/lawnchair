@@ -35,6 +35,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.Flags.enableGridOnlyOverview;
+import static com.android.launcher3.Flags.enableRefactorTaskThumbnail;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
@@ -186,6 +187,7 @@ import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.TopTaskTracker;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
+import com.android.quickstep.recents.viewmodel.RecentsViewData;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AnimUtils;
@@ -376,6 +378,9 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                 public void setValue(RecentsView view, float scale) {
                     view.setScaleX(scale);
                     view.setScaleY(scale);
+                    if (enableRefactorTaskThumbnail()) {
+                        view.mRecentsViewData.getScale().setValue(scale);
+                    }
                     view.mLastComputedTaskStartPushOutDistance = null;
                     view.mLastComputedTaskEndPushOutDistance = null;
                     view.runActionOnRemoteHandles(new Consumer<RemoteTargetHandle>() {
@@ -445,6 +450,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     private static final float SIGNIFICANT_MOVE_SCREEN_WIDTH_PERCENTAGE = 0.15f;
 
     private static final float FOREGROUND_SCRIM_TINT = 0.32f;
+
+    public final RecentsViewData mRecentsViewData = new RecentsViewData();
 
     protected final RecentsOrientedState mOrientationState;
     protected final BaseContainerInterface<STATE_TYPE, CONTAINER_TYPE> mSizeStrategy;
@@ -2012,6 +2019,9 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
 
     public void setFullscreenProgress(float fullscreenProgress) {
         mFullscreenProgress = fullscreenProgress;
+        if (enableRefactorTaskThumbnail()) {
+            mRecentsViewData.getFullscreenProgress().setValue(mFullscreenProgress);
+        }
         int taskCount = getTaskViewCount();
         for (int i = 0; i < taskCount; i++) {
             requireTaskViewAt(i).setFullscreenProgress(mFullscreenProgress);
@@ -2019,7 +2029,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         mClearAllButton.setFullscreenProgress(fullscreenProgress);
 
         // Fade out the actions view quickly (0.1 range)
-        mActionsView.getFullscreenAlpha().setValue(
+        mActionsView.getFullscreenAlphaSetter().accept(
                 mapToRange(fullscreenProgress, 0, 0.1f, 1f, 0f, LINEAR));
     }
 
@@ -2270,8 +2280,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     }
 
     private void animateActionsViewAlpha(float alphaValue, long duration) {
-        mActionsViewAlphaAnimator = ObjectAnimator.ofFloat(
-                mActionsView.getVisibilityAlpha(), MULTI_PROPERTY_VALUE, alphaValue);
+        mActionsViewAlphaAnimator = ObjectAnimator.ofFloat(mActionsView.getVisibilityAlphaSetter(),
+                OverviewActionsView.FLOAT_SETTER, alphaValue);
         mActionsViewAlphaAnimatorFinalValue = alphaValue;
         mActionsViewAlphaAnimator.setDuration(duration);
         // Set autocancel to prevent race-conditiony setting of alpha from other animations
@@ -2290,7 +2300,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         mClearAllButton.onRecentsViewScroll(scroll, mOverviewGridEnabled);
 
         // Clear all button alpha was set by the previous line.
-        mActionsView.getIndexScrollAlpha().setValue(1 - mClearAllButton.getScrollAlpha());
+        mActionsView.getIndexScrollAlphaSetter().accept(1 - mClearAllButton.getScrollAlpha());
     }
 
     @Override
@@ -2354,8 +2364,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         // Update the task data for the in/visible children
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = requireTaskViewAt(i);
-            TaskContainer[] containers = taskView.getTaskContainers();
-            if (containers.length == 0) {
+            List<TaskContainer> containers = taskView.getTaskContainers();
+            if (containers.isEmpty()) {
                 continue;
             }
             int index = indexOfChild(taskView);
@@ -2367,7 +2377,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             }
             if (visible) {
                 // Default update all non-null tasks, then remove running ones
-                List<Task> tasksToUpdate = Arrays.stream(containers).filter(Objects::nonNull)
+                List<Task> tasksToUpdate = containers.stream()
                         .map(TaskContainer::getTask)
                         .collect(Collectors.toCollection(ArrayList::new));
                 if (mTmpRunningTasks != null) {
@@ -4295,7 +4305,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         int alphaInt = Math.round(alpha * 255);
         mEmptyMessagePaint.setAlpha(alphaInt);
         mEmptyIcon.setAlpha(alphaInt);
-        mActionsView.getContentAlpha().setValue(mContentAlpha);
+        mActionsView.getContentAlphaSetter().accept(mContentAlpha);
 
         if (alpha > 0) {
             setVisibility(VISIBLE);
@@ -4801,7 +4811,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             boolean primaryTaskSelected = mSplitHiddenTaskView.getTaskIds()[0]
                     == mSplitSelectStateController.getInitialTaskId();
             TaskContainer taskContainer = mSplitHiddenTaskView
-                    .getTaskContainers()[primaryTaskSelected ? 1 : 0];
+                    .getTaskContainers().get(primaryTaskSelected ? 1 : 0);
             TaskThumbnailViewDeprecated thumbnail = taskContainer.getThumbnailView();
             mSplitSelectStateController.getSplitAnimationController()
                     .addInitialSplitFromPair(taskContainer, builder,

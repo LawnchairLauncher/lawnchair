@@ -107,6 +107,7 @@ import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.task.thumbnail.TaskThumbnail;
 import com.android.quickstep.task.thumbnail.TaskThumbnailView;
+import com.android.quickstep.task.viewmodel.TaskViewData;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.BorderAnimator;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -326,6 +327,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             };
 
+    public TaskViewData mTaskViewData = new TaskViewData();
     protected TaskThumbnailViewDeprecated mTaskThumbnailViewDeprecated;
     protected TaskThumbnailView mTaskThumbnailView;
     protected TaskViewIcon mIconView;
@@ -368,7 +370,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mStableAlpha = 1;
 
     private int mTaskViewId = -1;
-    protected TaskContainer[] mTaskContainers = new TaskContainer[0];
+    protected List<TaskContainer> mTaskContainers = Collections.emptyList();
 
     private boolean mShowScreenshot;
     private boolean mBorderEnabled;
@@ -496,7 +498,7 @@ public class TaskView extends FrameLayout implements Reusable {
     public void notifyIsRunningTaskUpdated() {
         // TODO(b/335649589): TaskView's VM will already have access to TaskThumbnailView's VM
         //  so there will be no need to access TaskThumbnailView's VM through the TaskThumbnailView
-        if (mTaskContainers.length > 0) {
+        if (!mTaskContainers.isEmpty()) {
             bindTaskThumbnailView();
         }
     }
@@ -685,9 +687,9 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     public void bind(Task task, RecentsOrientedState orientedState) {
         cancelPendingLoadTasks();
-        mTaskContainers = new TaskContainer[]{
+        mTaskContainers = Collections.singletonList(
                 new TaskContainer(task, mTaskThumbnailViewDeprecated, mIconView,
-                        STAGE_POSITION_UNDEFINED, mDigitalWellBeingToast)};
+                        STAGE_POSITION_UNDEFINED, mDigitalWellBeingToast));
         if (enableRefactorTaskThumbnail()) {
             bindTaskThumbnailView();
         } else {
@@ -706,10 +708,10 @@ public class TaskView extends FrameLayout implements Reusable {
      * Sets up an on-click listener and the visibility for show_windows icon on top of the task.
      */
     public void setUpShowAllInstancesListener() {
-        if (mTaskContainers.length == 0) {
+        if (mTaskContainers.isEmpty()) {
             return;
         }
-        String taskPackageName = mTaskContainers[0].getTask().key.getPackageName();
+        String taskPackageName = mTaskContainers.get(0).getTask().key.getPackageName();
 
         // icon of the top/left task
         View showWindowsView = findViewById(R.id.show_windows);
@@ -752,9 +754,9 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     /**
-     * Returns an array of all TaskContainers in the TaskView.
+     * Returns a list of all TaskContainers in the TaskView.
      */
-    public TaskContainer[] getTaskContainers() {
+    public List<TaskContainer> getTaskContainers() {
         return mTaskContainers;
     }
 
@@ -766,7 +768,7 @@ public class TaskView extends FrameLayout implements Reusable {
     @Deprecated
     @Nullable
     public Task getFirstTask() {
-        return mTaskContainers.length > 0 ? mTaskContainers[0].getTask() : null;
+        return !mTaskContainers.isEmpty() ? mTaskContainers.get(0).getTask() : null;
     }
 
     /**
@@ -780,12 +782,12 @@ public class TaskView extends FrameLayout implements Reusable {
      * Returns a copy of integer array containing taskIds of all tasks in the TaskView.
      */
     public int[] getTaskIds() {
-        return Arrays.stream(mTaskContainers).mapToInt(
+        return mTaskContainers.stream().mapToInt(
                 container -> container.getTask().key.id).toArray();
     }
 
     public boolean containsMultipleTasks() {
-        return mTaskContainers.length > 1;
+        return mTaskContainers.size() > 1;
     }
 
     /**
@@ -794,7 +796,7 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     @Nullable
     public TaskContainer getTaskContainerById(int taskId) {
-        return Arrays.stream(mTaskContainers).filter(
+        return mTaskContainers.stream().filter(
                 container -> container.getTask().key.id == taskId).findFirst().orElse(null);
     }
 
@@ -805,7 +807,7 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     @Deprecated
     public TaskThumbnailViewDeprecated getFirstThumbnailView() {
-        return mTaskContainers.length > 0 ? mTaskContainers[0].getThumbnailView()
+        return !mTaskContainers.isEmpty() ? mTaskContainers.get(0).getThumbnailView()
                 : mTaskThumbnailViewDeprecated;
     }
 
@@ -826,7 +828,7 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public TaskThumbnailViewDeprecated[] getThumbnailViews() {
-        return Arrays.stream(mTaskContainers).map(
+        return mTaskContainers.stream().map(
                 TaskContainer::getThumbnailView).toArray(
                 TaskThumbnailViewDeprecated[]::new);
     }
@@ -839,7 +841,7 @@ public class TaskView extends FrameLayout implements Reusable {
     @Deprecated
     @Nullable
     public TaskViewIcon getFirstIconView() {
-        return mTaskContainers.length > 0 ? mTaskContainers[0].getIconView() : null;
+        return !mTaskContainers.isEmpty() ? mTaskContainers.get(0).getIconView() : null;
     }
 
     @Override
@@ -892,10 +894,10 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     protected boolean confirmSecondSplitSelectApp() {
         int index = getLastSelectedChildTaskIndex();
-        if (index >= mTaskContainers.length) {
+        if (index >= mTaskContainers.size()) {
             return false;
         }
-        TaskContainer container = mTaskContainers[index];
+        TaskContainer container = mTaskContainers.get(index);
         if (container != null) {
             return getRecentsView().confirmSplitSelect(this, container.getTask(),
                     container.getIconView().getDrawable(), container.getThumbnailView(),
@@ -1217,9 +1219,8 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected boolean showTaskMenuWithContainer(TaskViewIcon iconView) {
-        Optional<TaskContainer> menuContainer = Arrays.stream(
-                mTaskContainers).filter(
-                        container -> container.getIconView() == iconView).findAny();
+        Optional<TaskContainer> menuContainer = mTaskContainers.stream().filter(
+                container -> container.getIconView() == iconView).findAny();
         if (menuContainer.isEmpty()) {
             return false;
         }
@@ -1462,6 +1463,9 @@ public class TaskView extends FrameLayout implements Reusable {
         scale *= mDismissScale;
         setScaleX(scale);
         setScaleY(scale);
+        if (enableRefactorTaskThumbnail()) {
+            mTaskViewData.getScale().setValue(scale);
+        }
         updateSnapshotRadius();
     }
 
@@ -1768,10 +1772,7 @@ public class TaskView extends FrameLayout implements Reusable {
         progress = Utilities.boundToRange(progress, 0, 1);
         mFullscreenProgress = progress;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
-        if (!enableRefactorTaskThumbnail()) {
-            // TODO(b/334826840) Add corner rounding to new TTV
-            mTaskThumbnailViewDeprecated.getTaskOverlay().setFullscreenProgress(progress);
-        }
+        mTaskThumbnailViewDeprecated.getTaskOverlay().setFullscreenProgress(progress);
 
         RecentsView recentsView = mContainer.getOverviewPanel();
         // Animate icons and DWB banners in/out, except in QuickSwitch state, when tiles are
@@ -1785,10 +1786,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     protected void updateSnapshotRadius() {
         updateCurrentFullscreenParams();
-        if (!enableRefactorTaskThumbnail()) {
-            // TODO(b/334826840) Add corner rounding to new TTV
-            mTaskThumbnailViewDeprecated.setFullscreenParams(mCurrentFullscreenParams);
-        }
+        mTaskThumbnailViewDeprecated.setFullscreenParams(mCurrentFullscreenParams);
     }
 
     void updateCurrentFullscreenParams() {
@@ -1799,8 +1797,8 @@ public class TaskView extends FrameLayout implements Reusable {
         if (getRecentsView() == null) {
             return;
         }
-        fullscreenParams.setProgress(mFullscreenProgress, getRecentsView().getScaleX(),
-                getScaleX());
+        fullscreenParams.setProgress(
+                mFullscreenProgress, getRecentsView().getScaleX(), getScaleX());
     }
 
     /**
