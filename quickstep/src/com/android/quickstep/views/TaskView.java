@@ -107,6 +107,7 @@ import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.task.thumbnail.TaskThumbnail;
 import com.android.quickstep.task.thumbnail.TaskThumbnailView;
+import com.android.quickstep.task.viewmodel.TaskViewData;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.BorderAnimator;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -326,6 +327,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             };
 
+    public TaskViewData mTaskViewData = new TaskViewData();
     protected TaskThumbnailViewDeprecated mTaskThumbnailViewDeprecated;
     protected TaskThumbnailView mTaskThumbnailView;
     protected TaskViewIcon mIconView;
@@ -1461,6 +1463,9 @@ public class TaskView extends FrameLayout implements Reusable {
         scale *= mDismissScale;
         setScaleX(scale);
         setScaleY(scale);
+        if (enableRefactorTaskThumbnail()) {
+            mTaskViewData.getScale().setValue(scale);
+        }
         updateSnapshotRadius();
     }
 
@@ -1767,10 +1772,7 @@ public class TaskView extends FrameLayout implements Reusable {
         progress = Utilities.boundToRange(progress, 0, 1);
         mFullscreenProgress = progress;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
-        if (!enableRefactorTaskThumbnail()) {
-            // TODO(b/334826840) Add corner rounding to new TTV
-            mTaskThumbnailViewDeprecated.getTaskOverlay().setFullscreenProgress(progress);
-        }
+        mTaskThumbnailViewDeprecated.getTaskOverlay().setFullscreenProgress(progress);
 
         RecentsView recentsView = mContainer.getOverviewPanel();
         // Animate icons and DWB banners in/out, except in QuickSwitch state, when tiles are
@@ -1784,10 +1786,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     protected void updateSnapshotRadius() {
         updateCurrentFullscreenParams();
-        if (!enableRefactorTaskThumbnail()) {
-            // TODO(b/334826840) Add corner rounding to new TTV
-            mTaskThumbnailViewDeprecated.setFullscreenParams(mCurrentFullscreenParams);
-        }
+        mTaskThumbnailViewDeprecated.setFullscreenParams(mCurrentFullscreenParams);
     }
 
     void updateCurrentFullscreenParams() {
@@ -1798,8 +1797,8 @@ public class TaskView extends FrameLayout implements Reusable {
         if (getRecentsView() == null) {
             return;
         }
-        fullscreenParams.setProgress(mFullscreenProgress, getRecentsView().getScaleX(),
-                getScaleX());
+        fullscreenParams.setProgress(
+                mFullscreenProgress, getRecentsView().getScaleX(), getScaleX());
     }
 
     /**
