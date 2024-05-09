@@ -16,8 +16,8 @@
 
 <!-- TODO(b/330585402): replace 600dp height with calculated value -->
 <View xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/bubble_expanded_view_drop_target_width"
-    android:layout_height="600dp"
+    android:layout_width="@dimen/bubble_expanded_view_drop_target_default_width"
+    android:layout_height="@dimen/bubble_expanded_view_drop_target_default_height"
     android:layout_margin="@dimen/bubble_expanded_view_drop_target_margin"
     android:background="@drawable/bg_bubble_expanded_view_drop_target"
     android:elevation="@dimen/bubblebar_elevation" />
