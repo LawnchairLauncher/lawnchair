@@ -17,15 +17,19 @@
 package com.android.launcher3.taskbar.navbutton
 
 import android.content.res.Resources
+import android.view.Gravity
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Space
+import com.android.launcher3.DeviceProfile
 import com.android.launcher3.taskbar.TaskbarActivityContext
 
 /** Layoutter for showing gesture navigation on phone screen. No buttons here, no-op container */
 class PhoneGestureLayoutter(
     resources: Resources,
+    navButtonsView: NearestTouchFrame,
     navBarContainer: LinearLayout,
     endContextualContainer: ViewGroup,
     startContextualContainer: ViewGroup,
@@ -42,8 +46,31 @@ class PhoneGestureLayoutter(
         a11yButton,
         space
     ) {
+    private val mNavButtonsView = navButtonsView
 
     override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
+        // TODO: look into if we should use SetupNavLayoutter instead.
+        if (!context.isUserSetupComplete) {
+            // Since setup wizard only has back button enabled, it looks strange to be
+            // end-aligned, so start-align instead.
+            val navButtonsLayoutParams = navButtonContainer.layoutParams as FrameLayout.LayoutParams
+            val navButtonsViewLayoutParams =
+                mNavButtonsView.layoutParams as FrameLayout.LayoutParams
+            val deviceProfile: DeviceProfile = context.deviceProfile
+
+            navButtonsLayoutParams.marginEnd = 0
+            navButtonsLayoutParams.gravity = Gravity.START
+            context.setTaskbarWindowSize(context.setupWindowSize)
+
+            adjustForSetupInPhoneMode(
+                navButtonsLayoutParams,
+                navButtonsViewLayoutParams,
+                deviceProfile
+            )
+            mNavButtonsView.layoutParams = navButtonsViewLayoutParams
+            navButtonContainer.layoutParams = navButtonsLayoutParams
+        }
+
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
     }

@@ -116,6 +116,7 @@ class NavButtonLayoutFactory {
                 isPhoneGestureMode -> {
                     PhoneGestureLayoutter(
                         resources,
+                        navButtonsView,
                         navButtonContainer,
                         endContextualContainer,
                         startContextualContainer,
