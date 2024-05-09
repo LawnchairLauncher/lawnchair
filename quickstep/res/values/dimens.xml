@@ -177,6 +177,8 @@
     <dimen name="gesture_tutorial_menu_done_button_top_spacing">0dp</dimen>
     <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">0dp</dimen>
     <dimen name="gesture_tutorial_menu_done_button_spacing">72dp</dimen>
+    <dimen name="gesture_tutorial_done_button_bottom_margin">40dp</dimen>
+    <dimen name="gesture_tutorial_done_button_end_margin">24dp</dimen>
 
     <!-- Gesture Tutorial mock conversations -->
     <dimen name="gesture_tutorial_message_icon_size">44dp</dimen>
