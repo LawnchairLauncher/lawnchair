@@ -254,7 +254,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         TASK_THUMBNAIL_SPLASH_ALPHA.set(mRecentsView, fromState.showTaskThumbnailSplash() ? 1f : 0);
         mRecentsView.setContentAlpha(1);
         mRecentsView.setFullscreenProgress(fromState.getOverviewFullscreenProgress());
-        mLauncher.getActionsView().getVisibilityAlphaSetter().accept(
+        mLauncher.getActionsView().getVisibilityAlpha().updateValue(
                 (fromState.getVisibleElements(mLauncher) & OVERVIEW_ACTIONS) != 0 ? 1f : 0f);
         mRecentsView.setTaskIconScaledDown(true);
 

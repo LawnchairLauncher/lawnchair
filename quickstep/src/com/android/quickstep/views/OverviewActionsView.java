@@ -34,6 +34,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.NavigationMode;
@@ -42,27 +43,14 @@ import com.android.quickstep.util.LayoutUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 /**
  * View for showing action buttons in Overview
  */
 public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayout
         implements OnClickListener, Insettable {
-    public static final FloatProperty<Consumer<Float>> FLOAT_SETTER =
-            new FloatProperty<>("floatSetter") {
-                @Override
-                public void setValue(Consumer<Float> consumer, float v) {
-                    consumer.accept(v);
-                }
-
-                @Override
-                public Float get(Consumer<Float> consumer) {
-                    return -1f;
-                }
-            };
-
     private final Rect mInsets = new Rect();
 
     @IntDef(flag = true, value = {
@@ -109,7 +97,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public @interface SplitButtonHiddenFlags { }
     public static final int FLAG_SMALL_SCREEN_HIDE_SPLIT = 1 << 0;
 
-    /** Holds MultiValueAlpha values for all actions buttons */
+    /**
+     * Holds an AnimatedFloat for each alpha property, used to set or animate alpha values in
+     * {@link #mMultiValueAlphas}.
+     */
+    private final AnimatedFloat[] mAlphaProperties = new AnimatedFloat[NUM_ALPHAS];
+
+    /** Holds MultiValueAlpha values for all actions bars */
     private final MultiValueAlpha[] mMultiValueAlphas = new MultiValueAlpha[2];
     /** Index used for single-task actions in the mMultiValueAlphas array */
     private static final int ACTIONS_ALPHAS = 0;
@@ -159,11 +153,21 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         // These will take up the same space on the screen and alternate visibility as needed.
         mActionButtons = findViewById(R.id.action_buttons);
         mGroupActionButtons = findViewById(R.id.group_action_buttons);
-        // Initialize a list to set alpha on mActionButtons and mGroupActionButtons simultaneously.
+        // Initialize a list to hold alphas for mActionButtons and mGroupActionButtons.
         mMultiValueAlphas[ACTIONS_ALPHAS] = new MultiValueAlpha(mActionButtons, NUM_ALPHAS);
         mMultiValueAlphas[GROUP_ACTIONS_ALPHAS] =
                 new MultiValueAlpha(mGroupActionButtons, NUM_ALPHAS);
         Arrays.stream(mMultiValueAlphas).forEach(a -> a.setUpdateVisibility(true));
+        // To control alpha simultaneously on mActionButtons and mGroupActionButtons, we set up an
+        // AnimatedFloat for each alpha property.
+        for (int i = 0; i < NUM_ALPHAS; i++) {
+            final int index = i;
+            mAlphaProperties[index] = new AnimatedFloat(() -> {
+                for (MultiValueAlpha multiValueAlpha : mMultiValueAlphas) {
+                    multiValueAlpha.get(index).setValue(mAlphaProperties[index].value);
+                }
+            }, 1f /* initialValue */);
+        }
 
         // The screenshot button is implemented as a Button in launcher3 and NexusLauncher, but is
         // an ImageButton in go launcher (does not share a common class with Button). Take care when
@@ -220,7 +224,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mHiddenFlags &= ~visibilityFlags;
         }
         boolean isHidden = mHiddenFlags != 0;
-        setActionsAlpha(INDEX_HIDDEN_FLAGS_ALPHA, isHidden ? 0 : 1);
+        mAlphaProperties[INDEX_HIDDEN_FLAGS_ALPHA].updateValue(isHidden ? 0 : 1);
     }
 
     /**
@@ -305,28 +309,24 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
     }
 
-    private void setActionsAlpha(int index, float value) {
-        Arrays.stream(mMultiValueAlphas).forEach(a -> a.get(index).setValue(value));
+    public AnimatedFloat getContentAlpha() {
+        return mAlphaProperties[INDEX_CONTENT_ALPHA];
     }
 
-    public Consumer<Float> getContentAlphaSetter() {
-        return v -> setActionsAlpha(INDEX_CONTENT_ALPHA, v);
+    public AnimatedFloat getVisibilityAlpha() {
+        return mAlphaProperties[INDEX_VISIBILITY_ALPHA];
     }
 
-    public Consumer<Float> getVisibilityAlphaSetter() {
-        return v -> setActionsAlpha(INDEX_VISIBILITY_ALPHA, v);
+    public AnimatedFloat getFullscreenAlpha() {
+        return mAlphaProperties[INDEX_FULLSCREEN_ALPHA];
     }
 
-    public Consumer<Float> getFullscreenAlphaSetter() {
-        return v -> setActionsAlpha(INDEX_FULLSCREEN_ALPHA, v);
+    public AnimatedFloat getShareTargetAlpha() {
+        return mAlphaProperties[INDEX_SHARE_TARGET_ALPHA];
     }
 
-    public Consumer<Float> getShareTargetAlphaSetter() {
-        return v -> setActionsAlpha(INDEX_SHARE_TARGET_ALPHA, v);
-    }
-
-    public Consumer<Float> getIndexScrollAlphaSetter() {
-        return v -> setActionsAlpha(INDEX_SCROLL_ALPHA, v);
+    public AnimatedFloat getIndexScrollAlpha() {
+        return mAlphaProperties[INDEX_SCROLL_ALPHA];
     }
 
     /**
