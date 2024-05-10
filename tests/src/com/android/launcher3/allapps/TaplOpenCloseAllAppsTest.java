@@ -26,7 +26,6 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.platform.test.annotations.PlatinumTest;
-import android.platform.test.rule.ScreenRecordRule;
 
 import androidx.test.filters.FlakyTest;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -132,7 +131,6 @@ public class TaplOpenCloseAllAppsTest extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
-    @ScreenRecordRule.ScreenRecord // b/322228038
     public void testAllAppsFromHome() {
         // Test opening all apps
         assertNotNull("switchToAllApps() returned null",
