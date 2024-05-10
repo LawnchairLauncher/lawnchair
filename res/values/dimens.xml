@@ -516,7 +516,7 @@
     <dimen name="default_ime_height">300dp</dimen>
 
     <!-- Private Space parameters -->
-    <dimen name="ps_container_corner_radius">24dp</dimen>
+    <dimen name="ps_container_corner_radius">28dp</dimen>
     <dimen name="ps_header_height">72dp</dimen>
     <dimen name="ps_header_relative_layout_height">48dp</dimen>
     <dimen name="ps_header_image_height">48dp</dimen>
