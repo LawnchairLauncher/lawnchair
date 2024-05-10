@@ -1,6 +1,10 @@
 # Lawnchair Contributing Guidelines
 
-<img alt="" src="docs/lawnchair-round.webp" width="100" data-align="inline">
+<picture>
+    <!-- Avoid image being clickable with slight workaround --->
+    <source media="(prefers-color-scheme: dark)" srcset="docs/lawnchair-round.webp" width="100">
+    <img alt="" src="docs/lawnchair-round.webp" width="100">
+</picture>
 
 First and foremost, welcome to the **Lawnchair** Contributing Guidelines!
 This document will contain everything you'll need to contribute to the **Lawnchair** project.
