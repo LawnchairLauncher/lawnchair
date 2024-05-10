@@ -42,3 +42,11 @@ flag {
     description: "This flag disables drag and drop for Private Space Items."
     bug: "289223923"
 }
+
+
+flag {
+    name: "private_space_floating_mask_view"
+    namespace: "launcher_search"
+    description: "This flag enables the floating mask view as part of the Private Space animation. "
+    bug: "339850589"
+}
