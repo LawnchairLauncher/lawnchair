@@ -163,11 +163,6 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             return false;
         }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onTaskbarItemLongClick");
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.TWO_TASKBAR_LONG_CLICKS,
-                    "TaskbarDragController.startDragOnLongClick",
-                    new Throwable());
-        }
         BubbleTextView btv = (BubbleTextView) view;
         mActivity.onDragStart();
         btv.post(() -> {
