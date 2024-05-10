@@ -17,6 +17,7 @@
 package com.android.launcher3.util;
 
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE;
+import static android.view.WindowManager.PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI;
 
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -73,10 +74,14 @@ public class PackageManagerHelper implements SafeCloseable{
     @NonNull
     private final LauncherApps mLauncherApps;
 
+    private final String[] mLegacyMultiInstanceSupportedApps;
+
     public PackageManagerHelper(@NonNull final Context context) {
         mContext = context;
         mPm = context.getPackageManager();
         mLauncherApps = Objects.requireNonNull(context.getSystemService(LauncherApps.class));
+        mLegacyMultiInstanceSupportedApps = mContext.getResources().getStringArray(
+                R.array.config_appsSupportMultiInstancesSplit);
     }
 
     @Override
@@ -159,11 +164,23 @@ public class PackageManagerHelper implements SafeCloseable{
         }
     }
 
+    /**
+     * Returns the preferred launch activity intent for a given package.
+     */
     @Nullable
     public Intent getAppLaunchIntent(@Nullable final String pkg, @NonNull final UserHandle user) {
+        LauncherActivityInfo info = getAppLaunchInfo(pkg, user);
+        return info != null ? AppInfo.makeLaunchIntent(info) : null;
+    }
+
+    /**
+     * Returns the preferred launch activity for a given package.
+     */
+    @Nullable
+    public LauncherActivityInfo getAppLaunchInfo(@Nullable final String pkg,
+            @NonNull final UserHandle user) {
         List<LauncherActivityInfo> activities = mLauncherApps.getActivityList(pkg, user);
-        return activities.isEmpty() ? null :
-                AppInfo.makeLaunchIntent(activities.get(0));
+        return activities.isEmpty() ? null : activities.get(0);
     }
 
     /**
@@ -284,5 +301,48 @@ public class PackageManagerHelper implements SafeCloseable{
     private boolean isPackageInstalledOrArchived(ApplicationInfo info) {
         return (info.flags & ApplicationInfo.FLAG_INSTALLED) != 0 || (
                 Flags.enableSupportForArchiving() && info.isArchived);
+    }
+
+    /**
+     * Returns whether the given component or its application has the multi-instance property set.
+     */
+    public boolean supportsMultiInstance(@NonNull ComponentName component) {
+        // Check the legacy hardcoded allowlist first
+        for (String pkg : mLegacyMultiInstanceSupportedApps) {
+            if (pkg.equals(component.getPackageName())) {
+                return true;
+            }
+        }
+
+        // Check app multi-instance properties after V
+        if (!Utilities.ATLEAST_V) {
+            return false;
+        }
+
+        try {
+            // Check if the component has the multi-instance property
+            return mPm.getProperty(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI, component)
+                    .getBoolean();
+        } catch (PackageManager.NameNotFoundException e1) {
+            try {
+                // Check if the application has the multi-instance property
+                return mPm.getProperty(PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI,
+                                component.getPackageName())
+                    .getBoolean();
+            } catch (PackageManager.NameNotFoundException e2) {
+                // Fall through
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether two apps should be considered the same for multi-instance purposes, which
+     * requires additional checks to ensure they can be started as multiple instances.
+     */
+    public static boolean isSameAppForMultiInstance(@NonNull ItemInfo app1,
+            @NonNull ItemInfo app2) {
+        return app1.getTargetPackage().equals(app2.getTargetPackage())
+                && app1.user.equals(app2.user);
     }
 }

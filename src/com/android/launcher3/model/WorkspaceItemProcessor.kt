@@ -336,7 +336,8 @@ class WorkspaceItemProcessor(
                     info,
                     activityInfo,
                     userCache.getUserInfo(c.user),
-                    ApiWrapper.INSTANCE[app.context]
+                    ApiWrapper.INSTANCE[app.context],
+                    pmHelper
                 )
             }
             if (

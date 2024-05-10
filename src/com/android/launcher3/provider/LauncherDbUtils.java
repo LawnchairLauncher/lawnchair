@@ -44,6 +44,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.PackageManagerHelper;
 
 /**
  * A set of utility methods for Launcher DB used for DB updates and migration.
@@ -107,9 +108,11 @@ public class LauncherDbUtils {
         Cursor c = db.query(
                 Favorites.TABLE_NAME, null, "itemType = 1", null, null, null, null);
         UserManagerState ums = new UserManagerState();
+        PackageManagerHelper pmHelper = PackageManagerHelper.INSTANCE.get(context);
         ums.init(UserCache.INSTANCE.get(context),
                 context.getSystemService(UserManager.class));
-        LoaderCursor lc = new LoaderCursor(c, LauncherAppState.getInstance(context), ums, null);
+        LoaderCursor lc = new LoaderCursor(c, LauncherAppState.getInstance(context), ums, pmHelper,
+                null);
         IntSet deletedShortcuts = new IntSet();
 
         while (lc.moveToNext()) {

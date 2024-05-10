@@ -52,6 +52,7 @@ import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SafeCloseable;
@@ -181,7 +182,7 @@ public class LauncherAppState implements SafeCloseable {
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile,
                 iconCacheFileName, mIconProvider);
         mModel = new LauncherModel(context, this, mIconCache, new AppFilter(mContext),
-                iconCacheFileName != null);
+                PackageManagerHelper.INSTANCE.get(context), iconCacheFileName != null);
         mOnTerminateCallback.add(mIconCache::close);
         mOnTerminateCallback.add(mModel::destroy);
     }

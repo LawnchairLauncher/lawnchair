@@ -126,8 +126,8 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                     if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
                         appsList.removePackage(packages[i], mUser);
                     }
-                    activitiesLists.put(
-                            packages[i], appsList.addPackage(context, packages[i], mUser));
+                    activitiesLists.put(packages[i],
+                            appsList.addPackage(context, packages[i], mUser));
                 }
                 flagOp = FlagOp.NO_OP.removeFlag(WorkspaceItemInfo.FLAG_DISABLED_NOT_AVAILABLE);
                 break;
@@ -138,8 +138,8 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                     for (int i = 0; i < N; i++) {
                         if (DEBUG) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
                         iconCache.updateIconsForPkg(packages[i], mUser);
-                        activitiesLists.put(
-                                packages[i], appsList.updatePackage(context, packages[i], mUser));
+                        activitiesLists.put(packages[i],
+                                appsList.updatePackage(context, packages[i], mUser));
                     }
                 }
                 // Since package was just updated, the target must be available now.
@@ -269,6 +269,8 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                         if (isNewApkAvailable) {
                             List<LauncherActivityInfo> activities = activitiesLists.get(
                                     packageName);
+                            // TODO: See if we can migrate this to
+                            //  AppInfo#updateRuntimeFlagsForActivityTarget
                             si.setProgressLevel(
                                     activities == null || activities.isEmpty()
                                             ? 100
@@ -399,7 +401,8 @@ public class PackageUpdatedTask implements ModelUpdateTask {
             return false;
         }
         // Try to find the best match activity.
-        Intent intent = new PackageManagerHelper(context).getAppLaunchIntent(packageName, mUser);
+        Intent intent = PackageManagerHelper.INSTANCE.get(context)
+                .getAppLaunchIntent(packageName, mUser);
         if (intent != null) {
             si.intent = intent;
             si.status = WorkspaceItemInfo.DEFAULT;

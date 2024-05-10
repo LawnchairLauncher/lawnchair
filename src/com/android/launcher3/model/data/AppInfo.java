@@ -90,12 +90,12 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
      */
     public AppInfo(Context context, LauncherActivityInfo info, UserHandle user) {
         this(info, UserCache.INSTANCE.get(context).getUserInfo(user),
-                ApiWrapper.INSTANCE.get(context),
+                ApiWrapper.INSTANCE.get(context), PackageManagerHelper.INSTANCE.get(context),
                 context.getSystemService(UserManager.class).isQuietModeEnabled(user));
     }
 
     public AppInfo(LauncherActivityInfo info, UserIconInfo userIconInfo,
-            ApiWrapper apiWrapper, boolean quietModeEnabled) {
+            ApiWrapper apiWrapper, PackageManagerHelper pmHelper, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = CONTAINER_ALL_APPS;
         this.user = userIconInfo.user;
@@ -105,7 +105,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
             runtimeStatusFlags |= FLAG_DISABLED_QUIET_USER;
         }
         uid = info.getApplicationInfo().uid;
-        updateRuntimeFlagsForActivityTarget(this, info, userIconInfo, apiWrapper);
+        updateRuntimeFlagsForActivityTarget(this, info, userIconInfo, apiWrapper, pmHelper);
     }
 
     public AppInfo(AppInfo info) {
@@ -184,7 +184,7 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
      */
     public static boolean updateRuntimeFlagsForActivityTarget(
             ItemInfoWithIcon info, LauncherActivityInfo lai, UserIconInfo userIconInfo,
-            ApiWrapper apiWrapper) {
+            ApiWrapper apiWrapper, PackageManagerHelper pmHelper) {
         final int oldProgressLevel = info.getProgressLevel();
         final int oldRuntimeStatusFlags = info.runtimeStatusFlags;
         ApplicationInfo appInfo = lai.getApplicationInfo();
@@ -216,6 +216,8 @@ public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
                 PackageManagerHelper.getLoadingProgress(lai),
                 PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
         info.setNonResizeable(apiWrapper.isNonResizeableActivity(lai));
+        info.setSupportsMultiInstance(
+                pmHelper.supportsMultiInstance(lai.getComponentName()));
         return (oldProgressLevel != info.getProgressLevel())
                 || (oldRuntimeStatusFlags != info.runtimeStatusFlags);
     }

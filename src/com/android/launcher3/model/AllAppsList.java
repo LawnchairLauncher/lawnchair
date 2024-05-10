@@ -301,6 +301,7 @@ public class AllAppsList {
             Context context, String packageName, UserHandle user) {
         final ApiWrapper apiWrapper = ApiWrapper.INSTANCE.get(context);
         final UserCache userCache = UserCache.getInstance(context);
+        final PackageManagerHelper pmHelper = PackageManagerHelper.INSTANCE.get(context);
         final List<LauncherActivityInfo> matches = context.getSystemService(LauncherApps.class)
                 .getActivityList(packageName, user);
         if (matches.size() > 0) {
@@ -330,7 +331,7 @@ public class AllAppsList {
                     applicationInfo.sectionName = mIndex.computeSectionName(applicationInfo.title);
                     applicationInfo.intent = launchIntent;
                     AppInfo.updateRuntimeFlagsForActivityTarget(applicationInfo, info,
-                            userCache.getUserInfo(user), apiWrapper);
+                            userCache.getUserInfo(user), apiWrapper, pmHelper);
                     mDataChanged = true;
                 }
             }
