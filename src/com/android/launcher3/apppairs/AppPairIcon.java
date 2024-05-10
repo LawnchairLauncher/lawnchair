@@ -30,6 +30,8 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Reorderable;
@@ -84,6 +86,11 @@ public class AppPairIcon extends FrameLayout implements DraggableView, Reorderab
                 ? LayoutInflater.from(group.getContext())
                 : activity.getLayoutInflater();
         AppPairIcon icon = (AppPairIcon) inflater.inflate(resId, group, false);
+
+        if (Flags.enableFocusOutline() && activity instanceof Launcher) {
+            icon.setOnFocusChangeListener(((Launcher) activity).getFocusHandler());
+            icon.setDefaultFocusHighlightEnabled(false);
+        }
 
         // Sort contents, so that left-hand app comes first
         appPairInfo.getContents().sort(Comparator.comparingInt(a -> a.rank));
