@@ -37,7 +37,7 @@ class FallbackTaskbarUIControllerTest : TaskbarBaseTestCase() {
     lateinit var stateListener: StateManager.StateListener<RecentsState>
 
     private val recentsActivity: RecentsActivity = mock()
-    private val stateManager: StateManager<RecentsState> = mock()
+    private val stateManager: StateManager<RecentsState, RecentsActivity> = mock()
 
     @Before
     override fun setup() {
