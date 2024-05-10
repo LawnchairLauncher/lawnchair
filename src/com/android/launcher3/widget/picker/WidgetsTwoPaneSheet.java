@@ -36,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 
 import com.android.launcher3.DeviceProfile;
@@ -78,6 +79,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
     private boolean mOldIsSwipeToDismissInProgress;
     private int mActivePage = -1;
+    @Nullable
     private PackageUserKey mSelectedHeader;
 
     public WidgetsTwoPaneSheet(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -230,7 +232,8 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         if (mSuggestedWidgetsContainer == null && mRecommendedWidgetsCount > 0) {
             setupSuggestedWidgets(LayoutInflater.from(getContext()));
             mSuggestedWidgetsHeader.callOnClick();
-        } else if (mSelectedHeader.equals(mSuggestedWidgetsPackageUserKey)) {
+        } else if (mSelectedHeader != null
+                && mSelectedHeader.equals(mSuggestedWidgetsPackageUserKey)) {
             // Reselect widget if we are reloading recommendations while it is currently showing.
             selectWidgetCell(mWidgetRecommendationsContainer, getLastSelectedWidgetItem());
         }
@@ -280,8 +283,8 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
             mRightPaneScrollView.setScrollY(0);
             mRightPane.setAccessibilityPaneTitle(suggestionsRightPaneTitle);
             mSuggestedWidgetsPackageUserKey = PackageUserKey.fromPackageItemInfo(packageItemInfo);
-            final boolean isChangingHeaders =
-                    !mSelectedHeader.equals(mSuggestedWidgetsPackageUserKey);
+            final boolean isChangingHeaders = mSelectedHeader == null
+                    || !mSelectedHeader.equals(mSuggestedWidgetsPackageUserKey);
             if (isChangingHeaders)  {
                 // If switching from another header, unselect any WidgetCells. This is necessary
                 // because we do not clear/recycle the WidgetCells in the recommendations container
