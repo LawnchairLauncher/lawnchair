@@ -108,7 +108,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
 
-    private @SystemUiStateFlags int mSystemUiStateFlags = QuickStepContract.SYSUI_STATE_AWAKE;
+    private @SystemUiStateFlags long mSystemUiStateFlags = QuickStepContract.SYSUI_STATE_AWAKE;
     private NavigationMode mMode = THREE_BUTTONS;
     private NavBarPosition mNavBarPosition;
 
@@ -352,7 +352,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
     /**
      * Updates the system ui state flags from SystemUI.
      */
-    public void setSystemUiFlags(int stateFlags) {
+    public void setSystemUiFlags(@SystemUiStateFlags long stateFlags) {
         mSystemUiStateFlags = stateFlags;
     }
 
@@ -360,7 +360,8 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
      * @return the system ui state flags.
      */
     // TODO(141886704): See if we can remove this
-    public int getSystemUiStateFlags() {
+    @SystemUiStateFlags
+    public long getSystemUiStateFlags() {
         return mSystemUiStateFlags;
     }
 

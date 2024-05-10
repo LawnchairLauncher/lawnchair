@@ -129,6 +129,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.unfold.progress.IUnfoldAnimation;
 import com.android.wm.shell.back.IBackAnimation;
@@ -301,9 +302,9 @@ public class TouchInteractionService extends Service {
         }
 
         @BinderThread
-        public void onSystemUiStateChanged(int stateFlags) {
+        public void onSystemUiStateChanged(@SystemUiStateFlags long stateFlags) {
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
-                int lastFlags = tis.mDeviceState.getSystemUiStateFlags();
+                long lastFlags = tis.mDeviceState.getSystemUiStateFlags();
                 tis.mDeviceState.setSystemUiFlags(stateFlags);
                 tis.onSystemUiFlagsChanged(lastFlags);
             }));
@@ -636,14 +637,14 @@ public class TouchInteractionService extends Service {
     }
 
     @UiThread
-    private void onSystemUiFlagsChanged(int lastSysUIFlags) {
+    private void onSystemUiFlagsChanged(@SystemUiStateFlags long lastSysUIFlags) {
         if (LockedUserState.get(this).isUserUnlocked()) {
-            int systemUiStateFlags = mDeviceState.getSystemUiStateFlags();
+            long systemUiStateFlags = mDeviceState.getSystemUiStateFlags();
             SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(systemUiStateFlags);
             mOverviewComponentObserver.onSystemUiStateChanged();
             mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
 
-            int isShadeExpandedFlag =
+            long isShadeExpandedFlag =
                     SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
             boolean wasExpanded = (lastSysUIFlags & isShadeExpandedFlag) != 0;
             boolean isExpanded = (systemUiStateFlags & isShadeExpandedFlag) != 0;
