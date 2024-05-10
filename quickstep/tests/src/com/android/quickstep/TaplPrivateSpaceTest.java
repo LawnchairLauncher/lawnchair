@@ -99,7 +99,6 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
     }
 
     @Test
-    @ScreenRecordRule.ScreenRecord // b/334946529
     public void testPrivateSpaceContainerIsPresent() {
         // Scroll to the bottom of All Apps
         executeOnLauncher(launcher -> launcher.getAppsView().resetAndScrollToPrivateSpaceHeader());
