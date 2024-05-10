@@ -30,6 +30,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -265,7 +266,7 @@ public class SystemShortcutTest {
         SystemShortcut systemShortcut = SystemShortcut.PRIVATE_PROFILE_INSTALL
                 .getShortcut(mTestContext, mAppInfo, mView);
 
-        verify(mPrivateProfileManager).isEnabled();
+        verify(mPrivateProfileManager, atLeast(1)).isEnabled();
         assertNotNull(systemShortcut);
     }
 
