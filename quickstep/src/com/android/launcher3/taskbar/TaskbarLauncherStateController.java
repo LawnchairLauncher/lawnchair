@@ -65,7 +65,7 @@ import java.util.StringJoiner;
  */
 public class TaskbarLauncherStateController {
 
-    private static final String TAG = TaskbarLauncherStateController.class.getSimpleName();
+    private static final String TAG = "TaskbarLauncherStateController";
     private static final boolean DEBUG = false;
 
     /** Launcher activity is visible and focused. */

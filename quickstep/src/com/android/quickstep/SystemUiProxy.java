@@ -111,7 +111,7 @@ import java.util.List;
  * Holds the reference to SystemUI.
  */
 public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
-    private static final String TAG = SystemUiProxy.class.getSimpleName();
+    private static final String TAG = "SystemUiProxy";
 
     public static final MainThreadInitializedObject<SystemUiProxy> INSTANCE =
             new MainThreadInitializedObject<>(SystemUiProxy::new);

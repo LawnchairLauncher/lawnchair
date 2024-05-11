@@ -60,7 +60,7 @@ public class AllAppsList {
 
     private static final String TAG = "AllAppsList";
     private static final Consumer<AppInfo> NO_OP_CONSUMER = a -> { };
-
+    private static final boolean DEBUG = true;
 
     public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
 
@@ -220,6 +220,11 @@ public class AllAppsList {
                     updatedAppInfos.add(appInfo);
                 } else if (installInfo.state == PackageInstallInfo.STATUS_FAILED
                         && !appInfo.isAppStartable()) {
+                    if (DEBUG) {
+                        Log.w(TAG, "updatePromiseInstallInfo: removing app due to install"
+                                + " failure and appInfo not startable."
+                                + " package=" + appInfo.getTargetPackage());
+                    }
                     removeApp(i);
                 }
             }
@@ -301,6 +306,7 @@ public class AllAppsList {
             Context context, String packageName, UserHandle user) {
         final ApiWrapper apiWrapper = ApiWrapper.INSTANCE.get(context);
         final UserCache userCache = UserCache.getInstance(context);
+        final PackageManagerHelper pmHelper = PackageManagerHelper.INSTANCE.get(context);
         final List<LauncherActivityInfo> matches = context.getSystemService(LauncherApps.class)
                 .getActivityList(packageName, user);
         if (matches.size() > 0) {
@@ -311,7 +317,10 @@ public class AllAppsList {
                 if (user.equals(applicationInfo.user)
                         && packageName.equals(applicationInfo.componentName.getPackageName())) {
                     if (!findActivity(matches, applicationInfo.componentName)) {
-                        Log.w(TAG, "Changing shortcut target due to app component name change.");
+                        if (DEBUG) {
+                            Log.w(TAG, "Changing shortcut target due to app component name change."
+                                    + " package=" + packageName);
+                        }
                         removeApp(i);
                     }
                 }
@@ -330,12 +339,16 @@ public class AllAppsList {
                     applicationInfo.sectionName = mIndex.computeSectionName(applicationInfo.title);
                     applicationInfo.intent = launchIntent;
                     AppInfo.updateRuntimeFlagsForActivityTarget(applicationInfo, info,
-                            userCache.getUserInfo(user), apiWrapper);
+                            userCache.getUserInfo(user), apiWrapper, pmHelper);
                     mDataChanged = true;
                 }
             }
         } else {
             // Remove all data for this package.
+            if (DEBUG) {
+                Log.w(TAG, "updatePromiseInstallInfo: no Activities matched updated package,"
+                        + " removing all apps from package=" + packageName);
+            }
             for (int i = data.size() - 1; i >= 0; i--) {
                 final AppInfo applicationInfo = data.get(i);
                 if (user.equals(applicationInfo.user)

@@ -57,6 +57,7 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.UserIconInfo;
 
 import java.net.URISyntaxException;
@@ -73,6 +74,7 @@ public class LoaderCursor extends CursorWrapper {
 
     private final LauncherAppState mApp;
     private final Context mContext;
+    private final PackageManagerHelper mPmHelper;
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mIDP;
     private final @Nullable LauncherRestoreEventLogger mRestoreEventLogger;
@@ -114,6 +116,7 @@ public class LoaderCursor extends CursorWrapper {
     public int restoreFlag;
 
     public LoaderCursor(Cursor cursor, LauncherAppState app, UserManagerState userManagerState,
+            PackageManagerHelper pmHelper,
             @Nullable LauncherRestoreEventLogger restoreEventLogger) {
         super(cursor);
 
@@ -121,6 +124,7 @@ public class LoaderCursor extends CursorWrapper {
         allUsers = userManagerState.allUsers;
         mContext = app.getContext();
         mIconCache = app.getIconCache();
+        mPmHelper = pmHelper;
         mIDP = app.getInvariantDeviceProfile();
         mRestoreEventLogger = restoreEventLogger;
 
@@ -368,7 +372,7 @@ public class LoaderCursor extends CursorWrapper {
 
         if (mActivityInfo != null) {
             AppInfo.updateRuntimeFlagsForActivityTarget(info, mActivityInfo, userIconInfo,
-                    ApiWrapper.INSTANCE.get(mContext));
+                    ApiWrapper.INSTANCE.get(mContext), mPmHelper);
         }
 
         // from the db

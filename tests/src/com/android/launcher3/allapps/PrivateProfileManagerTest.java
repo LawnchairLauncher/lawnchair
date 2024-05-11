@@ -202,6 +202,7 @@ public class PrivateProfileManagerTest {
     }
 
     @Test
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/339109319
     public void openPrivateSpaceSettings_triggersCorrectIntent() {
         Intent expectedIntent = ApiWrapper.INSTANCE.get(mContext).getPrivateSpaceSettingsIntent();
         ArgumentCaptor<Intent> acIntent = ArgumentCaptor.forClass(Intent.class);

@@ -74,8 +74,8 @@ import java.util.stream.Collectors;
 public class PackageUpdatedTask implements ModelUpdateTask {
 
     // TODO(b/290090023): Set to false after root causing is done.
-    private static final boolean DEBUG = true;
     private static final String TAG = "PackageUpdatedTask";
+    private static final boolean DEBUG = true;
 
     public static final int OP_NONE = 0;
     public static final int OP_ADD = 1;
@@ -117,29 +117,39 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                 : ItemInfoMatcher.ofPackages(packageSet, mUser);
         final HashSet<ComponentName> removedComponents = new HashSet<>();
         final HashMap<String, List<LauncherActivityInfo>> activitiesLists = new HashMap<>();
-
+        if (DEBUG) {
+            Log.d(TAG, "Package updated: mOp=" + getOpString()
+                    + " packages=" + Arrays.toString(packages));
+        }
         switch (mOp) {
             case OP_ADD: {
                 for (int i = 0; i < N; i++) {
-                    if (DEBUG) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
                     iconCache.updateIconsForPkg(packages[i], mUser);
                     if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
+                        if (DEBUG) {
+                            Log.d(TAG, "OP_ADD: PROMISE_APPS_IN_ALL_APPS enabled:"
+                                    + " removing promise icon apps from package=" + packages[i]);
+                        }
                         appsList.removePackage(packages[i], mUser);
                     }
-                    activitiesLists.put(
-                            packages[i], appsList.addPackage(context, packages[i], mUser));
+                    activitiesLists.put(packages[i],
+                            appsList.addPackage(context, packages[i], mUser));
                 }
                 flagOp = FlagOp.NO_OP.removeFlag(WorkspaceItemInfo.FLAG_DISABLED_NOT_AVAILABLE);
                 break;
             }
             case OP_UPDATE:
-                try (SafeCloseable t =
-                             appsList.trackRemoves(a -> removedComponents.add(a.componentName))) {
+                try (SafeCloseable t = appsList.trackRemoves(a -> {
+                    Log.d(TAG, "OP_UPDATE - AllAppsList.trackRemoves callback:"
+                            + " removed component=" + a.componentName
+                            + " id=" + a.id
+                            + " Look for earlier AllAppsList logs to find more information.");
+                    removedComponents.add(a.componentName);
+                })) {
                     for (int i = 0; i < N; i++) {
-                        if (DEBUG) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
                         iconCache.updateIconsForPkg(packages[i], mUser);
-                        activitiesLists.put(
-                                packages[i], appsList.updatePackage(context, packages[i], mUser));
+                        activitiesLists.put(packages[i],
+                                appsList.updatePackage(context, packages[i], mUser));
                     }
                 }
                 // Since package was just updated, the target must be available now.
@@ -147,14 +157,15 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                 break;
             case OP_REMOVE: {
                 for (int i = 0; i < N; i++) {
-                    FileLog.d(TAG, "Removing app icon: " + packages[i]);
                     iconCache.removeIconsForPkg(packages[i], mUser);
                 }
                 // Fall through
             }
             case OP_UNAVAILABLE:
                 for (int i = 0; i < N; i++) {
-                    if (DEBUG) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
+                    if (DEBUG) {
+                        Log.d(TAG, getOpString() + ": removing package=" + packages[i]);
+                    }
                     appsList.removePackage(packages[i], mUser);
                 }
                 flagOp = FlagOp.NO_OP.addFlag(WorkspaceItemInfo.FLAG_DISABLED_NOT_AVAILABLE);
@@ -163,7 +174,6 @@ public class PackageUpdatedTask implements ModelUpdateTask {
             case OP_UNSUSPEND:
                 flagOp = FlagOp.NO_OP.setFlag(
                         WorkspaceItemInfo.FLAG_DISABLED_SUSPENDED, mOp == OP_SUSPEND);
-                if (DEBUG) Log.d(TAG, "mAllAppsList.(un)suspend " + N);
                 appsList.updateDisabledFlags(matcher, flagOp);
                 break;
             case OP_USER_AVAILABILITY_CHANGE: {
@@ -249,12 +259,21 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                                     infoUpdated = true;
                                 } else if (si.hasPromiseIconUi()) {
                                     removedShortcuts.add(si.id);
+                                    if (DEBUG) {
+                                        Log.d(TAG, "Removing restored shortcut promise icon"
+                                                + " that no longer points to valid component."
+                                                + " id=" + si.id
+                                                + ", package=" + si.getTargetPackage());
+                                    }
                                     return;
                                 }
                             } else if (!isTargetValid) {
                                 removedShortcuts.add(si.id);
-                                FileLog.e(TAG, "Restored shortcut no longer valid "
-                                        + si.getIntent());
+                                FileLog.e(TAG, "Removing shortcut that no longer points to"
+                                        + " valid component."
+                                        + " id=" + si.id
+                                        + " package=" + si.getTargetPackage()
+                                        + " status=" + si.status);
                                 return;
                             } else {
                                 si.status = WorkspaceItemInfo.DEFAULT;
@@ -269,6 +288,8 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                         if (isNewApkAvailable) {
                             List<LauncherActivityInfo> activities = activitiesLists.get(
                                     packageName);
+                            // TODO: See if we can migrate this to
+                            //  AppInfo#updateRuntimeFlagsForActivityTarget
                             si.setProgressLevel(
                                     activities == null || activities.isEmpty()
                                             ? 100
@@ -334,7 +355,8 @@ public class PackageUpdatedTask implements ModelUpdateTask {
             if (!removedShortcuts.isEmpty()) {
                 taskController.deleteAndBindComponentsRemoved(
                         ItemInfoMatcher.ofItemIds(removedShortcuts),
-                        "removed because the target component is invalid");
+                        "removing shortcuts with invalid target components."
+                                + " ids=" + removedShortcuts);
             }
 
             if (!widgets.isEmpty()) {
@@ -346,6 +368,9 @@ public class PackageUpdatedTask implements ModelUpdateTask {
         if (mOp == OP_REMOVE) {
             // Mark all packages in the broadcast to be removed
             Collections.addAll(removedPackages, packages);
+            if (DEBUG) {
+                Log.d(TAG, "OP_REMOVE: removing packages=" + Arrays.toString(packages));
+            }
 
             // No need to update the removedComponents as
             // removedPackages is a super-set of removedComponents
@@ -354,6 +379,10 @@ public class PackageUpdatedTask implements ModelUpdateTask {
             final LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
             for (int i=0; i<N; i++) {
                 if (!launcherApps.isPackageEnabled(packages[i], mUser)) {
+                    if (DEBUG) {
+                        Log.d(TAG, "OP_UPDATE:"
+                                + " package " + packages[i] + " is disabled, removing package.");
+                    }
                     removedPackages.add(packages[i]);
                 }
             }
@@ -399,12 +428,27 @@ public class PackageUpdatedTask implements ModelUpdateTask {
             return false;
         }
         // Try to find the best match activity.
-        Intent intent = new PackageManagerHelper(context).getAppLaunchIntent(packageName, mUser);
+        Intent intent = PackageManagerHelper.INSTANCE.get(context)
+                .getAppLaunchIntent(packageName, mUser);
         if (intent != null) {
             si.intent = intent;
             si.status = WorkspaceItemInfo.DEFAULT;
             return true;
         }
         return false;
+    }
+
+    private String getOpString() {
+        return switch (mOp) {
+            case OP_NONE -> "NONE";
+            case OP_ADD -> "ADD";
+            case OP_UPDATE -> "UPDATE";
+            case OP_REMOVE -> "REMOVE";
+            case OP_UNAVAILABLE -> "UNAVAILABLE";
+            case OP_SUSPEND -> "SUSPEND";
+            case OP_UNSUSPEND -> "UNSUSPEND";
+            case OP_USER_AVAILABILITY_CHANGE -> "USER_AVAILABILITY_CHANGE";
+            default -> "UNKNOWN";
+        };
     }
 }

@@ -26,6 +26,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.UserHandle;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
@@ -104,6 +105,8 @@ public class WidgetManagerHelper {
             // If exception is thrown because of device is locked, it means a race condition occurs
             // that the user got locked again while launcher is processing the event. In this case
             // we should return empty list.
+            Log.e(TAG, "getAllProviders: Error getting installed providers for"
+                    + " package=" + packageUser.mPackageName, e);
             return Collections.emptyList();
         }
     }
@@ -133,6 +136,8 @@ public class WidgetManagerHelper {
                 return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
             }
         }
+        Log.w(TAG, "findProvider: No App Widget Provider found for component=" + provider
+                + " user=" + user);
         return null;
     }
 

@@ -78,7 +78,7 @@ import java.util.function.IntPredicate;
  * create a cohesive animation between stashed/unstashed states.
  */
 public class TaskbarStashController implements TaskbarControllers.LoggableTaskbarController {
-    private static final String TAG = TaskbarStashController.class.getSimpleName();
+    private static final String TAG = "TaskbarStashController";
     private static final boolean DEBUG = false;
 
     public static final int FLAG_IN_APP = 1 << 0;

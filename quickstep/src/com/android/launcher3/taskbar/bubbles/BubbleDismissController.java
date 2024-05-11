@@ -40,7 +40,7 @@ import com.android.wm.shell.common.magnetictarget.MagnetizedObject;
  * @see BubbleDragController
  */
 public class BubbleDismissController {
-    private static final String TAG = BubbleDismissController.class.getSimpleName();
+    private static final String TAG = "BubbleDismissController";
     private static final float FLING_TO_DISMISS_MIN_VELOCITY = 6000f;
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mDragLayer;

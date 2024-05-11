@@ -135,7 +135,7 @@ data class HotseatSpec(
         hotseatQsbSpace.fixedSize + edgePadding.fixedSize <= maxAvailableSize
 
     private fun logError(message: String) {
-        Log.e(LOG_TAG, "${this::class.simpleName}#isValid - $message - $this")
+        Log.e(LOG_TAG, "$LOG_TAG #isValid - $message - $this")
     }
 
     companion object {

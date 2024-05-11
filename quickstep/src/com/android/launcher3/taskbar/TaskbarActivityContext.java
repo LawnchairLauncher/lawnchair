@@ -260,9 +260,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     new BubbleDragController(this),
                     new BubbleDismissController(this, mDragLayer),
                     new BubbleBarPinController(this, mDragLayer,
-                            () -> getDeviceProfile().getDisplayInfo().currentSize),
+                            () -> DisplayController.INSTANCE.get(this).getInfo().currentSize),
                     new BubblePinController(this, mDragLayer,
-                            () -> getDeviceProfile().getDisplayInfo().currentSize)
+                            () -> DisplayController.INSTANCE.get(this).getInfo().currentSize)
             ));
         }
 

@@ -435,7 +435,8 @@ public class LoaderTask implements Runnable {
             mShortcutKeyToPinnedShortcuts = new HashMap<>();
             final LoaderCursor c = new LoaderCursor(
                     dbController.query(TABLE_NAME, null, selection, null, null),
-                    mApp, mUserManagerState, mIsRestoreFromBackup ? restoreEventLogger : null);
+                    mApp, mUserManagerState, mPmHelper,
+                    mIsRestoreFromBackup ? restoreEventLogger : null);
             final Bundle extras = c.getExtras();
             mDbName = extras == null ? null : extras.getString(ModelDbController.EXTRA_DB_NAME);
             try {
@@ -697,7 +698,7 @@ public class LoaderTask implements Runnable {
             for (int i = 0; i < apps.size(); i++) {
                 LauncherActivityInfo app = apps.get(i);
                 AppInfo appInfo = new AppInfo(app, mUserCache.getUserInfo(user),
-                        ApiWrapper.INSTANCE.get(mApp.getContext()), quietMode);
+                        ApiWrapper.INSTANCE.get(mApp.getContext()), mPmHelper, quietMode);
                 if (Flags.enableSupportForArchiving() && app.getApplicationInfo().isArchived) {
                     // For archived apps, include progress info in case there is a pending
                     // install session post restart of device.

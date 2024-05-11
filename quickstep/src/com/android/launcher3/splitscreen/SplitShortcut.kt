@@ -45,7 +45,7 @@ abstract class SplitShortcut<T>(
 ) : SystemShortcut<T>(iconResId, labelResId, target, itemInfo, originalView) where
 T : Context?,
 T : ActivityContext? {
-    private val TAG = SystemShortcut::class.java.simpleName
+    private val TAG = "SplitShortcut"
 
     // Initiate splitscreen from the Home screen or Home All Apps
     protected val splitSelectSource: SplitSelectSource?

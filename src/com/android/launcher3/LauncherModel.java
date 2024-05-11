@@ -98,6 +98,8 @@ public class LauncherModel implements InstallSessionTracker.Callback {
     @NonNull
     private final LauncherAppState mApp;
     @NonNull
+    private final PackageManagerHelper mPmHelper;
+    @NonNull
     private final ModelDbController mModelDbController;
     @NonNull
     private final Object mLock = new Object();
@@ -152,12 +154,13 @@ public class LauncherModel implements InstallSessionTracker.Callback {
 
     LauncherModel(@NonNull final Context context, @NonNull final LauncherAppState app,
             @NonNull final IconCache iconCache, @NonNull final AppFilter appFilter,
-            final boolean isPrimaryInstance) {
+            @NonNull final PackageManagerHelper pmHelper, final boolean isPrimaryInstance) {
         mApp = app;
+        mPmHelper = pmHelper;
         mModelDbController = new ModelDbController(context);
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
-        mModelDelegate = ModelDelegate.newInstance(context, app, mBgAllAppsList, mBgDataModel,
-                isPrimaryInstance);
+        mModelDelegate = ModelDelegate.newInstance(context, app, mPmHelper, mBgAllAppsList,
+                mBgDataModel, isPrimaryInstance);
     }
 
     @NonNull

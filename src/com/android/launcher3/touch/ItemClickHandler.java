@@ -84,7 +84,8 @@ import java.util.function.Consumer;
  */
 public class ItemClickHandler {
 
-    private static final String TAG = ItemClickHandler.class.getSimpleName();
+    private static final String TAG = "ItemClickHandler";
+    private static final boolean DEBUG = true;
 
     /**
      * Instance used for click handling on items
@@ -110,7 +111,19 @@ public class ItemClickHandler {
             startAppShortcutOrInfoActivity(v, (AppInfo) tag, launcher);
         } else if (tag instanceof LauncherAppWidgetInfo) {
             if (v instanceof PendingAppWidgetHostView) {
+                if (DEBUG) {
+                    String targetPackage = ((LauncherAppWidgetInfo) tag).getTargetPackage();
+                    Log.d(TAG, "onClick: PendingAppWidgetHostView clicked for"
+                            + " package=" + targetPackage);
+                }
                 onClickPendingWidget((PendingAppWidgetHostView) v, launcher);
+            } else {
+                if (DEBUG) {
+                    String targetPackage = ((LauncherAppWidgetInfo) tag).getTargetPackage();
+                    Log.d(TAG, "onClick: LauncherAppWidgetInfo clicked,"
+                            + " but not instance of PendingAppWidgetHostView. Returning."
+                            + " package=" + targetPackage);
+                }
             }
         } else if (tag instanceof ItemClickProxy) {
             ((ItemClickProxy) tag).onItemClicked(v);
@@ -120,6 +133,10 @@ public class ItemClickHandler {
                     launcher.getString(R.string.long_accessible_way_to_add_shortcut));
             Snackbar.show(launcher, msg, null);
         } else if (tag instanceof PendingAddWidgetInfo) {
+            if (DEBUG) {
+                String targetPackage = ((PendingAddWidgetInfo) tag).getTargetPackage();
+                Log.d(TAG, "onClick: PendingAddWidgetInfo clicked for package=" + targetPackage);
+            }
             CharSequence msg = Utilities.wrapForTts(
                     launcher.getText(R.string.long_press_widget_to_add),
                     launcher.getString(R.string.long_accessible_way_to_add));
@@ -199,6 +216,9 @@ public class ItemClickHandler {
             LauncherAppWidgetProviderInfo appWidgetInfo = new WidgetManagerHelper(launcher)
                     .findProvider(info.providerName, info.user);
             if (appWidgetInfo == null) {
+                Log.e(TAG, "onClickPendingWidget: Pending widget ready for click setup,"
+                        + " but LauncherAppWidgetProviderInfo was null. Returning."
+                        + " component=" + info.getTargetComponent());
                 return;
             }
             WidgetAddFlowHandler addFlowHandler = new WidgetAddFlowHandler(appWidgetInfo);
@@ -206,6 +226,10 @@ public class ItemClickHandler {
             if (info.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
                 if (!info.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_ALLOCATED)) {
                     // This should not happen, as we make sure that an Id is allocated during bind.
+                    Log.e(TAG, "onClickPendingWidget: Pending widget ready for click setup,"
+                            + " and LauncherAppWidgetProviderInfo was found. However,"
+                            + " no appWidgetId was allocated. Returning."
+                            + " component=" + info.getTargetComponent());
                     return;
                 }
                 addFlowHandler.startBindFlow(launcher, info.appWidgetId, info,

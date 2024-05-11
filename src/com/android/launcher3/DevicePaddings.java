@@ -47,7 +47,7 @@ public class DevicePaddings {
     private static final String WORKSPACE_BOTTOM_PADDING = "workspaceBottomPadding";
     private static final String HOTSEAT_BOTTOM_PADDING = "hotseatBottomPadding";
 
-    private static final String TAG = DevicePaddings.class.getSimpleName();
+    private static final String TAG = "DevicePaddings";
     private static final boolean DEBUG = false;
 
     ArrayList<DevicePadding> mDevicePaddings = new ArrayList<>();

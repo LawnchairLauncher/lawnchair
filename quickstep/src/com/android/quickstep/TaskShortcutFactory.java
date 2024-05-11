@@ -335,24 +335,15 @@ public interface TaskShortcutFactory {
                     recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
             boolean shouldShowActionsButtonInstead =
                     isLargeTileFocusedTask && isInExpectedScrollPosition;
-            boolean hasUnpinnableApp = taskView.getTaskContainers().stream()
-                    .anyMatch(att -> att != null && att.getItemInfo() != null
-                            && ((att.getItemInfo().runtimeStatusFlags
-                                & ItemInfoWithIcon.FLAG_NOT_PINNABLE) != 0));
 
             // No "save app pair" menu item if:
-            // - app pairs feature is not enabled
             // - we are in 3p launcher
-            // - the task in question is a single task
-            // - at least one app in app pair is unpinnable
             // - the Overview Actions Button should be visible
-            // - the task is not a GroupedTaskView
-            if (!FeatureFlags.enableAppPairs()
-                    || !recentsView.supportsAppPairs()
-                    || !taskView.containsMultipleTasks()
-                    || hasUnpinnableApp
+            // - the task view is not a valid save-able split pair
+            if (!recentsView.supportsAppPairs()
                     || shouldShowActionsButtonInstead
-                    || !(taskView instanceof GroupedTaskView)) {
+                    || !recentsView.getSplitSelectController().getAppPairsController()
+                            .canSaveAppPair(taskView)) {
                 return null;
             }
 

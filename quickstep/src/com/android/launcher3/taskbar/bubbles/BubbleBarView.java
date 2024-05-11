@@ -76,7 +76,7 @@ import java.util.function.Consumer;
  */
 public class BubbleBarView extends FrameLayout {
 
-    private static final String TAG = BubbleBarView.class.getSimpleName();
+    private static final String TAG = "BubbleBarView";
 
     // TODO: (b/273594744) calculate the amount of space we have and base the max on that
     //  if it's smaller than 5.

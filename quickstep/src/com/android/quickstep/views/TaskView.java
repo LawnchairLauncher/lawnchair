@@ -136,7 +136,7 @@ import java.util.stream.Stream;
  */
 public class TaskView extends FrameLayout implements Reusable {
 
-    private static final String TAG = TaskView.class.getSimpleName();
+    private static final String TAG = "TaskView";
     public static final int FLAG_UPDATE_ICON = 1;
     public static final int FLAG_UPDATE_THUMBNAIL = FLAG_UPDATE_ICON << 1;
     public static final int FLAG_UPDATE_CORNER_RADIUS = FLAG_UPDATE_THUMBNAIL << 1;

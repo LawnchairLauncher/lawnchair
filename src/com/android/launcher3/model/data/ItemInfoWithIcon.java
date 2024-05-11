@@ -127,6 +127,11 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final int FLAG_NOT_RESIZEABLE = 1 << 15;
 
     /**
+     * Flag indicating whether the package related to the item & user supports multiple instances.
+     */
+    public static final int FLAG_SUPPORTS_MULTI_INSTANCE = 1 << 16;
+
+    /**
      * Status associated with the system state of the underlying item. This is calculated every
      * time a new info is created and not persisted on the disk.
      */
@@ -252,6 +257,24 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     }
 
     /**
+     * Sets whether this app info supports multi-instance.
+     */
+    protected void setSupportsMultiInstance(boolean supportsMultiInstance) {
+        if (supportsMultiInstance) {
+            runtimeStatusFlags |= FLAG_SUPPORTS_MULTI_INSTANCE;
+        } else {
+            runtimeStatusFlags &= ~FLAG_SUPPORTS_MULTI_INSTANCE;
+        }
+    }
+
+    /**
+     * Returns whether this app info supports multi-instance.
+     */
+    public boolean supportsMultiInstance() {
+        return (runtimeStatusFlags & FLAG_SUPPORTS_MULTI_INSTANCE) != 0;
+    }
+
+    /**
      * Sets whether this app info is non-resizeable.
      */
     public void setNonResizeable(boolean nonResizeable) {
@@ -300,5 +323,12 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
         FastBitmapDrawable drawable = bitmap.newIcon(context, creationFlags);
         drawable.setIsDisabled(isDisabled());
         return drawable;
+    }
+
+    @Override
+    protected String dumpProperties() {
+        return super.dumpProperties()
+                + " supportsMultiInstance=" + supportsMultiInstance()
+                + " nonResizeable=" + isNonResizeable();
     }
 }

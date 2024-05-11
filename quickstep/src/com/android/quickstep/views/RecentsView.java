@@ -4021,7 +4021,9 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      * * Device is large screen
      */
     private void updateCurrentTaskActionsVisibility() {
-        boolean isCurrentSplit = getCurrentPageTaskView() instanceof GroupedTaskView;
+        TaskView taskView = getCurrentPageTaskView();
+        boolean isCurrentSplit = taskView instanceof GroupedTaskView;
+        GroupedTaskView groupedTaskView = isCurrentSplit ? (GroupedTaskView) taskView : null;
         // Update flags to see if entire actions bar should be hidden.
         if (!FeatureFlags.enableAppPairs()) {
             mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SCREEN, isCurrentSplit);
@@ -4029,9 +4031,11 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SELECT_ACTIVE, isSplitSelectionActive());
         // Update flags to see if actions bar should show buttons for a single task or a pair of
         // tasks.
-        mActionsView.updateForGroupedTask(isCurrentSplit);
+        boolean canSaveAppPair = isCurrentSplit && supportsAppPairs() &&
+                getSplitSelectController().getAppPairsController().canSaveAppPair(groupedTaskView);
+        mActionsView.updateForGroupedTask(isCurrentSplit, canSaveAppPair);
 
-        boolean isCurrentDesktop = getCurrentPageTaskView() instanceof DesktopTaskView;
+        boolean isCurrentDesktop = taskView instanceof DesktopTaskView;
         mActionsView.updateHiddenFlags(HIDDEN_DESKTOP, isCurrentDesktop);
     }
 
