@@ -193,7 +193,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Zasebno, zaklenjeno."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Zaklepanje"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Preklapljanje zasebnega prostora"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"Nameščanje aplikacij"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Nameščanje aplikacij v zasebni prostor"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Oblaček z dodatnimi elementi"</string>
 </resources>

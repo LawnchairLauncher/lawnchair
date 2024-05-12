@@ -193,7 +193,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ব্যক্তিগত, লক করা আছে।"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"লক"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ব্যক্তিগত স্পেস ট্রানজিট করা"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"অ্যাপ ইনস্টল করুন"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"প্রাইভেট স্পেসে অ্যাপ ইনস্টল করুন"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ওভারফ্লো"</string>
 </resources>
