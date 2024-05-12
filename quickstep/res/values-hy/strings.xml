@@ -118,7 +118,7 @@
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Ամրացրեք հավելվածների վահանակը"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Հավելվածների վահանակն էկրանի ներքևում ամրացնելու համար հպեք և պահեք բաժանիչը"</string>
     <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Սեղմած պահեք գործողության ստեղնը՝ էկրանին բովանդակություն որոնելու համար"</string>
-    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Այս պրոդուկտն օգտագործում է էկրանի ընտրված հատվածը որոնման համար։ Կիրառվում են Google-ի <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>գաղտնիության քաղաքականությունը<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> և <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>օգտագործման պայմանները<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g>։"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Այս պրոդուկտն օգտագործում է էկրանի ընտրված հատվածը որոնման համար։ Կիրառվում են Google-ի <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Գաղտնիության քաղաքականությունը<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> և <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Օգտագործման պայմանները<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g>։"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Փակել"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Պատրաստ է"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Սկիզբ"</string>
