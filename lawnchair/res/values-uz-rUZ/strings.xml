@@ -20,7 +20,7 @@
     <string name="set_default_launcher_tip">Yorliqlar va boshqalarga kirish uchun Lawnchair-ni birlamchi ishga tushirgich sifatida sozlang.</string>
     <string name="settings">Sozlamalar</string>
     <string name="general_label">Umumiy</string>
-    <string name="general_description">Bildirishnoma nuqtalari, ikonlar to‘plami</string>
+    <string name="general_description">Bildirishnoma nuqtalari, iconlar to‘plami</string>
     <string name="home_screen_label">Asosiy ekran</string>
     <string name="home_screen_description">Feed, Grid, Icons</string>
     <string name="what_to_show">What to Show</string>
@@ -32,19 +32,19 @@
     <string name="drawer_search_description">Web Suggestions, Global Search</string>
     <string name="folders_label">Jildlar</string>
     <string name="folders_description">Qator va ustunlar soni</string>
-    <string name="gestures_label">Gestures</string>
+    <string name="gestures_label">Ishoralar</string>
     <string name="gestures_description">Taps and Swipes</string>
     <string name="quickstep_label">Oxirgilar</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="about_label">Haqida</string>
     <string name="app_info_drop_target_label">Ilova ma’lumoti</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">Lawnchair qayta ishga tush</string>
     <string name="experimental_features_label">Experimental Features</string>
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Shriftni moslashtirish</string>
     <string name="font_picker_description">Some text remains unchanged</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="smartspace_calendar_label">At a Glance Kalendarni moslashtirish</string>
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
     <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
     <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
@@ -53,7 +53,7 @@
     <string name="recents_lock_unlock">Lock/Unlock</string>
     <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
     <!-- Relating to label/icon size -->
-    <string name="icons">Belgilar</string>
+    <string name="icons">Iconlar</string>
     <string name="icon_size">Belgi hajmi</string>
     <string name="show_home_labels">Show Labels</string>
     <string name="label_size">Yorliq hajmi</string>
@@ -71,7 +71,7 @@
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
     <string name="icon_shape_label">Icon Shape</string>
     <string name="auto_adaptive_icons_label">Avtomatik moslashuvchan belgilar</string>
-    <string name="auto_adaptive_icons_description">Barcha mos kelmaydigan belgilar uchun.</string>
+    <string name="auto_adaptive_icons_description">Barcha mos kelmaydigan Iconlar uchun.</string>
     <string name="background_lightness_label">Fon yorug‘ligi</string>
     <string name="adaptive_icon_background_description">Oq rang uchun 100% fon yorug‘ligini ishlating.</string>
     <string name="reset_custom_icons">Reset Custom Icons</string>
@@ -80,23 +80,23 @@
     <string name="show_notification_count">Show Notification Count</string>
     <string name="notification_dots_color">Notification Dot Color</string>
     <string name="notification_dots_text_color">Notification Count Color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">Ogohlantirish: Bildirishnoma nuqtasi &amp; Qarama-qarshi ranglar bir-biri bilan etarlicha kontrastga ega emas</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Ogohlantirish: Bildirishnoma nuqtasi &amp; Qarama-qarshi ranglar har doim ham bir-biri bilan etarlicha kontrastga ega bo\'lmasligi mumkin</string>
     <!-- Notification popup -->
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed</string>
+    <string name="missing_notification_access_label">Bildirishnomaga Ruxsat Berish</string>
+    <string name="missing_notification_access_description">Bidirishnomaga ruxrat berish</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Change Settings</string>
     <string name="colors">Colors</string>
     <string name="theme_label">Mavzu</string>
-    <string name="theme_light">Yorug‘lik</string>
+    <string name="theme_light">Yorug‘</string>
     <string name="theme_dark">Qorong‘i</string>
     <string name="theme_system_default">System</string>
     <string name="theme_follow_wallpaper">Mos fon rasmi</string>
     <string name="accent_color">Accent Color</string>
     <!-- CustomIconShapePreference -->
     <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
+    <string name="custom_icon_shape_create">Maxsus Iconlar shaklini yaratish</string>
     <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
     <string name="icon_shape_corner">Corner Shape</string>
     <string name="icon_shape_corner_round">Round</string>
@@ -108,13 +108,13 @@
     <string name="icon_shape_bottom_right">Bottom Right</string>
     <string name="create">Create</string>
     <string name="clipboard">Clipboard</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
+    <string name="export_to_clipboard">Buferga eksport qilish</string>
     <string name="import_from_clipboard">Import from Clipboard</string>
     <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
     <!-- IconPackPreferences -->
-    <string name="icon_pack">Belgilar to‘plami</string>
+    <string name="icon_pack">Iconlar to‘plami</string>
     <string name="themed_icon_pack">Themed Icon Source</string>
-    <string name="system_icons">Tizim belgilari</string>
+    <string name="system_icons">Tizim Iconlari</string>
     <string name="themed_icon_title">Themed Icons</string>
     <string name="themed_icons_off_label">Off</string>
     <string name="themed_icons_home_label">Asosiy ekran</string>
@@ -136,7 +136,7 @@
     <string name="icon_shape_teardrop">Teardrop</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Add Fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF shriftlari qo\'llaniladi</string>
     <string name="pref_fonts_missing_font">Font not found</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
@@ -178,8 +178,8 @@
     <string name="feed_default">Default</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper Depth Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher</string>
+    <string name="wallpaper_depth_effect_label">Fon rasmi chuqurlik effekti</string>
+    <string name="wallpaper_depth_effect_description">Launcherning hududlari o\'rtasiga o\'tishda fon rasmini kattalashtirish va kichiklashtirish</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
     <string name="layout">Layout</string>
     <string name="home_screen_grid">Home Screen Grid</string>
@@ -187,16 +187,16 @@
     <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
     <string name="home_screen_unlock">Unlock Home Screen</string>
     <string name="home_screen_locked">Home Screen is locked</string>
-    <string name="show_dot_pagination_label">Use Dot Pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
+    <string name="show_dot_pagination_label">Sahifa nuqtasidan foydalanish</string>
+    <string name="show_dot_pagination_description">Sahifa raqamini ko\'rsatish uchun chiziqlar o\'rniga nuqtalardan foydalanish</string>
     <string name="show_material_u_popup_label">Use New Popup Style</string>
     <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
     <string name="popup_menu">Pop-up Menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
     <string name="show_system_settings_entry">Show System Settings Entry</string>
     <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
-    <string name="status_bar_label">Status Bar</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="status_bar_label">Bar holati</string>
+    <string name="show_status_bar">Bar holatini ko\'rsatish</string>
     <string name="dark_status_bar_label">Dark Status Bar</string>
     <string name="home_screen_text_color">Text Color</string>
     <string name="color_light">Yorug‘lik</string>
@@ -204,7 +204,7 @@
     <string name="force_rounded_widgets">Rounded Corners</string>
     <string name="allow_widget_overlap">Allow Overlap</string>
     <string name="force_widget_resize_label">Enforce Widget Resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
+    <string name="force_widget_resize_description">Muayyan o\'lcham bilan cheklangan vidjetlar hajmini o\'zgartirishga ruxsat berish</string>
     <string name="widget_unlimited_size_label">Remove Size Constraints</string>
     <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
     <!-- HomeScreenGridPreferences -->
@@ -218,7 +218,7 @@
     <string name="smartspace_battery_low">Battery Low</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
     <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
-    <string name="smartspace_widget">Bir qarashda</string>
+    <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_description">What to Show</string>
     <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
     <string name="preview_label">Preview</string>
@@ -234,14 +234,14 @@
     <string name="smartspace_battery_status">Battery Status</string>
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_requires_setup">Tap to Set Up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">Foydalanish uchun <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, Bildirishnoma nuqtalarini yoqing.</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persian</string>
     <string name="smartspace_preferences">Afzalliklar</string>
     <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
-    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_widget_toggle_description">At a Glance “Lawnchair” vidjetini joylashtirish orqali bosh ekranga qo‘lda qo‘shilishi mumkin</string>
+    <string name="smartspace_mode_label">At a Glance provayderi</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- DockPreferences -->
@@ -255,7 +255,7 @@
     <string name="apply_accent_color_label">Apply Accent Color</string>
     <string name="search_provider">Search Provider</string>
     <string name="grid">Panjara</string>
-    <string name="dock_icons">Dok belgilari</string>
+    <string name="dock_icons">Dok Iconlarni</string>
     <string name="hotseat_bottom_space_label">Bottom Padding</string>
     <!-- SearchProviderPreferences -->
     <string name="search_provider_app_search">App Search</string>
@@ -406,7 +406,7 @@
     <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
     <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
     <string name="all_apps_search_market_message">Search for More Apps</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_startpage_message">Boʻyicha qidirish <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
@@ -414,7 +414,7 @@
     <!-- Backup -->
     <string name="create_backup">Create Backup</string>
     <string name="create_backup_action">Create</string>
-    <string name="what_to_backup">What to Back Up</string>
+    <string name="what_to_backup">Nimani zaxiralash kerak</string>
     <string name="backup_content_layout_and_settings">Layout and Settings</string>
     <string name="backup_content_wallpaper">Wallpaper</string>
     <string name="backup_create_success">Backup created.</string>
@@ -430,15 +430,15 @@
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">System Settings</string>
     <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="allapps_twoline_label">Use Multiple Lines</string>
-    <string name="hidden_apps_show_always">Always</string>
-    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
-    <string name="hidden_apps_show_never">Never</string>
-    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
-    <string name="search_algorithm_app_search">App Search</string>
-    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
-    <string name="app_search_algorithm">Search Algorithm</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="action_lock">Qulflash</string>
+    <string name="allapps_twoline_label">Bir nechta qatorlardan foydalanish</string>
+    <string name="hidden_apps_show_always">Har doim</string>
+    <string name="hidden_apps_show_name_typed">To\'liq ism yozilsa</string>
+    <string name="hidden_apps_show_never">Hech qachon</string>
+    <string name="show_hidden_apps_in_search_results">Qidiruv natijalarida yashirin ilovalarni ko\'rsatish</string>
+    <string name="search_algorithm_app_search">Ilova qidirish</string>
+    <string name="search_algorithm_global_search_on_device">Global qidiruv (qurilmada)</string>
+    <string name="search_algorithm_global_search_via_asi">Global qidiruv (ASI orqali)</string>
+    <string name="app_search_algorithm">Qidiruv algoritmi</string>
+    <string name="all_apps_search_result_calculator">Kalkulyator</string>
 </resources>

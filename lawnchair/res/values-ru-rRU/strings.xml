@@ -64,8 +64,8 @@
     <string name="fontWorkspace">Общие</string>
     <string name="fontHeading">Заголовки</string>
     <string name="fontHeadingMedium">Заголовки (средние)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (Medium)</string>
+    <string name="fontBody">Обычный</string>
+    <string name="fontBodyMedium">Обычный (Средний)</string>
     <string name="icon_style">Стиль значка</string>
     <string name="transparent_background_icons">Прозрачные тематические иконки</string>
     <string name="transparent_background_icons_description">Использовать прозрачный фон на тематических значках</string>
@@ -189,7 +189,7 @@
     <string name="home_screen_locked">Домашний экран заблокирован</string>
     <string name="show_dot_pagination_label">Использовать точечную нумерацию страниц</string>
     <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use New Popup Style</string>
+    <string name="show_material_u_popup_label">Использовать новый стиль всплывающего окна</string>
     <string name="show_material_u_popup_description">Использовать современный стиль всплывающих окон Material You</string>
     <string name="popup_menu">Всплывающее меню</string>
     <string name="home_screen_lock_toggle_from_home_popup">Показать кнопку блокировки</string>
@@ -240,7 +240,7 @@
     <string name="smartspace_calendar_persian">Персидский</string>
     <string name="smartspace_preferences">Настройки</string>
     <string name="smartspace_widget_toggle_label">Показать на домашнем экране</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
+    <string name="smartspace_widget_toggle_description">Виджет At a Glance можно добавить, поместив виджет \"Lawnchair\".</string>
     <string name="smartspace_mode_label">Провайдер \"At a Glance\"</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Поиск Google</string>
@@ -262,23 +262,23 @@
     <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair имеет соглашение о разделе доходов.\n\nПоиск с помощью %1$s помогает поддерживать Lawnchair.</string>
     <string name="app_label">Приложение</string>
     <string name="website_label">Веб-сайт</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="qsb_search_provider_app_required">Требуется приложение</string>
     <!-- AppDrawerPrefences -->
     <string name="background_opacity">Прозрачность фона</string>
     <string name="hidden_apps_label">Скрытые приложения</string>
     <string name="show_enable_smart_hide">Показать, когда название введено полностью</string>
     <string name="hide_hidden_apps_search">Скрывать в результатах поиска</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Массовая загрузка приложений</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Загружать и отображать все иконки за один раз вместо загрузки и отображения каждой иконки по отдельности. Может исправить ошибки с поиском, но увеличивает время загрузки.</string>
     <string name="pref_all_apps_remember_position_title">Помнить позицию</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
+    <string name="pref_all_apps_remember_position_description">Запомнить позицию поля поиска приложений после закрытия поиска</string>
     <string name="pref_all_apps_show_scrollbar_title">Отображать полосу прокрутки</string>
     <string name="pref_category_search">Поиск</string>
     <string name="show_app_search_bar">Показать строку поиска</string>
     <string name="pref_search_auto_show_keyboard">Автоматически выдвигать клавиатуру</string>
     <string name="fuzzy_search_title">Поиск по сходству</string>
     <string name="fuzzy_search_desc">Поиск приложений по похожему запросу.</string>
-    <string name="clear_history">Clear Search History</string>
+    <string name="clear_history">Очистить историю поиска</string>
     <string name="app_drawer_columns">Количество столбцов в меню приложений</string>
     <string name="row_height_label">Высота строки</string>
     <string name="app_drawer_indent_label">Горизонтальный отступ</string>
@@ -434,13 +434,13 @@
     <string name="action_unlock">Разблокировать</string>
     <string name="action_lock">Заблокировать</string>
     <string name="allapps_twoline_label">Bir nechta qatordan foydalanish</string>
-    <string name="hidden_apps_show_always">Always</string>
+    <string name="hidden_apps_show_always">Всегда</string>
     <string name="hidden_apps_show_name_typed">Agar to\'liq ism yozilsa</string>
-    <string name="hidden_apps_show_never">Never</string>
-    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="hidden_apps_show_never">Никогда</string>
+    <string name="show_hidden_apps_in_search_results">Показывать скрытые приложения в результатах поиска</string>
     <string name="search_algorithm_app_search">Поиск приложений</string>
     <string name="search_algorithm_global_search_on_device">Global qidiruv (qurilmada)</string>
-    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
-    <string name="app_search_algorithm">Search Algorithm</string>
+    <string name="search_algorithm_global_search_via_asi">Глобальный поиск (с помощью ASI)</string>
+    <string name="app_search_algorithm">Алгоритм поиска</string>
     <string name="all_apps_search_result_calculator">Kalkulyator</string>
 </resources>
