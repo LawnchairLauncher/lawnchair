@@ -28,6 +28,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -51,6 +53,9 @@ import com.android.systemui.shared.system.InputMonitorCompat;
  * Listens for touch (swipe) and hover events to unstash the Taskbar.
  */
 public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
+
+    private static final int HOVER_TASKBAR_UNSTASH_TIMEOUT = 500;
+    private static final Handler sUnstashHandler = new Handler(Looper.getMainLooper());
 
     private final TaskbarActivityContext mTaskbarActivityContext;
     private final OverviewCommandHelper mOverviewCommandHelper;
@@ -308,16 +313,25 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                 dp.heightPx);
 
         if (mBottomEdgeBounds.contains(x, y)) {
-            // If hovering stashed taskbar and then hover screen bottom edge, unstash it.
-            mTaskbarActivityContext.onSwipeToUnstashTaskbar();
-            mIsStashedTaskbarHovered = false;
+            // start a single unstash timeout if hovering bottom edge under the hinted taskbar.
+            if (!sUnstashHandler.hasMessagesOrCallbacks()) {
+                sUnstashHandler.postDelayed(() -> {
+                    mTaskbarActivityContext.onSwipeToUnstashTaskbar();
+                    mIsStashedTaskbarHovered = false;
+                }, HOVER_TASKBAR_UNSTASH_TIMEOUT);
+            }
         } else if (!isStashedTaskbarHovered(x, y)) {
-            // If exit hovering stashed taskbar, remove hint.
+            // If exit hovering stashed taskbar, remove hint and clear pending unstash calls.
+            sUnstashHandler.removeCallbacksAndMessages(null);
             startStashedTaskbarHover(/* isHovered = */ false);
+        } else {
+            sUnstashHandler.removeCallbacksAndMessages(null);
         }
     }
 
     private void updateUnhoveredTaskbarState(int x, int y) {
+        sUnstashHandler.removeCallbacksAndMessages(null);
+
         DeviceProfile dp = mTaskbarActivityContext.getDeviceProfile();
         mBottomEdgeBounds.set(
                 0,
