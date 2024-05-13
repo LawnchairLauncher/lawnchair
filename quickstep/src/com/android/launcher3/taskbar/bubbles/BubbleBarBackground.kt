@@ -123,22 +123,23 @@ class BubbleBarBackground(context: Context, private var backgroundHeight: Float)
         )
         // Create background path
         val backgroundPath = Path()
+        val topOffset = backgroundHeight - bounds.height().toFloat()
         val radius = backgroundHeight / 2f
         val left = bounds.left + (if (anchorLeft) 0f else bounds.width().toFloat() - width)
         val right = bounds.left + (if (anchorLeft) width else bounds.width().toFloat())
-        val top = bounds.top + arrowVisibleHeight
+        val top = bounds.top - topOffset + arrowVisibleHeight
+
         val bottom = bounds.top + bounds.height().toFloat()
         backgroundPath.addRoundRect(left, top, right, bottom, radius, radius, Path.Direction.CW)
-        addArrowPathIfNeeded(backgroundPath)
+        addArrowPathIfNeeded(backgroundPath, topOffset)
 
         // Draw background.
         canvas.drawPath(backgroundPath, fillPaint)
         canvas.drawPath(backgroundPath, strokePaint)
-
         canvas.restore()
     }
 
-    private fun addArrowPathIfNeeded(sourcePath: Path) {
+    private fun addArrowPathIfNeeded(sourcePath: Path, topOffset: Float) {
         if (!showingArrow || arrowHeightFraction <= 0) return
         val arrowPath = Path()
         RoundedArrowDrawable.addDownPointingRoundedTriangleToPath(
@@ -153,7 +154,7 @@ class BubbleBarBackground(context: Context, private var backgroundHeight: Float)
         arrowPath.transform(pathTransform)
         // shift to arrow position
         val arrowStart = bounds.left + arrowPositionX - (arrowWidth / 2f)
-        val arrowTop = (1 - arrowHeightFraction) * arrowVisibleHeight
+        val arrowTop = (1 - arrowHeightFraction) * arrowVisibleHeight - topOffset
         arrowPath.offset(arrowStart, arrowTop)
         // union with rectangle
         sourcePath.op(arrowPath, Path.Op.UNION)
@@ -180,7 +181,7 @@ class BubbleBarBackground(context: Context, private var backgroundHeight: Float)
         fillPaint.colorFilter = colorFilter
     }
 
-    fun setHeight(newHeight: Float) {
+    fun setBackgroundHeight(newHeight: Float) {
         backgroundHeight = newHeight
     }
 
