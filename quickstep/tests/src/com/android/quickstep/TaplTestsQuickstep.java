@@ -181,12 +181,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     public void testOverviewActions() throws Exception {
         assumeFalse("Skipping Overview Actions tests for grid only overview",
                 mLauncher.isTablet() && mLauncher.isGridOnlyOverviewEnabled());
-        // Experimenting for b/165029151:
-        final Overview overview = mLauncher.goHome().switchToOverview();
-        if (overview.hasTasks()) overview.dismissAllTasks();
-        mLauncher.goHome();
-        //
-
         startTestAppsWithCheck();
         OverviewActions actionsView =
                 mLauncher.goHome().switchToOverview().getOverviewActions();
@@ -434,9 +428,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @PortraitLandscape
     @TaskbarModeSwitch()
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/309820115
     @Ignore("b/315376057")
-    @ScreenRecord // b/309820115
     public void testOverviewForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
 

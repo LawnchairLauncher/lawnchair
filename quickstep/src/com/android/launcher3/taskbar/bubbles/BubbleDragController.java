@@ -124,7 +124,7 @@ public class BubbleDragController {
             @Override
             void onDragEnd() {
                 mBubbleBarController.updateBubbleBarLocation(mReleasedLocation);
-                mBubbleBarViewController.onDragEnd();
+                mBubbleBarViewController.onDragBubbleEnded();
                 mBubblePinController.setListener(null);
             }
 
@@ -192,6 +192,7 @@ public class BubbleDragController {
                 bubbleBarView.setIsDragging(false);
                 // Restoring the initial pivot for the bubble bar view
                 bubbleBarView.setRelativePivot(initialRelativePivot.x, initialRelativePivot.y);
+                mBubbleBarViewController.onDragBubbleBarEnded();
                 mBubbleBarPinController.setListener(null);
             }
 

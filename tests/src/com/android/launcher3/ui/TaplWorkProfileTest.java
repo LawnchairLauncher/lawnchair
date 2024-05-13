@@ -76,7 +76,6 @@ public class TaplWorkProfileTest extends AbstractLauncherUiTest<Launcher> {
         String output =
                 mDevice.executeShellCommand(
                         "pm create-user --profileOf 0 --managed TestProfile");
-        // b/203817455
         updateWorkProfileSetupSuccessful("pm create-user", output);
 
         String[] tokens = output.split("\\s+");
