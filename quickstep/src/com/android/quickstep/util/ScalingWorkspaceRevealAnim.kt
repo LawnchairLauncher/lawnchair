@@ -17,11 +17,12 @@
 package com.android.quickstep.util
 
 import android.graphics.Matrix
+import android.graphics.Path
 import android.graphics.RectF
 import android.view.View
+import android.view.animation.PathInterpolator
 import androidx.core.graphics.transform
 import com.android.app.animation.Interpolators
-import com.android.app.animation.Interpolators.EMPHASIZED
 import com.android.app.animation.Interpolators.LINEAR
 import com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY
 import com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WORKSPACE_STATE
@@ -53,6 +54,19 @@ class ScalingWorkspaceRevealAnim(
         private const val MIN_ALPHA = 0f
         private const val MAX_SIZE = 1f
         private const val MIN_SIZE = 0.85f
+
+        /**
+         * Custom interpolator for both the home and wallpaper scaling. Necessary because EMPHASIZED
+         * is too aggressive, but EMPHASIZED_DECELERATE is too soft.
+         */
+        private val SCALE_INTERPOLATOR =
+            PathInterpolator(
+                Path().apply {
+                    moveTo(0f, 0f)
+                    cubicTo(0.045f, 0.0356f, 0.0975f, 0.2055f, 0.15f, 0.3952f)
+                    cubicTo(0.235f, 0.6855f, 0.235f, 1f, 1f, 1f)
+                }
+            )
     }
 
     private val animation = PendingAnimation(SCALE_DURATION_MS)
@@ -78,20 +92,20 @@ class ScalingWorkspaceRevealAnim(
         val hotseat = launcher.hotseat
 
         // Scale the Workspace and Hotseat around the same pivot.
+        workspace.setPivotToScaleWithSelf(hotseat)
         animation.addFloat(
             workspace,
             WORKSPACE_SCALE_PROPERTY_FACTORY[SCALE_INDEX_WORKSPACE_STATE],
             MIN_SIZE,
             MAX_SIZE,
-            EMPHASIZED,
+            SCALE_INTERPOLATOR,
         )
-        workspace.setPivotToScaleWithSelf(hotseat)
         animation.addFloat(
             hotseat,
             HOTSEAT_SCALE_PROPERTY_FACTORY[SCALE_INDEX_WORKSPACE_STATE],
             MIN_SIZE,
             MAX_SIZE,
-            EMPHASIZED,
+            SCALE_INTERPOLATOR,
         )
 
         // Fade in quickly at the beginning of the animation, so the content doesn't look like it's
@@ -114,11 +128,11 @@ class ScalingWorkspaceRevealAnim(
 
         // Match the Wallpaper animation to the rest of the content.
         val depthController = (launcher as? QuickstepLauncher)?.depthController
-        transitionConfig.setInterpolator(StateAnimationConfig.ANIM_DEPTH, EMPHASIZED)
+        transitionConfig.setInterpolator(StateAnimationConfig.ANIM_DEPTH, SCALE_INTERPOLATOR)
         depthController?.setStateWithAnimation(LauncherState.NORMAL, transitionConfig, animation)
 
         // Make sure that the contrast scrim animates correctly if needed.
-        transitionConfig.setInterpolator(StateAnimationConfig.ANIM_SCRIM_FADE, EMPHASIZED)
+        transitionConfig.setInterpolator(StateAnimationConfig.ANIM_SCRIM_FADE, SCALE_INTERPOLATOR)
         launcher.workspace.stateTransitionAnimation.setScrim(
             animation,
             LauncherState.NORMAL,

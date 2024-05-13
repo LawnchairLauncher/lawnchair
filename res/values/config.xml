@@ -102,8 +102,8 @@
     <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
     <item name="swipe_up_rect_scale_higher_stiffness" type="dimen" format="float">400</item>
     <!-- Flag: enableScalingRevealHomeAnimation() -->
-    <item name="swipe_up_rect_scale_damping_ratio_v2" type="dimen" format="float">0.8</item>
-    <item name="swipe_up_rect_scale_stiffness_v2" type="dimen" format="float">650</item>
+    <item name="swipe_up_rect_scale_damping_ratio_v2" type="dimen" format="float">0.99</item>
+    <item name="swipe_up_rect_scale_stiffness_v2" type="dimen" format="float">500</item>
 
     <item name="swipe_up_rect_xy_fling_friction" type="dimen" format="float">1.5</item>
 
@@ -113,9 +113,9 @@
     <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">200</item>
     <!-- Flag: enableScalingRevealHomeAnimation() -->
     <item name="swipe_up_rect_x_damping_ratio" type="dimen" format="float">0.965</item>
-    <item name="swipe_up_rect_x_stiffness" type="dimen" format="float">300</item>
+    <item name="swipe_up_rect_x_stiffness" type="dimen" format="float">450</item>
     <item name="swipe_up_rect_y_damping_ratio" type="dimen" format="float">0.95</item>
-    <item name="swipe_up_rect_y_stiffness" type="dimen" format="float">190</item>
+    <item name="swipe_up_rect_y_stiffness" type="dimen" format="float">400</item>
 
     <!-- Taskbar -->
     <!-- This is a float because it is converted to dp later in DeviceProfile -->
