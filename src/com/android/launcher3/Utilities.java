@@ -645,7 +645,7 @@ public final class Utilities {
         } else {
             // Wrap the main icon in AID
             try (LauncherIcons li = LauncherIcons.obtain(context)) {
-                result = li.wrapToAdaptiveIcon(mainIcon);
+                result = li.wrapToAdaptiveIcon(mainIcon, null);
             }
         }
         if (result == null) {
