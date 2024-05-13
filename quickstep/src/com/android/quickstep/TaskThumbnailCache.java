@@ -148,7 +148,7 @@ public class TaskThumbnailCache {
      * @param callback The callback to receive the task after its data has been populated.
      * @return A cancelable handle to the request
      */
-    public CancellableTask updateThumbnailInBackground(
+    public CancellableTask<ThumbnailData> updateThumbnailInBackground(
             Task task, Consumer<ThumbnailData> callback) {
         Preconditions.assertUIThread();
 
@@ -184,8 +184,8 @@ public class TaskThumbnailCache {
         return newSize > oldSize;
     }
 
-    private CancellableTask updateThumbnailInBackground(TaskKey key, boolean lowResolution,
-            Consumer<ThumbnailData> callback) {
+    private CancellableTask<ThumbnailData> updateThumbnailInBackground(TaskKey key,
+            boolean lowResolution, Consumer<ThumbnailData> callback) {
         Preconditions.assertUIThread();
 
         ThumbnailData cachedThumbnail = mCache.getAndInvalidateIfModified(key);

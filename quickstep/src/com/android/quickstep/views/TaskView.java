@@ -687,6 +687,11 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     public void bind(Task task, RecentsOrientedState orientedState) {
         cancelPendingLoadTasks();
+        setupTaskContainers(task);
+        setOrientationState(orientedState);
+    }
+
+    protected void setupTaskContainers(Task task) {
         mTaskContainers = Collections.singletonList(
                 new TaskContainer(task, mTaskThumbnailViewDeprecated, mIconView,
                         STAGE_POSITION_UNDEFINED, mDigitalWellBeingToast));
@@ -695,7 +700,6 @@ public class TaskView extends FrameLayout implements Reusable {
         } else {
             mTaskThumbnailViewDeprecated.bind(task);
         }
-        setOrientationState(orientedState);
     }
 
     private void bindTaskThumbnailView() {
