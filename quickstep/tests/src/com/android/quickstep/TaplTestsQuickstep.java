@@ -434,9 +434,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @PortraitLandscape
     @TaskbarModeSwitch()
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/309820115
     @Ignore("b/315376057")
-    @ScreenRecord // b/309820115
     public void testOverviewForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
 
