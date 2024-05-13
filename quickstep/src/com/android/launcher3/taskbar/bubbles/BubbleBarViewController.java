@@ -93,8 +93,6 @@ public class BubbleBarViewController {
     @Nullable
     private BubbleBarBoundsChangeListener mBoundsChangeListener;
 
-    private final Rect mPreviousBubbleBarBounds = new Rect();
-
     public BubbleBarViewController(TaskbarActivityContext activity, BubbleBarView barView) {
         mActivity = activity;
         mBarView = barView;
@@ -122,12 +120,8 @@ public class BubbleBarViewController {
         mBarView.addOnLayoutChangeListener(
                 (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
                     mTaskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
-                    Rect bubbleBarBounds = mBarView.getBubbleBarBounds();
-                    if (!bubbleBarBounds.equals(mPreviousBubbleBarBounds)) {
-                        mPreviousBubbleBarBounds.set(bubbleBarBounds);
-                        if (mBoundsChangeListener != null) {
-                            mBoundsChangeListener.onBoundsChanged(bubbleBarBounds);
-                        }
+                    if (mBoundsChangeListener != null) {
+                        mBoundsChangeListener.onBoundsChanged();
                     }
                 });
 
@@ -497,7 +491,7 @@ public class BubbleBarViewController {
      * that a bubble is being dragged to dismiss.
      * @param bubbleView dragged bubble view
      */
-    public void onDragStart(@NonNull BubbleView bubbleView) {
+    public void onBubbleDragStart(@NonNull BubbleView bubbleView) {
         if (bubbleView.getBubble() == null) return;
 
         mSystemUiProxy.startBubbleDrag(bubbleView.getBubble().getKey());
@@ -507,20 +501,19 @@ public class BubbleBarViewController {
     /**
      * Notifies SystemUI to expand the selected bubble when the bubble is released.
      */
-    public void onDragRelease(BubbleBarLocation location) {
-        // TODO(b/330585402): send new bubble bar bounds to shell for the animation
-        mSystemUiProxy.stopBubbleDrag(location);
+    public void onBubbleDragRelease(BubbleBarLocation location) {
+        mSystemUiProxy.stopBubbleDrag(location, mBarView.getRestingTopPositionOnScreen());
     }
 
     /**
      * Notifies {@link BubbleBarView} that drag and all animations are finished.
      */
-    public void onDragBubbleEnded() {
+    public void onBubbleDragEnd() {
         mBarView.setDraggedBubble(null);
     }
 
     /** Notifies that dragging the bubble bar ended. */
-    public void onDragBubbleBarEnded() {
+    public void onBubbleBarDragEnd() {
         // we may have changed the bubble bar translation Y value from the value it had at the
         // beginning of the drag, so update the translation Y animator state
         mBubbleBarTranslationY.updateValue(mBarView.getTranslationY());
@@ -576,6 +569,6 @@ public class BubbleBarViewController {
      */
     public interface BubbleBarBoundsChangeListener {
         /** Called when bounds have changed */
-        void onBoundsChanged(Rect newBounds);
+        void onBoundsChanged();
     }
 }
