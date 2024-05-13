@@ -101,6 +101,7 @@ public class UserCache implements SafeCloseable {
         mUserChangeReceiver.register(mContext,
                 Intent.ACTION_MANAGED_PROFILE_AVAILABLE,
                 Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
+                Intent.ACTION_MANAGED_PROFILE_REMOVED,
                 ACTION_PROFILE_ADDED,
                 ACTION_PROFILE_REMOVED,
                 ACTION_PROFILE_UNLOCKED,
