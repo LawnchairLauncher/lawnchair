@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"നിർദ്ദേശങ്ങൾ"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"ആവശ്യമായവ"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"വാർത്തകളും മാസികകളും"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"നിങ്ങൾക്ക് സുഖപ്രദമായ സ്ഥലം"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"വിനോദം"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"സാമൂഹികം"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"ആരോഗ്യവും ശാരീരികക്ഷമതയും"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"കാലാവസ്ഥ"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"നിങ്ങൾക്കായി നിർദ്ദേശിച്ചവ"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"വലതുവശത്ത് <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> വിജറ്റുകളും ഇടതുവശത്ത് തിരയൽ, ഓപ്ഷനുകൾ എന്നിവയും"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# വിജറ്റ്}other{# വിജറ്റുകൾ}}"</string>
