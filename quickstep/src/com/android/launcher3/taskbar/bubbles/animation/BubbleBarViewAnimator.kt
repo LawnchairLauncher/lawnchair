@@ -42,6 +42,8 @@ constructor(
         const val FLYOUT_DELAY_MS: Long = 2500
         /** The initial scale Y value that the new bubble is set to before the animation starts. */
         const val BUBBLE_ANIMATION_INITIAL_SCALE_Y = 0.3f
+        /** The minimum alpha value to make the bubble bar touchable. */
+        const val MIN_ALPHA_FOR_TOUCHABLE = 0.5f
     }
 
     /** Wrapper around the animating bubble with its show and hide animations. */
@@ -167,6 +169,9 @@ constructor(
                         bubbleBarView.scaleY =
                             BUBBLE_ANIMATION_INITIAL_SCALE_Y +
                                 (1 - BUBBLE_ANIMATION_INITIAL_SCALE_Y) * fraction
+                        if (bubbleBarView.alpha > MIN_ALPHA_FOR_TOUCHABLE) {
+                            bubbleStashController.updateTaskbarTouchRegion()
+                        }
                     }
                 }
                 else -> {
@@ -176,6 +181,7 @@ constructor(
                     bubbleBarView.alpha = 1f
                     bubbleBarView.scaleY = 1f
                     bubbleBarView.translationY = ty - offset
+                    bubbleStashController.updateTaskbarTouchRegion()
                 }
             }
         }
@@ -233,6 +239,9 @@ constructor(
                         (totalTranslationY - ty) / (totalTranslationY - stashedHandleTranslationY)
                     bubbleBarView.alpha = 1 - fraction
                     bubbleBarView.scaleY = 1 - (1 - BUBBLE_ANIMATION_INITIAL_SCALE_Y) * fraction
+                    if (bubbleBarView.alpha > MIN_ALPHA_FOR_TOUCHABLE) {
+                        bubbleStashController.updateTaskbarTouchRegion()
+                    }
                 }
                 ty <= 0 -> {
                     // this is the second part of the animation. make the bubble bar invisible and
@@ -279,6 +288,7 @@ constructor(
                     animatingBubble = null
                     bubbleStashController.showBubbleBarImmediate()
                     bubbleBarView.onAnimatingBubbleCompleted()
+                    bubbleStashController.updateTaskbarTouchRegion()
                 }
             }
         animatingBubble = AnimatingBubble(bubbleView, showAnimation, hideAnimation)
@@ -298,6 +308,7 @@ constructor(
         val animator = PhysicsAnimator.getInstance(bubbleBarView)
         animator.setDefaultSpringConfig(springConfig)
         animator.spring(DynamicAnimation.TRANSLATION_Y, bubbleStashController.bubbleBarTranslationY)
+        animator.addUpdateListener { _, _ -> bubbleStashController.updateTaskbarTouchRegion() }
         animator.addEndListener { _, _, _, _, _, _, _ ->
             // the bubble bar is now fully settled in. update taskbar touch region so it's touchable
             bubbleStashController.updateTaskbarTouchRegion()
@@ -305,8 +316,10 @@ constructor(
         animator.start()
     }
 
-    /** Handles clicking on the animating bubble while the animation is still playing. */
-    fun onBubbleClickedWhileAnimating() {
+    /** Handles touching the animating bubble bar. */
+    fun onBubbleBarTouchedWhileAnimating() {
+        PhysicsAnimator.getInstance(bubbleBarView).cancelIfRunning()
+        bubbleStashController.stashedHandlePhysicsAnimator.cancelIfRunning()
         val hideAnimation = animatingBubble?.hideAnimation ?: return
         scheduler.cancel(hideAnimation)
         bubbleBarView.onAnimatingBubbleCompleted()
@@ -326,5 +339,9 @@ constructor(
             /* isStashed= */ bubbleBarView.alpha == 0f,
             bubbleBarView.translationY
         )
+    }
+
+    private fun <T> PhysicsAnimator<T>.cancelIfRunning() {
+        if (isRunning()) cancel()
     }
 }
