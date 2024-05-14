@@ -53,7 +53,7 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
         )
 
         val expectedRadius = TaskCornerRadius.get(context)
-        assertThat(params.mCurrentDrawnCornerRadius).isEqualTo(expectedRadius)
+        assertThat(params.currentDrawnCornerRadius).isEqualTo(expectedRadius)
     }
 
     @Test
@@ -67,7 +67,7 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
         )
 
         val expectedRadius = QuickStepContract.getWindowCornerRadius(context)
-        assertThat(params.mCurrentDrawnCornerRadius).isEqualTo(expectedRadius)
+        assertThat(params.currentDrawnCornerRadius).isEqualTo(expectedRadius)
     }
 
     @Test
@@ -81,7 +81,7 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
         )
 
         val expectedRadius = TaskCornerRadius.get(context)
-        assertThat(params.mCurrentDrawnCornerRadius).isEqualTo(expectedRadius)
+        assertThat(params.currentDrawnCornerRadius).isEqualTo(expectedRadius)
     }
 
     @Test
@@ -95,7 +95,7 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
         )
 
         val expectedRadius = QuickStepContract.getWindowCornerRadius(context)
-        assertThat(params.mCurrentDrawnCornerRadius).isEqualTo(expectedRadius)
+        assertThat(params.currentDrawnCornerRadius).isEqualTo(expectedRadius)
     }
 
     @Test
@@ -117,7 +117,7 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
             /* parentScale= */ 1.0f,
             /* taskViewScale= */ 1.0f
         )
-        assertThat(spyParams.mCurrentDrawnCornerRadius).isEqualTo(display1TaskRadius)
+        assertThat(spyParams.currentDrawnCornerRadius).isEqualTo(display1TaskRadius)
 
         spyParams.updateCornerRadius(display2Context)
         spyParams.setProgress(
@@ -125,7 +125,7 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
             /* parentScale= */ 1.0f,
             /* taskViewScale= */ 1.0f
         )
-        assertThat(spyParams.mCurrentDrawnCornerRadius).isEqualTo(display2TaskRadius)
+        assertThat(spyParams.currentDrawnCornerRadius).isEqualTo(display2TaskRadius)
     }
 
     @Test
@@ -147,7 +147,7 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
             /* parentScale= */ 1.0f,
             /* taskViewScale= */ 1.0f
         )
-        assertThat(spyParams.mCurrentDrawnCornerRadius).isEqualTo(display1WindowRadius)
+        assertThat(spyParams.currentDrawnCornerRadius).isEqualTo(display1WindowRadius)
 
         spyParams.updateCornerRadius(display2Context)
         spyParams.setProgress(
@@ -155,6 +155,6 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
             /* parentScale= */ 1.0f,
             /* taskViewScale= */ 1.0f,
         )
-        assertThat(spyParams.mCurrentDrawnCornerRadius).isEqualTo(display2WindowRadius)
+        assertThat(spyParams.currentDrawnCornerRadius).isEqualTo(display2WindowRadius)
     }
 }

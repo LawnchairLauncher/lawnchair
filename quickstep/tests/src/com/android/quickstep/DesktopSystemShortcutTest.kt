@@ -30,7 +30,9 @@ import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.quickstep.views.LauncherRecentsView
+import com.android.quickstep.views.TaskThumbnailViewDeprecated
 import com.android.quickstep.views.TaskView
+import com.android.quickstep.views.TaskViewIcon
 import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.recents.model.Task.TaskKey
 import com.android.window.flags.Flags
@@ -58,6 +60,8 @@ class DesktopSystemShortcutTest {
     private val taskView: TaskView = mock()
     private val workspaceItemInfo: WorkspaceItemInfo = mock()
     private val abstractFloatingViewHelper: AbstractFloatingViewHelper = mock()
+    private val thumbnailView: TaskThumbnailViewDeprecated = mock()
+    private val iconView: TaskViewIcon = mock()
     private val factory: TaskShortcutFactory =
         DesktopSystemShortcut.createFactory(abstractFloatingViewHelper)
 
@@ -90,8 +94,8 @@ class DesktopSystemShortcutTest {
         val taskContainer =
             taskView.TaskContainer(
                 task,
-                null,
-                null,
+                thumbnailView,
+                iconView,
                 SplitConfigurationOptions.STAGE_POSITION_UNDEFINED,
                 null
             )
@@ -112,8 +116,8 @@ class DesktopSystemShortcutTest {
         val taskContainer =
             taskView.TaskContainer(
                 task,
-                null,
-                null,
+                thumbnailView,
+                iconView,
                 SplitConfigurationOptions.STAGE_POSITION_UNDEFINED,
                 null
             )
@@ -135,8 +139,8 @@ class DesktopSystemShortcutTest {
         val taskContainer =
             taskView.TaskContainer(
                 task,
-                null,
-                null,
+                thumbnailView,
+                iconView,
                 SplitConfigurationOptions.STAGE_POSITION_UNDEFINED,
                 null
             )
@@ -156,8 +160,8 @@ class DesktopSystemShortcutTest {
         val taskContainer =
             taskView.TaskContainer(
                 task,
-                null,
-                null,
+                thumbnailView,
+                iconView,
                 SplitConfigurationOptions.STAGE_POSITION_UNDEFINED,
                 null
             )
@@ -177,8 +181,8 @@ class DesktopSystemShortcutTest {
         val taskContainer =
             taskView.TaskContainer(
                 task,
-                null,
-                null,
+                thumbnailView,
+                iconView,
                 SplitConfigurationOptions.STAGE_POSITION_UNDEFINED,
                 null
             )

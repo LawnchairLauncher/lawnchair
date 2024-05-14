@@ -165,8 +165,8 @@ public final class TaskViewUtils {
             @NonNull RemoteAnimationTarget[] nonAppTargets,
             @Nullable DepthController depthController,
             PendingAnimation out) {
-        boolean isQuickSwitch = v.isEndQuickswitchCuj();
-        v.setEndQuickswitchCuj(false);
+        boolean isQuickSwitch = v.isEndQuickSwitchCuj();
+        v.setEndQuickSwitchCuj(false);
 
         final RemoteAnimationTargets targets =
                 new RemoteAnimationTargets(appTargets, wallpaperTargets, nonAppTargets,

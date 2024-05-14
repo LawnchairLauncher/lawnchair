@@ -56,6 +56,8 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.systemui.shared.recents.model.Task;
 
+import kotlin.Unit;
+
 /**
  * {@link RecentsView} used in Launcher activity
  */
@@ -107,7 +109,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     }
 
     @Override
-    protected void onTaskLaunchAnimationEnd(boolean success) {
+    protected Unit onTaskLaunchAnimationEnd(boolean success) {
         if (success) {
             getStateManager().moveToRestState();
         } else {
@@ -115,6 +117,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
             mContainer.getAllAppsController().setState(state);
         }
         super.onTaskLaunchAnimationEnd(success);
+        return Unit.INSTANCE;
     }
 
     @Override
