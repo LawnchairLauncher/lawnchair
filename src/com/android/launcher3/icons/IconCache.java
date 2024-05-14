@@ -373,8 +373,13 @@ public class IconCache extends BaseIconCache {
                     infoInOut.user, activityInfoProvider, mLauncherActivityInfoCachingLogic,
                     usePkgIcon, useLowResIcon);
             applyPackageEntry(packageEntry, infoInOut, entry);
-        } else {
+        } else if (useLowResIcon || !entry.bitmap.isNullOrLowRes()
+                || infoInOut.bitmap.isNullOrLowRes()) {
+            // Only use cache entry if it will not downgrade the current bitmap in infoInOut
             applyCacheEntry(entry, infoInOut);
+        } else {
+            Log.d(TAG, "getTitleAndIcon: Cache entry bitmap was a downgrade of existing bitmap"
+                    + " in ItemInfo. Skipping.");
         }
     }
 
