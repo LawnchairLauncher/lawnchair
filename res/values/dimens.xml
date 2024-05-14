@@ -536,6 +536,8 @@
     <dimen name="ps_lock_icon_text_margin_start_expanded">8dp</dimen>
     <dimen name="ps_lock_icon_text_margin_end_expanded">6dp</dimen>
     <dimen name="ps_lock_button_background_padding">10dp</dimen>
+    <dimen name="ps_floating_mask_corner_radius">28dp</dimen>
+    <dimen name="ps_floating_mask_end_padding">16dp</dimen>
 
     <!-- WindowManagerProxy -->
     <dimen name="max_width_and_height_of_small_display_cutout">136px</dimen>
