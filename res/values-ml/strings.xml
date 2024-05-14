@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"നിർദ്ദേശങ്ങൾ"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"ആവശ്യമായവ"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"വാർത്തകളും മാസികകളും"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"നിങ്ങൾക്ക് സുഖപ്രദമായ സ്ഥലം"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"വിനോദം"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"സാമൂഹികം"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"ആരോഗ്യവും ശാരീരികക്ഷമതയും"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"കാലാവസ്ഥ"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"നിങ്ങൾക്കായി നിർദ്ദേശിച്ചവ"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"വലതുവശത്ത് <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> വിജറ്റുകളും ഇടതുവശത്ത് തിരയൽ, ഓപ്ഷനുകൾ എന്നിവയും"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# വിജറ്റ്}other{# വിജറ്റുകൾ}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"സ്വകാര്യം, ലോക്ക് ചെയ്തു."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ലോക്ക് ചെയ്യുക"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"പ്രൈവറ്റ് സ്‌പേസ് ട്രാൻസിഷനിംഗ്"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യുക"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"സ്വകാര്യ സ്പേസിലേക്ക് ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യുക"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ഓവർഫ്ലോ"</string>
 </resources>

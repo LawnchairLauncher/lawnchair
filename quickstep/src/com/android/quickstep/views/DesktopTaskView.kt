@@ -191,24 +191,19 @@ class DesktopTaskView @JvmOverloads constructor(context: Context?, attrs: Attrib
     }
 
     override fun launchTaskAnimated(): RunnableList? {
-        val recentsView = recentsView
-        if (recentsView == null) {
-            Log.d(TAG, "launchTaskAnimated - recentsView is null")
-            return null
-        }
-
+        val recentsView = recentsView ?: return null
         val endCallback = RunnableList()
         val desktopController = recentsView.desktopRecentsController
-        if (desktopController == null) {
-            Log.d(
-                TAG,
-                "launchTaskAnimated - recentsController is null: ${taskIds.contentToString()}"
-            )
-        } else {
+        if (desktopController != null) {
             desktopController.launchDesktopFromRecents(this) { endCallback.executeAllAndDestroy() }
             Log.d(
                 TAG,
                 "launchTaskAnimated - launchDesktopFromRecents: ${taskIds.contentToString()}"
+            )
+        } else {
+            Log.d(
+                TAG,
+                "launchTaskAnimated - recentsController is null: ${taskIds.contentToString()}"
             )
         }
 
@@ -222,7 +217,7 @@ class DesktopTaskView @JvmOverloads constructor(context: Context?, attrs: Attrib
         callback.accept(true)
     }
 
-    public override fun refreshThumbnails(thumbnailDatas: HashMap<Int, ThumbnailData>?) {
+    public override fun refreshThumbnails(thumbnailDatas: HashMap<Int, ThumbnailData?>?) {
         // Sets new thumbnails based on the incoming data and refreshes the rest.
         thumbnailDatas?.let {
             mTaskContainers.forEach {

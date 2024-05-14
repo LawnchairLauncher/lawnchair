@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"ਸੁਝਾਅ"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"ਲੋੜੀਂਦੀਆਂ"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"ਖਬਰਾਂ ਅਤੇ ਰਸਾਲੇ"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"ਤੁਹਾਡੇ ਲਈ ਸਕੂਨਮਈ ਖੇਤਰ"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"ਮਨੋਰੰਜਨ"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"ਸੋਸ਼ਲ"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"ਸਿਹਤ ਅਤੇ ਫਿੱਟਨੈੱਸ"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"ਮੌਸਮ"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"ਤੁਹਾਡੇ ਲਈ ਸੁਝਾਅ"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> ਵਿਜੇਟ ਸੱਜੇ ਪਾਸੇ ਹਨ, ਖੋਜ ਵਿਜੇਟ ਅਤੇ ਹੋਰ ਵਿਕਲਪ ਖੱਬੇ ਪਾਸੇ ਹਨ"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# ਵਿਜੇਟ}one{# ਵਿਜੇਟ}other{# ਵਿਜੇਟ}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ਨਿੱਜੀ, ਲਾਕ ਕੀਤਾ ਗਿਆ।"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ਲਾਕ ਕਰੋ"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ਨਿੱਜੀ ਸਪੇਸ ਨੂੰ ਤਬਦੀਲ ਕਰਨਾ"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"ਐਪਾਂ ਸਥਾਪਤ ਕਰੋ"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"ਪ੍ਰਾਈਵੇਟ ਸਪੇਸ ਵਿੱਚ ਐਪਾਂ ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ਓਵਰਫ਼ਲੋ"</string>
 </resources>

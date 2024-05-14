@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"คำแนะนำ"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"รายการที่ห้ามพลาด"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"ข่าวสารและนิตยสาร"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"พื้นที่สบายๆ ของคุณ"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"ความบันเทิง"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"โซเชียล"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"สุขภาพและการออกกำลังกาย"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"สภาพอากาศ"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"แนะนำให้คุณ"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"วิดเจ็ต<xliff:g id="SELECTED_HEADER">%1$s</xliff:g>ทางด้านขวา การค้นหาและตัวเลือกทางด้านซ้าย"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{วิดเจ็ต # รายการ}other{วิดเจ็ต # รายการ}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ส่วนตัว ล็อกอยู่"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ล็อก"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"การเปลี่ยนไปใช้พื้นที่ส่วนตัว"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"ติดตั้งแอป"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"ติดตั้งแอปไปยังพื้นที่ส่วนตัว"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"การดำเนินการเพิ่มเติม"</string>
 </resources>

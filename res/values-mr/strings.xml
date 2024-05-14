@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"सूचना"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"आवश्यक गोष्टी"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"बातम्‍या आणि मासिके"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"तुमचा आरामदायक झोन"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"मनोरंजन"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"सोशल"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"आरोग्य आणि फिटनेस"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"हवामान"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"तुमच्यासाठी सुचवलेले"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"उजवीकडे <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> विजेट, डावीकडे शोध आणि पर्याय"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# विजेट}other{# विजेट}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"खाजगी, लॉक केलेली."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"लॉक"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"खाजगी स्पेस वर स्विच करणे"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"अ‍ॅप्स इंस्टॉल करा"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"अ‍ॅप्स खाजगी स्पेस मध्ये इंस्टॉल करा"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ओव्हरफ्लो"</string>
 </resources>

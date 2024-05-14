@@ -30,6 +30,7 @@ import android.view.animation.PathInterpolator;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.SystemUiProxy;
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 
 import java.io.PrintWriter;
 
@@ -45,7 +46,8 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
     private final TaskbarActivityContext mActivity;
     private final TaskbarScrimView mScrimView;
     private boolean mTaskbarVisible;
-    private int mSysUiStateFlags;
+    @SystemUiStateFlags
+    private long mSysUiStateFlags;
 
     // Alpha property for the scrim.
     private final AnimatedFloat mScrimAlpha = new AnimatedFloat(this::updateScrimAlpha);
@@ -82,7 +84,7 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
     /**
      * Updates the scrim state based on the flags.
      */
-    public void updateStateForSysuiFlags(int stateFlags, boolean skipAnim) {
+    public void updateStateForSysuiFlags(@SystemUiStateFlags long stateFlags, boolean skipAnim) {
         if (isBubbleBarEnabled() && DisplayController.isTransientTaskbar(mActivity)) {
             // These scrims aren't used if bubble bar & transient taskbar are active.
             return;

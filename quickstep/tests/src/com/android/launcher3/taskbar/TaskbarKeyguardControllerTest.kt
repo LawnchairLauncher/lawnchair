@@ -105,7 +105,7 @@ class TaskbarKeyguardControllerTest : TaskbarBaseTestCase() {
         verify(navbarButtonsViewController, times(1)).setBackForBouncer(false)
     }
 
-    private fun setFlags(flags: Int) {
+    private fun setFlags(flags: Long) {
         taskbarKeyguardController.updateStateForSysuiFlags(flags)
     }
 }

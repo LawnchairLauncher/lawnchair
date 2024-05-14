@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Javaslatok"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Legfontosabbak"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Újságok és magazinok"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Az Ön relaxáló zónája"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Szórakozás"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Közösségi"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Egészség és fitnesz"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Időjárás"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Neked javasolt"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"A <xliff:g id="SELECTED_HEADER">%1$s</xliff:g>-modulok a jobb, a kereső és a beállítások pedig a bal oldalon találhatók"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# modul}other{# modul}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privát, zárolt."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Zárolás"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Átállás privát területre…"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"App telepítése"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Alkalmazások telepítése magánterületre"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Túlcsordulás"</string>
 </resources>

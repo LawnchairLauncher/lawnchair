@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Prijedlozi"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Osnovne aplikacije"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Vijesti i časopisi"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Vaša zona opuštanja"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Zabava"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Društvene mreže"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Zdravlje i fitnes"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Vrijeme"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Predloženo za vas"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Vidžeti aplikacije <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> su na desnoj, a pretraživanje i opcije na lijevoj strani"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# vidžet}one{# vidžet}few{# vidžeta}other{# vidžeta}}"</string>
@@ -65,7 +62,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Posao"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Razgovori"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Pisanje bilješki"</string>
-    <string name="widget_add_button_label" msgid="2761267068711937179">"Dodaj"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"Dodajte"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"Dodavanje vidžeta <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Dodirnite da promijenite postavke vidžeta"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Promjena postavki vidžeta"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privatno, zaključano."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Zaključaj"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Prelazak u privatan prostor"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"Instaliranje aplikacija"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instaliranje aplikacija u privatni prostor"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Preklopni meni"</string>
 </resources>

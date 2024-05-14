@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"পৰামৰ্শ"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"অত্যাৱশ্যকীয়সমূহ"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"বাতৰি আৰু আলোচনী"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"আপোনাৰ পচন্দৰ স্থান"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"মনোৰঞ্জন"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"সামাজিক"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"স্বাস্থ্য আৰু সুস্থতা"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"বতৰ"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"আপোনাৰ বাবে পৰামৰ্শ হিচাপে আগবঢ়োৱা"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> ৱিজেট সোঁফালে, সন্ধান আৰু বিকল্পসমূহ বাওঁফালে"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# টা ৱিজেট}one{# টা ৱিজেট}other{# টা ৱিজেট}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ব্যক্তিগত, লক কৰা আছে।"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"লক কৰক"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ব্যক্তিগত স্পে’চৰ স্থানান্তৰণ"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"এপ্‌ ইনষ্টল কৰক"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"এপ্‌সমূহ প্ৰাইভেট স্পেচত ইনষ্টল কৰক"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"অ’ভাৰফ্ল’"</string>
 </resources>

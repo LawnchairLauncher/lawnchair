@@ -71,6 +71,7 @@ import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.quickstep.SystemUiProxy;
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.wm.shell.Flags;
 import com.android.wm.shell.bubbles.IBubblesListener;
 import com.android.wm.shell.common.bubbles.BubbleBarLocation;
@@ -117,7 +118,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 || SystemProperties.getBoolean("persist.wm.debug.bubble_bar", false);
     }
 
-    private static final int MASK_HIDE_BUBBLE_BAR = SYSUI_STATE_BOUNCER_SHOWING
+    private static final long MASK_HIDE_BUBBLE_BAR = SYSUI_STATE_BOUNCER_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
             | SYSUI_STATE_IME_SHOWING
@@ -125,11 +126,11 @@ public class BubbleBarController extends IBubblesListener.Stub {
             | SYSUI_STATE_QUICK_SETTINGS_EXPANDED
             | SYSUI_STATE_IME_SWITCHER_SHOWING;
 
-    private static final int MASK_HIDE_HANDLE_VIEW = SYSUI_STATE_BOUNCER_SHOWING
+    private static final long MASK_HIDE_HANDLE_VIEW = SYSUI_STATE_BOUNCER_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
-    private static final int MASK_SYSUI_LOCKED = SYSUI_STATE_BOUNCER_SHOWING
+    private static final long MASK_SYSUI_LOCKED = SYSUI_STATE_BOUNCER_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
@@ -256,7 +257,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
     /**
      * Updates the bubble bar, handle bar, and stash controllers based on sysui state flags.
      */
-    public void updateStateForSysuiFlags(int flags) {
+    public void updateStateForSysuiFlags(@SystemUiStateFlags long flags) {
         boolean hideBubbleBar = (flags & MASK_HIDE_BUBBLE_BAR) != 0;
         mBubbleBarViewController.setHiddenForSysui(hideBubbleBar);
 

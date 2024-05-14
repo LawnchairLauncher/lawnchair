@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"பரிந்துரைகள்"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"அத்தியாவசியமானவை"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"செய்திகள் &amp; பத்திரிக்கைகள்"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"உங்கள் மனதுக்கு இதமானவை"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"பொழுதுபோக்கு"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"சமூகம்"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"ஆரோக்கியம் &amp; உடற்பயிற்சி"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"வானிலை"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"உங்களுக்கான பரிந்துரைகள்"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> விட்ஜெட்கள் வலதுபுறத்தில் உள்ளன, தேடல் மற்றும் விருப்பங்கள் இடதுபுறத்தில் உள்ளன"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# விட்ஜெட்}other{# விட்ஜெட்டுகள்}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"தனிப்பட்டது, லாக் செய்யப்பட்டுள்ளது."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"பூட்டு"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"தனிப்பட்ட சேமிப்பிடத்திற்கு மாற்றுகிறது"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"ஆப்ஸை நிறுவுதல்"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"தனிப்பட்ட சேமிப்பிடத்தில் ஆப்ஸை நிறுவும்"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"கூடுதல் விருப்பங்களைக் காட்டும்"</string>
 </resources>

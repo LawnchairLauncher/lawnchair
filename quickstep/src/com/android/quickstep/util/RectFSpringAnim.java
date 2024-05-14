@@ -565,7 +565,11 @@ public class RectFSpringAnim extends ReleaseCheck {
                 final float bottomThreshold = deviceProfile.heightPx - padding.bottom;
 
                 if (targetRect.bottom > bottomThreshold) {
-                    tracking = TRACKING_BOTTOM;
+                    if (enableScalingRevealHomeAnimation()) {
+                        tracking = TRACKING_CENTER;
+                    } else {
+                        tracking = TRACKING_BOTTOM;
+                    }
                 } else if (targetRect.top < topThreshold) {
                     tracking = TRACKING_TOP;
                 } else {

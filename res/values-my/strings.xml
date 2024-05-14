@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"အကြံပြုချက်"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"မရှိမဖြစ်များ"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"သတင်းနှင့် မဂ္ဂဇင်း"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"သင်အနားယူသောနေရာ"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"ဖျော်ဖြေရေး"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"လူမှုရေး"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"ကျန်းမာကြံ့ခိုင်ရေး"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"မိုးလေဝသ"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"သင့်အတွက် အကြံပြုထားသည်များ"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> ဝိဂျက်များသည် ညာဘက်တွင်ရှိပြီး ရှာဖွေမှုနှင့် ရွေးစရာများသည် ဘယ်ဘက်တွင်ရှိသည်"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{ဝိဂျက် # ခု}other{ဝိဂျက် # ခု}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"သီးသန့် လော့ခ်ချထားသည်။"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"လော့ခ်ချခြင်း"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"သီးသန့်ချတ်ခန်း အပြောင်းအလဲ"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"အက်ပ်ထည့်ခြင်း"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"‘သီးသန့်နေရာ’ တွင် အက်ပ်များ ထည့်သွင်းနိုင်သည်"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"မီနူးအပို"</string>
 </resources>

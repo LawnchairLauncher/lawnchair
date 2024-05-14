@@ -73,6 +73,7 @@ import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AssistUtils;
 import com.android.systemui.shared.system.QuickStepContract;
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
@@ -491,7 +492,7 @@ public class TaskbarManager {
         }
     }
 
-    public void onSystemUiFlagsChanged(int systemUiStateFlags) {
+    public void onSystemUiFlagsChanged(@SystemUiStateFlags long systemUiStateFlags) {
         if (DEBUG) {
             Log.d(TAG, "SysUI flags changed: " + formatFlagChange(systemUiStateFlags,
                     mSharedState.sysuiStateFlags, QuickStepContract::getSystemUiStateString));

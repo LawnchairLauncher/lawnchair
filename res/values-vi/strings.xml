@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Nội dung đề xuất"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Các tiện ích thiết yếu"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Tin tức và tạp chí"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Giai điệu thư giãn của bạn"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Giải trí"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Mạng xã hội"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Sức khoẻ và thể chất"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Thời tiết"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Đề xuất cho bạn"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Tiện ích <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> ở bên phải, công cụ tìm kiếm và tuỳ chọn ở bên trái"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# tiện ích}other{# tiện ích}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Riêng tư, đã khoá."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Khoá"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Chuyển đổi sang không gian riêng tư"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"Cài đặt ứng dụng"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Cài đặt ứng dụng vào Không gian riêng tư"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Bong bóng bổ sung"</string>
 </resources>

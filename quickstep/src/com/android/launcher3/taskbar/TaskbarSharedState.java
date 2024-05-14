@@ -29,6 +29,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.view.InsetsFrameProvider;
 
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
+
 /**
  * State shared across different taskbar instance
  */
@@ -39,7 +41,8 @@ public class TaskbarSharedState {
     private static int INDEX_RIGHT = 1;
 
     // TaskbarManager#onSystemUiFlagsChanged
-    public int sysuiStateFlags;
+    @SystemUiStateFlags
+    public long sysuiStateFlags;
 
     // TaskbarManager#disableNavBarElements()
     public int disableNavBarDisplayId;

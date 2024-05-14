@@ -105,6 +105,7 @@ import com.android.systemui.shared.rotation.FloatingRotationButton;
 import com.android.systemui.shared.rotation.RotationButton;
 import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.shared.system.QuickStepContract;
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -197,7 +198,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private TaskbarControllers mControllers;
     private boolean mIsImeRenderingNavButtons;
     private ImageView mA11yButton;
-    private int mSysuiStateFlags;
+    @SystemUiStateFlags
+    private long mSysuiStateFlags;
     private ImageView mBackButton;
     private ImageView mHomeButton;
     private MultiValueAlpha mBackButtonAlpha;
@@ -442,7 +444,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 navButtonController.onButtonLongClick(BUTTON_SPACE, view));
     }
 
-    private void parseSystemUiFlags(int sysUiStateFlags) {
+    private void parseSystemUiFlags(@SystemUiStateFlags long sysUiStateFlags) {
         mSysuiStateFlags = sysUiStateFlags;
         boolean isImeVisible = (sysUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0;
         boolean isImeSwitcherShowing = (sysUiStateFlags & SYSUI_STATE_IME_SWITCHER_SHOWING) != 0;
@@ -450,7 +452,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         boolean isHomeDisabled = (sysUiStateFlags & SYSUI_STATE_HOME_DISABLED) != 0;
         boolean isRecentsDisabled = (sysUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0;
         boolean isBackDisabled = (sysUiStateFlags & SYSUI_STATE_BACK_DISABLED) != 0;
-        int shadeExpandedFlags = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
+        long shadeExpandedFlags = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
                 | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
         boolean isNotificationShadeExpanded = (sysUiStateFlags & shadeExpandedFlags) != 0;
         boolean isScreenPinningActive = (sysUiStateFlags & SYSUI_STATE_SCREEN_PINNING) != 0;
@@ -477,7 +479,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         }
     }
 
-    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean skipAnim) {
+    public void updateStateForSysuiFlags(@SystemUiStateFlags long systemUiStateFlags,
+            boolean skipAnim) {
         if (systemUiStateFlags == mSysuiStateFlags) {
             return;
         }

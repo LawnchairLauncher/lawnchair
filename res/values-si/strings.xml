@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"යෝජනා"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"අත්‍යවශ්‍යාංග"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"පුවත් සහ සඟරා"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"ඔබේ නිවුණු කලාපය"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"විනෝදාස්වාදය"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"සමාජයීය"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"සෞඛ්‍යය සහ යෝග්‍යතාව"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"කාලගුණ"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"ඔබ සඳහා යෝජිත"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"දකුණේ <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> විජට්, වමේ සෙවීම සහ විකල්ප"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{විජට් #}one{විජට් #}other{විජට් #}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"පුද්ගලික, අගුලු දමන ලදි."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"අගුළු දමන්න"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"පෞද්ගලික අවකාශ සංක්‍රමණය"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"යෙදුම් ස්ථාපනය කරන්න"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"පෞද්ගලික අවකාශයට යෙදුම් ස්ථාපනය කරන්න"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"පිටාර යාම"</string>
 </resources>

@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Ieteikumi"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Produktivitātei"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Ziņas un žurnāli"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Jūsu atpūtas stūrītis"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Izklaide"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Sociālie tīkli"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Veselība un fitness"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Laikapstākļi"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Ieteikumi jums"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Pa labi logrīki <xliff:g id="SELECTED_HEADER">%1$s</xliff:g>, pa kreisi meklēšana un iespējas"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# logrīks}zero{# logrīku}one{# logrīks}other{# logrīki}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privāta un bloķēta."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Bloķēšana"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Pāriet uz privāto mapi"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"Lietotņu instalēšana"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalējiet lietotnes privātajā telpā."</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Pārpilde"</string>
 </resources>

@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"የአስተያየት ጥቆማዎች"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"ጠቃሚ ነገሮች"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"ዜና እና መጽሔቶች"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"የሚያርፉበት ቦታዎ"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"መዝናኛ"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"ማህበራዊ"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"ጤና እና የአካል ብቃት"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"የአየር ሁኔታ"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"ለእርስዎ የተጠቆሙ"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> ምግብሮች በቀኝ በኩል፣ ፍለጋ እና አማራጮች በግራ በኩል"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# ምግብር}one{# ምግብሮች}other{# ምግብሮች}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"የግል፣ የተቆለፈ።"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ቆልፍ"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"የግል ቦታ ሽግግር"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"መተግበሪያዎችን ይጫኑ"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"መተግበሪያዎችን ወደ የግል ቦታ ይጫኑ"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ትርፍ ፍሰት"</string>
 </resources>

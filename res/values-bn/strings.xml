@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"সাজেশন"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"প্রয়োজনীয় জিনিস"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"খবর ও ম্যাগাজিন"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"আপনার চিল জোন"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"বিনোদন"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"সোশ্যাল"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"স্বাস্থ্য ও ফিটনেস"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"আবহাওয়া"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"আপনার জন্য সাজেস্ট করা হয়েছে"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> উইজেট ডানদিকে, সার্চ ও বিকল্প বাঁদিকে রয়েছে"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{#টি উইজেট}one{#টি উইজেট}other{#টি উইজেট}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ব্যক্তিগত, লক করা আছে।"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"লক"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ব্যক্তিগত স্পেস ট্রানজিট করা"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"অ্যাপ ইনস্টল করুন"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"প্রাইভেট স্পেসে অ্যাপ ইনস্টল করুন"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ওভারফ্লো"</string>
 </resources>

@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Сунуштар"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Эң зарыл параметрлер"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Жаңылыктар жана журналдар"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Чер жазуу"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Көңүл ачуу"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Коомдук тармактар"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Ден соолук жана дене-бойду чыңдоо"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Аба ырайы"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Сизге сунушталат"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> виджеттери оң, ал эми издөө жана параметрлер сол жакта"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# виджет}other{# виджет}}"</string>
@@ -186,14 +183,15 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Чыпкалоо"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Аткарылган жок: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Жеке мейкиндик"</string>
-    <string name="private_space_secondary_label" msgid="9203933341714508907">"Тууралоо же ачуу үчүн таптап коюңуз"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"Тууралоо же ачуу үчүн тийип коюңуз"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Жеке"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Жеке мейкиндиктин параметрлери"</string>
     <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Купуя, кулпусу ачык."</string>
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Купуя, кулпуланган."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Кулпулоо"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Жеке чөйрөгө өтүү"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"Колдонмолорду орнотуу"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Колдонмолорду Жеке мейкиндикке орнотуe"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Кошумча меню"</string>
 </resources>

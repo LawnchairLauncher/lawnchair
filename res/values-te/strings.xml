@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"సూచనలు"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"నిత్యావసరాలు"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"వార్తలు &amp; మ్యాగజైన్లు"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"మీరు ప్రశాంతంగా ఉండే ప్రదేశం"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"వినోదం"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"సామాజికం"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"ఆరోగ్యం &amp; ఫిట్‌నెస్"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"వాతావరణం"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"మీ కోసం సూచించినవి"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"కుడి వైపున <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> విడ్జెట్‌లు, ఎడమ వైపున సెర్చ్, ఇతర ఆప్షన్‌లు"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# విడ్జెట్}other{# విడ్జెట్‌లు}}"</string>
@@ -193,7 +190,8 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ప్రైవేట్, లాక్ చేయబడింది."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"లాక్ చేయండి"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ప్రైవేట్ స్పేస్ కేటాయించడం జరుగుతుంది"</string>
-    <string name="ps_add_button_label" msgid="8611055839242385935">"యాప్‌లను ఇన్‌స్టాల్ చేయండి"</string>
+    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
+    <skip />
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"ప్రైవేట్ స్పేస్‌కు యాప్‌లను ఇన్‌స్టాల్ చేయండి"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ఓవర్‌ఫ్లో"</string>
 </resources>
