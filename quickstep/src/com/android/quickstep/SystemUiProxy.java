@@ -760,19 +760,6 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
     }
 
     /**
-     * Tells SysUI to remove the bubble with the provided key.
-     * @param key the key of the bubble to show.
-     */
-    public void removeBubble(String key) {
-        if (mBubbles == null) return;
-        try {
-            mBubbles.removeBubble(key);
-        } catch (RemoteException e) {
-            Log.w(TAG, "Failed call removeBubble");
-        }
-    }
-
-    /**
      * Tells SysUI to remove all bubbles.
      */
     public void removeAllBubbles() {
@@ -814,15 +801,27 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
     /**
      * Tells SysUI when the bubble stops being dragged.
      * Should be called only when the bubble bar is expanded.
-     * @param bubbleKey key of the bubble being dragged
      * @param location location of the bubble bar
      */
-    public void stopBubbleDrag(@Nullable String bubbleKey, BubbleBarLocation location) {
+    public void stopBubbleDrag(BubbleBarLocation location) {
         if (mBubbles == null) return;
         try {
-            mBubbles.stopBubbleDrag(bubbleKey, location);
+            mBubbles.stopBubbleDrag(location);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed call stopBubbleDrag");
+        }
+    }
+
+    /**
+     * Tells SysUI to dismiss the bubble with the provided key.
+     * @param key the key of the bubble to dismiss.
+     */
+    public void dragBubbleToDismiss(String key) {
+        if (mBubbles == null) return;
+        try {
+            mBubbles.dragBubbleToDismiss(key);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call dragBubbleToDismiss");
         }
     }
 
