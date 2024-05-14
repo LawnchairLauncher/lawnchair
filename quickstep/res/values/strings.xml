@@ -332,10 +332,4 @@
 
     <!-- Accessibility label for quick switch tiles showing split tasks [CHAR LIMIT=NONE] -->
     <string name="quick_switch_split_task"><xliff:g id="app_name_1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app_name_2" example="Gmail">%2$s</xliff:g></string>
-
-    <!-- ******* Desktop ******* -->
-    <!-- Text shown in popup to choose a desktop app. [CHAR LIMIT=60] -->
-    <string name="desktop_select_app_toast">Adding app to Desktop</string>
-    <!-- Text shown on a button that closes the popup for choosing a desktop app. [CHAR_LIMIT=40] -->
-    <string name="desktop_button_close_app_toast">Cancel</string>
 </resources>
