@@ -137,6 +137,7 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
@@ -825,7 +826,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         return mIsDestroyed;
     }
 
-    public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {
+    public void updateSysuiStateFlags(@SystemUiStateFlags long systemUiStateFlags,
+            boolean fromInit) {
         mControllers.navbarButtonsViewController.updateStateForSysuiFlags(systemUiStateFlags,
                 fromInit);
         boolean isShadeVisible = (systemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE) != 0;

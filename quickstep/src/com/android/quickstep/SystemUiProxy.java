@@ -72,6 +72,7 @@ import com.android.quickstep.util.AssistUtils;
 import com.android.quickstep.util.unfold.ProxyUnfoldTransitionProvider;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationController;
@@ -172,7 +173,8 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
     private final Handler mAsyncHandler;
 
     // TODO(141886704): Find a way to remove this
-    private int mLastSystemUiStateFlags;
+    @SystemUiStateFlags
+    private long mLastSystemUiStateFlags;
 
     /**
      * This is a singleton pending intent that is used to start recents via Shell (which is a
@@ -324,12 +326,13 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
     }
 
     // TODO(141886704): Find a way to remove this
-    public void setLastSystemUiStateFlags(int stateFlags) {
+    public void setLastSystemUiStateFlags(@SystemUiStateFlags long stateFlags) {
         mLastSystemUiStateFlags = stateFlags;
     }
 
     // TODO(141886704): Find a way to remove this
-    public int getLastSystemUiStateFlags() {
+    @SystemUiStateFlags
+    public long getLastSystemUiStateFlags() {
         return mLastSystemUiStateFlags;
     }
 

@@ -51,6 +51,7 @@ import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.AssistUtils;
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
@@ -258,7 +259,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         mLastScreenPinLongPress = 0;
     }
 
-    public void updateSysuiFlags(int sysuiFlags) {
+    public void updateSysuiFlags(@SystemUiStateFlags long sysuiFlags) {
         mScreenPinned = (sysuiFlags & SYSUI_STATE_SCREEN_PINNING) != 0;
     }
 

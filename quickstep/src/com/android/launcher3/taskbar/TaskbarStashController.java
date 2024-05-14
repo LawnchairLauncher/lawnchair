@@ -71,7 +71,7 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.StringJoiner;
-import java.util.function.IntPredicate;
+import java.util.function.LongPredicate;
 
 /**
  * Coordinates between controllers such as TaskbarViewController and StashedHandleViewController to
@@ -229,7 +229,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     /** Whether we are currently visually stashed (might change based on launcher state). */
     private boolean mIsStashed = false;
-    private int mState;
+    private long mState;
 
     private @Nullable AnimatorSet mAnimator;
     private boolean mIsSystemGestureInProgress;
@@ -240,7 +240,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     private boolean mEnableBlockingTimeoutDuringTests = false;
 
     // Evaluate whether the handle should be stashed
-    private final IntPredicate mIsStashedPredicate = flags -> {
+    private final LongPredicate mIsStashedPredicate = flags -> {
         boolean inApp = hasAnyFlag(flags, FLAGS_IN_APP);
         boolean stashedInApp = hasAnyFlag(flags, FLAGS_STASHED_IN_APP);
         boolean stashedLauncherState = hasAnyFlag(flags, FLAG_IN_STASHED_LAUNCHER_STATE);
@@ -388,11 +388,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         return (hasAnyFlag(FLAG_IN_STASHED_LAUNCHER_STATE) && supportsVisualStashing());
     }
 
-    private boolean hasAnyFlag(int flagMask) {
+    private boolean hasAnyFlag(long flagMask) {
         return hasAnyFlag(mState, flagMask);
     }
 
-    private boolean hasAnyFlag(int flags, int flagMask) {
+    private boolean hasAnyFlag(long flags, long flagMask) {
         return (flags & flagMask) != 0;
     }
 
@@ -929,7 +929,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     /** Called when some system ui state has changed. (See SYSUI_STATE_... in QuickstepContract) */
-    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean skipAnim) {
+    public void updateStateForSysuiFlags(long systemUiStateFlags, boolean skipAnim) {
         long animDuration = TASKBAR_STASH_DURATION;
         long startDelay = 0;
 
@@ -1005,8 +1005,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *                unstashed.
      * @return Whether the flag state changed.
      */
-    public boolean updateStateForFlag(int flag, boolean enabled) {
-        int oldState = mState;
+    public boolean updateStateForFlag(long flag, boolean enabled) {
+        long oldState = mState;
         if (enabled) {
             mState |= flag;
         } else {
@@ -1020,7 +1020,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *
      * @param changedFlags The flags that have changed.
      */
-    private void onStateChangeApplied(int changedFlags) {
+    private void onStateChangeApplied(long changedFlags) {
         if (hasAnyFlag(changedFlags, FLAGS_STASHED_IN_APP)) {
             mControllers.uiController.onStashedInAppChanged();
         }
@@ -1151,7 +1151,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         pw.println(prefix + "\tmIsImeSwitcherShowing=" + mIsImeSwitcherShowing);
     }
 
-    private static String getStateString(int flags) {
+    private static String getStateString(long flags) {
         StringJoiner sj = new StringJoiner("|");
         appendFlag(sj, flags, FLAGS_IN_APP, "FLAG_IN_APP");
         appendFlag(sj, flags, FLAG_STASHED_IN_APP_SYSUI, "FLAG_STASHED_IN_APP_SYSUI");
@@ -1168,15 +1168,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     private class StatePropertyHolder {
-        private final IntPredicate mStashCondition;
+        private final LongPredicate mStashCondition;
 
         private boolean mIsStashed;
         private @StashAnimation int mLastStartedTransitionType = TRANSITION_DEFAULT;
-        private int mPrevFlags;
+        private long mPrevFlags;
 
         private long mLastUnlockTransitionTimeout = 0;
 
-        StatePropertyHolder(IntPredicate stashCondition) {
+        StatePropertyHolder(LongPredicate stashCondition) {
             mStashCondition = stashCondition;
         }
 
@@ -1189,7 +1189,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
          * @return mAnimator if mIsStashed changed, or {@code null} otherwise.
          */
         @Nullable
-        public Animator createSetStateAnimator(int flags, long duration) {
+        public Animator createSetStateAnimator(long flags, long duration) {
             boolean isStashed = mStashCondition.test(flags);
 
             if (DEBUG) {
@@ -1201,7 +1201,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                         + ", mIsStashed: " + mIsStashed);
             }
 
-            int changedFlags = mPrevFlags ^ flags;
+            long changedFlags = mPrevFlags ^ flags;
             if (mPrevFlags != flags) {
                 onStateChangeApplied(changedFlags);
                 mPrevFlags = flags;
@@ -1248,7 +1248,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
 
         /** Calculates the tag for CUJ_TASKBAR_EXPAND and CUJ_TASKBAR_COLLAPSE jank traces. */
-        private String computeTaskbarJankMonitorTag(int changedFlags) {
+        private String computeTaskbarJankMonitorTag(long changedFlags) {
             if (hasAnyFlag(changedFlags, FLAG_IN_APP)) {
                 // moving in or out of the app
                 if (hasAnyFlag(FLAG_IN_APP)) {
@@ -1268,7 +1268,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return "";
         }
 
-        private @StashAnimation int computeTransitionType(int changedFlags) {
+        private @StashAnimation int computeTransitionType(long changedFlags) {
 
             boolean hotseatHiddenDuringAppLaunch =
                     !mControllers.uiController.isHotseatIconOnTopWhenAligned()

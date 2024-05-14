@@ -249,7 +249,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     }
 
     private boolean handlingOverviewAnim() {
-        int stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
+        long stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
         return mDidTouchStartInNavBar && mStartState == NORMAL
                 && (stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0;
     }
