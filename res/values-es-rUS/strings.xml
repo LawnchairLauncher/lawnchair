@@ -46,11 +46,8 @@
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Sugerencias"</string>
     <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Imprescindibles"</string>
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Noticias y revistas"</string>
-    <string name="social_and_entertainment_widget_recommendation_category_label" msgid="2923840997302308191">"Zona de descanso"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Entretenimiento"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Redes sociales"</string>
-    <string name="fitness_widget_recommendation_category_label" msgid="2756483898236585324">"Salud y bienestar"</string>
-    <string name="weather_widget_recommendation_category_label" msgid="3059715991930798039">"Clima"</string>
     <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Sugerencias para ti"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Widgets de <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> a la derecha, búsqueda y opciones a la izquierda"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widgets}}"</string>

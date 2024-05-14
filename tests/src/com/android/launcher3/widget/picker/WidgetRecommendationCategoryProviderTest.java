@@ -79,15 +79,15 @@ public class WidgetRecommendationCategoryProviderTest {
                     R.string.news_widget_recommendation_category_label, /*order=*/1);
     private static final WidgetRecommendationCategory SUGGESTED_FOR_YOU =
             new WidgetRecommendationCategory(
-                    R.string.others_widget_recommendation_category_label, /*order=*/4);
+                    R.string.others_widget_recommendation_category_label, /*order=*/2);
     private static final WidgetRecommendationCategory SOCIAL =
             new WidgetRecommendationCategory(
                     R.string.social_widget_recommendation_category_label,
-                    /*order=*/5);
+                    /*order=*/3);
     private static final WidgetRecommendationCategory ENTERTAINMENT =
             new WidgetRecommendationCategory(
                     R.string.entertainment_widget_recommendation_category_label,
-                    /*order=*/6);
+                    /*order=*/4);
 
     private final ApplicationInfo mTestAppInfo = ApplicationInfoBuilder.newBuilder().setPackageName(
             TEST_PACKAGE).setName(TEST_APP_NAME).build();

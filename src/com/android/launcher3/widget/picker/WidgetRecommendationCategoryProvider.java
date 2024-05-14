@@ -64,14 +64,11 @@ public class WidgetRecommendationCategoryProvider implements ResourceBasedOverri
         Preconditions.assertWorkerThread();
         try (PackageManagerHelper pmHelper = new PackageManagerHelper(context)) {
             if (item.widgetInfo != null && item.widgetInfo.getComponent() != null) {
-                String widgetComponentName = item.widgetInfo.getComponent().getClassName();
                 ApplicationInfo applicationInfo = pmHelper.getApplicationInfo(
                         item.widgetInfo.getComponent().getPackageName(), item.widgetInfo.getUser(),
                         0 /* flags */);
                 if (applicationInfo != null) {
-                    int predictionCategory = applicationInfo.category;
-                    return getCategoryFromApplicationCategory(context, predictionCategory,
-                            widgetComponentName);
+                    return getCategoryFromApplicationCategory(applicationInfo.category);
                 }
             }
         }
@@ -80,29 +77,7 @@ public class WidgetRecommendationCategoryProvider implements ResourceBasedOverri
 
     /** Maps application category to an appropriate displayable category. */
     private static WidgetRecommendationCategory getCategoryFromApplicationCategory(
-            Context context, int applicationCategory, String componentName) {
-        // Weather categories don't map to a specific application category, so, we maintain an
-        // allowlist.
-        String[] weatherRecommendationAllowlist =
-                context.getResources().getStringArray(R.array.weather_recommendations);
-        for (String allowedWeatherComponentName : weatherRecommendationAllowlist) {
-            if (componentName.equalsIgnoreCase(allowedWeatherComponentName)) {
-                return new WidgetRecommendationCategory(
-                        R.string.weather_widget_recommendation_category_label, /*order=*/3);
-            }
-        }
-
-        // Fitness categories don't map to a specific application category, so, we maintain an
-        // allowlist.
-        String[] fitnessRecommendationAllowlist =
-                context.getResources().getStringArray(R.array.fitness_recommendations);
-        for (String allowedFitnessComponentName : fitnessRecommendationAllowlist) {
-            if (componentName.equalsIgnoreCase(allowedFitnessComponentName)) {
-                return new WidgetRecommendationCategory(
-                        R.string.fitness_widget_recommendation_category_label, /*order=*/2);
-            }
-        }
-
+            int applicationCategory) {
         if (applicationCategory == ApplicationInfo.CATEGORY_PRODUCTIVITY) {
             return new WidgetRecommendationCategory(
                     R.string.productivity_widget_recommendation_category_label, /*order=*/0);
@@ -116,7 +91,7 @@ public class WidgetRecommendationCategoryProvider implements ResourceBasedOverri
         if (applicationCategory == ApplicationInfo.CATEGORY_SOCIAL) {
             return new WidgetRecommendationCategory(
                     R.string.social_widget_recommendation_category_label,
-                    /*order=*/5);
+                    /*order=*/3);
         }
 
         if (applicationCategory == ApplicationInfo.CATEGORY_AUDIO
@@ -124,11 +99,10 @@ public class WidgetRecommendationCategoryProvider implements ResourceBasedOverri
                 || applicationCategory == ApplicationInfo.CATEGORY_IMAGE) {
             return new WidgetRecommendationCategory(
                     R.string.entertainment_widget_recommendation_category_label,
-                    /*order=*/6);
+                    /*order=*/4);
         }
 
         return new WidgetRecommendationCategory(
-                R.string.others_widget_recommendation_category_label, /*order=*/4);
+                R.string.others_widget_recommendation_category_label, /*order=*/2);
     }
-
 }

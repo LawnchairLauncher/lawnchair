@@ -155,11 +155,6 @@
 
     <string-array name="filtered_components" ></string-array>
 
-    <!-- Widget component names to be included in weather category of widget suggestions. -->
-    <string-array name="weather_recommendations"></string-array>
-    <!-- Widget component names to be included in fitness category of widget suggestions. -->
-    <string-array name="fitness_recommendations"></string-array>
-
     <!-- Swipe back to home related -->
     <dimen name="swipe_back_window_scale_x_margin">10dp</dimen>
     <dimen name="swipe_back_window_corner_radius">40dp</dimen>
