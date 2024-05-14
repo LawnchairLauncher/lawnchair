@@ -75,7 +75,6 @@ public class TaplKeyboardFocusTest extends AbstractLauncherUiTest<Launcher> {
     }
 
     @Test
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/311410127
     public void testAllAppsExitSearchAndFocusSearchResults() {
         final HomeAllApps allApps = mLauncher.goHome().switchToAllApps();
         assertTrue("Launcher internal state is not All Apps",
