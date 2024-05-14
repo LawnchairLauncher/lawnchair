@@ -575,6 +575,17 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
         }
     }
 
+    @Override
+    public void toggleQuickSettingsPanel() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.toggleQuickSettingsPanel();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call toggleQuickSettingsPanel", e);
+            }
+        }
+    }
+
     //
     // Pip
     //
