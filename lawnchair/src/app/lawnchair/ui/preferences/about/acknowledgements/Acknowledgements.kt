@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.layout.LoadingScreen
@@ -50,7 +50,7 @@ import com.android.launcher3.R
 fun Acknowledgements(
     modifier: Modifier = Modifier,
 ) {
-    val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsState()
+    val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsStateWithLifecycle()
     LoadingScreen(
         obj = ossLibraries,
         modifier = modifier,

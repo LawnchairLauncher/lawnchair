@@ -1,14 +1,14 @@
 package app.lawnchair.preferences2
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.util.subscribeBlocking
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun <C, S> Preference<C, S, *>.asState() = get().collectAsState(initial = firstBlocking())
+fun <C, S> Preference<C, S, *>.asState() = get().collectAsStateWithLifecycle(initialValue = firstBlocking())
 
 fun <C, S> Preference<C, S, *>.subscribeBlocking(
     scope: CoroutineScope,
