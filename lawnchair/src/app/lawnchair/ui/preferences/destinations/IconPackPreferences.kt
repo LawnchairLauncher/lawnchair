@@ -39,7 +39,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
@@ -51,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -224,8 +224,8 @@ fun IconPackGrid(
     isThemedIconPack: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
-    val themedIconPacks by LocalPreferenceInteractor.current.themedIconPacks.collectAsState()
+    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
+    val themedIconPacks by LocalPreferenceInteractor.current.themedIconPacks.collectAsStateWithLifecycle()
     val lazyListState = rememberLazyListState()
     val padding = 12.dp
     var iconPacksLocal = iconPacks

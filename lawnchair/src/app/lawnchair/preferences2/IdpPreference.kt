@@ -1,10 +1,10 @@
 package app.lawnchair.preferences2
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.launcher3.InvariantDeviceProfile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -46,4 +46,4 @@ fun IdpPreference.firstBlocking(gridOption: InvariantDeviceProfile.GridOption) =
 fun IdpPreference.state(
     gridOption: InvariantDeviceProfile.GridOption,
     initial: Int? = null,
-) = get(gridOption = gridOption).collectAsState(initial = initial)
+) = get(gridOption = gridOption).collectAsStateWithLifecycle(initialValue = initial)

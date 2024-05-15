@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +22,7 @@ import kotlinx.coroutines.runBlocking
 fun <T> Flow<T>.firstBlocking() = runBlocking { first() }
 
 @Composable
-fun <T> Flow<T>.collectAsStateBlocking() = collectAsState(initial = firstBlocking())
+fun <T> Flow<T>.collectAsStateBlocking() = collectAsStateWithLifecycle(initialValue = firstBlocking())
 
 fun broadcastReceiverFlow(context: Context, filter: IntentFilter) = callbackFlow {
     val receiver = object : BroadcastReceiver() {
