@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -186,9 +187,12 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         if (shortcutInfo.isEnabled()) {
             runtimeStatusFlags &= ~FLAG_DISABLED_BY_PUBLISHER;
         } else {
+            Log.w(TAG, "updateFromDeepShortcutInfo: Updated shortcut has been disabled. "
+                    + " package=" + shortcutInfo.getPackage()
+                    + " disabledReason=" + shortcutInfo.getDisabledReason());
             runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
         }
-        disabledMessage = shortcutInfo.getDisabledMessage();
+
         if (shortcutInfo.getDisabledReason() == ShortcutInfo.DISABLED_REASON_VERSION_LOWER) {
             runtimeStatusFlags |= FLAG_DISABLED_VERSION_LOWER;
         } else {
