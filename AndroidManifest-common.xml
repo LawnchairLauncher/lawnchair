@@ -179,7 +179,7 @@
             </intent-filter>
         </activity>
 
-        <!-- [b/197780098] Disable eager initialization of Jetpack libraries. -->
+        <!-- Disable eager initialization of Jetpack libraries. See bug 197780098. -->
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
