@@ -88,7 +88,9 @@ fun ProvideBottomSheetHandler(
                 onDismissRequest = {
                     showBottomSheet = false
                 },
-                windowInsets = windowInsets,
+                contentWindowInsets = {
+                    windowInsets
+                },
             ) {
                 bottomSheetContent.content()
             }
