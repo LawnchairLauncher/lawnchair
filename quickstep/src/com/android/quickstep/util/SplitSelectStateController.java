@@ -983,6 +983,7 @@ public class SplitSelectStateController {
         void onDestroy() {
             SystemUiProxy.INSTANCE.get(mLauncher).unregisterSplitSelectListener(
                     mSplitSelectListener);
+            mSplitSelectListener = null;
         }
 
         /**

@@ -111,6 +111,7 @@ public class DesktopVisibilityController {
      */
     public void unregisterSystemUiListener() {
         SystemUiProxy.INSTANCE.get(mLauncher).setDesktopTaskListener(null);
+        mDesktopTaskListener = null;
     }
 
     /**
