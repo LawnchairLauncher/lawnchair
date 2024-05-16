@@ -484,11 +484,4 @@
     <dimen name="keyboard_quick_switch_no_recent_items_icon_size">24dp</dimen>
     <dimen name="keyboard_quick_switch_no_recent_items_icon_margin">8dp</dimen>
 
-    <!-- Desktop mode -->
-    <dimen name="desktop_mode_floating_app_select_height">56dp</dimen>
-    <dimen name="desktop_mode_floating_app_select_elevation">4dp</dimen>
-    <dimen name="desktop_mode_floating_app_select_margin">16dp</dimen>
-    <dimen name="desktop_mode_floating_app_select_text_size">14sp</dimen>
-    <dimen name="desktop_mode_floating_app_select_text_margin">8dp</dimen>
-
 </resources>

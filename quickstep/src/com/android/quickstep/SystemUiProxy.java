@@ -1443,28 +1443,6 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
         }
     }
 
-    /** Call shell to stash desktop apps */
-    public void stashDesktopApps(int displayId) {
-        if (mDesktopMode != null) {
-            try {
-                mDesktopMode.stashDesktopApps(displayId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call stashDesktopApps", e);
-            }
-        }
-    }
-
-    /** Call shell to hide desktop apps that may be stashed */
-    public void hideStashedDesktopApps(int displayId) {
-        if (mDesktopMode != null) {
-            try {
-                mDesktopMode.hideStashedDesktopApps(displayId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call hideStashedDesktopApps", e);
-            }
-        }
-    }
-
     /**
      * If task with the given id is on the desktop, bring it to front
      */
