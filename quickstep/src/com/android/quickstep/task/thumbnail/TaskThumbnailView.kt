@@ -46,7 +46,7 @@ class TaskThumbnailView : View {
             RecentsViewContainer.containerFromContext<RecentsViewContainer>(context)
                 .getOverviewPanel<RecentsView<*, *>>()
                 .mRecentsViewData,
-            (parent as TaskView).mTaskViewData
+            (parent as TaskView).taskViewData
         )
     }
 

@@ -42,10 +42,8 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.popup.SystemShortcut.AppInfo;
 import com.android.launcher3.util.InstantAppResolver;
@@ -463,8 +461,7 @@ public interface TaskShortcutFactory {
             boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
             // Extra conditions if it's not grid-only overview
             if (!isGridOnlyOverview) {
-                RecentsOrientedState orientedState =
-                        taskContainer.getTaskView().getRecentsView().getPagedViewOrientedState();
+                RecentsOrientedState orientedState = taskContainer.getTaskView().getOrientedState();
                 boolean isFakeLandscape = !orientedState.isRecentsActivityRotationAllowed()
                         && orientedState.getTouchRotation() != ROTATION_0;
                 if (!isFakeLandscape) {
@@ -493,8 +490,7 @@ public interface TaskShortcutFactory {
             boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
             // Extra conditions if it's not grid-only overview
             if (!isGridOnlyOverview) {
-                RecentsOrientedState orientedState =
-                        taskContainer.getTaskView().getRecentsView().getPagedViewOrientedState();
+                RecentsOrientedState orientedState = taskContainer.getTaskView().getOrientedState();
                 boolean isFakeLandscape = !orientedState.isRecentsActivityRotationAllowed()
                         && orientedState.getTouchRotation() != ROTATION_0;
                 if (!isFakeLandscape) {

@@ -46,7 +46,7 @@ import org.mockito.kotlin.whenever
 @IgnoreLimit(ignoreLimit = BuildConfig.IS_STUDIO_BUILD)
 abstract class FakeInvariantDeviceProfileTest {
 
-    protected var context: Context? = null
+    protected lateinit var context: Context
     protected var inv: InvariantDeviceProfile? = null
     protected val info: Info = mock()
     protected var windowBounds: WindowBounds? = null
@@ -257,10 +257,10 @@ abstract class FakeInvariantDeviceProfileTest {
     }
 
     protected fun initializeVarsForTwoPanel(
-            isLandscape: Boolean = false,
-            isGestureMode: Boolean = true,
-            rows: Int = 4,
-            cols: Int = 4,
+        isLandscape: Boolean = false,
+        isGestureMode: Boolean = true,
+        rows: Int = 4,
+        cols: Int = 4,
     ) {
         val (x, y) = if (isLandscape) Pair(2208, 1840) else Pair(1840, 2208)
 

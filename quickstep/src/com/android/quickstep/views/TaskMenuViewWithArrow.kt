@@ -43,10 +43,7 @@ class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T
     companion object {
         const val TAG = "TaskMenuViewWithArrow"
 
-        fun <T> showForTask(
-            taskContainer: TaskContainer,
-            alignedOptionIndex: Int = 0
-        ): Boolean where T : RecentsViewContainer, T : Context {
+        fun showForTask(taskContainer: TaskContainer, alignedOptionIndex: Int = 0): Boolean {
             val container: RecentsViewContainer =
                 RecentsViewContainer.containerFromContext(taskContainer.taskView.context)
             val taskMenuViewWithArrow =
@@ -54,7 +51,7 @@ class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T
                     R.layout.task_menu_with_arrow,
                     container.dragLayer,
                     false
-                ) as TaskMenuViewWithArrow<T>
+                ) as TaskMenuViewWithArrow<*>
 
             return taskMenuViewWithArrow.populateAndShowForTask(taskContainer, alignedOptionIndex)
         }

@@ -176,7 +176,7 @@ public class OverviewCommandHelper {
         RunnableList callbackList = null;
         if (taskView != null) {
             mWaitForToggleCommandComplete = true;
-            taskView.setEndQuickswitchCuj(true);
+            taskView.setEndQuickSwitchCuj(true);
             callbackList = taskView.launchTasks();
         }
 

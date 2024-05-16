@@ -304,9 +304,7 @@ public class LauncherSwipeHandlerV2 extends
             // Disable if swiping to PIP
             return null;
         }
-        if (sourceTaskView == null
-                || sourceTaskView.getFirstTask() == null
-                || sourceTaskView.getFirstTask().key.getComponent() == null) {
+        if (sourceTaskView == null || sourceTaskView.getFirstTask().key.getComponent() == null) {
             // Disable if it's an invalid task
             return null;
         }

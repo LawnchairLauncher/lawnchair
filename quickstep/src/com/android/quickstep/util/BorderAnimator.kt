@@ -86,7 +86,7 @@ private constructor(
         fun createSimpleBorderAnimator(
             @Px borderRadiusPx: Int,
             @Px borderWidthPx: Int,
-            boundsBuilder: (rect: Rect?) -> Unit,
+            boundsBuilder: (Rect) -> Unit,
             targetView: View,
             @ColorInt borderColor: Int = DEFAULT_BORDER_COLOR,
             appearanceDurationMs: Long = DEFAULT_APPEARANCE_ANIMATION_DURATION_MS,
@@ -250,7 +250,7 @@ private constructor(
     /** BorderAnimationParams that simply draws the border outside the bounds of the target view. */
     private class SimpleParams(
         @Px borderWidthPx: Int,
-        boundsBuilder: (rect: Rect?) -> Unit,
+        boundsBuilder: (Rect) -> Unit,
         targetView: View,
     ) : BorderAnimationParams(borderWidthPx, boundsBuilder, targetView) {
         override val alignmentAdjustmentInset = 0

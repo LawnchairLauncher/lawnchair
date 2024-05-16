@@ -197,6 +197,8 @@ import com.android.systemui.unfold.config.UnfoldTransitionConfig;
 import com.android.systemui.unfold.progress.RemoteUnfoldTransitionReceiver;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
 
+import kotlin.Unit;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -586,6 +588,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
                         } else {
                             getStateManager().moveToRestState();
                         }
+                        return Unit.INSTANCE;
                     });
                 } else {
                     getStateManager().goToState(NORMAL);

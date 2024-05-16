@@ -152,6 +152,8 @@ import com.android.window.flags.Flags;
 import com.android.wm.shell.common.TransactionPool;
 import com.android.wm.shell.startingsurface.SplashScreenExitAnimationUtils;
 
+import kotlin.Unit;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -2332,6 +2334,7 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                             mRecentsAnimationController.finish(true /* toRecents */, null);
                         }
                     }
+                    return Unit.INSTANCE;
                 }, true /* freezeTaskList */);
             } else {
                 mContainerInterface.onLaunchTaskFailed();

@@ -551,7 +551,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      * TaskView
      */
     public float getCurrentCornerRadius() {
-        float visibleRadius = mCurrentFullscreenParams.mCurrentDrawnCornerRadius;
+        float visibleRadius = mCurrentFullscreenParams.getCurrentDrawnCornerRadius();
         mTempPoint[0] = visibleRadius;
         mTempPoint[1] = 0;
         mInversePositionMatrix.mapVectors(mTempPoint);
