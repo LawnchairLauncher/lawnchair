@@ -46,8 +46,11 @@ class TaskbarRecentAppsController(
         enableDesktopWindowingMode() && enableDesktopWindowingTaskbarRunningApps()
 
     // TODO(b/343532825): Add a setting to disable Recents even when the flag is on.
-    @VisibleForTesting
-    var isEnabled = enableRecentsInTaskbar() || canShowRunningApps
+    var isEnabled: Boolean = enableRecentsInTaskbar() || canShowRunningApps
+        @VisibleForTesting
+        set(isEnabledFromTest){
+            field = isEnabledFromTest
+        }
 
     // Initialized in init.
     private lateinit var controllers: TaskbarControllers
