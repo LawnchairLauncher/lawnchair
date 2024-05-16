@@ -323,7 +323,6 @@ public class BubbleBarController extends IBubblesListener.Stub {
         final boolean suppressAnimation =
                 update.initialState || mBubbleBarViewController.isHiddenForSysui();
 
-        BubbleBarItem previouslySelectedBubble = mSelectedBubble;
         BubbleBarBubble bubbleToSelect = null;
         if (!update.removedBubbles.isEmpty()) {
             for (int i = 0; i < update.removedBubbles.size(); i++) {
@@ -379,6 +378,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
             BubbleBarBubble bb = mBubbles.get(update.updatedBubble.getKey());
             // If we're not stashed, we're visible so animate
             bb.getView().updateDotVisibility(!mBubbleStashController.isStashed() /* animate */);
+            mBubbleBarViewController.animateBubbleNotification(bb, /* isExpanding= */ false);
         }
         if (update.bubbleKeysInOrder != null && !update.bubbleKeysInOrder.isEmpty()) {
             // Create the new list
