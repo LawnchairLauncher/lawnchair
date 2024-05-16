@@ -411,15 +411,27 @@ public abstract class AbstractStateChangeTouchController
         mLauncher.getStatsLogManager().logger()
                 .withSrcState(mStartState.statsLogOrdinal)
                 .withDstState(targetState.statsLogOrdinal)
-                .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
-                        .setWorkspace(
-                                LauncherAtom.WorkspaceContainer.newBuilder()
-                                        .setPageIndex(mLauncher.getWorkspace().getCurrentPage()))
-                        .build())
+                .withContainerInfo(getContainerInfo(targetState))
                 .log(StatsLogManager.getLauncherAtomEvent(mStartState.statsLogOrdinal,
                             targetState.statsLogOrdinal, mToState.ordinal > mFromState.ordinal
                                     ? LAUNCHER_UNKNOWN_SWIPEUP
                                     : LAUNCHER_UNKNOWN_SWIPEDOWN));
+    }
+
+    private LauncherAtom.ContainerInfo getContainerInfo(LauncherState targetState) {
+        if (targetState.isRecentsViewVisible) {
+            return LauncherAtom.ContainerInfo.newBuilder()
+                    .setTaskSwitcherContainer(
+                            LauncherAtom.TaskSwitcherContainer.getDefaultInstance()
+                    )
+                    .build();
+        }
+
+        return LauncherAtom.ContainerInfo.newBuilder()
+                .setWorkspace(
+                        LauncherAtom.WorkspaceContainer.newBuilder()
+                                .setPageIndex(mLauncher.getWorkspace().getCurrentPage()))
+                .build();
     }
 
     protected void clearState() {

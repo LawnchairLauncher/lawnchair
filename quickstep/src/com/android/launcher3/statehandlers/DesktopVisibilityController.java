@@ -172,7 +172,7 @@ public class DesktopVisibilityController {
         }
         setBackgroundStateEnabled(state == BACKGROUND_APP);
         // Desktop visibility tracks overview and background state separately
-        setOverviewStateEnabled(state != BACKGROUND_APP && state.overviewUi);
+        setOverviewStateEnabled(state != BACKGROUND_APP && state.isRecentsViewVisible);
     }
 
     private void setOverviewStateEnabled(boolean overviewStateEnabled) {

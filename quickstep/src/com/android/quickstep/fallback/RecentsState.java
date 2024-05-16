@@ -26,7 +26,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.util.Themes;
-import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.RecentsViewContainer;
 
 /**
@@ -41,22 +40,23 @@ public class RecentsState implements BaseState<RecentsState> {
     private static final int FLAG_SHOW_AS_GRID = BaseState.getFlag(4);
     private static final int FLAG_SCRIM = BaseState.getFlag(5);
     private static final int FLAG_LIVE_TILE = BaseState.getFlag(6);
-    private static final int FLAG_OVERVIEW_UI = BaseState.getFlag(7);
+    private static final int FLAG_RECENTS_VIEW_VISIBLE = BaseState.getFlag(7);
     private static final int FLAG_TASK_THUMBNAIL_SPLASH = BaseState.getFlag(8);
 
     public static final RecentsState DEFAULT = new RecentsState(0,
             FLAG_DISABLE_RESTORE | FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_SHOW_AS_GRID
-                    | FLAG_SCRIM | FLAG_LIVE_TILE | FLAG_OVERVIEW_UI);
+                    | FLAG_SCRIM | FLAG_LIVE_TILE | FLAG_RECENTS_VIEW_VISIBLE);
     public static final RecentsState MODAL_TASK = new ModalState(1,
             FLAG_DISABLE_RESTORE | FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_MODAL
-                    | FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_LIVE_TILE | FLAG_OVERVIEW_UI);
+                    | FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_LIVE_TILE | FLAG_RECENTS_VIEW_VISIBLE);
     public static final RecentsState BACKGROUND_APP = new BackgroundAppState(2,
-            FLAG_DISABLE_RESTORE | FLAG_NON_INTERACTIVE | FLAG_FULL_SCREEN | FLAG_OVERVIEW_UI
+            FLAG_DISABLE_RESTORE | FLAG_NON_INTERACTIVE | FLAG_FULL_SCREEN
+                    | FLAG_RECENTS_VIEW_VISIBLE
                     | FLAG_TASK_THUMBNAIL_SPLASH);
     public static final RecentsState HOME = new RecentsState(3, 0);
     public static final RecentsState BG_LAUNCHER = new LauncherState(4, 0);
     public static final RecentsState OVERVIEW_SPLIT_SELECT = new RecentsState(5,
-            FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_OVERVIEW_UI | FLAG_CLOSE_POPUPS
+            FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_RECENTS_VIEW_VISIBLE | FLAG_CLOSE_POPUPS
                     | FLAG_DISABLE_RESTORE);
 
     public final int ordinal;
@@ -152,8 +152,8 @@ public class RecentsState implements BaseState<RecentsState> {
     /**
      * True if the state has overview panel visible.
      */
-    public boolean overviewUi() {
-        return hasFlag(FLAG_OVERVIEW_UI);
+    public boolean isRecentsViewVisible() {
+        return hasFlag(FLAG_RECENTS_VIEW_VISIBLE);
     }
 
     private static class ModalState extends RecentsState {

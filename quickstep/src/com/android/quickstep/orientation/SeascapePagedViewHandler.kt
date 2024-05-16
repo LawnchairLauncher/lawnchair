@@ -32,6 +32,7 @@ import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Flags
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.logger.LauncherAtom
 import com.android.launcher3.touch.SingleAxisSwipeDetector
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT
@@ -395,4 +396,8 @@ class SeascapePagedViewHandler : LandscapePagedViewHandler() {
             iconView.layoutParams = layoutParams
         }
     }
+
+    @Override
+    override fun getHandlerTypeForLogging(): LauncherAtom.TaskSwitcherContainer.OrientationHandler =
+        LauncherAtom.TaskSwitcherContainer.OrientationHandler.SEASCAPE
 }

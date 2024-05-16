@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.Window;
 
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ScrimView;
@@ -165,4 +166,36 @@ public interface RecentsViewContainer extends ActivityContext {
      * Begins transition from overview back to homescreen
      */
     void returnToHomescreen();
+
+    /**
+     * True if the overview panel is visible.
+     * @return Boolean
+     */
+    boolean isRecentsViewVisible();
+
+    /**
+     * Overwrites any logged item in Launcher that doesn't have a container with the
+     * {@link com.android.launcher3.touch.PagedOrientationHandler} in use for Overview.
+     *
+     * @param itemInfoBuilder {@link LauncherAtom.ItemInfo.Builder}
+     */
+    default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) {
+        if (!itemInfoBuilder.getContainerInfo().hasTaskSwitcherContainer()) {
+            return;
+        }
+
+        if (!isRecentsViewVisible()) {
+            return;
+        }
+
+        RecentsView<?, ?> recentsView = getOverviewPanel();
+        var orientationForLogging =
+                recentsView.getPagedOrientationHandler().getHandlerTypeForLogging();
+        itemInfoBuilder.setContainerInfo(
+                LauncherAtom.ContainerInfo.newBuilder()
+                        .setTaskSwitcherContainer(
+                                LauncherAtom.TaskSwitcherContainer.newBuilder()
+                                        .setOrientationHandler(orientationForLogging))
+                        .build());
+    }
 }

@@ -247,7 +247,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         }
 
         // Set border after select mode changes to avoid showing border during state transition
-        if (!toState.overviewUi() || toState == MODAL_TASK) {
+        if (!toState.isRecentsViewVisible() || toState == MODAL_TASK) {
             setTaskBorderEnabled(false);
         }
 
@@ -267,7 +267,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             setOverviewSelectEnabled(false);
         }
 
-        if (finalState.overviewUi() && finalState != MODAL_TASK) {
+        if (finalState.isRecentsViewVisible() && finalState != MODAL_TASK) {
             setTaskBorderEnabled(true);
         }
 
@@ -298,7 +298,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     public boolean onTouchEvent(MotionEvent ev) {
         boolean result = super.onTouchEvent(ev);
         // Do not let touch escape to siblings below this view.
-        return result || mContainer.getStateManager().getState().overviewUi();
+        return result || mContainer.getStateManager().getState().isRecentsViewVisible();
     }
 
     @Override

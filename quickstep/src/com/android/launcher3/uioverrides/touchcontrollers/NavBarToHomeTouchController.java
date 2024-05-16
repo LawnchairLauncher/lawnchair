@@ -118,7 +118,7 @@ public class NavBarToHomeTouchController implements TouchController,
         if (!cameFromNavBar) {
             return false;
         }
-        if (mStartState.overviewUi || mStartState == ALL_APPS) {
+        if (mStartState.isRecentsViewVisible || mStartState == ALL_APPS) {
             return true;
         }
         int typeToClose = TYPE_ALL & ~TYPE_ALL_APPS_EDU;
@@ -145,7 +145,7 @@ public class NavBarToHomeTouchController implements TouchController,
     private void initCurrentAnimation() {
         long accuracy = (long) (getShiftRange() * 2);
         final PendingAnimation builder = new PendingAnimation(accuracy);
-        if (mStartState.overviewUi) {
+        if (mStartState.isRecentsViewVisible) {
             RecentsView recentsView = mLauncher.getOverviewPanel();
             AnimatorControllerWithResistance.createRecentsResistanceFromOverviewAnim(mLauncher,
                     builder);
@@ -194,7 +194,7 @@ public class NavBarToHomeTouchController implements TouchController,
             RecentsView recentsView = mLauncher.getOverviewPanel();
             recentsView.switchToScreenshot(null,
                     () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
-            if (mStartState.overviewUi) {
+            if (mStartState.isRecentsViewVisible) {
                 Runnable onReachedHome = () -> {
                     StateManager.StateListener<LauncherState> listener =
                             new StateManager.StateListener<>() {

@@ -136,7 +136,7 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
     }
 
     private Interpolator getOverviewInterpolator(RecentsState toState) {
-        return toState.overviewUi() ? INSTANT : FINAL_FRAME;
+        return toState.isRecentsViewVisible() ? INSTANT : FINAL_FRAME;
     }
 
     /**

@@ -192,7 +192,7 @@ public final class LauncherActivityInterface extends
     public RecentsView getVisibleRecentsView() {
         QuickstepLauncher launcher = getVisibleLauncher();
         RecentsView recentsView =
-                launcher != null && launcher.getStateManager().getState().overviewUi
+                launcher != null && launcher.getStateManager().getState().isRecentsViewVisible
                         ? launcher.getOverviewPanel() : null;
         if (recentsView == null || (!launcher.hasBeenResumed()
                 && recentsView.getRunningTaskViewId() == -1)) {

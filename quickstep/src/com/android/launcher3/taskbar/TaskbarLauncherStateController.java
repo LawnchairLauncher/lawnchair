@@ -669,7 +669,7 @@ public class TaskbarLauncherStateController {
     }
 
     boolean isInOverviewUi() {
-        return mLauncherState.overviewUi;
+        return mLauncherState.isRecentsViewVisible;
     }
 
     private void playStateTransitionAnim(AnimatorSet animatorSet, long duration,

@@ -45,6 +45,7 @@ import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_ACTIONS_SPLIT;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_ORIENTATION_CHANGED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
@@ -145,6 +146,7 @@ import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
@@ -2085,12 +2087,17 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                 : View.LAYOUT_DIRECTION_RTL);
         mClearAllButton.setRotation(getPagedOrientationHandler().getDegreesRotated());
 
-        if (forceRecreateDragLayerControllers
-                || !getPagedOrientationHandler().equals(oldOrientationHandler)) {
+        boolean isOrientationHandlerChanged =
+                !getPagedOrientationHandler().equals(oldOrientationHandler);
+        if (forceRecreateDragLayerControllers || isOrientationHandlerChanged) {
             // Changed orientations, update controllers so they intercept accordingly.
             mContainer.getDragLayer().recreateControllers();
             onOrientationChanged();
             resetTaskVisuals();
+            // Log fake orientation changed.
+            if (isOrientationHandlerChanged) {
+                logOrientationChanged();
+            }
         }
 
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
@@ -4356,7 +4363,10 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     public void updateRecentsRotation() {
         final int rotation = TraceHelper.allowIpcs(
                 "RecentsView.updateRecentsRotation", () -> mContainer.getDisplay().getRotation());
-        mOrientationState.setRecentsRotation(rotation);
+        // Log real orientation change.
+        if (mOrientationState.setRecentsRotation(rotation)) {
+            logOrientationChanged();
+        }
     }
 
     public void setLayoutRotation(int touchRotation, int displayRotation) {
@@ -6300,6 +6310,24 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         }
         mDesktopRecentsTransitionController.moveToDesktop(taskContainer.getTask().key.id);
         successCallback.run();
+    }
+
+    // Logs when the orientation of Overview changes. We log both real and fake orientation changes.
+    private void logOrientationChanged() {
+        // Only log when Overview is showing.
+        if (mOverviewStateEnabled) {
+            mContainer.getStatsLogManager()
+                    .logger()
+                    .withContainerInfo(
+                            LauncherAtom.ContainerInfo.newBuilder()
+                                    .setTaskSwitcherContainer(
+                                            LauncherAtom.TaskSwitcherContainer.newBuilder()
+                                                    .setOrientationHandler(
+                                                            getPagedOrientationHandler()
+                                                                    .getHandlerTypeForLogging()))
+                                    .build())
+                    .log(LAUNCHER_OVERVIEW_ORIENTATION_CHANGED);
+        }
     }
 
     public interface TaskLaunchListener {
