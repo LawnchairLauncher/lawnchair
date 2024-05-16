@@ -64,7 +64,8 @@ public class BubbleControllers {
      * in constructors for now, as some controllers may still be waiting for init().
      */
     public void init(TaskbarControllers taskbarControllers) {
-        bubbleBarController.init(taskbarControllers, this);
+        bubbleBarController.init(this,
+                taskbarControllers.navbarButtonsViewController::isImeVisible);
         bubbleBarViewController.init(taskbarControllers, this);
         bubbleStashedHandleViewController.init(taskbarControllers, this);
         bubbleStashController.init(taskbarControllers, this);
