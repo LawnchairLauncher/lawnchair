@@ -506,12 +506,10 @@ public class BubbleBarViewController {
 
     /**
      * Notifies SystemUI to expand the selected bubble when the bubble is released.
-     * @param bubbleView dragged bubble view
      */
-    public void onDragRelease(@NonNull BubbleView bubbleView, BubbleBarLocation location) {
-        if (bubbleView.getBubble() == null) return;
+    public void onDragRelease(BubbleBarLocation location) {
         // TODO(b/330585402): send new bubble bar bounds to shell for the animation
-        mSystemUiProxy.stopBubbleDrag(bubbleView.getBubble().getKey(), location);
+        mSystemUiProxy.stopBubbleDrag(location);
     }
 
     /**
@@ -556,7 +554,7 @@ public class BubbleBarViewController {
      * @param bubble dismissed bubble item
      */
     public void onDismissBubbleWhileDragging(@NonNull BubbleBarItem bubble) {
-        mSystemUiProxy.removeBubble(bubble.getKey());
+        mSystemUiProxy.dragBubbleToDismiss(bubble.getKey());
     }
 
     /**
