@@ -153,7 +153,7 @@ public class TaskThumbnailCache {
         Preconditions.assertUIThread();
 
         boolean lowResolution = !mHighResLoadingState.isEnabled();
-        if (task.thumbnail != null && task.thumbnail.thumbnail != null
+        if (task.thumbnail != null && task.thumbnail.getThumbnail() != null
                 && (!task.thumbnail.reducedResolution || lowResolution)) {
             // Nothing to load, the thumbnail is already high-resolution or matches what the
             // request, so just callback
@@ -189,7 +189,7 @@ public class TaskThumbnailCache {
         Preconditions.assertUIThread();
 
         ThumbnailData cachedThumbnail = mCache.getAndInvalidateIfModified(key);
-        if (cachedThumbnail != null &&  cachedThumbnail.thumbnail != null
+        if (cachedThumbnail != null &&  cachedThumbnail.getThumbnail() != null
                 && (!cachedThumbnail.reducedResolution || lowResolution)) {
             // Already cached, lets use that thumbnail
             callback.accept(cachedThumbnail);
@@ -200,7 +200,7 @@ public class TaskThumbnailCache {
                 () -> {
                     ThumbnailData thumbnailData = ActivityManagerWrapper.getInstance()
                             .getTaskThumbnail(key.id, lowResolution);
-                    return thumbnailData.thumbnail != null ? thumbnailData
+                    return thumbnailData.getThumbnail() != null ? thumbnailData
                             : ActivityManagerWrapper.getInstance().takeTaskThumbnail(key.id);
                 },
                 MAIN_EXECUTOR,
@@ -210,7 +210,7 @@ public class TaskThumbnailCache {
                     if (enableGridOnlyOverview() && result.reducedResolution
                             && getHighResLoadingState().isEnabled()) {
                         ThumbnailData newCachedThumbnail = mCache.getAndInvalidateIfModified(key);
-                        if (newCachedThumbnail != null && newCachedThumbnail.thumbnail != null
+                        if (newCachedThumbnail != null && newCachedThumbnail.getThumbnail() != null
                                 && !newCachedThumbnail.reducedResolution) {
                             return;
                         }
