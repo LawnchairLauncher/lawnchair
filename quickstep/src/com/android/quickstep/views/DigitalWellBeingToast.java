@@ -320,7 +320,7 @@ public final class DigitalWellBeingToast {
                 (FrameLayout.LayoutParams) mBanner.getLayoutParams();
         DeviceProfile deviceProfile = mContainer.getDeviceProfile();
         layoutParams.bottomMargin = ((ViewGroup.MarginLayoutParams)
-                mTaskView.getFirstThumbnailView().getLayoutParams()).bottomMargin;
+                mTaskView.getFirstThumbnailViewDeprecated().getLayoutParams()).bottomMargin;
         RecentsPagedOrientationHandler orientationHandler = mTaskView.getPagedOrientationHandler();
         Pair<Float, Float> translations = orientationHandler
                 .getDwbLayoutTranslations(mTaskView.getMeasuredWidth(),

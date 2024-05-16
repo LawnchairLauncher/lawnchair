@@ -56,7 +56,7 @@ import com.android.launcher3.views.ArrowTipView;
 import com.android.quickstep.util.AssistContentRequester;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.GoOverviewActionsView;
-import com.android.quickstep.views.TaskThumbnailViewDeprecated;
+import com.android.quickstep.views.TaskView.TaskContainer;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -101,8 +101,8 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     /**
      * Create a new overlay instance for the given View
      */
-    public TaskOverlayGo createOverlay(TaskThumbnailViewDeprecated thumbnailView) {
-        return new TaskOverlayGo(thumbnailView, mContentRequester);
+    public TaskOverlayGo createOverlay(TaskContainer taskContainer) {
+        return new TaskOverlayGo(taskContainer, mContentRequester);
     }
 
     /**
@@ -120,9 +120,9 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         private OverlayDialogGo mDialog;
         private ArrowTipView mArrowTipView;
 
-        private TaskOverlayGo(TaskThumbnailViewDeprecated taskThumbnailView,
+        private TaskOverlayGo(TaskContainer taskContainer,
                 AssistContentRequester assistContentRequester) {
-            super(taskThumbnailView);
+            super(taskContainer);
             mFactoryContentRequester = assistContentRequester;
             mSharedPreferences = LauncherPrefs.getPrefs(mApplicationContext);
         }
@@ -148,7 +148,8 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             // Disable Overview Actions for Work Profile apps
             boolean isManagedProfileTask =
                     UserManager.get(mApplicationContext).isManagedProfile(task.key.userId);
-            boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot() && !isManagedProfileTask;
+            boolean isAllowedByPolicy = mTaskContainer.getThumbnailViewDeprecated().isRealSnapshot()
+                    && !isManagedProfileTask;
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
             mTaskPackageName = task.key.getPackageName();
             mSharedPreferences = LauncherPrefs.getPrefs(mApplicationContext);
@@ -162,8 +163,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             int taskId = task.key.id;
             mFactoryContentRequester.requestAssistContent(taskId, this::onAssistContentReceived);
 
-            RecentsOrientedState orientedState =
-                    mThumbnailView.getTaskView().getRecentsView().getPagedViewOrientedState();
+            RecentsOrientedState orientedState = mTaskContainer.getTaskView().getOrientedState();
             boolean isInLandscape = orientedState.getDisplayRotation() != ROTATION_0;
 
             // show tooltips in portrait mode only

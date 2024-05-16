@@ -87,7 +87,7 @@ class SplitAnimationControllerTest {
 
     @Before
     fun setup() {
-        whenever(mockTaskContainer.thumbnailView).thenReturn(mockThumbnailView)
+        whenever(mockTaskContainer.thumbnailViewDeprecated).thenReturn(mockThumbnailView)
         whenever(mockThumbnailView.thumbnail).thenReturn(mockBitmap)
         whenever(mockTaskContainer.iconView).thenReturn(mockIconView)
         whenever(mockIconView.drawable).thenReturn(mockTaskViewDrawable)
@@ -180,7 +180,7 @@ class SplitAnimationControllerTest {
 
         whenever(mockTaskContainer.task).thenReturn(mockTask)
         whenever(mockTaskContainer.iconView).thenReturn(mockIconView)
-        whenever(mockTaskContainer.thumbnailView).thenReturn(mockThumbnailView)
+        whenever(mockTaskContainer.thumbnailViewDeprecated).thenReturn(mockThumbnailView)
         whenever(mockTask.getKey()).thenReturn(mockTaskKey)
         whenever(mockTaskKey.getId()).thenReturn(taskId)
         whenever(mockSplitSelectStateController.initialTaskId).thenReturn(taskId)
