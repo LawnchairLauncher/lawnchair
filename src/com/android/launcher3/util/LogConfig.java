@@ -70,4 +70,10 @@ public class LogConfig {
      * When turned on, we enable long press nav handle related logging.
      */
     public static final String NAV_HANDLE_LONG_PRESS = "NavHandleLongPress";
+
+
+    /**
+     * When turned on, we enable zero state web data loader related logging.
+     */
+    public static final String ZERO_WEB_DATA_LOADER = "ZeroStateWebDataLoaderLog";
 }

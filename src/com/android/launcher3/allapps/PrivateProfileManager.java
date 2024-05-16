@@ -60,6 +60,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -96,14 +97,17 @@ public class PrivateProfileManager extends UserProfileManager {
     private static final int TEXT_UNLOCK_OPACITY_DURATION = 300;
     private static final int TEXT_LOCK_OPACITY_DURATION = 50;
     private static final int APP_OPACITY_DURATION = 400;
+    private static final int MASK_VIEW_DURATION = 200;
     private static final int APP_OPACITY_DELAY = 400;
     private static final int SETTINGS_AND_LOCK_GROUP_TRANSITION_DELAY = 400;
     private static final int SETTINGS_OPACITY_DELAY = 400;
     private static final int LOCK_TEXT_OPACITY_DELAY = 500;
+    private static final int MASK_VIEW_DELAY = 400;
     private static final int NO_DELAY = 0;
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
     private final int mPsHeaderHeight;
+    private final int mFloatingMaskViewCornerRadius;
     private final RecyclerView.OnScrollListener mOnIdleScrollListener =
             new RecyclerView.OnScrollListener() {
         @Override
@@ -123,6 +127,7 @@ public class PrivateProfileManager extends UserProfileManager {
     private Runnable mOnPSHeaderAdded;
     @Nullable
     private RelativeLayout mPSHeader;
+    private ConstraintLayout mFloatingMaskView;
     private final String mLockedStateContentDesc;
     private final String mUnLockedStateContentDesc;
 
@@ -142,6 +147,8 @@ public class PrivateProfileManager extends UserProfileManager {
                 .getString(R.string.ps_container_lock_button_content_description);
         mUnLockedStateContentDesc = mAllApps.getContext()
                 .getString(R.string.ps_container_unlock_button_content_description);
+        mFloatingMaskViewCornerRadius = mAllApps.getContext().getResources().getDimensionPixelSize(
+                R.dimen.ps_floating_mask_corner_radius);
     }
 
     /** Adds Private Space Header to the layout. */
@@ -219,6 +226,7 @@ public class PrivateProfileManager extends UserProfileManager {
                 .hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED);
         int updatedState = isEnabled ? STATE_ENABLED : STATE_DISABLED;
         setCurrentState(updatedState);
+        mFloatingMaskView = null;
         if (mPSHeader != null) {
             mPSHeader.setAlpha(1);
         }
@@ -494,12 +502,15 @@ public class PrivateProfileManager extends UserProfileManager {
                 RecyclerView.LayoutManager layoutManager = allAppsRecyclerView.getLayoutManager();
                 if (layoutManager != null) {
                     startAnimationScroll(allAppsRecyclerView, layoutManager, smoothScroller);
-                    currentItem.decorationInfo = null;
+                    // Preserve decorator if floating mask view exists.
+                    if (mFloatingMaskView == null) {
+                        currentItem.decorationInfo = null;
+                    }
                 }
                 break;
             }
             // Make the private space apps gone to "collapse".
-            if (isPrivateSpaceItem(currentItem)) {
+            if (mFloatingMaskView == null && isPrivateSpaceItem(currentItem)) {
                 RecyclerView.ViewHolder viewHolder =
                         allAppsRecyclerView.findViewHolderForAdapterPosition(i);
                 if (viewHolder != null) {
@@ -637,6 +648,7 @@ public class PrivateProfileManager extends UserProfileManager {
             setAnimationRunning(false);
             return;
         }
+        attachFloatingMaskView(expand);
         ViewGroup settingsAndLockGroup = mPSHeader.findViewById(R.id.settingsAndLockGroup);
         if (settingsAndLockGroup.getLayoutTransition() == null) {
             // Set a new transition if the current ViewGroup does not already contain one as each
@@ -662,6 +674,11 @@ public class PrivateProfileManager extends UserProfileManager {
                 mPSHeader.findViewById(R.id.lock_text).setVisibility(expand ? VISIBLE : GONE);
                 setAnimationRunning(true);
             }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                detachFloatingMaskView();
+            }
         });
         animatorSet.addListener(forEndCallback(() -> {
             setAnimationRunning(false);
@@ -681,13 +698,17 @@ public class PrivateProfileManager extends UserProfileManager {
             }
         }));
         if (expand) {
-            animatorSet.playTogether(animateAlphaOfIcons(true));
+            animatorSet.playTogether(animateAlphaOfIcons(true),
+                    translateFloatingMaskView(false));
         } else {
             if (isPrivateSpaceHidden()) {
-                animatorSet.playSequentially(animateAlphaOfIcons(false),
-                        animateCollapseAnimation(), fadeOutHeaderAlpha());
+                animatorSet.playSequentially(translateFloatingMaskView(false),
+                        animateAlphaOfIcons(false),
+                        animateCollapseAnimation(),
+                        fadeOutHeaderAlpha());
             } else {
-                animatorSet.playSequentially(animateAlphaOfIcons(false),
+                animatorSet.playSequentially(translateFloatingMaskView(true),
+                        animateAlphaOfIcons(false),
                         animateCollapseAnimation());
             }
         }
@@ -710,6 +731,27 @@ public class PrivateProfileManager extends UserProfileManager {
                 if (mPSHeader != null) {
                     mPSHeader.setAlpha((float) valueAnimator.getAnimatedValue());
                 }
+            }
+        });
+        return alphaAnim;
+    }
+
+    /** Fades out the private space container. */
+    private ValueAnimator translateFloatingMaskView(boolean animateIn) {
+        if (!Flags.privateSpaceFloatingMaskView() || mFloatingMaskView == null) {
+            return new ValueAnimator();
+        }
+        // Translate base on the height amount. Translates out on expand and in on collapse.
+        float floatingMaskViewHeight = getFloatingMaskViewHeight();
+        float from = animateIn ? floatingMaskViewHeight : 0;
+        float to = animateIn ? 0 : floatingMaskViewHeight;
+        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(from, to);
+        alphaAnim.setDuration(MASK_VIEW_DURATION);
+        alphaAnim.setStartDelay(MASK_VIEW_DELAY);
+        alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                mFloatingMaskView.setTranslationY((float) valueAnimator.getAnimatedValue());
             }
         });
         return alphaAnim;
@@ -806,6 +848,28 @@ public class PrivateProfileManager extends UserProfileManager {
         });
     }
 
+    private void attachFloatingMaskView(boolean expand) {
+        if (!Flags.privateSpaceFloatingMaskView()) {
+            return;
+        }
+        mFloatingMaskView = (FloatingMaskView) mAllApps.getLayoutInflater().inflate(
+                R.layout.private_space_mask_view, mAllApps, false);
+        mAllApps.addView(mFloatingMaskView);
+        // Translate off the screen first if its collapsing so this header view isn't visible to
+        // user when animation starts.
+        if (!expand) {
+            mFloatingMaskView.setTranslationY(getFloatingMaskViewHeight());
+        }
+        mFloatingMaskView.setVisibility(VISIBLE);
+    }
+
+    private void detachFloatingMaskView() {
+        if (mFloatingMaskView != null) {
+            mAllApps.removeView(mFloatingMaskView);
+        }
+        mFloatingMaskView = null;
+    }
+
     /** Starts the smooth scroll with the provided smoothScroller and add idle listener. */
     private void startAnimationScroll(AllAppsRecyclerView allAppsRecyclerView,
             RecyclerView.LayoutManager layoutManager, RecyclerView.SmoothScroller smoothScroller) {
@@ -813,6 +877,10 @@ public class PrivateProfileManager extends UserProfileManager {
         layoutManager.startSmoothScroll(smoothScroller);
         allAppsRecyclerView.removeOnScrollListener(mOnIdleScrollListener);
         allAppsRecyclerView.addOnScrollListener(mOnIdleScrollListener);
+    }
+
+    private float getFloatingMaskViewHeight() {
+        return mFloatingMaskViewCornerRadius + getMainRecyclerView().getPaddingBottom();
     }
 
     AllAppsRecyclerView getMainRecyclerView() {

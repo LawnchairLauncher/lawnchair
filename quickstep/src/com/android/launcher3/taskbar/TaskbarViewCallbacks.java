@@ -46,20 +46,17 @@ public class TaskbarViewCallbacks {
         return mActivity.getItemOnClickListener();
     }
 
-    public View.OnClickListener getAllAppsButtonClickListener() {
-        return v -> {
-            InteractionJankMonitorWrapper.begin(v, Cuj.CUJ_LAUNCHER_OPEN_ALL_APPS,
-                    /* tag= */ "TASKBAR_BUTTON");
-            mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP);
-            mControllers.taskbarAllAppsController.toggle();
-        };
+    /** Trigger All Apps button click action. */
+    protected void triggerAllAppsButtonClick(View v) {
+        InteractionJankMonitorWrapper.begin(v, Cuj.CUJ_LAUNCHER_OPEN_ALL_APPS,
+                /* tag= */ "TASKBAR_BUTTON");
+        mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP);
+        mControllers.taskbarAllAppsController.toggle();
     }
 
-    public View.OnLongClickListener getAllAppsButtonLongClickListener() {
-        return v -> {
-            mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_ALLAPPS_BUTTON_LONG_PRESS);
-            return true;
-        };
+    /** Trigger All Apps button long click action. */
+    protected void triggerAllAppsButtonLongClick() {
+        mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_ALLAPPS_BUTTON_LONG_PRESS);
     }
 
     public boolean isAllAppsButtonHapticFeedbackEnabled() {

@@ -24,6 +24,8 @@ import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR;
 import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.quickstep.RecentsAnimationDeviceState.QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -31,11 +33,13 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.DisplayCutout;
 import android.view.InputDevice;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 
@@ -63,6 +67,9 @@ import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconButtonView;
+import com.android.quickstep.DeviceConfigWrapper;
+import com.android.quickstep.RecentsAnimationDeviceState;
+import com.android.quickstep.util.AssistStateManager;
 
 import java.util.function.Predicate;
 
@@ -82,8 +89,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private final int mItemPadding;
     private final int mFolderLeaveBehindColor;
     private final boolean mIsRtl;
+    private final boolean mIsTransientTaskbar;
 
     private final TaskbarActivityContext mActivityContext;
+    private final RecentsAnimationDeviceState mDeviceState;
 
     // Initialized in init.
     private TaskbarViewCallbacks mControllerCallbacks;
@@ -95,6 +104,11 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     // Only non-null when device supports having an All Apps button.
     private @Nullable IconButtonView mAllAppsButton;
+    private Runnable mAllAppsTouchRunnable;
+    private long mAllAppsButtonTouchDelayMs;
+    private boolean mAllAppsTouchTriggered;
+    private MotionEvent mCurrentDownEvent;
+    private float mTouchSlopSquared;
 
     // Only non-null when device supports having an All Apps button.
     private @Nullable IconButtonView mTaskbarDivider;
@@ -124,11 +138,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mActivityContext = ActivityContext.lookupContext(context);
         mIconLayoutBounds = mActivityContext.getTransientTaskbarBounds();
         Resources resources = getResources();
-        boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivityContext)
+        mIsTransientTaskbar = DisplayController.isTransientTaskbar(mActivityContext)
                 && !mActivityContext.isPhoneMode();
         mIsRtl = Utilities.isRtl(resources);
         mTransientTaskbarMinWidth = resources.getDimension(R.dimen.transient_taskbar_min_width);
-
 
         onDeviceProfileChanged(mActivityContext.getDeviceProfile());
 
@@ -159,7 +172,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mAllAppsButton = (IconButtonView) LayoutInflater.from(context)
                 .inflate(R.layout.taskbar_all_apps_button, this, false);
         mAllAppsButton.setIconDrawable(resources.getDrawable(
-                getAllAppsButton(isTransientTaskbar)));
+                getAllAppsButton(mIsTransientTaskbar)));
         mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
         mAllAppsButton.setForegroundTint(
                 mActivityContext.getColor(R.color.all_apps_button_color));
@@ -175,6 +188,13 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         // TODO: Disable touch events on QSB otherwise it can crash.
         mQsb = LayoutInflater.from(context).inflate(R.layout.search_container_hotseat, this, false);
+
+        // Default long press (touch) delay = 400ms
+        mAllAppsButtonTouchDelayMs = ViewConfiguration.getLongPressTimeout();
+        // Default touch slop
+        mDeviceState = new RecentsAnimationDeviceState(mContext);
+        mTouchSlopSquared = mDeviceState.getSquaredTouchSlop(
+                QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON, 1);
     }
 
     @DrawableRes
@@ -265,11 +285,26 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mIconLongClickListener = mControllerCallbacks.getIconOnLongClickListener();
 
         if (mAllAppsButton != null) {
-            mAllAppsButton.setOnClickListener(mControllerCallbacks.getAllAppsButtonClickListener());
-            mAllAppsButton.setOnLongClickListener(
-                    mControllerCallbacks.getAllAppsButtonLongClickListener());
+            mAllAppsButton.setOnClickListener(this::onAllAppsButtonClick);
+            mAllAppsButton.setOnLongClickListener(this::onAllAppsButtonLongClick);
+            mAllAppsButton.setOnTouchListener(this::onAllAppsButtonTouch);
             mAllAppsButton.setHapticFeedbackEnabled(
                     mControllerCallbacks.isAllAppsButtonHapticFeedbackEnabled());
+            mAllAppsTouchRunnable = () -> {
+                mControllerCallbacks.triggerAllAppsButtonLongClick();
+                mAllAppsTouchTriggered = true;
+            };
+            AssistStateManager assistStateManager = AssistStateManager.INSTANCE.get(mContext);
+            if (DeviceConfigWrapper.get().getCustomLpaaThresholds()
+                    && assistStateManager.getLPNHDurationMillis().isPresent()) {
+                mAllAppsButtonTouchDelayMs = assistStateManager.getLPNHDurationMillis().get();
+            }
+            if (DeviceConfigWrapper.get().getCustomLpaaThresholds()
+                    && assistStateManager.getLPNHCustomSlopMultiplier().isPresent()) {
+                mTouchSlopSquared = mDeviceState.getSquaredTouchSlop(
+                        QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON,
+                        assistStateManager.getLPNHCustomSlopMultiplier().get());
+            }
         }
         if (mTaskbarDivider != null && !mActivityContext.isThreeButtonNav()) {
             mTaskbarDivider.setOnLongClickListener(
@@ -304,7 +339,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             }
         }
         removeView(mQsb);
-
 
         for (int i = 0; i < hotseatItemInfos.length; i++) {
             ItemInfo hotseatItemInfo = hotseatItemInfos[i];
@@ -688,5 +722,64 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             }
         }
         return mAllAppsButton;
+    }
+
+    private boolean onAllAppsButtonTouch(View view, MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (mCurrentDownEvent != null) {
+                    mCurrentDownEvent.recycle();
+                }
+                mCurrentDownEvent = MotionEvent.obtain(ev);
+                mAllAppsTouchTriggered = false;
+                MAIN_EXECUTOR.getHandler().postDelayed(
+                        mAllAppsTouchRunnable, mAllAppsButtonTouchDelayMs);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (!MAIN_EXECUTOR.getHandler().hasCallbacks(mAllAppsTouchRunnable)
+                        || mIsTransientTaskbar) {
+                    break;
+                }
+                float dx = ev.getX() - mCurrentDownEvent.getX();
+                float dy = ev.getY() - mCurrentDownEvent.getY();
+                double distanceSquared = (dx * dx) + (dy * dy);
+                if (distanceSquared > mTouchSlopSquared) {
+                    Log.d(TAG, "Touch slop out");
+                    cancelAllAppsButtonTouch();
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                cancelAllAppsButtonTouch();
+        }
+        return false;
+    }
+
+    private void cancelAllAppsButtonTouch() {
+        MAIN_EXECUTOR.getHandler().removeCallbacks(mAllAppsTouchRunnable);
+        // ACTION_UP is first triggered, then click listener / long-click listener is triggered on
+        // the next frame, so we need to post twice and delay the reset.
+        if (mAllAppsButton != null) {
+            mAllAppsButton.post(() -> {
+                mAllAppsButton.post(() -> {
+                    mAllAppsTouchTriggered = false;
+                });
+            });
+        }
+    }
+
+    private void onAllAppsButtonClick(View view) {
+        if (!mAllAppsTouchTriggered) {
+            mControllerCallbacks.triggerAllAppsButtonClick(view);
+        }
+    }
+
+    // Handle long click from Switch Access and Voice Access
+    private boolean onAllAppsButtonLongClick(View view) {
+        if (!MAIN_EXECUTOR.getHandler().hasCallbacks(mAllAppsTouchRunnable)
+                && !mAllAppsTouchTriggered) {
+            mControllerCallbacks.triggerAllAppsButtonLongClick();
+        }
+        return true;
     }
 }
