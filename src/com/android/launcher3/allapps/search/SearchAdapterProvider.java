@@ -20,8 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.views.ActivityContext;
 
@@ -48,11 +46,6 @@ public abstract class SearchAdapterProvider<T extends ActivityContext> {
      * Returns the current highlighted view
      */
     public abstract View getHighlightedItem();
-
-    /**
-     * Returns the item decorator.
-     */
-    public abstract RecyclerView.ItemDecoration getDecorator();
 
     /**
      * Clear the highlighted view.
