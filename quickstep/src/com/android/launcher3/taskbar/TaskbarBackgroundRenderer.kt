@@ -66,15 +66,13 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
     private var keyShadowDistance = 0f
     private var bottomMargin = 0
 
-    private val fullLeftCornerRadius = context.leftCornerRadius.toFloat()
-    private val fullRightCornerRadius = context.rightCornerRadius.toFloat()
-    private var leftCornerRadius = fullLeftCornerRadius
-    private var rightCornerRadius = fullRightCornerRadius
+    private val fullCornerRadius = context.cornerRadius.toFloat()
+    private var cornerRadius = fullCornerRadius
     private var widthInsetPercentage = 0f
-    private val square: Path = Path()
-    private val circle: Path = Path()
-    private val invertedLeftCornerPath: Path = Path()
-    private val invertedRightCornerPath: Path = Path()
+    private val square = Path()
+    private val circle = Path()
+    private val invertedLeftCornerPath = Path()
+    private val invertedRightCornerPath = Path()
 
     private var stashedHandleWidth =
         context.resources.getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width)
@@ -103,7 +101,7 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
     }
 
     /**
-     * Sets the roundness of the round corner above Taskbar. No effect on transient Taskkbar.
+     * Sets the roundness of the round corner above Taskbar. No effect on transient Taskbar.
      *
      * @param cornerRoundness 0 has no round corner, 1 has complete round corner.
      */
@@ -112,21 +110,18 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
             return
         }
 
-        leftCornerRadius = fullLeftCornerRadius * cornerRoundness
-        rightCornerRadius = fullRightCornerRadius * cornerRoundness
+        cornerRadius = fullCornerRadius * cornerRoundness
 
         // Create the paths for the inverted rounded corners above the taskbar. Start with a filled
         // square, and then subtract out a circle from the appropriate corner.
         square.reset()
-        square.addRect(0f, 0f, leftCornerRadius, leftCornerRadius, Path.Direction.CW)
+        square.addRect(0f, 0f, cornerRadius, cornerRadius, Path.Direction.CW)
         circle.reset()
-        circle.addCircle(leftCornerRadius, 0f, leftCornerRadius, Path.Direction.CW)
+        circle.addCircle(cornerRadius, 0f, cornerRadius, Path.Direction.CW)
         invertedLeftCornerPath.op(square, circle, Path.Op.DIFFERENCE)
 
-        square.reset()
-        square.addRect(0f, 0f, rightCornerRadius, rightCornerRadius, Path.Direction.CW)
         circle.reset()
-        circle.addCircle(0f, 0f, rightCornerRadius, Path.Direction.CW)
+        circle.addCircle(0f, 0f, cornerRadius, Path.Direction.CW)
         invertedRightCornerPath.op(square, circle, Path.Op.DIFFERENCE)
     }
 
@@ -160,10 +155,10 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
         }
 
         // Draw the inverted rounded corners above the taskbar.
-        canvas.translate(0f, -leftCornerRadius)
+        canvas.translate(0f, -cornerRadius)
         canvas.drawPath(invertedLeftCornerPath, paint)
-        canvas.translate(0f, leftCornerRadius)
-        canvas.translate(canvas.width - rightCornerRadius, -rightCornerRadius)
+        canvas.translate(0f, cornerRadius)
+        canvas.translate(canvas.width - cornerRadius, -cornerRadius)
         canvas.drawPath(invertedRightCornerPath, paint)
     }
 
