@@ -47,6 +47,7 @@ class DesktopTaskbarRunningAppsController(
 
     private var apps: Array<AppInfo>? = null
     private var allRunningDesktopAppInfos: List<AppInfo>? = null
+    private var allMinimizedDesktopAppInfos: List<AppInfo>? = null
 
     private val desktopVisibilityController: DesktopVisibilityController?
         get() = desktopVisibilityControllerProvider()
@@ -95,6 +96,13 @@ class DesktopTaskbarRunningAppsController(
         return allRunningDesktopAppInfos?.mapNotNull { it.targetPackage }?.toSet() ?: emptySet()
     }
 
+    override fun getMinimizedApps(): Set<String> {
+        if (!isInDesktopMode) {
+            return emptySet()
+        }
+        return allMinimizedDesktopAppInfos?.mapNotNull { it.targetPackage }?.toSet() ?: emptySet()
+    }
+
     @VisibleForTesting
     public override fun updateRunningApps() {
         if (!isInDesktopMode) {
@@ -102,8 +110,32 @@ class DesktopTaskbarRunningAppsController(
             mControllers.taskbarViewController.commitRunningAppsToUI()
             return
         }
-        allRunningDesktopAppInfos = getRunningDesktopAppInfos()
+        val runningTasks = getDesktopRunningTasks()
+        val runningAppInfo = getAppInfosFromRunningTasks(runningTasks)
+        allRunningDesktopAppInfos = runningAppInfo
+        updateMinimizedApps(runningTasks, runningAppInfo)
         mControllers.taskbarViewController.commitRunningAppsToUI()
+    }
+
+    private fun updateMinimizedApps(
+        runningTasks: List<RunningTaskInfo>,
+        runningAppInfo: List<AppInfo>,
+    ) {
+        val allRunningAppTasks =
+            runningAppInfo
+                .mapNotNull { appInfo -> appInfo.targetPackage?.let { appInfo to it } }
+                .associate { (appInfo, targetPackage) ->
+                    appInfo to
+                        runningTasks
+                            .filter { it.realActivity?.packageName == targetPackage }
+                            .map { it.taskId }
+                }
+        val minimizedTaskIds = runningTasks.associate { it.taskId to !it.isVisible }
+        allMinimizedDesktopAppInfos =
+            allRunningAppTasks
+                .filterValues { taskIds -> taskIds.all { minimizedTaskIds[it] ?: false } }
+                .keys
+                .toList()
     }
 
     private fun getRunningDesktopAppInfosExceptHotseatApps(
@@ -116,15 +148,10 @@ class DesktopTaskbarRunningAppsController(
             .map { WorkspaceItemInfo(it) }
     }
 
-    private fun getRunningDesktopAppInfos(): List<AppInfo> {
-        return getAppInfosFromRunningTasks(
-            recentsModel.runningTasks
-                .filter { taskInfo: RunningTaskInfo ->
-                    taskInfo.windowingMode == WindowConfiguration.WINDOWING_MODE_FREEFORM
-                }
-                .toList()
-        )
-    }
+    private fun getDesktopRunningTasks(): List<RunningTaskInfo> =
+        recentsModel.runningTasks.filter { taskInfo: RunningTaskInfo ->
+            taskInfo.windowingMode == WindowConfiguration.WINDOWING_MODE_FREEFORM
+        }
 
     // TODO(b/335398876) fetch app icons from Tasks instead of AppInfos
     private fun getAppInfosFromRunningTasks(tasks: List<RunningTaskInfo>): List<AppInfo> {
@@ -138,9 +165,10 @@ class DesktopTaskbarRunningAppsController(
             .filterNotNull()
     }
 
-    private fun <E> SparseArray<E>.toList(): List<E> {
-        return valueIterator().asSequence().toList()
-    }
+    private fun getAppInfosFromRunningTask(task: RunningTaskInfo): AppInfo? =
+        apps?.firstOrNull { it.targetPackage == task.realActivity?.packageName }
+
+    private fun <E> SparseArray<E>.toList(): List<E> = valueIterator().asSequence().toList()
 
     companion object {
         private const val TAG = "TabletDesktopTaskbarRunningAppsController"

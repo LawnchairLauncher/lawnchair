@@ -186,9 +186,20 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     // These fields, related to showing running apps, are only used for Taskbar.
     private final Size mRunningAppIndicatorSize;
     private final int mRunningAppIndicatorTopMargin;
+    private final Size mMinimizedAppIndicatorSize;
+    private final int mMinimizedAppIndicatorTopMargin;
     private final Paint mRunningAppIndicatorPaint;
     private final Rect mRunningAppIconBounds = new Rect();
-    private boolean mIsRunning;
+    private RunningAppState mRunningAppState;
+
+    /**
+     * Various options for the running state of an app.
+     */
+    public enum RunningAppState {
+        NOT_RUNNING,
+        RUNNING,
+        MINIMIZED,
+    }
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mStayPressed;
@@ -259,9 +270,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mRunningAppIndicatorSize = new Size(
                 getResources().getDimensionPixelSize(R.dimen.taskbar_running_app_indicator_width),
                 getResources().getDimensionPixelSize(R.dimen.taskbar_running_app_indicator_height));
+        mMinimizedAppIndicatorSize = new Size(
+                getResources().getDimensionPixelSize(R.dimen.taskbar_minimized_app_indicator_width),
+                getResources().getDimensionPixelSize(
+                        R.dimen.taskbar_minimized_app_indicator_height));
         mRunningAppIndicatorTopMargin =
                 getResources().getDimensionPixelSize(
                         R.dimen.taskbar_running_app_indicator_top_margin);
+        mMinimizedAppIndicatorTopMargin =
+                getResources().getDimensionPixelSize(
+                        R.dimen.taskbar_minimized_app_indicator_top_margin);
         mRunningAppIndicatorPaint = new Paint();
         mRunningAppIndicatorPaint.setColor(getResources().getColor(
                 R.color.taskbar_running_app_indicator_color, context.getTheme()));
@@ -414,8 +432,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     /** Updates whether the app this view represents is currently running. */
     @UiThread
-    public void updateRunningState(boolean isRunning) {
-        mIsRunning = isRunning;
+    public void updateRunningState(RunningAppState runningAppState) {
+        mRunningAppState = runningAppState;
     }
 
     protected void setItemInfo(ItemInfoWithIcon itemInfo) {
@@ -667,18 +685,20 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     /** Draws a line under the app icon if this is representing a running app in Desktop Mode. */
     protected void drawRunningAppIndicatorIfNecessary(Canvas canvas) {
-        if (!mIsRunning || mDisplay != DISPLAY_TASKBAR) {
+        if (mRunningAppState == RunningAppState.NOT_RUNNING || mDisplay != DISPLAY_TASKBAR) {
             return;
         }
         getIconBounds(mRunningAppIconBounds);
         // TODO(b/333872717): update color, shape, and size of indicator
-        int indicatorTop = mRunningAppIconBounds.bottom + mRunningAppIndicatorTopMargin;
-        canvas.drawRect(
-                mRunningAppIconBounds.centerX() - mRunningAppIndicatorSize.getWidth() / 2,
-                indicatorTop,
-                mRunningAppIconBounds.centerX() + mRunningAppIndicatorSize.getWidth() / 2,
-                indicatorTop + mRunningAppIndicatorSize.getHeight(),
-                mRunningAppIndicatorPaint);
+        boolean isMinimized = mRunningAppState == RunningAppState.MINIMIZED;
+        int indicatorTop =
+                mRunningAppIconBounds.bottom + (isMinimized ? mMinimizedAppIndicatorTopMargin
+                        : mRunningAppIndicatorTopMargin);
+        final Size indicatorSize =
+                isMinimized ? mMinimizedAppIndicatorSize : mRunningAppIndicatorSize;
+        canvas.drawRect(mRunningAppIconBounds.centerX() - indicatorSize.getWidth() / 2,
+                indicatorTop, mRunningAppIconBounds.centerX() + indicatorSize.getWidth() / 2,
+                indicatorTop + indicatorSize.getHeight(), mRunningAppIndicatorPaint);
     }
 
     @Override

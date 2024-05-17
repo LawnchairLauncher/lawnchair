@@ -69,4 +69,9 @@ public class TaskbarRecentAppsController {
     public Set<String> getRunningApps() {
         return emptySet();
     }
+
+    /** Returns the set of apps whose tasks are all minimized. */
+    public Set<String> getMinimizedApps() {
+        return emptySet();
+    }
 }
