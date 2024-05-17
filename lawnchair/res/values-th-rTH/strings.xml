@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">ตั้งค่า Lawnchair ให้เป็น Lancher เริ่มต้นเพื่อเข้าถึงทางลัดและอีกมากมาย</string>
+    <string name="set_default_launcher_tip">ตั้งค่า Lawnchair ให้เป็น Launcher เริ่มต้นเพื่อเข้าถึงทางลัดและอีกมากมาย</string>
     <string name="settings">การตั้งค่า</string>
     <string name="general_label">ทั่วไป</string>
     <string name="general_description">สี, ชุดไอคอน, จุดแจ้งเตือน</string>

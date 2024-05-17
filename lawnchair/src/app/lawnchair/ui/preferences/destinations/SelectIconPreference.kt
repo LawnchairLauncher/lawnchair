@@ -4,13 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.LauncherApps
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.icons.IconPickerItem
 import app.lawnchair.ui.preferences.LocalNavController
@@ -35,7 +35,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
         val activity = launcherApps.resolveActivity(intent, componentKey.user)
         activity.label.toString()
     }
-    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
+    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
 
@@ -50,7 +50,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
         }
     }
 
-    val overrideItem by repo.observeTarget(componentKey).collectAsState(initial = null)
+    val overrideItem by repo.observeTarget(componentKey).collectAsStateWithLifecycle(initialValue = null)
     val hasOverride = overrideItem != null
 
     PreferenceLayoutLazyColumn(label = label) {

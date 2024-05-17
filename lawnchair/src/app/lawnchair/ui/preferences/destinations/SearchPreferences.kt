@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.not
@@ -180,7 +180,7 @@ private fun LocalSearchSettings(
     )
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         val lifecycleOwner = LocalLifecycleOwner.current
-        val state by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+        val state by lifecycleOwner.lifecycle.currentStateFlow.collectAsStateWithLifecycle()
         var isGranted by remember { mutableStateOf(filesAndStorageGranted(context)) }
         // TODO refactor permission handling of all files access
 
