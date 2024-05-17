@@ -630,6 +630,7 @@ constructor(
                 )
             )
         if (enableRefactorTaskThumbnail()) {
+            taskThumbnailViewDeprecated.setTaskOverlayFactory(taskOverlayFactory)
             bindTaskThumbnailView()
         } else {
             taskThumbnailViewDeprecated.bind(task, taskOverlayFactory)
