@@ -16,6 +16,9 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.PagedView.INVALID_PAGE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_3_BUTTON;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_KEYBOARD_QUICK_SWITCH;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_KEYBOARD_SHORTCUT;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
@@ -34,6 +37,8 @@ import androidx.annotation.UiThread;
 import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.util.RunnableList;
@@ -171,7 +176,7 @@ public class OverviewCommandHelper {
         RunnableList callbackList = null;
         if (taskView != null) {
             mWaitForToggleCommandComplete = true;
-            taskView.setEndQuickswitchCuj(true);
+            taskView.setEndQuickSwitchCuj(true);
             callbackList = taskView.launchTasks();
         }
 
@@ -285,6 +290,7 @@ public class OverviewCommandHelper {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 updateRecentsViewFocus(cmd);
+                logShowOverviewFrom(cmd.type);
             }
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -319,6 +325,7 @@ public class OverviewCommandHelper {
             public void onRecentsAnimationStart(RecentsAnimationController controller,
                     RecentsAnimationTargets targets) {
                 updateRecentsViewFocus(cmd);
+                logShowOverviewFrom(cmd.type);
                 activityInterface.runOnInitBackgroundStateUI(() ->
                         interactionHandler.onGestureEnded(0, new PointF()));
                 cmd.removeListener(this);
@@ -418,6 +425,33 @@ public class OverviewCommandHelper {
             taskView.requestAccessibilityFocus();
         });
         return true;
+    }
+
+    private <T extends StatefulActivity<?> & RecentsViewContainer>
+            void logShowOverviewFrom(int cmdType) {
+        BaseActivityInterface<?, T> activityInterface =
+                mOverviewComponentObserver.getActivityInterface();
+        var container = activityInterface.getCreatedContainer();
+        if (container != null) {
+            StatsLogManager.LauncherEvent event;
+            switch (cmdType) {
+                case TYPE_SHOW -> event = LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_KEYBOARD_SHORTCUT;
+                case TYPE_HIDE ->
+                        event = LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_KEYBOARD_QUICK_SWITCH;
+                case TYPE_TOGGLE -> event = LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_3_BUTTON;
+                default -> {
+                    return;
+                }
+            }
+
+            StatsLogManager.newInstance(container.asContext())
+                    .logger()
+                    .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                            .setTaskSwitcherContainer(
+                                    LauncherAtom.TaskSwitcherContainer.getDefaultInstance())
+                            .build())
+                    .log(event);
+        }
     }
 
     public void dump(PrintWriter pw) {

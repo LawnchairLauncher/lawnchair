@@ -71,7 +71,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         ADJACENT_PAGE_HORIZONTAL_OFFSET.set(mRecentsView, scaleAndOffset[1]);
         TASK_SECONDARY_TRANSLATION.set(mRecentsView, 0f);
 
-        getContentAlphaProperty().set(mRecentsView, state.overviewUi ? 1f : 0);
+        getContentAlphaProperty().set(mRecentsView, state.isRecentsViewVisible ? 1f : 0);
         getTaskModalnessProperty().set(mRecentsView, state.getOverviewModalness());
         RECENTS_GRID_PROGRESS.set(mRecentsView,
                 state.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile()) ? 1f : 0f);
@@ -109,7 +109,8 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         setter.setFloat(mRecentsView, TASK_SECONDARY_TRANSLATION, 0f,
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
 
-        boolean exitingOverview = !FeatureFlags.enableSplitContextually() && !toState.overviewUi;
+        boolean exitingOverview =
+                !FeatureFlags.enableSplitContextually() && !toState.isRecentsViewVisible;
         if (mRecentsView.isSplitSelectionActive() && exitingOverview) {
             setter.add(mRecentsView.getSplitSelectController().getSplitAnimationController()
                     .createPlaceholderDismissAnim(mLauncher, LAUNCHER_SPLIT_SELECTION_EXIT_HOME,
@@ -124,7 +125,8 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
             );
         }
 
-        setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
+        setter.setFloat(mRecentsView, getContentAlphaProperty(),
+                toState.isRecentsViewVisible ? 1 : 0,
                 config.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
 
         setter.setFloat(
@@ -145,7 +147,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
     private Interpolator getOverviewInterpolator(LauncherState fromState, LauncherState toState) {
         return fromState == QUICK_SWITCH_FROM_HOME
                 ? ACCELERATE_DECELERATE
-                : toState.overviewUi ? INSTANT : FINAL_FRAME;
+                : toState.isRecentsViewVisible ? INSTANT : FINAL_FRAME;
     }
 
     abstract FloatProperty getTaskModalnessProperty();

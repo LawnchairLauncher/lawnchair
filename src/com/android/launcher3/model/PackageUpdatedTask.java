@@ -244,7 +244,16 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                                                 .query(ShortcutRequest.PINNED);
                                 if (shortcut.isEmpty()) {
                                     isTargetValid = false;
+                                    if (DEBUG) {
+                                        Log.d(TAG, "Pinned Shortcut not found for updated"
+                                                + " package=" + si.getTargetPackage());
+                                    }
                                 } else {
+                                    if (DEBUG) {
+                                        Log.d(TAG, "Found pinned shortcut for updated"
+                                                + " package=" + si.getTargetPackage()
+                                                + ", isTargetValid=" + isTargetValid);
+                                    }
                                     si.updateFromDeepShortcutInfo(shortcut.get(0), context);
                                     infoUpdated = true;
                                 }
@@ -252,6 +261,7 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                                 isTargetValid = context.getSystemService(LauncherApps.class)
                                         .isActivityEnabled(cn, mUser);
                             }
+
                             if (!isTargetValid && (si.hasStatusFlag(
                                     FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)
                                     || si.isArchived())) {
@@ -260,20 +270,24 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                                 } else if (si.hasPromiseIconUi()) {
                                     removedShortcuts.add(si.id);
                                     if (DEBUG) {
-                                        Log.d(TAG, "Removing restored shortcut promise icon"
+                                        FileLog.w(TAG, "Removing restored shortcut promise icon"
                                                 + " that no longer points to valid component."
                                                 + " id=" + si.id
-                                                + ", package=" + si.getTargetPackage());
+                                                + ", package=" + si.getTargetPackage()
+                                                + ", status=" + si.status
+                                                + ", isArchived=" + si.isArchived());
                                     }
                                     return;
                                 }
                             } else if (!isTargetValid) {
                                 removedShortcuts.add(si.id);
-                                FileLog.e(TAG, "Removing shortcut that no longer points to"
-                                        + " valid component."
-                                        + " id=" + si.id
-                                        + " package=" + si.getTargetPackage()
-                                        + " status=" + si.status);
+                                if (DEBUG) {
+                                    FileLog.w(TAG, "Removing shortcut that no longer points to"
+                                            + " valid component."
+                                            + " id=" + si.id
+                                            + " package=" + si.getTargetPackage()
+                                            + " status=" + si.status);
+                                }
                                 return;
                             } else {
                                 si.status = WorkspaceItemInfo.DEFAULT;

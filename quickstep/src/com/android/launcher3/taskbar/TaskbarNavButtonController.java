@@ -44,10 +44,8 @@ import androidx.annotation.StringRes;
 
 import com.android.launcher3.R;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.AssistUtils;
@@ -285,13 +283,6 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
 
     private void navigateHome() {
         TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
-
-        DesktopVisibilityController desktopVisibilityController =
-                LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
-        if (desktopVisibilityController != null) {
-            desktopVisibilityController.onHomeActionTriggered();
-        }
-
         mCallbacks.onNavigateHome();
     }
 

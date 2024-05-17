@@ -83,7 +83,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int FLAG_HAS_SYS_UI_SCRIM = BaseState.getFlag(4);
     // Flag to inticate that all popups should be closed when this state is enabled.
     public static final int FLAG_CLOSE_POPUPS = BaseState.getFlag(5);
-    public static final int FLAG_OVERVIEW_UI = BaseState.getFlag(6);
+    public static final int FLAG_RECENTS_VIEW_VISIBLE = BaseState.getFlag(6);
 
     // Flag indicating that hotseat and its contents are not accessible.
     public static final int FLAG_HOTSEAT_INACCESSIBLE = BaseState.getFlag(7);
@@ -158,14 +158,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     /**
      * True if the state has overview panel visible.
      */
-    public final boolean overviewUi;
+    public final boolean isRecentsViewVisible;
 
     private final int mFlags;
 
     public LauncherState(int id, int statsLogOrdinal, int flags) {
         this.statsLogOrdinal = statsLogOrdinal;
         this.mFlags = flags;
-        this.overviewUi = (flags & FLAG_OVERVIEW_UI) != 0;
+        this.isRecentsViewVisible = (flags & FLAG_RECENTS_VIEW_VISIBLE) != 0;
         this.ordinal = id;
         sAllStates[id] = this;
     }

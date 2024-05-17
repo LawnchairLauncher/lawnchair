@@ -113,7 +113,7 @@ public class BubbleDragController {
             @Override
             protected void onDragRelease() {
                 mBubblePinController.onDragEnd();
-                mBubbleBarViewController.onDragRelease(bubbleView, mReleasedLocation);
+                mBubbleBarViewController.onDragRelease(mReleasedLocation);
             }
 
             @Override

@@ -67,7 +67,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BubbleIconFactory;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.quickstep.SystemUiProxy;
@@ -148,6 +147,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
     private BubbleBarItem mSelectedBubble;
     private BubbleBarOverflow mOverflowBubble;
 
+    private ImeVisibilityChecker mImeVisibilityChecker;
     private BubbleBarViewController mBubbleBarViewController;
     private BubbleStashController mBubbleStashController;
     private BubbleStashedHandleViewController mBubbleStashedHandleViewController;
@@ -216,7 +216,10 @@ public class BubbleBarController extends IBubblesListener.Stub {
         mSystemUiProxy.setBubblesListener(null);
     }
 
-    public void init(TaskbarControllers controllers, BubbleControllers bubbleControllers) {
+    /** Initializes controllers. */
+    public void init(BubbleControllers bubbleControllers,
+            ImeVisibilityChecker imeVisibilityChecker) {
+        mImeVisibilityChecker = imeVisibilityChecker;
         mBubbleBarViewController = bubbleControllers.bubbleBarViewController;
         mBubbleStashController = bubbleControllers.bubbleStashController;
         mBubbleStashedHandleViewController = bubbleControllers.bubbleStashedHandleViewController;
@@ -321,9 +324,9 @@ public class BubbleBarController extends IBubblesListener.Stub {
         // enabling gesture nav. also suppress animation if the bubble bar is hidden for sysui e.g.
         // the shade is open, or we're locked.
         final boolean suppressAnimation =
-                update.initialState || mBubbleBarViewController.isHiddenForSysui();
+                update.initialState || mBubbleBarViewController.isHiddenForSysui()
+                        || mImeVisibilityChecker.isImeVisible();
 
-        BubbleBarItem previouslySelectedBubble = mSelectedBubble;
         BubbleBarBubble bubbleToSelect = null;
         if (!update.removedBubbles.isEmpty()) {
             for (int i = 0; i < update.removedBubbles.size(); i++) {
@@ -379,6 +382,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
             BubbleBarBubble bb = mBubbles.get(update.updatedBubble.getKey());
             // If we're not stashed, we're visible so animate
             bb.getView().updateDotVisibility(!mBubbleStashController.isStashed() /* animate */);
+            mBubbleBarViewController.animateBubbleNotification(bb, /* isExpanding= */ false);
         }
         if (update.bubbleKeysInOrder != null && !update.bubbleKeysInOrder.isEmpty()) {
             // Create the new list
@@ -666,5 +670,11 @@ public class BubbleBarController extends IBubblesListener.Stub {
         displayBounds.top = displaySize.y - currentBarBounds.height() - translation;
         displayBounds.bottom = displaySize.y - translation;
         return displayBounds;
+    }
+
+    /** Interface for checking whether the IME is visible. */
+    public interface ImeVisibilityChecker {
+        /** Whether the IME is visible. */
+        boolean isImeVisible();
     }
 }

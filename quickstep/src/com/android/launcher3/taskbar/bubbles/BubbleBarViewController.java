@@ -414,28 +414,28 @@ public class BubbleBarViewController {
             b.getView().setOnClickListener(mBubbleClickListener);
             mBubbleDragController.setupBubbleView(b.getView());
 
-            if (suppressAnimation) {
+            if (suppressAnimation || !(b instanceof BubbleBarBubble bubble)) {
                 return;
             }
-
-            if (!(b instanceof BubbleBarBubble bubble)) {
-                return;
-            }
-
-            boolean isInApp = mTaskbarStashController.isInApp();
-            // if this is the first bubble, animate to the initial state. one bubble is the overflow
-            // so check for at most 2 children.
-            if (mBarView.getChildCount() <= 2) {
-                mBubbleBarViewAnimator.animateToInitialState(bubble, isInApp, isExpanding);
-                return;
-            }
-
-            // only animate the new bubble if we're in an app and not auto expanding
-            if (isInApp && !isExpanding && !isExpanded()) {
-                mBubbleBarViewAnimator.animateBubbleInForStashed(bubble);
-            }
+            animateBubbleNotification(bubble, isExpanding);
         } else {
             Log.w(TAG, "addBubble, bubble was null!");
+        }
+    }
+
+    /** Animates the bubble bar to notify the user about a bubble change. */
+    public void animateBubbleNotification(BubbleBarBubble bubble, boolean isExpanding) {
+        boolean isInApp = mTaskbarStashController.isInApp();
+        // if this is the first bubble, animate to the initial state. one bubble is the overflow
+        // so check for at most 2 children.
+        if (mBarView.getChildCount() <= 2) {
+            mBubbleBarViewAnimator.animateToInitialState(bubble, isInApp, isExpanding);
+            return;
+        }
+
+        // only animate the new bubble if we're in an app and not auto expanding
+        if (isInApp && !isExpanding && !isExpanded()) {
+            mBubbleBarViewAnimator.animateBubbleInForStashed(bubble);
         }
     }
 
@@ -506,12 +506,10 @@ public class BubbleBarViewController {
 
     /**
      * Notifies SystemUI to expand the selected bubble when the bubble is released.
-     * @param bubbleView dragged bubble view
      */
-    public void onDragRelease(@NonNull BubbleView bubbleView, BubbleBarLocation location) {
-        if (bubbleView.getBubble() == null) return;
+    public void onDragRelease(BubbleBarLocation location) {
         // TODO(b/330585402): send new bubble bar bounds to shell for the animation
-        mSystemUiProxy.stopBubbleDrag(bubbleView.getBubble().getKey(), location);
+        mSystemUiProxy.stopBubbleDrag(location);
     }
 
     /**
@@ -556,7 +554,7 @@ public class BubbleBarViewController {
      * @param bubble dismissed bubble item
      */
     public void onDismissBubbleWhileDragging(@NonNull BubbleBarItem bubble) {
-        mSystemUiProxy.removeBubble(bubble.getKey());
+        mSystemUiProxy.dragBubbleToDismiss(bubble.getKey());
     }
 
     /**

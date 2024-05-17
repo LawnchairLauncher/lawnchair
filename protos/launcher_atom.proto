@@ -121,6 +121,20 @@ message SettingsContainer {
 }
 
 message TaskSwitcherContainer {
+  /**
+   * Indicates the current OrientationHandler in use in Overview.
+   * In fake landscape, the value will be
+   * {@link com.android.quickstep.orientation.LandscapePagedViewHandler} and in real landscape,
+   * the value will be {@link com.android.quickstep.orientation.PortraitPagedViewHandler} for
+   * example.
+   */
+  optional OrientationHandler orientation_handler = 1;
+
+  enum OrientationHandler {
+    PORTRAIT = 0;
+    LANDSCAPE = 1;
+    SEASCAPE = 2;
+  }
 }
 
 // Container for taskbar.

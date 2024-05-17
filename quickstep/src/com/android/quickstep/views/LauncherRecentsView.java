@@ -56,6 +56,8 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.systemui.shared.recents.model.Task;
 
+import kotlin.Unit;
+
 /**
  * {@link RecentsView} used in Launcher activity
  */
@@ -107,7 +109,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     }
 
     @Override
-    protected void onTaskLaunchAnimationEnd(boolean success) {
+    protected Unit onTaskLaunchAnimationEnd(boolean success) {
         if (success) {
             getStateManager().moveToRestState();
         } else {
@@ -115,6 +117,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
             mContainer.getAllAppsController().setState(state);
         }
         super.onTaskLaunchAnimationEnd(success);
+        return Unit.INSTANCE;
     }
 
     @Override
@@ -143,7 +146,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
 
     @Override
     public void onStateTransitionStart(LauncherState toState) {
-        setOverviewStateEnabled(toState.overviewUi);
+        setOverviewStateEnabled(toState.isRecentsViewVisible);
 
         setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mContainer.getDeviceProfile()));
         setOverviewFullscreenEnabled(toState.getOverviewFullscreenProgress() == 1);
@@ -154,7 +157,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         }
 
         // Set border after select mode changes to avoid showing border during state transition
-        if (!toState.overviewUi || toState == OVERVIEW_MODAL_TASK) {
+        if (!toState.isRecentsViewVisible || toState == OVERVIEW_MODAL_TASK) {
             setTaskBorderEnabled(false);
         }
 
@@ -178,7 +181,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
             setOverviewSelectEnabled(false);
         }
 
-        if (finalState.overviewUi && finalState != OVERVIEW_MODAL_TASK) {
+        if (finalState.isRecentsViewVisible && finalState != OVERVIEW_MODAL_TASK) {
             setTaskBorderEnabled(true);
         }
 
@@ -203,7 +206,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     public boolean onTouchEvent(MotionEvent ev) {
         boolean result = super.onTouchEvent(ev);
         // Do not let touch escape to siblings below this view.
-        return result || getStateManager().getState().overviewUi;
+        return result || getStateManager().getState().isRecentsViewVisible;
     }
 
     @Override

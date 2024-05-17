@@ -61,15 +61,6 @@ public final class FeatureFlags {
      * and set a default value for the flag. This will be the default value on Debug builds.
      * <p>
      */
-    // TODO(Block 1): Clean up flags
-    public static final BooleanFlag ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES = getReleaseFlag(
-            270394041, "ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES", ENABLED,
-            "Enable option to replace decorator-based search result backgrounds with drawables");
-
-    public static final BooleanFlag ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION = getReleaseFlag(
-            270394392, "ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION", ENABLED,
-            "Enable option to launch search results using the new view container transitions");
-
     // TODO(Block 2): Clean up flags
     public static final BooleanFlag ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH = getDebugFlag(270395073,
             "ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH", DISABLED,

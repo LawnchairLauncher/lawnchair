@@ -26,6 +26,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.logger.LauncherAtom
 import com.android.launcher3.touch.PagedOrientationHandler
 import com.android.launcher3.touch.PagedOrientationHandler.Float2DAction
 import com.android.launcher3.touch.PagedOrientationHandler.Int2DAction
@@ -370,6 +371,8 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
      * @return The current translation value.
      */
     fun getFloatingTaskPrimaryTranslation(floatingTask: View, dp: DeviceProfile): Float
+
+    fun getHandlerTypeForLogging(): LauncherAtom.TaskSwitcherContainer.OrientationHandler
 
     companion object {
         @JvmField val PORTRAIT: RecentsPagedOrientationHandler = PortraitPagedViewHandler()

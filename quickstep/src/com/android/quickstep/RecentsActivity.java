@@ -33,7 +33,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -506,5 +505,10 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> implem
     @NonNull
     public TISBindHelper getTISBindHelper() {
         return mTISBindHelper;
+    }
+
+    @Override
+    public boolean isRecentsViewVisible() {
+        return getStateManager().getState().isRecentsViewVisible();
     }
 }

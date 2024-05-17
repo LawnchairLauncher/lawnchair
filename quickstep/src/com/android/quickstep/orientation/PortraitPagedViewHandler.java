@@ -46,9 +46,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.touch.DefaultPagedViewHandler;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -801,5 +804,11 @@ public class PortraitPagedViewHandler extends DefaultPagedViewHandler implements
         return dp.isLeftRightSplit
                 ? floatingTask.getTranslationX()
                 : floatingTask.getTranslationY();
+    }
+
+    @NonNull
+    @Override
+    public LauncherAtom.TaskSwitcherContainer.OrientationHandler getHandlerTypeForLogging() {
+        return LauncherAtom.TaskSwitcherContainer.OrientationHandler.PORTRAIT;
     }
 }

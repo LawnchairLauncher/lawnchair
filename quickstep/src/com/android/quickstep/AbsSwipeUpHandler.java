@@ -152,6 +152,8 @@ import com.android.window.flags.Flags;
 import com.android.wm.shell.common.TransactionPool;
 import com.android.wm.shell.startingsurface.SplashScreenExitAnimationUtils;
 
+import kotlin.Unit;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1173,12 +1175,6 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
                 // Notify the SysUI to use fade-in animation when entering PiP
                 SystemUiProxy.INSTANCE.get(mContext).setPipAnimationTypeToAlpha();
-                DesktopVisibilityController desktopVisibilityController =
-                        mContainerInterface.getDesktopVisibilityController();
-                if (desktopVisibilityController != null) {
-                    // Notify the SysUI to stash desktop apps if they are visible
-                    desktopVisibilityController.onHomeActionTriggered();
-                }
                 break;
             case RECENTS:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
@@ -1474,7 +1470,8 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
             default:
                 event = IGNORE;
         }
-        StatsLogger logger = StatsLogManager.newInstance(mContext).logger()
+        StatsLogger logger = StatsLogManager.newInstance(
+                        mContainer != null ? mContainer.asContext() : mContext).logger()
                 .withSrcState(LAUNCHER_STATE_BACKGROUND)
                 .withDstState(endTarget.containerType)
                 .withInputType(mGestureState.isTrackpadGesture()
@@ -2337,6 +2334,7 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                             mRecentsAnimationController.finish(true /* toRecents */, null);
                         }
                     }
+                    return Unit.INSTANCE;
                 }, true /* freezeTaskList */);
             } else {
                 mContainerInterface.onLaunchTaskFailed();

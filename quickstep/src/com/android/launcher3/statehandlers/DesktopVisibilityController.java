@@ -35,7 +35,6 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.SystemUiProxy;
-import com.android.quickstep.views.DesktopAppSelectView;
 import com.android.wm.shell.desktopmode.IDesktopTaskListener;
 
 import java.util.HashSet;
@@ -49,8 +48,6 @@ public class DesktopVisibilityController {
 
     private static final String TAG = "DesktopVisController";
     private static final boolean DEBUG = false;
-    private static final boolean IS_STASHING_ENABLED = SystemProperties.getBoolean(
-            "persist.wm.debug.desktop_stashing", false);
     private final Launcher mLauncher;
     private final Set<DesktopVisibilityListener> mDesktopVisibilityListeners = new HashSet<>();
 
@@ -61,7 +58,6 @@ public class DesktopVisibilityController {
 
     @Nullable
     private IDesktopTaskListener mDesktopTaskListener;
-    private DesktopAppSelectView mSelectAppToast;
 
     public DesktopVisibilityController(Launcher launcher) {
         mLauncher = launcher;
@@ -86,21 +82,7 @@ public class DesktopVisibilityController {
 
             @Override
             public void onStashedChanged(int displayId, boolean stashed) {
-                if (!IS_STASHING_ENABLED) {
-                    return;
-                }
-                MAIN_EXECUTOR.execute(() -> {
-                    if (displayId == mLauncher.getDisplayId()) {
-                        if (DEBUG) {
-                            Log.d(TAG, "desktop stashed changed value=" + stashed);
-                        }
-                        if (stashed) {
-                            showSelectAppToast();
-                        } else {
-                            hideSelectAppToast();
-                        }
-                    }
-                });
+              Log.w(TAG, "IDesktopTaskListener: onStashedChanged is deprecated");
             }
         };
         SystemUiProxy.INSTANCE.get(mLauncher).setDesktopTaskListener(mDesktopTaskListener);
@@ -190,7 +172,7 @@ public class DesktopVisibilityController {
         }
         setBackgroundStateEnabled(state == BACKGROUND_APP);
         // Desktop visibility tracks overview and background state separately
-        setOverviewStateEnabled(state != BACKGROUND_APP && state.overviewUi);
+        setOverviewStateEnabled(state != BACKGROUND_APP && state.isRecentsViewVisible);
     }
 
     private void setOverviewStateEnabled(boolean overviewStateEnabled) {
@@ -303,15 +285,6 @@ public class DesktopVisibilityController {
     }
 
     /**
-     * Handle launcher moving to home due to home gesture or home button press.
-     */
-    public void onHomeActionTriggered() {
-        if (IS_STASHING_ENABLED && areDesktopTasksVisible()) {
-            SystemUiProxy.INSTANCE.get(mLauncher).stashDesktopApps(mLauncher.getDisplayId());
-        }
-    }
-
-    /**
      * TODO: b/333533253 - Remove after flag rollout
      */
     private void setLauncherViewsVisibility(int visibility) {
@@ -371,30 +344,6 @@ public class DesktopVisibilityController {
         if (activity != null && activity.isResumed()) {
             activity.setResumed();
         }
-    }
-
-    private void showSelectAppToast() {
-        if (mSelectAppToast != null) {
-            return;
-        }
-        if (DEBUG) {
-            Log.d(TAG, "show toast to select desktop apps");
-        }
-        Runnable onCloseCallback = () -> {
-            SystemUiProxy.INSTANCE.get(mLauncher).hideStashedDesktopApps(mLauncher.getDisplayId());
-        };
-        mSelectAppToast = DesktopAppSelectView.show(mLauncher, onCloseCallback);
-    }
-
-    private void hideSelectAppToast() {
-        if (mSelectAppToast == null) {
-            return;
-        }
-        if (DEBUG) {
-            Log.d(TAG, "hide toast to select desktop apps");
-        }
-        mSelectAppToast.hide();
-        mSelectAppToast = null;
     }
 
     /** A listener for when the user enters/exits Desktop Mode. */
