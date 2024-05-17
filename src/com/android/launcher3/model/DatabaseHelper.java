@@ -505,7 +505,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
 
     public int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
         // TODO: Use multiple loaders with fall-back and transaction.
-        int count = loader.loadLayout(db, new IntArray());
+        int count = loader.loadLayout(db);
 
         // Ensure that the max ids are initialized
         mMaxItemId = initializeMaxItemId(db);
