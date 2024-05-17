@@ -226,8 +226,8 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
             boolean refreshNow) {
         mTask = task;
         boolean thumbnailWasNull = mThumbnailData == null;
-        mThumbnailData =
-                (thumbnailData != null && thumbnailData.thumbnail != null) ? thumbnailData : null;
+        mThumbnailData = (thumbnailData != null && thumbnailData.getThumbnail() != null)
+                ? thumbnailData : null;
         if (mTask != null) {
             updateSplashView(mTask.icon);
         }
@@ -252,8 +252,8 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
      * @param shouldRefreshOverlay whether to re-initialize overlay
      */
     private void refresh(boolean shouldRefreshOverlay) {
-        if (mThumbnailData != null && mThumbnailData.thumbnail != null) {
-            Bitmap bm = mThumbnailData.thumbnail;
+        if (mThumbnailData != null && mThumbnailData.getThumbnail() != null) {
+            Bitmap bm = mThumbnailData.getThumbnail();
             bm.prepareToDraw();
             mBitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mPaint.setShader(mBitmapShader);
@@ -317,8 +317,10 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
         }
 
         RectF bitmapRect = new RectF(
-                0, 0,
-                mThumbnailData.thumbnail.getWidth(), mThumbnailData.thumbnail.getHeight());
+                0,
+                0,
+                mThumbnailData.getThumbnail().getWidth(),
+                mThumbnailData.getThumbnail().getHeight());
         RectF viewRect = new RectF(0, 0, getMeasuredWidth(), getMeasuredHeight());
 
         // The position helper matrix tells us how to transform the bitmap to fit the view, the
@@ -517,13 +519,13 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
     }
 
     private boolean isThumbnailAspectRatioDifferentFromThumbnailData() {
-        if (mThumbnailData == null || mThumbnailData.thumbnail == null) {
+        if (mThumbnailData == null || mThumbnailData.getThumbnail() == null) {
             return false;
         }
 
         float thumbnailViewAspect = getWidth() / (float) getHeight();
-        float thumbnailDataAspect =
-                mThumbnailData.thumbnail.getWidth() / (float) mThumbnailData.thumbnail.getHeight();
+        float thumbnailDataAspect = mThumbnailData.getThumbnail().getWidth()
+                / (float) mThumbnailData.getThumbnail().getHeight();
 
         return isRelativePercentDifferenceGreaterThan(thumbnailViewAspect,
                 thumbnailDataAspect, MAX_PCT_BEFORE_ASPECT_RATIOS_CONSIDERED_DIFFERENT);
@@ -574,8 +576,8 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
         DeviceProfile dp = mContainer.getDeviceProfile();
         mPreviewPositionHelper.setOrientationChanged(false);
         if (mBitmapShader != null && mThumbnailData != null) {
-            mPreviewRect.set(0, 0, mThumbnailData.thumbnail.getWidth(),
-                    mThumbnailData.thumbnail.getHeight());
+            mPreviewRect.set(0, 0, mThumbnailData.getThumbnail().getWidth(),
+                    mThumbnailData.getThumbnail().getHeight());
             int currentRotation = getTaskView().getOrientedState().getRecentsActivityRotation();
             boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
             mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
@@ -608,7 +610,7 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
         if (mThumbnailData == null) {
             return null;
         }
-        return mThumbnailData.thumbnail;
+        return mThumbnailData.getThumbnail();
     }
 
     /**
