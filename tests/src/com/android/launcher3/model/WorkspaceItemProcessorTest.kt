@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.pm.LauncherApps
 import android.content.pm.PackageInstaller
 import android.content.pm.ShortcutInfo
+import android.os.Process
 import android.os.UserHandle
 import android.platform.test.annotations.EnableFlags
 import android.util.LongSparseArray
@@ -429,6 +430,7 @@ class WorkspaceItemProcessorTest {
                 whenever(disabledMessage).thenReturn("")
                 whenever(disabledReason).thenReturn(0)
                 whenever(persons).thenReturn(EMPTY_PERSON_ARRAY)
+                whenever(userHandle).thenReturn(Process.myUserHandle())
             }
         mIconRequestInfos = mutableListOf()
         // Make sure shortcuts map has expected key from expected package

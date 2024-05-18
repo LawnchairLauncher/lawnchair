@@ -30,7 +30,7 @@ import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 
-import com.android.app.viewcapture.SettingsAwareViewCapture;
+import com.android.app.viewcapture.ViewCaptureFactory;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -59,7 +59,7 @@ public class TaskbarOverlayDragLayer extends
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnComputeInternalInsetsListener(this);
-        mViewCaptureCloseable = SettingsAwareViewCapture.getInstance(getContext())
+        mViewCaptureCloseable = ViewCaptureFactory.getInstance(getContext())
                 .startCapture(getRootView(), ".TaskbarOverlay");
     }
 

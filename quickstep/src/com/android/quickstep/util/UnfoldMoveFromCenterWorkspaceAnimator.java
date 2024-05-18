@@ -22,6 +22,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.systemui.unfold.dagger.UnfoldMain;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
 
 /**
@@ -31,8 +32,9 @@ public class UnfoldMoveFromCenterWorkspaceAnimator extends BaseUnfoldMoveFromCen
 
     private final QuickstepLauncher mLauncher;
 
-    public UnfoldMoveFromCenterWorkspaceAnimator(QuickstepLauncher launcher,
-            WindowManager windowManager, RotationChangeProvider rotationChangeProvider) {
+    public UnfoldMoveFromCenterWorkspaceAnimator(
+            QuickstepLauncher launcher, WindowManager windowManager,
+            @UnfoldMain RotationChangeProvider rotationChangeProvider) {
         super(windowManager, rotationChangeProvider);
         mLauncher = launcher;
     }

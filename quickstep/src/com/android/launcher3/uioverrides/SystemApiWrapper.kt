@@ -40,7 +40,7 @@ import com.android.launcher3.util.UserIconInfo
 import com.android.quickstep.util.FadeOutRemoteTransition
 
 /** A wrapper for the hidden API calls */
-class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
+open class SystemApiWrapper(context: Context?) : ApiWrapper(context) {
 
     override fun getPersons(si: ShortcutInfo) = si.persons ?: Utilities.EMPTY_PERSON_ARRAY
 

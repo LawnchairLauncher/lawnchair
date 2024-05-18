@@ -103,7 +103,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import com.android.app.viewcapture.SettingsAwareViewCapture;
+import com.android.app.viewcapture.ViewCaptureFactory;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Flags;
@@ -194,6 +194,7 @@ import com.android.systemui.unfold.UnfoldTransitionFactory;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.config.ResourceUnfoldTransitionConfig;
 import com.android.systemui.unfold.config.UnfoldTransitionConfig;
+import com.android.systemui.unfold.dagger.UnfoldMain;
 import com.android.systemui.unfold.progress.RemoteUnfoldTransitionReceiver;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
 
@@ -671,7 +672,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
         addMultiWindowModeChangedListener(mDepthController);
         initUnfoldTransitionProgressProvider();
         if (FeatureFlags.CONTINUOUS_VIEW_TREE_CAPTURE.get()) {
-            mViewCapture = SettingsAwareViewCapture.getInstance(this).startCapture(getWindow());
+            mViewCapture = ViewCaptureFactory.getInstance(this).startCapture(getWindow());
         }
         getWindow().addPrivateFlags(PRIVATE_FLAG_OPTIMIZE_MEASURE);
         QuickstepOnboardingPrefs.setup(this);
@@ -1047,6 +1048,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
                         getMainExecutor(),
                         getMainThreadHandler(),
                         /* backgroundExecutor= */ UI_HELPER_EXECUTOR,
+                        /* bgHandler= */ UI_HELPER_EXECUTOR.getHandler(),
                         /* tracingTagPrefix= */ "launcher",
                         getSystemService(DisplayManager.class)
                 );
@@ -1066,7 +1068,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
     }
 
     private void initUnfoldAnimationController(UnfoldTransitionProgressProvider progressProvider,
-            RotationChangeProvider rotationChangeProvider) {
+            @UnfoldMain RotationChangeProvider rotationChangeProvider) {
         mLauncherUnfoldAnimationController = new LauncherUnfoldAnimationController(
                 /* launcher= */ this,
                 getWindowManager(),

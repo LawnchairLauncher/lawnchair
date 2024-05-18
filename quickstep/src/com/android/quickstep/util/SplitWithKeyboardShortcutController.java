@@ -136,7 +136,7 @@ public class SplitWithKeyboardShortcutController {
             RectF startingTaskRect = new RectF();
             final FloatingTaskView floatingTaskView = FloatingTaskView.getFloatingTaskView(
                     mLauncher, mLauncher.getDragLayer(),
-                    controller.screenshotTask(runningTaskInfo.taskId).thumbnail,
+                    controller.screenshotTask(runningTaskInfo.taskId).getThumbnail(),
                     null /* icon */, startingTaskRect);
             RecentsModel.INSTANCE.get(mLauncher.getApplicationContext())
                     .getIconCache()

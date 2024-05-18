@@ -171,7 +171,7 @@ public class LoaderTask implements Runnable {
         mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
         mUserManager = mApp.getContext().getSystemService(UserManager.class);
         mUserCache = UserCache.INSTANCE.get(mApp.getContext());
-        mPmHelper = new PackageManagerHelper(mApp.getContext());
+        mPmHelper = PackageManagerHelper.INSTANCE.get(mApp.getContext());
         mSessionHelper = InstallSessionHelper.INSTANCE.get(mApp.getContext());
         mIconCache = mApp.getIconCache();
         mUserManagerState = userManagerState;

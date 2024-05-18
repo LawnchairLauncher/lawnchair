@@ -186,7 +186,7 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
             @NonNull ImageView thumbnailView,
             @ColorInt int backgroundColor,
             @Nullable ThumbnailData thumbnailData) {
-        Bitmap bm = thumbnailData == null ? null : thumbnailData.thumbnail;
+        Bitmap bm = thumbnailData == null ? null : thumbnailData.getThumbnail();
 
         if (thumbnailView.getVisibility() != VISIBLE) {
             thumbnailView.setVisibility(VISIBLE);
