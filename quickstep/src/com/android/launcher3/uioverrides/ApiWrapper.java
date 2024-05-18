@@ -21,13 +21,21 @@ import android.app.Person;
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.LauncherUserInfo;
 import android.content.pm.ShortcutInfo;
+import android.graphics.drawable.ColorDrawable;
+import android.os.UserHandle;
+import android.os.UserManager;
+import android.util.ArrayMap;
 import android.window.RemoteTransition;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.UserIconInfo;
 import com.android.quickstep.util.FadeOutRemoteTransition;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import app.lawnchair.util.LawnchairUtilsKt;
@@ -48,9 +56,8 @@ public class ApiWrapper {
 
     public static Map<String, LauncherActivityInfo> getActivityOverrides(Context context) {
         return LawnchairUtilsKt.isDefaultLauncher(context)
-                && Utilities.ATLEAST_Q ?
-                getLauncherActivityOverrides(context)
-                : Collections.emptyMap();
+                && Utilities.ATLEAST_Q ? getLauncherActivityOverrides(context)
+                        : Collections.emptyMap();
     }
 
     private static Map<String, LauncherActivityInfo> getLauncherActivityOverrides(Context context) {
@@ -72,6 +79,58 @@ public class ApiWrapper {
         } catch (Throwable t) {
             // TODO Create our own custom closing animation
             return ActivityOptions.makeCustomAnimation(context, 0, android.R.anim.fade_out);
+        }
+    }
+
+    /**
+     * Returns a map of all users on the device to their corresponding UI properties
+     */
+    public static Map<UserHandle, UserIconInfo> queryAllUsers(Context context) {
+        UserManager um = context.getSystemService(UserManager.class);
+        Map<UserHandle, UserIconInfo> users = new ArrayMap<>();
+        List<UserHandle> usersActual = um.getUserProfiles();
+        if (usersActual != null) {
+            for (UserHandle user : usersActual) {
+                if (android.os.Flags.allowPrivateProfile() && Flags.enablePrivateSpace()) {
+                    LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
+                    LauncherUserInfo launcherUserInfo = launcherApps.getLauncherUserInfo(user);
+                    // UserTypes not supported in Launcher are deemed to be the current
+                    // Foreground User.
+                    int userType = switch (launcherUserInfo.getUserType()) {
+                        case UserManager.USER_TYPE_PROFILE_MANAGED -> UserIconInfo.TYPE_WORK;
+                        case UserManager.USER_TYPE_PROFILE_CLONE -> UserIconInfo.TYPE_CLONED;
+                        case UserManager.USER_TYPE_PROFILE_PRIVATE -> UserIconInfo.TYPE_PRIVATE;
+                        default -> UserIconInfo.TYPE_MAIN;
+                    };
+                    long serial = launcherUserInfo.getUserSerialNumber();
+                    users.put(user, new UserIconInfo(user, userType, serial));
+                } else {
+                    long serial = um.getSerialNumberForUser(user);
+
+                    // Simple check to check if the provided user is work profile
+                    // TODO: Migrate to a better platform API
+                    NoopDrawable d = new NoopDrawable();
+                    boolean isWork = (d != context.getPackageManager().getUserBadgedIcon(d, user));
+                    UserIconInfo info = new UserIconInfo(
+                            user,
+                            isWork ? UserIconInfo.TYPE_WORK : UserIconInfo.TYPE_MAIN,
+                            serial);
+                    users.put(user, info);
+                }
+            }
+        }
+        return users;
+    }
+
+    private static class NoopDrawable extends ColorDrawable {
+        @Override
+        public int getIntrinsicHeight() {
+            return 1;
+        }
+
+        @Override
+        public int getIntrinsicWidth() {
+            return 1;
         }
     }
 }

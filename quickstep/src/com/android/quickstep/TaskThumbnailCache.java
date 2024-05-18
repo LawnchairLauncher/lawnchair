@@ -15,12 +15,18 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
+
 import android.content.Context;
 import android.content.res.Resources;
+
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.CancellableTask;
+import com.android.quickstep.util.TaskKeyByLastActiveTimeCache;
+import com.android.quickstep.util.TaskKeyCache;
 import com.android.quickstep.util.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -34,11 +40,10 @@ import java.util.function.Consumer;
 public class TaskThumbnailCache {
 
     private final Executor mBgExecutor;
-
-    private final int mCacheSize;
-    private final TaskKeyLruCache<ThumbnailData> mCache;
+    private final TaskKeyCache<ThumbnailData> mCache;
     private final HighResLoadingState mHighResLoadingState;
     private final boolean mEnableTaskSnapshotPreloading;
+    private final Context mContext;
 
     public static class HighResLoadingState {
         private boolean mForceHighResThumbnails;
@@ -91,26 +96,39 @@ public class TaskThumbnailCache {
     }
 
     public TaskThumbnailCache(Context context, Executor bgExecutor) {
+        this(context, bgExecutor,
+                context.getResources().getInteger(R.integer.recentsThumbnailCacheSize));
+    }
+
+    private TaskThumbnailCache(Context context, Executor bgExecutor, int cacheSize) {
+        this(context, bgExecutor,
+                enableGridOnlyOverview() ? new TaskKeyByLastActiveTimeCache<>(cacheSize)
+                        : new TaskKeyLruCache<>(cacheSize));
+    }
+
+    @VisibleForTesting
+    TaskThumbnailCache(Context context, Executor bgExecutor, TaskKeyCache<ThumbnailData> cache) {
         mBgExecutor = bgExecutor;
         mHighResLoadingState = new HighResLoadingState(context);
+        mContext = context;
 
         Resources res = context.getResources();
-        mCacheSize = res.getInteger(R.integer.recentsThumbnailCacheSize);
         mEnableTaskSnapshotPreloading = res.getBoolean(R.bool.config_enableTaskSnapshotPreloading);
-        mCache = new TaskKeyLruCache<>(mCacheSize);
+        mCache = cache;
     }
 
     /**
-     * Synchronously fetches the thumbnail for the given {@param task} and puts it in the cache.
+     * Synchronously fetches the thumbnail for the given task at the specified resolution level, and
+     * puts it in the cache.
      */
-    public void updateThumbnailInCache(Task task) {
+    public void updateThumbnailInCache(Task task, boolean lowResolution) {
         if (task == null) {
             return;
         }
         Preconditions.assertUIThread();
         // Fetch the thumbnail for this task and put it in the cache
         if (task.thumbnail == null) {
-            updateThumbnailInBackground(task.key, true /* lowResolution */,
+            updateThumbnailInBackground(task.key, lowResolution,
                     t -> task.thumbnail = t);
         }
     }
@@ -148,6 +166,23 @@ public class TaskThumbnailCache {
         });
     }
 
+    /**
+     * Updates cache size and remove excess entries if current size is more than new cache size.
+     *
+     * @return whether cache size has increased
+     */
+    public boolean updateCacheSizeAndRemoveExcess() {
+        int newSize = mContext.getResources().getInteger(R.integer.recentsThumbnailCacheSize);
+        int oldSize = mCache.getMaxSize();
+        if (newSize == oldSize) {
+            // Return if no change in size
+            return false;
+        }
+
+        mCache.updateCacheSizeAndRemoveExcess(newSize);
+        return newSize > oldSize;
+    }
+
     private CancellableTask updateThumbnailInBackground(TaskKey key, boolean lowResolution,
             Consumer<ThumbnailData> callback) {
         Preconditions.assertUIThread();
@@ -160,15 +195,29 @@ public class TaskThumbnailCache {
             return null;
         }
 
-        CancellableTask<ThumbnailData> request = new CancellableTask<ThumbnailData>() {
+        CancellableTask<ThumbnailData> request = new CancellableTask<>() {
             @Override
             public ThumbnailData getResultOnBg() {
-                return ActivityManagerWrapper.getInstance().getTaskThumbnail(
+                ThumbnailData thumbnailData = ActivityManagerWrapper.getInstance().getTaskThumbnail(
                         key.id, lowResolution);
+                if (thumbnailData.thumbnail != null) {
+                    return thumbnailData;
+                }
+                return ActivityManagerWrapper.getInstance().takeTaskThumbnail(key.id);
             }
 
             @Override
             public void handleResult(ThumbnailData result) {
+                // Avoid an async timing issue that a low res entry replaces an existing high res
+                // entry in high res enabled state, so we check before putting it to cache
+                if (enableGridOnlyOverview() && result.reducedResolution
+                        && getHighResLoadingState().isEnabled()) {
+                    ThumbnailData cachedThumbnail = mCache.getAndInvalidateIfModified(key);
+                    if (cachedThumbnail != null && cachedThumbnail.thumbnail != null
+                            && !cachedThumbnail.reducedResolution) {
+                        return;
+                    }
+                }
                 mCache.put(key, result);
                 callback.accept(result);
             }
@@ -195,7 +244,7 @@ public class TaskThumbnailCache {
      * @return The cache size.
      */
     public int getCacheSize() {
-        return mCacheSize;
+        return mCache.getMaxSize();
     }
 
     /**

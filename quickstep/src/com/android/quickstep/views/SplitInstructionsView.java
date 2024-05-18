@@ -17,17 +17,15 @@
 package com.android.quickstep.views;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -41,12 +39,11 @@ import com.android.launcher3.statemanager.StatefulActivity;
  *
  * Appears and disappears concurrently with a FloatingTaskView.
  */
-public class SplitInstructionsView extends FrameLayout {
+public class SplitInstructionsView extends LinearLayout {
     private final StatefulActivity mLauncher;
-    private AppCompatTextView mTextView;
 
     public static final FloatProperty<SplitInstructionsView> UNFOLD =
-            new FloatProperty<SplitInstructionsView>("SplitInstructionsUnfold") {
+            new FloatProperty<>("SplitInstructionsUnfold") {
                 @Override
                 public void setValue(SplitInstructionsView splitInstructionsView, float v) {
                     splitInstructionsView.setScaleY(v);
@@ -97,22 +94,12 @@ public class SplitInstructionsView extends FrameLayout {
     }
 
     private void init() {
-        mTextView = findViewById(R.id.split_instructions_text);
+        TextView cancelTextView = findViewById(R.id.split_instructions_text_cancel);
 
-        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
-            mTextView.setCompoundDrawables(null, null, null, null);
-            return;
+        if (FeatureFlags.enableSplitContextually()) {
+            cancelTextView.setVisibility(VISIBLE);
+            cancelTextView.setOnClickListener((v) -> exitSplitSelection());
         }
-
-        mTextView.setOnTouchListener((v, event) -> {
-            if (isTouchInsideRightCompoundDrawable(event)) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    exitSplitSelection();
-                }
-                return true;
-            }
-            return false;
-        });
     }
 
     private void exitSplitSelection() {
@@ -121,24 +108,10 @@ public class SplitInstructionsView extends FrameLayout {
         mLauncher.getStateManager().goToState(LauncherState.NORMAL);
     }
 
-    private boolean isTouchInsideRightCompoundDrawable(MotionEvent event) {
-        // Get the right compound drawable of the TextView.
-        Drawable rightDrawable = mTextView.getCompoundDrawablesRelative()[2];
-
-        // Check if the touch event intersects with the drawable's bounds.
-        if (rightDrawable != null) {
-            // We can get away w/o caring about the Y bounds since it's such a small view, if it's
-            // above/below the drawable just assume they meant to touch it. ¯\_(ツ)_/¯
-            return  event.getX() >= (mTextView.getWidth() - rightDrawable.getBounds().width());
-        } else {
-            return false;
-        }
-    }
-
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+        if (!FeatureFlags.enableSplitContextually()) {
             return;
         }
 
@@ -150,7 +123,7 @@ public class SplitInstructionsView extends FrameLayout {
 
     @Override
     public boolean performAccessibilityAction(int action, Bundle arguments) {
-        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+        if (!FeatureFlags.enableSplitContextually()) {
             return super.performAccessibilityAction(action, arguments);
         }
 
@@ -169,9 +142,5 @@ public class SplitInstructionsView extends FrameLayout {
                         getMeasuredHeight(),
                         getMeasuredWidth()
                 );
-    }
-
-    public AppCompatTextView getTextView() {
-        return mTextView;
     }
 }

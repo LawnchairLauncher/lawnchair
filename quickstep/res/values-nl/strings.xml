@@ -95,9 +95,11 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="action_split" msgid="2098009717623550676">"Splitsen"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Tik op nog een app om je scherm te splitsen"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Annuleren"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Sluit de selectie voor gesplitst scherm"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Kies andere app om gesplitst scherm te gebruiken"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Deze actie wordt niet toegestaan door de app of je organisatie"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Widgets worden op dit moment niet ondersteund, selecteer een andere app"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Navigatietutorial overslaan?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Je vindt dit later terug in de app <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Annuleren"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Sleep een app naar de zijkant om 2 apps tegelijk te gebruiken"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Swipe langzaam omhoog om de taakbalk te tonen"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Krijg app-suggesties op basis van je routine"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Zet navigatie met gebaren aan bij Instellingen om de Taakbalk automatisch te verbergen"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Houd je vinger op de scheiding om de taakbalk vast te zetten"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Doe meer met de taakbalk"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Sluiten"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Klaar"</string>

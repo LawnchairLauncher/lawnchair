@@ -17,6 +17,9 @@ package com.android.launcher3.model;
 
 import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_GET_KEY_FIELDS_ONLY;
 
+import static com.android.launcher3.BuildConfig.QSB_ON_FIRST_SCREEN;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
 import static com.android.launcher3.shortcuts.ShortcutRequest.PINNED;
 
@@ -131,6 +134,8 @@ public class BgDataModel {
      * Load id for which the callbacks were successfully bound
      */
     public int lastLoadId = -1;
+    public boolean isFirstPagePinnedItemEnabled = QSB_ON_FIRST_SCREEN
+            && !ENABLE_SMARTSPACE_REMOVAL.get();
 
     /**
      * Clears all the data
@@ -145,16 +150,19 @@ public class BgDataModel {
     }
 
     /**
-     * Creates an array of valid workspace screens based on current items in the model.
+     * Creates an array of valid workspace screens based on current items in the
+     * model.
      */
     public synchronized IntArray collectWorkspaceScreens() {
         IntSet screenSet = new IntSet();
-        for (ItemInfo item: itemsIdMap) {
+        for (ItemInfo item : itemsIdMap) {
             if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                 screenSet.add(item.screenId);
             }
         }
-        if (FeatureFlags.topQsbOnFirstScreenEnabled(LawnchairApp.getInstance()) || screenSet.isEmpty()) {
+        if ((FeatureFlags.topQsbOnFirstScreenEnabled(LawnchairApp.getInstance())
+                && !shouldShowFirstPageWidget())
+                || screenSet.isEmpty()) {
             screenSet.add(Workspace.FIRST_SCREEN_ID);
         }
         return screenSet.getArray();
@@ -172,11 +180,15 @@ public class BgDataModel {
             writer.println(prefix + '\t' + appWidgets.get(i).toString());
         }
         writer.println(prefix + " ---- folder items ");
-        for (int i = 0; i< folders.size(); i++) {
+        for (int i = 0; i < folders.size(); i++) {
             writer.println(prefix + '\t' + folders.valueAt(i).toString());
         }
+        writer.println(prefix + " ---- extra items ");
+        for (int i = 0; i < extraItems.size(); i++) {
+            writer.println(prefix + '\t' + extraItems.valueAt(i).toString());
+        }
         writer.println(prefix + " ---- items id map ");
-        for (int i = 0; i< itemsIdMap.size(); i++) {
+        for (int i = 0; i < itemsIdMap.size(); i++) {
             writer.println(prefix + '\t' + itemsIdMap.valueAt(i).toString());
         }
 
@@ -279,7 +291,8 @@ public class BgDataModel {
     }
 
     /**
-     * Updates the deep shortucts state in system to match out internal model, pinning any missing
+     * Updates the deep shortucts state in system to match out internal model,
+     * pinning any missing
      * shortcuts and unpinning any extra shortcuts.
      */
     public void updateShortcutPinnedState(Context context) {
@@ -289,7 +302,8 @@ public class BgDataModel {
     }
 
     /**
-     * Updates the deep shortucts state in system to match out internal model, pinning any missing
+     * Updates the deep shortucts state in system to match out internal model,
+     * pinning any missing
      * shortcuts and unpinning any extra shortcuts.
      */
     public synchronized void updateShortcutPinnedState(Context context, UserHandle user) {
@@ -313,12 +327,12 @@ public class BgDataModel {
         forAllWorkspaceItemInfos(user, itemStream::accept);
         // Map of packageName to shortcutIds that are currently in our model
         Map<String, Set<String>> modelMap = Stream.concat(
-                    // Model shortcuts
-                    itemStream.build()
+                // Model shortcuts
+                itemStream.build()
                         .filter(wi -> wi.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
                         .map(ShortcutKey::fromItemInfo),
-                    // Pending shortcuts
-                    ItemInstallQueue.INSTANCE.get(context).getPendingShortcuts(user))
+                // Pending shortcuts
+                ItemInstallQueue.INSTANCE.get(context).getPendingShortcuts(user))
                 .collect(groupingBy(ShortcutKey::getPackageName,
                         mapping(ShortcutKey::getId, Collectors.toSet())));
 
@@ -356,7 +370,8 @@ public class BgDataModel {
     }
 
     /**
-     * Return an existing FolderInfo object if we have encountered this ID previously,
+     * Return an existing FolderInfo object if we have encountered this ID
+     * previously,
      * or make a new one.
      */
     public synchronized FolderInfo findOrMakeFolder(int id) {
@@ -371,7 +386,8 @@ public class BgDataModel {
     }
 
     /**
-     * Clear all the deep shortcut counts for the given package, and re-add the new shortcut counts.
+     * Clear all the deep shortcut counts for the given package, and re-add the new
+     * shortcut counts.
      */
     public synchronized void updateDeepShortcutCounts(
             String packageName, UserHandle user, List<ShortcutInfo> shortcuts) {
@@ -392,8 +408,7 @@ public class BgDataModel {
                     && (shortcut.isDeclaredInManifest() || shortcut.isDynamic())
                     && shortcut.getActivity() != null;
             if (shouldShowInContainer) {
-                ComponentKey targetComponent
-                        = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
+                ComponentKey targetComponent = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
 
                 Integer previousCount = deepShortcutMap.get(targetComponent);
                 deepShortcutMap.put(targetComponent, previousCount == null ? 1 : previousCount + 1);
@@ -412,9 +427,11 @@ public class BgDataModel {
     }
 
     /**
-     * Calls the provided {@code op} for all workspaceItems in the in-memory model (both persisted
+     * Calls the provided {@code op} for all workspaceItems in the in-memory model
+     * (both persisted
      * items and dynamic/predicted items for the provided {@code userHandle}.
-     * Note the call is not synchronized over the model, that should be handled by the called.
+     * Note the call is not synchronized over the model, that should be handled by
+     * the called.
      */
     public void forAllWorkspaceItemInfos(UserHandle userHandle, Consumer<WorkspaceItemInfo> op) {
         for (ItemInfo info : itemsIdMap) {
@@ -444,8 +461,21 @@ public class BgDataModel {
             this.containerId = containerId;
             this.items = Collections.unmodifiableList(items);
         }
-    }
 
+        @Override
+        @NonNull
+        public final String toString() {
+            StringBuilder s = new StringBuilder();
+            s.append("FixedContainerItems:");
+            s.append(" id=").append(containerId);
+            s.append(" itemCount=").append(items.size());
+            for (int i = 0; i < items.size(); i++) {
+                s.append(" item #").append(i).append(": ").append(items.get(i).toString());
+            }
+            return s.toString();
+        }
+
+    }
 
     public interface Callbacks {
         // If the launcher has permission to access deep shortcuts.
@@ -454,10 +484,15 @@ public class BgDataModel {
         int FLAG_QUIET_MODE_ENABLED = 1 << 1;
         // If launcher can change quiet mode
         int FLAG_QUIET_MODE_CHANGE_PERMISSION = 1 << 2;
+        // If quiet mode is enabled for work profile user
+        int FLAG_WORK_PROFILE_QUIET_MODE_ENABLED = 1 << 3;
+        // If quiet mode is enabled for private profile user
+        int FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED = 1 << 4;
 
         /**
          * Returns an IntSet of page ids to bind first, synchronously if possible
          * or an empty IntSet
+         * 
          * @param orderedScreenIds All the page ids to be bound
          */
         @NonNull
@@ -465,30 +500,60 @@ public class BgDataModel {
             return new IntSet();
         }
 
-        default void clearPendingBinds() { }
-        default void startBinding() { }
+        default void clearPendingBinds() {
+        }
 
-        default void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons) { }
-        default void bindScreens(IntArray orderedScreenIds) { }
-        default void finishBindingItems(IntSet pagesBoundFirst) { }
-        default void preAddApps() { }
+        default void startBinding() {
+        }
+
+        default void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons) {
+        }
+
+        default void bindScreens(IntArray orderedScreenIds) {
+        }
+
+        default void setIsFirstPagePinnedItemEnabled(boolean isFirstPagePinnedItemEnabled) {
+        }
+
+        default void finishBindingItems(IntSet pagesBoundFirst) {
+        }
+
+        default void preAddApps() {
+        }
+
         default void bindAppsAdded(IntArray newScreens,
-                ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated) { }
+                ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated) {
+        }
 
         /**
          * Called when some persistent property of an item is modified
          */
-        default void bindItemsModified(List<ItemInfo> items) { }
+        default void bindItemsModified(List<ItemInfo> items) {
+        }
 
         /**
          * Binds updated incremental download progress
          */
-        default void bindIncrementalDownloadProgressUpdated(AppInfo app) { }
-        default void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) { }
-        default void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets) { }
-        default void bindRestoreItemsChange(HashSet<ItemInfo> updates) { }
-        default void bindWorkspaceComponentsRemoved(Predicate<ItemInfo> matcher) { }
-        default void bindAllWidgets(List<WidgetsListBaseEntry> widgets) { }
+        default void bindIncrementalDownloadProgressUpdated(AppInfo app) {
+        }
+
+        default void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) {
+        }
+
+        default void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets) {
+        }
+
+        default void bindRestoreItemsChange(HashSet<ItemInfo> updates) {
+        }
+
+        default void bindWorkspaceComponentsRemoved(Predicate<ItemInfo> matcher) {
+        }
+
+        default void bindAllWidgets(List<WidgetsListBaseEntry> widgets) {
+        }
+
+        default void bindSmartspaceWidget() {
+        }
 
         /** Called when workspace has been bound. */
         default void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
@@ -496,12 +561,14 @@ public class BgDataModel {
             pendingTasks.executeAllAndDestroy();
         }
 
-        default void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap) { }
+        default void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap) {
+        }
 
         /**
          * Binds extra item provided any external source
          */
-        default void bindExtraContainerItems(FixedContainerItems item) { }
+        default void bindExtraContainerItems(FixedContainerItems item) {
+        }
 
         default void bindAllApplications(AppInfo[] apps, int flags,
                 Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
@@ -510,6 +577,7 @@ public class BgDataModel {
         /**
          * Binds the cache of string resources
          */
-        default void bindStringCache(StringCache cache) { }
+        default void bindStringCache(StringCache cache) {
+        }
     }
 }

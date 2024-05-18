@@ -19,6 +19,7 @@ import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_RECENTS;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 
+import android.os.Bundle;
 import android.view.RemoteAnimationTarget;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class RemoteAnimationTargets {
     public final RemoteAnimationTarget[] apps;
     public final RemoteAnimationTarget[] wallpapers;
     public final RemoteAnimationTarget[] nonApps;
+    public final Bundle extras;
     public final int targetMode;
     public final boolean hasRecents;
 
@@ -42,7 +44,7 @@ public class RemoteAnimationTargets {
 
     public RemoteAnimationTargets(RemoteAnimationTarget[] apps,
             RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
-            int targetMode) {
+            int targetMode, Bundle extras) {
         ArrayList<RemoteAnimationTarget> filteredApps = new ArrayList<>();
         boolean hasRecents = false;
         if (apps != null) {
@@ -61,6 +63,13 @@ public class RemoteAnimationTargets {
         this.targetMode = targetMode;
         this.hasRecents = hasRecents;
         this.nonApps = nonApps;
+        this.extras = extras;
+    }
+
+    public RemoteAnimationTargets(RemoteAnimationTarget[] apps,
+            RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
+            int targetMode) {
+        this(apps, wallpapers, nonApps, targetMode, new Bundle());
     }
 
     public RemoteAnimationTarget findTask(int taskId) {

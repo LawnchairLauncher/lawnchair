@@ -15,9 +15,13 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.taskbar.bubbles.BubbleBarController.BUBBLE_BAR_ENABLED;
+import static android.view.View.VISIBLE;
+
+import static com.android.launcher3.taskbar.bubbles.BubbleBarController.isBubbleBarEnabled;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED;
+import static com.android.wm.shell.common.bubbles.BubbleConstants.BUBBLE_EXPANDED_SCRIM_ALPHA;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
 
 import android.animation.ObjectAnimator;
 import android.view.animation.Interpolator;
@@ -35,13 +39,13 @@ import java.io.PrintWriter;
 public class TaskbarScrimViewController implements TaskbarControllers.LoggableTaskbarController,
         TaskbarControllers.BackgroundRendererController {
 
-    private static final float SCRIM_ALPHA = 0.6f;
-
     private static final Interpolator SCRIM_ALPHA_IN = new PathInterpolator(0.4f, 0f, 1f, 1f);
     private static final Interpolator SCRIM_ALPHA_OUT = new PathInterpolator(0f, 0f, 0.8f, 1f);
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarScrimView mScrimView;
+    private boolean mTaskbarVisible;
+    private int mSysUiStateFlags;
 
     // Alpha property for the scrim.
     private final AnimatedFloat mScrimAlpha = new AnimatedFloat(this::updateScrimAlpha);
@@ -62,35 +66,60 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
     }
 
     /**
+     * Called when the taskbar visibility changes.
+     *
+     * @param visibility the current visibility of {@link TaskbarView}.
+     */
+    public void onTaskbarVisibilityChanged(int visibility) {
+        mTaskbarVisible = visibility == VISIBLE;
+        if (shouldShowScrim()) {
+            showScrim(true, getScrimAlpha(), false /* skipAnim */);
+        } else if (mScrimView.getScrimAlpha() > 0f) {
+            showScrim(false, 0, false /* skipAnim */);
+        }
+    }
+
+    /**
      * Updates the scrim state based on the flags.
      */
     public void updateStateForSysuiFlags(int stateFlags, boolean skipAnim) {
-        if (BUBBLE_BAR_ENABLED && DisplayController.isTransientTaskbar(mActivity)) {
+        if (isBubbleBarEnabled() && DisplayController.isTransientTaskbar(mActivity)) {
             // These scrims aren't used if bubble bar & transient taskbar are active.
             return;
         }
-        final boolean bubblesExpanded = (stateFlags & SYSUI_STATE_BUBBLES_EXPANDED) != 0;
+        mSysUiStateFlags = stateFlags;
+        showScrim(shouldShowScrim(), getScrimAlpha(), skipAnim);
+    }
+
+    private boolean shouldShowScrim() {
+        final boolean bubblesExpanded = (mSysUiStateFlags & SYSUI_STATE_BUBBLES_EXPANDED) != 0;
+        boolean isShadeVisible = (mSysUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE) != 0;
+        return bubblesExpanded && !mControllers.navbarButtonsViewController.isImeVisible()
+                && !isShadeVisible
+                && !mControllers.taskbarStashController.isStashed()
+                && mTaskbarVisible;
+    }
+
+    private float getScrimAlpha() {
         final boolean manageMenuExpanded =
-                (stateFlags & SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED) != 0;
-        final boolean showScrim = !mControllers.navbarButtonsViewController.isImeVisible()
-                && bubblesExpanded
-                && mControllers.taskbarStashController.isTaskbarVisibleAndNotStashing();
-        final float scrimAlpha = manageMenuExpanded
+                (mSysUiStateFlags & SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED) != 0;
+        return manageMenuExpanded
                 // When manage menu shows there's the first scrim and second scrim so figure out
                 // what the total transparency would be.
-                ? (SCRIM_ALPHA + (SCRIM_ALPHA * (1 - SCRIM_ALPHA)))
-                : showScrim ? SCRIM_ALPHA : 0;
-        showScrim(showScrim, scrimAlpha, skipAnim);
+                ? (BUBBLE_EXPANDED_SCRIM_ALPHA + (BUBBLE_EXPANDED_SCRIM_ALPHA
+                * (1 - BUBBLE_EXPANDED_SCRIM_ALPHA)))
+                : shouldShowScrim() ? BUBBLE_EXPANDED_SCRIM_ALPHA : 0;
     }
 
     private void showScrim(boolean showScrim, float alpha, boolean skipAnim) {
         mScrimView.setOnClickListener(showScrim ? (view) -> onClick() : null);
         mScrimView.setClickable(showScrim);
-        ObjectAnimator anim = mScrimAlpha.animateToValue(showScrim ? alpha : 0);
-        anim.setInterpolator(showScrim ? SCRIM_ALPHA_IN : SCRIM_ALPHA_OUT);
-        anim.start();
         if (skipAnim) {
-            anim.end();
+            mScrimView.setScrimAlpha(alpha);
+        } else {
+            ObjectAnimator anim = mScrimAlpha.animateToValue(showScrim ? alpha : 0);
+            anim.setInterpolator(showScrim ? SCRIM_ALPHA_IN : SCRIM_ALPHA_OUT);
+            anim.start();
         }
     }
 

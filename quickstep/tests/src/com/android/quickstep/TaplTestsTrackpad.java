@@ -19,7 +19,6 @@ package com.android.quickstep;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
@@ -32,8 +31,8 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.tapl.LauncherInstrumentation.TrackpadGestureType;
 import com.android.launcher3.tapl.Workspace;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
-import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.After;
@@ -51,7 +50,7 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
     }
 
     @After
@@ -87,7 +86,7 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
             mLauncher.setTrackpadGestureType(TrackpadGestureType.THREE_FINGER);
 
             startTestActivity(2);
-            mLauncher.pressBack();
+            mLauncher.getLaunchedAppState().pressBackToWorkspace();
         } finally {
             instrumentation.getUiAutomation().dropShellPermissionIdentity();
         }

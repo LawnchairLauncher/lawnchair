@@ -25,6 +25,8 @@ import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import androidx.annotation.Nullable;
+
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.SimpleOrientationTouchTransformer;
 import com.android.systemui.shared.system.InputConsumerController;
@@ -42,7 +44,10 @@ public class InputConsumerProxy {
     private final Context mContext;
     private final Supplier<Integer> mRotationSupplier;
     private final InputConsumerController mInputConsumerController;
-    private Runnable mCallback;
+
+    /** Called if a new InputConsumer is created via touch down event. */
+    private @Nullable Runnable mOnTouchDownCallback;
+
     private Supplier<InputConsumer> mConsumerSupplier;
 
     // The consumer is created lazily on demand.
@@ -54,11 +59,11 @@ public class InputConsumerProxy {
 
     public InputConsumerProxy(Context context, Supplier<Integer> rotationSupplier,
             InputConsumerController inputConsumerController,
-            Runnable callback, Supplier<InputConsumer> consumerSupplier) {
+            Runnable onTouchDownCallback, Supplier<InputConsumer> consumerSupplier) {
         mContext = context;
         mRotationSupplier = rotationSupplier;
         mInputConsumerController = inputConsumerController;
-        mCallback = callback;
+        mOnTouchDownCallback = onTouchDownCallback;
         mConsumerSupplier = consumerSupplier;
     }
 
@@ -82,7 +87,7 @@ public class InputConsumerProxy {
                 onInputConsumerMotionEvent(event);
             }
         } else if (ev instanceof KeyEvent) {
-            initInputConsumerIfNeeded();
+            initInputConsumerIfNeeded(/* isFromTouchDown= */ false);
             mInputConsumer.onKeyEvent((KeyEvent) ev);
             return true;
         }
@@ -105,7 +110,7 @@ public class InputConsumerProxy {
 
         if (action == ACTION_DOWN) {
             mTouchInProgress = true;
-            initInputConsumerIfNeeded();
+            initInputConsumerIfNeeded(/* isFromTouchDown= */ true);
         } else if (action == ACTION_CANCEL || action == ACTION_UP) {
             // Finish any pending actions
             mTouchInProgress = false;
@@ -123,7 +128,7 @@ public class InputConsumerProxy {
     }
 
     private void onInputConsumerHoverEvent(MotionEvent ev) {
-        initInputConsumerIfNeeded();
+        initInputConsumerIfNeeded(/* isFromTouchDown= */ false);
         if (mInputConsumer != null) {
             SimpleOrientationTouchTransformer.INSTANCE.get(mContext).transform(ev,
                     mRotationSupplier.get());
@@ -141,14 +146,15 @@ public class InputConsumerProxy {
         mInputConsumerController.setInputListener(null);
     }
 
-    public void unregisterCallback() {
-        mCallback = null;
+    /** Sets mOnToudhCownCallback = null. */
+    public void unregisterOnTouchDownCallback() {
+        mOnTouchDownCallback = null;
     }
 
-    private void initInputConsumerIfNeeded() {
+    private void initInputConsumerIfNeeded(boolean isFromTouchDown) {
         if (mInputConsumer == null) {
-            if (mCallback != null) {
-                mCallback.run();
+            if (isFromTouchDown && mOnTouchDownCallback != null) {
+                mOnTouchDownCallback.run();
             }
             mInputConsumer = mConsumerSupplier.get();
             mConsumerSupplier = null;

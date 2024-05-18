@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.Flags.enableUnfoldedTwoPanePicker;
+
 import android.content.Context;
 import android.graphics.Outline;
 import android.os.Process;
@@ -23,12 +25,15 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Px;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.PackageUserKey;
@@ -46,6 +51,8 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
     private static final int PERSONAL_TAB = 0;
     private static final int WORK_TAB = 1;
+    private static final int MINIMUM_WIDTH_LEFT_PANE_FOLDABLE_DP = 268;
+    private static final int MAXIMUM_WIDTH_LEFT_PANE_FOLDABLE_DP = 395;
     private static final String SUGGESTIONS_PACKAGE_NAME = "widgets_list_suggestions_entry";
 
     private LinearLayout mSuggestedWidgetsContainer;
@@ -114,6 +121,29 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
         // Set the fast scroller as not visible for two pane layout.
         mFastScroller.setVisibility(GONE);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (changed && mDeviceProfile.isTwoPanels && enableUnfoldedTwoPanePicker()) {
+            LinearLayout layout = mContent.findViewById(R.id.linear_layout_container);
+            FrameLayout leftPane = layout.findViewById(R.id.recycler_view_container);
+            LinearLayout.LayoutParams layoutParams = (LayoutParams) leftPane.getLayoutParams();
+            // Width is 1/3 of the sheet unless it's less than min width or max width
+            int leftPaneWidth = layout.getMeasuredWidth() / 3;
+            @Px int minLeftPaneWidthPx = Utilities.dpToPx(MINIMUM_WIDTH_LEFT_PANE_FOLDABLE_DP);
+            @Px int maxLeftPaneWidthPx = Utilities.dpToPx(MAXIMUM_WIDTH_LEFT_PANE_FOLDABLE_DP);
+            if (leftPaneWidth < minLeftPaneWidthPx) {
+                layoutParams.width = minLeftPaneWidthPx;
+            } else if (leftPaneWidth > maxLeftPaneWidthPx) {
+                layoutParams.width = maxLeftPaneWidthPx;
+            } else {
+                layoutParams.width = 0;
+            }
+            layoutParams.weight = layoutParams.width == 0 ? 0.33F : 0;
+            leftPane.setLayoutParams(layoutParams);
+        }
     }
 
     @Override

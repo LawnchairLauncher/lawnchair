@@ -39,12 +39,23 @@ import java.util.regex.Pattern;
  * Indicates the base state with a UI other than Overview running as foreground. It can also
  * indicate Launcher as long as Launcher is not in Overview state.
  */
-public abstract class Background extends LauncherInstrumentation.VisibleContainer {
+public abstract class Background extends LauncherInstrumentation.VisibleContainer
+        implements KeyboardQuickSwitchSource {
     private static final int ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION = 500;
     private static final Pattern SQUARE_BUTTON_EVENT = Pattern.compile("onOverviewToggle");
 
     Background(LauncherInstrumentation launcher) {
         super(launcher);
+    }
+
+    @Override
+    public LauncherInstrumentation getLauncher() {
+        return mLauncher;
+    }
+
+    @Override
+    public LauncherInstrumentation.ContainerType getStartingContainerType() {
+        return getContainerType();
     }
 
     /**

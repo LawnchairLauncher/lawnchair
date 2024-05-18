@@ -30,6 +30,7 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -43,7 +44,6 @@ import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Stream;
 
@@ -165,15 +165,24 @@ public class TaskbarUIController {
         mControllers.taskbarActivityContext.startTranslationSpring();
     }
 
-    /*
+    /**
      * @param ev MotionEvent in screen coordinates.
      * 
      * @return Whether any Taskbar item could handle the given MotionEvent if given
-     * the chance.
+     *         the chance.
      */
     public boolean isEventOverAnyTaskbarItem(MotionEvent ev) {
         return mControllers.taskbarViewController.isEventOverAnyItem(ev)
                 || mControllers.navbarButtonsViewController.isEventOverAnyItem(ev);
+    }
+
+    /**
+     * Checks if the given {@link MotionEvent} is over the bubble bar stash handle.
+     */
+    public boolean isEventOverBubbleBarStashHandle(MotionEvent ev) {
+        return mControllers.bubbleControllers.map(
+                bubbleControllers -> bubbleControllers.bubbleStashController.isEventOverStashHandle(ev))
+                .orElse(false);
     }
 
     /**
@@ -223,6 +232,7 @@ public class TaskbarUIController {
 
         recentsView.getSplitSelectController().findLastActiveTasksAndRunCallback(
                 Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
+                false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable
                     Task foundTask = foundTasks.get(0);
@@ -241,6 +251,7 @@ public class TaskbarUIController {
         RecentsView recents = getRecentsView();
         recents.getSplitSelectController().findLastActiveTasksAndRunCallback(
                 Collections.singletonList(info.getComponentKey()),
+                false /* findExactPairMatch */,
                 foundTasks -> {
                     @Nullable
                     Task foundTask = foundTasks.get(0);
@@ -308,11 +319,9 @@ public class TaskbarUIController {
     }
 
     /**
-     * Launches the focused task in splitscreen.
-     *
-     * No-op if the view is not yet open.
+     * Launches the given task in split-screen.
      */
-    public void launchSplitTasks(@NonNull View taskview, @NonNull GroupTask groupTask) {
+    public void launchSplitTasks(@NonNull GroupTask groupTask) {
     }
 
     /**
@@ -344,6 +353,16 @@ public class TaskbarUIController {
     }
 
     /**
+     * Callback for when launcher state transition completes after user swipes to
+     * home.
+     * 
+     * @param finalState The final state of the transition.
+     */
+    public void onStateTransitionCompletedAfterSwipeToHome(LauncherState finalState) {
+        // Overridden
+    }
+
+    /**
      * Refreshes the resumed state of this ui controller.
      */
     public void refreshResumedState() {
@@ -357,5 +376,9 @@ public class TaskbarUIController {
                 .getSplitPositionOptions(mControllers.taskbarActivityContext.getDeviceProfile())
                 .stream()
                 .map(mControllers.taskbarPopupController::createSplitShortcutFactory);
+    }
+
+    /** Adjusts the hotseat for the bubble bar. */
+    public void adjustHotseatForBubbleBar(boolean isBubbleBarVisible) {
     }
 }

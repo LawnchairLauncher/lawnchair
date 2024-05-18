@@ -26,6 +26,8 @@ import com.android.launcher3.anim.AnimatorListeners
 import com.android.launcher3.anim.AnimatorPlaybackController
 import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.statemanager.StatefulActivity
+import com.android.launcher3.states.StateAnimationConfig.HANDLE_STATE_APPLY
+import com.android.launcher3.states.StateAnimationConfig.USER_CONTROLLED
 import java.util.function.Consumer
 
 private const val TAG = "CannedAnimCoordinator"
@@ -107,8 +109,15 @@ class CannedAnimationCoordinator(private val activity: StatefulActivity<*>) {
         }
         // Link this to the state manager so that it auto-cancels when state changes
         recreatePending = false
+        // Animator coordinator takes care of reapplying the animation due to state reset. Set the
+        // flags accordingly
         animationController =
-            controller.apply { activity.stateManager.setCurrentUserControlledAnimation(this) }
+            controller.apply {
+                activity.stateManager.setCurrentAnimation(
+                    this,
+                    USER_CONTROLLED or HANDLE_STATE_APPLY
+                )
+            }
         recreateAnimation(provider)
     }
 

@@ -54,4 +54,9 @@ public final class TaskbarAppIconMenuItem extends AppIconMenuItem implements Spl
     public Launchable getLaunchable() {
         return this;
     }
+
+    @Override
+    protected boolean launcherStopsAfterLaunch() {
+        return false;
+    }
 }

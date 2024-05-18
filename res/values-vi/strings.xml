@@ -30,6 +30,7 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Chia đôi màn hình"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Thông tin ứng dụng cho %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Lưu cặp ứng dụng"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Chạm và giữ để di chuyển một tiện ích."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Nhấn đúp và giữ để di chuyển một tiện ích hoặc sử dụng các thao tác tùy chỉnh."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -99,6 +100,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Đã đổi tên thư mục thành <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Thư mục: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> mục"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Thư mục: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> mục trở lên"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"Cặp ứng dụng: <xliff:g id="APP1">%1$s</xliff:g> và <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Hình nền và phong cách"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Chỉnh sửa Màn hình chính"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Cài đặt màn hình chính"</string>
@@ -170,7 +172,11 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Tạm dừng các ứng dụng công việc"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Bỏ tạm dừng"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Bộ lọc"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Tìm trên điện thoại"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Tìm kiếm trong máy tính bảng của bạn"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Không thực hiện được thao tác: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Không gian riêng tư"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Riêng tư"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"Cài đặt không gian riêng tư"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Khoá/mở khoá không gian riêng tư"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Chuyển đổi sang không gian riêng tư"</string>
+    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Bong bóng bổ sung"</string>
 </resources>

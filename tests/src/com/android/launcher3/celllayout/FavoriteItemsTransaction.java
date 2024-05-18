@@ -29,13 +29,13 @@ import androidx.test.uiautomator.UiDevice;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.util.ModelTestExtensions;
 
 import java.util.ArrayList;
 import java.util.function.Supplier;
@@ -60,8 +60,7 @@ public class FavoriteItemsTransaction {
     public void commit() {
         LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
         // Load the model once so that there is no pending migration:
-        loadModelSync(model);
-
+        ModelTestExtensions.INSTANCE.loadModelSync(model);
         runOnExecutorSync(MODEL_EXECUTOR, () -> {
             ModelDbController controller = model.getModelDbController();
             // Migrate any previous data so that the DB state is correct
@@ -105,16 +104,7 @@ public class FavoriteItemsTransaction {
 
         // Reload model
         runOnExecutorSync(MAIN_EXECUTOR, model::forceReload);
-        loadModelSync(model);
-    }
-
-    private void loadModelSync(LauncherModel model) {
-        Callbacks mockCb = new Callbacks() { };
-        runOnExecutorSync(MAIN_EXECUTOR, () -> model.addCallbacksAndLoad(mockCb));
-        runOnExecutorSync(MODEL_EXECUTOR, () -> { });
-
-        runOnExecutorSync(MAIN_EXECUTOR, () -> { });
-        runOnExecutorSync(MAIN_EXECUTOR, () -> model.removeCallbacks(mockCb));
+        ModelTestExtensions.INSTANCE.loadModelSync(model);
     }
 
     /**

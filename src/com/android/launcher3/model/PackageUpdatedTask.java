@@ -17,10 +17,11 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_WORK_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_RESTORED_ICON;
-
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -35,7 +36,7 @@ import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.Launcher;
+import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -48,7 +49,6 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -70,12 +70,14 @@ import java.util.stream.Collectors;
 import app.lawnchair.preferences.PreferenceManager;
 
 /**
- * Handles updates due to changes in package manager (app installed/updated/removed)
+ * Handles updates due to changes in package manager (app
+ * installed/updated/removed)
  * or when a user availability changes.
  */
 public class PackageUpdatedTask extends BaseModelUpdateTask {
 
-    private static boolean DEBUG = false;
+    // TODO(b/290090023): Set to false after root causing is done.
+    private static final boolean DEBUG = true;
     private static final String TAG = "PackageUpdatedTask";
 
     public static final int OP_NONE = 0;
@@ -127,7 +129,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         switch (mOp) {
             case OP_ADD: {
                 for (int i = 0; i < N; i++) {
-                    if (DEBUG) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
+                    if (DEBUG)
+                        Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
                     iconCache.updateIconsForPkg(packages[i], mUser);
                     if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
                         appsList.removePackage(packages[i], mUser);
@@ -139,24 +142,13 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 break;
             }
             case OP_UPDATE:
-                try (SafeCloseable t =
-                             appsList.trackRemoves(a -> removedComponents.add(a.componentName))) {
+                try (SafeCloseable t = appsList.trackRemoves(a -> removedComponents.add(a.componentName))) {
                     for (int i = 0; i < N; i++) {
-                        if (DEBUG) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
+                        if (DEBUG)
+                            Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
                         iconCache.updateIconsForPkg(packages[i], mUser);
                         activitiesLists.put(
                                 packages[i], appsList.updatePackage(context, packages[i], mUser));
-
-                        // The update may have changed which shortcuts/widgets are available.
-                        // Refresh the widgets for the package if we have an activity running.
-                        Launcher launcher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
-                        if (TestProtocol.sDebugTracing) {
-                            Log.d(TestProtocol.WORK_TAB_MISSING, "launcher: " + launcher);
-                        }
-                        if (launcher != null) {
-                            launcher.refreshAndBindWidgetsForPackageUser(
-                                    new PackageUserKey(packages[i], mUser));
-                        }
                     }
                 }
                 // Since package was just updated, the target must be available now.
@@ -164,22 +156,26 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 break;
             case OP_REMOVE: {
                 for (int i = 0; i < N; i++) {
-                    FileLog.d(TAG, "Removing app icon" + packages[i]);
+                    FileLog.d(TAG, "Removing app icon: " + packages[i]);
                     iconCache.removeIconsForPkg(packages[i], mUser);
                     PreferenceManager pm = PreferenceManager.getInstance(context);
                     if (packages[i].equals(pm.getIconPackPackage().get())) {
                         pm.getIconPackPackage().set("");
-                    };
+                    }
+                    ;
                     if (packages[i].equals(pm.getThemedIconPackPackage().get())) {
                         pm.getThemedIconPackPackage().set("");
-                    };
+                    }
+                    ;
                     final boolean isThemedIconsAvailable = context.getPackageManager()
-                        .queryIntentActivityOptions(
-                            new ComponentName(context.getApplicationInfo().packageName, context.getApplicationInfo().className),
-                            null,
-                            new Intent(context.getResources().getString(R.string.icon_packs_intent_name)),
-                            PackageManager.GET_RESOLVED_FILTER).stream().map(it -> it.activityInfo.packageName)
-                        .noneMatch(it -> packageManagerHelper.isAppInstalled(it, mUser));
+                            .queryIntentActivityOptions(
+                                    new ComponentName(context.getApplicationInfo().packageName,
+                                            context.getApplicationInfo().className),
+                                    null,
+                                    new Intent(context.getResources().getString(R.string.icon_packs_intent_name)),
+                                    PackageManager.GET_RESOLVED_FILTER)
+                            .stream().map(it -> it.activityInfo.packageName)
+                            .noneMatch(it -> packageManagerHelper.isAppInstalled(it, mUser));
                     if (isThemedIconsAvailable) {
                         pm.getThemedIcons().set(false);
                     }
@@ -188,7 +184,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             }
             case OP_UNAVAILABLE:
                 for (int i = 0; i < N; i++) {
-                    if (DEBUG) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
+                    if (DEBUG)
+                        Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
                     appsList.removePackage(packages[i], mUser);
                 }
                 flagOp = FlagOp.addFlag(WorkspaceItemInfo.FLAG_DISABLED_NOT_AVAILABLE);
@@ -197,19 +194,30 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             case OP_UNSUSPEND:
                 flagOp = FlagOp.NO_OP.setFlag(
                         WorkspaceItemInfo.FLAG_DISABLED_SUSPENDED, mOp == OP_SUSPEND);
-                if (DEBUG) Log.d(TAG, "mAllAppsList.(un)suspend " + N);
+                if (DEBUG)
+                    Log.d(TAG, "mAllAppsList.(un)suspend " + N);
                 appsList.updateDisabledFlags(matcher, flagOp);
                 break;
             case OP_USER_AVAILABILITY_CHANGE: {
                 UserManagerState ums = new UserManagerState();
-                ums.init(UserCache.INSTANCE.get(context),
-                        context.getSystemService(UserManager.class));
+                UserManager userManager = context.getSystemService(UserManager.class);
+                ums.init(UserCache.INSTANCE.get(context), userManager);
+                boolean isUserQuiet = ums.isUserQuiet(mUser);
                 flagOp = FlagOp.NO_OP.setFlag(
-                        WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER, ums.isUserQuiet(mUser));
+                        WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER, isUserQuiet);
                 appsList.updateDisabledFlags(matcher, flagOp);
 
-                // We are not synchronizing here, as int operations are atomic
-                appsList.setFlags(FLAG_QUIET_MODE_ENABLED, ums.isAnyProfileQuietModeEnabled());
+                if (Flags.enablePrivateSpace()) {
+                    UserCache userCache = UserCache.INSTANCE.get(context);
+                    if (userCache.getUserInfo(mUser).isWork()) {
+                        appsList.setFlags(FLAG_WORK_PROFILE_QUIET_MODE_ENABLED, isUserQuiet);
+                    } else if (userCache.getUserInfo(mUser).isPrivate()) {
+                        appsList.setFlags(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED, isUserQuiet);
+                    }
+                } else {
+                    // We are not synchronizing here, as int operations are atomic
+                    appsList.setFlags(FLAG_QUIET_MODE_ENABLED, ums.isAnyProfileQuietModeEnabled());
+                }
                 break;
             }
             default:
@@ -251,11 +259,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                             boolean isTargetValid = !cn.getClassName().equals(
                                     IconCache.EMPTY_CLASS_NAME);
                             if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                                List<ShortcutInfo> shortcut =
-                                        new ShortcutRequest(context, mUser)
-                                                .forPackage(cn.getPackageName(),
-                                                        si.getDeepShortcutId())
-                                                .query(ShortcutRequest.PINNED);
+                                List<ShortcutInfo> shortcut = new ShortcutRequest(context, mUser)
+                                        .forPackage(cn.getPackageName(),
+                                                si.getDeepShortcutId())
+                                        .query(ShortcutRequest.PINNED);
                                 if (shortcut.isEmpty()) {
                                     isTargetValid = false;
                                 } else {
@@ -324,9 +331,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                             && widgetInfo.hasRestoreFlag(
                                     LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
                             && packageSet.contains(widgetInfo.providerName.getPackageName())) {
-                        widgetInfo.restoreStatus &=
-                                ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY
-                                        & ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
+                        widgetInfo.restoreStatus &= ~LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY
+                                & ~LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
 
                         // adding this flag ensures that launcher shows 'click to setup'
                         // if the widget has a config activity. In case there is no config
@@ -361,7 +367,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         } else if (mOp == OP_UPDATE) {
             // Mark disabled packages in the broadcast to be removed
             final LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
-            for (int i=0; i<N; i++) {
+            for (int i = 0; i < N; i++) {
                 if (!launcherApps.isPackageEnabled(packages[i], mUser)) {
                     removedPackages.add(packages[i]);
                 }
@@ -377,8 +383,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                             + "mOp=" + mOp + " removedPackages=" + removedPackages.stream().collect(
                                     Collectors.joining(",", "[", "]"))
                             + " removedComponents=" + removedComponents.stream()
-                            .filter(Objects::nonNull).map(ComponentName::toShortString)
-                            .collect(Collectors.joining(",", "[", "]")));
+                                    .filter(Objects::nonNull).map(ComponentName::toShortString)
+                                    .collect(Collectors.joining(",", "[", "]")));
 
             // Remove any queued items from the install queue
             ItemInstallQueue.INSTANCE.get(context)
@@ -386,7 +392,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         }
 
         if (mOp == OP_ADD) {
-            // Load widgets for the new package. Changes due to app updates are handled through
+            // Load widgets for the new package. Changes due to app updates are handled
+            // through
             // AppWidgetHost events, this is just to initialize the long-press options.
             for (int i = 0; i < N; i++) {
                 dataModel.widgetsModel.update(app, new PackageUserKey(packages[i], mUser));
@@ -397,12 +404,14 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
     /**
      * Updates {@param si}'s intent to point to a new ComponentName.
+     * 
      * @return Whether the shortcut intent was changed.
      */
     private boolean updateWorkspaceItemIntent(Context context,
             WorkspaceItemInfo si, String packageName) {
         if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-            // Do not update intent for deep shortcuts as they contain additional information
+            // Do not update intent for deep shortcuts as they contain additional
+            // information
             // about the shortcut.
             return false;
         }

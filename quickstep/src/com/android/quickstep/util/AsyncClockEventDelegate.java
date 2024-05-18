@@ -32,6 +32,8 @@ import android.widget.TextClock;
 
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SettingsCache.OnChangeListener;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -42,11 +44,14 @@ import java.util.List;
 /**
  * Extension of {@link ClockEventDelegate} to support async event registration
  */
-public class AsyncClockEventDelegate extends TextClock implements OnChangeListener {
+public class AsyncClockEventDelegate extends ClockEventDelegate
+        implements OnChangeListener, SafeCloseable {
+
+    public static final MainThreadInitializedObject<AsyncClockEventDelegate> INSTANCE = new MainThreadInitializedObject<>(
+            AsyncClockEventDelegate::new);
 
     private final Context mContext;
-    private final SimpleBroadcastReceiver mReceiver =
-            new SimpleBroadcastReceiver(this::onClockEventReceived);
+    private final SimpleBroadcastReceiver mReceiver = new SimpleBroadcastReceiver(this::onClockEventReceived);
 
     private final ArrayMap<BroadcastReceiver, Handler> mTimeEventReceivers = new ArrayMap<>();
     private final List<ContentObserver> mFormatObservers = new ArrayList<>();
@@ -55,12 +60,46 @@ public class AsyncClockEventDelegate extends TextClock implements OnChangeListen
     private boolean mFormatRegistered = false;
     private boolean mDestroyed = false;
 
-    public AsyncClockEventDelegate(Context context) {
+    private AsyncClockEventDelegate(Context context) {
         super(context);
         mContext = context;
 
-        UI_HELPER_EXECUTOR.execute(() ->
-                mReceiver.register(mContext, ACTION_TIME_CHANGED, ACTION_TIMEZONE_CHANGED));
+        UI_HELPER_EXECUTOR.execute(() -> mReceiver.register(mContext, ACTION_TIME_CHANGED, ACTION_TIMEZONE_CHANGED));
+    }
+
+    @Override
+    public void registerTimeChangeReceiver(BroadcastReceiver receiver, Handler handler) {
+        synchronized (mTimeEventReceivers) {
+            mTimeEventReceivers.put(receiver, handler == null ? new Handler() : handler);
+        }
+    }
+
+    @Override
+    public void unregisterTimeChangeReceiver(BroadcastReceiver receiver) {
+        synchronized (mTimeEventReceivers) {
+            mTimeEventReceivers.remove(receiver);
+        }
+    }
+
+    @Override
+    public void registerFormatChangeObserver(ContentObserver observer, int userHandle) {
+        if (mDestroyed) {
+            return;
+        }
+        synchronized (mFormatObservers) {
+            if (!mFormatRegistered && !mDestroyed) {
+                SettingsCache.INSTANCE.get(mContext).register(mFormatUri, this);
+                mFormatRegistered = true;
+            }
+            mFormatObservers.add(observer);
+        }
+    }
+
+    @Override
+    public void unregisterFormatChangeObserver(ContentObserver observer) {
+        synchronized (mFormatObservers) {
+            mFormatObservers.remove(observer);
+        }
     }
 
     @Override
@@ -72,6 +111,7 @@ public class AsyncClockEventDelegate extends TextClock implements OnChangeListen
             mFormatObservers.forEach(o -> o.dispatchChange(false, mFormatUri));
         }
     }
+
     @WorkerThread
     private void onClockEventReceived(Intent intent) {
         if (mDestroyed) {
@@ -82,10 +122,8 @@ public class AsyncClockEventDelegate extends TextClock implements OnChangeListen
         }
     }
 
-    /**
-     * Unregisters all system callbacks and destroys this delegate
-     */
-    public void onDestroy() {
+    @Override
+    public void close() {
         mDestroyed = true;
         SettingsCache.INSTANCE.get(mContext).unregister(mFormatUri, this);
         UI_HELPER_EXECUTOR.execute(() -> mReceiver.unregisterReceiverSafely(mContext));

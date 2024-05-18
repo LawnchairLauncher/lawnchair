@@ -25,9 +25,7 @@ public class RunnableList {
     private ArrayList<Runnable> mList = null;
     private boolean mDestroyed = false;
 
-    /**
-     * Ads a runnable to this list
-     */
+    /** Adds a runnable to this list */
     public void add(Runnable runnable) {
         if (runnable == null) {
             return;
@@ -40,6 +38,13 @@ public class RunnableList {
             mList = new ArrayList<>();
         }
         mList.add(runnable);
+    }
+
+    /** Removes a previously added runnable */
+    public void remove(Runnable runnable) {
+        if (mList != null) {
+            mList.remove(runnable);
+        }
     }
 
     /**

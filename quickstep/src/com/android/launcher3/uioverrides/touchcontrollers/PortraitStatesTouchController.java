@@ -15,8 +15,7 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
-import static com.android.launcher3.AbstractFloatingView.TYPE_ALL_APPS_EDU;
+import static com.android.launcher3.AbstractFloatingView.TYPE_TOUCH_CONTROLLER_NO_INTERCEPT;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -84,7 +83,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 return false;
             }
         }
-        if (getTopOpenViewWithType(mLauncher, TYPE_ACCESSIBLE | TYPE_ALL_APPS_EDU) != null) {
+        if (getTopOpenViewWithType(mLauncher, TYPE_TOUCH_CONTROLLER_NO_INTERCEPT) != null) {
             return false;
         }
         return true;
@@ -96,7 +95,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             return FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()
                     ? mLauncher.getStateManager().getLastState()
                     : NORMAL;
-        } else if (fromState == NORMAL && isDragTowardPositive) {
+        } else if (fromState == NORMAL && shouldOpenAllApps(isDragTowardPositive)) {
             return ALL_APPS;
         }
         return fromState;
@@ -106,7 +105,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     protected StateAnimationConfig getConfigForStates(
             LauncherState fromState, LauncherState toState) {
         final StateAnimationConfig config = new StateAnimationConfig();
-        config.userControlled = true;
+        config.animProps |= StateAnimationConfig.USER_CONTROLLED;
         if (fromState == NORMAL && toState == ALL_APPS) {
             AllAppsSwipeController.applyNormalToAllAppsAnimConfig(mLauncher, config);
         } else if (fromState == ALL_APPS && toState == NORMAL) {

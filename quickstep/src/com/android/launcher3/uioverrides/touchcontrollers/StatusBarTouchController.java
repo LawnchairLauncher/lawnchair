@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.WindowManager.LayoutParams.FLAG_SLIPPERY;
 
+import static com.android.launcher3.MotionEventsUtils.isTrackpadScroll;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN;
 
 import android.annotation.SuppressLint;
@@ -72,6 +73,7 @@ public class StatusBarTouchController implements TouchController {
 
     private boolean mExpanded;
     private boolean mVibrated;
+    private boolean mIsTrackpadReverseScroll;
 
     public StatusBarTouchController(Launcher l) {
         mLauncher = l;
@@ -103,13 +105,14 @@ public class StatusBarTouchController implements TouchController {
         }
     }
 
-    @SuppressLint({"WrongConstant", "PrivateApi"})
+    @SuppressLint({ "WrongConstant", "PrivateApi" })
     private void expand() {
         try {
             Class.forName("android.app.StatusBarManager")
-                .getMethod("expandNotificationsPanel")
-                .invoke(mLauncher.getSystemService("statusbar"));
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
+                    .getMethod("expandNotificationsPanel")
+                    .invoke(mLauncher.getSystemService("statusbar"));
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException
+                | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -134,6 +137,8 @@ public class StatusBarTouchController implements TouchController {
             mExpanded = false;
             mVibrated = false;
             mDownEvents.put(pid, new PointF(ev.getX(), ev.getY()));
+            mIsTrackpadReverseScroll = !mLauncher.isNaturalScrollingEnabled()
+                    && isTrackpadScroll(ev);
         } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
             // Check!! should only set it only when threshold is not entered.
             mDownEvents.put(pid, new PointF(ev.getX(idx), ev.getY(idx)));
@@ -144,6 +149,9 @@ public class StatusBarTouchController implements TouchController {
         if (action == ACTION_MOVE) {
             float dy = ev.getY(idx) - mDownEvents.get(pid).y;
             float dx = ev.getX(idx) - mDownEvents.get(pid).x;
+            if (mIsTrackpadReverseScroll) {
+                dy = -dy;
+            }
             // Currently input dispatcher will not do touch transfer if there are more than
             // one touch pointer. Hence, even if slope passed, only set the slippery flag
             // when there is single touch event. (context: InputDispatcher.cpp line 1445)
@@ -168,6 +176,7 @@ public class StatusBarTouchController implements TouchController {
             mLauncher.getStatsLogManager().logger()
                     .log(LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN);
             setWindowSlippery(false);
+            mIsTrackpadReverseScroll = false;
             return true;
         } else if (CompatibilityKt.isOnePlusStock() && action == ACTION_MOVE) {
             dispatchTouchEvent(ev);

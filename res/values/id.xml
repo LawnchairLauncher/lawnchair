@@ -43,4 +43,12 @@
     <item type="id" name="saved_floating_widget_foreground" />
     <item type="id" name="saved_floating_widget_background" />
 
+    <item type="id" name="dismiss_view" />
+
+    <!-- Private Space parameters -->
+    <item type="id" name="ps_container_header" />
+    <item type="id" name="ps_lock_unlock_button" />
+    <item type="id" name="ps_settings_button" />
+    <item type="id" name="ps_transition_image" />
+
 </resources>

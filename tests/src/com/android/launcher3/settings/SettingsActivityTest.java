@@ -31,8 +31,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT;
+import static com.android.launcher3.settings.SettingsActivity.DEVELOPER_OPTIONS_KEY;
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARGS;
+import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ROOT_KEY;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -43,18 +44,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.launcher3.R;
-import com.android.launcher3.uioverrides.flags.DeveloperOptionsFragment;
 import com.android.systemui.shared.plugins.PluginPrefs;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -100,7 +98,7 @@ public class SettingsActivityTest {
 
         intended(allOf(
                 hasComponent(SettingsActivity.class.getName()),
-                hasExtra(EXTRA_FRAGMENT, DeveloperOptionsFragment.class.getName())));
+                hasExtra(EXTRA_FRAGMENT_ROOT_KEY, DEVELOPER_OPTIONS_KEY)));
     }
 
     @Test
@@ -122,27 +120,12 @@ public class SettingsActivityTest {
     @Ignore  // b/199309785
     public void testSettings_developerOptionsFragmentIntent() {
         Intent intent = new Intent(mApplicationContext, SettingsActivity.class)
-                .putExtra(EXTRA_FRAGMENT, DeveloperOptionsFragment.class.getName());
+                .putExtra(EXTRA_FRAGMENT_ROOT_KEY, DEVELOPER_OPTIONS_KEY);
         ActivityScenario.launch(intent);
 
         onView(withText("Developer Options")).check(matches(isDisplayed()));
         onView(withId(R.id.filter_box)).check(matches(isDisplayed()));
         onView(withContentDescription("Navigate up")).check(matches(isDisplayed()));
-    }
-
-    @Test
-    @Ignore  // b/199309785
-    public void testSettings_intentWithUnknownFragment() {
-        String fragmentClass = PreferenceFragmentCompat.class.getName();
-        Intent intent = new Intent(mApplicationContext, SettingsActivity.class)
-                .putExtra(EXTRA_FRAGMENT, fragmentClass);
-
-        try {
-            ActivityScenario.launch(intent);
-            Assert.fail("Should have thrown an IllegalArgumentException.");
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage()).contains(fragmentClass);
-        }
     }
 
     @Test

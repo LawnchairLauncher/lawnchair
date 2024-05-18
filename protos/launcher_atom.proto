@@ -38,7 +38,7 @@ message ItemInfo {
   optional int32 rank = 5;
 
   // Stores whether the Item belows to non primary user
-  optional bool is_work = 6;
+  optional bool is_work = 6 [deprecated = true];
 
   // Item can be child node to parent container or parent containers (nested)
   optional ContainerInfo container_info = 7;
@@ -48,6 +48,9 @@ message ItemInfo {
 
   // Stores whether the navigation bar is in kids mode.
   optional bool is_kids_mode = 13;
+
+  // Stores type of the user the Item belong to
+  optional int32 user_type = 14;
 }
 
 message LauncherAttributes{
@@ -135,7 +138,7 @@ message TaskBarContainer {
   }
 }
 
-// Next value 52
+// Next value 54
 enum Attribute {
   option allow_alias = true;
 
@@ -180,7 +183,8 @@ enum Attribute {
   ALL_APPS_SEARCH_RESULT_CHROMETAB = 24;
   ALL_APPS_SEARCH_RESULT_NAVVYSITE = 25 [deprecated = true];
   ALL_APPS_SEARCH_RESULT_TIPS = 26;
-  ALL_APPS_SEARCH_RESULT_PEOPLE_TILE = 27;
+  ALL_APPS_SEARCH_RESULT_QS_TILE = 27;
+  ALL_APPS_SEARCH_RESULT_PEOPLE_TILE = 27 [deprecated = true];
   ALL_APPS_SEARCH_RESULT_LEGACY_SHORTCUT = 30;
   ALL_APPS_SEARCH_RESULT_ASSISTANT_MEMORY = 31;
   ALL_APPS_SEARCH_RESULT_VIDEO = 41;
@@ -188,6 +192,7 @@ enum Attribute {
   ALL_APPS_SEARCH_RESULT_EDUCARD = 43;
   ALL_APPS_SEARCH_RESULT_LOCATION = 50;
   ALL_APPS_SEARCH_RESULT_TEXT_HEADER = 51;
+  ALL_APPS_SEARCH_RESULT_NO_FULFILLMENT = 52;
 
   // Result sources
   DATA_SOURCE_APPSEARCH_APP_PREVIEW = 45;
@@ -195,6 +200,7 @@ enum Attribute {
   DATA_SOURCE_APPSEARCH_CATEGORY_SRP_PREVIEW = 48;
   DATA_SOURCE_APPSEARCH_ENTITY_SRP_PREVIEW = 49;
   DATA_SOURCE_AIAI_SEARCH_ROOT = 47;
+  DATA_SOURCE_LAUNCHER = 53;
 
   // Web suggestions provided by AGA
   ALL_APPS_SEARCH_RESULT_WEB_SUGGEST = 39;

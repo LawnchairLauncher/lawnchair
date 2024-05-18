@@ -19,8 +19,6 @@ package com.android.launcher3.graphics;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.app.animation.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_DOWNLOAD_APP_UX_V2;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_DOWNLOAD_APP_UX_V3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -76,10 +74,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     // Duration = COMPLETE_ANIM_FRACTION * DURATION_SCALE
     private static final float COMPLETE_ANIM_FRACTION = 1f;
 
-    private static final float SMALL_SCALE = ENABLE_DOWNLOAD_APP_UX_V3.get() ? 0.8f : 0.7f;
-    private static final float PROGRESS_STROKE_SCALE = ENABLE_DOWNLOAD_APP_UX_V2.get()
-            ? 0.055f
-            : 0.075f;
+    private static final float SMALL_SCALE = 0.8f;
+    private static final float PROGRESS_STROKE_SCALE = 0.055f;
     private static final float PROGRESS_BOUNDS_SCALE = 0.075f;
     private static final int PRELOAD_ACCENT_COLOR_INDEX = 0;
     private static final int PRELOAD_BACKGROUND_COLOR_INDEX = 1;
@@ -119,8 +115,6 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
     private ObjectAnimator mCurrentAnim;
 
-    private boolean mIsStartable;
-
     public PreloadIconDrawable(ItemInfoWithIcon info, Context context) {
         this(
                 info,
@@ -144,9 +138,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
         mProgressPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mProgressPaint.setStrokeCap(Paint.Cap.ROUND);
-        if (ENABLE_DOWNLOAD_APP_UX_V3.get()) {
-            mProgressPaint.setAlpha(MAX_PAINT_ALPHA);
-        }
+        mProgressPaint.setAlpha(MAX_PAINT_ALPHA);
         mIndicatorColor = indicatorColor;
 
         // This is the color
@@ -181,9 +173,6 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         mIconScaleMultiplier.updateValue(info.getProgressLevel() == 0 ? 0 : 1);
 
         setLevel(info.getProgressLevel());
-        if (!ENABLE_DOWNLOAD_APP_UX_V2.get()) {
-            setIsStartable(info.isAppStartable());
-        }
     }
 
     @Override
@@ -212,52 +201,29 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             return;
         }
 
-        if (mInternalStateProgress > 0
-                && (ENABLE_DOWNLOAD_APP_UX_V3.get() || !ENABLE_DOWNLOAD_APP_UX_V2.get())) {
+        if (mInternalStateProgress > 0) {
             // Draw background.
-            mProgressPaint.setStyle(ENABLE_DOWNLOAD_APP_UX_V3.get()
-                    ? Paint.Style.FILL
-                    : Paint.Style.FILL_AND_STROKE);
-            mProgressPaint.setColor(ENABLE_DOWNLOAD_APP_UX_V3.get()
-                    ? mPlateColor
-                    : mSystemBackgroundColor);
+            mProgressPaint.setStyle(Paint.Style.FILL);
+            mProgressPaint.setColor(mPlateColor);
             canvas.drawPath(mScaledTrackPath, mProgressPaint);
         }
 
-        if (!ENABLE_DOWNLOAD_APP_UX_V2.get() || mInternalStateProgress > 0) {
+        if (mInternalStateProgress > 0) {
             // Draw track and progress.
             mProgressPaint.setStyle(Paint.Style.STROKE);
-            mProgressPaint.setColor(ENABLE_DOWNLOAD_APP_UX_V3.get()
-                    ? mTrackColor
-                    : mSystemAccentColor);
-            if (!ENABLE_DOWNLOAD_APP_UX_V3.get()) {
-                mProgressPaint.setAlpha(TRACK_ALPHA);
-            }
+            mProgressPaint.setColor(mTrackColor);
             canvas.drawPath(mScaledTrackPath, mProgressPaint);
             mProgressPaint.setAlpha(MAX_PAINT_ALPHA);
-            if (ENABLE_DOWNLOAD_APP_UX_V3.get()) {
-                mProgressPaint.setColor(mProgressColor);
-            }
+            mProgressPaint.setColor(mProgressColor);
             canvas.drawPath(mScaledProgressPath, mProgressPaint);
         }
 
         int saveCount = canvas.save();
-        float scale = ENABLE_DOWNLOAD_APP_UX_V2.get()
-                ? 1 - mIconScaleMultiplier.value * (1 - SMALL_SCALE)
-                : SMALL_SCALE;
+        float scale = 1 - mIconScaleMultiplier.value * (1 - SMALL_SCALE);
         canvas.scale(scale, scale, bounds.exactCenterX(), bounds.exactCenterY());
 
         super.drawInternal(canvas, bounds);
         canvas.restoreToCount(saveCount);
-    }
-
-    @Override
-    protected void updateFilter() {
-        if (!ENABLE_DOWNLOAD_APP_UX_V2.get()) {
-            setAlpha(mIsDisabled ? DISABLED_ICON_ALPHA : MAX_PAINT_ALPHA);
-        } else {
-            super.updateFilter();
-        }
     }
 
     /**
@@ -294,14 +260,6 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
     public boolean hasNotCompleted() {
         return !mRanFinishAnimation;
-    }
-
-    /** Sets whether this icon should display the startable app UI. */
-    public void setIsStartable(boolean isStartable) {
-        if (mIsStartable != isStartable) {
-            mIsStartable = isStartable;
-            setIsDisabled(!isStartable);
-        }
     }
 
     private void updateInternalState(
@@ -355,7 +313,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
      */
     private void setInternalProgress(float progress) {
         // Animate scale and alpha from pending to downloading state.
-        if (ENABLE_DOWNLOAD_APP_UX_V2.get() && progress > 0 && mInternalStateProgress == 0) {
+        if (progress > 0 && mInternalStateProgress == 0) {
             // Progress is changing for the first time, animate the icon scale
             Animator iconScaleAnimator = mIconScaleMultiplier.animateToValue(1);
             iconScaleAnimator.setDuration(SCALE_AND_ALPHA_ANIM_DURATION);
@@ -365,14 +323,11 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
         mInternalStateProgress = progress;
         if (progress <= 0) {
-            if (!ENABLE_DOWNLOAD_APP_UX_V2.get()) {
-                mScaledTrackPath.reset();
-            }
             mIconScaleMultiplier.updateValue(0);
         } else {
             mPathMeasure.getSegment(
                     0, Math.min(progress, 1) * mTrackLength, mScaledProgressPath, true);
-            if (progress > 1 && ENABLE_DOWNLOAD_APP_UX_V2.get()) {
+            if (progress > 1) {
                 // map the scale back to original value
                 mIconScaleMultiplier.updateValue(Utilities.mapBoundToRange(
                         progress - 1, 0, COMPLETE_ANIM_FRACTION, 1, 0, EMPHASIZED));

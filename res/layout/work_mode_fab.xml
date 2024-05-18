@@ -37,11 +37,14 @@
         android:id="@+id/pause_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="@dimen/work_fab_width"
         android:textColor="@color/work_fab_icon_color"
         android:textSize="14sp"
         android:includeFontPadding="false"
         android:textDirection="locale"
         android:text="@string/work_apps_pause_btn_text"
         android:layout_marginStart="@dimen/work_fab_text_start_margin"
+        android:ellipsize="end"
+        android:maxLines="1"
         style="@style/TextHeadline"/>
 </com.android.launcher3.allapps.WorkModeSwitch>

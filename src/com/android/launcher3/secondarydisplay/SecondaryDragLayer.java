@@ -18,7 +18,6 @@ package com.android.launcher3.secondarydisplay;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 
 import android.content.Context;
@@ -45,7 +44,6 @@ import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -66,8 +64,8 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
 
     @Override
     public void recreateControllers() {
-        mControllers = new TouchController[]{new CloseAllAppsTouchController(),
-                mActivity.getDragController()};
+        mControllers = new TouchController[] { new CloseAllAppsTouchController(),
+                mActivity.getDragController() };
     }
 
     /**
@@ -121,15 +119,12 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
             if (child == mAppsView) {
                 int horizontalPadding = (2 * grid.desiredWorkspaceHorizontalMarginPx)
                         + grid.cellLayoutPaddingPx.left + grid.cellLayoutPaddingPx.right;
-                int verticalPadding =
-                        grid.cellLayoutPaddingPx.top + grid.cellLayoutPaddingPx.bottom;
+                int verticalPadding = grid.cellLayoutPaddingPx.top + grid.cellLayoutPaddingPx.bottom;
 
-                int maxWidth =
-                        grid.allAppsCellWidthPx * grid.numShownAllAppsColumns + horizontalPadding;
+                int maxWidth = grid.allAppsCellWidthPx * grid.numShownAllAppsColumns + horizontalPadding;
                 int appsWidth = Math.min(width - getPaddingLeft() - getPaddingRight(), maxWidth);
 
-                int maxHeight =
-                        grid.allAppsCellHeightPx * grid.numShownAllAppsColumns + verticalPadding;
+                int maxHeight = grid.allAppsCellHeightPx * grid.numShownAllAppsColumns + verticalPadding;
                 int appsHeight = Math.min(height - getPaddingTop() - getPaddingBottom(), maxHeight);
 
                 mAppsView.measure(
@@ -240,8 +235,8 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
                 public void onPreDragStart(DropTarget.DragObject dragObject) {
                     mDragView = dragObject.dragView;
                     if (!shouldStartDrag(0)) {
-                        mDragView.setOnScaleAnimEndCallback(() ->
-                                mActivity.beginDragShared(v, mActivity.getAppsView(), options));
+                        mDragView.setOnScaleAnimEndCallback(
+                                () -> mActivity.beginDragShared(v, mActivity.getAppsView(), options));
                     }
                 }
 

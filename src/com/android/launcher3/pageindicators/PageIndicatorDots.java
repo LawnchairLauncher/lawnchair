@@ -16,7 +16,7 @@
 
 package com.android.launcher3.pageindicators;
 
-import static com.android.launcher3.config.FeatureFlags.SHOW_DOT_PAGINATION;
+import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -73,7 +73,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private static final int PAGE_INDICATOR_ALPHA = 255;
     private static final int DOT_ALPHA = 128;
     private static final float DOT_ALPHA_FRACTION = 0.5f;
-    private final int DOT_GAP_FACTOR = FeatureFlags.showDotPagination(getContext()) ? 4 : 3;
+    private static final int DOT_GAP_FACTOR = FeatureFlags.showDotPagination(getContext()) ? 4 : 3;
     private static final int VISIBLE_ALPHA = 255;
     private static final int INVISIBLE_ALPHA = 0;
     private Paint mPaginationPaint;
@@ -135,6 +135,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private float mCurrentPosition;
     private float mFinalPosition;
     private boolean mAreScreensBinding;
+    private boolean mIsTwoPanels;
     private ObjectAnimator mAnimator;
     private @Nullable ObjectAnimator mAlphaAnimator;
 
@@ -357,6 +358,13 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     public void setActiveMarker(int activePage) {
+        // In unfolded foldables, every page has two CellLayouts, so we need to halve
+        // the active
+        // page for it to be accurate.
+        if (mIsTwoPanels && !FOLDABLE_SINGLE_PAGE.get()) {
+            activePage = activePage / 2;
+        }
+
         if (mActivePage != activePage) {
             mActivePage = activePage;
         }
@@ -369,7 +377,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     }
 
     @Override
-    public void setAreScreensBinding(boolean areScreensBinding) {
+    public void setAreScreensBinding(boolean areScreensBinding, boolean isTwoPanels) {
+        mIsTwoPanels = isTwoPanels;
+
         // Reapply correct current position which was skipped during setScroll.
         if (mAreScreensBinding && !areScreensBinding) {
             CURRENT_POSITION.set(this, (float) mActivePage);

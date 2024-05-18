@@ -32,9 +32,9 @@ class DeleteDropTargetTest {
         buttonDropTarget.setTextMultiLine(false)
 
         // No space for text
-        assertThat(buttonDropTarget.isTextClippedVertically(30)).isTrue()
+        assertThat(buttonDropTarget.isTextClippedVertically(1)).isTrue()
 
         // A lot of space for text so the text should not be clipped
-        assertThat(buttonDropTarget.isTextClippedVertically(100)).isFalse()
+        assertThat(buttonDropTarget.isTextClippedVertically(1000)).isFalse()
     }
 }

@@ -34,13 +34,29 @@ import java.util.Collection;
 /**
  * All widgets container.
  */
-public final class Widgets extends LauncherInstrumentation.VisibleContainer {
+public final class Widgets extends LauncherInstrumentation.VisibleContainer
+        implements KeyboardQuickSwitchSource {
     private static final int FLING_STEPS = 10;
     private static final int SCROLL_ATTEMPTS = 60;
 
     Widgets(LauncherInstrumentation launcher) {
         super(launcher);
         verifyActiveContainer();
+    }
+
+    @Override
+    public LauncherInstrumentation getLauncher() {
+        return mLauncher;
+    }
+
+    @Override
+    public LauncherInstrumentation.ContainerType getStartingContainerType() {
+        return getContainerType();
+    }
+
+    @Override
+    public boolean isHomeState() {
+        return true;
     }
 
     /**

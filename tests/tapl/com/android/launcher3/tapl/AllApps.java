@@ -16,6 +16,9 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.KeyEvent.KEYCODE_ESCAPE;
+import static android.view.KeyEvent.KEYCODE_META_RIGHT;
+
 import static com.android.launcher3.tapl.LauncherInstrumentation.DEFAULT_POLL_INTERVAL;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 
@@ -37,16 +40,26 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * Operations on AllApps opened from Home. Also a parent for All Apps opened from Overview.
  */
-public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
+public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
+        implements KeyboardQuickSwitchSource {
     // Defer updates flag used to defer all apps updates by a test's request.
     private static final int DEFER_UPDATES_TEST = 1 << 1;
 
     private static final int MAX_SCROLL_ATTEMPTS = 40;
+
+    private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
+    private static final String FAST_SCROLLER_RES_ID = "fast_scroller";
+
+    private static final Pattern EVENT_ALT_ESC_DOWN = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
+    private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
 
     private final int mHeight;
     private final int mIconHeight;
@@ -61,6 +74,16 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         verifyNotFrozen("All apps freeze flags upon opening all apps");
         mIconHeight = mLauncher.getTestInfo(TestProtocol.REQUEST_ICON_HEIGHT)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    @Override
+    public LauncherInstrumentation getLauncher() {
+        return mLauncher;
+    }
+
+    @Override
+    public LauncherInstrumentation.ContainerType getStartingContainerType() {
+        return getContainerType();
     }
 
     private boolean hasClickableIcon(UiObject2 allAppsContainer, UiObject2 appListRecycler,
@@ -336,6 +359,55 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         final Bundle testInfo = mLauncher.getTestInfo(TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS);
         return testInfo == null ? 0 : testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
+
+    /**
+     * Taps outside bottom sheet to dismiss it. Available on tablets only.
+     * @param tapRight Tap on the right of bottom sheet if true, or left otherwise.
+     */
+    public void dismissByTappingOutsideForTablet(boolean tapRight) {
+        mLauncher.assertTrue("Device must be a tablet", mLauncher.isTablet());
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to tap outside AllApps bottom sheet on the "
+                             + (tapRight ? "right" : "left"))) {
+
+            final UiObject2 container = (tapRight)
+                    ? mLauncher.waitForLauncherObject(FAST_SCROLLER_RES_ID) :
+                    mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
+
+            mLauncher.touchOutsideContainer(container, tapRight, false);
+            try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
+                    "tapped outside AllApps bottom sheet")) {
+                verifyVisibleContainerOnDismiss();
+            }
+        }
+    }
+
+    /** Presses the meta keyboard shortcut to dismiss AllApps. */
+    public void dismissByKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed meta key")) {
+                verifyVisibleContainerOnDismiss();
+            }
+        }
+    }
+
+    /** Presses the esc key to dismiss AllApps. */
+    public void dismissByEscKey() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
+            mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE);
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed esc key")) {
+                verifyVisibleContainerOnDismiss();
+            }
+        }
+    }
+
+    protected abstract void verifyVisibleContainerOnDismiss();
 
     /**
      * Return the QSB UI object on the AllApps screen.

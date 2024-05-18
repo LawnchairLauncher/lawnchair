@@ -40,6 +40,8 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
 
     private var future: Future<Void>? = null
 
+    var hasWorkProfile = false
+
     /**
      * Preinflate app icons. If all apps RV cannot be scrolled down, we don't need to preinflate.
      */
@@ -93,9 +95,10 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
                 EXTRA_ICONS_COUNT
         if (FeatureFlags.ALL_APPS_GONE_VISIBILITY.get()) {
             val grid = ActivityContext.lookupContext<T>(context).deviceProfile
-            val approxRows =
-                Math.ceil((grid.availableHeightPx / grid.allAppsIconSizePx).toDouble()).toInt()
-            targetPreinflateCount += (approxRows + 1) * grid.numShownAllAppsColumns
+            targetPreinflateCount += grid.maxAllAppsRowCount * grid.numShownAllAppsColumns
+        }
+        if (hasWorkProfile) {
+            targetPreinflateCount *= 2
         }
         val existingPreinflateCount = getRecycledViewCount(BaseAllAppsAdapter.VIEW_TYPE_ICON)
         return targetPreinflateCount - existingPreinflateCount

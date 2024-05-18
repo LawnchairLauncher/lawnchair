@@ -28,7 +28,6 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
@@ -94,9 +93,8 @@ public class LauncherDelegate {
                         // folder
                         CellLayout cellLayout = mLauncher.getCellLayout(info.container,
                                 mLauncher.getCellPosMapper().mapModelToPresenter(info).screenId);
-                        if (cellLayout == null) {
+                        if (cellLayout == null)
                             return;
-                        }
                         finalItem = info.contents.remove(0);
                         newIcon = mLauncher.createShortcut(cellLayout, finalItem);
                         mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,
@@ -180,8 +178,8 @@ public class LauncherDelegate {
         @Override
         ModelWriter getModelWriter() {
             if (mWriter == null) {
-                mWriter = LauncherAppState.getInstance((Context) mContext).getModel()
-                        .getWriter(false, false, CellPosMapper.DEFAULT, null);
+                mWriter = LauncherAppState.getInstance((Context) mContext).getModel().getWriter(
+                        false, mContext.getCellPosMapper(), null);
             }
             return mWriter;
         }

@@ -160,7 +160,7 @@ public class AllAppsSearchBarController
      * Focuses the search field to handle key events.
      */
     public void focusSearchField() {
-        mInput.showKeyboard(true /* shouldFocus */);
+        mInput.showKeyboard();
     }
 
     /**

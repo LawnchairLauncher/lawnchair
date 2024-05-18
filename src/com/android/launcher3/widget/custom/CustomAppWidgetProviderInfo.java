@@ -33,14 +33,15 @@ import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
         implements Parcelable {
 
-    public final int providerId;
+    public final String providerId;
 
-    protected CustomAppWidgetProviderInfo(Parcel parcel, boolean readSelf, int providerId) {
+    protected CustomAppWidgetProviderInfo(Parcel parcel, boolean readSelf, String providerId) {
         super(parcel);
         if (readSelf) {
-            this.providerId = parcel.readInt();
+            this.providerId = parcel.readString();
 
-            provider = new ComponentName(parcel.readString(), CLS_CUSTOM_WIDGET_PREFIX + providerId);
+            provider = new ComponentName(parcel.readString(),
+                    CLS_CUSTOM_WIDGET_PREFIX + parcel.readString());
 
             label = parcel.readString();
             initialLayout = parcel.readInt();
@@ -58,7 +59,10 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
     }
 
     @Override
-    public void initSpans(Context context, InvariantDeviceProfile idp) { }
+    public void initSpans(Context context, InvariantDeviceProfile idp) {
+        mIsMinSizeFulfilled = Math.min(spanX, minSpanX) <= idp.numColumns
+                && Math.min(spanY, minSpanY) <= idp.numRows;
+    }
 
     @Override
     public String getLabel(PackageManager packageManager) {
@@ -73,8 +77,9 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
     @Override
     public void writeToParcel(Parcel out, int flags) {
         super.writeToParcel(out, flags);
-        out.writeInt(providerId);
+        out.writeString(providerId);
         out.writeString(provider.getPackageName());
+        out.writeString(provider.getClassName());
 
         out.writeString(label);
         out.writeInt(initialLayout);
@@ -93,7 +98,7 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
 
         @Override
         public CustomAppWidgetProviderInfo createFromParcel(Parcel parcel) {
-            return new CustomAppWidgetProviderInfo(parcel, true, 0);
+            return new CustomAppWidgetProviderInfo(parcel, true, "");
         }
 
         @Override

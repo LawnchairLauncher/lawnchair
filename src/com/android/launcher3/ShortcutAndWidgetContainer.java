@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static com.android.launcher3.CellLayout.FOLDER;
 import static com.android.launcher3.CellLayout.HOTSEAT;
 import static com.android.launcher3.CellLayout.WORKSPACE;
+import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_BUBBLE_ADJUSTMENT_ANIM;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_WIDGET_CENTERING;
 
 import android.app.WallpaperManager;
@@ -33,11 +34,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
@@ -67,6 +71,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
     private boolean mInvertIfRtl = false;
 
     private final PreferenceManager2 mPreferenceManager2;
+    @Nullable
+    private TranslationProvider mTranslationProvider = null;
 
     public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
         super(context);
@@ -80,8 +86,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        boolean mAllowWidgetOverlap =
-                PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getAllowWidgetOverlap());
+        boolean mAllowWidgetOverlap = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getAllowWidgetOverlap());
         setClipChildren(!mAllowWidgetOverlap);
         setClipToPadding(!mAllowWidgetOverlap);
         setClipToOutline(!mAllowWidgetOverlap);
@@ -234,7 +239,31 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
         int childLeft = lp.x;
         int childTop = lp.y;
+
+        // We want to get the layout position of the widget, but layout() is a final
+        // function in
+        // ViewGroup which makes it impossible to be overridden. Overriding onLayout()
+        // will have no
+        // effect since it will not be called when the transition is enabled. The only
+        // possible
+        // solution here seems to be sending the positions when CellLayout is laying out
+        // the views
+        if (child instanceof LauncherAppWidgetHostView widgetView
+                && widgetView.getCellChildViewPreLayoutListener() != null) {
+            widgetView.getCellChildViewPreLayoutListener().notifyBoundChangeOnPreLayout(child,
+                    childLeft, childTop, childLeft + lp.width, childTop + lp.height);
+        }
         child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
+        if (mTranslationProvider != null) {
+            final float tx = mTranslationProvider.getTranslationX(child);
+            if (child instanceof Reorderable) {
+                ((Reorderable) child).getTranslateDelegate()
+                        .getTranslationX(INDEX_BUBBLE_ADJUSTMENT_ANIM)
+                        .setValue(tx);
+            } else {
+                child.setTranslationX(tx);
+            }
+        }
 
         if (lp.dropped) {
             lp.dropped = false;
@@ -302,5 +331,14 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             CellLayout cl = (CellLayout) getParent();
             cl.clearFolderLeaveBehind();
         }
+    }
+
+    void setTranslationProvider(@Nullable TranslationProvider provider) {
+        mTranslationProvider = provider;
+    }
+
+    /** Provides translation values to apply when laying out child views. */
+    interface TranslationProvider {
+        float getTranslationX(View child);
     }
 }

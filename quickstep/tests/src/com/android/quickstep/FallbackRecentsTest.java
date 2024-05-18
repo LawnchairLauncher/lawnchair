@@ -32,8 +32,6 @@ import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -57,10 +55,12 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.SamplerRule;
 import com.android.launcher3.util.rule.ScreenRecordRule;
+import com.android.launcher3.util.rule.TestIsolationRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.util.rule.ViewCaptureRule;
 import com.android.quickstep.views.RecentsView;
@@ -94,9 +94,6 @@ public class FallbackRecentsTest {
     public final TestRule mDisableHeadsUpNotification = disableHeadsUpNotification();
 
     @Rule
-    public final TestRule mSetLauncherCommand;
-
-    @Rule
     public final TestRule mOrderSensitiveRules;
 
     @Rule
@@ -107,7 +104,7 @@ public class FallbackRecentsTest {
         Context context = instrumentation.getContext();
         mDevice = UiDevice.getInstance(instrumentation);
         mDevice.setOrientationNatural();
-        mLauncher = new LauncherInstrumentation();
+        mLauncher = AbstractLauncherUiTest.createLauncherInstrumentation();
         mLauncher.enableDebugTracing();
         // b/143488140
         //mLauncher.enableCheckEventsForSuccessfulGestures();
@@ -116,19 +113,7 @@ public class FallbackRecentsTest {
             Utilities.enableRunningInTestHarnessForTests();
         }
 
-        final ViewCaptureRule viewCaptureRule = new ViewCaptureRule(
-                RecentsActivity.ACTIVITY_TRACKER::getCreatedActivity);
-        mOrderSensitiveRules = RuleChain
-                .outerRule(new SamplerRule())
-                .around(new NavigationModeSwitchRule(mLauncher))
-                .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
-                .around(viewCaptureRule);
-
-        mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
-                getHomeIntentInPackage(context),
-                MATCH_DISABLED_COMPONENTS).get(0).activityInfo;
-
-        mSetLauncherCommand = (base, desc) -> new Statement() {
+        final TestRule setLauncherCommand = (base, desc) -> new Statement() {
             @Override
             public void evaluate() throws Throwable {
                 TestCommandReceiver.callCommand(TestCommandReceiver.ENABLE_TEST_LAUNCHER);
@@ -151,6 +136,22 @@ public class FallbackRecentsTest {
                 }
             }
         };
+
+        final ViewCaptureRule viewCaptureRule = new ViewCaptureRule(
+                RecentsActivity.ACTIVITY_TRACKER::getCreatedActivity);
+        mOrderSensitiveRules = RuleChain
+                .outerRule(new SamplerRule())
+                .around(new TestStabilityRule())
+                .around(new NavigationModeSwitchRule(mLauncher))
+                .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
+                // .around(viewCaptureRule) b/315482167
+                .around(new TestIsolationRule(mLauncher, false))
+                .around(setLauncherCommand);
+
+        mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
+                getHomeIntentInPackage(context),
+                MATCH_DISABLED_COMPONENTS).get(0).activityInfo;
+
         if (TestHelpers.isInLauncherProcess()) {
             mLauncher.setSystemHealthSupplier(startTime -> TestCommandReceiver.callCommand(
                     TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
@@ -161,13 +162,14 @@ public class FallbackRecentsTest {
     @Before
     public void setUp() {
         mLauncher.onTestStart();
+        AbstractLauncherUiTest.onTestStart();
     }
 
     @After
     public void tearDown() {
         try {
             // Limits UI tests affecting tests running after them.
-            AbstractQuickStepTest.checkDetectedLeaks(mLauncher);
+            AbstractQuickStepTest.checkDetectedLeaks(mLauncher, true);
         } finally {
             mLauncher.onTestFinish();
         }
@@ -175,7 +177,6 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/266606727
     @Test
     public void goToOverviewFromHome() {
         mDevice.pressHome();
@@ -223,7 +224,6 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/266606727
     @Test
     public void testOverview() {
         startAppFast(getAppPackageName());

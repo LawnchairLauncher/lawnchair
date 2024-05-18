@@ -14,17 +14,19 @@
   ~ limitations under the License.
   -->
 <hotseatSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <specs launcher:maxAspectRatio="10">
+        <hotseatSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="847dp">
+            <hotseatQsbSpace launcher:ofAvailableSpace="1" />
+            <edgePadding launcher:fixedSize="36dp" />
+        </hotseatSpec>
 
-    <hotseatSpec
-        launcher:specType="height"
-        launcher:maxAvailableSize="847dp">
-        <hotseatQsbSpace launcher:ofAvailableSpace="1" />
-    </hotseatSpec>
-
-    <hotseatSpec
-        launcher:specType="height"
-        launcher:maxAvailableSize="9999dp">
-        <hotseatQsbSpace launcher:fixedSize="36dp" />
-    </hotseatSpec>
-
+        <hotseatSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <hotseatQsbSpace launcher:fixedSize="36dp" />
+            <edgePadding launcher:fixedSize="36dp" />
+        </hotseatSpec>
+    </specs>
 </hotseatSpecs>

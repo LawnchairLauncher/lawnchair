@@ -57,10 +57,15 @@ public class WidgetManagerHelper {
     /**
      * @see AppWidgetManager#getAppWidgetInfo(int)
      */
-    public LauncherAppWidgetProviderInfo getLauncherAppWidgetInfo(int appWidgetId) {
-        if (appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
-            return CustomWidgetManager.INSTANCE.get(mContext).getWidgetProvider(appWidgetId);
+    public LauncherAppWidgetProviderInfo getLauncherAppWidgetInfo(
+            int appWidgetId, ComponentName componentName) {
+
+        // For custom widgets.
+        if (appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID && !CustomWidgetManager
+                .INSTANCE.get(mContext).getWidgetIdForCustomProvider(componentName).equals("")) {
+            return CustomWidgetManager.INSTANCE.get(mContext).getWidgetProvider(componentName);
         }
+
         AppWidgetProviderInfo info = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
         return info == null ? null : LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
     }

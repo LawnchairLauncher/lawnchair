@@ -17,6 +17,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -486,7 +487,7 @@ public class LoaderCursor extends CursorWrapper {
             // cause the item loading to get skipped
             ShortcutKey.fromItemInfo(info);
         }
-        if (checkItemPlacement(info)) {
+        if (checkItemPlacement(info, dataModel.isFirstPagePinnedItemEnabled)) {
             dataModel.addItem(mContext, info, false, logger);
         } else {
             markDeleted("Item position overlap");
@@ -497,7 +498,7 @@ public class LoaderCursor extends CursorWrapper {
      * check & update map of what's occupied; used to discard overlapping/invalid
      * items
      */
-    protected boolean checkItemPlacement(ItemInfo item) {
+    protected boolean checkItemPlacement(ItemInfo item, boolean isFirstPagePinnedItemEnabled) {
         int containerIndex = item.screenId;
         if (item.container == Favorites.CONTAINER_HOTSEAT) {
             final GridOccupancy hotseatOccupancy = mOccupied.get(Favorites.CONTAINER_HOTSEAT);
@@ -544,7 +545,8 @@ public class LoaderCursor extends CursorWrapper {
 
         if (!mOccupied.containsKey(item.screenId)) {
             GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
-            if (item.screenId == Workspace.FIRST_SCREEN_ID && FeatureFlags.topQsbOnFirstScreenEnabled(mContext)) {
+            if (item.screenId == Workspace.FIRST_SCREEN_ID && (FeatureFlags.topQsbOnFirstScreenEnabled(mContext)
+                    && !shouldShowFirstPageWidget() && isFirstPagePinnedItemEnabled)) {
                 // Mark the first X columns (X is width of the search container) in the first
                 // row as
                 // occupied (if the feature is enabled) in order to account for the search

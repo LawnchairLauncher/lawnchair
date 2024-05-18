@@ -51,7 +51,11 @@ open class TaskbarSearchSessionController : ResourceBasedOverride, AllAppsTransi
 
     open fun handleBackInvoked(): Boolean = false
 
-    open fun onAllAppsAnimationPending(animation: PendingAnimation, toAllApps: Boolean) = Unit
+    open fun onAllAppsAnimationPending(
+        animation: PendingAnimation,
+        toAllApps: Boolean,
+        showKeyboard: Boolean,
+    ) = Unit
 
     companion object {
         @JvmStatic
