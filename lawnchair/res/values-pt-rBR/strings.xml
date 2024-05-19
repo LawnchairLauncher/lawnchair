@@ -43,9 +43,9 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Personalização de fonte</string>
-    <string name="font_picker_description">Algum texto permanecerá inalterado</string>
+    <string name="font_picker_description">Algum texto continua inalterado</string>
     <string name="smartspace_calendar_label">Personalização do Calendário no Resumo</string>
-    <string name="smartspace_calendar_description">Permitir mostrar data em sistemas de calendário não-Gregorianos</string>
+    <string name="smartspace_calendar_description">Permitir a visualização de data nos sistemas de calendário não-Gregorianos</string>
     <string name="workspace_increase_max_grid_size_label">Aumentar o tamanho máximo da grade da tela inicial</string>
     <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grade da tela inicial de 10 x 10 para 20 x 20</string>
     <string name="always_reload_icons_label">Sempre atualizar os Ícones</string>
@@ -431,14 +431,14 @@
     <string name="system_settings">Definições de Sistema</string>
     <string name="action_unlock">Desbloquear</string>
     <string name="action_lock">Bloquear</string>
-    <string name="allapps_twoline_label">Use Multiple Lines</string>
-    <string name="hidden_apps_show_always">Always</string>
-    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
-    <string name="hidden_apps_show_never">Never</string>
-    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="allapps_twoline_label">Use Múltiplas Linhas</string>
+    <string name="hidden_apps_show_always">Sempre</string>
+    <string name="hidden_apps_show_name_typed">Se o Nome Completo for Digitado</string>
+    <string name="hidden_apps_show_never">Nunca</string>
+    <string name="show_hidden_apps_in_search_results">Mostrar Apps Ocultos no Resultado da Busca</string>
     <string name="search_algorithm_app_search">Pesquisa de aplicativos</string>
-    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
-    <string name="app_search_algorithm">Search Algorithm</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="search_algorithm_global_search_on_device">Busca Global (no dispositivo)</string>
+    <string name="search_algorithm_global_search_via_asi">Busca Global (via ASI)</string>
+    <string name="app_search_algorithm">Algoritmo de busca</string>
+    <string name="all_apps_search_result_calculator">Calculadora</string>
 </resources>
