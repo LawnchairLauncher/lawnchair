@@ -23,9 +23,9 @@
             android:pathData="M30 0H30A30 30 0 0 1 60 30V30A30 30 0 0 1 30 60H30A30 30 0 0 1 0 30V30A30 30 0 0 1 30 0Z" />
         <path
             android:pathData="M30 0H30A30 30 0 0 1 60 30V30A30 30 0 0 1 30 60H30A30 30 0 0 1 0 30V30A30 30 0 0 1 30 0Z"
-            android:fillColor="@color/material_color_surface_bright" />
+            android:fillColor="@color/material_color_surface_container_lowest" />
         <path
             android:pathData="M29 31h-6v-2h6v-6h2v6h6v2h-6v6h-2v-6Z"
-            android:fillColor="@color/material_color_on_surface_variant" />
+            android:fillColor="@color/material_color_on_surface" />
     </group>
 </vector>
