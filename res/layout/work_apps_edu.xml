@@ -50,9 +50,9 @@
                 android:id="@+id/action_btn"
                 android:layout_width="@dimen/x_icon_size"
                 android:layout_height="@dimen/x_icon_size"
+                android:scaleType="centerInside"
                 android:layout_gravity="center"
                 android:contentDescription="@string/accessibility_close"
-                android:padding="@dimen/x_icon_padding"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_remove_no_shadow" />
         </FrameLayout>
