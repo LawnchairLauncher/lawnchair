@@ -526,7 +526,8 @@
     <dimen name="ps_button_height">40dp</dimen>
     <dimen name="ps_button_width">40dp</dimen>
     <dimen name="ps_lock_button_width">89dp</dimen>
-    <dimen name="ps_app_divider_padding">16dp</dimen>
+    <dimen name="ps_app_divider_horizontal_padding">16dp</dimen>
+    <dimen name="ps_app_divider_vertical_padding">32dp</dimen>
     <dimen name="ps_extra_bottom_padding">16dp</dimen>
     <dimen name="ps_lock_corner_radius">20dp</dimen>
     <dimen name="ps_lock_icon_size">20dp</dimen>

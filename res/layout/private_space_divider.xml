@@ -18,8 +18,8 @@
     android:importantForAccessibility="no"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/ps_app_divider_padding"
-    android:paddingRight="@dimen/ps_app_divider_padding"
+    android:paddingHorizontal="@dimen/ps_app_divider_horizontal_padding"
+    android:paddingVertical="@dimen/ps_app_divider_vertical_padding"
     android:src="@drawable/private_space_app_divider"
     android:scaleType="fitXY"
     android:focusable="false" />

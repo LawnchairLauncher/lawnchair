@@ -17,5 +17,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="?attr/materialColorOutlineVariant"/>
-    <size android:height="1dp" />
+    <size android:height="@dimen/all_apps_divider_height" />
 </shape>
