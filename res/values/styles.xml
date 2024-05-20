@@ -427,6 +427,9 @@
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <!-- Add the dim background here, rather than in the activity layout as the window slides
+             in from the bottom, and we don't want the scrim to slide. -->
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
 
     <style name="ProxyActivityStarterTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
