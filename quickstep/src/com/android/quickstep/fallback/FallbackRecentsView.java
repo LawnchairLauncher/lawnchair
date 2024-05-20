@@ -54,6 +54,7 @@ import com.android.systemui.shared.recents.model.Task;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsState>
         implements StateListener<RecentsState> {
@@ -179,7 +180,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    protected void applyLoadPlan(ArrayList<GroupTask> taskGroups) {
+    protected void applyLoadPlan(List<GroupTask> taskGroups) {
         // When quick-switching on 3p-launcher, we add a "stub" tile corresponding to Launcher
         // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
         // track the index of the next task appropriately, as if we are switching on any other app.
