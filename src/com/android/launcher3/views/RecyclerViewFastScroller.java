@@ -109,6 +109,13 @@ public class RecyclerViewFastScroller extends View {
 
     private float mLastTouchY;
     private boolean mIsDragging;
+    /**
+     * Tracks whether a keyboard hide request has been sent due to downward scrolling.
+     * <p>
+     * Set to true when scrolling down and reset when scrolling up to prevents redundant hide
+     * requests during continuous downward scrolls.
+     */
+    private boolean mRequestedHideKeyboard;
     private boolean mIsThumbDetached;
     private final boolean mCanThumbDetach;
     private boolean mIgnoreDragGesture;
@@ -241,6 +248,7 @@ public class RecyclerViewFastScroller extends View {
     public boolean handleTouchEvent(MotionEvent ev, Point offset) {
         int x = (int) ev.getX() - offset.x;
         int y = (int) ev.getY() - offset.y;
+        ActivityContext activityContext = ActivityContext.lookupContext(getContext());
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -248,6 +256,7 @@ public class RecyclerViewFastScroller extends View {
                 mDownX = x;
                 mDownY = mLastY = y;
                 mDownTimeStampMillis = ev.getDownTime();
+                mRequestedHideKeyboard = false;
 
                 if ((Math.abs(mDy) < mDeltaThreshold &&
                         mRv.getScrollState() != SCROLL_STATE_IDLE)) {
@@ -260,6 +269,15 @@ public class RecyclerViewFastScroller extends View {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (y > mLastY) {
+                    if (!mRequestedHideKeyboard) {
+                        activityContext.hideKeyboard();
+                    }
+                    mRequestedHideKeyboard = true;
+                } else {
+                    mRequestedHideKeyboard = false;
+                }
+
                 mLastY = y;
                 int absDeltaY = Math.abs(y - mDownY);
                 int absDeltaX = Math.abs(x - mDownX);
@@ -294,7 +312,6 @@ public class RecyclerViewFastScroller extends View {
     }
 
     private void calcTouchOffsetAndPrepToFastScroll(int downY, int lastY) {
-        ActivityContext.lookupContext(getContext()).hideKeyboard();
         mIsDragging = true;
         if (mCanThumbDetach) {
             mIsThumbDetached = true;
