@@ -43,6 +43,7 @@ import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.SpringAnimationBuilder;
+import com.android.launcher3.util.DisplayController;
 import com.android.wm.shell.common.bubbles.BubbleBarLocation;
 
 import java.util.List;
@@ -551,6 +552,15 @@ public class BubbleBarView extends FrameLayout {
         setAlphaDuringBubbleDrag(1f);
         setTranslationX(0f);
         setAlpha(1f);
+    }
+
+    /**
+     * Get bubble bar top coordinate on screen when bar is resting
+     */
+    public int getRestingTopPositionOnScreen() {
+        int displayHeight = DisplayController.INSTANCE.get(getContext()).getInfo().currentSize.y;
+        int bubbleBarHeight = getBubbleBarBounds().height();
+        return displayHeight - bubbleBarHeight + (int) mController.getBubbleBarTranslationY();
     }
 
     /**
