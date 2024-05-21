@@ -299,6 +299,7 @@ class BubbleBarViewAnimatorTest {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {}
         PhysicsAnimatorTestUtils.blockUntilAnimationsEnd(DynamicAnimation.TRANSLATION_Y)
 
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
         assertThat(bubbleBarView.isAnimatingNewBubble).isFalse()
         assertThat(bubbleBarView.alpha).isEqualTo(0)
         assertThat(handle.translationY).isEqualTo(0)
