@@ -140,6 +140,4 @@
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{إظهار تطبيق واحد آخر}zero{إظهار # تطبيق آخر}two{إظهار تطبيقَين آخرَين}few{إظهار # تطبيقات أخرى}many{إظهار # تطبيقًا آخر}other{إظهار # تطبيق آخر}}"</string>
     <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{عرض تطبيق واحد متوافق مع الكمبيوتر المكتبي}zero{عرض # تطبيق متوافق مع الكمبيوتر المكتبي}two{عرض تطبيقَين متوافقين مع الكمبيوتر المكتبي}few{عرض # تطبيقات متوافقة مع الكمبيوتر المكتبي}many{عرض # تطبيقًا متوافقًا مع الكمبيوتر المكتبي}other{عرض # تطبيق متوافق مع الكمبيوتر المكتبي}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"\"<xliff:g id="APP_NAME_1">%1$s</xliff:g>\" و\"<xliff:g id="APP_NAME_2">%2$s</xliff:g>\""</string>
-    <string name="desktop_select_app_toast" msgid="2306057322833956910">"إضافة تطبيق إلى سطح المكتب"</string>
-    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"إلغاء"</string>
 </resources>

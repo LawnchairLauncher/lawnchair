@@ -140,6 +140,4 @@
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{앱 #개 더 표시}other{앱 #개 더 표시}}"</string>
     <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{데스크톱 앱 #개를 표시합니다.}other{데스크톱 앱 #개를 표시합니다.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> 및 <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
-    <string name="desktop_select_app_toast" msgid="2306057322833956910">"데스크톱에 앱 추가하기"</string>
-    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"취소"</string>
 </resources>
