@@ -185,12 +185,12 @@
     <string name="remote_action_failed" msgid="1383965239183576790">"Sikertelen: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Privát terület"</string>
     <string name="private_space_secondary_label" msgid="611902414159280263">"Privát alkalmazások zárolásának és rejtve tartásának fenntartása"</string>
-    <string name="ps_container_title" msgid="4391796149519594205">"Magánterület"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Privát terület"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Privát terület beállításai"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Privát terület zárolása/zárolásának feloldása"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Zárolás"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Átállás privát területre…"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"App telepítése"</string>
-    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Alkalmazások telepítése magánterületre"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Alkalmazások telepítése privát területre"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Túlcsordulás"</string>
 </resources>

@@ -183,7 +183,7 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Cofnij wstrzymywanie"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtruj"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Niepowodzenie: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"Obszar prywatny"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Przestrzeń prywatna"</string>
     <string name="private_space_secondary_label" msgid="611902414159280263">"Pozostaw aplikacje prywatne zablokowane i ukryte"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Prywatne"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Ustawienia obszaru prywatnego"</string>
