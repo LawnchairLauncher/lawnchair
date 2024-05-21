@@ -107,7 +107,6 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
-import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.taskbar.TaskbarThresholdUtils;
 import com.android.launcher3.taskbar.TaskbarUIController;
@@ -926,7 +925,7 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
             TaskView runningTask = mRecentsView.getRunningTaskView();
             TaskView centermostTask = mRecentsView.getTaskViewNearestToCenterOfScreen();
             int centermostTaskFlags = centermostTask == null ? 0
-                    : centermostTask.getFirstThumbnailView().getSysUiStatusNavFlags();
+                    : centermostTask.getFirstThumbnailViewDeprecated().getSysUiStatusNavFlags();
             boolean swipeUpThresholdPassed = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
             boolean quickswitchThresholdPassed = centermostTask != runningTask;
 
@@ -1478,7 +1477,7 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                         ? SysUiStatsLog.LAUNCHER_UICHANGED__INPUT_TYPE__TRACKPAD
                         : SysUiStatsLog.LAUNCHER_UICHANGED__INPUT_TYPE__TOUCH);
         if (targetTask != null) {
-            logger.withItemInfo(targetTask.getItemInfo());
+            logger.withItemInfo(targetTask.getFirstItemInfo());
         }
 
         int pageIndex = endTarget == LAST_TASK || mRecentsView == null
@@ -2424,7 +2423,8 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
         RemoteAnimationTarget taskTarget = taskTargetOptional.get();
         TaskView taskView = mRecentsView == null
                 ? null : mRecentsView.getTaskViewByTaskId(taskTarget.taskId);
-        if (taskView == null || !taskView.getFirstThumbnailView().shouldShowSplashView()) {
+        if (taskView == null
+                || !taskView.getFirstThumbnailViewDeprecated().shouldShowSplashView()) {
             ActiveGestureLog.INSTANCE.addLog("Invalid task view splash state");
             finishRecentsAnimationOnTasksAppeared(null /* onFinishComplete */);
             return;

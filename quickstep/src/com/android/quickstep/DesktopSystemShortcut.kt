@@ -29,24 +29,24 @@ import com.android.wm.shell.shared.DesktopModeStatus
 /** A menu item, "Desktop", that allows the user to bring the current app into Desktop Windowing. */
 class DesktopSystemShortcut(
     container: RecentsViewContainer,
-    private val mTaskContainer: TaskContainer,
+    private val taskContainer: TaskContainer,
     abstractFloatingViewHelper: AbstractFloatingViewHelper
 ) :
     SystemShortcut<RecentsViewContainer>(
         R.drawable.ic_caption_desktop_button_foreground,
         R.string.recent_task_option_desktop,
         container,
-        mTaskContainer.itemInfo,
-        mTaskContainer.taskView,
+        taskContainer.itemInfo,
+        taskContainer.taskView,
         abstractFloatingViewHelper
     ) {
     override fun onClick(view: View) {
         dismissTaskMenuView()
-        val recentsView = mTarget!!.getOverviewPanel<RecentsView<*, *>>()
-        recentsView.moveTaskToDesktop(mTaskContainer) {
+        val recentsView = mTarget.getOverviewPanel<RecentsView<*, *>>()
+        recentsView.moveTaskToDesktop(taskContainer) {
             mTarget.statsLogManager
                 .logger()
-                .withItemInfo(mTaskContainer.itemInfo)
+                .withItemInfo(taskContainer.itemInfo)
                 .log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_DESKTOP_TAP)
         }
     }

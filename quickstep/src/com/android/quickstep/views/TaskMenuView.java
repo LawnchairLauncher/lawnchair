@@ -241,12 +241,13 @@ public class TaskMenuView extends AbstractFloatingView {
         mContainer.getDragLayer().getDescendantRectRelativeToSelf(
                 enableOverviewIconMenu()
                         ? getIconView().findViewById(R.id.icon_view_menu_anchor)
-                        : taskContainer.getThumbnailView(),
+                        : taskContainer.getThumbnailViewDeprecated(),
                 sTempRect);
         Rect insets = mContainer.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
-        params.width = orientationHandler.getTaskMenuWidth(taskContainer.getThumbnailView(),
-                deviceProfile, taskContainer.getStagePosition());
+        params.width = orientationHandler.getTaskMenuWidth(
+                taskContainer.getThumbnailViewDeprecated(), deviceProfile,
+                taskContainer.getStagePosition());
         // Gravity set to Left instead of Start as sTempRect.left measures Left distance not Start
         params.gravity = Gravity.LEFT;
         setLayoutParams(params);
@@ -279,10 +280,10 @@ public class TaskMenuView extends AbstractFloatingView {
             // Margin that insets the menuView inside the taskView
             float taskInsetMargin = getResources().getDimension(R.dimen.task_card_margin);
             setTranslationX(orientationHandler.getTaskMenuX(thumbnailAlignedX,
-                    mTaskContainer.getThumbnailView(), deviceProfile, taskInsetMargin,
+                    mTaskContainer.getThumbnailViewDeprecated(), deviceProfile, taskInsetMargin,
                     getIconView()));
             setTranslationY(orientationHandler.getTaskMenuY(
-                    thumbnailAlignedY, mTaskContainer.getThumbnailView(),
+                    thumbnailAlignedY, mTaskContainer.getThumbnailViewDeprecated(),
                     mTaskContainer.getStagePosition(), this, taskInsetMargin,
                     getIconView()));
         }
@@ -367,7 +368,7 @@ public class TaskMenuView extends AbstractFloatingView {
         }
         mOpenCloseAnimator.playTogether(mRevealAnimator,
                 ObjectAnimator.ofFloat(
-                        mTaskContainer.getThumbnailView(), DIM_ALPHA,
+                        mTaskContainer.getThumbnailViewDeprecated(), DIM_ALPHA,
                         closing ? 0 : TaskView.MAX_PAGE_SCRIM_ALPHA),
                 ObjectAnimator.ofFloat(this, ALPHA, closing ? 0 : 1));
         mOpenCloseAnimator.addListener(new AnimationSuccessListener() {

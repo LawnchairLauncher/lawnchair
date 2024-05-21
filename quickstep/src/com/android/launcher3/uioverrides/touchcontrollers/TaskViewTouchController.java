@@ -252,7 +252,7 @@ public abstract class TaskViewTouchController<CONTAINER extends Context & Recent
                     mTaskBeingDragged, maxDuration, currentInterpolator);
 
             // Since the thumbnail is what is filling the screen, based the end displacement on it.
-            View thumbnailView = mTaskBeingDragged.getFirstThumbnailView();
+            View thumbnailView = mTaskBeingDragged.getFirstThumbnailViewDeprecated();
             mTempCords[1] = orientationHandler.getSecondaryDimension(thumbnailView);
             dl.getDescendantCoordRelativeToSelf(thumbnailView, mTempCords);
             mEndDisplacement = secondaryLayerDimension - mTempCords[1];

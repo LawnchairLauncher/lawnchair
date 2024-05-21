@@ -80,8 +80,9 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         return shortcuts;
     }
 
-    public TaskOverlay createOverlay(TaskThumbnailViewDeprecated thumbnailView) {
-        return new TaskOverlay(thumbnailView);
+    /** Creates a {@link TaskOverlay} associated with the provide {@link TaskContainer}. */
+    public TaskOverlay<?> createOverlay(TaskContainer taskContainer) {
+        return new TaskOverlay<>(taskContainer);
     }
 
     /**
@@ -124,28 +125,29 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     public static class TaskOverlay<T extends OverviewActionsView> {
 
         protected final Context mApplicationContext;
-        protected final TaskThumbnailViewDeprecated mThumbnailView;
+        protected final TaskContainer mTaskContainer;
 
         private T mActionsView;
         protected ImageActionsApi mImageApi;
 
-        protected TaskOverlay(TaskThumbnailViewDeprecated taskThumbnailViewDeprecated) {
-            mApplicationContext = taskThumbnailViewDeprecated.getContext().getApplicationContext();
-            mThumbnailView = taskThumbnailViewDeprecated;
+        protected TaskOverlay(TaskContainer taskContainer) {
+            mApplicationContext = taskContainer.getTaskView().getContext().getApplicationContext();
+            mTaskContainer = taskContainer;
             mImageApi = new ImageActionsApi(
-                    mApplicationContext, mThumbnailView::getThumbnail);
+                    mApplicationContext, mTaskContainer.getThumbnailViewDeprecated()::getThumbnail);
         }
 
         protected T getActionsView() {
             if (mActionsView == null) {
-                mActionsView = BaseActivity.fromContext(mThumbnailView.getContext()).findViewById(
+                mActionsView = BaseActivity.fromContext(
+                        mTaskContainer.getThumbnailViewDeprecated().getContext()).findViewById(
                         R.id.overview_actions_view);
             }
             return mActionsView;
         }
 
         public TaskThumbnailViewDeprecated getThumbnailView() {
-            return mThumbnailView;
+            return mTaskContainer.getThumbnailViewDeprecated();
         }
 
         /**
@@ -157,7 +159,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
             if (thumbnail != null) {
                 getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
-                boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot();
+                boolean isAllowedByPolicy =
+                        mTaskContainer.getThumbnailViewDeprecated().isRealSnapshot();
                 getActionsView().setCallbacks(new OverlayUICallbacksImpl(isAllowedByPolicy, task));
             }
         }
@@ -168,7 +171,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          * @param callback callback to run, after switching to screenshot
          */
         public void endLiveTileMode(@NonNull Runnable callback) {
-            RecentsView recentsView = mThumbnailView.getTaskView().getRecentsView();
+            RecentsView recentsView =
+                    mTaskContainer.getThumbnailViewDeprecated().getTaskView().getRecentsView();
             // Task has already been dismissed
             if (recentsView == null) return;
             recentsView.switchToScreenshot(
@@ -181,8 +185,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          */
         @SuppressLint("NewApi")
         protected void saveScreenshot(Task task) {
-            if (mThumbnailView.isRealSnapshot()) {
-                mImageApi.saveScreenshot(mThumbnailView.getThumbnail(),
+            if (mTaskContainer.getThumbnailViewDeprecated().isRealSnapshot()) {
+                mImageApi.saveScreenshot(mTaskContainer.getThumbnailViewDeprecated().getThumbnail(),
                         getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key);
             } else {
                 showBlockedByPolicyMessage();
@@ -190,14 +194,17 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         }
 
         protected void enterSplitSelect() {
-            RecentsView overviewPanel = mThumbnailView.getTaskView().getRecentsView();
+            RecentsView overviewPanel =
+                    mTaskContainer.getThumbnailViewDeprecated().getTaskView().getRecentsView();
             // Task has already been dismissed
             if (overviewPanel == null) return;
-            overviewPanel.initiateSplitSelect(mThumbnailView.getTaskView());
+            overviewPanel.initiateSplitSelect(
+                    mTaskContainer.getThumbnailViewDeprecated().getTaskView());
         }
 
         protected void saveAppPair() {
-            GroupedTaskView taskView = (GroupedTaskView) mThumbnailView.getTaskView();
+            GroupedTaskView taskView =
+                    (GroupedTaskView) mTaskContainer.getThumbnailViewDeprecated().getTaskView();
             taskView.getRecentsView().getSplitSelectController().getAppPairsController()
                     .saveAppPair(taskView);
         }
@@ -243,10 +250,11 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          */
         public Rect getTaskSnapshotBounds() {
             int[] location = new int[2];
-            mThumbnailView.getLocationOnScreen(location);
+            mTaskContainer.getThumbnailViewDeprecated().getLocationOnScreen(location);
 
-            return new Rect(location[0], location[1], mThumbnailView.getWidth() + location[0],
-                    mThumbnailView.getHeight() + location[1]);
+            return new Rect(location[0], location[1],
+                    mTaskContainer.getThumbnailViewDeprecated().getWidth() + location[0],
+                    mTaskContainer.getThumbnailViewDeprecated().getHeight() + location[1]);
         }
 
         /**
@@ -256,7 +264,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          */
         @RequiresApi(api = Build.VERSION_CODES.Q)
         public Insets getTaskSnapshotInsets() {
-            return mThumbnailView.getScaledInsets();
+            return mTaskContainer.getThumbnailViewDeprecated().getScaledInsets();
         }
 
         /**
@@ -267,17 +275,21 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
         protected void showBlockedByPolicyMessage() {
             ActivityContext activityContext = ActivityContext.lookupContext(
-                    mThumbnailView.getContext());
+                    mTaskContainer.getThumbnailViewDeprecated().getContext());
             String message = activityContext.getStringCache() != null
                     ? activityContext.getStringCache().disabledByAdminMessage
-                    : mThumbnailView.getContext().getString(R.string.blocked_by_policy);
+                    : mTaskContainer.getThumbnailViewDeprecated().getContext().getString(
+                            R.string.blocked_by_policy);
 
-            Snackbar.show(BaseActivity.fromContext(mThumbnailView.getContext()), message, null);
+            Snackbar.show(BaseActivity.fromContext(
+                    mTaskContainer.getThumbnailViewDeprecated().getContext()), message, null);
         }
 
         /** Called when the snapshot has updated its full screen drawing parameters. */
-        public void setFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
-        }
+        public void setFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {}
+
+        /** Sets visibility for the overlay associated elements. */
+        public void setVisibility(int visibility) {}
 
         private class ScreenshotSystemShortcut extends SystemShortcut {
 
@@ -292,7 +304,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
             @Override
             public void onClick(View view) {
-                saveScreenshot(mThumbnailView.getTaskView().getFirstTask());
+                saveScreenshot(
+                        mTaskContainer.getThumbnailViewDeprecated().getTaskView().getFirstTask());
                 dismissTaskMenuView();
             }
         }

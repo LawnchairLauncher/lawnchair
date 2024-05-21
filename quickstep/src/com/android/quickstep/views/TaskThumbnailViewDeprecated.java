@@ -54,7 +54,6 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.SystemUiController.SystemUiControllerFlags;
 import com.android.launcher3.util.ViewPool;
-import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
@@ -129,9 +128,7 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
             };
 
     private final RecentsViewContainer mContainer;
-    private TaskOverlayFactory mTaskOverlayFactory;
-    @Nullable
-    private TaskOverlay mOverlay;
+    private TaskOverlay<?> mOverlay;
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mSplashBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -190,9 +187,9 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
     /**
      * Updates the thumbnail to draw the provided task
      */
-    public void bind(Task task, TaskOverlayFactory taskOverlayFactory) {
-        mTaskOverlayFactory = taskOverlayFactory;
-        getTaskOverlay().reset();
+    public void bind(Task task, TaskOverlay<?> overlay) {
+        mOverlay = overlay;
+        mOverlay.reset();
         mTask = task;
         int color = task == null ? Color.BLACK : task.colorBackground | 0xFF000000;
         mPaint.setColor(color);
@@ -202,14 +199,14 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
     }
 
     /**
-     * Sets TaskOverlayFactory without binding a task.
+     * Sets TaskOverlay without binding a task.
      *
      * @deprecated Should only be used when using new
      * {@link com.android.quickstep.task.thumbnail.TaskThumbnailView}.
      */
     @Deprecated
-    public void setTaskOverlayFactory(TaskOverlayFactory taskOverlayFactory) {
-        mTaskOverlayFactory = taskOverlayFactory;
+    public void setTaskOverlay(TaskOverlay<?> overlay) {
+        mOverlay = overlay;
     }
 
     /**
@@ -265,7 +262,7 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
             mBitmapShader = null;
             mThumbnailData = null;
             mPaint.setShader(null);
-            getTaskOverlay().reset();
+            mOverlay.reset();
         }
         updateThumbnailPaintFilter();
     }
@@ -291,13 +288,6 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
         }
         mSplashBackgroundPaint.setAlpha(mSplashAlpha);
         invalidate();
-    }
-
-    public TaskOverlay getTaskOverlay() {
-        if (mOverlay == null) {
-            mOverlay = mTaskOverlayFactory.createOverlay(this);
-        }
-        return mOverlay;
     }
 
     public float getDimAlpha() {
@@ -374,7 +364,6 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
 
     public void setFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
         mFullscreenParams = fullscreenParams;
-        getTaskOverlay().setFullscreenParams(fullscreenParams);
         invalidate();
     }
 
@@ -551,10 +540,10 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
      */
     private void refreshOverlay() {
         if (mOverlayEnabled) {
-            getTaskOverlay().initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.getMatrix(),
+            mOverlay.initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.getMatrix(),
                     mPreviewPositionHelper.isOrientationChanged());
         } else {
-            getTaskOverlay().reset();
+            mOverlay.reset();
         }
     }
 

@@ -1006,7 +1006,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                     if (container == null || taskId != container.getTask().key.id) {
                         continue;
                     }
-                    container.getThumbnailView().setThumbnail(container.getTask(), thumbnailData);
+                    container.getThumbnailViewDeprecated().setThumbnail(container.getTask(),
+                            thumbnailData);
                 }
             }
         }
@@ -1020,8 +1021,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             Task task = tv.getFirstTask();
             if (pkg.equals(task.key.getPackageName()) && task.key.userId == user.getIdentifier()) {
                 task.icon = null;
-                TaskViewIcon firstIconView = tv.getFirstIconView();
-                if (firstIconView.getDrawable() != null) {
+                if (tv.getTaskContainers().stream().anyMatch(
+                        container -> container.getIconView().getDrawable() != null)) {
                     tv.onTaskListVisibilityChanged(true /* visible */);
                 }
             }
@@ -1058,7 +1059,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             }
             Task task = taskAttributes.getTask();
             TaskThumbnailViewDeprecated taskThumbnailViewDeprecated =
-                    taskAttributes.getThumbnailView();
+                    taskAttributes.getThumbnailViewDeprecated();
             taskThumbnailViewDeprecated.setThumbnail(task, thumbnail, refreshNow);
             // thumbnailData can contain 1-2 ids, but they should correspond to the same
             // TaskView, so overwriting is ok
@@ -3832,7 +3833,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                         announceForAccessibility(
                                 getResources().getString(R.string.task_view_closed));
                         mContainer.getStatsLogManager().logger()
-                                .withItemInfo(dismissedTaskView.getItemInfo())
+                                .withItemInfo(dismissedTaskView.getFirstItemInfo())
                                 .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
                     }
 
@@ -4743,7 +4744,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      */
     public void resetModalVisuals() {
         if (mSelectedTask != null) {
-            mSelectedTask.getFirstThumbnailView().getTaskOverlay().resetModalVisuals();
+            mSelectedTask.taskContainers.forEach(
+                    taskContainer -> taskContainer.getOverlay().resetModalVisuals());
         }
     }
 
@@ -4761,8 +4763,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     public void initiateSplitSelect(TaskView taskView, @StagePosition int stagePosition,
             StatsLogManager.EventEnum splitEvent) {
         mSplitHiddenTaskView = taskView;
-        mSplitSelectStateController.setInitialTaskSelect(null /*intent*/,
-                stagePosition, taskView.getItemInfo(), splitEvent, taskView.getFirstTask().key.id);
+        mSplitSelectStateController.setInitialTaskSelect(null /*intent*/, stagePosition,
+                taskView.getFirstItemInfo(), splitEvent, taskView.getFirstTask().key.id);
         mSplitSelectStateController.setAnimateCurrentTaskDismissal(
                 true /*animateCurrentTaskDismissal*/);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
@@ -4815,7 +4817,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                     == mSplitSelectStateController.getInitialTaskId();
             TaskContainer taskContainer = mSplitHiddenTaskView
                     .getTaskContainers().get(primaryTaskSelected ? 1 : 0);
-            TaskThumbnailViewDeprecated thumbnail = taskContainer.getThumbnailView();
+            TaskThumbnailViewDeprecated thumbnail = taskContainer.getThumbnailViewDeprecated();
             mSplitSelectStateController.getSplitAnimationController()
                     .addInitialSplitFromPair(taskContainer, builder,
                             mContainer.getDeviceProfile(),
@@ -5215,7 +5217,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         updateGridProperties();
         updateScrollSynchronously();
 
-        int targetSysUiFlags = tv.getFirstThumbnailView().getSysUiStatusNavFlags();
+        int targetSysUiFlags = tv.getFirstThumbnailViewDeprecated().getSysUiStatusNavFlags();
         final boolean[] passedOverviewThreshold = new boolean[] {false};
         ValueAnimator progressAnim = ValueAnimator.ofFloat(0, 1);
         progressAnim.addUpdateListener(animator -> {
@@ -5279,7 +5281,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                 } else {
                     tv.launchTask(this::onTaskLaunchAnimationEnd);
                 }
-                mContainer.getStatsLogManager().logger().withItemInfo(tv.getItemInfo())
+                mContainer.getStatsLogManager().logger().withItemInfo(tv.getFirstItemInfo())
                         .log(LAUNCHER_TASK_LAUNCH_SWIPE_DOWN);
             } else {
                 onTaskLaunchAnimationEnd(false);
@@ -5917,7 +5919,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
 
             ThumbnailData td =
                     mRecentsAnimationController.screenshotTask(container.getTask().key.id);
-            TaskThumbnailViewDeprecated thumbnailView = container.getThumbnailView();
+            TaskThumbnailViewDeprecated thumbnailView = container.getThumbnailViewDeprecated();
             if (td != null) {
                 thumbnailView.setThumbnail(container.getTask(), td);
             } else {

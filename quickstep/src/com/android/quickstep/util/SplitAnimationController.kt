@@ -118,8 +118,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 if (container.task.getKey().getId() == splitSelectStateController.initialTaskId) {
                     val drawable = getDrawable(container.iconView, splitSelectSource)
                     return SplitAnimInitProps(
-                        container.thumbnailView,
-                        container.thumbnailView.thumbnail,
+                        container.thumbnailViewDeprecated,
+                        container.thumbnailViewDeprecated.thumbnail,
                         drawable!!,
                         fadeWithThumbnail = true,
                         isStagedTask = true,
@@ -137,8 +137,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             taskView.taskContainers.first().let {
                 val drawable = getDrawable(it.iconView, splitSelectSource)
                 return SplitAnimInitProps(
-                    it.thumbnailView,
-                    it.thumbnailView.thumbnail,
+                    it.thumbnailViewDeprecated,
+                    it.thumbnailViewDeprecated.thumbnail,
                     drawable!!,
                     fadeWithThumbnail = true,
                     isStagedTask = true,
@@ -182,7 +182,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         taskViewHeight: Int,
         isPrimaryTaskSplitting: Boolean
     ) {
-        val thumbnail = taskIdAttributeContainer.thumbnailView
+        val thumbnail = taskIdAttributeContainer.thumbnailViewDeprecated
         val iconView: View = taskIdAttributeContainer.iconView.asView()
         builder.add(ObjectAnimator.ofFloat(thumbnail, TaskThumbnailViewDeprecated.SPLASH_ALPHA, 1f))
         thumbnail.setShowSplashForSplitSelection(true)
