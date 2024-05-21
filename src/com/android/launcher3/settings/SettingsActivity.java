@@ -20,8 +20,6 @@ import static android.provider.Settings.Global.DEVELOPMENT_SETTINGS_ENABLED;
 
 import static androidx.preference.PreferenceFragmentCompat.ARG_PREFERENCE_ROOT;
 
-import static com.android.launcher3.BuildConfig.IS_DEBUG_DEVICE;
-import static com.android.launcher3.BuildConfig.IS_STUDIO_BUILD;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 
 import android.app.Activity;
@@ -68,8 +66,6 @@ public class SettingsActivity extends FragmentActivity
         implements OnPreferenceStartFragmentCallback, OnPreferenceStartScreenCallback {
 
     /** List of fragments that can be hosted by this activity. */
-    private static final List<String> VALID_PREFERENCE_FRAGMENTS = Collections
-            .singletonList(DeveloperOptionsFragment.class.getName());
 
     private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
     @VisibleForTesting
@@ -183,7 +179,7 @@ public class SettingsActivity extends FragmentActivity
 
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
-            if (BuildConfig.IS_DEBUG_DEVICE) {
+            if (BuildConfig.DEBUG) {
                 Uri devUri = Settings.Global.getUriFor(DEVELOPMENT_SETTINGS_ENABLED);
                 SettingsCache settingsCache = SettingsCache.INSTANCE.get(getContext());
                 mDeveloperOptionsEnabled = settingsCache.getValue(devUri);
@@ -262,7 +258,7 @@ public class SettingsActivity extends FragmentActivity
                     return true;
 
                 case DEVELOPER_OPTIONS_KEY:
-                    if (IS_STUDIO_BUILD) {
+                    if (BuildConfig.DEBUG) {
                         preference.setOrder(0);
                     }
                     return mDeveloperOptionsEnabled;
@@ -303,7 +299,7 @@ public class SettingsActivity extends FragmentActivity
         @Override
         public void onDestroy() {
             super.onDestroy();
-            if (IS_DEBUG_DEVICE) {
+            if (BuildConfig.DEBUG) {
                 SettingsCache.INSTANCE.get(getContext())
                         .unregister(Settings.Global.getUriFor(DEVELOPMENT_SETTINGS_ENABLED), this);
             }

@@ -62,6 +62,8 @@ public final class InteractionJankMonitorWrapper {
             InteractionJankMonitor.CUJ_LAUNCHER_OPEN_SEARCH_RESULT;
     public static final int CUJ_SHADE_EXPAND_FROM_STATUS_BAR = 79;
 
+    public static final int CUJ_LAUNCHER_UNFOLD_ANIM = 83;
+
     @IntDef({
             CUJ_APP_LAUNCH_FROM_RECENTS,
             CUJ_APP_LAUNCH_FROM_ICON,

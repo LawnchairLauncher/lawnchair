@@ -421,7 +421,6 @@ public class ItemInfo {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
         UserIconInfo info = getUserInfo();
         itemBuilder.setIsWork(info != null && info.isWork());
-        itemBuilder.setUserType(getUserType(info));
         SettingsCache settingsCache = SettingsCache.INSTANCE.getNoCreate();
         boolean isKidsMode = settingsCache != null && LawnchairApp.isRecentsEnabled () && settingsCache.getValue(NAV_BAR_KIDS_MODE, 0);
         itemBuilder.setIsKidsMode(isKidsMode);
@@ -525,21 +524,5 @@ public class ItemInfo {
         }
 
         return userCache.getUserInfo(user);
-    }
-
-    private int getUserType(UserIconInfo info) {
-        if (info == null) {
-            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_UNKNOWN;
-        } else if (info.isMain()) {
-            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_MAIN;
-        } else if (info.isPrivate()) {
-            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_PRIVATE;
-        } else if (info.isWork()) {
-            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_WORK;
-        } else if (info.isCloned()) {
-            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_CLONED;
-        } else {
-            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_UNKNOWN;
-        }
     }
 }

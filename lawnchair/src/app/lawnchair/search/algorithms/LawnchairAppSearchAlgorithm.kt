@@ -25,12 +25,12 @@ import com.android.launcher3.search.StringMatcherUtility
 import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.Executors
 import com.patrykmichalik.opto.core.onEach
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
+import java.util.Locale
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
@@ -120,7 +120,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val shortcuts = ShortcutRequest(context.launcher, app.user)
             .withContainer(app.targetComponent)
             .query(ShortcutRequest.PUBLISHED)
-        return PopupPopulator.sortAndFilterShortcuts(shortcuts, null)
+        return PopupPopulator.sortAndFilterShortcuts(shortcuts)
     }
 
     private fun normalSearch(apps: List<AppInfo>, query: String): List<AppInfo> {

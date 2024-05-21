@@ -22,7 +22,7 @@
         android:angle="0"
         android:startColor="#00000000"
         android:centerX="0.25"
-        android:centerColor="?androidprv:attr/materialColorSurfaceBright"
-        android:endColor="?androidprv:attr/materialColorSurfaceBright" />
+        android:centerColor="?attr/materialColorSurfaceBright"
+        android:endColor="?attr/materialColorSurfaceBright" />
     <corners android:radius="@dimen/dialogCornerRadius" />
 </shape>

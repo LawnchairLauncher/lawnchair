@@ -21,7 +21,8 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN
+import app.lawnchair.LawnchairApp
+import app.lawnchair.launcher
 import com.android.launcher3.LauncherFiles.DEVICE_PREFERENCES_KEY
 import com.android.launcher3.LauncherFiles.SHARED_PREFERENCES_KEY
 import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_DELAY
@@ -31,6 +32,7 @@ import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_SCALE_EXPONENT
 import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_START_SCALE_PERCENT
 import com.android.launcher3.config.FeatureFlags.LPNH_SLOP_PERCENTAGE
 import com.android.launcher3.config.FeatureFlags.LPNH_TIMEOUT_MS
+import com.android.launcher3.config.FeatureFlags.topQsbOnFirstScreenEnabled
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.pm.InstallSessionHelper
 import com.android.launcher3.provider.RestoreDbTask
@@ -407,7 +409,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
         val SHOULD_SHOW_SMARTSPACE =
             backedUpItem(
                 SHOULD_SHOW_SMARTSPACE_KEY,
-                WIDGET_ON_FIRST_SCREEN,
+                topQsbOnFirstScreenEnabled(LawnchairApp.instance.launcher),
                 EncryptionType.DEVICE_PROTECTED
             )
         @JvmField

@@ -18,7 +18,7 @@ import app.lawnchair.ui.preferences.components.controls.TextPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import com.android.launcher3.settings.SettingsActivity
-import com.android.launcher3.uioverrides.flags.DeveloperOptionsFragment
+import com.android.launcher3.uioverrides.flags.DeveloperOptionsUI
 import com.patrykmichalik.opto.domain.Preference
 
 /**
@@ -49,7 +49,7 @@ fun DebugMenuPreferences(
                         Intent(context, SettingsActivity::class.java)
                             .putExtra(
                                 ":settings:fragment",
-                                DeveloperOptionsFragment::class.java.name,
+                                DeveloperOptionsUI::class.java.name,
                             )
                             .also { context.startActivity(it) }
                     },

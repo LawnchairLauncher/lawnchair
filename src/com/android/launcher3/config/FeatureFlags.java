@@ -16,15 +16,14 @@
 
 package com.android.launcher3.config;
 
-import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
 import static com.android.launcher3.config.FeatureFlags.FlagState.DISABLED;
 import static com.android.launcher3.config.FeatureFlags.FlagState.ENABLED;
 import static com.android.launcher3.config.FeatureFlags.FlagState.TEAMFOOD;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getDebugFlag;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getIntFlag;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getReleaseFlag;
-import static com.android.wm.shell.Flags.enableTaskbarNavbarUnification;
 
+import android.content.Context;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.VisibleForTesting;
@@ -216,7 +215,7 @@ public final class FeatureFlags {
                         "SMARTSPACE_AS_A_WIDGET", DISABLED, "Enable SmartSpace as a widget");
 
         public static boolean shouldShowFirstPageWidget() {
-                return SMARTSPACE_AS_A_WIDGET.get() && WIDGET_ON_FIRST_SCREEN;
+                return SMARTSPACE_AS_A_WIDGET.get();
         }
 
         public static final BooleanFlag ENABLE_SMARTSPACE_REMOVAL = getDebugFlag(290799975,
@@ -262,7 +261,7 @@ public final class FeatureFlags {
         public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag(270393108, "NOTIFY_CRASHES",
                         TEAMFOOD, "Sends a notification whenever launcher encounters an uncaught exception.");
 
-        public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION = enableTaskbarNavbarUnification();
+        public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION = true;
 
         // Aconfig migration complete for ENABLE_TASKBAR_NO_RECREATION.
         public static final BooleanFlag ENABLE_TASKBAR_NO_RECREATION = getDebugFlag(299193589,
@@ -386,7 +385,7 @@ public final class FeatureFlags {
                                         + " split screen launching.");
 
         public static boolean enableAppPairs() {
-                return ENABLE_APP_PAIRS.get() || com.android.wm.shell.Flags.enableAppPairs();
+                return ENABLE_APP_PAIRS.get();
         }
 
         // TODO(Block 19): Clean up flags
@@ -496,8 +495,7 @@ public final class FeatureFlags {
                         "Enable initiating split screen from workspace to workspace.");
 
         public static boolean enableSplitContextually() {
-                return ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get() ||
-                                com.android.wm.shell.Flags.enableSplitContextual();
+                return ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get();
         }
 
         public static final BooleanFlag ENABLE_TRACKPAD_GESTURE = getDebugFlag(271010401,

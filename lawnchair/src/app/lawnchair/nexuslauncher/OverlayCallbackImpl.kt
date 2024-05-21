@@ -1,9 +1,7 @@
 package app.lawnchair.nexuslauncher
 
-import android.app.Activity
 import android.content.Context
 import android.content.pm.ApplicationInfo
-import android.os.Bundle
 import app.lawnchair.FeedBridge
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences2.PreferenceManager2
@@ -78,32 +76,32 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) :
         mClient.hideOverlay(duration)
     }
 
-    override fun startSearch(config: ByteArray?, extras: Bundle?): Boolean = false
-
-    override fun onActivityCreated(activity: Activity, bundle: Bundle?) = Unit
-
-    override fun onActivityStarted(activity: Activity) {
-        mClient.onStart()
-    }
-
-    override fun onActivityResumed(activity: Activity) {
-        mClient.onResume()
-    }
-
-    override fun onActivityPaused(activity: Activity) {
-        mClient.onPause()
-    }
-
-    override fun onActivityStopped(activity: Activity) {
-        mClient.onStop()
-    }
-
-    override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) = Unit
-
-    override fun onActivityDestroyed(activity: Activity) {
-        mClient.onDestroy()
-        mClient.mDestroyed = true
-    }
+//    override fun startSearch(config: ByteArray?, extras: Bundle?): Boolean = false
+//
+//    override fun onActivityCreated(activity: Activity, bundle: Bundle?) = Unit
+//
+//    override fun onActivityStarted(activity: Activity) {
+//        mClient.onStart()
+//    }
+//
+//    override fun onActivityResumed(activity: Activity) {
+//        mClient.onResume()
+//    }
+//
+//    override fun onActivityPaused(activity: Activity) {
+//        mClient.onPause()
+//    }
+//
+//    override fun onActivityStopped(activity: Activity) {
+//        mClient.onStop()
+//    }
+//
+//    override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) = Unit
+//
+//    override fun onActivityDestroyed(activity: Activity) {
+//        mClient.onDestroy()
+//        mClient.mDestroyed = true
+//    }
 
     override fun onOverlayScrollChanged(progress: Float) {
         mLauncherOverlayCallbacks?.onOverlayScrollChanged(progress)

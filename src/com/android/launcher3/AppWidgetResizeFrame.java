@@ -62,8 +62,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private static final float RESIZE_THRESHOLD = 0.66f;
     private static final int RESIZE_TRANSITION_DURATION_MS = 150;
 
-    <<<<<<<HEAD
-    private static final String KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN = "launcher.reconfigurable_widget_education_tip_seen";=======>>>>>>>android14-qpr2-release
     private static final Rect sTmpRect = new Rect();
     private static final Rect sTmpRect2 = new Rect();
 
@@ -513,7 +511,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 mDirectionVector, onDismiss)) {
             if (mStateAnnouncer != null && (lp.cellHSpan != spanX || lp.cellVSpan != spanY)) {
                 mStateAnnouncer.announce(
-                        mLauncher.getString(R.string.widget_resized, spanX, spanY));
+                        mLauncher.getString(R.string.widget_resized));
             }
 
             lp.setTmpCellX(cellX);

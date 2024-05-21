@@ -43,7 +43,7 @@ abstract class AppPairLaunchTimings : SplitAnimationTimings {
     private val cellSplitEnd: Int
         get() = cellSplitStart + 500
 
-    override fun getStagedRectXInterpolator() = Interpolators.EMPHASIZED_COMPLEMENT
+    override fun getStagedRectXInterpolator() = Interpolators.EMPHASIZED
     override fun getStagedRectYInterpolator() = Interpolators.EMPHASIZED
     override fun getStagedRectScaleXInterpolator() = Interpolators.EMPHASIZED
     override fun getStagedRectScaleYInterpolator() = Interpolators.EMPHASIZED

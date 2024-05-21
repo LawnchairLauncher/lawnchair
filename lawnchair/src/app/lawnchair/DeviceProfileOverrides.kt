@@ -16,7 +16,7 @@ class DeviceProfileOverrides(context: Context) {
     private val prefs = PreferenceManager.getInstance(context)
     private val preferenceManager2 = PreferenceManager2.getInstance(context)
 
-    private val predefinedGrids = InvariantDeviceProfile.parseAllGridOptions(context)
+    private val predefinedGrids = InvariantDeviceProfile.parseAllDefinedGridOptions(context)
         .map { option ->
             val gridInfo = DBGridInfo(
                 numHotseatColumns = option.numHotseatIcons,
@@ -100,8 +100,8 @@ class DeviceProfileOverrides(context: Context) {
             // apply grid size
             idp.numAllAppsColumns = numAllAppsColumns
             idp.numDatabaseAllAppsColumns = numAllAppsColumns
-            idp.numFolderRows = numFolderRows
-            idp.numFolderColumns = numFolderColumns
+            idp.numFolderRows = IntArray(numFolderRows)
+            idp.numFolderColumns = IntArray(numFolderColumns)
 
             // apply icon and text size
             idp.iconSize[INDEX_DEFAULT] *= iconSizeFactor

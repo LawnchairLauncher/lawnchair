@@ -99,7 +99,7 @@ class DesktopRecentsTransitionController(
             finishCallback: IRemoteTransitionFinishedCallback
         ) {}
 
-        override fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {
+         fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {
         }
     }
 

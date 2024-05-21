@@ -16,6 +16,6 @@ data object AppSearch : QsbSearchProvider(
 ) {
     override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
         launcher.animateToAllApps()
-        launcher.appsView.searchUiManager.editText?.showKeyboard(true)
+        launcher.appsView.searchUiManager.editText?.showKeyboard()
     }
 }

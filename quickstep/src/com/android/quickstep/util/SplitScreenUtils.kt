@@ -33,7 +33,7 @@ class SplitScreenUtils {
                 SplitConfigurationOptions.SplitBounds(
                     shellSplitBounds.leftTopBounds, shellSplitBounds.rightBottomBounds,
                     shellSplitBounds.leftTopTaskId, shellSplitBounds.rightBottomTaskId,
-                    shellSplitBounds.snapPosition
+                    shellSplitBounds.stability
                 )
             }
         }
@@ -51,7 +51,6 @@ class SplitScreenUtils {
                     launcherSplitBounds.rightBottomBounds,
                     launcherSplitBounds.leftTopTaskId,
                     launcherSplitBounds.rightBottomTaskId,
-                    launcherSplitBounds.snapPosition
                 )
             }
         }

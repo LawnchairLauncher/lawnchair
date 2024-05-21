@@ -36,7 +36,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
     var pagesToBindSynchronously = LIntSet()
 
     private var isFirstPagePinnedItemEnabled =
-        (BuildConfig.QSB_ON_FIRST_SCREEN && !FeatureFlags.ENABLE_SMARTSPACE_REMOVAL.get())
+        (FeatureFlags.topQsbOnFirstScreenEnabled(launcher) && !FeatureFlags.ENABLE_SMARTSPACE_REMOVAL.get())
 
     var stringCache: StringCache? = null
 
@@ -309,7 +309,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         )
         val firstScreenPosition = 0
         if (
-            (FeatureFlags.QSB_ON_FIRST_SCREEN &&
+            (FeatureFlags.topQsbOnFirstScreenEnabled(launcher) &&
                 isFirstPagePinnedItemEnabled &&
                 !shouldShowFirstPageWidget()) &&
                 orderedScreenIds.indexOf(FIRST_SCREEN_ID) != firstScreenPosition
@@ -317,7 +317,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             orderedScreenIds.removeValue(FIRST_SCREEN_ID)
             orderedScreenIds.add(firstScreenPosition, FIRST_SCREEN_ID)
         } else if (
-            (!FeatureFlags.QSB_ON_FIRST_SCREEN && !isFirstPagePinnedItemEnabled ||
+            (!FeatureFlags.topQsbOnFirstScreenEnabled(launcher) && !isFirstPagePinnedItemEnabled ||
                 shouldShowFirstPageWidget()) && orderedScreenIds.isEmpty
         ) {
             // If there are no screens, we need to have an empty screen
@@ -374,7 +374,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         }
         orderedScreenIds
             .filterNot { screenId ->
-                FeatureFlags.QSB_ON_FIRST_SCREEN &&
+                FeatureFlags.topQsbOnFirstScreenEnabled(launcher) &&
                     isFirstPagePinnedItemEnabled &&
                     !FeatureFlags.shouldShowFirstPageWidget() &&
                     screenId == WorkspaceLayoutManager.FIRST_SCREEN_ID

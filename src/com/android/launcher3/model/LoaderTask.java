@@ -16,12 +16,12 @@
 
 package com.android.launcher3.model;
 
-import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
 import static com.android.launcher3.LauncherPrefs.SHOULD_SHOW_SMARTSPACE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.SMARTSPACE_AS_A_WIDGET;
+import static com.android.launcher3.config.FeatureFlags.topQsbOnFirstScreenEnabled;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
@@ -331,7 +331,7 @@ public class LoaderTask implements Runnable {
                 prefs.putSync(SHOULD_SHOW_SMARTSPACE.to(false));
                 logASplit("bindSmartspaceWidget");
                 verifyNotStopped();
-            } else if (!SMARTSPACE_AS_A_WIDGET.get() && WIDGET_ON_FIRST_SCREEN
+            } else if (!SMARTSPACE_AS_A_WIDGET.get() && topQsbOnFirstScreenEnabled(mApp.getContext())
                     && !prefs.get(LauncherPrefs.SHOULD_SHOW_SMARTSPACE)) {
                 // Turn on pref.
                 prefs.putSync(SHOULD_SHOW_SMARTSPACE.to(true));
@@ -392,7 +392,7 @@ public class LoaderTask implements Runnable {
             mModelDelegate.markActive();
             logASplit("workspaceDelegateItems");
         }
-        mBgDataModel.isFirstPagePinnedItemEnabled = FeatureFlags.QSB_ON_FIRST_SCREEN
+        mBgDataModel.isFirstPagePinnedItemEnabled = FeatureFlags.topQsbOnFirstScreenEnabled(mApp.getContext())
                 && (!ENABLE_SMARTSPACE_REMOVAL.get() || LauncherPrefs.getPrefs(
                         mApp.getContext()).getBoolean(SMARTSPACE_ON_HOME_SCREEN, true));
     }
