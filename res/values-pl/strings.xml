@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Instaluję aplikację <xliff:g id="NAME">%1$s</xliff:g>, postęp: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Pobieranie elementu <xliff:g id="NAME">%1$s</xliff:g>, ukończono: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> oczekuje na instalację"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"Aplikacja <xliff:g id="NAME">%1$s</xliff:g> jest zarchiwizowana. Kliknij, aby ją pobrać."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"Aplikacja <xliff:g id="NAME">%1$s</xliff:g> jest zarchiwizowana. Kliknij, aby ją pobrać i przywrócić."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Wymagana aktualizacja aplikacji"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Aplikacja z tą ikoną nie jest aktualizowana. Możesz zaktualizować ją ręcznie, aby ponownie uruchomić ten skrót, lub usunąć ikonę."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Aktualizuj"</string>
@@ -182,7 +182,7 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Cofnij wstrzymywanie"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtruj"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Niepowodzenie: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"Obszar prywatny"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Przestrzeń prywatna"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Kliknij, aby skonfigurować lub otworzyć"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Prywatne"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Ustawienia obszaru prywatnego"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Prywatna, zablokowana."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Zablokuj"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Przenoszenie obszaru prywatnego"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Zainstaluj"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Zainstaluj aplikacje w przestrzeni prywatnej"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Rozwiń menu"</string>
 </resources>

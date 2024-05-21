@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ကို ထည့်သွင်းနေသည်၊ <xliff:g id="PROGRESS">%2$s</xliff:g> ပြီးပါပြီ"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ဒေါင်းလုဒ်လုပ်နေသည်၊ <xliff:g id="PROGRESS">%2$s</xliff:g> ပြီးပါပြီ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ကိုထည့်သွင်းရန်စောင့်နေသည်"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> ကို သိမ်းထားသည်။ ဒေါင်းလုဒ်လုပ်ရန် တို့ပါ။"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> ကို သိမ်းထားသည်။ ဒေါင်းလုဒ်လုပ်ပြီး ပြန်ယူရန် တို့ပါ။"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"အက်ပ်ကို အပ်ဒိတ်လုပ်ရန် လိုအပ်သည်"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"ဤသင်္ကေတအတွက် အက်ပ်ကို အပ်ဒိတ်လုပ်မထားပါ။ ဤဖြတ်လမ်းလင့်ခ်ကို ပြန်ဖွင့်ရန် ကိုယ်တိုင်အပ်ဒိတ်လုပ်နိုင်သည် (သို့) သင်္ကေတကို ဖယ်ရှားနိုင်သည်။"</string>
     <string name="dialog_update" msgid="2178028071796141234">"အပ်ဒိတ်လုပ်ရန်"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"သီးသန့် လော့ခ်ချထားသည်။"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"လော့ခ်ချခြင်း"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"သီးသန့်ချတ်ခန်း အပြောင်းအလဲ"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"ထည့်သွင်းရန်"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"‘သီးသန့်နေရာ’ တွင် အက်ပ်များ ထည့်သွင်းနိုင်သည်"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"မီနူးအပို"</string>
 </resources>

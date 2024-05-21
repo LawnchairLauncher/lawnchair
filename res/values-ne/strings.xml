@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> इन्स्टल गरिँदै छ, <xliff:g id="PROGRESS">%2$s</xliff:g> पूरा भयो"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड गर्दै, <xliff:g id="PROGRESS">%2$s</xliff:g> सम्पन्‍न"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> स्थापना गर्न प्रतीक्षा गर्दै"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> अभिलेखमा राखिएको छ। डाउनलोड गर्न ट्याप गर्नुहोस्।"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> अभिलेखमा राखिएको छ। डाउनलोड गरी रिस्टोर गर्न ट्याप गर्नुहोस्।"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"एप अपडेट गरिनु पर्छ"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"यो आइकनले जनाउने एप अपडेट गरिएको छैन। तपाईं यो सर्टकट फेरि अन गर्न म्यानुअल रूपमा अपडेट गर्न सक्नुहुन्छ वा आइकन नै हटाउनुहोस्।"</string>
     <string name="dialog_update" msgid="2178028071796141234">"अपडेट गर्नुहोस्"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"निजी, लक गरिएको।"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"लक गर्नुहोस्"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"निजी स्पेस ट्रान्जिसन गरिँदै छ"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"इन्स्टल गर्नुहोस्"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"निजी स्पेसमा एपहरू इन्स्टल गर्नुहोस्"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ओभरफ्लो"</string>
 </resources>

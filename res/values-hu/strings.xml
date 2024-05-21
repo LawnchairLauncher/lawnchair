@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Folyamatban van a(z) <xliff:g id="NAME">%1$s</xliff:g> telepítése, <xliff:g id="PROGRESS">%2$s</xliff:g> kész"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"A(z) <xliff:g id="NAME">%1$s</xliff:g> letöltése, <xliff:g id="PROGRESS">%2$s</xliff:g> kész"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"A(z) <xliff:g id="NAME">%1$s</xliff:g> telepítésre vár"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> archiválva. Koppintson a letöltéshez."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> archiválva. Koppintson a letöltéshez és a visszaállításhoz."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Alkalmazásfrissítés szükséges"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Az ikonhoz tartozó alkalmazás nincs frissítve. A parancsikon újbóli engedélyezéséhez frissítse az alkalmazást, vagy távolítsa ez az ikont."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Frissítés"</string>
@@ -184,14 +184,13 @@
     <string name="remote_action_failed" msgid="1383965239183576790">"Sikertelen: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Privát terület"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Koppintson a beállításhoz vagy a megnyitáshoz"</string>
-    <string name="ps_container_title" msgid="4391796149519594205">"Magánterület"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Privát terület"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Privát terület beállításai"</string>
     <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Privát, feloldott."</string>
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privát, zárolt."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Zárolás"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Átállás privát területre…"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
-    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Alkalmazások telepítése magánterületre"</string>
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Telepítés"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Alkalmazások telepítése privát területre"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Túlcsordulás"</string>
 </resources>

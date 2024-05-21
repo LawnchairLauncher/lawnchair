@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Instaliranje aplikacije <xliff:g id="NAME">%1$s</xliff:g>, završeno je <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> se preuzima, završeno <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> čeka da se instalira"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"Arhivirana je aplikacija <xliff:g id="NAME">%1$s</xliff:g>. Dodirnite je da je preuzmete."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"Arhivirana je aplikacija <xliff:g id="NAME">%1$s</xliff:g>. Dodirnite da je preuzmete i vratite."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Potrebno je ažurirati aplikaciju"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Aplikacija za ovu ikonu nije ažurirana. Možete je ažurirati ručno da ponovo omogućite ovu prečicu ili možete ukloniti ikonu."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Ažuriraj"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privatno, zaključano."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Zaključaj"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Prelazak u privatan prostor"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Instaliraj"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instaliranje aplikacija u privatni prostor"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Preklopni meni"</string>
 </resources>
