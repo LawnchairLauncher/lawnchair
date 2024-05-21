@@ -16,6 +16,7 @@
 package com.android.launcher3.widget.picker;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -49,8 +50,8 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.ActivityContextWrapper;
-import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.WidgetUtils;
+import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetManagerHelper;
@@ -112,7 +113,9 @@ public final class WidgetsListTableViewHolderBinderTest {
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
         mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0, EMPTY_LIST);
-        Executors.MAIN_EXECUTOR.submit(() -> { }).get();
+        // Wait for the loader to complete the preview loading
+        DatabaseWidgetPreviewLoader.getLoaderExecutor().submit(() -> { }).get();
+        getInstrumentation().waitForIdleSync();
 
         // THEN the table container has one row, which contains 3 widgets.
         // View:  .SampleWidget0 | .SampleWidget1 | .SampleWidget2
