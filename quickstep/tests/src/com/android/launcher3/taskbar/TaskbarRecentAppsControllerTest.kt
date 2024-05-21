@@ -37,7 +37,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.kotlin.whenever
 
 @RunWith(AndroidTestingRunner::class)
-class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
+class TaskbarRecentAppsControllerTest : TaskbarBaseTestCase() {
 
     @get:Rule val mockitoRule = MockitoJUnit.rule()
 
@@ -46,19 +46,18 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
 
     private var nextTaskId: Int = 500
 
-    private lateinit var taskbarRunningAppsController: DesktopTaskbarRunningAppsController
+    private lateinit var recentAppsController: TaskbarRecentAppsController
     private lateinit var userHandle: UserHandle
 
     @Before
     fun setUp() {
         super.setup()
         userHandle = Process.myUserHandle()
-        taskbarRunningAppsController =
-            DesktopTaskbarRunningAppsController(mockRecentsModel) {
-                mockDesktopVisibilityController
-            }
-        taskbarRunningAppsController.init(taskbarControllers)
-        taskbarRunningAppsController.setApps(
+        recentAppsController =
+            TaskbarRecentAppsController(mockRecentsModel) { mockDesktopVisibilityController }
+        recentAppsController.init(taskbarControllers)
+        recentAppsController.isEnabled = true
+        recentAppsController.setApps(
             ALL_APP_PACKAGES.map { createTestAppInfo(packageName = it) }.toTypedArray()
         )
     }
@@ -69,7 +68,7 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val hotseatItems =
             createHotseatItemsFromPackageNames(listOf(HOTSEAT_PACKAGE_1, HOTSEAT_PACKAGE_2))
 
-        assertThat(taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray()))
+        assertThat(recentAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray()))
             .isEqualTo(hotseatItems.toTypedArray())
     }
 
@@ -81,10 +80,10 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val runningTasks =
             createDesktopTasksFromPackageNames(listOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps()
+        recentAppsController.updateRunningApps()
 
         val newHotseatItems =
-            taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray())
+            recentAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray())
 
         assertThat(newHotseatItems.map { it?.targetPackage })
             .containsExactlyElementsIn(hotseatPackages)
@@ -96,7 +95,7 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val hotseatItems =
             createHotseatItemsFromPackageNames(listOf(HOTSEAT_PACKAGE_1, HOTSEAT_PACKAGE_2))
 
-        assertThat(taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray()))
+        assertThat(recentAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray()))
             .isEqualTo(hotseatItems.toTypedArray())
     }
 
@@ -108,10 +107,10 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val runningTasks =
             createDesktopTasksFromPackageNames(listOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps()
+        recentAppsController.updateRunningApps()
 
         val newHotseatItems =
-            taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray())
+            recentAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray())
 
         val expectedPackages =
             listOf(
@@ -134,10 +133,10 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
                 listOf(HOTSEAT_PACKAGE_1, RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2)
             )
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps()
+        recentAppsController.updateRunningApps()
 
         val newHotseatItems =
-            taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray())
+            recentAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray())
 
         val expectedPackages =
             listOf(
@@ -156,10 +155,10 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val runningTasks =
             createDesktopTasksFromPackageNames(listOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps()
+        recentAppsController.updateRunningApps()
 
-        assertThat(taskbarRunningAppsController.runningApps).isEmpty()
-        assertThat(taskbarRunningAppsController.minimizedApps).isEmpty()
+        assertThat(recentAppsController.runningApps).isEmpty()
+        assertThat(recentAppsController.minimizedApps).isEmpty()
     }
 
     @Test
@@ -168,11 +167,11 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val runningTasks =
             createDesktopTasksFromPackageNames(listOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps()
+        recentAppsController.updateRunningApps()
 
-        assertThat(taskbarRunningAppsController.runningApps)
+        assertThat(recentAppsController.runningApps)
             .containsExactly(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2)
-        assertThat(taskbarRunningAppsController.minimizedApps).isEmpty()
+        assertThat(recentAppsController.minimizedApps).isEmpty()
     }
 
     @Test
@@ -187,12 +186,11 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
                 )
             )
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
-        taskbarRunningAppsController.updateRunningApps()
+        recentAppsController.updateRunningApps()
 
-        assertThat(taskbarRunningAppsController.runningApps)
+        assertThat(recentAppsController.runningApps)
             .containsExactly(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2, RUNNING_APP_PACKAGE_3)
-        assertThat(taskbarRunningAppsController.minimizedApps)
-            .containsExactly(RUNNING_APP_PACKAGE_3)
+        assertThat(recentAppsController.minimizedApps).containsExactly(RUNNING_APP_PACKAGE_3)
     }
 
     private fun createHotseatItemsFromPackageNames(packageNames: List<String>): List<ItemInfo> {

@@ -79,7 +79,7 @@ public class TaskbarModelCallbacks implements
 
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
-        if (mControllers.taskbarRecentAppsController.isEnabled()) {
+        if (mControllers.taskbarRecentAppsController.getCanShowRunningApps()) {
             RecentsModel.INSTANCE.get(mContext).registerRunningTasksListener(this);
 
             if (shouldShowRunningAppsInDesktopMode()) {
