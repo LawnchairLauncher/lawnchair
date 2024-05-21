@@ -198,6 +198,8 @@
     <string name="app_info_drop_target_label">App info</string>
     <!-- Label for install to private profile shortcut label. [CHAR_LIMIT=20] -->
     <string name="install_private_system_shortcut_label">Install in private</string>
+    <!-- Label for uninstall app private profile shortcut.-->
+    <string name="uninstall_private_system_shortcut_label">Uninstall app</string>
     <!-- Label for install drop target. [CHAR_LIMIT=20] -->
     <string name="install_drop_target_label">Install</string>
     <!-- Label for dismiss prediction. -->

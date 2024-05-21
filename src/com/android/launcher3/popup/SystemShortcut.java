@@ -360,7 +360,8 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
 
         UninstallApp(T target, ItemInfo itemInfo, @NonNull View originalView,
                 @NonNull ComponentName cn) {
-            super(R.drawable.ic_uninstall_no_shadow, R.string.uninstall_drop_target_label, target,
+            super(R.drawable.ic_uninstall_no_shadow,
+                    R.string.uninstall_private_system_shortcut_label, target,
                     itemInfo, originalView);
             mComponentName = cn;
 
