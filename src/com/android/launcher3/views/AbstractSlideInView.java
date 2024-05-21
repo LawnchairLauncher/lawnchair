@@ -92,7 +92,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected @NonNull AnimatorPlaybackController mOpenCloseAnimation;
 
     protected ViewGroup mContent;
-    protected final View mColorScrim;
+    protected final @Nullable View mColorScrim;
 
     /**
      * Interpolator for {@link #mOpenCloseAnimation} when we are closing due to dragging downwards.
@@ -216,6 +216,9 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
 
         animation.addFloat(
                 this, TRANSLATION_SHIFT, fromTranslationShift, toTranslationShift, LINEAR);
+        if (mColorScrim != null) {
+            animation.setViewAlpha(mColorScrim, 1 - toTranslationShift, getScrimInterpolator());
+        }
         onOpenCloseAnimationPending(animation);
 
         mOpenCloseAnimation = animation.createPlaybackController();
@@ -254,9 +257,6 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected void setTranslationShift(float translationShift) {
         mTranslationShift = translationShift;
         mContent.setTranslationY(mTranslationShift * getShiftRange());
-        if (mColorScrim != null) {
-            mColorScrim.setAlpha(1 - mTranslationShift);
-        }
         invalidate();
     }
 
@@ -498,6 +498,10 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
 
     protected Interpolator getIdleInterpolator() {
         return Interpolators.ACCELERATE;
+    }
+
+    protected Interpolator getScrimInterpolator() {
+        return LINEAR;
     }
 
     protected void onCloseComplete() {
