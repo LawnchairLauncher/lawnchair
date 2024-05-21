@@ -167,7 +167,6 @@
     <!-- (x) icon button inside work edu card -->
     <dimen name="rounded_button_width">24dp</dimen>
     <dimen name="x_icon_size">16dp</dimen>
-    <dimen name="x_icon_padding">4dp</dimen>
 
     <!-- rounded button shown inside card views, and snack bars  -->
     <dimen name="padded_rounded_button_height">48dp</dimen>

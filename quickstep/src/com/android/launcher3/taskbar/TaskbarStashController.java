@@ -424,14 +424,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * @see android.view.WindowInsets.Type#systemBars()
      */
     public int getContentHeightToReportToApps() {
-        if ((mActivity.isPhoneMode() && !mActivity.isThreeButtonNav())
-                || DisplayController.isTransientTaskbar(mActivity)) {
+        if (mActivity.isUserSetupComplete() && (mActivity.isPhoneGestureNavMode()
+                || DisplayController.isTransientTaskbar(mActivity))) {
             return getStashedHeight();
         }
 
         if (supportsVisualStashing() && hasAnyFlag(FLAGS_REPORT_STASHED_INSETS_TO_APP)) {
             DeviceProfile dp = mActivity.getDeviceProfile();
-            if (hasAnyFlag(FLAG_STASHED_IN_APP_SETUP) && dp.isTaskbarPresent) {
+            if (hasAnyFlag(FLAG_STASHED_IN_APP_SETUP) && (dp.isTaskbarPresent
+                    || mActivity.isPhoneGestureNavMode())) {
                 // We always show the back button in SUW but in portrait the SUW layout may not
                 // be wide enough to support overlapping the nav bar with its content.
                 // We're sending different res values in portrait vs landscape
