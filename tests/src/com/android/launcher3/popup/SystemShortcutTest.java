@@ -57,6 +57,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LauncherModelHelper.SandboxModelContext;
 import com.android.launcher3.util.TestSandboxModelContextWrapper;
@@ -88,6 +89,7 @@ public class SystemShortcutTest {
     private PopupDataProvider mPopupDataProvider;
     private AppInfo mAppInfo;
     @Mock UserCache mUserCache;
+    @Mock ApiWrapper mApiWrapper;
     @Mock BaseDragLayer mBaseDragLayer;
     @Mock UserIconInfo mUserIconInfo;
     @Mock LauncherActivityInfo mLauncherActivityInfo;
@@ -98,6 +100,7 @@ public class SystemShortcutTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         mSandboxContext.putObject(UserCache.INSTANCE, mUserCache);
+        mSandboxContext.putObject(ApiWrapper.INSTANCE, mApiWrapper);
         mTestContext = new TestSandboxModelContextWrapper(mSandboxContext);
         mView = new View(mSandboxContext);
         spyOn(mTestContext);
