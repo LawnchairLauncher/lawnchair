@@ -17,6 +17,7 @@
 package com.android.launcher3.icons;
 
 import android.content.Context;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 
@@ -75,7 +76,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     }
 
     @Override
-    protected Drawable getMonochromeDrawable(Drawable base) {
+    protected Drawable getMonochromeDrawable(AdaptiveIconDrawable base) {
         Drawable mono = super.getMonochromeDrawable(base);
         if (mono != null || !Flags.forceMonochromeAppIcons()) {
             return mono;
