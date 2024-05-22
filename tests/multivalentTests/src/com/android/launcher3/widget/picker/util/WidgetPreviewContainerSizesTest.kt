@@ -43,6 +43,7 @@ class WidgetPreviewContainerSizesTest {
     private lateinit var context: Context
     private lateinit var deviceProfile: DeviceProfile
     private lateinit var testInvariantProfile: InvariantDeviceProfile
+    private lateinit var widgetItemInvariantProfile: InvariantDeviceProfile
 
     @Mock private lateinit var iconCache: IconCache
 
@@ -51,6 +52,11 @@ class WidgetPreviewContainerSizesTest {
         MockitoAnnotations.initMocks(this)
         context = ActivityContextWrapper(ApplicationProvider.getApplicationContext())
         testInvariantProfile = LauncherAppState.getIDP(context)
+        widgetItemInvariantProfile =
+            InvariantDeviceProfile().apply {
+                numRows = TEST_GRID_SIZE
+                numColumns = TEST_GRID_SIZE
+            }
         deviceProfile = testInvariantProfile.getDeviceProfile(context).copy(context)
     }
 
@@ -60,7 +66,8 @@ class WidgetPreviewContainerSizesTest {
         val expectedPreviewContainers = testSizes.values.toList()
 
         for ((index, widgetSize) in testSizes.keys.withIndex()) {
-            val widgetItem = createWidgetItem(widgetSize, context, testInvariantProfile, iconCache)
+            val widgetItem =
+                createWidgetItem(widgetSize, context, widgetItemInvariantProfile, iconCache)
 
             assertWithMessage("size for $widgetSize should be: ${expectedPreviewContainers[index]}")
                 .that(WidgetPreviewContainerSize.forItem(widgetItem, deviceProfile))
@@ -70,6 +77,7 @@ class WidgetPreviewContainerSizesTest {
 
     companion object {
         private const val TEST_PACKAGE = "com.google.test"
+        private const val TEST_GRID_SIZE = 6
 
         private val HANDHELD_TEST_SIZES: Map<Point, WidgetPreviewContainerSize> =
             mapOf(

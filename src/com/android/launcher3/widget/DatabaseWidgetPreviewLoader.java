@@ -27,12 +27,12 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Size;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
@@ -45,6 +45,7 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.util.WidgetSizes;
 
@@ -68,8 +69,7 @@ public class DatabaseWidgetPreviewLoader {
     }
 
     /**
-     * Generates the widget preview on {@link AsyncTask#THREAD_POOL_EXECUTOR}. Must be
-     * called on UI thread.
+     * Generates the widget preview on {@link Executors#UI_HELPER_EXECUTOR}.
      *
      * @return a request id which can be used to cancel the request.
      */
@@ -78,13 +78,19 @@ public class DatabaseWidgetPreviewLoader {
             @NonNull WidgetItem item,
             @NonNull Size previewSize,
             @NonNull Consumer<Bitmap> callback) {
-        Handler handler = Executors.UI_HELPER_EXECUTOR.getHandler();
+        Handler handler = getLoaderExecutor().getHandler();
         CancellableTask<Bitmap> request = new CancellableTask<>(
                 () -> generatePreview(item, previewSize.getWidth(), previewSize.getHeight()),
                 MAIN_EXECUTOR,
                 callback);
         Utilities.postAsyncCallback(handler, request);
         return request;
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public static LooperExecutor getLoaderExecutor() {
+        return Executors.UI_HELPER_EXECUTOR;
     }
 
     /**
