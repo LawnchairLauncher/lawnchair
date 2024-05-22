@@ -53,6 +53,7 @@ import android.window.BackProgressAnimator;
 import android.window.IOnBackInvokedCallback;
 
 import com.android.app.animation.Interpolators;
+import com.android.internal.policy.SystemBarUtils;
 import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
@@ -88,7 +89,6 @@ public class LauncherBackAnimationController {
     private static final float MIN_WINDOW_SCALE = 0.85f;
     private static final float MAX_SCRIM_ALPHA_DARK = 0.8f;
     private static final float MAX_SCRIM_ALPHA_LIGHT = 0.2f;
-    private static final float UPDATE_SYSUI_FLAGS_THRESHOLD = 0.20f;
 
     private final QuickstepTransitionManager mQuickstepTransitionManager;
     private final Matrix mTransformMatrix = new Matrix();
@@ -100,6 +100,7 @@ public class LauncherBackAnimationController {
     private final int mWindowScaleMarginX;
     private float mWindowScaleEndCornerRadius;
     private float mWindowScaleStartCornerRadius;
+    private int mStatusBarHeight;
     private final Interpolator mProgressInterpolator = Interpolators.BACK_GESTURE;
     private final Interpolator mVerticalMoveInterpolator = new DecelerateInterpolator();
     private final PointF mInitialTouchPos = new PointF();
@@ -123,7 +124,7 @@ public class LauncherBackAnimationController {
     private final ComponentCallbacks mComponentCallbacks = new ComponentCallbacks() {
         @Override
         public void onConfigurationChanged(Configuration newConfig) {
-            loadCornerRadius();
+            loadResources();
         }
 
         @Override
@@ -135,7 +136,7 @@ public class LauncherBackAnimationController {
             QuickstepTransitionManager quickstepTransitionManager) {
         mLauncher = launcher;
         mQuickstepTransitionManager = quickstepTransitionManager;
-        loadCornerRadius();
+        loadResources();
         mWindowScaleMarginX = mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.swipe_back_window_scale_x_margin);
     }
@@ -388,7 +389,7 @@ public class LauncherBackAnimationController {
                 progress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
         applyTransform(mCurrentRect, cornerRadius);
 
-        customizeStatusBarAppearance(progress > UPDATE_SYSUI_FLAGS_THRESHOLD);
+        customizeStatusBarAppearance(top > mStatusBarHeight / 2);
     }
 
     /** Transform the target window to match the target rect. */
@@ -535,13 +536,14 @@ public class LauncherBackAnimationController {
         anim.start();
     }
 
-    private void loadCornerRadius() {
+    private void loadResources() {
         mWindowScaleEndCornerRadius = QuickStepContract.supportsRoundedCornersOnWindows(
                 mLauncher.getResources())
                 ? mLauncher.getResources().getDimensionPixelSize(
                 R.dimen.swipe_back_window_corner_radius)
                 : 0;
         mWindowScaleStartCornerRadius = QuickStepContract.getWindowCornerRadius(mLauncher);
+        mStatusBarHeight = SystemBarUtils.getStatusBarHeight(mLauncher);
     }
 
     /**
