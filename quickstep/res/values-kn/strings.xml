@@ -140,6 +140,4 @@
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{ಇನ್ನೂ # ಆ್ಯಪ್ ಅನ್ನು ತೋರಿಸಿ.}one{ಇನ್ನೂ # ಆ್ಯಪ್‌ಗಳನ್ನು ತೋರಿಸಿ.}other{ಇನ್ನೂ # ಆ್ಯಪ್‌ಗಳನ್ನು ತೋರಿಸಿ.}}"</string>
     <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# ಡೆಸ್ಕ್‌ಟಾಪ್ ಆ್ಯಪ್ ತೋರಿಸಿ.}one{# ಡೆಸ್ಕ್‌ಟಾಪ್ ಆ್ಯಪ್‌ಗಳನ್ನು ತೋರಿಸಿ.}other{# ಡೆಸ್ಕ್‌ಟಾಪ್ ಆ್ಯಪ್‌ಗಳನ್ನು ತೋರಿಸಿ.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ಮತ್ತು <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
-    <string name="desktop_select_app_toast" msgid="2306057322833956910">"ಡೆಸ್ಕ್‌ಟಾಪ್‌ಗೆ ಆ್ಯಪ್ ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ"</string>
-    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"ರದ್ದುಮಾಡಿ"</string>
 </resources>
