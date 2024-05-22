@@ -145,7 +145,10 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
 
     @Override
     protected int getScrimColor(Context context) {
-        return context.getResources().getColor(R.color.widgets_picker_scrim);
+        // Don't add a scrim when using the standalone picker activity. The background dimming is
+        // handled by applying dimBackground in the activity theme, so the scrim doesn't slide in
+        // with the window.
+        return -1;
     }
 
     @SuppressLint("NewApi") // Already added API check.
