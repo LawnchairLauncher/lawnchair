@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -37,21 +38,33 @@ import com.android.quickstep.util.RecentsOrientedState;
  * when the drawable changes.
  */
 public class IconView extends View implements TaskViewIcon {
+    private static final int NUM_ALPHA_CHANNELS = 2;
+    private static final int INDEX_CONTENT_ALPHA = 0;
+    private static final int INDEX_MODAL_ALPHA = 1;
+
+    private final MultiValueAlpha mMultiValueAlpha;
 
     @Nullable
     private Drawable mDrawable;
     private int mDrawableWidth, mDrawableHeight;
 
     public IconView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public IconView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public IconView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public IconView(Context context, @Nullable AttributeSet attrs, int defStyleAttr,
+            int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        mMultiValueAlpha = new MultiValueAlpha(this, NUM_ALPHA_CHANNELS);
+        mMultiValueAlpha.setUpdateVisibility(/* updateVisibility= */ true);
     }
 
     /**
@@ -143,22 +156,12 @@ public class IconView extends View implements TaskViewIcon {
 
     @Override
     public void setContentAlpha(float alpha) {
-        setAlpha(alpha);
+        mMultiValueAlpha.get(INDEX_CONTENT_ALPHA).setValue(alpha);
     }
 
     @Override
     public void setModalAlpha(float alpha) {
-        setAlpha(alpha);
-    }
-
-    @Override
-    public void setAlpha(float alpha) {
-        super.setAlpha(alpha);
-        if (alpha > 0) {
-            setVisibility(VISIBLE);
-        } else {
-            setVisibility(INVISIBLE);
-        }
+        mMultiValueAlpha.get(INDEX_MODAL_ALPHA).setValue(alpha);
     }
 
     /**
