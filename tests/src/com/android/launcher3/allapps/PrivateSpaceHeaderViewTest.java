@@ -133,7 +133,7 @@ public class PrivateSpaceHeaderViewTest {
         Bitmap unlockButton = getBitmap(mContext.getDrawable(R.drawable.ic_lock));
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         when(privateProfileManager.getCurrentState()).thenReturn(STATE_DISABLED);
-        privateProfileManager.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
+        privateProfileManager.bindPrivateSpaceHeaderViewElements(mPsHeaderLayout);
         awaitTasksCompleted();
 
         int totalContainerHeaderView = 0;
@@ -168,7 +168,7 @@ public class PrivateSpaceHeaderViewTest {
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         when(privateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
         when(privateProfileManager.isPrivateSpaceSettingsAvailable()).thenReturn(true);
-        privateProfileManager.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
+        privateProfileManager.bindPrivateSpaceHeaderViewElements(mPsHeaderLayout);
         awaitTasksCompleted();
 
         int totalContainerHeaderView = 0;
@@ -210,7 +210,7 @@ public class PrivateSpaceHeaderViewTest {
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         when(privateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
         when(privateProfileManager.isPrivateSpaceSettingsAvailable()).thenReturn(false);
-        privateProfileManager.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
+        privateProfileManager.bindPrivateSpaceHeaderViewElements(mPsHeaderLayout);
         awaitTasksCompleted();
 
         int totalContainerHeaderView = 0;
@@ -248,7 +248,7 @@ public class PrivateSpaceHeaderViewTest {
         Bitmap transitionImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_transition_image));
         PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
         when(privateProfileManager.getCurrentState()).thenReturn(STATE_TRANSITION);
-        privateProfileManager.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
+        privateProfileManager.bindPrivateSpaceHeaderViewElements(mPsHeaderLayout);
         awaitTasksCompleted();
 
         int totalContainerHeaderView = 0;

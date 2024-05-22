@@ -300,7 +300,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_PRIVATE_SPACE_HEADER:
                 RelativeLayout psHeaderLayout = holder.itemView.findViewById(
                         R.id.ps_header_layout);
-                mApps.getPrivateProfileManager().addPrivateSpaceHeaderViewElements(psHeaderLayout);
+                mApps.getPrivateProfileManager().bindPrivateSpaceHeaderViewElements(psHeaderLayout);
                 AdapterItem adapterItem = mApps.getAdapterItems().get(position);
                 int roundRegions = ROUND_TOP_LEFT | ROUND_TOP_RIGHT;
                 if (mApps.getPrivateProfileManager().getCurrentState() == STATE_DISABLED) {
