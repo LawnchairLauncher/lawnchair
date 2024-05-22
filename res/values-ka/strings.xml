@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"ინსტალირდება <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> დასრულებულია"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"მიმდინარეობს <xliff:g id="NAME">%1$s</xliff:g>-ის ჩამოტვირთვა, <xliff:g id="PROGRESS">%2$s</xliff:g> დასრულდა"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ელოდება ინსტალაციას"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> დაარქივებულია. შეეხეთ ჩამოსატვირთად."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> დაარქივებულია. შეეხეთ გადმოსაწერად და აღსადგენად."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"საჭიროა აპის განახლება"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"ამ ხატულის აპი განახლებული არ არის. შეგიძლიათ, ხელით განაახლოთ ამ მალსახმობის ხელახლა გასააქტიურებლად, ან ამოშალოთ ხატულა."</string>
     <string name="dialog_update" msgid="2178028071796141234">"განახლება"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"პირადი (ჩაკეტილი)."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ჩაკეტვა"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"პირად სივრცეზე გადასვლა"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"ინსტალაცია"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"კერძო სივრცეში აპების ინსტალაცია"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"გადავსება"</string>
 </resources>

@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"正在安裝「<xliff:g id="NAME">%1$s</xliff:g>」(已完成 <xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"正在下載「<xliff:g id="NAME">%1$s</xliff:g>」，已完成 <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"正在等待安裝「<xliff:g id="NAME">%1$s</xliff:g>」"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"已封存「<xliff:g id="NAME">%1$s</xliff:g>」。輕觸即可下載。"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"「<xliff:g id="NAME">%1$s</xliff:g>」已封存。輕觸即可下載並還原。"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"必須更新應用程式"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"這個圖示代表的應用程式未更新。手動更新即可重新啟用這個捷徑，你也可以移除圖示。"</string>
     <string name="dialog_update" msgid="2178028071796141234">"更新"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"私人，已鎖定。"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"鎖定"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"轉換私人空間狀態"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"安裝"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"將應用程式安裝在私人空間中"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"溢位"</string>
 </resources>

@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> انسٹال کی جا رہی ہے، <xliff:g id="PROGRESS">%2$s</xliff:g> مکمل ہو گئی"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ڈاؤن لوڈ ہو رہا ہے، <xliff:g id="PROGRESS">%2$s</xliff:g> مکمل ہو گیا"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> انسٹال ہونے کا انتظار کر رہی ہے"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> کو آرکائیو کر لیا گیا ہے۔ ڈاؤن لوڈ کرنے کیلئے تھپتھپائیں۔"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> کو آرکائیو کر لیا گیا ہے۔ ڈاؤن لوڈ اور بحال کرنے کیلئے تھپتھپائیں۔"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"ایپ کی اپ ڈیٹ درکار ہے"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"اس آئیکن کیلئے ایپ کو اپ ڈیٹ نہیں کیا گیا ہے۔ آپ اس شارٹ کٹ کو دوبارہ فعال کرنے کے لیے دستی طور پر اپ ڈیٹ کر سکتے ہیں، یا آئیکن کو ہٹا سکتے ہیں۔"</string>
     <string name="dialog_update" msgid="2178028071796141234">"اپ ڈیٹ کریں"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"نجی اسپیس مقفل ہے۔"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"مقفل کریں"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"نجی اسپیس کی منتقلی"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"انسٹال کریں"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"پرائیویٹ اسپیس میں ایپس انسٹال کریں"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"اوورفلو"</string>
 </resources>

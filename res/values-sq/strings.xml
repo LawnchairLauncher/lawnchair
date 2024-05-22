@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> po instalohet, <xliff:g id="PROGRESS">%2$s</xliff:g> i përfunduar"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> po shkarkohet, <xliff:g id="PROGRESS">%2$s</xliff:g> të përfunduara"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> po pret të instalohet"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> është arkivuar. Trokit për të shkarkuar."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> është arkivuar. Trokit për ta shkarkuar dhe restauruar."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Kërkohet përditësimi i aplikacionit"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Aplikacioni për këtë ikonë nuk është përditësuar. Mund ta përditësosh manualisht për të riaktivizuar këtë shkurtore ose hiq ikonën."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Përditëso"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Private, e kyçur."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Kyç"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Kalimi te \"Hapësira private\""</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Instalo"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalo aplikacionet në hapësirën private"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Tejkalimi"</string>
 </resources>

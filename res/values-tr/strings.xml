@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> yükleniyor, <xliff:g id="PROGRESS">%2$s</xliff:g> tamamlandı"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> indiriliyor, <xliff:g id="PROGRESS">%2$s</xliff:g> tamamlandı"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> uygulaması yüklenmek için bekliyor"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> arşivlendi. İndirmek için dokunun."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> arşivlendi. İndirip geri yüklemek için dokunun."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Uygulama güncellemesi gerekli"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Bu simgenin uygulaması güncellenmemiş. Simgeyi kaldırabilir ya da uygulamayı manuel olarak güncelleyerek bu kısayolu yeniden etkinleştirebilirsiniz."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Güncelle"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Gizli, kilitli."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Kilit"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Gizli Alana Geçiş"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Yükle"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Uygulamaları özel alana yükleyin"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Taşma"</string>
 </resources>

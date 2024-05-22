@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Instalando <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> completado"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Descargando <xliff:g id="NAME">%1$s</xliff:g> (<xliff:g id="PROGRESS">%2$s</xliff:g> completado)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Esperando para instalar <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> está no arquivo. Toca para descargar esta aplicación."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> está no arquivo. Toca para descargar e restaurar."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"É necesario actualizar a aplicación"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"A aplicación á que corresponde esta icona non está actualizada. Podes actualizala manualmente para activar de novo este atallo, ou ben quitar a icona."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Actualizar"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privado, bloqueado."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Bloquear"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Transición ao espazo privado"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Instalar"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalar as aplicacións no espazo privado"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Menú adicional"</string>
 </resources>

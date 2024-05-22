@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"正在安装<xliff:g id="NAME">%1$s</xliff:g>，已完成 <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"正在下载<xliff:g id="NAME">%1$s</xliff:g>，已完成 <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>正在等待安装"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"已归档“<xliff:g id="NAME">%1$s</xliff:g>”。点按即可下载。"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"已归档“<xliff:g id="NAME">%1$s</xliff:g>”。点按即可进行下载并恢复。"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"需要更新应用"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"此图标对应的应用未更新。您可以手动更新以重新启用该快捷方式，或者移除此图标。"</string>
     <string name="dialog_update" msgid="2178028071796141234">"更新"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"私密，已锁定。"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"锁定"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"私密空间转换"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"安装"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"将应用安装到私密空间"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"菜单"</string>
 </resources>

@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> орнатылуда, <xliff:g id="PROGRESS">%2$s</xliff:g> аяқталды"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> жүктелуде, <xliff:g id="PROGRESS">%2$s</xliff:g> аяқталды"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> орнату күтілуде"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> мұрағатталды. Жүктеп алу үшін түртіңіз."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> мұрағатталды. Жүктеп алу және қалпына келтіру үшін түртіңіз."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Қолданбаны жаңарту қажет"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Осы белгіше үшін қолданба жаңартылмаған. Оны қолмен жаңартып, осы таңбашаны қайта іске қоса аласыз немесе белгішені өшіріп тастаңыз."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Жаңарту"</string>
@@ -182,16 +182,15 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Қайта қосу"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Сүзгі"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Қате шықты: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"Жеке бөлме"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Құпия кеңістік"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Реттеу немесе ашу үшін түртіңіз"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Жеке"</string>
-    <string name="ps_container_settings" msgid="6059734123353320479">"Жеке бөлме параметрлері"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"Құпия кеңістік параметрлері"</string>
     <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Құпия (құлыпталмаған)."</string>
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Құпия (құлыптаулы)."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Құлыптау"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Жеке бөлмеге өту"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Орнату"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Қолданбаларды \"Құпия кеңістікке\" орнатыңыз."</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Қосымша мәзір"</string>
 </resources>

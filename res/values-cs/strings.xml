@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Instalace aplikace <xliff:g id="NAME">%1$s</xliff:g>, dokončeno <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Stahování aplikace <xliff:g id="NAME">%1$s</xliff:g> (dokončeno <xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Instalace aplikace <xliff:g id="NAME">%1$s</xliff:g> čeká na zahájení"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"Aplikace <xliff:g id="NAME">%1$s</xliff:g> je archivována. Klepnutím ji stáhnete."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"Aplikace <xliff:g id="NAME">%1$s</xliff:g> je archivována. Klepnutím ji můžete stáhnout a obnovit."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Je nutná aktualizace aplikace"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Aplikace pro tuto ikonu není nainstalována. Můžete ji ručně aktualizovat, aby zkratka znovu fungovala, případně můžete ikonu odstranit."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Aktualizovat"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Soukromé, uzamčeno."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Zamknout"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Převádění soukromého prostoru"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Instalovat"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalovat aplikace do soukromého prostoru"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Rozbalovací nabídka"</string>
 </resources>
