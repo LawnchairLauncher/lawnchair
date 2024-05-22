@@ -15,12 +15,15 @@
  */
 package com.android.launcher3.util;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
+import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
+import android.os.Process;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -84,10 +87,10 @@ public class WidgetUtils {
      * Creates a {@link AppWidgetProviderInfo} for the provided component name
      */
     public static AppWidgetProviderInfo createAppWidgetProviderInfo(ComponentName cn) {
-        ActivityInfo activityInfo = new ActivityInfo();
-        activityInfo.applicationInfo = new ApplicationInfo();
-        AppWidgetProviderInfo info = new AppWidgetProviderInfo();
-        info.providerInfo = activityInfo;
+        AppWidgetProviderInfo info = AppWidgetManager.getInstance(getApplicationContext())
+                .getInstalledProvidersForPackage(
+                        getInstrumentation().getContext().getPackageName(), Process.myUserHandle())
+                .get(0);
         info.provider = cn;
         return info;
     }

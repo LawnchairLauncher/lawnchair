@@ -158,7 +158,7 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
 
         try {
             // Get the "uninstall" menu item.
-            homeAllApps.getAppIcon(INSTALLED_APP_NAME).openMenu().getMenuItem("Uninstall");
+            homeAllApps.getAppIcon(INSTALLED_APP_NAME).openMenu().getMenuItem("Uninstall app");
         } finally {
             // UnFreeze
             homeAllApps.unfreeze();

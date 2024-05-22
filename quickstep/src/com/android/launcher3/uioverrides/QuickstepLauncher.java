@@ -542,16 +542,18 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
         if (mDesktopVisibilityController != null) {
             mDesktopVisibilityController.unregisterSystemUiListener();
         }
+        mDesktopVisibilityController = null;
 
         if (mSplitSelectStateController != null) {
+            removeBackAnimationCallback(mSplitSelectStateController.getSplitBackHandler());
             mSplitSelectStateController.onDestroy();
         }
+        mSplitSelectStateController = null;
 
         super.onDestroy();
         mHotseatPredictionController.destroy();
         mSplitWithKeyboardShortcutController.onDestroy();
         if (mViewCapture != null) mViewCapture.close();
-        removeBackAnimationCallback(mSplitSelectStateController.getSplitBackHandler());
     }
 
     @Override
