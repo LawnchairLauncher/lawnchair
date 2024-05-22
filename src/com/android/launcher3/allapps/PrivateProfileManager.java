@@ -30,7 +30,6 @@ import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_LOCK_ANIMATION_BEGIN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_LOCK_ANIMATION_END;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_LOCK_TAP;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_BEGIN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNLOCK_ANIMATION_END;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP;
@@ -52,7 +51,6 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -228,30 +226,6 @@ public class PrivateProfileManager extends UserProfileManager {
         resetPrivateSpaceDecorator(updatedState);
     }
 
-    /**
-     * Opens the Private Space Settings Page.
-     *
-     * @param view the view that was clicked to open the settings page and which will be the same
-     *             view to animate back. Otherwise if there is no view, simply start the activity.
-     */
-    public void openPrivateSpaceSettings(View view) {
-        if (mPrivateSpaceSettingsAvailable) {
-            Context context = mAllApps.getContext();
-            Intent intent = ApiWrapper.INSTANCE.get(context).getPrivateSpaceSettingsIntent();
-            if (view == null) {
-                context.startActivity(intent);
-                return;
-            }
-            ActivityContext activityContext = ActivityContext.lookupContext(context);
-            AppInfo itemInfo = new AppInfo();
-            itemInfo.id = CONTAINER_PRIVATESPACE;
-            itemInfo.componentName = intent.getComponent();
-            itemInfo.container = CONTAINER_PRIVATESPACE;
-            view.setTag(itemInfo);
-            activityContext.startActivitySafely(view, intent, itemInfo);
-        }
-    }
-
     /** Returns whether or not Private Space Settings Page is available. */
     public boolean isPrivateSpaceSettingsAvailable() {
         return mPrivateSpaceSettingsAvailable;
@@ -384,7 +358,7 @@ public class PrivateProfileManager extends UserProfileManager {
         updateHeaderOnClickListener(mPSHeader);
 
         //Add image and action for private space settings button
-        ImageButton settingsButton = mPSHeader.findViewById(R.id.ps_settings_button);
+        PrivateSpaceSettingsButton settingsButton = mPSHeader.findViewById(R.id.ps_settings_button);
         assert settingsButton != null;
         updatePrivateSpaceSettingsButton(settingsButton);
 
@@ -438,15 +412,10 @@ public class PrivateProfileManager extends UserProfileManager {
         setQuietMode(lock);
     }
 
-    private void updatePrivateSpaceSettingsButton(ImageButton settingsButton) {
+    private void updatePrivateSpaceSettingsButton(PrivateSpaceSettingsButton settingsButton) {
         if (getCurrentState() == STATE_ENABLED
                 && isPrivateSpaceSettingsAvailable()) {
             settingsButton.setVisibility(VISIBLE);
-            settingsButton.setOnClickListener(
-                    view -> {
-                        logEvents(LAUNCHER_PRIVATE_SPACE_SETTINGS_TAP);
-                        openPrivateSpaceSettings(view);
-                    });
         } else {
             settingsButton.setVisibility(GONE);
         }
