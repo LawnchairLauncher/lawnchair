@@ -50,3 +50,6 @@ per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, adamcohe
 
 per-file DeviceConfigWrapper.java, globs = set noparent
 per-file DeviceConfigWrapper.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com
+
+# Predictive Back
+per-file LauncherBackAnimationController.java = shanh@google.com, gallmann@google.com
