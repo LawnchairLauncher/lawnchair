@@ -274,4 +274,11 @@
     <string-array name="skip_private_profile_shortcut_packages" translatable="false">
         <item>com.android.settings</item>
     </string-array>
+
+    <!-- Legacy list of components supporting multiple instances.
+         DO NOT ADD TO THIS LIST.  Apps should use the PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI
+         property to declare multi-instance support in V+. This resource should match the resource
+         of the same name in SystemUI. -->
+    <string-array name="config_appsSupportMultiInstancesSplit">
+    </string-array>
 </resources>
