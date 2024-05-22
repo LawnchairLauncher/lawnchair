@@ -257,6 +257,9 @@ constructor(
      */
     protected var modalness = 0f
         set(value) {
+            if (field == value) {
+                return
+            }
             field = value
             onModalnessUpdated(field)
         }
