@@ -7,10 +7,9 @@
     ],
     "packageRules": [
         {
-            "groupName": "Kotlin, KSP and Compose Compiler",
+            "groupName": "Kotlin and KSP",
             "matchPackagePrefixes": [
-                "com.google.devtools.ksp",
-                "androidx.compose.compiler"
+                "com.google.devtools.ksp"
             ],
             "matchPackagePatterns": [
                 "org.jetbrains.kotlin.*"
