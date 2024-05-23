@@ -51,6 +51,7 @@ import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION
 import com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
+import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.DisplayController
 import java.io.PrintWriter
 import kotlin.jvm.optionals.getOrNull
@@ -231,8 +232,24 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
         val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
         val res = context.resources
-        if (provider.type == navigationBars() || provider.type == mandatorySystemGestures()) {
+        if (provider.type == navigationBars()) {
             provider.insetsSize = getInsetsForGravityWithCutout(contentHeight, gravity, endRotation)
+        } else if (provider.type == mandatorySystemGestures()) {
+            if (context.isThreeButtonNav) {
+                provider.insetsSize = Insets.of(0, 0, 0, 0)
+            } else {
+                val gestureHeight =
+                        ResourceUtils.getNavbarSize(
+                        ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE,
+                        context.resources)
+                val isPinnedTaskbar = context.deviceProfile.isTaskbarPresent
+                        && !context.deviceProfile.isTransientTaskbar
+                val mandatoryGestureHeight =
+                        if (isPinnedTaskbar) contentHeight
+                        else gestureHeight
+                provider.insetsSize = getInsetsForGravityWithCutout(mandatoryGestureHeight, gravity,
+                        endRotation)
+            }
         } else if (provider.type == tappableElement()) {
             provider.insetsSize = getInsetsForGravity(tappableHeight, gravity)
         } else if (provider.type == systemGestures() && provider.index == INDEX_LEFT) {
