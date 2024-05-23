@@ -25,7 +25,6 @@ import static android.content.pm.ApplicationInfo.CATEGORY_UNDEFINED;
 import static android.content.pm.ApplicationInfo.CATEGORY_VIDEO;
 import static android.content.pm.ApplicationInfo.FLAG_INSTALLED;
 
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -35,7 +34,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
-import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
@@ -53,6 +51,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.WidgetUtils;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import com.google.common.collect.ImmutableMap;
@@ -152,11 +151,8 @@ public class WidgetRecommendationCategoryProviderTest {
 
         doAnswer(invocation -> widgetLabel).when(mIconCache).getTitleNoCache(any());
 
-        AppWidgetProviderInfo providerInfo = AppWidgetManager.getInstance(getApplicationContext())
-                .getInstalledProvidersForPackage(
-                        getInstrumentation().getContext().getPackageName(), Process.myUserHandle())
-                .get(0);
-        providerInfo.provider = ComponentName.createRelative(TEST_PACKAGE, widgetClassName);
+        AppWidgetProviderInfo providerInfo = WidgetUtils.createAppWidgetProviderInfo(ComponentName
+                .createRelative(TEST_PACKAGE, widgetClassName));
 
         LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
                 LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, providerInfo);

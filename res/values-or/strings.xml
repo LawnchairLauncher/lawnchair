@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ଇନଷ୍ଟଲ୍ କରାଯାଉଛି, <xliff:g id="PROGRESS">%2$s</xliff:g> ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ଡାଉନଲୋଡ୍‌ ହେଉଛି, <xliff:g id="PROGRESS">%2$s</xliff:g> ସମ୍ପୂର୍ଣ୍ଣ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ଇନଷ୍ଟଲ୍‌ ହେବାକୁ ଅପେକ୍ଷା କରିଛି"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g>କୁ ଆର୍କାଇଭ କରାଯାଇଛି। ଡାଉନଲୋଡ୍ କରିବା ପାଇଁ ଟାପ୍‌ କରନ୍ତୁ।"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g>କୁ ଆର୍କାଇଭ କରାଯାଇଛି। ଡାଉନଲୋଡ ଏବଂ ରିଷ୍ଟୋର କରିବା ପାଇଁ ଟାପ କରନ୍ତୁ।"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"ଆପକୁ ଅପଡେଟ କରିବା ଆବଶ୍ୟକ"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"ଏହି ଆଇକନ ପାଇଁ ଆପକୁ ଅପଡେଟ କରାଯାଇନାହିଁ। ଏହି ସର୍ଟକଟକୁ ପୁଣି-ସକ୍ଷମ କରିବା ପାଇଁ ଆପଣ ମାନୁଆଲୀ ଅପଡେଟ କରିପାରିବେ କିମ୍ବା ଆଇକନଟିକୁ କାଢ଼ି ଦେଇପାରିବେ।"</string>
     <string name="dialog_update" msgid="2178028071796141234">"ଅପଡେଟ କରନ୍ତୁ"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ପ୍ରାଇଭେଟ, ଲକ କରାଯାଇଛି।"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ଲକ କରନ୍ତୁ"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ପ୍ରାଇଭେଟ ସ୍ପେସ ଟ୍ରାଞ୍ଜିସନିଂ"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"ଇନଷ୍ଟଲ କରନ୍ତୁ"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"ଆପ୍ସକୁ ପ୍ରାଇଭେଟ ସ୍ପେସରେ ଇନଷ୍ଟଲ କରନ୍ତୁ"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ଓଭରଫ୍ଲୋ"</string>
 </resources>

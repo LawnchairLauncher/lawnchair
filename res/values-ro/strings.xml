@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> se instalează, <xliff:g id="PROGRESS">%2$s</xliff:g> finalizat"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> se descarcă (finalizat <xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> așteaptă instalarea"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> s-a arhivat. Atinge pentru a descărca."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> s-a arhivat. Atinge pentru a descărca și restabili."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Este necesară actualizarea aplicației"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Aplicația pentru această pictogramă nu este actualizată. Poți să actualizezi manual ca să reactivezi comanda rapidă sau să elimini pictograma."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Actualizează"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privat, blocat."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Blochează"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Tranziție pentru spațiul privat"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Instalează"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalează aplicații în Spațiul privat"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Suplimentar"</string>
 </resources>

@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ഇൻസ്‌റ്റാൾ ചെയ്യുന്നു, <xliff:g id="PROGRESS">%2$s</xliff:g> പൂർത്തിയായി"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ഡൗൺലോഡ് ചെയ്യുന്നു, <xliff:g id="PROGRESS">%2$s</xliff:g> പൂർത്തിയായി"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"ഇൻസ്റ്റാൾ ചെയ്യാൻ <xliff:g id="NAME">%1$s</xliff:g> കാക്കുന്നു"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> ആർക്കൈവ് ചെയ്തു. ഡൗൺലോഡ് ചെയ്യാൻ ടാപ്പ് ചെയ്യുക."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> ആർക്കൈവ് ചെയ്തു. ഡൗൺലോഡ് ചെയ്യാനും പുനഃസ്ഥാപിക്കാനും ടാപ്പ് ചെയ്യുക."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"ആപ്പ് അപ്‌ഡേറ്റ് ചെയ്യേണ്ടതുണ്ട്"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"ഈ ഐക്കണിനുള്ള ആപ്പ് അപ്‌ഡേറ്റ് ചെയ്തിട്ടില്ല. ഈ കുറുക്കുവഴി വീണ്ടും പ്രവർത്തനക്ഷമമാക്കാൻ നിങ്ങൾക്ക് നേരിട്ട് അപ്‌ഡേറ്റ് ചെയ്യാം അല്ലെങ്കിൽ ഐക്കൺ നീക്കം ചെയ്യാം."</string>
     <string name="dialog_update" msgid="2178028071796141234">"അപ്ഡേറ്റ് ചെയ്യുക"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"സ്വകാര്യം, ലോക്ക് ചെയ്തു."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ലോക്ക് ചെയ്യുക"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"പ്രൈവറ്റ് സ്‌പേസ് ട്രാൻസിഷനിംഗ്"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"ഇൻസ്റ്റാൾ ചെയ്യുക"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"സ്വകാര്യ സ്പേസിലേക്ക് ആപ്പുകൾ ഇൻസ്റ്റാൾ ചെയ്യുക"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ഓവർഫ്ലോ"</string>
 </resources>

@@ -140,6 +140,4 @@
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{# ആപ്പ് കൂടി കാണിക്കുക.}other{# ആപ്പുകൾ കൂടി കാണിക്കുക.}}"</string>
     <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# ഡെസ്‌ക്ടോപ്പ് ആപ്പ് കാണിക്കുക.}other{# ഡെസ്‌ക്ടോപ്പ് ആപ്പുകൾ കാണിക്കുക.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g>, <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
-    <string name="desktop_select_app_toast" msgid="2306057322833956910">"ആപ്പ് ഡെസ്ക്ടോപ്പിലേക്ക് ചേർക്കുന്നു"</string>
-    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"റദ്ദാക്കുക"</string>
 </resources>

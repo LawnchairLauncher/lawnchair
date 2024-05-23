@@ -135,7 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> instalatzen, <xliff:g id="PROGRESS">%2$s</xliff:g> osatuta"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> deskargatzen, <xliff:g id="PROGRESS">%2$s</xliff:g> osatuta"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> instalatzeko zain"</string>
-    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> artxibatuta dago. Deskargatzeko, sakatu hau."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> artxibatuta dago. Sakatu deskargatzeko eta leheneratzeko."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Aplikazioa eguneratu egin behar da"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Ikonoaren aplikazioa ez dago eguneratuta. Lasterbidea berriro gaitzeko, eskuz egunera dezakezu aplikazioa. Bestela, kendu ikonoa."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Eguneratu"</string>
@@ -190,8 +190,7 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Pribatua, blokeatuta."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Blokeatu"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Eremu pribaturako trantsizioa"</string>
-    <!-- no translation found for ps_add_button_label (8127988716897128773) -->
-    <skip />
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Instalatu"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalatu aplikazioak eremu pribatuan"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Luzapena"</string>
 </resources>
