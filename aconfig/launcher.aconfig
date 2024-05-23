@@ -284,10 +284,3 @@ flag {
     description: "Enables folders in all apps"
     bug: "341582436"
 }
-
-flag {
-    name: "enable_tiny_taskbar"
-    namespace: "launcher"
-    description: "Enables Taskbar on phones"
-    bug: "341784466"
-}
