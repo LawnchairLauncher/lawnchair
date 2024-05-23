@@ -162,8 +162,8 @@ public class NavigationModeSwitchRule implements TestRule {
             final Context targetContext = getInstrumentation().getTargetContext();
             final DisplayController.DisplayInfoChangeListener listener =
                     (context, info, flags) -> {
-                        if (LauncherInstrumentation.getNavigationModel(info.navigationMode.resValue)
-                                == expectedMode) {
+                        if (LauncherInstrumentation.getNavigationModel(
+                                info.getNavigationMode().resValue) == expectedMode) {
                             latch.countDown();
                         }
                     };

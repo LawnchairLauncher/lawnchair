@@ -148,7 +148,7 @@ public class SettingsChangeLogger implements
     @Override
     public void onDisplayInfoChanged(Context context, Info info, int flags) {
         if ((flags & CHANGE_NAVIGATION_MODE) != 0) {
-            mNavMode = info.navigationMode;
+            mNavMode = info.getNavigationMode();
             mStatsLogManager.logger().log(mNavMode.launcherEvent);
         }
     }

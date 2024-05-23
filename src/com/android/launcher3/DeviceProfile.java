@@ -2402,7 +2402,7 @@ public class DeviceProfile {
                 mTransposeLayoutWithOrientation = !mInfo.isTablet(mWindowBounds);
             }
             if (mIsGestureMode == null) {
-                mIsGestureMode = mInfo.navigationMode.hasGestures;
+                mIsGestureMode = mInfo.getNavigationMode().hasGestures;
             }
             if (mDotRendererCache == null) {
                 mDotRendererCache = new SparseArray<>();

@@ -1275,7 +1275,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
         if ((flags & CHANGE_NAVIGATION_MODE) != 0) {
             getDragLayer().recreateControllers();
             if (mActionsView != null) {
-                mActionsView.updateVerticalMargin(info.navigationMode);
+                mActionsView.updateVerticalMargin(info.getNavigationMode());
             }
         }
     }
