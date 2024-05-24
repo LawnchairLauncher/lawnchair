@@ -359,21 +359,6 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     }
 
     /**
-     * Gets Overview Actions specific to grouped tasks.
-     *
-     * @return The Overview group actions bar
-     */
-    @NonNull
-    public OverviewActions getOverviewGroupActions() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to get overview group actions")) {
-            verifyActiveContainer();
-            UiObject2 groupActions = mLauncher.waitForOverviewObject("group_action_buttons");
-            return new OverviewActions(groupActions, mLauncher);
-        }
-    }
-
-    /**
      * Returns if clear all button is visible.
      */
     public boolean isClearAllVisible() {
@@ -469,13 +454,13 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
             if (isActionsViewVisible()) {
                 if (task.isTaskSplit()) {
-                    mLauncher.waitForOverviewObject("group_action_buttons");
+                    mLauncher.waitForOverviewObject("action_save_app_pair");
                 } else {
                     mLauncher.waitForOverviewObject("action_buttons");
                 }
             } else {
                 mLauncher.waitUntilOverviewObjectGone("action_buttons");
-                mLauncher.waitUntilOverviewObjectGone("group_action_buttons");
+                mLauncher.waitUntilOverviewObjectGone("action_save_app_pair");
             }
         }
     }
