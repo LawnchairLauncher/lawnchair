@@ -21,11 +21,13 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import android.content.Context;
 import android.content.res.Resources;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
 import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.task.thumbnail.data.TaskThumbnailDataSource;
 import com.android.quickstep.util.TaskKeyByLastActiveTimeCache;
 import com.android.quickstep.util.TaskKeyCache;
 import com.android.quickstep.util.TaskKeyLruCache;
@@ -38,7 +40,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
-public class TaskThumbnailCache {
+public class TaskThumbnailCache implements TaskThumbnailDataSource {
 
     private final Executor mBgExecutor;
     private final TaskKeyCache<ThumbnailData> mCache;
@@ -148,8 +150,9 @@ public class TaskThumbnailCache {
      * @param callback The callback to receive the task after its data has been populated.
      * @return A cancelable handle to the request
      */
+    @Override
     public CancellableTask<ThumbnailData> updateThumbnailInBackground(
-            Task task, Consumer<ThumbnailData> callback) {
+            Task task, @NonNull Consumer<ThumbnailData> callback) {
         Preconditions.assertUIThread();
 
         boolean lowResolution = !mHighResLoadingState.isEnabled();

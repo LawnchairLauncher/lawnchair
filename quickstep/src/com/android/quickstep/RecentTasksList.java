@@ -31,6 +31,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.util.SparseBooleanArray;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.util.LooperExecutor;
@@ -44,6 +45,7 @@ import com.android.wm.shell.util.GroupedRecentTaskInfo;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -137,7 +139,7 @@ public class RecentTasksList {
      * @return The change id of the current task list
      */
     public synchronized int getTasks(boolean loadKeysOnly,
-            Consumer<ArrayList<GroupTask>> callback, Predicate<GroupTask> filter) {
+            @Nullable Consumer<List<GroupTask>> callback, Predicate<GroupTask> filter) {
         final int requestLoadId = mChangeId;
         if (mResultsUi.isValidForRequest(requestLoadId, loadKeysOnly)) {
             // The list is up to date, send the callback on the next frame,

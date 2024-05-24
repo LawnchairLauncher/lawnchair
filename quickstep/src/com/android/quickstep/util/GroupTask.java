@@ -23,6 +23,10 @@ import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A {@link Task} container that can contain one or two tasks, depending on if the two tasks
  * are represented as an app-pair in the recents task list.
@@ -59,6 +63,17 @@ public class GroupTask {
 
     public boolean hasMultipleTasks() {
         return task2 != null;
+    }
+
+    /**
+     * Returns a List of all the Tasks in this GroupTask
+     */
+    public List<Task> getTasks() {
+        if (task2 == null) {
+            return Collections.singletonList(task1);
+        } else {
+            return Arrays.asList(task1, task2);
+        }
     }
 
     /**
