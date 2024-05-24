@@ -17,7 +17,6 @@
 package com.android.launcher3.tapl;
 
 import androidx.annotation.NonNull;
-import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 
 /**
@@ -109,14 +108,6 @@ public class OverviewActions {
                     "clicked split")) {
                 return new SplitScreenSelect(mLauncher);
             }
-        }
-    }
-
-    /** Asserts that an item matching the given string is present in the overview actions. */
-    public void assertHasAction(String text) {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to check if the action [" + text + "] is present")) {
-            mLauncher.waitForObjectInContainer(mOverviewActions, By.text(text));
         }
     }
 }
