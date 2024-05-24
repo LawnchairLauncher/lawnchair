@@ -183,13 +183,13 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Отмяна на паузата"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Филтър"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Неуспешно: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"Лично пространство"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Частно пространство"</string>
     <string name="private_space_secondary_label" msgid="611902414159280263">"Заключване и скриване на частните приложения"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Лично"</string>
-    <string name="ps_container_settings" msgid="6059734123353320479">"Настройки за личното пространство"</string>
-    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Заключване/отключване на личното пространство"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"Настройки за частното пространство"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Заключване/отключване на частното пространство"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Заключване"</string>
-    <string name="ps_container_transition" msgid="8667331812048014412">"Преминаване към личното пространство"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Преминаване към частното пространство"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Инсталиране на приложения"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Инсталиране на приложения в частно пространство"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Препълване"</string>
