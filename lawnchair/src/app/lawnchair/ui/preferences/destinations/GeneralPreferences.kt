@@ -28,6 +28,7 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.FontPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -82,7 +83,10 @@ fun GeneralPreferences() {
         ?.label?.invoke()
         ?: stringResource(id = R.string.custom)
 
-    PreferenceLayout(label = stringResource(id = R.string.general_label)) {
+    PreferenceLayout(
+        backArrowVisible = !LocalIsExpandedScreen.current,
+        label = stringResource(id = R.string.general_label),
+    ) {
         PreferenceGroup {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),

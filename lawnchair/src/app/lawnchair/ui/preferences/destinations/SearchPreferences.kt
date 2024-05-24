@@ -20,6 +20,7 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearchPreference
 import app.lawnchair.ui.preferences.components.SearchSuggestionPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
@@ -46,7 +47,10 @@ fun SearchPreferences() {
     val showDrawerSearchBar = !prefs2.hideAppDrawerSearchBar.getAdapter()
     val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
 
-    PreferenceLayout(label = stringResource(id = R.string.drawer_search_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.drawer_search_label),
+        backArrowVisible = !LocalIsExpandedScreen.current,
+    ) {
         MainSwitchPreference(
             adapter = showDrawerSearchBar,
             label = stringResource(id = R.string.show_app_search_bar),

@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.SuggestionsPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
@@ -48,6 +49,7 @@ fun AppDrawerPreferences(
 
     PreferenceLayout(
         label = stringResource(id = R.string.app_drawer_label),
+        backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {

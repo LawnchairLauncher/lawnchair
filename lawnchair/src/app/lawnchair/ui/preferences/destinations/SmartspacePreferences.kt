@@ -35,6 +35,7 @@ import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.smartspace.model.Smartspacer
 import app.lawnchair.smartspace.provider.SmartspaceProvider
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
@@ -62,6 +63,7 @@ fun SmartspacePreferences(
 
     PreferenceLayout(
         label = stringResource(id = R.string.smartspace_widget),
+        backArrowVisible = !LocalIsExpandedScreen.current && !fromWidget,
         modifier = modifier,
     ) {
         if (fromWidget) {
@@ -79,7 +81,6 @@ fun SmartspacePreferences(
                             Smartspacer -> {
                                 { SmartspacerSettings() }
                             }
-
                             else -> null
                         },
                     )
