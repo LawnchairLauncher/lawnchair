@@ -91,7 +91,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
     static final String SUPPORT_ONE_HANDED_MODE = "ro.support_one_handed_mode";
 
     // TODO: Move to quickstep contract
-    public static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 3f;
+    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 3f;
     private static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 1.414f;
 
     private final Context mContext;
@@ -607,16 +607,6 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
      */
     public float getSquaredTouchSlop() {
         float touchSlop = getTouchSlop();
-        return touchSlop * touchSlop;
-    }
-
-    /**
-     * Returns the squared touch slop using the given base slop multiplier {@code slopMultiplier}
-     * and custom slop multiplier {@code customSlopMultiplier}.
-     */
-    public float getSquaredTouchSlop(float slopMultiplier, float customSlopMultiplier) {
-        float systemTouchSlop = ViewConfiguration.get(mContext).getScaledTouchSlop();
-        float touchSlop = customSlopMultiplier * slopMultiplier * systemTouchSlop;
         return touchSlop * touchSlop;
     }
 
