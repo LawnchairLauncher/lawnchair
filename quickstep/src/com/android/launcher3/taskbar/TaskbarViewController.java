@@ -510,12 +510,28 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     /** Updates which icons are marked as running given the Set of currently running packages. */
-    public void updateIconViewsRunningStates(Set<String> runningPackages) {
+    public void updateIconViewsRunningStates(Set<String> runningPackages,
+            Set<String> minimizedPackages) {
         for (View iconView : getIconViews()) {
             if (iconView instanceof BubbleTextView btv) {
-                btv.updateRunningState(runningPackages.contains(btv.getTargetPackageName()));
+                btv.updateRunningState(
+                        getRunningAppState(btv.getTargetPackageName(), runningPackages,
+                                minimizedPackages));
             }
         }
+    }
+
+    private BubbleTextView.RunningAppState getRunningAppState(
+            String packageName,
+            Set<String> runningPackages,
+            Set<String> minimizedPackages) {
+        if (minimizedPackages.contains(packageName)) {
+            return BubbleTextView.RunningAppState.MINIMIZED;
+        }
+        if (runningPackages.contains(packageName)) {
+            return BubbleTextView.RunningAppState.RUNNING;
+        }
+        return BubbleTextView.RunningAppState.NOT_RUNNING;
     }
 
     /**

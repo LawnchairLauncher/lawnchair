@@ -68,7 +68,7 @@ public class TaskbarModelCallbacks implements
     // Used to defer any UI updates during the SUW unstash animation.
     private boolean mDeferUpdatesForSUW;
     private Runnable mDeferredUpdates;
-    private DesktopVisibilityController.DesktopVisibilityListener mDesktopVisibilityListener =
+    private final DesktopVisibilityController.DesktopVisibilityListener mDesktopVisibilityListener =
             visible -> updateRunningApps();
 
     public TaskbarModelCallbacks(
@@ -235,20 +235,23 @@ public class TaskbarModelCallbacks implements
         hotseatItemInfos = mControllers.taskbarRecentAppsController
                 .updateHotseatItemInfos(hotseatItemInfos);
         Set<String> runningPackages = mControllers.taskbarRecentAppsController.getRunningApps();
+        Set<String> minimizedPackages = mControllers.taskbarRecentAppsController.getMinimizedApps();
 
         if (mDeferUpdatesForSUW) {
             ItemInfo[] finalHotseatItemInfos = hotseatItemInfos;
             mDeferredUpdates = () ->
-                    commitHotseatItemUpdates(finalHotseatItemInfos, runningPackages);
+                    commitHotseatItemUpdates(finalHotseatItemInfos, runningPackages,
+                            minimizedPackages);
         } else {
-            commitHotseatItemUpdates(hotseatItemInfos, runningPackages);
+            commitHotseatItemUpdates(hotseatItemInfos, runningPackages, minimizedPackages);
         }
     }
 
-    private void commitHotseatItemUpdates(
-            ItemInfo[] hotseatItemInfos, Set<String> runningPackages) {
+    private void commitHotseatItemUpdates(ItemInfo[] hotseatItemInfos, Set<String> runningPackages,
+            Set<String> minimizedPackages) {
         mContainer.updateHotseatItems(hotseatItemInfos);
-        mControllers.taskbarViewController.updateIconViewsRunningStates(runningPackages);
+        mControllers.taskbarViewController.updateIconViewsRunningStates(runningPackages,
+                minimizedPackages);
     }
 
     /**
