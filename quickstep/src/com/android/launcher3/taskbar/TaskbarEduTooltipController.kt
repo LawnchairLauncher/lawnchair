@@ -81,7 +81,11 @@ open class TaskbarEduTooltipController(context: Context) :
     protected val activityContext: TaskbarActivityContext = ActivityContext.lookupContext(context)
     open val shouldShowSearchEdu = false
     private val isTooltipEnabled: Boolean
-        get() = !Utilities.isRunningInTestHarness() && !activityContext.isPhoneMode
+        get() {
+            return !Utilities.isRunningInTestHarness() &&
+                !activityContext.isPhoneMode &&
+                !activityContext.isTinyTaskbar
+        }
     private val isOpen: Boolean
         get() = tooltip?.isOpen ?: false
     val isBeforeTooltipFeaturesStep: Boolean

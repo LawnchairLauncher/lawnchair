@@ -519,7 +519,7 @@ public class TaskbarManager {
         }
     }
 
-    private static boolean isTaskbarEnabled(DeviceProfile deviceProfile) {
+    private boolean isTaskbarEnabled(DeviceProfile deviceProfile) {
         return ENABLE_TASKBAR_NAVBAR_UNIFICATION || deviceProfile.isTaskbarPresent;
     }
 

@@ -31,7 +31,6 @@ import com.android.launcher3.logging.StatsLogManager.StatsLogger
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
-import com.android.launcher3.statemanager.StatefulActivity
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.quickstep.RecentsModel
@@ -121,7 +120,7 @@ class SplitSelectStateControllerTest {
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
-            argumentCaptor<Consumer<ArrayList<GroupTask>>> {
+            argumentCaptor<Consumer<List<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(nonMatchingComponent),
                         false /* findExactPairMatch */,
@@ -174,7 +173,7 @@ class SplitSelectStateControllerTest {
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
-            argumentCaptor<Consumer<ArrayList<GroupTask>>> {
+            argumentCaptor<Consumer<List<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(matchingComponent),
                         false /* findExactPairMatch */,
@@ -215,7 +214,7 @@ class SplitSelectStateControllerTest {
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
-            argumentCaptor<Consumer<ArrayList<GroupTask>>> {
+            argumentCaptor<Consumer<List<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(nonPrimaryUserComponent),
                         false /* findExactPairMatch */,
@@ -271,7 +270,7 @@ class SplitSelectStateControllerTest {
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
-            argumentCaptor<Consumer<ArrayList<GroupTask>>> {
+            argumentCaptor<Consumer<List<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(nonPrimaryUserComponent),
                         false /* findExactPairMatch */,
@@ -324,7 +323,7 @@ class SplitSelectStateControllerTest {
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
-            argumentCaptor<Consumer<ArrayList<GroupTask>>> {
+            argumentCaptor<Consumer<List<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(matchingComponent),
                         false /* findExactPairMatch */,
@@ -378,7 +377,7 @@ class SplitSelectStateControllerTest {
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
-            argumentCaptor<Consumer<ArrayList<GroupTask>>> {
+            argumentCaptor<Consumer<List<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(nonMatchingComponent, matchingComponent),
                         false /* findExactPairMatch */,
@@ -431,7 +430,7 @@ class SplitSelectStateControllerTest {
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
-            argumentCaptor<Consumer<ArrayList<GroupTask>>> {
+            argumentCaptor<Consumer<List<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(matchingComponent, matchingComponent),
                         false /* findExactPairMatch */,
@@ -497,7 +496,7 @@ class SplitSelectStateControllerTest {
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
-            argumentCaptor<Consumer<ArrayList<GroupTask>>> {
+            argumentCaptor<Consumer<List<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(matchingComponent, matchingComponent),
                         false /* findExactPairMatch */,
@@ -549,7 +548,7 @@ class SplitSelectStateControllerTest {
 
         // Capture callback from recentsModel#getTasks()
         val consumer =
-            argumentCaptor<Consumer<ArrayList<GroupTask>>> {
+            argumentCaptor<Consumer<List<GroupTask>>> {
                     splitSelectStateController.findLastActiveTasksAndRunCallback(
                         listOf(matchingComponent2, matchingComponent),
                         true /* findExactPairMatch */,

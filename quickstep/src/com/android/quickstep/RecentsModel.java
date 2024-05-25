@@ -33,6 +33,7 @@ import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.icons.IconProvider;
@@ -40,6 +41,7 @@ import com.android.launcher3.icons.IconProvider.IconChangeListener;
 import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SafeCloseable;
+import com.android.quickstep.recents.data.RecentTasksDataSource;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.TaskVisualsChangeListener;
 import com.android.systemui.shared.recents.model.Task;
@@ -60,8 +62,8 @@ import java.util.function.Predicate;
  * Singleton class to load and manage recents model.
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class RecentsModel implements IconChangeListener, TaskStackChangeListener,
-        TaskVisualsChangeListener, SafeCloseable {
+public class RecentsModel implements RecentTasksDataSource, IconChangeListener,
+        TaskStackChangeListener, TaskVisualsChangeListener, SafeCloseable {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
@@ -141,7 +143,8 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
      *                always called on the UI thread.
      * @return the request id associated with this call.
      */
-    public int getTasks(Consumer<ArrayList<GroupTask>> callback) {
+    @Override
+    public int getTasks(@Nullable Consumer<List<GroupTask>> callback) {
         return mTaskList.getTasks(false /* loadKeysOnly */, callback,
                 RecentsFilterState.DEFAULT_FILTER);
     }
@@ -155,7 +158,7 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
      *                callback.
      * @return the request id associated with this call.
      */
-    public int getTasks(Consumer<ArrayList<GroupTask>> callback, Predicate<GroupTask> filter) {
+    public int getTasks(@Nullable Consumer<List<GroupTask>> callback, Predicate<GroupTask> filter) {
         return mTaskList.getTasks(false /* loadKeysOnly */, callback, filter);
     }
 

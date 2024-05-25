@@ -148,7 +148,7 @@ public final class KeyboardQuickSwitchController implements
         });
     }
 
-    private void processLoadedTasks(ArrayList<GroupTask> tasks) {
+    private void processLoadedTasks(List<GroupTask> tasks) {
         // Only store MAX_TASK tasks, from most to least recent
         Collections.reverse(tasks);
         mTasks = tasks.stream()
@@ -157,7 +157,7 @@ public final class KeyboardQuickSwitchController implements
         mNumHiddenTasks = Math.max(0, tasks.size() - MAX_TASKS);
     }
 
-    private void processLoadedTasksOnDesktop(ArrayList<GroupTask> tasks) {
+    private void processLoadedTasksOnDesktop(List<GroupTask> tasks) {
         // Find the single desktop task that contains a grouping of desktop tasks
         DesktopTask desktopTask = findDesktopTask(tasks);
 
@@ -173,7 +173,7 @@ public final class KeyboardQuickSwitchController implements
     }
 
     @Nullable
-    private DesktopTask findDesktopTask(ArrayList<GroupTask> tasks) {
+    private DesktopTask findDesktopTask(List<GroupTask> tasks) {
         return (DesktopTask) tasks.stream()
                 .filter(t -> t instanceof DesktopTask)
                 .findFirst()

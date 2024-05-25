@@ -86,7 +86,8 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         val newHotseatItems =
             taskbarRunningAppsController.updateHotseatItemInfos(hotseatItems.toTypedArray())
 
-        assertThat(newHotseatItems.map { it?.targetPackage }).isEqualTo(hotseatPackages)
+        assertThat(newHotseatItems.map { it?.targetPackage })
+            .containsExactlyElementsIn(hotseatPackages)
     }
 
     @Test
@@ -119,7 +120,8 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
                 RUNNING_APP_PACKAGE_1,
                 RUNNING_APP_PACKAGE_2,
             )
-        assertThat(newHotseatItems.map { it?.targetPackage }).isEqualTo(expectedPackages)
+        assertThat(newHotseatItems.map { it?.targetPackage })
+            .containsExactlyElementsIn(expectedPackages)
     }
 
     @Test
@@ -144,7 +146,8 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
                 RUNNING_APP_PACKAGE_1,
                 RUNNING_APP_PACKAGE_2,
             )
-        assertThat(newHotseatItems.map { it?.targetPackage }).isEqualTo(expectedPackages)
+        assertThat(newHotseatItems.map { it?.targetPackage })
+            .containsExactlyElementsIn(expectedPackages)
     }
 
     @Test
@@ -155,7 +158,8 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
         taskbarRunningAppsController.updateRunningApps()
 
-        assertThat(taskbarRunningAppsController.runningApps).isEqualTo(emptySet<String>())
+        assertThat(taskbarRunningAppsController.runningApps).isEmpty()
+        assertThat(taskbarRunningAppsController.minimizedApps).isEmpty()
     }
 
     @Test
@@ -167,7 +171,28 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         taskbarRunningAppsController.updateRunningApps()
 
         assertThat(taskbarRunningAppsController.runningApps)
-            .isEqualTo(setOf(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2))
+            .containsExactly(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2)
+        assertThat(taskbarRunningAppsController.minimizedApps).isEmpty()
+    }
+
+    @Test
+    fun getMinimizedApps_inDesktopMode_returnsAllAppsRunningAndInvisibleAppsMinimized() {
+        setInDesktopMode(true)
+        val runningTasks =
+            ArrayList(
+                listOf(
+                    createDesktopTaskInfo(RUNNING_APP_PACKAGE_1) { isVisible = true },
+                    createDesktopTaskInfo(RUNNING_APP_PACKAGE_2) { isVisible = true },
+                    createDesktopTaskInfo(RUNNING_APP_PACKAGE_3) { isVisible = false },
+                )
+            )
+        whenever(mockRecentsModel.runningTasks).thenReturn(runningTasks)
+        taskbarRunningAppsController.updateRunningApps()
+
+        assertThat(taskbarRunningAppsController.runningApps)
+            .containsExactly(RUNNING_APP_PACKAGE_1, RUNNING_APP_PACKAGE_2, RUNNING_APP_PACKAGE_3)
+        assertThat(taskbarRunningAppsController.minimizedApps)
+            .containsExactly(RUNNING_APP_PACKAGE_3)
     }
 
     private fun createHotseatItemsFromPackageNames(packageNames: List<String>): List<ItemInfo> {
@@ -180,11 +205,15 @@ class DesktopTaskbarRunningAppsControllerTest : TaskbarBaseTestCase() {
         return ArrayList(packageNames.map { createDesktopTaskInfo(packageName = it) })
     }
 
-    private fun createDesktopTaskInfo(packageName: String): RunningTaskInfo {
+    private fun createDesktopTaskInfo(
+        packageName: String,
+        init: RunningTaskInfo.() -> Unit = { isVisible = true },
+    ): RunningTaskInfo {
         return RunningTaskInfo().apply {
             taskId = nextTaskId++
             configuration.windowConfiguration.windowingMode = WINDOWING_MODE_FREEFORM
             realActivity = ComponentName(packageName, "TestActivity")
+            init()
         }
     }
 
