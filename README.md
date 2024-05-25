@@ -6,48 +6,40 @@
 [![Telegram](https://img.shields.io/endpoint?url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Flccommunity)](https://t.me/lccommunity)
 [![Discord](https://img.shields.io/discord/803299970169700402?label=server&logo=discord)](https://discord.gg/3x8qNWxgGZ)
 
-<img src="https://lawnchair.app/images/lawnchair.webp" width="100" style="border-radius: 50%">
+<picture>
+    <!-- Avoid image being clickable with slight workaround --->
+    <!-- ❤️ Credit to Raine on the Lawnchair Discord --->
+    <source media="(prefers-color-scheme: dark)" srcset="docs/device-frame.png" width="250px">
+    <img alt="Google Pixel running Lawnchair Launcher with green wallpaper" src="docs/device-frame.png" width="250px">
+</picture>
+
 Lawnchair is a free, open-source home app for Android. Taking Launcher3 — Android’s default home app — as a starting point, it ports Pixel Launcher features and introduces rich options for customization.
 
-This branch houses the codebase of Lawnchair 14, currently in development and based on Launcher3 from Android 14. For Lawnchair 9 to 13, see the branches with the `9-` to `13-` prefixes, respectively.
+This branch houses the codebase of Lawnchair 14, which is currently in beta and is based on Launcher3 from Android 14. For Lawnchair 9 to 13, see the branches with the `9-` to `13-` prefixes, respectively.
 
-## Contribute code
+## Features
 
-Whether you’ve fixed a bug or introduced a new feature, we welcome pull requests! (If you’d like to make a larger change and check with us first, you can do so via [Lawnchair’s Telegram group chat](https://t.me/lawnchairci).) To help translate Lawnchair 14 instead, please see “[Translate](#translate).”
+-   Pixel Launcher-like UI with Material You design
+-   At a Glance widget with Smartspacer support
+-   QuickSwitch support
+-   Global Search support
+-   Icons, fonts, and colors customization
+-   And more!
 
-You can use Git to clone this repository:
+## Download
 
-```
-git clone --recursive https://github.com/LawnchairLauncher/lawnchair.git
-```
+See the [Releases](https://github.com/LawnchairLauncher/lawnchair/releases) section for the latest
+beta build. For development builds with new icons, use the nightly builds.
 
-To build the app, select the `lawnWithQuickstepDebug` build type. Should you face errors relating to the `iconloaderlib` and `searchuilib` projects, run `git submodule update --init --recursive`.
+## Contributing
 
-Here are a few contribution tips:
-
-- [The `lawnchair` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/lawnchair) houses Lawnchair’s own code, whereas [the `src` package](https://github.com/LawnchairLauncher/lawnchair/tree/14-dev/src) includes a clone of the Launcher3 codebase with modifications. Generally, place new files in the former, keeping changes to the latter to a minimum.
-
-- You can use either Java or, preferably, Kotlin.
-
-- Make sure your code is logical and well formatted. If using Kotlin, see [“Coding conventions” in the Kotlin documentation](https://kotlinlang.org/docs/coding-conventions.html).
-
-- Set `14-dev` as the base branch for pull requests.
-
-## Translate
-
-You can help translate Lawnchair 14 [on Crowdin](https://lawnchair.crowdin.com/lawnchair). Here are a few tips:
-
-- When using quotation marks, insert the symbols specific to the target language, as listed in [this table](https://en.wikipedia.org/wiki/Quotation_mark#Summary_table).
-
-- Lawnchair uses title case for some English UI text. Title case isn’t used in other languages; opt for sentence case instead.
-
-- Some English terminology may have no commonly used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of _bottom row_ for _dock_.
+Please visit the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
 
 ## Quick links
 
-- [News](https://t.me/lawnchairci)
-- [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
-- [Website](https://lawnchair.app)
-- [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
+-   [News](https://t.me/lawnchairci)
+-   [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
+-   [Website](https://lawnchair.app)
+-   [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
 
-You can view all our links [in the Lawnchair Wiki](https://github.com/LawnchairLauncher/lawnchair/wiki).
+You can view all our links in the [Lawnchair Wiki](https://github.com/LawnchairLauncher/lawnchair/wiki).

@@ -136,7 +136,7 @@ android {
     namespace "com.android.launcher3"
     defaultConfig {
         // Lawnchair Launcher 14.0 Beta 2
-        // Android 14, Minor 0, Lawnchair Stage 2 (Beta), Update No 2
+        // See CONTRIBUTING.md#versioning-scheme
         versionCode 14_00_02_02
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
