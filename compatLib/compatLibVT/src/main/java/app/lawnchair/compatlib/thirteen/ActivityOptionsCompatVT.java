@@ -3,7 +3,6 @@ package app.lawnchair.compatlib.thirteen;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 import android.view.RemoteAnimationAdapter;
 import android.window.RemoteTransition;
 import androidx.annotation.NonNull;
