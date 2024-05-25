@@ -9,8 +9,8 @@
 <picture>
     <!-- Avoid image being clickable with slight workaround --->
     <!-- ❤️ Credit to Raine on the Lawnchair Discord --->
-    <source media="(prefers-color-scheme: dark)" srcset="docs/device-frame.png" width="15%">
-    <img alt="Google Pixel running Lawnchair Launcher with green wallpaper" src="docs/device-frame.png" width="15%">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/device-frame.png" width="250px">
+    <img alt="Google Pixel running Lawnchair Launcher with green wallpaper" src="docs/device-frame.png" width="250px">
 </picture>
 
 Lawnchair is a free, open-source home app for Android. Taking Launcher3 — Android’s default home app — as a starting point, it ports Pixel Launcher features and introduces rich options for customization.
