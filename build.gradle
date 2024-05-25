@@ -3,15 +3,15 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.4.0"
-    id 'com.android.library' version "8.4.0" apply false
-    id 'com.android.test' version '8.4.0' apply false
+    id 'com.android.application' version "8.4.1"
+    id 'com.android.library' version "8.4.1" apply false
+    id 'com.android.test' version '8.4.1' apply false
     id 'androidx.baselineprofile' version '1.2.4'
-    id 'org.jetbrains.kotlin.android' version "2.0.0-RC3"
-    id 'org.jetbrains.kotlin.plugin.compose' version "2.0.0-RC3"
-    id 'org.jetbrains.kotlin.plugin.parcelize' version "2.0.0-RC3"
-    id 'org.jetbrains.kotlin.plugin.serialization' version "2.0.0-RC3"
-    id "com.google.devtools.ksp" version "2.0.0-RC3-1.0.20"
+    id 'org.jetbrains.kotlin.android' version "2.0.0"
+    id 'org.jetbrains.kotlin.plugin.compose' version "2.0.0"
+    id 'org.jetbrains.kotlin.plugin.parcelize' version "2.0.0"
+    id 'org.jetbrains.kotlin.plugin.serialization' version "2.0.0"
+    id "com.google.devtools.ksp" version "2.0.0-1.0.21"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.11.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
@@ -42,7 +42,7 @@ allprojects {
     }
 
     plugins.withId('com.google.protobuf') {
-        def protocVersion = '4.26.1'
+        def protocVersion = '4.27.0'
         protobuf {
             // Configure the protoc executable
             protoc {
@@ -414,7 +414,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.4.0'
 
     // Smartspacer
-    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.9') {
+    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.10') {
         exclude group: "com.github.skydoves", module: "balloon"
     }
 }
