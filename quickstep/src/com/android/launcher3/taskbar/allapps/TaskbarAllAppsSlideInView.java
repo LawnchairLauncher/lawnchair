@@ -17,6 +17,8 @@ package com.android.launcher3.taskbar.allapps;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.Flags.enablePredictiveBackGesture;
+import static com.android.launcher3.touch.AllAppsSwipeController.ALL_APPS_FADE_MANUAL;
+import static com.android.launcher3.touch.AllAppsSwipeController.SCRIM_FADE_MANUAL;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -32,6 +34,7 @@ import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.Nullable;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
@@ -40,6 +43,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsViewController.TaskbarAllAppsCallbacks;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AbstractSlideInView;
 
 /** Wrapper for taskbar all apps with slide-in behavior. */
@@ -113,8 +117,25 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     @Override
     protected void onOpenCloseAnimationPending(PendingAnimation animation) {
-        mAllAppsCallbacks.onAllAppsAnimationPending(
-                animation, mToTranslationShift == TRANSLATION_SHIFT_OPENED);
+        final boolean isOpening = mToTranslationShift == TRANSLATION_SHIFT_OPENED;
+
+        if (mActivityContext.getDeviceProfile().isPhone) {
+            final Interpolator allAppsFadeInterpolator =
+                    isOpening ? ALL_APPS_FADE_MANUAL : Interpolators.reverse(ALL_APPS_FADE_MANUAL);
+            animation.setViewAlpha(mAppsView, 1 - mToTranslationShift, allAppsFadeInterpolator);
+        }
+
+        mAllAppsCallbacks.onAllAppsAnimationPending(animation, isOpening);
+    }
+
+    @Override
+    protected Interpolator getScrimInterpolator() {
+        if (mActivityContext.getDeviceProfile().isTablet) {
+            return super.getScrimInterpolator();
+        }
+        return mToTranslationShift == TRANSLATION_SHIFT_OPENED
+                ? SCRIM_FADE_MANUAL
+                : Interpolators.reverse(SCRIM_FADE_MANUAL);
     }
 
     /** The apps container inside this view. */
@@ -154,6 +175,9 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     protected void onFinishInflate() {
         super.onFinishInflate();
         mAppsView = findViewById(R.id.apps_view);
+        if (mActivityContext.getDeviceProfile().isPhone) {
+            mAppsView.setAlpha(0);
+        }
         mContent = mAppsView;
 
         // Setup header protection for search bar, if enabled.
@@ -214,7 +238,9 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     @Override
     protected int getScrimColor(Context context) {
-        return context.getColor(R.color.widgets_picker_scrim);
+        return mActivityContext.getDeviceProfile().isPhone
+                ? Themes.getAttrColor(context, R.attr.allAppsScrimColor)
+                : context.getColor(R.color.widgets_picker_scrim);
     }
 
     @Override
