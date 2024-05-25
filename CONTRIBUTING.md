@@ -62,7 +62,7 @@ Here are some contribution tips to help you get started:
 
 #### Versioning scheme
 
-As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361), 
+As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361),
 Lawnchair’s version code is separated by four parts:
 
 <p align="center">
@@ -87,7 +87,7 @@ For example: Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_
 
 The third part of the version code indicates Lawnchair's stability status, while the fourth part indicates the version number.
 
-For example, Alpha 4's version code will be `XX_XX_01_04`. 
+For example, Alpha 4's version code will be `XX_XX_01_04`.
 
 See the table below detailing the release type:
 
@@ -97,4 +97,3 @@ See the table below detailing the release type:
 | Beta              | 02    |
 | Release Candidate | 03    |
 | Release           | 04    |
-

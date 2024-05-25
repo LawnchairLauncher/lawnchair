@@ -1,5 +1,5 @@
 # Lawnchair 14
-    
+
 [![Build debug APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml)
 [![Build release APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml)
 [![Crowdin](https://badges.crowdin.net/e/188ba69d884418987f0b7f1dd55e3a4e/localized.svg)](https://lawnchair.crowdin.com/lawnchair)
@@ -19,12 +19,12 @@ This branch houses the codebase of Lawnchair 14, which is currently in beta and 
 
 ## Features
 
-* Pixel Launcher-like UI with Material You design
-* At a Glance widget with Smartspacer support
-* QuickSwitch support
-* Global Search support
-* Icons, fonts, and colors customization
-* And more!
+-   Pixel Launcher-like UI with Material You design
+-   At a Glance widget with Smartspacer support
+-   QuickSwitch support
+-   Global Search support
+-   Icons, fonts, and colors customization
+-   And more!
 
 ## Download
 
