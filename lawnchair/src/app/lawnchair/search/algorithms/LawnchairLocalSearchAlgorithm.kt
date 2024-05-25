@@ -171,6 +171,8 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
         val suggestions = filterByType(localSearchResults, WEB_SUGGESTION)
         if (suggestions.isNotEmpty()) {
+            val suggestionsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
+            searchTargets.add(suggestionsHeader)
             searchTargets.addAll(suggestions.map { generateSearchTarget.getSuggestionTarget(it.resultData as String) })
         }
 

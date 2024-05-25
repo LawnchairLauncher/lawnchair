@@ -46,7 +46,7 @@
         <TextView
             android:id="@+id/title"
             style="@style/AllAppsSearchResult"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:gravity="start|center"
