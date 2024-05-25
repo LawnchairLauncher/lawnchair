@@ -20,7 +20,6 @@ public class ActivityOptionsCompatVT extends ActivityOptionsCompatVS {
             @Nullable RemoteAnimationAdapter remoteAnimationAdapter,
             @Nullable Object remoteTransition,
             @Nullable String debugName) {
-        Log.e(TAG, "makeRemoteAnimation: " + debugName);
         return ActivityOptions.makeRemoteAnimation(
                 remoteAnimationAdapter, (RemoteTransition) remoteTransition);
     }
