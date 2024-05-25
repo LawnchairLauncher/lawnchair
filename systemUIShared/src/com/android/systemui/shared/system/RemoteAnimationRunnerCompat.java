@@ -93,6 +93,8 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
         return new IRemoteTransition.Stub() {
             final ArrayMap<IBinder, Runnable> mFinishRunnables = new ArrayMap<>();
 
+            public void onTransitionConsumed(IBinder transition, boolean aborted) {}
+
             @Override
             public void startAnimation(IBinder token, TransitionInfo info,
                     SurfaceControl.Transaction t,

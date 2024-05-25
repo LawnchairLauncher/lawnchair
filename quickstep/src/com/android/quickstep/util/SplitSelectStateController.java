@@ -604,6 +604,8 @@ public class SplitSelectStateController {
         public void mergeAnimation(IBinder transition, TransitionInfo info,
                 SurfaceControl.Transaction t, IBinder mergeTarget,
                 IRemoteTransitionFinishedCallback finishedCallback) { }
+
+        public void onTransitionConsumed(IBinder transition, boolean aborted) {}
     }
 
     /**

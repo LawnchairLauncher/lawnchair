@@ -69,6 +69,8 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -288,8 +290,23 @@ public class RotationButtonController {
             // Ignore if we can't read the setting for the current user
             return;
         }
-        RotationPolicy.setRotationLockAtAngle(mContext, /* enabled= */ isLocked,
-                /* rotation= */ rotationSuggestion);
+        hookSetRotationLockAtAngle(mContext, isLocked, rotationSuggestion);
+    }
+
+    /**
+     * RotationPolicy @setRotationLockAtAngle Reflection
+     */
+    private void hookSetRotationLockAtAngle(Context mContext, boolean isLocked, int rotationSuggestion) {
+        try {
+            Class<?> rotationPolicyClass = Class.forName("com.android.internal.view.RotationPolicy");
+            Method setRotationLockAtAngleMethod = rotationPolicyClass.getDeclaredMethod("setRotationLockAtAngle", Context.class, boolean.class, int.class, String.class);
+            setRotationLockAtAngleMethod.setAccessible(true);
+            setRotationLockAtAngleMethod.invoke(null, mContext, isLocked, rotationSuggestion, "Lawnchair");
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
+                 InvocationTargetException e) {
+            RotationPolicy.setRotationLockAtAngle(mContext, /* enabled= */ isLocked,
+                    /* rotation= */ rotationSuggestion);
+        }
     }
 
     /**

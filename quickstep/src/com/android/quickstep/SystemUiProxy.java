@@ -1471,6 +1471,14 @@ public class SystemUiProxy implements ISystemUiProxy {
                         wallpapers, homeContentInsets, minimizedHomeBounds);
             }
 
+            // Android 14 QPR2
+            public void onAnimationStart(IRecentsAnimationController controller,
+                                         RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+                                         Rect homeContentInsets, Rect minimizedHomeBounds, Bundle bundle) {
+                listener.onAnimationStart(new RecentsAnimationControllerCompat(controller), apps,
+                        wallpapers, homeContentInsets, minimizedHomeBounds);
+            }
+
             @Override
             public void onAnimationCanceled(int[] taskIds, TaskSnapshot[] taskSnapshots) {
                 listener.onAnimationCanceled(
