@@ -1,9 +1,9 @@
-# Lawnchair Quickstep Compat Lib
+# Lawnchair Quickstep Compat Library
 
-This library, `compatLib` integrate with the Quickstep launcher on Android.
+The `compatLib` library helps integrate Lawnchair with QuickSwitch while ensuring backward-compatibility with older Android versions.
 
-Each version of the `compatLib`, denoted by a letter code (e.g., `compatLibVQ` for Android 10), 
-the version ensures that Lawnchair can be use as Quickstep feature like Recents provider.
+Each subdirectory of the `compatLib`, denoted by a letter (e.g., `compatLibVQ` for Android 10), 
+refers to the compatibility code for that specific Android version.
 
 | Library     | Android version |
 |-------------|-----------------|

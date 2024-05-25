@@ -19,23 +19,22 @@ it ports Pixel Launcher features and introduces rich options for customization.
 
 ## Features
 
-Here are some of the features you can expect from Lawnchair
-* Material You support for all Android devices;
-* Fluid animation with Recent provider (root);
-* At a Glance widget;
-* Hide applications from your home screen;
-* Google Feed integrations;
-* Icon pack support and much more!
+
+* Pixel Launcher-like UI with Material You design
+* At a Glance widget with Smartspacer support
+* QuickSwitch support
+* Global Search support
+* Icons, fonts, and colors customization
+* And more!
 
 ## Download
 
 See the [Releases](https://github.com/LawnchairLauncher/lawnchair/releases) section for the latest
-stable build. For development builds with new icons, use the nightly builds.
+beta build. For development builds with new icons, use the nightly builds.
 
 ## Contributing
 
-Please see the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) as it contains everything
-you'd possibly need to contribute to Lawnchair.
+Please visit the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
 
 ## Quick links
 
