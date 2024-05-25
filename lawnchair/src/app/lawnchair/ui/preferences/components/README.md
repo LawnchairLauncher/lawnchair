@@ -1,4 +1,5 @@
-# About the `components` directory
+# About
+
 The `components` directory should be organized into the following:
 
 * For components for a specific UI that require many files, add it in a subdirectory. Example: `colorpreference`
