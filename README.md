@@ -1,4 +1,4 @@
-# Lawnchair
+# Lawnchair 14
     
 [![Build debug APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/ci.yml)
 [![Build release APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/release_update.yml)
@@ -13,12 +13,11 @@
     <img alt="Google Pixel running Lawnchair Launcher with green wallpaper" src="docs/device-frame.png" width="15%">
 </picture>
 
-**Lawnchair** is a free, open-source home app for Android. 
-Taking Launcher3 — Android’s default home app — as a starting point, 
-it ports Pixel Launcher features and introduces rich options for customization.
+Lawnchair is a free, open-source home app for Android. Taking Launcher3 — Android’s default home app — as a starting point, it ports Pixel Launcher features and introduces rich options for customization.
+
+This branch houses the codebase of Lawnchair 14, which is currently in beta and is based on Launcher3 from Android 14. For Lawnchair 9 to 13, see the branches with the `9-` to `13-` prefixes, respectively.
 
 ## Features
-
 
 * Pixel Launcher-like UI with Material You design
 * At a Glance widget with Smartspacer support

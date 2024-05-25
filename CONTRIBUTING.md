@@ -7,12 +7,6 @@
 </picture>
 
 First and foremost, welcome to the **Lawnchair** Contributing Guidelines!
-This document will contain everything you'll need to contribute to the **Lawnchair** project.
-
-## 👋 Before you start!
-
-We would like you to be familiar with the tools we are using.
-The tool(s) you will be using depend on the type of contribution you are going to make.
 
 ### 💫 Bug reports & feature requests
 
@@ -39,8 +33,7 @@ For translation, visit [Lawnchair on Crowdin](https://lawnchair.crowdin.com) and
 > For Lawnchair 9 to 13, see the branches with the `9-` to `13-` prefixes respectively.
 
 For code, it's highly recommended that you use [Android Studio](https://developer.android.com/studio),
-know [Java](https://www.java.com) or preferably [Kotlin](https://kotlinlang.org/), and [Git](https://git-scm.com/)
-which is a powerful source management control tool for collaborating with multiple programmers.
+know [Java](https://www.java.com) or preferably [Kotlin](https://kotlinlang.org/), and [Git](https://git-scm.com/).
 
 > [!IMPORTANT]
 > You can use Git to clone the repository; ensure that you include the project’s submodules using the `recursive` flag:
