@@ -431,14 +431,14 @@
     <string name="system_settings">Ajustes del sistema</string>
     <string name="action_unlock">Desbloquear</string>
     <string name="action_lock">Bloquear</string>
-    <string name="allapps_twoline_label">Use Multiple Lines</string>
-    <string name="hidden_apps_show_always">Always</string>
-    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
-    <string name="hidden_apps_show_never">Never</string>
-    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="allapps_twoline_label">Usar múltiples líneas</string>
+    <string name="hidden_apps_show_always">Siempre</string>
+    <string name="hidden_apps_show_name_typed">Si el nombre completo está escrito</string>
+    <string name="hidden_apps_show_never">Nunca</string>
+    <string name="show_hidden_apps_in_search_results">Mostrar aplicaciones ocultas en los resultados de la búsqueda</string>
     <string name="search_algorithm_app_search">Búsqueda de Aplicaciones</string>
-    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
-    <string name="app_search_algorithm">Search Algorithm</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="search_algorithm_global_search_on_device">Búsqueda global (en dispositivo)</string>
+    <string name="search_algorithm_global_search_via_asi">Búsqueda global (vía ASI)</string>
+    <string name="app_search_algorithm">Algoritmo de búsqueda</string>
+    <string name="all_apps_search_result_calculator">Calculadora</string>
 </resources>
