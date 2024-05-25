@@ -18,6 +18,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.verifyZeroInteractions
 import org.mockito.kotlin.whenever
 
@@ -79,7 +80,7 @@ class RecentsAnimationDeviceStateTest {
 
     @Test
     fun onDisplayInfoChanged_noButton_registerExclusionListener() {
-        whenever(windowManagerProxy.getNavigationMode(context)).thenReturn(NavigationMode.NO_BUTTON)
+        doReturn(NavigationMode.NO_BUTTON).whenever(info).getNavigationMode()
 
         underTest.onDisplayInfoChanged(context, info, CHANGE_ROTATION or CHANGE_NAVIGATION_MODE)
 
