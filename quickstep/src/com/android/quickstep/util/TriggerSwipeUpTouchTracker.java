@@ -99,6 +99,7 @@ public class TriggerSwipeUpTouchTracker {
                         if (mDisableHorizontalSwipe
                                 && Math.abs(displacementX) > Math.abs(displacementY)) {
                             // Horizontal gesture is not allowed in this region
+                            mOnSwipeUp.onSwipeUpCancelled();
                             endTouchTracking();
                             break;
                         }
@@ -111,6 +112,7 @@ public class TriggerSwipeUpTouchTracker {
             }
 
             case ACTION_CANCEL:
+                mOnSwipeUp.onSwipeUpCancelled();
                 endTouchTracking();
                 break;
 

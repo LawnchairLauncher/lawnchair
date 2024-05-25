@@ -170,7 +170,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
      * Returns the current navigation mode
      */
     public static NavigationMode getNavigationMode(Context context) {
-        return INSTANCE.get(context).getInfo().navigationMode;
+        return INSTANCE.get(context).getInfo().getNavigationMode();
     }
 
     /**
@@ -302,7 +302,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         Info newInfo = new Info(displayInfoContext, wmProxy, oldInfo.mPerDisplayBounds);
 
         if (newInfo.densityDpi != oldInfo.densityDpi || newInfo.fontScale != oldInfo.fontScale
-                || newInfo.navigationMode != oldInfo.navigationMode) {
+                || newInfo.getNavigationMode() != oldInfo.getNavigationMode()) {
             // Cache may not be valid anymore, recreate without cache
             newInfo = new Info(displayInfoContext, wmProxy,
                     wmProxy.estimateInternalDisplayBounds(displayInfoContext));
@@ -318,7 +318,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         if (newInfo.densityDpi != oldInfo.densityDpi || newInfo.fontScale != oldInfo.fontScale) {
             change |= CHANGE_DENSITY;
         }
-        if (newInfo.navigationMode != oldInfo.navigationMode) {
+        if (newInfo.getNavigationMode() != oldInfo.getNavigationMode()) {
             change |= CHANGE_NAVIGATION_MODE;
         }
         if (!newInfo.supportedBounds.equals(oldInfo.supportedBounds)
@@ -369,7 +369,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         // Configuration property
         public final float fontScale;
         private final int densityDpi;
-        public final NavigationMode navigationMode;
+        private final NavigationMode navigationMode;
         private final PortraitSize mScreenSizeDp;
 
         // WindowBounds
@@ -553,7 +553,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         pw.println("  rotation=" + info.rotation);
         pw.println("  fontScale=" + info.fontScale);
         pw.println("  densityDpi=" + info.densityDpi);
-        pw.println("  navigationMode=" + info.navigationMode.name());
+        pw.println("  navigationMode=" + info.getNavigationMode().name());
         pw.println("  isTaskbarPinned=" + info.mIsTaskbarPinned);
         pw.println("  isTaskbarPinnedInDesktopMode=" + info.mIsTaskbarPinnedInDesktopMode);
         pw.println("  isInDesktopMode=" + info.mIsInDesktopMode);

@@ -157,7 +157,7 @@ public class RotationTouchHelper implements DisplayInfoChangeListener, SafeClose
         // Register for navigation mode changes
         mDisplayController.addChangeListener(this);
         DisplayController.Info info = mDisplayController.getInfo();
-        onDisplayInfoChangedInternal(info, CHANGE_ALL, info.navigationMode.hasGestures);
+        onDisplayInfoChangedInternal(info, CHANGE_ALL, info.getNavigationMode().hasGestures);
         runOnDestroy(() -> mDisplayController.removeChangeListener(this));
 
         mOrientationListener = new OrientationEventListener(mContext) {
@@ -291,7 +291,7 @@ public class RotationTouchHelper implements DisplayInfoChangeListener, SafeClose
         }
 
         if ((flags & CHANGE_NAVIGATION_MODE) != 0) {
-            NavigationMode newMode = info.navigationMode;
+            NavigationMode newMode = info.getNavigationMode();
             mOrientationTouchTransformer.setNavigationMode(newMode, mDisplayController.getInfo(),
                     mContext.getResources());
 
