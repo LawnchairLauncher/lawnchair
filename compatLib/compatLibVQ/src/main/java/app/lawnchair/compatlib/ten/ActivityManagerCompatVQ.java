@@ -72,6 +72,9 @@ public class ActivityManagerCompatVQ implements ActivityManagerCompat {
                         public void onAnimationCanceled(boolean deferredWithScreenshot) {
                             runnerCompat.onAnimationCanceled(deferredWithScreenshot);
                         }
+
+                        // Samsung OneUi
+                        public void reportAllDrawn() {}
                     };
         }
         try {
