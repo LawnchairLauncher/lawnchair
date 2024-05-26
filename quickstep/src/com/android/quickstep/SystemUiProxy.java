@@ -1489,8 +1489,6 @@ public class SystemUiProxy implements ISystemUiProxy {
                     RemoteAnimationTarget[] wallpapers,
                     Rect homeContentInsets,
                     Rect minimizedHomeBounds) {
-                listener.onAnimationStart(new RecentsAnimationControllerCompat(controller), apps,
-                        wallpapers, homeContentInsets, minimizedHomeBounds);
             }
 
             @Override
