@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Ustaw Lawnchair jako domyślny launcher, aby uzyskać dostęp do skrótów i więcej.</string>
+    <string name="set_default_launcher_tip">Użyj Lawnchair jako domyślnegoekranu głównego by uzyskać dostęp do skrótów i innych.</string>
     <string name="settings">Ustawienia</string>
     <string name="general_label">Ogólne</string>
     <string name="general_description">Plakietki z powiadomieniami, paczka ikon, kolory</string>
@@ -433,14 +433,14 @@
     <string name="system_settings">Ustawienia systemowe</string>
     <string name="action_unlock">Odblokuj</string>
     <string name="action_lock">Zablokuj</string>
-    <string name="allapps_twoline_label">Use Multiple Lines</string>
-    <string name="hidden_apps_show_always">Always</string>
-    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
-    <string name="hidden_apps_show_never">Never</string>
-    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="allapps_twoline_label">Zastosuj grubszą kreskę dla etykiet</string>
+    <string name="hidden_apps_show_always">Pokaż ukryte aplikacje</string>
+    <string name="hidden_apps_show_name_typed">Dla pełnej nazwy</string>
+    <string name="hidden_apps_show_never">Nigdy </string>
+    <string name="show_hidden_apps_in_search_results">Pokazuj ukryte aplikacje w wynikach wyszukiwania</string>
     <string name="search_algorithm_app_search">Wyszukiwanie aplikacji</string>
-    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
-    <string name="app_search_algorithm">Search Algorithm</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="search_algorithm_global_search_on_device">Wyszukiwanie Globalne (urządzenie)</string>
+    <string name="search_algorithm_global_search_via_asi">Wyszukiwanie Globalne (ASI)</string>
+    <string name="app_search_algorithm">Algorytm Wyszukiwania</string>
+    <string name="all_apps_search_result_calculator">Kalkulator</string>
 </resources>
