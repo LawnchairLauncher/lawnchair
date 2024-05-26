@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
+    <string name="set_default_launcher_tip">Stel Lawnchair in als uw standaard launcher voor toegang tot snelkoppelingen en meer.</string>
     <string name="settings">Instellingen</string>
     <string name="general_label">Algemeen</string>
     <string name="general_description">Kleuren, Icoon Pakket, Notificatie stippen</string>
@@ -28,8 +28,8 @@
     <string name="dock_description">Zoekbalk, iconen aantal</string>
     <string name="app_drawer_label">App-Overzicht</string>
     <string name="app_drawer_description">Verborgen apps, kolom aantal, iconen</string>
-    <string name="drawer_search_label">Drawer Search</string>
-    <string name="drawer_search_description">Web Suggestions, Global Search</string>
+    <string name="drawer_search_label">App-overzicht Zoeken</string>
+    <string name="drawer_search_description">Web Suggesties, Globaal Zoeken</string>
     <string name="folders_label">Mappen</string>
     <string name="folders_description">Aantal rijen en kolommen</string>
     <string name="gestures_label">Gebaren</string>
@@ -43,15 +43,15 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Lettertype aanpassen</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
+    <string name="font_picker_description">Sommige tekst blijft ongewijzigd</string>
     <string name="smartspace_calendar_label">At a Glance Kalender aanpassingen</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
+    <string name="smartspace_calendar_description">Sta toe datum te tonen in niet-Gregoriaanse kalendersystemen</string>
+    <string name="workspace_increase_max_grid_size_label">Verhoogde Maximale Startscherm Grid Grootte</string>
+    <string name="workspace_increase_max_grid_size_description">Verhoog het maximale toegestane startscherm-raster van 10 × 10 tot 20 × 20</string>
     <string name="always_reload_icons_label">Altijd iconen vernieuwen</string>
     <string name="always_reload_icons_description">Vermijd het gebruik van gecachte iconen van icoonpakketten</string>
     <string name="recents_lock_unlock">Vergrendelen/Ontgrendelen</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
+    <string name="recents_lock_unlock_description">Voorkom sluiten van geselecteerde app bij \"Alles Wissen\"</string>
     <!-- Relating to label/icon size -->
     <string name="icons">Iconen</string>
     <string name="icon_size">Icoon grootte</string>
@@ -59,13 +59,13 @@
     <string name="label_size">Label grootte</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Startscherm rotatie</string>
-    <string name="home_screen_rotation_description">When device is rotated</string>
+    <string name="home_screen_rotation_description">Wanneer het apparaat gedraaid is</string>
     <string name="font_label">Lettertype (Experimenteel)</string>
     <string name="fontWorkspace">Algemeen</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (Medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (Medium)</string>
+    <string name="fontHeading">Koppen</string>
+    <string name="fontHeadingMedium">Koppen (Middelgroot)</string>
+    <string name="fontBody">Berichttekst</string>
+    <string name="fontBodyMedium">Berichttekst (Middelgroot)</string>
     <string name="icon_style">Icoon stijl</string>
     <string name="transparent_background_icons">Transparante gethematiseerde iconen</string>
     <string name="transparent_background_icons_description">Gebruik transparante achtergrond bij gethematiseerde iconen</string>
@@ -84,7 +84,7 @@
     <string name="notification_dots_color_contrast_warning_sometimes">Waarschuwing: Meldings-stip &amp; Teller kleuren zijn mogelijk niet altijd voldoende in contrast met elkaar</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Notificatie Toegang Nodig</string>
-    <string name="missing_notification_access_description">Notification access needed</string>
+    <string name="missing_notification_access_description">Notificatie toegang vereist</string>
     <string name="msg_missing_notification_access">Om meldingsstipjes te gebruiken, geef <xliff:g id="name" example="My App">%1$s</xliff:g> toegang tot meldingen.</string>
     <string name="title_change_settings">Wijzig Instellingen</string>
     <string name="colors">Kleuren</string>
@@ -119,7 +119,7 @@
     <string name="themed_icons_off_label">Uitgeschakeld</string>
     <string name="themed_icons_home_label">Startscherm</string>
     <string name="themed_icons_home_and_drawer_label">Startscherm &amp; App-overzicht</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="lawnicons_not_installed_description">Geen ondersteunde pictogrampakketten</string>
     <!-- IconPickerPreference -->
     <string name="icon_shape_system">Systeem</string>
     <string name="icon_shape_circle">Cirkel</string>
@@ -136,8 +136,8 @@
     <string name="icon_shape_teardrop">Teardrop</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">Lettertypen toevoegen</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF lettertypen worden ondersteund</string>
+    <string name="pref_fonts_missing_font">Lettertype niet gevonden</string>
     <string name="font_variant_italic">Cursief</string>
     <string name="font_weight_thin">Dun</string>
     <string name="font_weight_extra_light">Extra Licht</string>
@@ -172,25 +172,25 @@
     <!-- HomeScreenPreferences -->
     <string name="auto_add_shortcuts_label">Voeg nieuwe apps toe aan startscherm</string>
     <string name="minus_one_enable">Toon feed</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
+    <string name="minus_one_unavailable">Geen feed apps geïnstalleerd</string>
     <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed Aanbieder</string>
     <string name="feed_default">Standaard</string>
     <string name="wallpaper">Achtergrond</string>
     <string name="wallpaper_scrolling_label">Scrollende achtergrond</string>
     <string name="wallpaper_depth_effect_label">Achtergrond Diepte Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher</string>
+    <string name="wallpaper_depth_effect_description">Zoom de achtergrond in en uit bij de overgang tussen de verschillende schermen</string>
     <string name="show_sys_ui_scrim">Schaduw bovenzijde</string>
     <string name="layout">Lay-out</string>
     <string name="home_screen_grid">Startscherm raster</string>
     <string name="home_screen_lock">Vergrendel startscherm</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
+    <string name="home_screen_lock_description">Voorkom wijzigingen van de startscherm lay-out</string>
     <string name="home_screen_unlock">Startscherm ontgrendelen</string>
-    <string name="home_screen_locked">Home Screen is locked</string>
-    <string name="show_dot_pagination_label">Use Dot Pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use New Popup Style</string>
-    <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
+    <string name="home_screen_locked">Startscherm is vergrendeld</string>
+    <string name="show_dot_pagination_label">Gebruik punt-paginering</string>
+    <string name="show_dot_pagination_description">Gebruik punten in plaats van lijnen om het paginanummer te tonen</string>
+    <string name="show_material_u_popup_label">Gebruik nieuwe popup stijl</string>
+    <string name="show_material_u_popup_description">Gebruik materiaal van uw stuiterende en enigszins geconsolideerde popupstijl</string>
     <string name="popup_menu">Pop-up Menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Toon Vergrendelingsknop</string>
     <string name="show_system_settings_entry">Toon Systeeminstellingenknop</string>
@@ -203,10 +203,10 @@
     <string name="color_dark">Donker</string>
     <string name="force_rounded_widgets">Afgeronde Hoeken</string>
     <string name="allow_widget_overlap">Overlap toestaan</string>
-    <string name="force_widget_resize_label">Enforce Widget Resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove Size Constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <string name="force_widget_resize_label">Forceer formaat wijzigen van de widget</string>
+    <string name="force_widget_resize_description">Aanpassen van de grootte toestaan van widgets die beperkt zijn tot een specifieke grootte</string>
+    <string name="widget_unlimited_size_label">Verwijder beperkingen voor afmetingen</string>
+    <string name="widget_unlimited_size_description">Verwijder de minimale en maximale grootte beperkingen van widgets</string>
     <!-- HomeScreenGridPreferences -->
     <string name="columns">Kolommen</string>
     <string name="rows">Rijen</string>

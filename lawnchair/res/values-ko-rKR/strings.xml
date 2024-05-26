@@ -430,14 +430,14 @@
     <string name="system_settings">시스템 설정</string>
     <string name="action_unlock">잠금 해제</string>
     <string name="action_lock">잠금</string>
-    <string name="allapps_twoline_label">Use Multiple Lines</string>
-    <string name="hidden_apps_show_always">Always</string>
-    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
+    <string name="allapps_twoline_label">여러 줄 사용</string>
+    <string name="hidden_apps_show_always">항상</string>
+    <string name="hidden_apps_show_name_typed">전체 이름을 입력한 경우</string>
     <string name="hidden_apps_show_never">Never</string>
-    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="show_hidden_apps_in_search_results">검색 결과에 숨겨진 앱 표시</string>
     <string name="search_algorithm_app_search">앱 검색</string>
-    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
+    <string name="search_algorithm_global_search_on_device">글로벌 검색(기기 내)</string>
     <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
-    <string name="app_search_algorithm">Search Algorithm</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="app_search_algorithm">검색 알고리듬</string>
+    <string name="all_apps_search_result_calculator">계산기</string>
 </resources>
