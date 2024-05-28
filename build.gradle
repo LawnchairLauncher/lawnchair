@@ -411,7 +411,7 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
-    implementation 'com.airbnb.android:lottie:6.4.0'
+    implementation 'com.airbnb.android:lottie:6.4.1'
 
     // Smartspacer
     implementation('com.kieronquinn.smartspacer:sdk-client:1.0.10') {
