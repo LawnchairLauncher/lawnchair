@@ -30,6 +30,7 @@ import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.quickstep.SystemUiProxy
 import com.android.quickstep.TaskViewUtils
 import com.android.quickstep.views.DesktopTaskView
+import com.android.wm.shell.common.desktopmode.DesktopModeTransitionSource
 import java.util.function.Consumer
 
 /** Manage recents related operations with desktop tasks */
@@ -57,8 +58,8 @@ class DesktopRecentsTransitionController(
     }
 
     /** Launch desktop tasks from recents view */
-    fun moveToDesktop(taskId: Int) {
-        systemUiProxy.moveToDesktop(taskId)
+    fun moveToDesktop(taskId: Int, transitionSource: DesktopModeTransitionSource) {
+        systemUiProxy.moveToDesktop(taskId, transitionSource)
     }
 
     private class RemoteDesktopLaunchTransitionRunner(
