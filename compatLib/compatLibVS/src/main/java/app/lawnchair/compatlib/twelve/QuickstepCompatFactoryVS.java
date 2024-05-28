@@ -30,7 +30,11 @@ public class QuickstepCompatFactoryVS extends QuickstepCompatFactoryVR {
     @NonNull
     @Override
     public RemoteTransitionCompat getRemoteTransitionCompat() {
-        return this::createRemoteTransition;
+        try {
+            return this::createRemoteTransition;
+        } catch (Throwable t) {
+            return super.getRemoteTransitionCompat();
+        }
     }
 
     // TODO remove this as it causing glitches on first launch opening/closing app
@@ -40,7 +44,7 @@ public class QuickstepCompatFactoryVS extends QuickstepCompatFactoryVR {
             Class<?> remoteTransitionClass = Class.forName("android.window.RemoteTransition");
             Constructor<?> constructor =
                     remoteTransitionClass.getConstructor(
-                            IRemoteTransition.class, IApplicationThread.class, String.class);
+                            IRemoteTransition.class, IApplicationThread.class);
             return (RemoteTransition) constructor.newInstance(remoteTransition, appThread);
         } catch (ClassNotFoundException
                 | IllegalAccessException
