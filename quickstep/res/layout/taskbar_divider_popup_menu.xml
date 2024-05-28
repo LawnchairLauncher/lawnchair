@@ -51,7 +51,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/taskbar_pinning_switch"
             android:background="@null"
-            android:clickable="false"
             android:gravity="start|center_vertical"
             android:textAlignment="viewStart"
             android:paddingStart="12dp"
