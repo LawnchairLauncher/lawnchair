@@ -267,13 +267,15 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 PrivateProfileManager privateProfileManager = mApps.getPrivateProfileManager();
                 if (privateProfileManager != null) {
                     // Set the alpha of the private space icon to 0 upon expanding the header so the
-                    // alpha can animate -> 1.
+                    // alpha can animate -> 1. This should only be in effect when doing a
+                    // transitioning between Locked/Unlocked state.
                     boolean isPrivateSpaceItem =
                             privateProfileManager.isPrivateSpaceItem(adapterItem);
                     if (icon.getAlpha() == 0 || icon.getAlpha() == 1) {
                         icon.setAlpha(isPrivateSpaceItem
-                                && (privateProfileManager.getAnimationScrolling() ||
-                                    privateProfileManager.getAnimate())
+                                && privateProfileManager.isStateTransitioning()
+                                && (privateProfileManager.isScrolling() ||
+                                    privateProfileManager.getReadyToAnimate())
                                 && privateProfileManager.getCurrentState() == STATE_ENABLED
                                 ? 0 : 1);
                     }
