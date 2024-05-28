@@ -183,13 +183,13 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Ljúka hléi"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Sía"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Mistókst: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"Einkarými"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Leynirými"</string>
     <string name="private_space_secondary_label" msgid="611902414159280263">"Haltu einkaforritum læstum og földum"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Lokað"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Stillingar einkarýmis"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Læsa leynirými/taka leynirými úr lás"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Læsa"</string>
-    <string name="ps_container_transition" msgid="8667331812048014412">"Einkarými að breytast"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Leynirými að breytast"</string>
     <string name="ps_add_button_label" msgid="8611055839242385935">"Setja upp forrit"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Setja upp forrit í leynirými"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Yfirflæði"</string>
