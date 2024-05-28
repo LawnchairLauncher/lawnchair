@@ -84,6 +84,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"நிறுவல் நீக்கு"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ஆப்ஸ் தகவல்"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"தனிப்பட்டதில் நிறுவு"</string>
+    <!-- no translation found for uninstall_private_system_shortcut_label (8423460530441627982) -->
+    <skip />
     <string name="install_drop_target_label" msgid="2539096853673231757">"நிறுவு"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"பரிந்துரைக்காதே"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"கணிக்கப்பட்ட ஆப்ஸைப் பின் செய்தல்"</string>

@@ -84,6 +84,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"제거"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"앱 정보"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"비공개 스페이스에 설치"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"앱 제거"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"설치"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"앱 제안 받지 않음"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"예상 앱 고정"</string>
