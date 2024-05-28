@@ -84,6 +84,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstal·la"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Informació de l\'aplicació"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Instal·la en privat"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"Desinstal·la l\'aplicació"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instal·la"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"No suggereixis l\'aplicació"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Fixa la predicció"</string>

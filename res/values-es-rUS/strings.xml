@@ -58,7 +58,7 @@
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Borra el texto del cuadro de búsqueda"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"Los widgets y accesos directos no están disponibles"</string>
     <string name="no_search_results" msgid="3787956167293097509">"No se encontraron widgets ni accesos directos"</string>
-    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personales"</string>
+    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personal"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Trabajo"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversaciones"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Tomar notas"</string>
@@ -84,6 +84,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstalar"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Información de app"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Instalar en privado"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"Desinstalar app"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instalar"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"No sugerir app"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Fijar predicción"</string>
@@ -167,8 +168,8 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Accesos directos"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Descartar"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Cerrar"</string>
-    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personales"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"De trabajo"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabajo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabajo"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Las apps de trabajo tienen una insignia y el administrador de TI las puede ver"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entendido"</string>
