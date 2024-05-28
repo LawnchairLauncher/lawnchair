@@ -711,7 +711,7 @@ public final class LauncherInstrumentation {
             final LogEventChecker eventChecker = mEventChecker;
             mEventChecker = null;
             if (checkEvents) {
-                final String eventMismatch = eventChecker.verify(0, false);
+                final String eventMismatch = eventChecker.verify(0);
                 if (eventMismatch != null) {
                     message = message + ";\n" + eventMismatch;
                 }
@@ -2408,7 +2408,7 @@ public final class LauncherInstrumentation {
             if (mEventChecker != null) {
                 mEventChecker = null;
                 if (mCheckEventsForSuccessfulGestures) {
-                    final String message = eventChecker.verify(WAIT_TIME_MS, true);
+                    final String message = eventChecker.verify(WAIT_TIME_MS);
                     if (message != null) {
                         dumpDiagnostics(message);
                         checkForAnomaly();
