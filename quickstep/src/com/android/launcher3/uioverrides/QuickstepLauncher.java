@@ -756,6 +756,9 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
 
     @Override
     public boolean isSplitSelectionActive() {
+        if (mSplitSelectStateController == null) {
+            return false;
+        }
         return mSplitSelectStateController.isSplitSelectActive();
     }
 
