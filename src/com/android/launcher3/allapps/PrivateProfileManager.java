@@ -738,7 +738,7 @@ public class PrivateProfileManager extends UserProfileManager {
 
     /** Fades out the private space container. */
     private ValueAnimator translateFloatingMaskView(boolean animateIn) {
-        if (!Flags.privateSpaceFloatingMaskView() || mFloatingMaskView == null) {
+        if (!Flags.privateSpaceAddFloatingMaskView() || mFloatingMaskView == null) {
             return new ValueAnimator();
         }
         // Translate base on the height amount. Translates out on expand and in on collapse.
@@ -849,7 +849,7 @@ public class PrivateProfileManager extends UserProfileManager {
     }
 
     private void attachFloatingMaskView(boolean expand) {
-        if (!Flags.privateSpaceFloatingMaskView()) {
+        if (!Flags.privateSpaceAddFloatingMaskView()) {
             return;
         }
         mFloatingMaskView = (FloatingMaskView) mAllApps.getLayoutInflater().inflate(
