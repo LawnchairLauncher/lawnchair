@@ -19,15 +19,20 @@ package com.android.quickstep.task.thumbnail
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Outline
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
+import androidx.annotation.ColorInt
 import com.android.launcher3.Utilities
+import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.BackgroundOnly
 import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.LiveTile
+import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.Snapshot
 import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.Uninitialized
 import com.android.quickstep.util.TaskCornerRadius
 import com.android.quickstep.views.RecentsView
@@ -42,17 +47,26 @@ class TaskThumbnailView : View {
     //  to [TaskView], and also shared between [TaskView] and [TaskThumbnailView]
     //  This is using a lazy for now because the dependencies cannot be obtained without DI.
     val viewModel by lazy {
-        TaskThumbnailViewModel(
+        val recentsView =
             RecentsViewContainer.containerFromContext<RecentsViewContainer>(context)
                 .getOverviewPanel<RecentsView<*, *>>()
-                .mRecentsViewData,
-            (parent as TaskView).taskViewData
+        TaskThumbnailViewModel(
+            recentsView.mRecentsViewData,
+            (parent as TaskView).taskViewData,
+            recentsView.mTasksRepository,
         )
     }
 
     private var uiState: TaskThumbnailUiState = Uninitialized
     private var inheritedScale: Float = 1f
 
+    private val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val _measuredBounds = Rect()
+    private val measuredBounds: Rect
+        get() {
+            _measuredBounds.set(0, 0, measuredWidth, measuredHeight)
+            return _measuredBounds
+        }
     private var cornerRadius: Float = TaskCornerRadius.get(context)
     private var fullscreenCornerRadius: Float = QuickStepContract.getWindowCornerRadius(context)
 
@@ -85,22 +99,23 @@ class TaskThumbnailView : View {
         outlineProvider =
             object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
-                    outline.setRoundRect(
-                        0,
-                        0,
-                        view.measuredWidth,
-                        view.measuredHeight,
-                        getCurrentCornerRadius()
-                    )
+                    outline.setRoundRect(measuredBounds, getCurrentCornerRadius())
                 }
             }
     }
 
     override fun onDraw(canvas: Canvas) {
-        when (uiState) {
-            is Uninitialized -> {}
+        when (val uiStateVal = uiState) {
+            is Uninitialized -> drawBackgroundOnly(canvas, Color.BLACK)
             is LiveTile -> drawTransparentUiState(canvas)
+            is Snapshot -> drawSnapshotState(canvas, uiStateVal)
+            is BackgroundOnly -> drawBackgroundOnly(canvas, uiStateVal.backgroundColor)
         }
+    }
+
+    private fun drawBackgroundOnly(canvas: Canvas, @ColorInt backgroundColor: Int) {
+        backgroundPaint.color = backgroundColor
+        canvas.drawRect(measuredBounds, backgroundPaint)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -112,7 +127,12 @@ class TaskThumbnailView : View {
     }
 
     private fun drawTransparentUiState(canvas: Canvas) {
-        canvas.drawRect(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat(), CLEAR_PAINT)
+        canvas.drawRect(measuredBounds, CLEAR_PAINT)
+    }
+
+    private fun drawSnapshotState(canvas: Canvas, snapshot: Snapshot) {
+        drawBackgroundOnly(canvas, snapshot.backgroundColor)
+        canvas.drawBitmap(snapshot.bitmap, snapshot.drawnRect, measuredBounds, null)
     }
 
     private fun getCurrentCornerRadius() =
