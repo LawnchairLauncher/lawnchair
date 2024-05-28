@@ -62,8 +62,10 @@ public class BubbleDragController {
         mBubblePinController = bubbleControllers.bubblePinController;
         mBubbleDismissController.setListener(
                 stuck -> {
-                    mBubbleBarPinController.setDropTargetHidden(stuck);
-                    mBubblePinController.setDropTargetHidden(stuck);
+                    if (stuck) {
+                        mBubbleBarPinController.onStuckToDismissTarget();
+                        mBubblePinController.onStuckToDismissTarget();
+                    }
                 });
     }
 
