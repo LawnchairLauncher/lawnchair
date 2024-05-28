@@ -31,7 +31,6 @@ import android.view.ViewParent;
 import android.view.animation.Interpolator;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.Px;
@@ -137,8 +136,9 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
                 mActivityContext.getDeviceProfile(), mMaxHorizontalSpan,
                 mWidgetCellHorizontalPadding)
                 .forEach(row -> {
-                    TableRow tableRow = new TableRow(getContext());
+                    WidgetTableRow tableRow = new WidgetTableRow(getContext());
                     tableRow.setGravity(Gravity.TOP);
+                    tableRow.setupRow(row.size(), /*resizeDelayMs=*/ 0);
                     row.forEach(widgetItem -> {
                         WidgetCell widget = addItemCell(tableRow);
                         widget.applyFromCellItem(widgetItem);
@@ -163,9 +163,10 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         return super.onControllerInterceptTouchEvent(ev);
     }
 
-    protected WidgetCell addItemCell(ViewGroup parent) {
+    protected WidgetCell addItemCell(WidgetTableRow parent) {
         WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext())
                 .inflate(R.layout.widget_cell, parent, false);
+        widget.addPreviewReadyListener(parent);
         widget.setOnClickListener(this);
 
         View previewContainer = widget.findViewById(R.id.widget_preview_container);

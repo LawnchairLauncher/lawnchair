@@ -103,6 +103,8 @@ public class WidgetCell extends LinearLayout {
     private Size mWidgetSize;
 
     private final DatabaseWidgetPreviewLoader mWidgetPreviewLoader;
+    @Nullable
+    private PreviewReadyListener mPreviewReadyListener = null;
 
     protected CancellableTask mActiveRequest;
     private boolean mAnimatePreview = true;
@@ -118,7 +120,8 @@ public class WidgetCell extends LinearLayout {
 
     private CancellableTask mIconLoadRequest;
     private boolean mIsShowingAddButton = false;
-
+    // Height enforced by the parent to align all widget cells displayed by it.
+    private int mParentAlignedPreviewHeight;
     public WidgetCell(Context context) {
         this(context, null);
     }
@@ -190,6 +193,8 @@ public class WidgetCell extends LinearLayout {
         mWidgetDims.setText(null);
         mWidgetDescription.setText(null);
         mWidgetDescription.setVisibility(GONE);
+        mPreviewReadyListener = null;
+        mParentAlignedPreviewHeight = 0;
         showDescription(true);
         showDimensions(true);
 
@@ -338,8 +343,8 @@ public class WidgetCell extends LinearLayout {
 
     private void updateAppWidgetHostScale(NavigableAppWidgetHostView view) {
         // Scale the content such that all of the content is visible
-        int contentWidth = view.getWidth();
-        int contentHeight = view.getHeight();
+        float contentWidth = view.getWidth();
+        float contentHeight = view.getHeight();
 
         if (view.getChildCount() == 1) {
             View content = view.getChildAt(0);
@@ -359,6 +364,12 @@ public class WidgetCell extends LinearLayout {
             mAppWidgetHostViewScale = Math.min(pWidth / contentWidth, pHeight / contentHeight);
         }
         view.setScaleToFit(mAppWidgetHostViewScale);
+
+        // layout based previews maybe ready at this point to inspect their inner height.
+        if (mPreviewReadyListener != null) {
+            mPreviewReadyListener.onPreviewAvailable();
+            mPreviewReadyListener = null;
+        }
     }
 
     public WidgetImageView getWidgetView() {
@@ -383,6 +394,12 @@ public class WidgetCell extends LinearLayout {
             if (mAppWidgetHostViewPreview != null) {
                 removeView(mAppWidgetHostViewPreview);
                 mAppWidgetHostViewPreview = null;
+            }
+
+            // Drawables of the image previews are available at this point to measure.
+            if (mPreviewReadyListener != null) {
+                mPreviewReadyListener.onPreviewAvailable();
+                mPreviewReadyListener = null;
             }
         }
 
@@ -489,14 +506,20 @@ public class WidgetCell extends LinearLayout {
         // mPreviewContainerScale ensures the needed scaling with respect to original widget size.
         mAppWidgetHostViewScale = mPreviewContainerScale;
         containerLp.width = mPreviewContainerSize.getWidth();
-        containerLp.height = mPreviewContainerSize.getHeight();
+        int height = mPreviewContainerSize.getHeight();
 
         // If we don't have enough available width, scale the preview container to fit.
         if (containerLp.width > maxWidth) {
             containerLp.width = maxWidth;
             mAppWidgetHostViewScale = (float) containerLp.width / mPreviewContainerSize.getWidth();
-            containerLp.height = Math.round(
-                    mPreviewContainerSize.getHeight() * mAppWidgetHostViewScale);
+            height = Math.round(mPreviewContainerSize.getHeight() * mAppWidgetHostViewScale);
+        }
+
+        // Use parent aligned height in set.
+        if (mParentAlignedPreviewHeight > 0) {
+            containerLp.height = Math.min(height, mParentAlignedPreviewHeight);
+        } else {
+            containerLp.height = height;
         }
 
         // No need to call mWidgetImageContainer.setLayoutParams as we are in measure pass
@@ -510,6 +533,42 @@ public class WidgetCell extends LinearLayout {
         if (changed && isShowingAddButton()) {
             post(this::setupIconOrTextButton);
         }
+    }
+
+    /**
+     * Sets the height of the preview as adjusted by the parent to have this cell's content aligned
+     * with other cells displayed by the parent.
+     */
+    public void setParentAlignedPreviewHeight(int previewHeight) {
+        mParentAlignedPreviewHeight = previewHeight;
+    }
+
+    /**
+     * Returns the height of the preview without any empty space.
+     * In case of appwidget host views, it returns the height of first child. This way, if preview
+     * view provided by an app doesn't fill bounds, this will return actual height without white
+     * space.
+     */
+    public int getPreviewContentHeight() {
+        // By default assume scaled height.
+        int height = Math.round(mPreviewContainerScale * mWidgetSize.getHeight());
+
+        if (mWidgetImage != null && mWidgetImage.getDrawable() != null) {
+            // getBitmapBounds returns the scaled bounds.
+            Rect bitmapBounds = mWidgetImage.getBitmapBounds();
+            height = bitmapBounds.height();
+        } else if (mAppWidgetHostViewPreview != null
+                && mAppWidgetHostViewPreview.getChildCount() == 1) {
+            int contentHeight = Math.round(
+                    mPreviewContainerScale * mWidgetSize.getHeight());
+            int previewInnerHeight = Math.round(
+                    mAppWidgetHostViewScale * mAppWidgetHostViewPreview.getChildAt(
+                            0).getMeasuredHeight());
+            // Use either of the inner scaled height or the scaled widget height
+            height = Math.min(contentHeight, previewInnerHeight);
+        }
+
+        return height;
     }
 
     /**
@@ -650,5 +709,20 @@ public class WidgetCell extends LinearLayout {
                     && info.activityInfo.getComponent().equals(mItem.activityInfo.getComponent());
         }
         return false;
+    }
+
+    /**
+     * Listener to notify when previews are available.
+     */
+    public void addPreviewReadyListener(PreviewReadyListener previewReadyListener) {
+        mPreviewReadyListener = previewReadyListener;
+    }
+
+    /**
+     * Listener interface for subscribers to listen to preview's availability.
+     */
+    public interface PreviewReadyListener {
+        /** Handler on to invoke when previews are available. */
+        void onPreviewAvailable();
     }
 }
