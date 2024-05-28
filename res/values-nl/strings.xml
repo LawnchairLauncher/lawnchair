@@ -31,16 +31,14 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"App-info voor %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"App-paar opslaan"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
-    <skip />
-    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
-    <skip />
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Dit app-paar wordt niet ondersteund op dit apparaat"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Vouw het apparaat open om dit app-paar te gebruiken"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Tik en houd vast om een widget te verplaatsen."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dubbeltik en houd vast om een widget te verplaatsen of aangepaste acties te gebruiken."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d breed en %2$d hoog"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Tik op de widget en houd vast om deze te verplaatsen op het startscherm"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Houd je vinger op de widget om deze te verplaatsen op het startscherm"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Toevoegen aan startscherm"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> toegevoegd aan startscherm"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Suggesties"</string>
@@ -127,7 +125,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Instellingen wijzigen"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Toon meldingsstipjes"</string>
     <string name="developer_options_title" msgid="700788437593726194">"Ontwikkelaarsopties"</string>
-    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"App-iconen toevoegen aan startscherm"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"App-iconen op startscherm"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Voor nieuwe apps"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Verwijderen"</string>
@@ -137,8 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> installeren, <xliff:g id="PROGRESS">%2$s</xliff:g> voltooid"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> wordt gedownload, <xliff:g id="PROGRESS">%2$s</xliff:g> voltooid"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> wacht op installatie"</string>
-    <!-- no translation found for app_archived_title (9124290918876665128) -->
-    <skip />
+    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> is gearchiveerd Tik om te downloaden."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"App-update vereist"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"De app voor dit icoon is niet geüpdatet. Je kunt handmatig updaten om deze snelkoppeling weer aan te zetten of het icoon verwijderen."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Updaten"</string>
@@ -175,7 +172,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Werkprofiel"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Werk-apps hebben badges en zijn zichtbaar voor je IT-beheerder"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Werk-apps zijn onderbroken"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Werk-apps zijn gepauzeerd"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Je krijgt geen meldingen van je werk-apps"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Je werk-apps kunnen je geen meldingen sturen, je batterij niet gebruiken en geen toegang krijgen tot je locatie"</string>
     <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Je krijgt geen telefoongesprekken, tekstberichten of meldingen van je werk-apps"</string>
@@ -186,7 +183,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filteren"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Mislukt: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Privéruimte"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"Privé-apps vergrendeld en verborgen houden"</string>
+    <string name="private_space_secondary_label" msgid="611902414159280263">"Houd privé-apps vergrendeld en verborgen"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Privé"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Instellingen voor privéruimte"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Privéruimte vergrendelen/ontgrendelen"</string>

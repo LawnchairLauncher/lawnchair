@@ -56,7 +56,7 @@ public class ViewUtils {
         boolean mSurfaceCallbackRegistered = false;
         boolean mFinished;
 
-        int mDeferFrameCount = 1;
+        int mDeferFrameCount = 2;
 
         FrameHandler(View view, Runnable finishCallback, BooleanSupplier cancelled) {
             mViewRoot = view.getViewRootImpl();

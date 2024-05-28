@@ -22,6 +22,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.io.PrintWriter;
+import java.util.Optional;
 
 /** Class to manage Assistant states. */
 public class AssistStateManager implements ResourceBasedOverride {
@@ -41,19 +42,14 @@ public class AssistStateManager implements ResourceBasedOverride {
         return false;
     }
 
-    /** Whether search recovery is available. */
-    public boolean isVisRecoveryEnabled() {
-        return false;
+    /** Whether CsHelper CtS invocation path is available. */
+    public Optional<Boolean> isCsHelperAvailable() {
+        return Optional.empty();
     }
 
-    /** Whether search recovery is available. */
-    public boolean isOseRecoveryEnabled() {
-        return false;
-    }
-
-    /** Whether search recovery is available. */
-    public boolean isOseShowSessionEnabled() {
-        return false;
+    /** Whether VIS CtS invocation path is available. */
+    public Optional<Boolean> isVisAvailable() {
+        return Optional.empty();
     }
 
     /** Return {@code true} if the Settings toggle is enabled. */

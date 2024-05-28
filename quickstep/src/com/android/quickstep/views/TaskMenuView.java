@@ -140,11 +140,9 @@ public class TaskMenuView extends AbstractFloatingView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (!enableOverviewIconMenu()) {
-            int maxMenuHeight = calculateMaxHeight();
-            if (MeasureSpec.getSize(heightMeasureSpec) > maxMenuHeight) {
-                heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxMenuHeight, MeasureSpec.AT_MOST);
-            }
+        int maxMenuHeight = calculateMaxHeight();
+        if (MeasureSpec.getSize(heightMeasureSpec) > maxMenuHeight) {
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxMenuHeight, MeasureSpec.AT_MOST);
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -416,10 +414,9 @@ public class TaskMenuView extends AbstractFloatingView {
      * with a margin on the top and bottom.
      */
     private int calculateMaxHeight() {
-        float taskBottom = mTaskView.getHeight() + mTaskView.getPersistentTranslationY();
         float taskInsetMargin = getResources().getDimension(R.dimen.task_card_margin);
-
-        return (int) (taskBottom - taskInsetMargin - getTranslationY());
+        return mTaskView.getPagedOrientationHandler().getTaskMenuHeight(taskInsetMargin,
+                mActivity.getDeviceProfile(), getTranslationX(), getTranslationY());
     }
 
     private void setOnClosingStartCallback(Runnable onClosingStartCallback) {

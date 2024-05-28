@@ -114,6 +114,12 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
+    public int getTaskMenuHeight(float taskInsetMargin, DeviceProfile deviceProfile,
+            float taskMenuX, float taskMenuY) {
+        return (int) (deviceProfile.availableWidthPx - taskInsetMargin - taskMenuX);
+    }
+
+    @Override
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect, SplitBounds splitInfo,
             int desiredStagePosition) {
         float topLeftTaskPercent = splitInfo.appsStackedVertically

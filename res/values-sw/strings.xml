@@ -31,10 +31,8 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Maelezo ya programu ya %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Hifadhi jozi ya programu"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
-    <skip />
-    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
-    <skip />
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Jozi hii ya programu haitumiki kwenye kifaa hiki"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Fungua kifaa ili utumie jozi hii ya programu"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Gusa na ushikilie ili usogeze wijeti."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Gusa mara mbili na ushikilie ili usogeze wijeti au utumie vitendo maalum."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -137,8 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Inasakinisha <xliff:g id="NAME">%1$s</xliff:g>, imekamilika <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> inapakuliwa, <xliff:g id="PROGRESS">%2$s</xliff:g> imekamilika"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> inasubiri kusakinisha"</string>
-    <!-- no translation found for app_archived_title (9124290918876665128) -->
-    <skip />
+    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> imewekwa kwenye kumbukumbu. Gusa ili uipakue."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Unahitaji kusasisha programu"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Programu ya aikoni hii haijasasishwa. Unaweza kusasisha mwenyewe ili uruhusu upya njia hii ya mkato au uondoe aikoni."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Sasisha"</string>

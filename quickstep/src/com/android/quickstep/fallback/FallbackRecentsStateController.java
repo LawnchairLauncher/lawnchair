@@ -117,9 +117,7 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
 
         setter.setViewBackgroundColor(mActivity.getScrimView(), state.getScrimColor(mActivity),
                 config.getInterpolator(ANIM_SCRIM_FADE, LINEAR));
-
-        RecentsState currentState = mActivity.getStateManager().getState();
-        if (isSplitSelectionState(state) && !isSplitSelectionState(currentState)) {
+        if (isSplitSelectionState(state)) {
             int duration = state.getTransitionDuration(mActivity, true /* isToState */);
             // TODO (b/246851887): Pass in setter as a NO_ANIM PendingAnimation instead
             PendingAnimation pa = new PendingAnimation(duration);

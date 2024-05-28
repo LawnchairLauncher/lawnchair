@@ -324,7 +324,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     @Override
     public void onDragEnd(PointF velocity) {
-        cancelAnimations();
         boolean horizontalFling = mSwipeDetector.isFling(velocity.x);
         boolean verticalFling = mSwipeDetector.isFling(velocity.y);
         boolean noFling = !horizontalFling && !verticalFling;
@@ -353,6 +352,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             return;
         }
         InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
+        cancelAnimations();
 
         final LauncherState targetState;
         if (horizontalFling && verticalFling) {

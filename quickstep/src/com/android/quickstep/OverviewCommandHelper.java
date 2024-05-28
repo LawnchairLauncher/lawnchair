@@ -248,7 +248,15 @@ public class OverviewCommandHelper {
                 case TYPE_SHOW:
                     // already visible
                     return true;
+                case TYPE_KEYBOARD_INPUT: {
+                    if (visibleRecentsView.isHandlingTouch()) {
+                        return true;
+                    }
+                }
                 case TYPE_HIDE: {
+                    if (visibleRecentsView.isHandlingTouch()) {
+                        return true;
+                    }
                     mKeyboardTaskFocusIndex = INVALID_PAGE;
                     int currentPage = visibleRecentsView.getNextPage();
                     TaskView tv = (currentPage >= 0

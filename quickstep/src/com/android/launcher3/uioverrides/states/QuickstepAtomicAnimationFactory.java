@@ -135,8 +135,7 @@ public class QuickstepAtomicAnimationFactory extends
                 config.duration = Math.max(config.duration, scrollDuration);
 
                 // Sync scroll so that it ends before or at the same time as the taskbar animation.
-                if (DisplayController.isTransientTaskbar(mActivity)
-                        && mActivity.getDeviceProfile().isTaskbarPresent) {
+                if (mActivity.getDeviceProfile().isTaskbarPresent) {
                     config.duration = Math.min(config.duration, TASKBAR_TO_HOME_DURATION);
                 }
                 overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));

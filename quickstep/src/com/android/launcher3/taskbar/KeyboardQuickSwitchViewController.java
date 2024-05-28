@@ -151,7 +151,8 @@ public class KeyboardQuickSwitchViewController {
                 context.getDeviceProfile().overviewPageSpacing,
                 QuickStepContract.getWindowCornerRadius(context),
                 AnimationUtils.loadInterpolator(
-                        context, android.R.interpolator.fast_out_extra_slow_in)));
+                        context, android.R.interpolator.fast_out_extra_slow_in)),
+                "SlideInTransition");
         if (mOnDesktop) {
             UI_HELPER_EXECUTOR.execute(() ->
                     SystemUiProxy.INSTANCE.get(mKeyboardQuickSwitchView.getContext())

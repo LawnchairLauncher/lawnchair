@@ -31,10 +31,8 @@
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informacioni i aplikacionit për %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Ruaj çiftin e aplikacioneve"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <!-- no translation found for app_pair_unlaunchable_at_screen_size (3446551575502685376) -->
-    <skip />
-    <!-- no translation found for app_pair_needs_unfold (4588897528143807002) -->
-    <skip />
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Ky çift aplikacionesh nuk mbështetet në këtë pajisje"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Shpalose pajisjen për të përdorur këtë çift aplikacionesh"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Prek dhe mbaj shtypur një miniaplikacion për ta zhvendosur."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Trokit dy herë dhe mbaje shtypur një miniapliikacion për ta zhvendosur atë ose për të përdorur veprimet e personalizuara."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -137,8 +135,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> po instalohet, <xliff:g id="PROGRESS">%2$s</xliff:g> i përfunduar"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> po shkarkohet, <xliff:g id="PROGRESS">%2$s</xliff:g> të përfunduara"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> po pret të instalohet"</string>
-    <!-- no translation found for app_archived_title (9124290918876665128) -->
-    <skip />
+    <string name="app_archived_title" msgid="9124290918876665128">"<xliff:g id="NAME">%1$s</xliff:g> është arkivuar. Trokit për të shkarkuar."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Kërkohet përditësimi i aplikacionit"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Aplikacioni për këtë ikonë nuk është përditësuar. Mund ta përditësosh manualisht për të riaktivizuar këtë shkurtore ose hiq ikonën."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Përditëso"</string>

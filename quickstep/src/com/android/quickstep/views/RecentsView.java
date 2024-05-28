@@ -4136,10 +4136,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private boolean snapToPageRelative(int delta, boolean cycle,
             @TaskGridNavHelper.TASK_NAV_DIRECTION int direction) {
-        // Ignore grid page snap events while scroll animations are running, otherwise the next
-        // page gets set before the animation finishes and can cause jumps.
+        // Set next page if scroll animation is still running, otherwise cannot snap to the
+        // next page on successive key presses. Setting the current page aborts the scroll.
         if (!mScroller.isFinished()) {
-            return true;
+            setCurrentPage(getNextPage());
         }
         int pageCount = getPageCount();
         if (pageCount == 0) {
@@ -4220,30 +4220,31 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_TAB:
-                    return snapToPageRelative(event.isShiftPressed() ? -1 : 1, true /* cycle */,
-                            DIRECTION_TAB);
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    return snapToPageRelative(mIsRtl ? -1 : 1, true /* cycle */, DIRECTION_RIGHT);
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                    return snapToPageRelative(mIsRtl ? 1 : -1, true /* cycle */, DIRECTION_LEFT);
-                case KeyEvent.KEYCODE_DPAD_UP:
-                    return snapToPageRelative(1, false /* cycle */, DIRECTION_UP);
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                    return snapToPageRelative(1, false /* cycle */, DIRECTION_DOWN);
-                case KeyEvent.KEYCODE_DEL:
-                case KeyEvent.KEYCODE_FORWARD_DEL:
+        if (isHandlingTouch() || event.getAction() != KeyEvent.ACTION_DOWN) {
+            return super.dispatchKeyEvent(event);
+        }
+        switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_TAB:
+                return snapToPageRelative(event.isShiftPressed() ? -1 : 1, true /* cycle */,
+                        DIRECTION_TAB);
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                return snapToPageRelative(mIsRtl ? -1 : 1, true /* cycle */, DIRECTION_RIGHT);
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                return snapToPageRelative(mIsRtl ? 1 : -1, true /* cycle */, DIRECTION_LEFT);
+            case KeyEvent.KEYCODE_DPAD_UP:
+                return snapToPageRelative(1, false /* cycle */, DIRECTION_UP);
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                return snapToPageRelative(1, false /* cycle */, DIRECTION_DOWN);
+            case KeyEvent.KEYCODE_DEL:
+            case KeyEvent.KEYCODE_FORWARD_DEL:
+                dismissCurrentTask();
+                return true;
+            case KeyEvent.KEYCODE_NUMPAD_DOT:
+                if (event.isAltPressed()) {
+                    // Numpad DEL pressed while holding Alt.
                     dismissCurrentTask();
                     return true;
-                case KeyEvent.KEYCODE_NUMPAD_DOT:
-                    if (event.isAltPressed()) {
-                        // Numpad DEL pressed while holding Alt.
-                        dismissCurrentTask();
-                        return true;
-                    }
-            }
+                }
         }
         return super.dispatchKeyEvent(event);
     }
@@ -5160,6 +5161,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 && !mOverviewGridEnabled) {
             mTempRect.set(mLastComputedCarouselTaskSize);
         } else {
+            if (mLastComputedTaskSize.height() == 0 || mLastComputedTaskSize.width() == 0) {
+                getTaskSize(mLastComputedTaskSize);
+            }
             mTempRect.set(mLastComputedTaskSize);
         }
         return getPagedViewOrientedState().getFullScreenScaleAndPivot(
