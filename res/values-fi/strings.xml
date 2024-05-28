@@ -84,6 +84,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Poista asennus"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Sovelluksen tiedot"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Asenna yksityisesti"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"Sovelluksen poistaminen"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Asenna"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Älä ehdota sovellusta"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Kiinnitä sovellus"</string>

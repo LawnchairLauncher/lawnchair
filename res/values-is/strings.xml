@@ -84,6 +84,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Fjarlægja"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Forritsupplýsingar"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Setja upp á lokuðum prófíl"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"Fjarlægja forrit"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Setja upp"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ekki fá tillögu að forriti"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Festa tillögu"</string>
@@ -182,14 +183,14 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Ljúka hléi"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Sía"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Mistókst: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"Einkarými"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Leynirými"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Ýttu til að setja upp eða opna"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Lokað"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Stillingar einkarýmis"</string>
     <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Lokað, ólæst."</string>
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Lokað, læst."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Læsa"</string>
-    <string name="ps_container_transition" msgid="8667331812048014412">"Einkarými að breytast"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Leynirými að breytast"</string>
     <string name="ps_add_button_label" msgid="8127988716897128773">"Setja upp"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Setja upp forrit í leynirými"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Yfirflæði"</string>

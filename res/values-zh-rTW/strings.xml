@@ -84,6 +84,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"解除安裝"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"應用程式資訊"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"安裝在私人空間中"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"解除安裝應用程式"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"安裝"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"不要提供應用程式建議"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"固定預測的應用程式"</string>
