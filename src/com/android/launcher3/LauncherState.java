@@ -38,6 +38,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.FloatRange;
+import androidx.annotation.StringRes;
 
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
@@ -367,6 +368,10 @@ public abstract class LauncherState implements BaseState<LauncherState> {
 
     public String getDescription(Launcher launcher) {
         return launcher.getWorkspace().getCurrentPageDescription();
+    }
+
+    public @StringRes int getTitle() {
+        return R.string.home_screen;
     }
 
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {

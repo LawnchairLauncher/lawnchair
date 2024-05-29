@@ -182,6 +182,11 @@ public class OverviewState extends LauncherState {
         return launcher.getString(R.string.accessibility_recent_apps);
     }
 
+    @Override
+    public int getTitle() {
+        return R.string.accessibility_recent_apps;
+    }
+
     public static float getDefaultSwipeHeight(Launcher launcher) {
         return LayoutUtils.getDefaultSwipeHeight(launcher, launcher.getDeviceProfile());
     }
