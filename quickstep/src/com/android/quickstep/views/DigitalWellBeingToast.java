@@ -23,6 +23,7 @@ import static com.android.launcher3.util.Executors.ORDERED_BG_EXECUTOR;
 
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.AppUsageLimit;
@@ -38,6 +39,7 @@ import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -49,6 +51,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
+import com.android.quickstep.TaskUtils;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 import com.android.systemui.shared.recents.model.Task;
 
@@ -68,13 +71,15 @@ public final class DigitalWellBeingToast {
     private static final int SPLIT_GRID_BANNER_LARGE = 1;
     /** Used for grid task view, only showing icon */
     private static final int SPLIT_GRID_BANNER_SMALL = 2;
+
     @IntDef(value = {
             SPLIT_BANNER_FULLSCREEN,
             SPLIT_GRID_BANNER_LARGE,
             SPLIT_GRID_BANNER_SMALL,
     })
     @Retention(RetentionPolicy.SOURCE)
-    @interface SplitBannerConfig{}
+    @interface SplitBannerConfig {
+    }
 
     static final Intent OPEN_APP_USAGE_SETTINGS_TEMPLATE = new Intent(ACTION_APP_USAGE_SETTINGS);
     static final int MINUTE_MS = 60000;
@@ -397,5 +402,37 @@ public final class DigitalWellBeingToast {
         }
 
         mBanner.setVisibility(visibility);
+    }
+
+    private int getAccessibilityActionId() {
+        return (mSplitBounds != null
+                && mSplitBounds.rightBottomTaskId == mTask.key.id)
+                ? R.id.action_digital_wellbeing_bottom_right
+                : R.id.action_digital_wellbeing_top_left;
+    }
+
+    @Nullable
+    public AccessibilityNodeInfo.AccessibilityAction getDWBAccessibilityAction() {
+        if (!hasLimit()) {
+            return null;
+        }
+
+        Context context = mContainer.asContext();
+        String label =
+                (mTaskView.containsMultipleTasks())
+                        ? context.getString(
+                        R.string.split_app_usage_settings,
+                        TaskUtils.getTitle(context, mTask)
+                ) : context.getString(R.string.accessibility_app_usage_settings);
+        return new AccessibilityNodeInfo.AccessibilityAction(getAccessibilityActionId(), label);
+    }
+
+    public boolean handleAccessibilityAction(int action) {
+        if (getAccessibilityActionId() == action) {
+            openAppUsageSettings(mTaskView);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

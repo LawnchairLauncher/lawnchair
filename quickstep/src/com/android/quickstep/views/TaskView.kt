@@ -38,6 +38,7 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.ViewStub
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.IntDef
@@ -67,7 +68,6 @@ import com.android.launcher3.util.Executors
 import com.android.launcher3.util.RunnableList
 import com.android.launcher3.util.SafeCloseable
 import com.android.launcher3.util.SplitConfigurationOptions
-import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
 import com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition
@@ -133,19 +133,26 @@ constructor(
     val taskIds: IntArray
         /** Returns a copy of integer array containing taskIds of all tasks in the TaskView. */
         get() = taskContainers.map { it.task.key.id }.toIntArray()
+
     val thumbnailViews: Array<TaskThumbnailViewDeprecated>
         get() = taskContainers.map { it.thumbnailViewDeprecated }.toTypedArray()
+
     val isGridTask: Boolean
         /** Returns whether the task is part of overview grid and not being focused. */
         get() = container.deviceProfile.isTablet && !isFocusedTask
+
     val isRunningTask: Boolean
         get() = this === recentsView?.runningTaskView
+
     val isFocusedTask: Boolean
         get() = this === recentsView?.focusedTaskView
+
     val taskCornerRadius: Float
         get() = currentFullscreenParams.cornerRadius
+
     val recentsView: RecentsView<*, *>?
         get() = parent as? RecentsView<*, *>
+
     val pagedOrientationHandler: RecentsPagedOrientationHandler
         get() = orientedState.orientationHandler
 
@@ -153,10 +160,12 @@ constructor(
     val firstTask: Task
         /** Returns the first task bound to this TaskView. */
         get() = taskContainers[0].task
+
     @get:Deprecated("Use [taskContainers] instead.")
     val firstThumbnailViewDeprecated: TaskThumbnailViewDeprecated
         /** Returns the first thumbnailView of the TaskView. */
         get() = taskContainers[0].thumbnailViewDeprecated
+
     @get:Deprecated("Use [taskContainers] instead.")
     val firstItemInfo: ItemInfo
         get() = taskContainers[0].itemInfo
@@ -173,6 +182,7 @@ constructor(
          * not change according to a temporary state.
          */
         get() = Utilities.mapRange(gridProgress, nonGridScale, 1f)
+
     protected val persistentTranslationX: Float
         /**
          * Returns addition of translationX that is persistent (e.g. fullscreen and grid), and does
@@ -182,42 +192,50 @@ constructor(
             (getNonGridTrans(nonGridTranslationX) +
                 getGridTrans(this.gridTranslationX) +
                 getNonGridTrans(nonGridPivotTranslationX))
+
     protected val persistentTranslationY: Float
         /**
          * Returns addition of translationY that is persistent (e.g. fullscreen and grid), and does
          * not change according to a temporary state (e.g. task offset).
          */
         get() = boxTranslationY + getGridTrans(gridTranslationY)
+
     protected val primarySplitTranslationProperty: FloatProperty<TaskView>
         get() =
             pagedOrientationHandler.getPrimaryValue(
                 SPLIT_SELECT_TRANSLATION_X,
                 SPLIT_SELECT_TRANSLATION_Y
             )
+
     protected val secondarySplitTranslationProperty: FloatProperty<TaskView>
         get() =
             pagedOrientationHandler.getSecondaryValue(
                 SPLIT_SELECT_TRANSLATION_X,
                 SPLIT_SELECT_TRANSLATION_Y
             )
+
     protected val primaryDismissTranslationProperty: FloatProperty<TaskView>
         get() =
             pagedOrientationHandler.getPrimaryValue(DISMISS_TRANSLATION_X, DISMISS_TRANSLATION_Y)
+
     protected val secondaryDismissTranslationProperty: FloatProperty<TaskView>
         get() =
             pagedOrientationHandler.getSecondaryValue(DISMISS_TRANSLATION_X, DISMISS_TRANSLATION_Y)
+
     protected val primaryTaskOffsetTranslationProperty: FloatProperty<TaskView>
         get() =
             pagedOrientationHandler.getPrimaryValue(
                 TASK_OFFSET_TRANSLATION_X,
                 TASK_OFFSET_TRANSLATION_Y
             )
+
     protected val secondaryTaskOffsetTranslationProperty: FloatProperty<TaskView>
         get() =
             pagedOrientationHandler.getSecondaryValue(
                 TASK_OFFSET_TRANSLATION_X,
                 TASK_OFFSET_TRANSLATION_Y
             )
+
     protected val taskResistanceTranslationProperty: FloatProperty<TaskView>
         get() =
             pagedOrientationHandler.getSecondaryValue(
@@ -234,6 +252,7 @@ constructor(
     /** Returns a list of all TaskContainers in the TaskView. */
     lateinit var taskContainers: List<TaskContainer>
         protected set
+
     lateinit var orientedState: RecentsOrientedState
 
     var taskViewId = UNBOUND_TASK_VIEW_ID
@@ -264,46 +283,55 @@ constructor(
             field = value
             onModalnessUpdated(field)
         }
+
     protected var taskThumbnailSplashAlpha = 0f
         set(value) {
             field = value
             applyThumbnailSplashAlpha()
         }
+
     protected var nonGridScale = 1f
         set(value) {
             field = value
             applyScale()
         }
+
     private var dismissScale = 1f
         set(value) {
             field = value
             applyScale()
         }
+
     private var dismissTranslationX = 0f
         set(value) {
             field = value
             applyTranslationX()
         }
+
     private var dismissTranslationY = 0f
         set(value) {
             field = value
             applyTranslationY()
         }
+
     private var taskOffsetTranslationX = 0f
         set(value) {
             field = value
             applyTranslationX()
         }
+
     private var taskOffsetTranslationY = 0f
         set(value) {
             field = value
             applyTranslationY()
         }
+
     private var taskResistanceTranslationX = 0f
         set(value) {
             field = value
             applyTranslationX()
         }
+
     private var taskResistanceTranslationY = 0f
         set(value) {
             field = value
@@ -321,6 +349,7 @@ constructor(
             field = value
             applyTranslationX()
         }
+
     var gridTranslationY = 0f
         protected set(value) {
             field = value
@@ -339,6 +368,7 @@ constructor(
             field = value
             applyTranslationX()
         }
+
     protected var nonGridPivotTranslationX = 0f
         set(value) {
             field = value
@@ -350,16 +380,19 @@ constructor(
             field = value
             applyTranslationY()
         }
+
     private var splitSelectTranslationX = 0f
         set(value) {
             field = value
             applyTranslationX()
         }
+
     protected var stableAlpha = 1f
         set(value) {
             field = value
             alpha = stableAlpha
         }
+
     protected var shouldShowScreenshot = false
         get() = !isRunningTask || field
     /** Enable or disable showing border on hover and focus change */
@@ -375,6 +408,7 @@ constructor(
             hoverBorderAnimator?.setBorderVisibility(visible = field && isHovered, animated = true)
             focusBorderAnimator?.setBorderVisibility(visible = field && isFocused, animated = true)
         }
+
     protected var iconScaleAnimStartProgress = 0f
     private var focusTransitionProgress = 1f
 
@@ -522,11 +556,12 @@ constructor(
         super.onInitializeAccessibilityNodeInfo(info)
         with(info) {
             addAction(
-                AccessibilityNodeInfo.AccessibilityAction(
-                    R.string.accessibility_close,
+                AccessibilityAction(
+                    R.id.action_close,
                     context.getText(R.string.accessibility_close)
                 )
             )
+
             taskContainers.forEach {
                 TraceHelper.allowIpcs("TV.a11yInfo") {
                     TaskOverlayFactory.getEnabledShortcuts(this@TaskView, it).forEach { shortcut ->
@@ -534,15 +569,12 @@ constructor(
                     }
                 }
             }
-            // TODO(b/341672022): handle multiple digitalWellBeingToast accessibility actions
-            if (taskContainers[0].digitalWellBeingToast?.hasLimit() == true) {
-                addAction(
-                    AccessibilityNodeInfo.AccessibilityAction(
-                        R.string.accessibility_app_usage_settings,
-                        context.getText(R.string.accessibility_app_usage_settings)
-                    )
-                )
+
+            // Add DWB accessibility action at the end of the list
+            taskContainers.forEach {
+                it.digitalWellBeingToast?.getDWBAccessibilityAction()?.let(::addAction)
             }
+
             recentsView?.let {
                 collectionItemInfo =
                     AccessibilityNodeInfo.CollectionItemInfo.obtain(
@@ -557,16 +589,17 @@ constructor(
     }
 
     override fun performAccessibilityAction(action: Int, arguments: Bundle?): Boolean {
-        if (action == R.string.accessibility_close) {
+        // TODO(b/343708271): Add support for multiple tasks per action.
+        if (action == R.id.action_close) {
             recentsView?.dismissTask(this, true /*animateTaskView*/, true /*removeTask*/)
             return true
         }
-        if (action == R.string.accessibility_app_usage_settings) {
-            // TODO(b/341672022): handle multiple digitalWellBeingToast accessibility actions
-            taskContainers[0].digitalWellBeingToast?.openAppUsageSettings(this)
-            return true
-        }
+
         taskContainers.forEach {
+            if (it.digitalWellBeingToast?.handleAccessibilityAction(action) == true) {
+                return true
+            }
+
             TaskOverlayFactory.getEnabledShortcuts(this, it).forEach { shortcut ->
                 if (shortcut.hasHandlerForAction(action)) {
                     shortcut.onClick(this)
@@ -574,6 +607,7 @@ constructor(
                 }
             }
         }
+
         return super.performAccessibilityAction(action, arguments)
     }
 
@@ -1554,11 +1588,6 @@ constructor(
         taskOverlayFactory: TaskOverlayFactory
     ) {
         val overlay: TaskOverlay<*> = taskOverlayFactory.createOverlay(this)
-
-        @IdRes
-        val a11yNodeId: Int =
-            if (stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) R.id.split_bottomRight_appInfo
-            else R.id.split_topLeft_appInfo
 
         val snapshotView: View
             get() = thumbnailView ?: thumbnailViewDeprecated

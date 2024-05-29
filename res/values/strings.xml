@@ -41,6 +41,7 @@
     <!-- Title for an option to enter split screen mode for a given app -->
     <string name="recent_task_option_split_screen">Split screen</string>
     <string name="split_app_info_accessibility">App info for %1$s</string>
+    <string name="split_app_usage_settings">Usage settings for %1$s</string>
 
     <!-- App pairs -->
     <string name="save_app_pair">Save app pair</string>

@@ -21,6 +21,7 @@ import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
 import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
 import android.app.ActivityOptions;
@@ -107,10 +108,14 @@ public interface TaskShortcutFactory {
         public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
                 TaskContainer taskContainer) {
             TaskView taskView = taskContainer.getTaskView();
+            int actionId = taskContainer.getStagePosition() == STAGE_POSITION_BOTTOM_OR_RIGHT
+                    ? R.id.action_app_info_bottom_right
+                    : R.id.action_app_info_top_left;
+
             AppInfo.SplitAccessibilityInfo accessibilityInfo =
                     new AppInfo.SplitAccessibilityInfo(taskView.containsMultipleTasks(),
                             TaskUtils.getTitle(taskView.getContext(), taskContainer.getTask()),
-                            taskContainer.getA11yNodeId()
+                            actionId
                     );
             return Collections.singletonList(new AppInfo(container, taskContainer.getItemInfo(),
                     taskView, accessibilityInfo));
