@@ -129,8 +129,6 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
                     overview.getCurrentTask()
                             .tapMenu()
                             .hasMenuItem("Save app pair"));
-        } else {
-            overview.getOverviewGroupActions().assertHasAction("Save app pair");
         }
     }
 

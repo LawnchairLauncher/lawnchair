@@ -113,9 +113,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     /** Container for the action buttons below a focused, non-split Overview tile. */
     protected LinearLayout mActionButtons;
-    /** Container for the action buttons below a focused, split Overview tile. */
-    protected LinearLayout mGroupActionButtons;
     private Button mSplitButton;
+    /**
+     * The "save app pair" button. Currently this is the only button that is not contained in
+     * mActionButtons, since it is the sole button that appears for a grouped task.
+     */
     private Button mSaveAppPairButton;
 
     @ActionsHiddenFlags
@@ -153,15 +155,16 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         super.onFinishInflate();
         // Initialize 2 view containers: one for single tasks, one for grouped tasks.
         // These will take up the same space on the screen and alternate visibility as needed.
+        // Currently, the only grouped task action is "save app pairs".
         mActionButtons = findViewById(R.id.action_buttons);
-        mGroupActionButtons = findViewById(R.id.group_action_buttons);
-        // Initialize a list to hold alphas for mActionButtons and mGroupActionButtons.
+        mSaveAppPairButton = findViewById(R.id.action_save_app_pair);
+        // Initialize a list to hold alphas for mActionButtons and any group action buttons.
         mMultiValueAlphas[ACTIONS_ALPHAS] = new MultiValueAlpha(mActionButtons, NUM_ALPHAS);
         mMultiValueAlphas[GROUP_ACTIONS_ALPHAS] =
-                new MultiValueAlpha(mGroupActionButtons, NUM_ALPHAS);
+                new MultiValueAlpha(mSaveAppPairButton, NUM_ALPHAS);
         Arrays.stream(mMultiValueAlphas).forEach(a -> a.setUpdateVisibility(true));
-        // To control alpha simultaneously on mActionButtons and mGroupActionButtons, we set up an
-        // AnimatedFloat for each alpha property.
+        // To control alpha simultaneously on mActionButtons and any group action buttons, we set up
+        // an AnimatedFloat for each alpha property.
         for (int i = 0; i < NUM_ALPHAS; i++) {
             final int index = i;
             mAlphaProperties[index] = new AnimatedFloat(() -> {
@@ -178,7 +181,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         screenshotButton.setOnClickListener(this);
         mSplitButton = findViewById(R.id.action_split);
         mSplitButton.setOnClickListener(this);
-        mSaveAppPairButton = findViewById(R.id.action_save_app_pair);
         mSaveAppPairButton.setOnClickListener(this);
     }
 
@@ -339,7 +341,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      */
     public boolean areActionsButtonsVisible() {
         return mActionButtons.getVisibility() == View.VISIBLE
-                || mGroupActionButtons.getVisibility() == View.VISIBLE;
+                || mSaveAppPairButton.getVisibility() == View.VISIBLE;
     }
 
     /**
@@ -353,11 +355,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     /** Updates vertical margins for different navigation mode or configuration changes. */
     public void updateVerticalMargin(NavigationMode mode) {
         updateActionBarPosition(mActionButtons);
-        updateActionBarPosition(mGroupActionButtons);
+        updateActionBarPosition(mSaveAppPairButton);
     }
 
     /** Positions actions buttons according to device settings and insets. */
-    private void updateActionBarPosition(LinearLayout actionBar) {
+    private void updateActionBarPosition(View actionBar) {
         if (mDp == null) {
             return;
         }
