@@ -184,7 +184,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Զտեք"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Չհաջողվեց կատարել գործողությունը (<xliff:g id="WHAT">%1$s</xliff:g>)"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Անձնական տարածք"</string>
-    <string name="private_space_secondary_label" msgid="611902414159280263">"Անձնական հավելվածները պահեք կողպված և թաքցված"</string>
+    <string name="private_space_secondary_label" msgid="611902414159280263">"Մասնավոր հավելվածները պահեք կողպված և թաքցված"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Մասնավոր"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Անձնական տարածքի կարգավորումներ"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"Կողպել/ապակողպել մասնավոր տարածքը"</string>
