@@ -712,7 +712,6 @@ public class PrivateProfileManager extends UserProfileManager {
                         animateCollapseAnimation());
             }
         }
-        animatorSet.setDuration(EXPAND_COLLAPSE_DURATION);
         animatorSet.start();
     }
 
