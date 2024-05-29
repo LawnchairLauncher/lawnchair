@@ -93,6 +93,7 @@ import com.android.quickstep.util.BorderAnimator.Companion.createSimpleBorderAni
 import com.android.quickstep.util.RecentsOrientedState
 import com.android.quickstep.util.TaskCornerRadius
 import com.android.quickstep.util.TaskRemovedDuringLaunchListener
+import com.android.quickstep.views.RecentsView.UNBOUND_TASK_VIEW_ID
 import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.recents.model.ThumbnailData
 import com.android.systemui.shared.system.ActivityManagerWrapper
@@ -235,7 +236,7 @@ constructor(
         protected set
     lateinit var orientedState: RecentsOrientedState
 
-    var taskViewId = -1
+    var taskViewId = UNBOUND_TASK_VIEW_ID
     var isEndQuickSwitchCuj = false
 
     // Various animation progress variables.
@@ -502,7 +503,6 @@ constructor(
         resetPersistentViewTransforms()
         // Clear any references to the thumbnail (it will be re-read either from the cache or the
         // system on next bind)
-        // TODO(b/334825222): Implement thumbnail/snapshot for the new [TaskThumbnailView].
         if (enableRefactorTaskThumbnail()) {
             notifyIsRunningTaskUpdated()
         } else {
@@ -511,6 +511,7 @@ constructor(
         setOverlayEnabled(false)
         onTaskListVisibilityChanged(false)
         borderEnabled = false
+        taskViewId = UNBOUND_TASK_VIEW_ID
     }
 
     // TODO: Clip-out the icon region from the thumbnail, since they are overlapping.
@@ -780,22 +781,19 @@ constructor(
         val recentsModel = RecentsModel.INSTANCE.get(context)
         // These calls are no-ops if the data is already loaded, try and load the high
         // resolution thumbnail if the state permits
-        if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
-            if (!enableRefactorTaskThumbnail()) {
-                // TODO(b/334825222) add thumbnail state
-                taskContainers.forEach {
-                    if (visible) {
-                        recentsModel.thumbnailCache
-                            .updateThumbnailInBackground(it.task) { thumbnailData ->
-                                it.thumbnailViewDeprecated.setThumbnail(it.task, thumbnailData)
-                            }
-                            ?.also { request -> pendingThumbnailLoadRequests.add(request) }
-                    } else {
-                        it.thumbnailViewDeprecated.setThumbnail(null, null)
-                        // Reset the task thumbnail reference as well (it will be fetched from the
-                        // cache or reloaded next time we need it)
-                        it.task.thumbnail = null
-                    }
+        if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL) && !enableRefactorTaskThumbnail()) {
+            taskContainers.forEach {
+                if (visible) {
+                    recentsModel.thumbnailCache
+                        .updateThumbnailInBackground(it.task) { thumbnailData ->
+                            it.thumbnailViewDeprecated.setThumbnail(it.task, thumbnailData)
+                        }
+                        ?.also { request -> pendingThumbnailLoadRequests.add(request) }
+                } else {
+                    it.thumbnailViewDeprecated.setThumbnail(null, null)
+                    // Reset the task thumbnail reference as well (it will be fetched from the
+                    // cache or reloaded next time we need it)
+                    it.task.thumbnail = null
                 }
             }
         }
@@ -861,7 +859,7 @@ constructor(
 
     open fun refreshThumbnails(thumbnailDatas: HashMap<Int, ThumbnailData?>?) {
         if (enableRefactorTaskThumbnail()) {
-            // TODO(b/334825222) add thumbnail logic
+            // TODO(b/342560598) add thumbnail logic
             return
         }
 
@@ -1591,7 +1589,9 @@ constructor(
         // TODO(b/335649589): TaskView's VM will already have access to TaskThumbnailView's VM
         //  so there will be no need to access TaskThumbnailView's VM through the TaskThumbnailView
         fun bindThumbnailView() {
-            thumbnailView?.viewModel?.bind(TaskThumbnail(task, isRunningTask))
+            // TODO(b/343364498): Existing view has shouldShowScreenshot as an override as well but
+            //  this should be decided inside TaskThumbnailViewModel.
+            thumbnailView?.viewModel?.bind(TaskThumbnail(task.key.id, isRunningTask))
         }
     }
 

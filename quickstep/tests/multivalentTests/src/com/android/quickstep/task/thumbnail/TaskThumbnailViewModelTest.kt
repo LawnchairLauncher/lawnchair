@@ -16,33 +16,51 @@
 
 package com.android.quickstep.task.thumbnail
 
+import android.content.ComponentName
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.Rect
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.quickstep.recents.data.FakeTasksRepository
 import com.android.quickstep.recents.viewmodel.RecentsViewData
+import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.BackgroundOnly
+import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.LiveTile
+import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.Snapshot
+import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.Uninitialized
 import com.android.quickstep.task.viewmodel.TaskViewData
 import com.android.systemui.shared.recents.model.Task
+import com.android.systemui.shared.recents.model.ThumbnailData
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(AndroidJUnit4::class)
 class TaskThumbnailViewModelTest {
     private val recentsViewData = RecentsViewData()
     private val taskViewData = TaskViewData()
-    private val systemUnderTest = TaskThumbnailViewModel(recentsViewData, taskViewData)
+    private val tasksRepository = FakeTasksRepository()
+    private val systemUnderTest =
+        TaskThumbnailViewModel(recentsViewData, taskViewData, tasksRepository)
+
+    private val tasks = (0..5).map(::createTaskWithId)
 
     @Test
     fun initialStateIsUninitialized() = runTest {
-        assertThat(systemUnderTest.uiState.first()).isEqualTo(TaskThumbnailUiState.Uninitialized)
+        assertThat(systemUnderTest.uiState.first()).isEqualTo(Uninitialized)
     }
 
     @Test
     fun bindRunningTask_thenStateIs_LiveTile() = runTest {
-        val taskThumbnail = TaskThumbnail(Task(), isRunning = true)
+        tasksRepository.seedTasks(tasks)
+        val taskThumbnail = TaskThumbnail(taskId = 1, isRunning = true)
         systemUnderTest.bind(taskThumbnail)
 
-        assertThat(systemUnderTest.uiState.first()).isEqualTo(TaskThumbnailUiState.LiveTile)
+        assertThat(systemUnderTest.uiState.first()).isEqualTo(LiveTile)
     }
 
     @Test
@@ -65,15 +83,96 @@ class TaskThumbnailViewModelTest {
     }
 
     @Test
-    fun bindRunningTaskThenStoppedTask_thenStateIs_Uninitialized() = runTest {
-        // TODO(b/334825222): Change the expectation here when snapshot state is implemented
-        val task = Task()
-        val runningTask = TaskThumbnail(task, isRunning = true)
-        val stoppedTask = TaskThumbnail(task, isRunning = false)
-        systemUnderTest.bind(runningTask)
-        assertThat(systemUnderTest.uiState.first()).isEqualTo(TaskThumbnailUiState.LiveTile)
+    fun bindRunningTaskThenStoppedTaskWithoutThumbnail_thenStateChangesToBackgroundOnly() =
+        runTest {
+            tasksRepository.seedTasks(tasks)
+            val runningTask = TaskThumbnail(taskId = 1, isRunning = true)
+            val stoppedTask = TaskThumbnail(taskId = 2, isRunning = false)
+            systemUnderTest.bind(runningTask)
+            assertThat(systemUnderTest.uiState.first()).isEqualTo(LiveTile)
+
+            systemUnderTest.bind(stoppedTask)
+            assertThat(systemUnderTest.uiState.first())
+                .isEqualTo(BackgroundOnly(backgroundColor = Color.rgb(2, 2, 2)))
+        }
+
+    @Test
+    fun bindStoppedTaskWithoutThumbnail_thenStateIs_BackgroundOnly_withAlphaRemoved() = runTest {
+        tasksRepository.seedTasks(tasks)
+        val stoppedTask = TaskThumbnail(taskId = 2, isRunning = false)
 
         systemUnderTest.bind(stoppedTask)
-        assertThat(systemUnderTest.uiState.first()).isEqualTo(TaskThumbnailUiState.Uninitialized)
+        assertThat(systemUnderTest.uiState.first())
+            .isEqualTo(BackgroundOnly(backgroundColor = Color.rgb(2, 2, 2)))
+    }
+
+    @Test
+    fun bindLockedTaskWithThumbnail_thenStateIs_BackgroundOnly() = runTest {
+        tasksRepository.seedThumbnailData(mapOf(2 to createThumbnailData()))
+        tasks[2].isLocked = true
+        tasksRepository.seedTasks(tasks)
+        val recentTask = TaskThumbnail(taskId = 2, isRunning = false)
+
+        systemUnderTest.bind(recentTask)
+        assertThat(systemUnderTest.uiState.first())
+            .isEqualTo(BackgroundOnly(backgroundColor = Color.rgb(2, 2, 2)))
+    }
+
+    @Test
+    fun bindStoppedTaskWithThumbnail_thenStateIs_Snapshot_withAlphaRemoved() = runTest {
+        val expectedThumbnailData = createThumbnailData()
+        tasksRepository.seedThumbnailData(mapOf(2 to expectedThumbnailData))
+        tasksRepository.seedTasks(tasks)
+        tasksRepository.setVisibleTasks(listOf(2))
+        val recentTask = TaskThumbnail(taskId = 2, isRunning = false)
+
+        systemUnderTest.bind(recentTask)
+        assertThat(systemUnderTest.uiState.first())
+            .isEqualTo(
+                Snapshot(
+                    backgroundColor = Color.rgb(2, 2, 2),
+                    bitmap = expectedThumbnailData.thumbnail!!,
+                    drawnRect = Rect(0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+                )
+            )
+    }
+
+    @Test
+    fun bindNonVisibleStoppedTask_whenMadeVisible_thenStateIsSnapshot() = runTest {
+        val expectedThumbnailData = createThumbnailData()
+        tasksRepository.seedThumbnailData(mapOf(2 to expectedThumbnailData))
+        tasksRepository.seedTasks(tasks)
+        val recentTask = TaskThumbnail(taskId = 2, isRunning = false)
+
+        systemUnderTest.bind(recentTask)
+        assertThat(systemUnderTest.uiState.first())
+            .isEqualTo(BackgroundOnly(backgroundColor = Color.rgb(2, 2, 2)))
+        tasksRepository.setVisibleTasks(listOf(2))
+        assertThat(systemUnderTest.uiState.first())
+            .isEqualTo(
+                Snapshot(
+                    backgroundColor = Color.rgb(2, 2, 2),
+                    bitmap = expectedThumbnailData.thumbnail!!,
+                    drawnRect = Rect(0, 0, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+                )
+            )
+    }
+
+    private fun createTaskWithId(taskId: Int) =
+        Task(Task.TaskKey(taskId, 0, Intent(), ComponentName("", ""), 0, 2000)).apply {
+            colorBackground = Color.argb(taskId, taskId, taskId, taskId)
+        }
+
+    private fun createThumbnailData(): ThumbnailData {
+        val bitmap = mock<Bitmap>()
+        whenever(bitmap.width).thenReturn(THUMBNAIL_WIDTH)
+        whenever(bitmap.height).thenReturn(THUMBNAIL_HEIGHT)
+
+        return ThumbnailData(thumbnail = bitmap)
+    }
+
+    companion object {
+        const val THUMBNAIL_WIDTH = 100
+        const val THUMBNAIL_HEIGHT = 200
     }
 }

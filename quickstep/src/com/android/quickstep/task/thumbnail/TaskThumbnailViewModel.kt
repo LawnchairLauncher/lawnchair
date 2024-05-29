@@ -16,32 +16,76 @@
 
 package com.android.quickstep.task.thumbnail
 
+import android.annotation.ColorInt
+import android.graphics.Rect
+import androidx.core.graphics.ColorUtils
+import com.android.quickstep.recents.data.RecentTasksRepository
 import com.android.quickstep.recents.viewmodel.RecentsViewData
+import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.BackgroundOnly
 import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.LiveTile
+import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.Snapshot
 import com.android.quickstep.task.thumbnail.TaskThumbnailUiState.Uninitialized
 import com.android.quickstep.task.viewmodel.TaskViewData
+import com.android.systemui.shared.recents.model.Task
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
-class TaskThumbnailViewModel(recentsViewData: RecentsViewData, taskViewData: TaskViewData) {
-    private val task = MutableStateFlow<TaskThumbnail?>(null)
+@OptIn(ExperimentalCoroutinesApi::class)
+class TaskThumbnailViewModel(
+    recentsViewData: RecentsViewData,
+    taskViewData: TaskViewData,
+    private val tasksRepository: RecentTasksRepository,
+) {
+    private val task = MutableStateFlow<Flow<Task?>>(flowOf(null))
+    private var boundTaskIsRunning = false
 
     val recentsFullscreenProgress = recentsViewData.fullscreenProgress
     val inheritedScale =
         combine(recentsViewData.scale, taskViewData.scale) { recentsScale, taskScale ->
             recentsScale * taskScale
         }
-    val uiState =
-        task.map { taskVal ->
-            when {
-                taskVal == null -> Uninitialized
-                taskVal.isRunning -> LiveTile
-                else -> Uninitialized
+    val uiState: Flow<TaskThumbnailUiState> =
+        task
+            .flatMapLatest { taskFlow ->
+                taskFlow.map { taskVal ->
+                    when {
+                        taskVal == null -> Uninitialized
+                        boundTaskIsRunning -> LiveTile
+                        isBackgroundOnly(taskVal) ->
+                            BackgroundOnly(taskVal.colorBackground.removeAlpha())
+                        isSnapshotState(taskVal) -> {
+                            val bitmap = taskVal.thumbnail?.thumbnail!!
+                            Snapshot(
+                                bitmap,
+                                Rect(0, 0, bitmap.width, bitmap.height),
+                                taskVal.colorBackground.removeAlpha()
+                            )
+                        }
+                        else -> Uninitialized
+                    }
+                }
             }
-        }
+            .distinctUntilChanged()
 
-    fun bind(task: TaskThumbnail) {
-        this.task.value = task
+    fun bind(taskThumbnail: TaskThumbnail) {
+        boundTaskIsRunning = taskThumbnail.isRunning
+        task.value = tasksRepository.getTaskDataById(taskThumbnail.taskId)
     }
+
+    private fun isBackgroundOnly(task: Task): Boolean = task.isLocked || task.thumbnail == null
+
+    private fun isSnapshotState(task: Task): Boolean {
+        val thumbnailPresent = task.thumbnail?.thumbnail != null
+        val taskLocked = task.isLocked
+
+        return thumbnailPresent && !taskLocked
+    }
+
+    @ColorInt private fun Int.removeAlpha(): Int = ColorUtils.setAlphaComponent(this, 0xff)
 }
