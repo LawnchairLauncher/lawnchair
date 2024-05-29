@@ -16,8 +16,9 @@
 
 package com.android.launcher3.util;
 
-import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE;
 import static android.view.WindowManager.PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI;
+
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE;
 
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -147,6 +148,18 @@ public class PackageManagerHelper implements SafeCloseable{
         } catch (NameNotFoundException e) {
             Log.e(TAG, "Failed to get applicationInfo for package: " + packageName, e);
             return false;
+        }
+    }
+
+    /**
+     * Returns the installing app package for the given package
+     */
+    public String getAppInstallerPackage(@NonNull final String packageName) {
+        try {
+            return mPm.getInstallSourceInfo(packageName).getInstallingPackageName();
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Failed to get installer package for app package:" + packageName, e);
+            return null;
         }
     }
 
