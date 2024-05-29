@@ -39,6 +39,7 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.os.BuildCompat;
 
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.IconCache;
@@ -107,7 +108,7 @@ public class LauncherAppState implements SafeCloseable {
         mOnTerminateCallback.add(() ->
                 mContext.getSystemService(LauncherApps.class).unregisterCallback(callbacks));
 
-        if (Flags.enableSupportForArchiving()) {
+        if (BuildCompat.isAtLeastV() && Flags.enableSupportForArchiving()) {
             ArchiveCompatibilityParams params = new ArchiveCompatibilityParams();
             params.setEnableUnarchivalConfirmation(false);
             launcherApps.setArchiveCompatibility(params);

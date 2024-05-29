@@ -163,6 +163,7 @@ import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.os.BuildCompat;
 import androidx.window.embedding.RuleController;
 
 import com.android.launcher3.DropTarget.DragObject;
@@ -589,7 +590,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         setTitle(R.string.home_screen);
         mStartupLatencyLogger.logEnd(LAUNCHER_LATENCY_STARTUP_ACTIVITY_ON_CREATE);
 
-        if (com.android.launcher3.Flags.enableTwoPaneLauncherSettings()) {
+        if (BuildCompat.isAtLeastV()
+                && com.android.launcher3.Flags.enableTwoPaneLauncherSettings()) {
             RuleController.getInstance(this).setRules(
                     RuleController.parseRules(this, R.xml.split_configuration));
         }
@@ -2789,7 +2791,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     private void updateDisallowBack() {
-        if (Flags.enableDesktopWindowingMode()) {
+        if (BuildCompat.isAtLeastV() && Flags.enableDesktopWindowingMode()) {
             // TODO(b/330183377) disable back in launcher when when we productionize
             return;
         }
