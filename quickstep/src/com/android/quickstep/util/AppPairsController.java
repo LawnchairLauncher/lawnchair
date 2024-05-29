@@ -27,6 +27,8 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
+import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50;
+import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_NONE;
 import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.wm.shell.common.split.SplitScreenConstants.SPLIT_POSITION_TOP_OR_LEFT;
 import static com.android.wm.shell.common.split.SplitScreenConstants.isPersistentSnapPosition;
@@ -186,6 +188,10 @@ public class AppPairsController {
         }
 
         @PersistentSnapPosition int snapPosition = gtv.getSnapPosition();
+        if (snapPosition == SNAP_TO_NONE) {
+            // Free snap mode is enabled, just save it as 50/50 split.
+            snapPosition = SNAP_TO_50_50;
+        }
         if (!isPersistentSnapPosition(snapPosition)) {
             // If we received an illegal snap position, log an error and do not create the app pair
             Log.wtf(TAG, "Tried to save an app pair with illegal snapPosition "
