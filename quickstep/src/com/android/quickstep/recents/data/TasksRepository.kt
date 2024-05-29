@@ -38,7 +38,7 @@ class TasksRepository(
     private val recentsModel: RecentTasksDataSource,
     private val taskThumbnailDataSource: TaskThumbnailDataSource,
     private val taskIconCache: TaskIconCache,
-) {
+) : RecentTasksRepository {
     private val groupedTaskData = MutableStateFlow(emptyList<GroupTask>())
     private val _taskData =
         groupedTaskData.map { groupTaskList -> groupTaskList.flatMap { it.tasks } }
@@ -53,17 +53,17 @@ class TasksRepository(
             tasks
         }
 
-    fun getAllTaskData(forceRefresh: Boolean = false): Flow<List<Task>> {
+    override fun getAllTaskData(forceRefresh: Boolean): Flow<List<Task>> {
         if (forceRefresh) {
             recentsModel.getTasks { groupedTaskData.value = it }
         }
         return taskData
     }
 
-    fun getTaskDataById(taskId: Int): Flow<Task?> =
+    override fun getTaskDataById(taskId: Int): Flow<Task?> =
         taskData.map { taskList -> taskList.firstOrNull { it.key.id == taskId } }
 
-    fun setVisibleTasks(visibleTaskIdList: List<Int>) {
+    override fun setVisibleTasks(visibleTaskIdList: List<Int>) {
         this.visibleTaskIds.value = visibleTaskIdList.toSet()
     }
 

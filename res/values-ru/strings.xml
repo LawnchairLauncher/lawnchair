@@ -185,7 +185,7 @@
     <string name="remote_action_failed" msgid="1383965239183576790">"Не удалось выполнить действие (<xliff:g id="WHAT">%1$s</xliff:g>)."</string>
     <string name="private_space_label" msgid="2359721649407947001">"Частное пространство"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Нажмите, чтобы настроить или открыть"</string>
-    <string name="ps_container_title" msgid="4391796149519594205">"Доступно только вам"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Частный профиль"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Настройки личного пространства"</string>
     <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Личное, разблокировано."</string>
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Личное, заблокировано."</string>
