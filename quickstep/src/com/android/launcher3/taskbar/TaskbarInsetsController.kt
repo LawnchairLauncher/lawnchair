@@ -236,7 +236,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             provider.insetsSize = getInsetsForGravityWithCutout(contentHeight, gravity, endRotation)
         } else if (provider.type == mandatorySystemGestures()) {
             if (context.isThreeButtonNav) {
-                // Leave null to inset by the window frame
+                provider.insetsSize = Insets.of(0, 0, 0, 0)
             } else {
                 val gestureHeight =
                         ResourceUtils.getNavbarSize(
