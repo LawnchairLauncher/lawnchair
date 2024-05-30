@@ -16,6 +16,8 @@ import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.MonetTonalPaletteCompat
 import app.lawnchair.theme.color.SystemTonalPalette
 import app.lawnchair.theme.colorscheme.LightDarkScheme
+import app.lawnchair.theme.utils.getLightDarkScheme
+import app.lawnchair.theme.utils.getSystemLightDarkScheme
 import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
@@ -37,8 +39,6 @@ class ThemeProvider(private val context: Context) {
 
     private val tonalPaletteMap = SparseArray<TonalPalette>()
     private val listeners = mutableListOf<TonalPaletteChangeListener>()
-
-    private lateinit var colorScheme: LightDarkScheme
 
     init {
         if (Utilities.ATLEAST_S) {
@@ -75,6 +75,21 @@ class ThemeProvider(private val context: Context) {
             null,
             Handler(Looper.getMainLooper()),
         )
+    }
+
+    val colorScheme get() = when (val accentColor = this.accentColor) {
+        is ColorOption.SystemAccent -> systemColorScheme
+        is ColorOption.WallpaperPrimary -> {
+            val wallpaperPrimary = wallpaperManager.wallpaperColors?.primaryColor
+            getLightDarkScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color)
+        }
+        is ColorOption.CustomColor -> getLightDarkScheme(accentColor.color)
+        else -> getLightDarkScheme(ColorOption.LawnchairBlue.color)
+    }
+
+    private val systemColorScheme get() = when {
+        Utilities.ATLEAST_S -> getSystemLightDarkScheme(context)
+        else -> getLightDarkScheme(context.getSystemAccent(darkTheme = false))
     }
 
     val tonalPalette get() = when (val accentColor = this.accentColor) {
