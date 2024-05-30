@@ -512,6 +512,7 @@ constructor(
         onTaskListVisibilityChanged(false)
         borderEnabled = false
         taskViewId = UNBOUND_TASK_VIEW_ID
+        taskContainers.forEach { it.destroy() }
     }
 
     // TODO: Clip-out the icon region from the thumbnail, since they are overlapping.
@@ -801,12 +802,12 @@ constructor(
             taskContainers.forEach {
                 if (visible) {
                     recentsModel.iconCache
-                        .updateIconInBackground(it.task) { thumbnailData ->
-                            setIcon(it.iconView, thumbnailData.icon)
+                        .updateIconInBackground(it.task) { task ->
+                            setIcon(it.iconView, task.icon)
                             if (enableOverviewIconMenu()) {
-                                setText(it.iconView, thumbnailData.title)
+                                setText(it.iconView, task.title)
                             }
-                            it.digitalWellBeingToast?.initialize(thumbnailData)
+                            it.digitalWellBeingToast?.initialize(task)
                         }
                         ?.also { request -> pendingIconLoadRequests.add(request) }
                 } else {
@@ -1585,6 +1586,11 @@ constructor(
 
         val taskView: TaskView
             get() = this@TaskView
+
+        fun destroy() {
+            digitalWellBeingToast?.destroy()
+            thumbnailView?.let { taskView.removeView(it) }
+        }
 
         // TODO(b/335649589): TaskView's VM will already have access to TaskThumbnailView's VM
         //  so there will be no need to access TaskThumbnailView's VM through the TaskThumbnailView
