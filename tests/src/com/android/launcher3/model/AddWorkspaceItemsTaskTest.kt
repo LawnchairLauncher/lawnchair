@@ -35,7 +35,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.same
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyZeroInteractions
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
 /** Tests for [AddWorkspaceItemsTask] */
@@ -97,7 +97,8 @@ class AddWorkspaceItemsTaskTest : AbstractWorkspaceModelTest() {
         val addedItems = testAddItems(nonEmptyScreenIds, itemToAdd)
 
         assertThat(addedItems.size).isEqualTo(0)
-        verifyZeroInteractions(mWorkspaceItemSpaceFinder)
+        // b/343530737
+        verifyNoMoreInteractions(mWorkspaceItemSpaceFinder)
     }
 
     @Test

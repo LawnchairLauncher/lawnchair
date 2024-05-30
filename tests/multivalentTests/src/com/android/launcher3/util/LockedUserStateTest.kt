@@ -28,7 +28,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyZeroInteractions
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
 /** Unit tests for {@link LockedUserState} */
@@ -58,7 +58,8 @@ class LockedUserStateTest {
         val action: Runnable = mock()
         val state = LockedUserState(context)
         state.runOnUserUnlocked(action)
-        verifyZeroInteractions(action)
+        // b/343530737
+        verifyNoMoreInteractions(action)
         state.mUserUnlockedReceiver.onReceive(context, Intent(Intent.ACTION_USER_UNLOCKED))
         verify(action).run()
     }
