@@ -8,12 +8,14 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PatternMatcher
 import android.util.SparseArray
+import androidx.compose.material3.ColorScheme
 import androidx.core.graphics.ColorUtils
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.AndroidColor
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.MonetTonalPaletteCompat
 import app.lawnchair.theme.color.SystemTonalPalette
+import app.lawnchair.theme.colorscheme.LightDarkScheme
 import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
@@ -35,6 +37,8 @@ class ThemeProvider(private val context: Context) {
 
     private val tonalPaletteMap = SparseArray<TonalPalette>()
     private val listeners = mutableListOf<TonalPaletteChangeListener>()
+
+    private lateinit var colorScheme: LightDarkScheme
 
     init {
         if (Utilities.ATLEAST_S) {
