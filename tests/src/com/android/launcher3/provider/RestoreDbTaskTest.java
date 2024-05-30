@@ -38,7 +38,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import android.app.backup.BackupManager;
@@ -243,7 +243,8 @@ public class RestoreDbTaskTest {
         // Then
         assertThat(expectedHost.getAppWidgetIds()).isEqualTo(expectedOldIds);
         assertThat(mPrefs.has(OLD_APP_WIDGET_IDS, APP_WIDGET_IDS)).isFalse();
-        verifyZeroInteractions(mMockController);
+        // b/343530737
+        verifyNoMoreInteractions(mMockController);
     }
 
     @Test

@@ -183,6 +183,9 @@ public final class TestProtocol {
     public static final String REQUEST_UNSTASH_BUBBLE_BAR_IF_STASHED =
             "unstash-bubble-bar-if-stashed";
 
+    public static final String REQUEST_INJECT_FAKE_TRACKPAD = "inject-fake-trackpad";
+    public static final String REQUEST_EJECT_FAKE_TRACKPAD = "eject-fake-trackpad";
+
     /** Logs {@link Log#d(String, String)} if {@link #sDebugTracing} is true. */
     public static void testLogD(String tag, String message) {
         if (!sDebugTracing) {

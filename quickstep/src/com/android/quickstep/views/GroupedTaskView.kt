@@ -162,6 +162,7 @@ class GroupedTaskView @JvmOverloads constructor(context: Context, attrs: Attribu
                         PreviewPositionHelper.STAGE_POSITION_BOTTOM_OR_RIGHT
                     )
             }
+        taskContainers.forEach { it.digitalWellBeingToast?.setSplitBounds(splitBoundsConfig) }
         setOrientationState(orientedState)
     }
 
@@ -240,6 +241,10 @@ class GroupedTaskView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     fun updateSplitBoundsConfig(splitBounds: SplitConfigurationOptions.SplitBounds?) {
         splitBoundsConfig = splitBounds
+        taskContainers.forEach {
+            it.digitalWellBeingToast?.setSplitBounds(splitBoundsConfig)
+            it.digitalWellBeingToast?.initialize(it.task)
+        }
         invalidate()
     }
 

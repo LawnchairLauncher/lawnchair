@@ -74,7 +74,7 @@ public final class DigitalWellBeingToast {
             SPLIT_GRID_BANNER_SMALL,
     })
     @Retention(RetentionPolicy.SOURCE)
-    @interface SPLIT_BANNER_CONFIG{}
+    @interface SplitBannerConfig{}
 
     static final Intent OPEN_APP_USAGE_SETTINGS_TEMPLATE = new Intent(ACTION_APP_USAGE_SETTINGS);
     static final int MINUTE_MS = 60000;
@@ -88,7 +88,6 @@ public final class DigitalWellBeingToast {
     private Task mTask;
     private boolean mHasLimit;
 
-    private long mAppUsageLimitTimeMs;
     private long mAppRemainingTimeMs;
     @Nullable
     private View mBanner;
@@ -96,9 +95,10 @@ public final class DigitalWellBeingToast {
     private float mBannerOffsetPercentage;
     @Nullable
     private SplitBounds mSplitBounds;
-    private int mSplitBannerConfig = SPLIT_BANNER_FULLSCREEN;
     private float mSplitOffsetTranslationY;
     private float mSplitOffsetTranslationX;
+
+    private boolean mIsDestroyed = false;
 
     public DigitalWellBeingToast(RecentsViewContainer container, TaskView taskView) {
         mContainer = container;
@@ -110,12 +110,10 @@ public final class DigitalWellBeingToast {
         mHasLimit = false;
         mTaskView.setContentDescription(mTask.titleDescription);
         replaceBanner(null);
-        mAppUsageLimitTimeMs = -1;
         mAppRemainingTimeMs = -1;
     }
 
     private void setLimit(long appUsageLimitTimeMs, long appRemainingTimeMs) {
-        mAppUsageLimitTimeMs = appUsageLimitTimeMs;
         mAppRemainingTimeMs = appRemainingTimeMs;
         mHasLimit = true;
         TextView toast = mContainer.getViewCache().getView(R.layout.digital_wellbeing_toast,
@@ -138,89 +136,95 @@ public final class DigitalWellBeingToast {
     }
 
     public void initialize(Task task) {
-        mAppUsageLimitTimeMs = mAppRemainingTimeMs = -1;
+        if (mIsDestroyed) {
+            throw new IllegalStateException("Cannot re-initialize a destroyed toast");
+        }
         mTask = task;
         ORDERED_BG_EXECUTOR.execute(() -> {
-                    AppUsageLimit usageLimit = null;
-                    try {
-                        usageLimit = mLauncherApps.getAppUsageLimit(
-                                mTask.getTopComponent().getPackageName(),
-                                UserHandle.of(mTask.key.userId));
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error initializing digital well being toast", e);
-                    }
-                    final long appUsageLimitTimeMs =
-                            usageLimit != null ? usageLimit.getTotalUsageLimit() : -1;
-                    final long appRemainingTimeMs =
-                            usageLimit != null ? usageLimit.getUsageRemaining() : -1;
+            AppUsageLimit usageLimit = null;
+            try {
+                usageLimit = mLauncherApps.getAppUsageLimit(
+                        mTask.getTopComponent().getPackageName(),
+                        UserHandle.of(mTask.key.userId));
+            } catch (Exception e) {
+                Log.e(TAG, "Error initializing digital well being toast", e);
+            }
+            final long appUsageLimitTimeMs =
+                    usageLimit != null ? usageLimit.getTotalUsageLimit() : -1;
+            final long appRemainingTimeMs =
+                    usageLimit != null ? usageLimit.getUsageRemaining() : -1;
 
-                    mTaskView.post(() -> {
-                        if (appUsageLimitTimeMs < 0 || appRemainingTimeMs < 0) {
-                            setNoLimit();
-                        } else {
-                            setLimit(appUsageLimitTimeMs, appRemainingTimeMs);
-                        }
-                    });
-
+            mTaskView.post(() -> {
+                if (mIsDestroyed) {
+                    return;
                 }
-        );
+                if (appUsageLimitTimeMs < 0 || appRemainingTimeMs < 0) {
+                    setNoLimit();
+                } else {
+                    setLimit(appUsageLimitTimeMs, appRemainingTimeMs);
+                }
+            });
+        });
     }
 
-    public void setSplitConfiguration(SplitBounds splitBounds) {
+    /**
+     * Mark the DWB toast as destroyed and remove banner from TaskView.
+     */
+    public void destroy() {
+        mIsDestroyed = true;
+        mTaskView.post(() -> replaceBanner(null));
+    }
+
+    public void setSplitBounds(@Nullable SplitBounds splitBounds) {
         mSplitBounds = splitBounds;
+    }
+
+    private @SplitBannerConfig int getSplitBannerConfig() {
         if (mSplitBounds == null
                 || !mContainer.getDeviceProfile().isTablet
                 || mTaskView.isFocusedTask()) {
-            mSplitBannerConfig = SPLIT_BANNER_FULLSCREEN;
-            return;
+            return SPLIT_BANNER_FULLSCREEN;
         }
 
         // For portrait grid only height of task changes, not width. So we keep the text the same
         if (!mContainer.getDeviceProfile().isLeftRightSplit) {
-            mSplitBannerConfig = SPLIT_GRID_BANNER_LARGE;
-            return;
+            return SPLIT_GRID_BANNER_LARGE;
         }
 
         // For landscape grid, for 30% width we only show icon, otherwise show icon and time
         if (mTask.key.id == mSplitBounds.leftTopTaskId) {
-            mSplitBannerConfig = mSplitBounds.leftTaskPercent < THRESHOLD_LEFT_ICON_ONLY ?
-                    SPLIT_GRID_BANNER_SMALL : SPLIT_GRID_BANNER_LARGE;
+            return mSplitBounds.leftTaskPercent < THRESHOLD_LEFT_ICON_ONLY
+                    ? SPLIT_GRID_BANNER_SMALL : SPLIT_GRID_BANNER_LARGE;
         } else {
-            mSplitBannerConfig = mSplitBounds.leftTaskPercent > THRESHOLD_RIGHT_ICON_ONLY ?
-                    SPLIT_GRID_BANNER_SMALL : SPLIT_GRID_BANNER_LARGE;
+            return mSplitBounds.leftTaskPercent > THRESHOLD_RIGHT_ICON_ONLY
+                    ? SPLIT_GRID_BANNER_SMALL : SPLIT_GRID_BANNER_LARGE;
         }
     }
 
     private String getReadableDuration(
             Duration duration,
-            FormatWidth formatWidthHourAndMinute,
-            @StringRes int durationLessThanOneMinuteStringId,
-            boolean forceFormatWidth) {
+            @StringRes int durationLessThanOneMinuteStringId) {
         int hours = Math.toIntExact(duration.toHours());
         int minutes = Math.toIntExact(duration.minusHours(hours).toMinutes());
 
-        // Apply formatWidthHourAndMinute if both the hour part and the minute part are non-zero.
+        // Apply FormatWidth.WIDE if both the hour part and the minute part are non-zero.
         if (hours > 0 && minutes > 0) {
-            return MeasureFormat.getInstance(Locale.getDefault(), formatWidthHourAndMinute)
+            return MeasureFormat.getInstance(Locale.getDefault(), FormatWidth.NARROW)
                     .formatMeasures(
                             new Measure(hours, MeasureUnit.HOUR),
                             new Measure(minutes, MeasureUnit.MINUTE));
         }
 
-        // Apply formatWidthHourOrMinute if only the hour part is non-zero (unless forced).
+        // Apply FormatWidth.WIDE if only the hour part is non-zero (unless forced).
         if (hours > 0) {
-            return MeasureFormat.getInstance(
-                    Locale.getDefault(),
-                    forceFormatWidth ? formatWidthHourAndMinute : FormatWidth.WIDE)
-                    .formatMeasures(new Measure(hours, MeasureUnit.HOUR));
+            return MeasureFormat.getInstance(Locale.getDefault(), FormatWidth.WIDE).formatMeasures(
+                    new Measure(hours, MeasureUnit.HOUR));
         }
 
-        // Apply formatWidthHourOrMinute if only the minute part is non-zero (unless forced).
+        // Apply FormatWidth.WIDE if only the minute part is non-zero (unless forced).
         if (minutes > 0) {
-            return MeasureFormat.getInstance(
-                    Locale.getDefault()
-                    , forceFormatWidth ? formatWidthHourAndMinute : FormatWidth.WIDE)
-                    .formatMeasures(new Measure(minutes, MeasureUnit.MINUTE));
+            return MeasureFormat.getInstance(Locale.getDefault(), FormatWidth.WIDE).formatMeasures(
+                    new Measure(minutes, MeasureUnit.MINUTE));
         }
 
         // Use a specific string for usage less than one minute but non-zero.
@@ -229,13 +233,12 @@ public final class DigitalWellBeingToast {
         }
 
         // Otherwise, return 0-minute string.
-        return MeasureFormat.getInstance(
-                Locale.getDefault(), forceFormatWidth ? formatWidthHourAndMinute : FormatWidth.WIDE)
-                .formatMeasures(new Measure(0, MeasureUnit.MINUTE));
+        return MeasureFormat.getInstance(Locale.getDefault(), FormatWidth.WIDE).formatMeasures(
+                new Measure(0, MeasureUnit.MINUTE));
     }
 
     /**
-     * Returns text to show for the banner depending on {@link #mSplitBannerConfig}
+     * Returns text to show for the banner depending on {@link #getSplitBannerConfig()}
      * If {@param forContentDesc} is {@code true}, this will always return the full
      * string corresponding to {@link #SPLIT_BANNER_FULLSCREEN}
      */
@@ -245,16 +248,16 @@ public final class DigitalWellBeingToast {
                         (remainingTime + MINUTE_MS - 1) / MINUTE_MS * MINUTE_MS :
                         remainingTime);
         String readableDuration = getReadableDuration(duration,
-                FormatWidth.NARROW,
-                R.string.shorter_duration_less_than_one_minute,
-                false /* forceFormatWidth */);
-        if (forContentDesc || mSplitBannerConfig == SPLIT_BANNER_FULLSCREEN) {
+                R.string.shorter_duration_less_than_one_minute
+                /* forceFormatWidth */);
+        @SplitBannerConfig int splitBannerConfig = getSplitBannerConfig();
+        if (forContentDesc || splitBannerConfig == SPLIT_BANNER_FULLSCREEN) {
             return mContainer.asContext().getString(
                     R.string.time_left_for_app,
                     readableDuration);
         }
 
-        if (mSplitBannerConfig == SPLIT_GRID_BANNER_SMALL) {
+        if (splitBannerConfig == SPLIT_GRID_BANNER_SMALL) {
             // show no text
             return "";
         } else { // SPLIT_GRID_BANNER_LARGE
@@ -309,7 +312,7 @@ public final class DigitalWellBeingToast {
 
     private void setBanner(@Nullable View view) {
         mBanner = view;
-        if (view != null && mTaskView.getRecentsView() != null) {
+        if (mBanner != null && mTaskView.getRecentsView() != null) {
             setupAndAddBanner();
             setBannerOutline();
         }

@@ -40,11 +40,13 @@ import java.util.function.Predicate;
  * {@link PrivateProfileManager} which manages private profile state.
  */
 public abstract class UserProfileManager {
+    public static final int STATE_UNKNOWN = 0;
     public static final int STATE_ENABLED = 1;
     public static final int STATE_DISABLED = 2;
     public static final int STATE_TRANSITION = 3;
 
     @IntDef(value = {
+            STATE_UNKNOWN,
             STATE_ENABLED,
             STATE_DISABLED,
             STATE_TRANSITION

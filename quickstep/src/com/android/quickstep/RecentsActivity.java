@@ -371,6 +371,9 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> implem
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
         ACTIVITY_TRACKER.handleCreate(this);
+
+        // Set screen title for Talkback
+        setTitle(R.string.accessibility_recent_apps);
     }
 
     @Override

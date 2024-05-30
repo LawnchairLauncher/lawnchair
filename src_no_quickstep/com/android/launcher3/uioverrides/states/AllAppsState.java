@@ -53,6 +53,11 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
+    public int getTitle() {
+        return R.string.all_apps_label;
+    }
+
+    @Override
     public int getVisibleElements(Launcher launcher) {
         return ALL_APPS_CONTENT;
     }

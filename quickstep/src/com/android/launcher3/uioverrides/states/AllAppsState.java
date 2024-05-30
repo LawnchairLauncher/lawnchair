@@ -102,6 +102,11 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
+    public int getTitle() {
+        return R.string.all_apps_label;
+    }
+
+    @Override
     public float getVerticalProgress(Launcher launcher) {
         return 0f;
     }

@@ -114,16 +114,21 @@ public class PrivateProfileManager extends UserProfileManager {
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                mAnimationScrolling = false;
+                mIsScrolling = false;
             }
         }
     };
     private Intent mAppInstallerIntent = new Intent();
     private PrivateAppsSectionDecorator mPrivateAppsSectionDecorator;
     private boolean mPrivateSpaceSettingsAvailable;
+    // Returns if the animation is currently running.
     private boolean mIsAnimationRunning;
-    private boolean mAnimate;
-    private boolean mAnimationScrolling;
+    // mAnimate denotes if private space is ready to be animated.
+    private boolean mReadyToAnimate;
+    // Returns when the recyclerView is currently scrolling.
+    private boolean mIsScrolling;
+    // mIsStateTransitioning indicates that private space is transitioning between states.
+    private boolean mIsStateTransitioning;
     private Runnable mOnPSHeaderAdded;
     @Nullable
     private RelativeLayout mPSHeader;
@@ -230,9 +235,11 @@ public class PrivateProfileManager extends UserProfileManager {
         if (mPSHeader != null) {
             mPSHeader.setAlpha(1);
         }
-        if (transitioningFromLockedToUnlocked(previousState, updatedState)) {
+        // It's possible that previousState is 0 when reset is first called.
+        mIsStateTransitioning = previousState != STATE_UNKNOWN && previousState != updatedState;
+        if (previousState == STATE_DISABLED && updatedState == STATE_ENABLED) {
             postUnlock();
-        } else if (transitioningFromUnlockedToLocked(previousState, updatedState)){
+        } else if (previousState == STATE_ENABLED && updatedState == STATE_DISABLED){
             executeLock();
         }
         resetPrivateSpaceDecorator(updatedState);
@@ -321,7 +328,7 @@ public class PrivateProfileManager extends UserProfileManager {
     @Override
     public void setQuietMode(boolean enable) {
         super.setQuietMode(enable);
-        mAnimate = true;
+        mReadyToAnimate = true;
     }
 
     /**
@@ -343,21 +350,13 @@ public class PrivateProfileManager extends UserProfileManager {
 
     void setAnimationRunning(boolean isAnimationRunning) {
         if (!isAnimationRunning) {
-            mAnimate = false;
+            mReadyToAnimate = false;
         }
         mIsAnimationRunning = isAnimationRunning;
     }
 
     boolean getAnimationRunning() {
         return mIsAnimationRunning;
-    }
-
-    private boolean transitioningFromLockedToUnlocked(int previousState, int updatedState) {
-        return previousState == STATE_DISABLED && updatedState == STATE_ENABLED;
-    }
-
-    private boolean transitioningFromUnlockedToLocked(int previousState, int updatedState) {
-        return previousState == STATE_ENABLED && updatedState == STATE_DISABLED;
     }
 
     @Override
@@ -386,7 +385,7 @@ public class PrivateProfileManager extends UserProfileManager {
         }
         // Set the transition duration for the settings and lock button to animate.
         ViewGroup settingAndLockGroup = mPSHeader.findViewById(R.id.settingsAndLockGroup);
-        if (mAnimate) {
+        if (mReadyToAnimate) {
             enableLayoutTransition(settingAndLockGroup);
         } else {
             // Ensure any unwanted animations to not happen.
@@ -681,6 +680,7 @@ public class PrivateProfileManager extends UserProfileManager {
             }
         });
         animatorSet.addListener(forEndCallback(() -> {
+            mIsStateTransitioning = false;
             setAnimationRunning(false);
             getMainRecyclerView().setChildAttachedConsumer(child -> child.setAlpha(1));
             mStatsLogManager.logger().sendToInteractionJankMonitor(
@@ -712,7 +712,6 @@ public class PrivateProfileManager extends UserProfileManager {
                         animateCollapseAnimation());
             }
         }
-        animatorSet.setDuration(EXPAND_COLLAPSE_DURATION);
         animatorSet.start();
     }
 
@@ -773,7 +772,7 @@ public class PrivateProfileManager extends UserProfileManager {
             public void endTransition(LayoutTransition transition, ViewGroup viewGroup,
                     View view, int i) {
                 settingsAndLockGroup.setLayoutTransition(null);
-                mAnimate = false;
+                mReadyToAnimate = false;
             }
         });
         settingsAndLockGroup.setLayoutTransition(settingsAndLockTransition);
@@ -873,7 +872,7 @@ public class PrivateProfileManager extends UserProfileManager {
     /** Starts the smooth scroll with the provided smoothScroller and add idle listener. */
     private void startAnimationScroll(AllAppsRecyclerView allAppsRecyclerView,
             RecyclerView.LayoutManager layoutManager, RecyclerView.SmoothScroller smoothScroller) {
-        mAnimationScrolling = true;
+        mIsScrolling = true;
         layoutManager.startSmoothScroll(smoothScroller);
         allAppsRecyclerView.removeOnScrollListener(mOnIdleScrollListener);
         allAppsRecyclerView.addOnScrollListener(mOnIdleScrollListener);
@@ -887,12 +886,24 @@ public class PrivateProfileManager extends UserProfileManager {
         return mAllApps.mAH.get(ActivityAllAppsContainerView.AdapterHolder.MAIN).mRecyclerView;
     }
 
-    boolean getAnimate() {
-        return mAnimate;
+    /** Returns if private space is readily available to be animated. */
+    boolean getReadyToAnimate() {
+        return mReadyToAnimate;
     }
 
-    boolean getAnimationScrolling() {
-        return mAnimationScrolling;
+    /** Returns when a smooth scroll is happening. */
+    boolean isScrolling() {
+        return mIsScrolling;
+    }
+
+    /**
+     * Returns when private space is in the process of transitioning. This is different from
+     * getAnimate() since mStateTransitioning checks from the time transitioning starts happening
+     * in reset() as oppose to when private space is animating. This should be used to ensure
+     * Private Space state during onBind().
+     */
+    boolean isStateTransitioning() {
+        return mIsStateTransitioning;
     }
 
     int getPsHeaderHeight() {

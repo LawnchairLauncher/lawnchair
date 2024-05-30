@@ -25,7 +25,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyZeroInteractions
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
 /** Test for AbstractFloatingViewHelper */
@@ -60,7 +60,8 @@ class AbstractFloatingViewHelperTest {
             AbstractFloatingView.TYPE_ALL
         )
 
-        verifyZeroInteractions(view)
+        // b/343530737
+        verifyNoMoreInteractions(view)
         verify(folderView).close(true)
         verify(taskMenuView).close(true)
     }
@@ -73,7 +74,8 @@ class AbstractFloatingViewHelperTest {
             AbstractFloatingView.TYPE_TASK_MENU
         )
 
-        verifyZeroInteractions(view)
+        // b/343530737
+        verifyNoMoreInteractions(view)
         verify(folderView, never()).close(any())
         verify(taskMenuView).close(true)
     }
@@ -86,7 +88,8 @@ class AbstractFloatingViewHelperTest {
             AbstractFloatingView.TYPE_PIN_IME_POPUP
         )
 
-        verifyZeroInteractions(view)
+        // b/343530737
+        verifyNoMoreInteractions(view)
         verify(folderView, never()).close(any())
         verify(taskMenuView, never()).close(any())
     }
@@ -99,7 +102,8 @@ class AbstractFloatingViewHelperTest {
             AbstractFloatingView.TYPE_FOLDER or AbstractFloatingView.TYPE_TASK_MENU
         )
 
-        verifyZeroInteractions(view)
+        // b/343530737
+        verifyNoMoreInteractions(view)
         verify(folderView).close(false)
         verify(taskMenuView).close(false)
     }
