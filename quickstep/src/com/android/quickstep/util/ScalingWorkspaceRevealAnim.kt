@@ -16,6 +16,7 @@
 
 package com.android.quickstep.util
 
+import android.animation.AnimatorSet
 import android.graphics.Matrix
 import android.graphics.Path
 import android.graphics.RectF
@@ -187,7 +188,11 @@ class ScalingWorkspaceRevealAnim(
         )
     }
 
+    fun getAnimators(): AnimatorSet {
+        return animation.buildAnim()
+    }
+
     fun start() {
-        animation.buildAnim().start()
+        getAnimators().start()
     }
 }
