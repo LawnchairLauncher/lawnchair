@@ -12,13 +12,13 @@ import dev.kdrag0n.colorkt.tristimulus.CieXyz
 import dev.kdrag0n.colorkt.tristimulus.CieXyzAbs.Companion.toAbs
 import java.util.Objects
 
-class DynamicColorScheme(
-    targets: ColorScheme,
+class DynamicTonalPalette(
+    targets: TonalPalette,
     private val seedColor: Color,
     private val chromaFactor: Double = 1.0,
     private val cond: Zcam.ViewingConditions,
     private val accurateShades: Boolean = true,
-) : ColorScheme() {
+) : TonalPalette() {
     private val seedNeutral = seedColor.convert<CieXyz>().toAbs(cond.referenceWhite.y).toZcam(cond, include2D = false).let { lch ->
         lch.copy(chroma = lch.chroma * chromaFactor)
     }
@@ -95,7 +95,7 @@ class DynamicColorScheme(
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is DynamicColorScheme &&
+        return other is DynamicTonalPalette &&
             other.seedColor == seedColor &&
             other.chromaFactor == chromaFactor &&
             other.cond == cond &&

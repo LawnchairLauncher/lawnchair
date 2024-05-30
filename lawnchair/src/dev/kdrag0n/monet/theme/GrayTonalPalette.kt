@@ -3,7 +3,7 @@ package dev.kdrag0n.monet.theme
 import dev.kdrag0n.colorkt.rgb.Srgb
 import java.util.Objects
 
-class GrayColorScheme(private val accentColorScheme: ColorScheme) : ColorScheme() {
+class GrayTonalPalette(private val accentTonalPalette: TonalPalette) : TonalPalette() {
 
     override val neutral1 = mapOf(
         0 to Srgb(0xffffff),
@@ -37,11 +37,11 @@ class GrayColorScheme(private val accentColorScheme: ColorScheme) : ColorScheme(
         1000 to Srgb(0x000000),
     )
 
-    override val accent1 = accentColorScheme.accent1
-    override val accent2 = accentColorScheme.accent2
-    override val accent3 = accentColorScheme.accent3
+    override val accent1 = accentTonalPalette.accent1
+    override val accent2 = accentTonalPalette.accent2
+    override val accent3 = accentTonalPalette.accent3
 
-    override fun equals(other: Any?) = other is GrayColorScheme && other.accentColorScheme == accentColorScheme
+    override fun equals(other: Any?) = other is GrayTonalPalette && other.accentTonalPalette == accentTonalPalette
 
-    override fun hashCode() = Objects.hash(accentColorScheme)
+    override fun hashCode() = Objects.hash(accentTonalPalette)
 }

@@ -166,7 +166,7 @@ import java.util.List;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.icons.shape.IconShapeManager;
-import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.color.tokens.ColorTokens;
 
 /**
  * Manages the opening and closing app transitions from Launcher

@@ -55,7 +55,7 @@ import com.android.launcher3.views.AbstractSlideInView;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ArrowTipView;
 
-import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.color.tokens.ColorTokens;
 
 /**
  * Base class for various widgets popup

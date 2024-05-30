@@ -1,6 +1,7 @@
 package app.lawnchair.theme.color
 
 import android.content.Context
+import app.lawnchair.theme.color.tokens.ColorTokens
 
 fun generateColor(context: Context): Int {
     val accentColors = listOf(

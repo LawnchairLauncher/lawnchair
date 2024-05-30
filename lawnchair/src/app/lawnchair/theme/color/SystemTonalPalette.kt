@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.core.content.res.ResourcesCompat
 import dev.kdrag0n.colorkt.Color
-import dev.kdrag0n.monet.theme.ColorScheme
+import dev.kdrag0n.monet.theme.TonalPalette
 
-class SystemColorScheme(context: Context) : ColorScheme() {
+class SystemTonalPalette(context: Context) : TonalPalette() {
     private val resources = context.resources
 
     override val neutral1 = systemPaletteMap("neutral1")

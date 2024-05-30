@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 
 @Composable
-fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorScheme = remember(this, isDark) {
+fun dev.kdrag0n.monet.theme.TonalPalette.toM3ColorScheme(isDark: Boolean): ColorScheme = remember(this, isDark) {
     if (isDark) {
         darkColorScheme(
             primary = primary(80),
@@ -63,6 +63,8 @@ fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorS
             // Temporary colors until we fully migrate to material-color-utilities
             surfaceContainer = neutral(90),
             surfaceContainerLow = neutral(95),
+//            surfaceContainerLowest = ,
+//            surfaceContainerHigh = ,
             surfaceContainerHighest = neutral(90),
         )
     }

@@ -66,7 +66,7 @@ allprojects {
 
     plugins.withType(JavaBasePlugin).configureEach {
         java {
-            toolchain.languageVersion = JavaLanguageVersion.of(21)
+            toolchain.languageVersion = JavaLanguageVersion.of(17)
         }
     }
 
@@ -123,10 +123,10 @@ final def ciBuild = System.getenv("CI") == "true"
 final def ciRef = System.getenv("GITHUB_REF") ?: ""
 final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 final def isReleaseBuild = ciBuild && ciRef.contains("beta")
-final def devReleaseName = ciBuild ? "Dev (#${ciRunNumber})" : "Dev (${buildCommit})"
+final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
 final def version = "14"
 final def releaseName = "Beta 2"
-final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
+final def versionDisplayName = "${version}.${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
 final def quickstepMinSdk = "29"
@@ -153,7 +153,7 @@ android {
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
             def channel = variant.productFlavors.last().name
-            outputFileName = "Lawnchair ${variant.versionName} $channel ${variant.buildType.name}.apk"
+            outputFileName = "Lawnchair.${variant.versionName}.$channel.${variant.buildType.name}.apk"
         }
     }
 

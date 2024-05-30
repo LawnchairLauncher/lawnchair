@@ -18,7 +18,7 @@ class MaterialYouTargets(
     private val chromaFactor: Double = 1.0,
     useLinearLightness: Boolean,
     private val cond: Zcam.ViewingConditions,
-) : ColorScheme() {
+) : TonalPalette() {
     companion object {
         // Linear ZCAM lightness
         private val LINEAR_LIGHTNESS_MAP = mapOf(

@@ -36,10 +36,10 @@ import java.util.Map;
 import app.lawnchair.theme.ThemeProvider;
 import app.lawnchair.theme.color.AndroidColor;
 import dev.kdrag0n.colorkt.Color;
-import dev.kdrag0n.monet.theme.ColorScheme;
+import dev.kdrag0n.monet.theme.TonalPalette;
 
 @RequiresApi(api = Build.VERSION_CODES.S)
-public class AccentColorExtractor extends LocalColorExtractor implements ThemeProvider.ColorSchemeChangeListener {
+public class AccentColorExtractor extends LocalColorExtractor implements ThemeProvider.TonalPaletteChangeListener {
 
     private final ThemeProvider mThemeProvider;
     private final RectF mTmpRect = new RectF();
@@ -62,14 +62,14 @@ public class AccentColorExtractor extends LocalColorExtractor implements ThemePr
     }
 
     @Nullable
-    protected SparseIntArray generateColorsOverride(ColorScheme colorScheme) {
+    protected SparseIntArray generateColorsOverride(TonalPalette tonalPalette) {
         SparseIntArray colorRes = new SparseIntArray(5 * 13);
 
-        addColorsToArray(colorScheme.getAccent1(), ACCENT1_RES, colorRes);
-        addColorsToArray(colorScheme.getAccent2(), ACCENT2_RES, colorRes);
-        addColorsToArray(colorScheme.getAccent3(), ACCENT3_RES, colorRes);
-        addColorsToArray(colorScheme.getNeutral1(), NEUTRAL1_RES, colorRes);
-        addColorsToArray(colorScheme.getNeutral2(), NEUTRAL2_RES, colorRes);
+        addColorsToArray(tonalPalette.getAccent1(), ACCENT1_RES, colorRes);
+        addColorsToArray(tonalPalette.getAccent2(), ACCENT2_RES, colorRes);
+        addColorsToArray(tonalPalette.getAccent3(), ACCENT3_RES, colorRes);
+        addColorsToArray(tonalPalette.getNeutral1(), NEUTRAL1_RES, colorRes);
+        addColorsToArray(tonalPalette.getNeutral2(), NEUTRAL2_RES, colorRes);
 
         return colorRes;
     }
@@ -84,13 +84,13 @@ public class AccentColorExtractor extends LocalColorExtractor implements ThemePr
     }
 
     @Override
-    public void onColorSchemeChanged() {
+    public void onTonalPaletteChanged() {
         notifyListener();
     }
 
     private void notifyListener() {
         if (mListener != null) {
-            mListener.onColorsChanged(generateColorsOverride(mThemeProvider.getColorScheme()));
+            mListener.onColorsChanged(generateColorsOverride(mThemeProvider.getTonalPalette()));
         }
     }
 

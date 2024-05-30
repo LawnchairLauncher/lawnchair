@@ -3,10 +3,10 @@ package app.lawnchair.theme.color
 import androidx.annotation.ColorInt
 import com.android.systemui.monet.ColorScheme as MonetColorScheme
 import dev.kdrag0n.colorkt.Color
-import dev.kdrag0n.monet.theme.ColorScheme
+import dev.kdrag0n.monet.theme.TonalPalette
 import dev.kdrag0n.monet.theme.ColorSwatch
 
-class MonetColorSchemeCompat(@ColorInt private val seedColor: Int) : ColorScheme() {
+class MonetTonalPaletteCompat(@ColorInt private val seedColor: Int) : TonalPalette() {
 
     private val scheme = MonetColorScheme(seedColor, darkTheme = false)
 

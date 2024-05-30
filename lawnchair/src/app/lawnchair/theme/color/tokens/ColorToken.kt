@@ -1,4 +1,4 @@
-package app.lawnchair.theme.color
+package app.lawnchair.theme.color.tokens
 
 import android.content.Context
 import android.util.Log
@@ -6,20 +6,21 @@ import androidx.core.graphics.ColorUtils
 import app.lawnchair.theme.ResourceToken
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.UiColorMode
+import app.lawnchair.theme.color.AndroidColor
 import app.lawnchair.theme.toAndroidColor
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
 import com.androidinternal.graphics.cam.Cam
 import dev.kdrag0n.colorkt.Color
-import dev.kdrag0n.monet.theme.ColorScheme
+import dev.kdrag0n.monet.theme.TonalPalette
 
 sealed interface ColorToken : ResourceToken<Color> {
     fun resolveColor(context: Context) = resolveColor(context, UiColorMode(Themes.getAttrInteger(context, R.attr.uiColorMode)))
     fun resolveColor(context: Context, uiColorMode: UiColorMode): Int {
         val themeProvider = ThemeProvider.INSTANCE.get(context)
-        return resolveColor(context, themeProvider.colorScheme, uiColorMode)
+        return resolveColor(context, themeProvider.tonalPalette, uiColorMode)
     }
-    fun resolveColor(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Int {
+    fun resolveColor(context: Context, scheme: TonalPalette, uiColorMode: UiColorMode): Int {
         return try {
             resolve(context, scheme, uiColorMode).toAndroidColor()
         } catch (t: Throwable) {
@@ -34,13 +35,13 @@ data class SwatchColorToken(
     private val shade: Shade,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
+    override fun resolve(context: Context, tonalPalette: TonalPalette, uiColorMode: UiColorMode): Color {
         val swatch = when (swatch) {
-            Swatch.Neutral1 -> scheme.neutral1
-            Swatch.Neutral2 -> scheme.neutral2
-            Swatch.Accent1 -> scheme.accent1
-            Swatch.Accent2 -> scheme.accent2
-            Swatch.Accent3 -> scheme.accent3
+            Swatch.Neutral1 -> tonalPalette.neutral1
+            Swatch.Neutral2 -> tonalPalette.neutral2
+            Swatch.Accent1 -> tonalPalette.accent1
+            Swatch.Accent2 -> tonalPalette.accent2
+            Swatch.Accent3 -> tonalPalette.accent3
         }
         return swatch[shade.lightness]!!
     }
@@ -51,7 +52,7 @@ data class DayNightColorToken(
     private val darkToken: ColorToken,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
+    override fun resolve(context: Context, scheme: TonalPalette, uiColorMode: UiColorMode): Color {
         return if (uiColorMode.isDarkTheme) {
             darkToken.resolve(context, scheme, uiColorMode)
         } else {
@@ -69,7 +70,7 @@ data class DarkTextColorToken(
     private val darkToken: ColorToken,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
+    override fun resolve(context: Context, scheme: TonalPalette, uiColorMode: UiColorMode): Color {
         return if (uiColorMode.isDarkText) {
             darkToken.resolve(context, scheme, uiColorMode)
         } else {
@@ -82,7 +83,7 @@ data class StaticColorToken(
     private val color: Long,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
+    override fun resolve(context: Context, scheme: TonalPalette, uiColorMode: UiColorMode): Color {
         return AndroidColor(color.toInt())
     }
 }
@@ -92,7 +93,7 @@ data class SetAlphaColorToken(
     private val alpha: Float,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
+    override fun resolve(context: Context, scheme: TonalPalette, uiColorMode: UiColorMode): Color {
         val color = token.resolveColor(context, scheme, uiColorMode)
         return AndroidColor(ColorUtils.setAlphaComponent(color, (alpha * 255).toInt()))
     }
@@ -103,7 +104,7 @@ data class SetLStarColorToken(
     private val lStar: Double,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
+    override fun resolve(context: Context, scheme: TonalPalette, uiColorMode: UiColorMode): Color {
         val color = token.resolveColor(context, scheme, uiColorMode)
         val cam = Cam.fromInt(color)
         return AndroidColor(Cam.getInt(cam.hue, cam.chroma, lStar.toFloat()))
@@ -115,7 +116,7 @@ class WithContextColorToken(
     private val transform: ColorToken.(Context) -> ColorToken,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
+    override fun resolve(context: Context, scheme: TonalPalette, uiColorMode: UiColorMode): Color {
         return transform(token, context).resolve(context, scheme, uiColorMode)
     }
 }

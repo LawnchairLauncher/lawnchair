@@ -56,10 +56,8 @@ fun getColorScheme(darkTheme: Boolean): ColorScheme {
     val preferenceManager2 = preferenceManager2()
     val accentColor by preferenceManager2.accentColor.asState()
     val colorScheme = remember(accentColor) {
-        ThemeProvider.INSTANCE.get(context).colorScheme
+        ThemeProvider.INSTANCE.get(context).tonalPalette
     }
-//
-//    colorScheme.accent1
 
     return colorScheme.toM3ColorScheme(isDark = darkTheme)
 }

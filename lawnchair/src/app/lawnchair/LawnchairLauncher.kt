@@ -91,7 +91,7 @@ import com.android.systemui.shared.system.QuickStepContract
 import com.kieronquinn.app.smartspacer.sdk.client.SmartspacerClient
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
-import dev.kdrag0n.monet.theme.ColorScheme
+import dev.kdrag0n.monet.theme.TonalPalette
 import java.util.stream.Stream
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -131,7 +131,7 @@ class LawnchairLauncher :
         }
         override fun onStateTransitionComplete(finalState: LauncherState) {}
     }
-    private lateinit var colorScheme: ColorScheme
+    private lateinit var tonalPalette: TonalPalette
     private var hasBackGesture = false
 
     val gestureController by unsafeLazy { GestureController(this) }
@@ -290,7 +290,7 @@ class LawnchairLauncher :
             prefs.themedIcons.set(newValue = false)
         }
 
-        colorScheme = themeProvider.colorScheme
+        tonalPalette = themeProvider.tonalPalette
 
         showQuickstepWarningIfNecessary()
 
@@ -311,7 +311,7 @@ class LawnchairLauncher :
         Stream.concat(super.getSupportedShortcuts(), Stream.of(LawnchairShortcut.UNINSTALL, LawnchairShortcut.CUSTOMIZE))
 
     override fun updateTheme() {
-        if (themeProvider.colorScheme != colorScheme) {
+        if (themeProvider.tonalPalette != tonalPalette) {
             recreate()
         } else {
             super.updateTheme()

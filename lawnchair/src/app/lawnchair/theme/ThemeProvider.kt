@@ -12,8 +12,8 @@ import androidx.core.graphics.ColorUtils
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.AndroidColor
 import app.lawnchair.theme.color.ColorOption
-import app.lawnchair.theme.color.MonetColorSchemeCompat
-import app.lawnchair.theme.color.SystemColorScheme
+import app.lawnchair.theme.color.MonetTonalPaletteCompat
+import app.lawnchair.theme.color.SystemTonalPalette
 import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
@@ -23,7 +23,7 @@ import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.colorkt.conversion.ConversionGraph.convert
 import dev.kdrag0n.colorkt.rgb.Srgb
-import dev.kdrag0n.monet.theme.ColorScheme
+import dev.kdrag0n.monet.theme.TonalPalette
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -33,24 +33,24 @@ class ThemeProvider(private val context: Context) {
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
     private var accentColor: ColorOption = preferenceManager2.accentColor.firstBlocking()
 
-    private val colorSchemeMap = SparseArray<ColorScheme>()
-    private val listeners = mutableListOf<ColorSchemeChangeListener>()
+    private val tonalPaletteMap = SparseArray<TonalPalette>()
+    private val listeners = mutableListOf<TonalPaletteChangeListener>()
 
     init {
         if (Utilities.ATLEAST_S) {
-            colorSchemeMap.append(0, SystemColorScheme(context))
+            tonalPaletteMap.append(0, SystemTonalPalette(context))
             registerOverlayChangedListener()
         }
         wallpaperManager.addOnChangeListener(object : WallpaperManagerCompat.OnColorsChangedListener {
             override fun onColorsChanged() {
                 if (accentColor is ColorOption.WallpaperPrimary) {
-                    notifyColorSchemeChanged()
+                    notifyTonalPaletteChanged()
                 }
             }
         })
         preferenceManager2.accentColor.onEach(launchIn = coroutineScope) {
             accentColor = it
-            notifyColorSchemeChanged()
+            notifyTonalPaletteChanged()
         }
     }
 
@@ -61,9 +61,9 @@ class ThemeProvider(private val context: Context) {
         context.registerReceiver(
             object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
-                    colorSchemeMap.append(0, SystemColorScheme(context))
+                    tonalPaletteMap.append(0, SystemTonalPalette(context))
                     if (accentColor is ColorOption.SystemAccent) {
-                        notifyColorSchemeChanged()
+                        notifyTonalPaletteChanged()
                     }
                 }
             },
@@ -73,41 +73,41 @@ class ThemeProvider(private val context: Context) {
         )
     }
 
-    val colorScheme get() = when (val accentColor = this.accentColor) {
-        is ColorOption.SystemAccent -> systemColorScheme
+    val tonalPalette get() = when (val accentColor = this.accentColor) {
+        is ColorOption.SystemAccent -> systemTonalPalette
         is ColorOption.WallpaperPrimary -> {
             val wallpaperPrimary = wallpaperManager.wallpaperColors?.primaryColor
-            getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color)
+            getTonalPalette(wallpaperPrimary ?: ColorOption.LawnchairBlue.color)
         }
-        is ColorOption.CustomColor -> getColorScheme(accentColor.color)
-        else -> getColorScheme(ColorOption.LawnchairBlue.color)
+        is ColorOption.CustomColor -> getTonalPalette(accentColor.color)
+        else -> getTonalPalette(ColorOption.LawnchairBlue.color)
     }
 
-    private val systemColorScheme get() = when {
-        Utilities.ATLEAST_S -> getColorScheme(0)
-        else -> getColorScheme(context.getSystemAccent(darkTheme = false))
+    private val systemTonalPalette get() = when {
+        Utilities.ATLEAST_S -> getTonalPalette(0) // Tonal palette is from line 41
+        else -> getTonalPalette(context.getSystemAccent(darkTheme = false))
     }
 
-    private fun getColorScheme(colorInt: Int): ColorScheme {
-        var colorScheme = colorSchemeMap[colorInt]
-        if (colorScheme == null) {
-            colorScheme = MonetColorSchemeCompat(colorInt)
-            colorSchemeMap.append(colorInt, colorScheme)
+    private fun getTonalPalette(colorInt: Int): TonalPalette {
+        var tonalPalette = tonalPaletteMap[colorInt]
+        if (tonalPalette == null) {
+            tonalPalette = MonetTonalPaletteCompat(colorInt)
+            tonalPaletteMap.append(colorInt, tonalPalette)
         }
-        return colorScheme
+        return tonalPalette
     }
 
-    fun addListener(listener: ColorSchemeChangeListener) {
+    fun addListener(listener: TonalPaletteChangeListener) {
         listeners.add(listener)
     }
 
-    fun removeListener(listener: ColorSchemeChangeListener) {
+    fun removeListener(listener: TonalPaletteChangeListener) {
         listeners.remove(listener)
     }
 
-    private fun notifyColorSchemeChanged() {
+    private fun notifyTonalPaletteChanged() {
         ArrayList(listeners)
-            .forEach(ColorSchemeChangeListener::onColorSchemeChanged)
+            .forEach(TonalPaletteChangeListener::onTonalPaletteChanged)
     }
 
     companion object {
@@ -115,8 +115,8 @@ class ThemeProvider(private val context: Context) {
         val INSTANCE = MainThreadInitializedObject(::ThemeProvider)
     }
 
-    sealed interface ColorSchemeChangeListener {
-        fun onColorSchemeChanged()
+    sealed interface TonalPaletteChangeListener {
+        fun onTonalPaletteChanged()
     }
 }
 

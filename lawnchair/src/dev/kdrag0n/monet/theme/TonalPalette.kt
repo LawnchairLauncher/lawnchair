@@ -6,7 +6,7 @@ import dev.kdrag0n.colorkt.Color
 
 typealias ColorSwatch = Map<Int, Color>
 
-abstract class ColorScheme {
+abstract class TonalPalette {
     abstract val neutral1: ColorSwatch
     abstract val neutral2: ColorSwatch
 
