@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static android.animation.ValueAnimator.areAnimatorsEnabled;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -201,7 +203,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     public void reapplyItemInfo(ItemInfoWithIcon info) {
         if (getTag() == info) {
             mIconLoadRequest = null;
-            mEnableIconUpdateAnimation = true;
+            mEnableIconUpdateAnimation = areAnimatorsEnabled();
 
             // Optimization: Starting in N, pre-uploads the bitmap to RenderThread.
             info.bitmap.icon.prepareToDraw();
