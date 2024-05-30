@@ -54,7 +54,7 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
-    @NavigationModeSwitch
+    @NavigationModeSwitch(mode = ZERO_BUTTON)
     public void goHome() throws Exception {
         assumeTrue(mLauncher.isTablet());
 
@@ -87,7 +87,7 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
-    @NavigationModeSwitch
+    @NavigationModeSwitch(mode = ZERO_BUTTON)
     @ScreenRecordRule.ScreenRecord // b/336606166
     @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/336606166
     public void switchToOverview() throws Exception {
@@ -100,7 +100,7 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
-    @NavigationModeSwitch
+    @NavigationModeSwitch(mode = ZERO_BUTTON)
     public void testAllAppsFromHome() throws Exception {
         assumeTrue(mLauncher.isTablet());
 
@@ -110,7 +110,7 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     }
 
     @Test
-    @NavigationModeSwitch
+    @NavigationModeSwitch(mode = ZERO_BUTTON)
     @PortraitLandscape
     public void testQuickSwitchFromHome() throws Exception {
         assumeTrue(mLauncher.isTablet());

@@ -68,11 +68,13 @@ import android.content.IIntentSender;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Region;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.os.Trace;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.InputDevice;
@@ -146,6 +148,7 @@ import com.android.wm.shell.startingsurface.IStartingWindow;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -453,6 +456,47 @@ public class TouchInteractionService extends Service {
         }
     }
 
+    private final InputManager.InputDeviceListener mInputDeviceListener =
+            new InputManager.InputDeviceListener() {
+                @Override
+                public void onInputDeviceAdded(int deviceId) {
+                    if (isTrackpadDevice(deviceId)) {
+                        boolean wasEmpty = mTrackpadsConnected.isEmpty();
+                        mTrackpadsConnected.add(deviceId);
+                        if (wasEmpty) {
+                            update();
+                        }
+                    }
+                }
+
+                @Override
+                public void onInputDeviceChanged(int deviceId) {
+                }
+
+                @Override
+                public void onInputDeviceRemoved(int deviceId) {
+                    mTrackpadsConnected.remove(deviceId);
+                    if (mTrackpadsConnected.isEmpty()) {
+                        update();
+                    }
+                }
+
+                private void update() {
+                    if (mInputMonitorCompat != null && !mTrackpadsConnected.isEmpty()) {
+                        // Don't destroy and reinitialize input monitor due to trackpad
+                        // connecting when it's already set up.
+                        return;
+                    }
+                    initInputMonitor("onTrackpadConnected()");
+                }
+
+                private boolean isTrackpadDevice(int deviceId) {
+                    InputDevice inputDevice = mInputManager.getInputDevice(deviceId);
+                    return inputDevice.getSources() == (InputDevice.SOURCE_MOUSE
+                            | InputDevice.SOURCE_TOUCHPAD);
+                }
+            };
+
     private static boolean sConnected = false;
     private static boolean sIsInitialized = false;
     private RotationTouchHelper mRotationTouchHelper;
@@ -503,6 +547,8 @@ public class TouchInteractionService extends Service {
     private TaskbarManager mTaskbarManager;
     private Function<GestureState, AnimatedFloat> mSwipeUpProxyProvider = i -> null;
     private AllAppsActionManager mAllAppsActionManager;
+    private InputManager mInputManager;
+    private final Set<Integer> mTrackpadsConnected = new ArraySet<>();
 
     @Override
     public void onCreate() {
@@ -514,6 +560,15 @@ public class TouchInteractionService extends Service {
         mDeviceState = new RecentsAnimationDeviceState(this, true);
         mAllAppsActionManager = new AllAppsActionManager(
                 this, UI_HELPER_EXECUTOR, this::createAllAppsPendingIntent);
+        mInputManager = getSystemService(InputManager.class);
+        if (ENABLE_TRACKPAD_GESTURE.get()) {
+            mInputManager.registerInputDeviceListener(mInputDeviceListener,
+                    UI_HELPER_EXECUTOR.getHandler());
+            int [] inputDevices = mInputManager.getInputDeviceIds();
+            for (int inputDeviceId : inputDevices) {
+                mInputDeviceListener.onInputDeviceAdded(inputDeviceId);
+            }
+        }
         mTaskbarManager = new TaskbarManager(this, mAllAppsActionManager, mNavCallbacks);
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
@@ -542,7 +597,8 @@ public class TouchInteractionService extends Service {
     private void initInputMonitor(String reason) {
         disposeEventHandlers("Initializing input monitor due to: " + reason);
 
-        if (mDeviceState.isButtonNavMode() && !ENABLE_TRACKPAD_GESTURE.get()) {
+        if (mDeviceState.isButtonNavMode() && (!ENABLE_TRACKPAD_GESTURE.get()
+                || mTrackpadsConnected.isEmpty())) {
             return;
         }
 
@@ -677,6 +733,9 @@ public class TouchInteractionService extends Service {
         SystemUiProxy.INSTANCE.get(this).clearProxy();
 
         mAllAppsActionManager.onDestroy();
+
+        mInputManager.unregisterInputDeviceListener(mInputDeviceListener);
+        mTrackpadsConnected.clear();
 
         mTaskbarManager.destroy();
         sConnected = false;
