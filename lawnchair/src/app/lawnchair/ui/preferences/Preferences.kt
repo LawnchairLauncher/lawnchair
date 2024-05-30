@@ -81,7 +81,7 @@ fun Preferences(
 
     val blacklistedRoute = twoPaneBlacklist.any { currentRoute.contains(it) }
 
-    val useTwoPane = !blacklistedRoute
+    val useTwoPane = !blacklistedRoute && isExpandedScreen
 
     Providers {
         Surface(
