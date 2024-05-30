@@ -85,6 +85,7 @@ import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ConstantItem;
@@ -397,6 +398,25 @@ public class TouchInteractionService extends Service {
             TouchInteractionService tis = mTis.get();
             if (tis == null) return null;
             return tis.mTaskbarManager;
+        }
+
+        @VisibleForTesting
+        public void injectFakeTrackpadForTesting() {
+            TouchInteractionService tis = mTis.get();
+            if (tis == null) return;
+            tis.mTrackpadsConnected.add(1000);
+            tis.initInputMonitor("tapl testing");
+        }
+
+        @VisibleForTesting
+        public void ejectFakeTrackpadForTesting() {
+            TouchInteractionService tis = mTis.get();
+            if (tis == null) return;
+            tis.mTrackpadsConnected.clear();
+            // This method destroys the current input monitor if set up, and only init a new one
+            // in 3-button mode if {@code mTrackpadsConnected} is not empty. So in other words,
+            // it will destroy the input monitor.
+            tis.initInputMonitor("tapl testing");
         }
 
         /**
