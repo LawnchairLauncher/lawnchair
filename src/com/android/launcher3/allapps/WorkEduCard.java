@@ -32,7 +32,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.tokens.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**

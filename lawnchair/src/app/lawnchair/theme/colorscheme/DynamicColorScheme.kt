@@ -3,11 +3,9 @@ package app.lawnchair.theme.colorscheme
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.material3.ColorScheme as ComposeColorScheme
-import androidx.compose.ui.graphics.Color
-import app.lawnchair.theme.utils.dynamicDarkColorScheme
-import app.lawnchair.theme.utils.dynamicLightColorScheme
-import app.lawnchair.theme.utils.dynamicTonalPalette
+import app.lawnchair.theme.tonalpalette.dynamicDarkColorScheme
+import app.lawnchair.theme.tonalpalette.dynamicLightColorScheme
+import app.lawnchair.theme.tonalpalette.dynamicTonalPalette
 import com.google.android.material.color.utilities.hct.Hct
 import com.google.android.material.color.utilities.scheme.SchemeVibrant
 

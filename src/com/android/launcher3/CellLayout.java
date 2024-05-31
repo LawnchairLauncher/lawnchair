@@ -91,7 +91,7 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.tokens.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
 public class CellLayout extends ViewGroup {

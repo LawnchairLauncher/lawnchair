@@ -25,7 +25,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.tokens.ColorTokens;
 
 /**
  * Education view about widgets.

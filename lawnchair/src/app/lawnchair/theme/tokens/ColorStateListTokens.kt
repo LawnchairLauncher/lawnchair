@@ -1,4 +1,4 @@
-package app.lawnchair.theme.color.tokens
+package app.lawnchair.theme.tokens
 
 import android.R
 import android.content.res.ColorStateList

@@ -1,4 +1,4 @@
-package app.lawnchair.theme.color.tokens
+package app.lawnchair.theme.tokens
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color

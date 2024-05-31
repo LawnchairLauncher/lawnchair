@@ -222,7 +222,7 @@ import java.util.stream.Collectors;
 
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.compat.LawnchairQuickstepCompat;
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.tokens.ColorTokens;
 import app.lawnchair.util.OverScrollerCompat;
 import app.lawnchair.util.RecentHelper;
 

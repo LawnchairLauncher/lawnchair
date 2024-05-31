@@ -55,7 +55,7 @@ import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorOption;
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.tokens.ColorTokens;
 import app.lawnchair.util.LawnchairUtilsKt;
 
 /**

@@ -7,7 +7,7 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
-import app.lawnchair.theme.color.tokens.ColorTokens
+import app.lawnchair.theme.tokens.ColorTokens
 import com.android.launcher3.R
 
 class ImageViewWrapper(context: Context, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {

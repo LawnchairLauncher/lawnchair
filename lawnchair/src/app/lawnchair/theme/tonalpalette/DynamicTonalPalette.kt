@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.theme.utils
+package app.lawnchair.theme.tonalpalette
 
 import android.R
 import android.content.Context

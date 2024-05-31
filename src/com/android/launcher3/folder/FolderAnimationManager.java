@@ -52,7 +52,7 @@ import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.List;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.tokens.ColorTokens;
 import app.lawnchair.util.LawnchairUtilsKt;
 
 /**

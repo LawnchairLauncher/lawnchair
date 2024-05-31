@@ -1,8 +1,9 @@
-package app.lawnchair.theme.color
+package app.lawnchair.theme.monet
 
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.core.content.res.ResourcesCompat
+import app.lawnchair.theme.color.AndroidColor
 import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.monet.theme.TonalPalette
 

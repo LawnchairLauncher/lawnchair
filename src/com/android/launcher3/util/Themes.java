@@ -40,7 +40,7 @@ import com.android.launcher3.icons.GraphicsUtils;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorMode;
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.tokens.ColorTokens;
 import app.lawnchair.wallpaper.WallpaperColorsCompat;
 import app.lawnchair.wallpaper.WallpaperManagerCompat;
 import app.lawnchair.ui.theme.ColorKt;

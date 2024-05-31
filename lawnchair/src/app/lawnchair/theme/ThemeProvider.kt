@@ -12,8 +12,8 @@ import androidx.core.graphics.ColorUtils
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.AndroidColor
 import app.lawnchair.theme.color.ColorOption
-import app.lawnchair.theme.color.MonetTonalPaletteCompat
-import app.lawnchair.theme.color.SystemTonalPalette
+import app.lawnchair.theme.monet.MonetTonalPaletteCompat
+import app.lawnchair.theme.monet.SystemTonalPalette
 import app.lawnchair.theme.colorscheme.getLightDarkScheme
 import app.lawnchair.theme.colorscheme.getSystemLightDarkScheme
 import app.lawnchair.ui.theme.getSystemAccent

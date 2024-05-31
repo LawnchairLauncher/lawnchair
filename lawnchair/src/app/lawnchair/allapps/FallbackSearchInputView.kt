@@ -5,7 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import androidx.core.graphics.ColorUtils
-import app.lawnchair.theme.color.tokens.ColorTokens
+import app.lawnchair.theme.tokens.ColorTokens
 import app.lawnchair.util.EditTextExtensions.setCursorColor
 import app.lawnchair.util.EditTextExtensions.setTextSelectHandleColor
 import com.android.launcher3.ExtendedEditText

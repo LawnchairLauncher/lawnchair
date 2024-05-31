@@ -32,7 +32,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
 import app.lawnchair.preferences.PreferenceManager;
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.tokens.ColorTokens;
 
 /**
  * Definition for overview state

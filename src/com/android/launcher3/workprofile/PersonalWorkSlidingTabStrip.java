@@ -31,7 +31,7 @@ import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
-import app.lawnchair.theme.color.tokens.ColorStateListTokens;
+import app.lawnchair.theme.tokens.ColorStateListTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**

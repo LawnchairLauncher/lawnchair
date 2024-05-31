@@ -26,7 +26,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.quickstep.RecentsActivity;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.tokens.ColorTokens;
 
 /**
  * State definition for Fallback recents

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package app.lawnchair.theme.utils
+package app.lawnchair.theme.tonalpalette
 
 /**
  * Tonal Palette structure in Material.

@@ -35,7 +35,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.dragndrop.AddItemActivity;
 import com.android.launcher3.views.AbstractSlideInView;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
+import app.lawnchair.theme.tokens.ColorTokens;
 
 /**
  * Bottom sheet for the pin widget.
