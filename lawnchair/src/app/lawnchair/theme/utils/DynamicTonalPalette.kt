@@ -18,12 +18,11 @@ package app.lawnchair.theme.utils
 
 import android.R
 import android.content.Context
+import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DoNotInline
 import androidx.annotation.FloatRange
 import androidx.annotation.RequiresApi
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.compose.ui.graphics.toArgb
@@ -157,6 +156,7 @@ fun dynamicTonalPalette(context: Context): TonalPalette = TonalPalette(
 
 private object ColorResourceHelper {
     @DoNotInline
+    @ColorInt
     fun getColor(context: Context, @ColorRes id: Int): Int {
         return context.resources.getColor(id, context.theme)
     }
@@ -168,6 +168,7 @@ private object ColorResourceHelper {
  *
  * @param newLuminance 0 <= newLuminance <= 100; invalid values are corrected.
  */
+@ColorInt
 private fun Int.setLuminance(
     @FloatRange(from = 0.0, to = 100.0)
     newLuminance: Float
