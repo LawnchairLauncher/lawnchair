@@ -98,7 +98,7 @@ import java.util.stream.Stream;
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.tokens.ColorTokens;
+import app.lawnchair.theme.tokens2.Material3Colors;
 import app.lawnchair.ui.StretchRecyclerViewContainer;
 
 /**
@@ -209,10 +209,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mActivityContext = ActivityContext.lookupContext(context);
         mAllAppsStore = new AllAppsStore<>(mActivityContext);
         pref2 = PreferenceManager2.getInstance(mActivityContext);
-        mScrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context);
+        mScrimColor = Material3Colors.AllAppsBackground.resolveColor(context);
         mHeaderThreshold = getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
-        mHeaderProtectionColor = ColorTokens.AllAppsHeaderProtectionColor.resolveColor(context);
+        mHeaderProtectionColor = Material3Colors.AllAppsHeaderProtection.resolveColor(context);
 
         mWorkManager = new WorkProfileManager(
                 mActivityContext.getSystemService(UserManager.class),
@@ -306,7 +306,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 0 // Bottom left
         };
         mBottomSheetBackgroundColor =
-                Themes.getAttrColor(getContext(), R.attr.materialColorSurfaceDim);
+                Material3Colors.AllAppsBottomSheetBackground.resolveColor(getContext());;
         updateBackgroundVisibility(mActivityContext.getDeviceProfile());
         mSearchUiManager.initializeSearch(this);
     }

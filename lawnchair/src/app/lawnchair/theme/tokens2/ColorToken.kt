@@ -8,19 +8,19 @@ import com.android.launcher3.R
 import com.android.launcher3.util.Themes
 
 interface ColorToken<T> {
-    fun resolve(context: Context): T = resolve(context, UiColorMode(Themes.getAttrInteger(context, R.attr.uiColorMode)))
-    fun resolve(context: Context, uiColorMode: UiColorMode): T {
+    fun resolveColor(context: Context): T = resolveColor(context, UiColorMode(Themes.getAttrInteger(context, R.attr.uiColorMode)))
+    fun resolveColor(context: Context, uiColorMode: UiColorMode): T {
         val themeProvider = ThemeProvider.INSTANCE.get(context)
-        return resolve(context, themeProvider.colorScheme, uiColorMode)
+        return resolveColor(context, themeProvider.colorScheme, uiColorMode)
     }
-    fun resolve(context: Context, scheme: LightDarkScheme, uiColorMode: UiColorMode): T
+    fun resolveColor(context: Context, scheme: LightDarkScheme, uiColorMode: UiColorMode): T
 }
 
 
 class MaterialColor(
     val color: String
 ) : ColorToken<Int> {
-    override fun resolve(context: Context, scheme: LightDarkScheme, uiColorMode: UiColorMode): Int {
+    override fun resolveColor(context: Context, scheme: LightDarkScheme, uiColorMode: UiColorMode): Int {
         return if (uiColorMode.isDarkTheme) {
             scheme.darkScheme.get(color)
         } else {
@@ -29,43 +29,46 @@ class MaterialColor(
     }
 }
 
-object ColorTokens2 {
-    val primary = MaterialColor("primary")
-    val onPrimary = MaterialColor("onPrimary")
-    val primaryContainer = MaterialColor("primaryContainer")
-    val onPrimaryContainer = MaterialColor("onPrimaryContainer")
-    val inversePrimary = MaterialColor("inversePrimary")
-    val secondary = MaterialColor("secondary")
-    val onSecondary = MaterialColor("onSecondary")
-    val secondaryContainer = MaterialColor("secondaryContainer")
-    val onSecondaryContainer = MaterialColor("onSecondaryContainer")
-    val tertiary = MaterialColor("tertiary")
-    val onTertiary = MaterialColor("onTertiary")
-    val tertiaryContainer = MaterialColor("tertiaryContainer")
-    val onTertiaryContainer = MaterialColor("onTertiaryContainer")
-    val background = MaterialColor("background")
-    val onBackground = MaterialColor("onBackground")
-    val surface = MaterialColor("surface")
-    val onSurface = MaterialColor("onSurface")
-    val surfaceVariant = MaterialColor("surfaceVariant")
-    val onSurfaceVariant = MaterialColor("onSurfaceVariant")
-    val surfaceTint = MaterialColor("surfaceTint")
-    val inverseSurface = MaterialColor("inverseSurface")
-    val inverseOnSurface = MaterialColor("inverseOnSurface")
-    val error = MaterialColor("error")
-    val onError = MaterialColor("onError")
-    val errorContainer = MaterialColor("errorContainer")
-    val onErrorContainer = MaterialColor("onErrorContainer")
-    val outline = MaterialColor("outline")
-    val outlineVariant = MaterialColor("outlineVariant")
-    val scrim = MaterialColor("scrim")
-    val surfaceBright = MaterialColor("surfaceBright")
-    val surfaceDim = MaterialColor("surfaceDim")
-    val surfaceContainer = MaterialColor("surfaceContainer")
-    val surfaceContainerHigh = MaterialColor("surfaceContainerHigh")
-    val surfaceContainerHighest = MaterialColor("surfaceContainerHighest")
-    val surfaceContainerLow = MaterialColor("surfaceContainerLow")
-    val surfaceContainerLowest = MaterialColor("surfaceContainerLowest")
+object Material3Colors {
+    @JvmField val primary = MaterialColor("primary")
+    @JvmField val onPrimary = MaterialColor("onPrimary")
+    @JvmField val primaryContainer = MaterialColor("primaryContainer")
+    @JvmField val onPrimaryContainer = MaterialColor("onPrimaryContainer")
+    @JvmField val inversePrimary = MaterialColor("inversePrimary")
+    @JvmField val secondary = MaterialColor("secondary")
+    @JvmField val onSecondary = MaterialColor("onSecondary")
+    @JvmField val secondaryContainer = MaterialColor("secondaryContainer")
+    @JvmField val onSecondaryContainer = MaterialColor("onSecondaryContainer")
+    @JvmField val tertiary = MaterialColor("tertiary")
+    @JvmField val onTertiary = MaterialColor("onTertiary")
+    @JvmField val tertiaryContainer = MaterialColor("tertiaryContainer")
+    @JvmField val onTertiaryContainer = MaterialColor("onTertiaryContainer")
+    @JvmField val background = MaterialColor("background")
+    @JvmField val onBackground = MaterialColor("onBackground")
+    @JvmField val surface = MaterialColor("surface")
+    @JvmField val onSurface = MaterialColor("onSurface")
+    @JvmField val surfaceVariant = MaterialColor("surfaceVariant")
+    @JvmField val onSurfaceVariant = MaterialColor("onSurfaceVariant")
+    @JvmField val surfaceTint = MaterialColor("surfaceTint")
+    @JvmField val inverseSurface = MaterialColor("inverseSurface")
+    @JvmField val inverseOnSurface = MaterialColor("inverseOnSurface")
+    @JvmField val error = MaterialColor("error")
+    @JvmField val onError = MaterialColor("onError")
+    @JvmField val errorContainer = MaterialColor("errorContainer")
+    @JvmField val onErrorContainer = MaterialColor("onErrorContainer")
+    @JvmField val outline = MaterialColor("outline")
+    @JvmField val outlineVariant = MaterialColor("outlineVariant")
+    @JvmField val scrim = MaterialColor("scrim")
+    @JvmField val surfaceBright = MaterialColor("surfaceBright")
+    @JvmField val surfaceDim = MaterialColor("surfaceDim")
+    @JvmField val surfaceContainer = MaterialColor("surfaceContainer")
+    @JvmField val surfaceContainerHigh = MaterialColor("surfaceContainerHigh")
+    @JvmField val surfaceContainerHighest = MaterialColor("surfaceContainerHighest")
+    @JvmField val surfaceContainerLow = MaterialColor("surfaceContainerLow")
+    @JvmField val surfaceContainerLowest = MaterialColor("surfaceContainerLowest")
 
-
+    @JvmField val WorkspaceAccentColor = primaryContainer
+    @JvmField val AllAppsBackground = surface
+    @JvmField val AllAppsHeaderProtection = surfaceContainerHigh
+    @JvmField val AllAppsBottomSheetBackground = surfaceDim
 }

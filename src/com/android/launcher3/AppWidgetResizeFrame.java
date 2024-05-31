@@ -48,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.tokens.ColorTokens;
+import app.lawnchair.theme.tokens2.Material3Colors;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
@@ -168,7 +168,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mDragHandles[INDEX_RIGHT] = findViewById(R.id.widget_resize_right_handle);
         mDragHandles[INDEX_BOTTOM] = findViewById(R.id.widget_resize_bottom_handle);
 
-        int workspaceAccentColor = ColorTokens.WorkspaceAccentColor.resolveColor(getContext());
+        int workspaceAccentColor = Material3Colors.WorkspaceAccentColor.resolveColor(getContext());
         for (int i = 0; i < HANDLE_COUNT; i++) {
             ((ImageView) mDragHandles[i]).setColorFilter(workspaceAccentColor);
         }

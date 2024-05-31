@@ -45,6 +45,8 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Themes;
 import app.lawnchair.theme.tokens.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
+import app.lawnchair.theme.tokens2.Material3Colors;
+
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -120,8 +122,8 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     private void setTextColor() {
-        int normalColor = ColorTokens.WorkspaceAccentColor.resolveColor(getContext());
-        int selectedColor = Themes.getAttrColor(getContext(), R.attr.dropTargetHoverTextColor);
+        int normalColor = Material3Colors.primaryContainer.resolveColor(getContext());
+        int selectedColor = Material3Colors.onPrimaryContainer.resolveColor(getContext());
         setTextColor(new ColorStateList(
                 new int[][] { new int[] { -android.R.attr.state_selected },
                         new int[] { android.R.attr.state_selected } },
