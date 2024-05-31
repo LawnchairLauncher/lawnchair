@@ -41,6 +41,7 @@ import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.TestUtil;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 
 import org.junit.Test;
 
@@ -194,6 +195,7 @@ public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
     @PlatinumTest(focusArea = "launcher")
     @Test
     @PortraitLandscape
+    @ScreenRecordRule.ScreenRecord // b/343953783
     public void testDragAppIcon() {
 
         final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
