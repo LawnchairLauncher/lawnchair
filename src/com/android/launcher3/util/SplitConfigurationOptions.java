@@ -186,6 +186,12 @@ public final class SplitConfigurationOptions {
         public int stagePosition = STAGE_POSITION_UNDEFINED;
         @StageType
         public int stageType = STAGE_TYPE_UNDEFINED;
+
+        @Override
+        public String toString() {
+            return "SplitStageInfo { taskId=" + taskId
+                    + ", stagePosition=" + stagePosition + ", stageType=" + stageType + " }";
+        }
     }
 
     public static StatsLogManager.EventEnum getLogEventForPosition(@StagePosition int position) {

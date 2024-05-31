@@ -28,6 +28,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import android.annotation.UserIdInt;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,6 +48,7 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.wm.shell.splitscreen.ISplitScreenListener;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,6 +62,10 @@ import java.util.List;
  */
 public class TopTaskTracker extends ISplitScreenListener.Stub
         implements TaskStackChangeListener, SafeCloseable {
+
+    private static final String TAG = "TopTaskTracker";
+    
+    private static final boolean DEBUG = true;
 
     public static MainThreadInitializedObject<TopTaskTracker> INSTANCE =
             new MainThreadInitializedObject<>(TopTaskTracker::new);
@@ -92,10 +98,19 @@ public class TopTaskTracker extends ISplitScreenListener.Stub
     @Override
     public void onTaskRemoved(int taskId) {
         mOrderedTaskList.removeIf(rto -> rto.taskId == taskId);
+        if (DEBUG) {
+            Log.i(TAG, "onTaskRemoved: taskId=" + taskId);
+        }
     }
 
     @Override
     public void onTaskMovedToFront(RunningTaskInfo taskInfo) {
+        if (!mOrderedTaskList.isEmpty()
+                && mOrderedTaskList.getFirst().taskId != taskInfo.taskId
+                && DEBUG) {
+            Log.i(TAG, "onTaskMovedToFront: (moved taskInfo to front) taskId=" + taskInfo.taskId
+                    + ", baseIntent=" + taskInfo.baseIntent);
+        }
         mOrderedTaskList.removeIf(rto -> rto.taskId == taskInfo.taskId);
         mOrderedTaskList.addFirst(taskInfo);
 
@@ -106,6 +121,11 @@ public class TopTaskTracker extends ISplitScreenListener.Stub
             final RunningTaskInfo topTaskOnHomeDisplay = mOrderedTaskList.stream()
                     .filter(rto -> rto.displayId == DEFAULT_DISPLAY).findFirst().orElse(null);
             if (topTaskOnHomeDisplay != null) {
+                if (DEBUG) {
+                    Log.i(TAG, "onTaskMovedToFront: (removing top task on home display) taskId="
+                            + topTaskOnHomeDisplay.taskId
+                            + ", baseIntent=" + topTaskOnHomeDisplay.baseIntent);
+                }
                 mOrderedTaskList.removeIf(rto -> rto.taskId == topTaskOnHomeDisplay.taskId);
                 mOrderedTaskList.addFirst(topTaskOnHomeDisplay);
             }
@@ -119,6 +139,10 @@ public class TopTaskTracker extends ISplitScreenListener.Stub
                 if (info.taskId != taskInfo.taskId
                         && info.taskId != mMainStagePosition.taskId
                         && info.taskId != mSideStagePosition.taskId) {
+                    if (DEBUG) {
+                        Log.i(TAG, "onTaskMovedToFront: (removing task list overflow) taskId="
+                                + taskInfo.taskId + ", baseIntent=" + taskInfo.baseIntent);
+                    }
                     itr.remove();
                     return;
                 }
@@ -128,6 +152,9 @@ public class TopTaskTracker extends ISplitScreenListener.Stub
 
     @Override
     public void onStagePositionChanged(@StageType int stage, @StagePosition int position) {
+        if (DEBUG) {
+            Log.i(TAG, "onStagePositionChanged: stage=" + stage + ", position=" + position);
+        }
         if (stage == SplitConfigurationOptions.STAGE_TYPE_MAIN) {
             mMainStagePosition.stagePosition = position;
         } else {
@@ -137,6 +164,10 @@ public class TopTaskTracker extends ISplitScreenListener.Stub
 
     @Override
     public void onTaskStageChanged(int taskId, @StageType int stage, boolean visible) {
+        if (DEBUG) {
+            Log.i(TAG, "onTaskStageChanged: taskId=" + taskId
+                    + ", stage=" + stage + ", visible=" + visible);
+        }
         // If a task is not visible anymore or has been moved to undefined, stop tracking it.
         if (!visible || stage == SplitConfigurationOptions.STAGE_TYPE_UNDEFINED) {
             if (mMainStagePosition.taskId == taskId) {
@@ -156,11 +187,18 @@ public class TopTaskTracker extends ISplitScreenListener.Stub
 
     @Override
     public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
+        if (DEBUG) {
+            Log.i(TAG, "onActivityPinned: packageName=" + packageName
+                    + ", userId=" + userId + ", stackId=" + stackId);
+        }
         mPinnedTaskId = taskId;
     }
 
     @Override
     public void onActivityUnpinned() {
+        if (DEBUG) {
+            Log.i(TAG, "onActivityUnpinned");
+        }
         mPinnedTaskId = INVALID_TASK_ID;
     }
 
@@ -210,6 +248,21 @@ public class TopTaskTracker extends ISplitScreenListener.Stub
         ArrayList<RunningTaskInfo> tasks = new ArrayList<>(mOrderedTaskList);
         tasks.removeIf(t -> t.taskId == mPinnedTaskId);
         return new CachedTaskInfo(tasks);
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "TopTaskTracker:");
+
+        writer.println(prefix + "\tmOrderedTaskList=[");
+        for (RunningTaskInfo taskInfo : mOrderedTaskList) {
+            writer.println(prefix + "\t\t(taskId=" + taskInfo.taskId
+                    + "; baseIntent=" + taskInfo.baseIntent
+                    + "; isRunning=" + taskInfo.isRunning + ")");
+        }
+        writer.println(prefix + "\t]");
+        writer.println(prefix + "\tmMainStagePosition=" + mMainStagePosition);
+        writer.println(prefix + "\tmSideStagePosition=" + mSideStagePosition);
+        writer.println(prefix + "\tmPinnedTaskId=" + mPinnedTaskId);
     }
 
     /**
