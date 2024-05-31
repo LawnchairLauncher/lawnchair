@@ -18,7 +18,7 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
-import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
+import static com.android.launcher3.LauncherAnimUtils.newSingleUseCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -226,7 +226,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             return;
         }
         mNormalToHintOverviewScrimAnimator = null;
-        mCurrentAnimation.getTarget().addListener(newCancelListener(() ->
+        mCurrentAnimation.getTarget().addListener(newSingleUseCancelListener(() ->
                 mLauncher.getStateManager().goToState(OVERVIEW, true, forSuccessCallback(() -> {
                     mOverviewResistYAnim = AnimatorControllerWithResistance
                             .createRecentsResistanceFromOverviewAnim(mLauncher, null)
