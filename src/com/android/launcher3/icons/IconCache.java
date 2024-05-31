@@ -57,6 +57,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.IconRequestInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -640,5 +641,11 @@ public class IconCache extends BaseIconCache {
     public interface ItemInfoUpdateReceiver {
 
         void reapplyItemInfo(ItemInfoWithIcon info);
+    }
+
+    /** Log persistently to FileLog.d for debugging. */
+    @Override
+    protected void logdPersistently(String tag, String message, @Nullable Exception e) {
+        FileLog.d(tag, message, e);
     }
 }
