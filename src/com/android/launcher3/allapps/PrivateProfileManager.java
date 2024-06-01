@@ -197,23 +197,6 @@ public class PrivateProfileManager extends UserProfileManager {
         mAllApps.mAH.get(MAIN).mAdapter.notifyItemInserted(adapterItems.size() - 1);
     }
 
-    /**
-     * Disables quiet mode for Private Space User Profile.
-     * When called from search, a runnable is set and executed in the {@link #reset()} method, when
-     * Launcher receives update about profile availability.
-     * The runnable is only executed once, and reset after execution.
-     * In case the method is called again, before the previously set runnable was executed,
-     * the runnable will be updated.
-     */
-    public void unlockPrivateProfile() {
-        setQuietMode(false);
-    }
-
-    /** Enables quiet mode for Private Space User Profile. */
-    void lockPrivateProfile() {
-        setQuietMode(true);
-    }
-
     /** Whether private profile should be hidden on Launcher. */
     public boolean isPrivateSpaceHidden() {
         return getCurrentState() == STATE_DISABLED && SettingsCache.INSTANCE
@@ -378,7 +361,7 @@ public class PrivateProfileManager extends UserProfileManager {
     }
 
     /** Add Private Space Header view elements based upon {@link UserProfileState} */
-    public void addPrivateSpaceHeaderViewElements(RelativeLayout parent) {
+    public void bindPrivateSpaceHeaderViewElements(RelativeLayout parent) {
         mPSHeader = parent;
         if (mOnPSHeaderAdded != null) {
             MAIN_EXECUTOR.execute(mOnPSHeaderAdded);
@@ -396,27 +379,27 @@ public class PrivateProfileManager extends UserProfileManager {
         //Add quietMode image and action for lock/unlock button
         ViewGroup lockButton = mPSHeader.findViewById(R.id.ps_lock_unlock_button);
         assert lockButton != null;
-        addLockButton(lockButton);
+        updateLockButton(lockButton);
 
         //Trigger lock/unlock action from header.
-        addHeaderOnClickListener(mPSHeader);
+        updateHeaderOnClickListener(mPSHeader);
 
         //Add image and action for private space settings button
         ImageButton settingsButton = mPSHeader.findViewById(R.id.ps_settings_button);
         assert settingsButton != null;
-        addPrivateSpaceSettingsButton(settingsButton);
+        updatePrivateSpaceSettingsButton(settingsButton);
 
         //Add image for private space transitioning view
         ImageView transitionView = parent.findViewById(R.id.ps_transition_image);
         assert transitionView != null;
-        addTransitionImage(transitionView);
+        updateTransitionImage(transitionView);
     }
 
     /**
      *  Adds the quietModeButton and attach onClickListener for the header to animate different
      *  states when clicked.
      */
-    private void addLockButton(ViewGroup lockButton) {
+    private void updateLockButton(ViewGroup lockButton) {
         TextView lockText = lockButton.findViewById(R.id.lock_text);
         switch (getCurrentState()) {
             case STATE_ENABLED -> {
@@ -435,7 +418,7 @@ public class PrivateProfileManager extends UserProfileManager {
         }
     }
 
-    private void addHeaderOnClickListener(RelativeLayout header) {
+    private void updateHeaderOnClickListener(RelativeLayout header) {
         if (getCurrentState() == STATE_DISABLED) {
             header.setOnClickListener(view -> lockingAction(/* lock */ false));
             header.setClickable(true);
@@ -453,14 +436,10 @@ public class PrivateProfileManager extends UserProfileManager {
     /** Sets the enablement of the profile when header or button is clicked. */
     private void lockingAction(boolean lock) {
         logEvents(lock ? LAUNCHER_PRIVATE_SPACE_LOCK_TAP : LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP);
-        if (lock) {
-            lockPrivateProfile();
-        } else {
-            unlockPrivateProfile();
-        }
+        setQuietMode(lock);
     }
 
-    private void addPrivateSpaceSettingsButton(ImageButton settingsButton) {
+    private void updatePrivateSpaceSettingsButton(ImageButton settingsButton) {
         if (getCurrentState() == STATE_ENABLED
                 && isPrivateSpaceSettingsAvailable()) {
             settingsButton.setVisibility(VISIBLE);
@@ -474,7 +453,7 @@ public class PrivateProfileManager extends UserProfileManager {
         }
     }
 
-    private void addTransitionImage(ImageView transitionImage) {
+    private void updateTransitionImage(ImageView transitionImage) {
         if (getCurrentState() == STATE_TRANSITION) {
             transitionImage.setVisibility(VISIBLE);
         } else {
