@@ -98,16 +98,21 @@ constructor(
         popupContainer.getDescendantRectRelativeToSelf(dividerView, outPos)
     }
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    @SuppressLint("UseSwitchCompatOrMaterialCode", "ClickableViewAccessibility")
     override fun onFinishInflate() {
         super.onFinishInflate()
         val taskbarSwitchOption = requireViewById<LinearLayout>(R.id.taskbar_switch_option)
         val alwaysShowTaskbarSwitch = requireViewById<Switch>(R.id.taskbar_pinning_switch)
         val taskbarVisibilityIcon = requireViewById<View>(R.id.taskbar_pinning_visibility_icon)
+
         alwaysShowTaskbarSwitch.isChecked = alwaysShowTaskbarOn
+        alwaysShowTaskbarSwitch.setOnTouchListener { view, event ->
+            (view.parent as View).onTouchEvent(event)
+        }
+        alwaysShowTaskbarSwitch.setOnClickListener { view -> (view.parent as View).performClick() }
+
         if (ActivityContext.lookupContext<TaskbarActivityContext>(context).isGestureNav) {
             taskbarSwitchOption.setOnClickListener {
-                alwaysShowTaskbarSwitch.isClickable = true
                 alwaysShowTaskbarSwitch.isChecked = !alwaysShowTaskbarOn
                 onClickAlwaysShowTaskbarSwitchOption()
             }

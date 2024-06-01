@@ -19,9 +19,6 @@
     <item type="id" name="view_type_widgets_space" />
     <item type="id" name="view_type_widgets_list" />
     <item type="id" name="view_type_widgets_header" />
-    <!--  Used for A11y actions in staged split to identify each task uniquely  -->
-    <item type="id" name="split_topLeft_appInfo" />
-    <item type="id" name="split_bottomRight_appInfo" />
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
@@ -37,6 +34,12 @@
     <item type="id" name="action_remote_action_shortcut" />
     <item type="id" name="action_dismiss_prediction" />
     <item type="id" name="action_pin_prediction"/>
+    <item type="id" name="action_close"/>
+    <!--  Used for A11y actions in staged split to identify each task uniquely  -->
+    <item type="id" name="action_app_info_top_left" />
+    <item type="id" name="action_app_info_bottom_right" />
+    <item type="id" name="action_digital_wellbeing_top_left" />
+    <item type="id" name="action_digital_wellbeing_bottom_right" />
 
     <!-- QSB IDs. DO not change -->
     <item type="id" name="search_container_workspace" />

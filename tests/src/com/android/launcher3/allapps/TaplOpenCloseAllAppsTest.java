@@ -120,7 +120,6 @@ public class TaplOpenCloseAllAppsTest extends AbstractLauncherUiTest<Launcher> {
     @Test
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
-    @ScreenRecordRule.ScreenRecord // b/322228038
     public void testAllAppsFromHome() {
         // Test opening all apps
         assertNotNull("switchToAllApps() returned null",

@@ -100,7 +100,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     // If we're in an app and any of these flags are enabled, taskbar should be stashed.
     private static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_SYSUI
             | FLAG_STASHED_IN_APP_SETUP | FLAG_STASHED_IN_TASKBAR_ALL_APPS
-            | FLAG_STASHED_SMALL_SCREEN | FLAG_STASHED_IN_APP_AUTO;
+            | FLAG_STASHED_SMALL_SCREEN | FLAG_STASHED_IN_APP_AUTO | FLAG_STASHED_IME;
+
+    // If we're in overview and any of these flags are enabled, taskbar should be stashed.
+    private static final int FLAGS_STASHED_IN_OVERVIEW = FLAG_STASHED_IME;
 
     // If any of these flags are enabled, inset apps by our stashed height instead of our unstashed
     // height. This way the reported insets are consistent even during transitions out of the app.
@@ -111,7 +114,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     // If any of these flags are enabled, the taskbar must be stashed.
     private static final int FLAGS_FORCE_STASHED = FLAG_STASHED_SYSUI | FLAG_STASHED_DEVICE_LOCKED
-            | FLAG_STASHED_IN_TASKBAR_ALL_APPS | FLAG_STASHED_SMALL_SCREEN | FLAG_STASHED_IME;
+            | FLAG_STASHED_IN_TASKBAR_ALL_APPS | FLAG_STASHED_SMALL_SCREEN;
 
     /**
      * How long to stash/unstash when manually invoked via long press.
@@ -244,8 +247,13 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         boolean inApp = hasAnyFlag(flags, FLAGS_IN_APP);
         boolean stashedInApp = hasAnyFlag(flags, FLAGS_STASHED_IN_APP);
         boolean stashedLauncherState = hasAnyFlag(flags, FLAG_IN_STASHED_LAUNCHER_STATE);
+        boolean inOverview = hasAnyFlag(flags, FLAG_IN_OVERVIEW);
+        boolean stashedInOverview = hasAnyFlag(flags, FLAGS_STASHED_IN_OVERVIEW);
         boolean forceStashed = hasAnyFlag(flags, FLAGS_FORCE_STASHED);
-        return (inApp && stashedInApp) || (!inApp && stashedLauncherState) || forceStashed;
+        return (inApp && stashedInApp)
+                || (!inApp && stashedLauncherState)
+                || (inOverview && stashedInOverview)
+                || forceStashed;
     };
     private final StatePropertyHolder mStatePropertyHolder = new StatePropertyHolder(
             mIsStashedPredicate);

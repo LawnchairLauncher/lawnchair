@@ -113,6 +113,8 @@ public class TaplTwoPanelWorkspaceTest extends AbstractLauncherUiTest<Launcher> 
 
     @Test
     @PortraitLandscape
+    @ScreenRecordRule.ScreenRecord // b/329935119
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/329935119
     public void testSinglePageDragIconWhenMultiplePageScrollingIsPossible() {
         Workspace workspace = mLauncher.getWorkspace();
 
