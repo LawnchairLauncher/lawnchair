@@ -104,6 +104,7 @@ public class PrivateProfileManager extends UserProfileManager {
     private static final int LOCK_TEXT_OPACITY_DELAY = 500;
     private static final int MASK_VIEW_DELAY = 400;
     private static final int NO_DELAY = 0;
+    private static final int CONTAINER_OPACITY_DURATION = 150;
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
     private final int mPsHeaderHeight;
@@ -497,7 +498,10 @@ public class PrivateProfileManager extends UserProfileManager {
                                 return LinearSmoothScroller.SNAP_TO_END;
                             }
                         };
-                smoothScroller.setTargetPosition(i);
+                // If privateSpaceHidden() then the entire container decorator will be invisible and
+                // we can directly move to an element above the header. There should always be one
+                // element, as PS is present in the bottom of All Apps.
+                smoothScroller.setTargetPosition(isPrivateSpaceHidden() ? i - 1 : i);
                 RecyclerView.LayoutManager layoutManager = allAppsRecyclerView.getLayoutManager();
                 if (layoutManager != null) {
                     startAnimationScroll(allAppsRecyclerView, layoutManager, smoothScroller);
@@ -619,8 +623,11 @@ public class PrivateProfileManager extends UserProfileManager {
                 float newAlpha = (float) valueAnimator.getAnimatedValue();
                 for (int i = 0; i < allAppsAdapterItems.size(); i++) {
                     BaseAllAppsAdapter.AdapterItem currentItem = allAppsAdapterItems.get(i);
+                    // When not hidden: Fade all PS items except header.
+                    // When hidden: Fade all items.
                     if (isPrivateSpaceItem(currentItem) &&
-                            currentItem.viewType != VIEW_TYPE_PRIVATE_SPACE_HEADER) {
+                            (currentItem.viewType != VIEW_TYPE_PRIVATE_SPACE_HEADER
+                                    || isPrivateSpaceHidden())) {
                         RecyclerView.ViewHolder viewHolder =
                                 allAppsRecyclerView.findViewHolderForAdapterPosition(i);
                         if (viewHolder != null) {
@@ -702,10 +709,9 @@ public class PrivateProfileManager extends UserProfileManager {
                     translateFloatingMaskView(false));
         } else {
             if (isPrivateSpaceHidden()) {
-                animatorSet.playSequentially(translateFloatingMaskView(false),
-                        animateAlphaOfIcons(false),
-                        animateCollapseAnimation(),
-                        fadeOutHeaderAlpha());
+                animatorSet.playSequentially(animateAlphaOfIcons(false),
+                        animateAlphaOfPrivateSpaceContainer(),
+                        animateCollapseAnimation());
             } else {
                 animatorSet.playSequentially(translateFloatingMaskView(true),
                         animateAlphaOfIcons(false),
@@ -715,22 +721,23 @@ public class PrivateProfileManager extends UserProfileManager {
         animatorSet.start();
     }
 
-    /** Fades out the private space container. */
-    private ValueAnimator fadeOutHeaderAlpha() {
-        if (mPSHeader == null) {
-            return new ValueAnimator();
-        }
-        float from = 1;
-        float to = 0;
-        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(from, to);
-        alphaAnim.setDuration(EXPAND_COLLAPSE_DURATION);
-        alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                if (mPSHeader != null) {
-                    mPSHeader.setAlpha((float) valueAnimator.getAnimatedValue());
+    /** Fades out the private space container (defined by its items' decorators). */
+    private ValueAnimator animateAlphaOfPrivateSpaceContainer() {
+        int from = 255; // 100% opacity.
+        int to = 0; // No opacity.
+        ValueAnimator alphaAnim = ObjectAnimator.ofInt(from, to);
+        AllAppsRecyclerView allAppsRecyclerView = mAllApps.getActiveRecyclerView();
+        List<BaseAllAppsAdapter.AdapterItem> allAppsAdapterItems =
+                allAppsRecyclerView.getApps().getAdapterItems();
+        alphaAnim.setDuration(CONTAINER_OPACITY_DURATION);
+        alphaAnim.addUpdateListener(valueAnimator -> {
+            for (BaseAllAppsAdapter.AdapterItem currentItem : allAppsAdapterItems) {
+                if (isPrivateSpaceItem(currentItem)) {
+                    currentItem.setDecorationFillAlpha((int) valueAnimator.getAnimatedValue());
                 }
             }
+            // Invalidate the parent view, to redraw the decorations with changed alpha.
+            allAppsRecyclerView.invalidate();
         });
         return alphaAnim;
     }
