@@ -104,6 +104,7 @@ public class PrivateProfileManager extends UserProfileManager {
     private static final int LOCK_TEXT_OPACITY_DELAY = 500;
     private static final int MASK_VIEW_DELAY = 400;
     private static final int NO_DELAY = 0;
+    private static final int CONTAINER_OPACITY_DURATION = 150;
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
     private final int mPsHeaderHeight;
@@ -194,23 +195,6 @@ public class PrivateProfileManager extends UserProfileManager {
 
         adapterItems.add(item);
         mAllApps.mAH.get(MAIN).mAdapter.notifyItemInserted(adapterItems.size() - 1);
-    }
-
-    /**
-     * Disables quiet mode for Private Space User Profile.
-     * When called from search, a runnable is set and executed in the {@link #reset()} method, when
-     * Launcher receives update about profile availability.
-     * The runnable is only executed once, and reset after execution.
-     * In case the method is called again, before the previously set runnable was executed,
-     * the runnable will be updated.
-     */
-    public void unlockPrivateProfile() {
-        setQuietMode(false);
-    }
-
-    /** Enables quiet mode for Private Space User Profile. */
-    void lockPrivateProfile() {
-        setQuietMode(true);
     }
 
     /** Whether private profile should be hidden on Launcher. */
@@ -377,7 +361,7 @@ public class PrivateProfileManager extends UserProfileManager {
     }
 
     /** Add Private Space Header view elements based upon {@link UserProfileState} */
-    public void addPrivateSpaceHeaderViewElements(RelativeLayout parent) {
+    public void bindPrivateSpaceHeaderViewElements(RelativeLayout parent) {
         mPSHeader = parent;
         if (mOnPSHeaderAdded != null) {
             MAIN_EXECUTOR.execute(mOnPSHeaderAdded);
@@ -395,27 +379,27 @@ public class PrivateProfileManager extends UserProfileManager {
         //Add quietMode image and action for lock/unlock button
         ViewGroup lockButton = mPSHeader.findViewById(R.id.ps_lock_unlock_button);
         assert lockButton != null;
-        addLockButton(lockButton);
+        updateLockButton(lockButton);
 
         //Trigger lock/unlock action from header.
-        addHeaderOnClickListener(mPSHeader);
+        updateHeaderOnClickListener(mPSHeader);
 
         //Add image and action for private space settings button
         ImageButton settingsButton = mPSHeader.findViewById(R.id.ps_settings_button);
         assert settingsButton != null;
-        addPrivateSpaceSettingsButton(settingsButton);
+        updatePrivateSpaceSettingsButton(settingsButton);
 
         //Add image for private space transitioning view
         ImageView transitionView = parent.findViewById(R.id.ps_transition_image);
         assert transitionView != null;
-        addTransitionImage(transitionView);
+        updateTransitionImage(transitionView);
     }
 
     /**
      *  Adds the quietModeButton and attach onClickListener for the header to animate different
      *  states when clicked.
      */
-    private void addLockButton(ViewGroup lockButton) {
+    private void updateLockButton(ViewGroup lockButton) {
         TextView lockText = lockButton.findViewById(R.id.lock_text);
         switch (getCurrentState()) {
             case STATE_ENABLED -> {
@@ -434,7 +418,7 @@ public class PrivateProfileManager extends UserProfileManager {
         }
     }
 
-    private void addHeaderOnClickListener(RelativeLayout header) {
+    private void updateHeaderOnClickListener(RelativeLayout header) {
         if (getCurrentState() == STATE_DISABLED) {
             header.setOnClickListener(view -> lockingAction(/* lock */ false));
             header.setClickable(true);
@@ -452,14 +436,10 @@ public class PrivateProfileManager extends UserProfileManager {
     /** Sets the enablement of the profile when header or button is clicked. */
     private void lockingAction(boolean lock) {
         logEvents(lock ? LAUNCHER_PRIVATE_SPACE_LOCK_TAP : LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP);
-        if (lock) {
-            lockPrivateProfile();
-        } else {
-            unlockPrivateProfile();
-        }
+        setQuietMode(lock);
     }
 
-    private void addPrivateSpaceSettingsButton(ImageButton settingsButton) {
+    private void updatePrivateSpaceSettingsButton(ImageButton settingsButton) {
         if (getCurrentState() == STATE_ENABLED
                 && isPrivateSpaceSettingsAvailable()) {
             settingsButton.setVisibility(VISIBLE);
@@ -473,7 +453,7 @@ public class PrivateProfileManager extends UserProfileManager {
         }
     }
 
-    private void addTransitionImage(ImageView transitionImage) {
+    private void updateTransitionImage(ImageView transitionImage) {
         if (getCurrentState() == STATE_TRANSITION) {
             transitionImage.setVisibility(VISIBLE);
         } else {
@@ -497,7 +477,10 @@ public class PrivateProfileManager extends UserProfileManager {
                                 return LinearSmoothScroller.SNAP_TO_END;
                             }
                         };
-                smoothScroller.setTargetPosition(i);
+                // If privateSpaceHidden() then the entire container decorator will be invisible and
+                // we can directly move to an element above the header. There should always be one
+                // element, as PS is present in the bottom of All Apps.
+                smoothScroller.setTargetPosition(isPrivateSpaceHidden() ? i - 1 : i);
                 RecyclerView.LayoutManager layoutManager = allAppsRecyclerView.getLayoutManager();
                 if (layoutManager != null) {
                     startAnimationScroll(allAppsRecyclerView, layoutManager, smoothScroller);
@@ -619,8 +602,11 @@ public class PrivateProfileManager extends UserProfileManager {
                 float newAlpha = (float) valueAnimator.getAnimatedValue();
                 for (int i = 0; i < allAppsAdapterItems.size(); i++) {
                     BaseAllAppsAdapter.AdapterItem currentItem = allAppsAdapterItems.get(i);
+                    // When not hidden: Fade all PS items except header.
+                    // When hidden: Fade all items.
                     if (isPrivateSpaceItem(currentItem) &&
-                            currentItem.viewType != VIEW_TYPE_PRIVATE_SPACE_HEADER) {
+                            (currentItem.viewType != VIEW_TYPE_PRIVATE_SPACE_HEADER
+                                    || isPrivateSpaceHidden())) {
                         RecyclerView.ViewHolder viewHolder =
                                 allAppsRecyclerView.findViewHolderForAdapterPosition(i);
                         if (viewHolder != null) {
@@ -702,10 +688,9 @@ public class PrivateProfileManager extends UserProfileManager {
                     translateFloatingMaskView(false));
         } else {
             if (isPrivateSpaceHidden()) {
-                animatorSet.playSequentially(translateFloatingMaskView(false),
-                        animateAlphaOfIcons(false),
-                        animateCollapseAnimation(),
-                        fadeOutHeaderAlpha());
+                animatorSet.playSequentially(animateAlphaOfIcons(false),
+                        animateAlphaOfPrivateSpaceContainer(),
+                        animateCollapseAnimation());
             } else {
                 animatorSet.playSequentially(translateFloatingMaskView(true),
                         animateAlphaOfIcons(false),
@@ -715,22 +700,23 @@ public class PrivateProfileManager extends UserProfileManager {
         animatorSet.start();
     }
 
-    /** Fades out the private space container. */
-    private ValueAnimator fadeOutHeaderAlpha() {
-        if (mPSHeader == null) {
-            return new ValueAnimator();
-        }
-        float from = 1;
-        float to = 0;
-        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(from, to);
-        alphaAnim.setDuration(EXPAND_COLLAPSE_DURATION);
-        alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                if (mPSHeader != null) {
-                    mPSHeader.setAlpha((float) valueAnimator.getAnimatedValue());
+    /** Fades out the private space container (defined by its items' decorators). */
+    private ValueAnimator animateAlphaOfPrivateSpaceContainer() {
+        int from = 255; // 100% opacity.
+        int to = 0; // No opacity.
+        ValueAnimator alphaAnim = ObjectAnimator.ofInt(from, to);
+        AllAppsRecyclerView allAppsRecyclerView = mAllApps.getActiveRecyclerView();
+        List<BaseAllAppsAdapter.AdapterItem> allAppsAdapterItems =
+                allAppsRecyclerView.getApps().getAdapterItems();
+        alphaAnim.setDuration(CONTAINER_OPACITY_DURATION);
+        alphaAnim.addUpdateListener(valueAnimator -> {
+            for (BaseAllAppsAdapter.AdapterItem currentItem : allAppsAdapterItems) {
+                if (isPrivateSpaceItem(currentItem)) {
+                    currentItem.setDecorationFillAlpha((int) valueAnimator.getAnimatedValue());
                 }
             }
+            // Invalidate the parent view, to redraw the decorations with changed alpha.
+            allAppsRecyclerView.invalidate();
         });
         return alphaAnim;
     }
