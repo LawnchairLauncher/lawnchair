@@ -25,9 +25,11 @@ import android.window.TaskSnapshot;
 
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
-import app.lawnchair.compat.LawnchairQuickstepCompat;
-import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
+import app.lawnchair.compat.LawnchairQuickstepCompat;
+import com.android.internal.os.IResultReceiver;
 public class RecentsAnimationControllerCompat {
 
     private static final String TAG = RecentsAnimationControllerCompat.class.getSimpleName();
@@ -99,9 +101,23 @@ public class RecentsAnimationControllerCompat {
      */
     public void finish(boolean toHome, boolean sendUserLeaveHint) {
         try {
-            mAnimationController.finish(toHome, sendUserLeaveHint);
+            hookIrecentsController(toHome, sendUserLeaveHint);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to finish recents animation", e);
+        }
+    }
+
+    /**
+     * IRecentsAnimationController @finish reflection
+     */
+    private void hookIrecentsController(boolean toHome, boolean sendUserLeaveHint) throws RemoteException {
+        try {
+            Class<?> iRecentsAnimationControllerClass = Class.forName("android.view.IRecentsAnimationController");
+            Method finishMethod = iRecentsAnimationControllerClass.getMethod("finish", boolean.class, boolean.class, IResultReceiver.class);
+            finishMethod.invoke(mAnimationController, toHome, sendUserLeaveHint, null);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
+                 InvocationTargetException e) {
+            mAnimationController.finish(toHome, sendUserLeaveHint);
         }
     }
 

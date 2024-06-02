@@ -32,6 +32,8 @@ import android.view.InputEvent;
 import android.view.WindowManagerGlobal;
 
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Manages the input consumer that allows the SystemUI to directly receive input.
@@ -139,7 +141,7 @@ public class InputConsumerController {
         if (mInputEventReceiver == null) {
             final InputChannel inputChannel = new InputChannel();
             try {
-                mWindowManager.destroyInputConsumer(mName, DEFAULT_DISPLAY);
+                hookDestroyInputConsumer(mWindowManager);
                 mWindowManager.createInputConsumer(mToken, mName, DEFAULT_DISPLAY, inputChannel);
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to create input consumer", e);
@@ -153,12 +155,26 @@ public class InputConsumerController {
     }
 
     /**
+     * IWindowManager @destroyInputConsumer reflection
+     */
+    private void hookDestroyInputConsumer(IWindowManager mWindowManager) throws RemoteException {
+        try {
+            Class<?> iWindowManagerClass = Class.forName("android.view.IWindowManager");
+            Method destroyInputConsumerMethod = iWindowManagerClass.getMethod("destroyInputConsumer", IBinder.class, int.class);
+            destroyInputConsumerMethod.invoke(mWindowManager, mToken, DEFAULT_DISPLAY);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
+                 InvocationTargetException e) {
+            mWindowManager.destroyInputConsumer(mName, DEFAULT_DISPLAY);
+        }
+    }
+
+    /**
      * Unregisters the input consumer.
      */
     public void unregisterInputConsumer() {
         if (mInputEventReceiver != null) {
             try {
-                mWindowManager.destroyInputConsumer(mName, DEFAULT_DISPLAY);
+                hookDestroyInputConsumer(mWindowManager);
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to destroy input consumer", e);
             }
