@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
 import app.lawnchair.ui.preferences.components.WallpaperPreview
@@ -117,6 +118,7 @@ fun CreateBackupScreen(
     PreferenceLayout(
         label = stringResource(id = R.string.create_backup),
         modifier = modifier,
+        backArrowVisible = LocalIsExpandedScreen.current,
         scrollState = if (isPortrait) null else scrollState,
     ) {
         DisposableEffect(contents, hasLiveWallpaper, hasStoragePermission) {

@@ -29,6 +29,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorMode
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.FeedPreference
 import app.lawnchair.ui.preferences.components.GestureHandlerPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -58,6 +59,7 @@ fun HomeScreenPreferences(
     val scope = rememberCoroutineScope()
     PreferenceLayout(
         label = stringResource(id = R.string.home_screen_label),
+        backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
         val lockHomeScreenAdapter = prefs2.lockHomeScreen.getAdapter()

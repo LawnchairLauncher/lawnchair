@@ -5,7 +5,7 @@ import android.content.Context
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.ui.preferences.PreferenceActivity
-import app.lawnchair.ui.preferences.Routes
+import app.lawnchair.ui.preferences.navigation.Routes
 import app.lawnchair.util.dropWhileBusy
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject

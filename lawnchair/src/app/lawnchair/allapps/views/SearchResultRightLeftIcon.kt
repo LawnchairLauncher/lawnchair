@@ -74,7 +74,7 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
             LayoutParams.MATCH_PARENT,
             heightRes,
         )
-        val horizontalMargin = grid.allAppsLeftRightMargin
+        val horizontalMargin = grid.allAppsLeftRightPadding
         layoutParams.leftMargin = horizontalMargin
         layoutParams.rightMargin = horizontalMargin
         this.layoutParams = layoutParams

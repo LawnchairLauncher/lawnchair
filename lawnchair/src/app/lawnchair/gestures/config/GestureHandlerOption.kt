@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import app.lawnchair.BlankActivity
 import app.lawnchair.ui.preferences.PreferenceActivity
-import app.lawnchair.ui.preferences.Routes
+import app.lawnchair.ui.preferences.navigation.Routes
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
 

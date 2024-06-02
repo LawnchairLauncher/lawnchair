@@ -43,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
@@ -215,6 +216,7 @@ fun About(
     PreferenceLayout(
         label = stringResource(id = R.string.about_label),
         modifier = modifier,
+        backArrowVisible = LocalIsExpandedScreen.current,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(

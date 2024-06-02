@@ -27,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -61,7 +62,7 @@ fun PreferenceCategory(
                 ),
             ) { onNavigate() }
             .background(
-                if (isSelected) MaterialTheme.colorScheme.surfaceVariant else Color.Transparent,
+                if (isSelected) MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp) else Color.Transparent,
             ),
         verticalPadding = 14.dp,
         title = {
