@@ -58,14 +58,14 @@
     <string name="show_home_labels">显示应用名称</string>
     <string name="label_size">应用名称大小</string>
     <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">允许主屏幕旋转</string>
+    <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotation_description">当设备旋转时不保持竖屏</string>
     <string name="font_label">字体（实验性功能）</string>
     <string name="fontWorkspace">通用</string>
     <string name="fontHeading">标题</string>
     <string name="fontHeadingMedium">标题（中）</string>
     <string name="fontBody">正文</string>
-    <string name="fontBodyMedium">正文（中等）</string>
+    <string name="fontBodyMedium">正文（中）</string>
     <string name="icon_style">图标样式</string>
     <string name="transparent_background_icons">透明的带主题图标</string>
     <string name="transparent_background_icons_description">在带主题的图标上使用透明背景</string>
@@ -80,8 +80,8 @@
     <string name="show_notification_count">显示通知数量</string>
     <string name="notification_dots_color">通知圆点颜色</string>
     <string name="notification_dots_text_color">通知角标文字颜色</string>
-    <string name="notification_dots_color_contrast_warning_always">警告：通知角标背景 &amp; 文字颜色之间没有足够的对比度</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">警告：通知角标背景 &amp; 文字颜色之间可能没有足够的对比度</string>
+    <string name="notification_dots_color_contrast_warning_always">警告：通知角标背景与文字颜色之间没有足够的对比度</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">警告：通知角标背景与文字颜色之间可能没有足够的对比度</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">需要通知权限</string>
     <string name="missing_notification_access_description">需要通知使用权来读取内容</string>
@@ -190,7 +190,7 @@
     <string name="show_dot_pagination_label">使用多点分页</string>
     <string name="show_dot_pagination_description">使用多个点而不是线条来显示页数</string>
     <string name="show_material_u_popup_label">使用新的弹窗样式</string>
-    <string name="show_material_u_popup_description">使用 Material You 弹窗风格</string>
+    <string name="show_material_u_popup_description">使用 Material You 的弹跳且略微紧凑的弹窗风格</string>
     <string name="popup_menu">弹出菜单</string>
     <string name="home_screen_lock_toggle_from_home_popup">显示锁定主屏幕布局按钮</string>
     <string name="show_system_settings_entry">显示系统设置项目</string>
@@ -392,7 +392,7 @@
     <string name="all_apps_search_result_files">来自您的文件</string>
     <string name="all_apps_search_result_settings_entry_from_device">从您的手机设置</string>
     <string name="label_search">搜索</string>
-    <string name="label_lens">相机</string>
+    <string name="label_lens">Google 智能镜头</string>
     <string name="label_voice_search">语音搜索</string>
     <string name="pref_advance_search_category">高级搜索</string>
     <string name="perform_wide_search_title">大范围搜索</string>
@@ -440,4 +440,5 @@
     <string name="search_algorithm_global_search_via_asi">全局搜索（通过 ASI）</string>
     <string name="app_search_algorithm">搜索算法</string>
     <string name="all_apps_search_result_calculator">计算器</string>
+    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
 </resources>

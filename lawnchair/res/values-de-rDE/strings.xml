@@ -441,4 +441,5 @@
     <string name="search_algorithm_global_search_via_asi">Globale Suche (über ASI)</string>
     <string name="app_search_algorithm">Such-Algorithmus</string>
     <string name="all_apps_search_result_calculator">Rechner</string>
+    <string name="accessibility_service_description">Um Dein Gerät mit einer Geste zu sperren, benötigt Lawnchair Bedienungshilfen-Zugriff.\n\nLawnchair beobachtet keine Nutzeraktionen, auch wenn die Bedienungshilfen dies ermöglichen würden. Lawnchair verwirft alle vom System gesendeten Ereignisse.\n\nUm Dein Gerät zu sperren, verwendet Lawnchair den performGlobalAction-Dienst.</string>
 </resources>

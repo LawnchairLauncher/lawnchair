@@ -442,4 +442,5 @@
     <string name="search_algorithm_global_search_via_asi">Глобална претрага (помоћу ASI-ја)</string>
     <string name="app_search_algorithm">Алгоритам претраге</string>
     <string name="all_apps_search_result_calculator">Калкулатор</string>
+    <string name="accessibility_service_description">Да бисте закључали уређај покретом потребно је да доделите Lawnchair-у приступ услузи приступачности.\n\nLawnchair не надгледа корисничке радње, али је привилегија за то потребна свим услугама приступачности. Lawnchair одбацује све догађаје које пошаље систем.\n\nКако би закључао уређај, Lawnchair користи услугу приступачности performGlobalAction.</string>
 </resources>
