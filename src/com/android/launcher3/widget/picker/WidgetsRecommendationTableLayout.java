@@ -27,9 +27,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
@@ -38,6 +36,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.widget.WidgetCell;
+import com.android.launcher3.widget.WidgetTableRow;
 import com.android.launcher3.widget.picker.util.WidgetPreviewContainerSize;
 
 import java.util.ArrayList;
@@ -105,7 +104,8 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
 
         for (int i = 0; i < recommendationTable.size(); i++) {
             List<WidgetItem> widgetItems = recommendationTable.get(i);
-            TableRow tableRow = new TableRow(getContext());
+            WidgetTableRow tableRow = new WidgetTableRow(getContext());
+            tableRow.setupRow(widgetItems.size(), /*resizeDelayMs=*/ 0);
             tableRow.setGravity(Gravity.TOP);
             for (WidgetItem widgetItem : widgetItems) {
                 WidgetCell widgetCell = addItemCell(tableRow);
@@ -121,9 +121,10 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         setVisibility(VISIBLE);
     }
 
-    private WidgetCell addItemCell(ViewGroup parent) {
+    private WidgetCell addItemCell(WidgetTableRow parent) {
         WidgetCell widget = (WidgetCell) LayoutInflater.from(
                 getContext()).inflate(R.layout.widget_cell, parent, false);
+        widget.addPreviewReadyListener(parent);
         widget.setOnClickListener(mWidgetCellOnClickListener);
 
         View previewContainer = widget.findViewById(R.id.widget_preview_container);
