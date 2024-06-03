@@ -154,8 +154,23 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         }
 
         if (sourceRectHint.isEmpty()) {
-            mSourceRectHint.setEmpty();
-            mSourceHintRectInsets = null;
+            // Crop a Rect matches the aspect ratio and pivots at the center point.
+            // To make the animation path simplified.
+            final float aspectRatio = destinationBounds.width()
+                    / (float) destinationBounds.height();
+            if ((appBounds.width() / (float) appBounds.height()) > aspectRatio) {
+                // use the full height.
+                mSourceRectHint.set(0, 0,
+                        (int) (appBounds.height() * aspectRatio), appBounds.height());
+                mSourceRectHint.offset(
+                        (appBounds.width() - mSourceRectHint.width()) / 2, 0);
+            } else {
+                // use the full width.
+                mSourceRectHint.set(0, 0,
+                        appBounds.width(), (int) (appBounds.width() / aspectRatio));
+                mSourceRectHint.offset(
+                        0, (appBounds.height() - mSourceRectHint.height()) / 2);
+            }
 
             // Create a new overlay layer. We do not call detach on this instance, it's propagated
             // to other classes like PipTaskOrganizer / RecentsAnimationController to complete
@@ -168,11 +183,11 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             Log.d(TAG, getContentOverlay() + " is created: " + reasonForCreateOverlay);
         } else {
             mSourceRectHint.set(sourceRectHint);
-            mSourceHintRectInsets = new Rect(sourceRectHint.left - appBounds.left,
-                    sourceRectHint.top - appBounds.top,
-                    appBounds.right - sourceRectHint.right,
-                    appBounds.bottom - sourceRectHint.bottom);
         }
+        mSourceHintRectInsets = new Rect(mSourceRectHint.left - appBounds.left,
+                mSourceRectHint.top - appBounds.top,
+                appBounds.right - mSourceRectHint.right,
+                appBounds.bottom - mSourceRectHint.bottom);
 
         addAnimatorListener(new AnimationSuccessListener() {
             @Override
@@ -217,27 +232,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         if (mPipContentOverlay != null) {
             mPipContentOverlay.onAnimationUpdate(tx, mCurrentBounds, progress);
         }
-        final PictureInPictureSurfaceTransaction op;
-        if (mSourceHintRectInsets == null) {
-            // no source rect hint been set, directly scale the window down
-            op = onAnimationScale(progress, tx, mCurrentBounds);
-        } else {
-            // scale and crop according to the source rect hint
-            op = onAnimationScaleAndCrop(progress, tx, mCurrentBounds);
-        }
-        return op;
-    }
-
-    /** scale the window directly with no source rect hint being set */
-    private PictureInPictureSurfaceTransaction onAnimationScale(
-            float progress, SurfaceControl.Transaction tx, Rect bounds) {
-        if (mFromRotation == Surface.ROTATION_90 || mFromRotation == Surface.ROTATION_270) {
-            final RotatedPosition rotatedPosition = getRotatedPosition(progress);
-            return mSurfaceTransactionHelper.scale(tx, mLeash, mAppBounds, bounds,
-                    rotatedPosition.degree, rotatedPosition.positionX, rotatedPosition.positionY);
-        } else {
-            return mSurfaceTransactionHelper.scale(tx, mLeash, mAppBounds, bounds);
-        }
+        return onAnimationScaleAndCrop(progress, tx, mCurrentBounds);
     }
 
     /** scale and crop the window with source rect hint */
