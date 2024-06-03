@@ -5,9 +5,6 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BACK_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DOZING;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DREAMING;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_WAKEFULNESS_MASK;
@@ -16,6 +13,7 @@ import static com.android.systemui.shared.system.QuickStepContract.WAKEFULNESS_A
 import android.app.KeyguardManager;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.quickstep.util.SystemUiFlagUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 
@@ -25,19 +23,6 @@ import java.io.PrintWriter;
  * Controller for managing keyguard state for taskbar
  */
 public class TaskbarKeyguardController implements TaskbarControllers.LoggableTaskbarController {
-
-    private static final long KEYGUARD_SYSUI_FLAGS = SYSUI_STATE_BOUNCER_SHOWING
-            | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING | SYSUI_STATE_DEVICE_DOZING
-            | SYSUI_STATE_OVERVIEW_DISABLED | SYSUI_STATE_HOME_DISABLED
-            | SYSUI_STATE_BACK_DISABLED | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
-            | SYSUI_STATE_WAKEFULNESS_MASK;
-
-    // If any of these SysUi flags (via QuickstepContract) is set, the device to be considered
-    // locked.
-    public static final long MASK_ANY_SYSUI_LOCKED = SYSUI_STATE_BOUNCER_SHOWING
-            | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
-            | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
-            | SYSUI_STATE_DEVICE_DREAMING;
 
     private final TaskbarActivityContext mContext;
     private long mKeyguardSysuiFlags;
@@ -55,7 +40,7 @@ public class TaskbarKeyguardController implements TaskbarControllers.LoggableTas
     }
 
     public void updateStateForSysuiFlags(@SystemUiStateFlags long systemUiStateFlags) {
-        long interestingKeyguardFlags = systemUiStateFlags & KEYGUARD_SYSUI_FLAGS;
+        long interestingKeyguardFlags = systemUiStateFlags & SystemUiFlagUtils.KEYGUARD_SYSUI_FLAGS;
         if (interestingKeyguardFlags == mKeyguardSysuiFlags) {
             // No change in keyguard relevant flags
             return;

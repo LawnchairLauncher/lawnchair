@@ -26,6 +26,8 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINI
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -44,9 +46,11 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.util.ActiveGestureLog;
+import com.android.quickstep.util.SystemUiFlagUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -373,20 +377,54 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         return mCallbacks;
     }
 
-    public void endLiveTile() {
-        if (mLastGestureState == null) {
-            return;
-        }
-        BaseContainerInterface containerInterface = mLastGestureState.getContainerInterface();
-        if (containerInterface.isInLiveTileMode()
-                && containerInterface.getCreatedContainer() != null) {
-            RecentsView recentsView = containerInterface.getCreatedContainer().getOverviewPanel();
-            if (recentsView != null) {
-                recentsView.switchToScreenshot(null,
-                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
-                                false /* shouldPip */, null));
+    public void onSystemUiFlagsChanged(@QuickStepContract.SystemUiStateFlags long lastSysUIFlags,
+            @QuickStepContract.SystemUiStateFlags long newSysUIFlags) {
+        long isShadeExpandedFlagMask =
+                SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+        boolean wasExpanded = hasAnyFlag(lastSysUIFlags, isShadeExpandedFlagMask);
+        boolean isExpanded = hasAnyFlag(newSysUIFlags, isShadeExpandedFlagMask);
+        if (wasExpanded != isExpanded && isExpanded) {
+            // End live tile when expanding the notification panel for the first time from
+            // overview.
+            if (endLiveTile()) {
+                return;
             }
         }
+
+        boolean wasLocked = SystemUiFlagUtils.isLocked(lastSysUIFlags);
+        boolean isLocked = SystemUiFlagUtils.isLocked(newSysUIFlags);
+        if (wasLocked != isLocked && isLocked) {
+            // Finish the running recents animation when locking the device.
+            finishRunningRecentsAnimation(
+                    mController != null && mController.getFinishTargetIsLauncher());
+        }
+    }
+
+    private boolean hasAnyFlag(long flags, long flagMask) {
+        return (flags & flagMask) != 0;
+    }
+
+    /**
+     * Switches the {@link RecentsView} to screenshot if in live tile mode.
+     *
+     * @return true iff the {@link RecentsView} was in live tile mode and was switched to screenshot
+     */
+    public boolean endLiveTile() {
+        if (mLastGestureState == null) {
+            return false;
+        }
+        BaseContainerInterface containerInterface = mLastGestureState.getContainerInterface();
+        if (!containerInterface.isInLiveTileMode()
+                || containerInterface.getCreatedContainer() == null) {
+            return false;
+        }
+        RecentsView recentsView = containerInterface.getCreatedContainer().getOverviewPanel();
+        if (recentsView == null) {
+            return false;
+        }
+        recentsView.switchToScreenshot(null, () -> recentsView.finishRecentsAnimation(
+                true /* toRecents */, false /* shouldPip */, null));
+        return true;
     }
 
     public void setLiveTileCleanUpHandler(Runnable cleanUpHandler) {
