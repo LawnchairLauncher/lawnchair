@@ -22,13 +22,11 @@ import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.FloatProperty;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.launcher3.R;
@@ -47,25 +45,6 @@ import java.util.EnumSet;
 public class BubbleView extends ConstraintLayout {
 
     public static final int DEFAULT_PATH_SIZE = 100;
-
-    /**
-     * Property to update drag translation value.
-     *
-     * @see BubbleView#getDragTranslationX()
-     * @see BubbleView#setDragTranslationX(float)
-     */
-    public static final FloatProperty<BubbleView> DRAG_TRANSLATION_X = new FloatProperty<>(
-            "dragTranslationX") {
-        @Override
-        public void setValue(@NonNull BubbleView bubbleView, float value) {
-            bubbleView.setDragTranslationX(value);
-        }
-
-        @Override
-        public Float get(BubbleView bubbleView) {
-            return bubbleView.getDragTranslationX();
-        }
-    };
 
     /**
      * Flags that suppress the visibility of the 'new' dot or the app badge, for one reason or

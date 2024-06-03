@@ -91,7 +91,8 @@ import java.util.function.Supplier;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class AddItemActivity extends BaseActivity
-        implements OnLongClickListener, OnTouchListener, AbstractSlideInView.OnCloseListener {
+        implements OnLongClickListener, OnTouchListener, AbstractSlideInView.OnCloseListener,
+        WidgetCell.PreviewReadyListener {
 
     private static final int SHADOW_SIZE = 10;
 
@@ -142,6 +143,7 @@ public class AddItemActivity extends BaseActivity
         mDragLayer = findViewById(R.id.add_item_drag_layer);
         mDragLayer.recreateControllers();
         mWidgetCell = findViewById(R.id.widget_cell);
+        mWidgetCell.addPreviewReadyListener(this);
         mAccessibilityManager =
                 getApplicationContext().getSystemService(AccessibilityManager.class);
 
@@ -453,5 +455,12 @@ public class AddItemActivity extends BaseActivity
         getStatsLogManager().logger()
                 .withItemInfo((ItemInfo) mWidgetCell.getWidgetView().getTag())
                 .log(command);
+    }
+
+    @Override
+    public void onPreviewAvailable() {
+        // Set the preview height based on "the only" widget's preview.
+        mWidgetCell.setParentAlignedPreviewHeight(mWidgetCell.getPreviewContentHeight());
+        mWidgetCell.post(mWidgetCell::requestLayout);
     }
 }

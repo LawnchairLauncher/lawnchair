@@ -53,6 +53,7 @@ import java.util.stream.Collectors;
  */
 public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots> {
     private @Px float mAvailableHeight = Float.MAX_VALUE;
+    private @Px float mAvailableWidth = 0;
     private static final String INITIALLY_DISPLAYED_WIDGETS_STATE_KEY =
             "widgetRecommendationsView:mDisplayedWidgets";
     private static final int MAX_CATEGORIES = 3;
@@ -152,6 +153,7 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
             final @Px float availableHeight, final @Px int availableWidth,
             final @Px int cellPadding) {
         this.mAvailableHeight = availableHeight;
+        this.mAvailableWidth = availableWidth;
         clear();
 
         Set<ComponentName> displayedWidgets = maybeDisplayInTable(recommendedWidgets,
@@ -187,6 +189,7 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
             DeviceProfile deviceProfile, final @Px float availableHeight,
             final @Px int availableWidth, final @Px int cellPadding, final int requestedPage) {
         this.mAvailableHeight = availableHeight;
+        this.mAvailableWidth = availableWidth;
         Context context = getContext();
         // For purpose of recommendations section, we don't want paging dots to be halved in two
         // pane display, so, we always provide isTwoPanels = "false".
@@ -280,17 +283,24 @@ public final class WidgetRecommendationsView extends PagedView<PageIndicatorDots
         boolean hasMultiplePages = getChildCount() > 0;
 
         if (hasMultiplePages) {
-            int finalWidth = MeasureSpec.getSize(widthMeasureSpec);
             int desiredHeight = 0;
+            int desiredWidth = Math.round(mAvailableWidth);
 
             for (int i = 0; i < getChildCount(); i++) {
                 View child = getChildAt(i);
-                measureChild(child, widthMeasureSpec, heightMeasureSpec);
+                // Measure children based on available height and width.
+                measureChild(child,
+                        MeasureSpec.makeMeasureSpec(desiredWidth, MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(Math.round(mAvailableHeight),
+                                MeasureSpec.AT_MOST));
                 // Use height of tallest child as we have limited height.
-                desiredHeight = Math.max(desiredHeight, child.getMeasuredHeight());
+                int childHeight = child.getMeasuredHeight();
+                desiredHeight = Math.max(desiredHeight, childHeight);
             }
 
             int finalHeight = resolveSizeAndState(desiredHeight, heightMeasureSpec, 0);
+            int finalWidth = resolveSizeAndState(desiredWidth, widthMeasureSpec, 0);
+
             setMeasuredDimension(finalWidth, finalHeight);
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);

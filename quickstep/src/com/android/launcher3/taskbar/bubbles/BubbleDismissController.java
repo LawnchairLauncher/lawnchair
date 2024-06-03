@@ -169,7 +169,8 @@ public class BubbleDismissController {
 
     private void setupMagnetizedObject(@NonNull View magnetizedView) {
         mMagnetizedObject = new MagnetizedObject<>(mActivity.getApplicationContext(),
-                magnetizedView, DynamicAnimation.TRANSLATION_X, DynamicAnimation.TRANSLATION_Y) {
+                magnetizedView, BubbleDragController.DRAG_TRANSLATION_X,
+                DynamicAnimation.TRANSLATION_Y) {
             @Override
             public float getWidth(@NonNull View underlyingObject) {
                 return underlyingObject.getWidth() * underlyingObject.getScaleX();

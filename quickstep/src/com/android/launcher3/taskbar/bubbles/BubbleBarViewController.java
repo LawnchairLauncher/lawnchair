@@ -98,7 +98,6 @@ public class BubbleBarViewController {
         mBarView = barView;
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(mActivity);
         mBubbleBarAlpha = new MultiValueAlpha(mBarView, 1 /* num alpha channels */);
-        mBubbleBarAlpha.setUpdateVisibility(true);
         mIconSize = activity.getResources().getDimensionPixelSize(
                 R.dimen.bubblebar_icon_size);
     }
@@ -408,7 +407,19 @@ public class BubbleBarViewController {
             b.getView().setOnClickListener(mBubbleClickListener);
             mBubbleDragController.setupBubbleView(b.getView());
 
+            if (b instanceof BubbleBarOverflow) {
+                return;
+            }
+
             if (suppressAnimation || !(b instanceof BubbleBarBubble bubble)) {
+                // the bubble bar and handle are initialized as part of the first bubble animation.
+                // if the animation is suppressed, immediately stash or show the bubble bar to
+                // ensure they've been initialized.
+                if (mTaskbarStashController.isInApp()) {
+                    mBubbleStashController.stashBubbleBarImmediate();
+                } else {
+                    mBubbleStashController.showBubbleBarImmediate();
+                }
                 return;
             }
             animateBubbleNotification(bubble, isExpanding);
