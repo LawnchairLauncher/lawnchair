@@ -60,7 +60,6 @@ public class BubbleDragAnimator {
     private final float mBubbleFocusedScale;
     private final float mBubbleCapturedScale;
     private final float mDismissCapturedScale;
-    private final FloatPropertyCompat<View> mTranslationXProperty;
 
     /**
      * Should be initialised for each dragged view
@@ -82,28 +81,9 @@ public class BubbleDragAnimator {
         if (view instanceof BubbleBarView) {
             mBubbleFocusedScale = SCALE_BUBBLE_BAR_FOCUSED;
             mBubbleCapturedScale = mDismissCapturedScale;
-            mTranslationXProperty = DynamicAnimation.TRANSLATION_X;
         } else {
             mBubbleFocusedScale = SCALE_BUBBLE_FOCUSED;
             mBubbleCapturedScale = SCALE_BUBBLE_CAPTURED;
-            // Wrap BubbleView.DRAG_TRANSLATION_X as it can't be cast to FloatPropertyCompat<View>
-            mTranslationXProperty = new FloatPropertyCompat<>(
-                    BubbleView.DRAG_TRANSLATION_X.getName()) {
-                @Override
-                public float getValue(View object) {
-                    if (object instanceof BubbleView bubbleView) {
-                        return BubbleView.DRAG_TRANSLATION_X.get(bubbleView);
-                    }
-                    return 0;
-                }
-
-                @Override
-                public void setValue(View object, float value) {
-                    if (object instanceof BubbleView bubbleView) {
-                        BubbleView.DRAG_TRANSLATION_X.setValue(bubbleView, value);
-                    }
-                }
-            };
         }
     }
 
@@ -140,7 +120,7 @@ public class BubbleDragAnimator {
         mBubbleAnimator
                 .spring(DynamicAnimation.SCALE_X, 1f)
                 .spring(DynamicAnimation.SCALE_Y, 1f)
-                .spring(mTranslationXProperty, restingPosition.x, velocity.x,
+                .spring(BubbleDragController.DRAG_TRANSLATION_X, restingPosition.x, velocity.x,
                         mTranslationConfig)
                 .spring(DynamicAnimation.TRANSLATION_Y, restingPosition.y, velocity.y,
                         mTranslationConfig)
