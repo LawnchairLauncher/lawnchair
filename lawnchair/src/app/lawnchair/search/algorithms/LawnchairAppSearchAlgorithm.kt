@@ -38,13 +38,12 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
     private val generateSearchTarget = GenerateSearchTarget(context)
 
-    private lateinit var hiddenApps: Set<String>
+    private var hiddenApps: Set<String> = setOf()
 
     private var hiddenAppsInSearch = ""
     private var enableFuzzySearch = false
     private var maxResultsCount = 5
 
-    private val prefs: PreferenceManager = PreferenceManager.getInstance(context)
     private val pref2 = PreferenceManager2.getInstance(context)
 
     val coroutineScope = CoroutineScope(context = Dispatchers.IO)
@@ -63,6 +62,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             maxResultsCount = it
         }
     }
+
+    private val searchUtils = SearchUtils(maxResultsCount, hiddenApps, hiddenAppsInSearch)
 
     override fun doSearch(query: String, callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
         appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
@@ -86,9 +87,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         query: String,
     ): ArrayList<BaseAllAppsAdapter.AdapterItem> {
         val appResults = if (enableFuzzySearch) {
-            fuzzySearch(apps, query)
+            searchUtils.fuzzySearch(apps, query)
         } else {
-            normalSearch(apps, query)
+            searchUtils.normalSearch(apps, query)
         }
 
         val searchTargets = mutableListOf<SearchTargetCompat>()
@@ -99,7 +100,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
         if (appResults.size == 1 && context.isDefaultLauncher()) {
             val singleAppResult = appResults.firstOrNull()
-            val shortcuts = singleAppResult?.let { getShortcuts(it) }
+            val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
             if (shortcuts != null) {
                 if (shortcuts.isNotEmpty()) {
                     searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
@@ -116,58 +117,5 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val adapterItems = transformSearchResults(searchTargets)
         LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
         return ArrayList(adapterItems)
-    }
-
-    private fun getShortcuts(app: AppInfo): List<ShortcutInfo> {
-        val shortcuts = ShortcutRequest(context.launcher, app.user)
-            .withContainer(app.targetComponent)
-            .query(ShortcutRequest.PUBLISHED)
-        return PopupPopulator.sortAndFilterShortcuts(shortcuts, null)
-    }
-
-    private fun normalSearch(apps: List<AppInfo>, query: String): List<AppInfo> {
-        // Do an intersection of the words in the query and each title, and filter out all the
-        // apps that don't match all of the words in the query.
-        val queryTextLower = query.lowercase(Locale.getDefault())
-        val matcher = StringMatcherUtility.StringMatcher.getInstance()
-        return apps.asSequence()
-            .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
-            .filterHiddenApps(queryTextLower)
-            .take(maxResultsCount)
-            .toList()
-    }
-
-    private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
-        val queryTextLower = query.lowercase(Locale.getDefault())
-        val filteredApps = apps.asSequence()
-            .filterHiddenApps(queryTextLower)
-            .toList()
-        val matches = FuzzySearch.extractSorted(
-            queryTextLower,
-            filteredApps,
-            { it.sectionName + it.title },
-            WeightedRatio(),
-            65,
-        )
-
-        return matches.take(maxResultsCount)
-            .map { it.referent }
-    }
-
-    private fun Sequence<AppInfo>.filterHiddenApps(query: String): Sequence<AppInfo> {
-        return when (hiddenAppsInSearch) {
-            HiddenAppsInSearch.ALWAYS -> {
-                this
-            }
-            HiddenAppsInSearch.IF_NAME_TYPED -> {
-                filter {
-                    it.toComponentKey().toString() !in hiddenApps ||
-                        it.title.toString().lowercase(Locale.getDefault()) == query
-                }
-            }
-            else -> {
-                filter { it.toComponentKey().toString() !in hiddenApps }
-            }
-        }
     }
 }
