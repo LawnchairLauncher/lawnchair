@@ -45,8 +45,11 @@ flag {
 
 
 flag {
-    name: "private_space_floating_mask_view"
+    name: "private_space_add_floating_mask_view"
     namespace: "launcher_search"
     description: "This flag enables the floating mask view as part of the Private Space animation. "
     bug: "339850589"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
 }
