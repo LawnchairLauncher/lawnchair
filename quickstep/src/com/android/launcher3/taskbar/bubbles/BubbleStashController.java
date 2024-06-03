@@ -418,6 +418,7 @@ public class BubbleStashController {
     /** Stashes the bubble bar immediately without animation. */
     public void stashBubbleBarImmediate() {
         mHandleViewController.setTranslationYForSwipe(0);
+        mBubbleStashedHandleAlpha.setValue(1);
         mIconAlphaForStash.setValue(0);
         mIconTranslationYForStash.updateValue(getStashTranslation());
         mIconScaleForStash.updateValue(STASHED_BAR_SCALE);
