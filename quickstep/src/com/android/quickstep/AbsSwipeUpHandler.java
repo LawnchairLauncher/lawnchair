@@ -1582,7 +1582,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         mSwipePipToHomeAnimator.getComponentName(),
                         mSwipePipToHomeAnimator.getDestinationBounds(),
                         mSwipePipToHomeAnimator.getContentOverlay(),
-                        mSwipePipToHomeAnimator.getAppBounds());
+                        mSwipePipToHomeAnimator.getAppBounds(),
+                        mSwipePipToHomeAnimator.getSourceRectHint());
 
                 windowAnim = mSwipePipToHomeAnimators;
             } else {
