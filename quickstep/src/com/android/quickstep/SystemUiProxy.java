@@ -85,6 +85,7 @@ import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.bubbles.IBubbles;
 import com.android.wm.shell.bubbles.IBubblesListener;
 import com.android.wm.shell.common.bubbles.BubbleBarLocation;
+import com.android.wm.shell.common.desktopmode.DesktopModeTransitionSource;
 import com.android.wm.shell.common.pip.IPip;
 import com.android.wm.shell.common.pip.IPipAnimationListener;
 import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
@@ -1494,10 +1495,10 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
     }
 
     /** Call shell to move a task with given `taskId` to desktop  */
-    public void moveToDesktop(int taskId) {
+    public void moveToDesktop(int taskId, DesktopModeTransitionSource transitionSource) {
         if (mDesktopMode != null) {
             try {
-                mDesktopMode.moveToDesktop(taskId);
+                mDesktopMode.moveToDesktop(taskId, transitionSource);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call moveToDesktop", e);
             }

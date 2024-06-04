@@ -38,6 +38,7 @@ import com.android.quickstep.views.TaskViewIcon
 import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.recents.model.Task.TaskKey
 import com.android.window.flags.Flags
+import com.android.wm.shell.common.desktopmode.DesktopModeTransitionSource
 import com.android.wm.shell.shared.DesktopModeStatus
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
@@ -152,8 +153,8 @@ class DesktopSystemShortcutTest {
         whenever(launcher.statsLogManager).thenReturn(statsLogManager)
         whenever(statsLogManager.logger()).thenReturn(statsLogger)
         whenever(statsLogger.withItemInfo(any())).thenReturn(statsLogger)
-        whenever(recentsView.moveTaskToDesktop(any(), any())).thenAnswer {
-            val successCallback = it.getArgument<Runnable>(1)
+        whenever(recentsView.moveTaskToDesktop(any(), any(), any())).thenAnswer {
+            val successCallback = it.getArgument<Runnable>(2)
             successCallback.run()
         }
         doReturn(workspaceItemInfo).whenever(taskContainer).itemInfo
@@ -169,7 +170,12 @@ class DesktopSystemShortcutTest {
         val allTypesExceptRebindSafe =
             AbstractFloatingView.TYPE_ALL and AbstractFloatingView.TYPE_REBIND_SAFE.inv()
         verify(abstractFloatingViewHelper).closeOpenViews(launcher, true, allTypesExceptRebindSafe)
-        verify(recentsView).moveTaskToDesktop(eq(taskContainer), any())
+        verify(recentsView)
+            .moveTaskToDesktop(
+                eq(taskContainer),
+                eq(DesktopModeTransitionSource.APP_FROM_OVERVIEW),
+                any()
+            )
         verify(statsLogger).withItemInfo(workspaceItemInfo)
         verify(statsLogger).log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_DESKTOP_TAP)
     }
