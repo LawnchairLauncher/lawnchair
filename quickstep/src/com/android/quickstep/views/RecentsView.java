@@ -2666,6 +2666,20 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             // Let system take care of the rotation
             return;
         }
+
+        if (mRunningTaskShowScreenshot) {
+            animateRotation(newRotation);
+        } else {
+            // Animate the rotation and stops running task
+            switchToScreenshot(() -> {
+                animateRotation(newRotation);
+                finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                        null /* onFinishComplete */);
+            });
+        }
+    }
+
+    private void animateRotation(int newRotation) {
         AnimatorSet pa = setRecentsChangedOrientation(true);
         pa.addListener(AnimatorListeners.forSuccessCallback(() -> {
             setLayoutRotation(newRotation, mOrientationState.getDisplayRotation());
@@ -5932,7 +5946,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             return;
         }
 
-        taskView.setShouldShowScreenshot(true);
+        setRunningTaskViewShowScreenshot(true);
         for (TaskContainer container : taskView.getTaskContainers()) {
             if (container == null) {
                 continue;
