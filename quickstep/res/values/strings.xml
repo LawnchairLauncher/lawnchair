@@ -332,4 +332,14 @@
 
     <!-- Accessibility label for quick switch tiles showing split tasks [CHAR LIMIT=NONE] -->
     <string name="quick_switch_split_task"><xliff:g id="app_name_1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app_name_2" example="Gmail">%2$s</xliff:g></string>
+
+    <!-- Strings for bubble bar -->
+    <!-- Fallback name for a bubble if it does have a title [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_bubble_fallback_description">Bubble</string>
+    <!-- content description for the overflow bubble [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_overflow_description">Overflow</string>
+    <!-- Content description for a bubble bar bubble. [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_bubble_description"><xliff:g id="notification_title" example="some title">%1$s</xliff:g> from <xliff:g id="app_name" example="YouTube">%2$s</xliff:g></string>
+    <!-- Content description for bubble bar when it has multiple bubbles. [CHAR_LIMIT=NONE] -->
+    <string name="bubble_bar_description_multiple_bubbles"><xliff:g id="bubble_bar_bubble_description" example="some title from YouTube">%1$s</xliff:g> and <xliff:g id="bubble_count" example="4">%2$d</xliff:g> more</string>
 </resources>
