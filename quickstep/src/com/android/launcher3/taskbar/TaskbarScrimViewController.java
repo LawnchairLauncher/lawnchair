@@ -103,14 +103,20 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
     }
 
     private float getScrimAlpha() {
+        final boolean isPersistentTaskBarVisible =
+                mTaskbarVisible && !DisplayController.isTransientTaskbar(mScrimView.getContext());
         final boolean manageMenuExpanded =
                 (mSysUiStateFlags & SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED) != 0;
-        return manageMenuExpanded
-                // When manage menu shows there's the first scrim and second scrim so figure out
-                // what the total transparency would be.
-                ? (BUBBLE_EXPANDED_SCRIM_ALPHA + (BUBBLE_EXPANDED_SCRIM_ALPHA
-                * (1 - BUBBLE_EXPANDED_SCRIM_ALPHA)))
-                : shouldShowScrim() ? BUBBLE_EXPANDED_SCRIM_ALPHA : 0;
+        if (isPersistentTaskBarVisible && manageMenuExpanded) {
+            // When manage menu shows for persistent task bar there's the first scrim and second
+            // scrim so figure out what the total transparency would be.
+            return BUBBLE_EXPANDED_SCRIM_ALPHA
+                    + (BUBBLE_EXPANDED_SCRIM_ALPHA * (1 - BUBBLE_EXPANDED_SCRIM_ALPHA));
+        } else if (shouldShowScrim()) {
+            return BUBBLE_EXPANDED_SCRIM_ALPHA;
+        } else {
+            return 0;
+        }
     }
 
     private void showScrim(boolean showScrim, float alpha, boolean skipAnim) {
