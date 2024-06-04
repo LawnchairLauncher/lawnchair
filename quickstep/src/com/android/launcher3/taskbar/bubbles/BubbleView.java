@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -187,6 +188,16 @@ public class BubbleView extends ConstraintLayout {
         mAppIcon.setImageBitmap(bubble.getBadge());
         mDotColor = bubble.getDotColor();
         mDotRenderer = new DotRenderer(mBubbleSize, bubble.getDotPath(), DEFAULT_PATH_SIZE);
+        String contentDesc = bubble.getInfo().getTitle();
+        if (TextUtils.isEmpty(contentDesc)) {
+            contentDesc = getResources().getString(R.string.bubble_bar_bubble_fallback_description);
+        }
+        String appName = bubble.getInfo().getAppName();
+        if (!TextUtils.isEmpty(appName)) {
+            contentDesc = getResources().getString(R.string.bubble_bar_bubble_description,
+                    contentDesc, appName);
+        }
+        setContentDescription(contentDesc);
     }
 
     /**

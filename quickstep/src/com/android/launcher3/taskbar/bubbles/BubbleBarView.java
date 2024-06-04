@@ -623,6 +623,8 @@ public class BubbleBarView extends FrameLayout {
         }
         super.addView(child, index, params);
         updateWidth();
+        updateBubbleAccessibilityStates();
+        updateContentDescription();
     }
 
     // TODO: (b/283309949) animate it
@@ -634,6 +636,8 @@ public class BubbleBarView extends FrameLayout {
             mBubbleBarBackground.showArrow(false);
         }
         updateWidth();
+        updateBubbleAccessibilityStates();
+        updateContentDescription();
     }
 
     private void updateWidth() {
@@ -799,6 +803,7 @@ public class BubbleBarView extends FrameLayout {
                 }
             }
             updateChildrenRenderNodeProperties(mBubbleBarLocation);
+            updateContentDescription();
         }
     }
 
@@ -927,6 +932,7 @@ public class BubbleBarView extends FrameLayout {
             } else {
                 mWidthAnimator.reverse();
             }
+            updateBubbleAccessibilityStates();
         }
     }
 
@@ -996,6 +1002,47 @@ public class BubbleBarView extends FrameLayout {
     /** Whether a new bubble is currently animating. */
     public boolean isAnimatingNewBubble() {
         return mIsAnimatingNewBubble;
+    }
+
+    private boolean hasOverview() {
+        // Overview is always the last bubble
+        View lastChild = getChildAt(getChildCount() - 1);
+        if (lastChild instanceof BubbleView bubbleView) {
+            return bubbleView.getBubble() instanceof BubbleBarOverflow;
+        }
+        return false;
+    }
+
+    private void updateBubbleAccessibilityStates() {
+        final int childA11y;
+        if (mIsBarExpanded) {
+            // Bar is expanded, focus on the bubbles
+            setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+            childA11y = View.IMPORTANT_FOR_ACCESSIBILITY_YES;
+        } else {
+            // Bar is collapsed, only focus on the bar
+            setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+            childA11y = View.IMPORTANT_FOR_ACCESSIBILITY_NO;
+        }
+        for (int i = 0; i < getChildCount(); i++) {
+            getChildAt(i).setImportantForAccessibility(childA11y);
+            // Only allowing focusing on bubbles when bar is expanded. Otherwise, in talkback mode,
+            // bubbles can be navigates to in collapsed mode.
+            getChildAt(i).setFocusable(mIsBarExpanded);
+        }
+    }
+
+    private void updateContentDescription() {
+        View firstChild = getChildAt(0);
+        CharSequence contentDesc = firstChild != null ? firstChild.getContentDescription() : "";
+
+        // Don't count overflow if it exists
+        int bubbleCount = getChildCount() - (hasOverview() ? 1 : 0);
+        if (bubbleCount > 1) {
+            contentDesc = getResources().getString(R.string.bubble_bar_description_multiple_bubbles,
+                    contentDesc, bubbleCount - 1);
+        }
+        setContentDescription(contentDesc);
     }
 
     /** Interface for BubbleBarView to communicate with its controller. */
