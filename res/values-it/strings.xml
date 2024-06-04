@@ -29,6 +29,8 @@
     <string name="home_screen" msgid="5629429142036709174">"Home"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Schermo diviso"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informazioni sull\'app %1$s"</string>
+    <!-- no translation found for split_app_usage_settings (7214375263347964093) -->
+    <skip />
     <string name="save_app_pair" msgid="5647523853662686243">"Salva coppia di app"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Questa coppia di app non è supportata su questo dispositivo"</string>
