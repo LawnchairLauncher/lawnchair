@@ -123,7 +123,7 @@
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Valiwe"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Ukufinyelela izaziso kuyadingeka"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Ukuze ubonisa amcashazi esaziso, vula izaziso zohlelo lokusebenza ze-<xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="title_change_settings" msgid="1376365968844349552">"Shintsha izilungiselelo"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Shintsha amasethingi"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Bonisa amacashazi esaziso"</string>
     <string name="developer_options_title" msgid="700788437593726194">"Izinketho zonjiniyela"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Engeza izithonjana ze-app kusikrini sasekhaya"</string>
