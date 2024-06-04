@@ -57,7 +57,7 @@ import org.mockito.kotlin.whenever
  *
  * For an implementation that mocks InvariantDeviceProfile, use [FakeInvariantDeviceProfileTest]
  */
-@AllowedDevices(allowed = [DeviceProduct.CF_PHONE])
+@AllowedDevices(allowed = [DeviceProduct.CF_PHONE, DeviceProduct.HOST_SIDE_X86_64])
 @IgnoreLimit(ignoreLimit = BuildConfig.IS_STUDIO_BUILD)
 abstract class AbstractDeviceProfileTest {
     protected val testContext: Context = InstrumentationRegistry.getInstrumentation().context
