@@ -29,6 +29,8 @@
     <string name="home_screen" msgid="5629429142036709174">"முகப்பு"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"திரைப் பிரிப்பு"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$sக்கான ஆப்ஸ் தகவல்கள்"</string>
+    <!-- no translation found for split_app_usage_settings (7214375263347964093) -->
+    <skip />
     <string name="save_app_pair" msgid="5647523853662686243">"ஆப்ஸ் ஜோடியைச் சேமி"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"இந்தச் சாதனத்தில் இந்த ஆப்ஸ் ஜோடி ஆதரிக்கப்படவில்லை"</string>
@@ -84,8 +86,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"நிறுவல் நீக்கு"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ஆப்ஸ் தகவல்"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"தனிப்பட்டதில் நிறுவு"</string>
-    <!-- no translation found for uninstall_private_system_shortcut_label (8423460530441627982) -->
-    <skip />
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"ஆப்ஸை நிறுவல் நீக்கு"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"நிறுவு"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"பரிந்துரைக்காதே"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"கணிக்கப்பட்ட ஆப்ஸைப் பின் செய்தல்"</string>

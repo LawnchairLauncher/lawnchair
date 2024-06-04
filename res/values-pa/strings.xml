@@ -29,6 +29,8 @@
     <string name="home_screen" msgid="5629429142036709174">"ਮੁੱਖ ਪੰਨਾ"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ਲਈ ਐਪ ਜਾਣਕਾਰੀ"</string>
+    <!-- no translation found for split_app_usage_settings (7214375263347964093) -->
+    <skip />
     <string name="save_app_pair" msgid="5647523853662686243">"ਐਪ ਜੋੜਾਬੱਧ ਰੱਖਿਅਤ ਕਰੋ"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ਇਸ ਐਪ ਜੋੜਾਬੱਧ ਦਾ ਇਸ ਡੀਵਾਈਸ \'ਤੇ ਸਮਰਥਨ ਨਹੀਂ ਕੀਤਾ ਜਾਂਦਾ"</string>
@@ -125,7 +127,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ਸੂਚਨਾ ਬਿੰਦੂਆਂ ਦਿਖਾਉਣ ਲਈ, <xliff:g id="NAME">%1$s</xliff:g> ਲਈ ਐਪ ਸੂਚਨਾਵਾਂ ਚਾਲੂ ਕਰੋ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ਸੈਟਿੰਗਾਂ ਬਦਲੋ"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ਸੂਚਨਾ ਬਿੰਦੂ ਦਿਖਾਓ"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"ਵਿਕਾਸਕਾਰ ਚੋਣਾਂ"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"ਵਿਕਾਸਕਾਰ ਵਿਕਲਪ"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਐਪ ਪ੍ਰਤੀਕਾਂ ਨੂੰ ਸ਼ਾਮਲ ਕਰੋ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ਨਵੀਆਂ ਐਪਾਂ ਲਈ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ਅਗਿਆਤ"</string>
