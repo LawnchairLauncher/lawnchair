@@ -3,6 +3,7 @@ package com.android.launcher3
 import android.annotation.TargetApi
 import android.os.Build
 import android.os.Trace
+import android.util.Log
 import androidx.annotation.UiThread
 import com.android.launcher3.Flags.enableSmartspaceRemovalToggle
 import com.android.launcher3.LauncherConstants.TraceEvents
@@ -28,6 +29,8 @@ import com.android.launcher3.util.ViewOnDrawExecutor
 import com.android.launcher3.widget.PendingAddWidgetInfo
 import com.android.launcher3.widget.model.WidgetsListBaseEntry
 import java.util.function.Predicate
+
+private const val TAG = "ModelCallbacks"
 
 class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
 
@@ -66,6 +69,13 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.workspace.removeAllWorkspaceScreens()
         // Avoid clearing the widget update listeners for staying up-to-date with widget info
         launcher.appWidgetHolder.clearWidgetViews()
+        // TODO(b/335141365): Remove this log after the bug is fixed.
+        Log.d(
+            TAG,
+            "startBinding: " +
+                "hotseat layout was vertical: ${launcher.hotseat?.isHasVerticalHotseat}" +
+                " and is setting to ${launcher.deviceProfile.isVerticalBarLayout}"
+        )
         launcher.hotseat?.resetLayout(launcher.deviceProfile.isVerticalBarLayout)
         TraceHelper.INSTANCE.endSection()
     }
@@ -142,7 +152,10 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         launcher.viewCache.setCacheSize(R.layout.folder_page, 2)
         TraceHelper.INSTANCE.endSection()
         launcher.workspace.removeExtraEmptyScreen(/* stripEmptyScreens= */ true)
-        launcher.workspace.pageIndicator.setPauseScroll(/*pause=*/ false, deviceProfile.isTwoPanels)
+        launcher.workspace.pageIndicator.setPauseScroll(
+            /*pause=*/ false,
+            deviceProfile.isTwoPanels
+        )
     }
 
     /**
@@ -290,8 +303,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         val widgetsListBaseEntry: WidgetsListBaseEntry =
             launcher.popupDataProvider.allWidgets.firstOrNull { item: WidgetsListBaseEntry ->
                 item.mPkgItem.packageName == BuildConfig.APPLICATION_ID
-            }
-                ?: return
+            } ?: return
 
         val info =
             PendingAddWidgetInfo(
@@ -315,16 +327,14 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         )
         val firstScreenPosition = 0
         if (
-            (isFirstPagePinnedItemEnabled &&
-                !SHOULD_SHOW_FIRST_PAGE_WIDGET) &&
+            (isFirstPagePinnedItemEnabled && !SHOULD_SHOW_FIRST_PAGE_WIDGET) &&
                 orderedScreenIds.indexOf(FIRST_SCREEN_ID) != firstScreenPosition
         ) {
             orderedScreenIds.removeValue(FIRST_SCREEN_ID)
             orderedScreenIds.add(firstScreenPosition, FIRST_SCREEN_ID)
         } else if (
-            (!isFirstPagePinnedItemEnabled ||
-                    SHOULD_SHOW_FIRST_PAGE_WIDGET)
-            && orderedScreenIds.isEmpty
+            (!isFirstPagePinnedItemEnabled || SHOULD_SHOW_FIRST_PAGE_WIDGET) &&
+                orderedScreenIds.isEmpty
         ) {
             // If there are no screens, we need to have an empty screen
             launcher.workspace.addExtraEmptyScreens()
@@ -380,7 +390,7 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
         }
         orderedScreenIds
             .filterNot { screenId ->
-                    isFirstPagePinnedItemEnabled &&
+                isFirstPagePinnedItemEnabled &&
                     !SHOULD_SHOW_FIRST_PAGE_WIDGET &&
                     screenId == WorkspaceLayoutManager.FIRST_SCREEN_ID
             }

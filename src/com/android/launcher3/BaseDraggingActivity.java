@@ -147,7 +147,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     @Override
     public void onDisplayInfoChanged(Context context, Info info, int flags) {
-        if ((flags & CHANGE_ROTATION) != 0 && mDeviceProfile.updateIsSeascape(this)) {
+        if ((flags & CHANGE_ROTATION) != 0 && mDeviceProfile.isVerticalBarLayout()) {
+            mDeviceProfile.updateIsSeascape(this);
             reapplyUi();
         }
     }

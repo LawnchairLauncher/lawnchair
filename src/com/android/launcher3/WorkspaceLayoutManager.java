@@ -58,6 +58,9 @@ public interface WorkspaceLayoutManager {
             int screenId = presenterPos.screenId;
             x = getHotseat().getCellXFromOrder(screenId);
             y = getHotseat().getCellYFromOrder(screenId);
+            // TODO(b/335141365): Remove this log after the bug is fixed.
+            Log.d(TAG, "addInScreenFromBind: hotseat inflation with x = " + x
+                    + " and y = " + y);
         }
         addInScreen(child, info.container, presenterPos.screenId, x, y, info.spanX, info.spanY);
     }
