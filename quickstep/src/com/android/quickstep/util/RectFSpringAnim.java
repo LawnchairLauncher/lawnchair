@@ -157,6 +157,10 @@ public class RectFSpringAnim extends ReleaseCheck {
         mCurrentY = getTrackedYFromRect(mStartRect);
     }
 
+    public RectF getTargetRect() {
+        return mTargetRect;
+    }
+
     private float getTrackedYFromRect(RectF rect) {
         switch (mTracking) {
             case TRACKING_TOP:

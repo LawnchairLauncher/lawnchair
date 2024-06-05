@@ -151,6 +151,7 @@ import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.RectFSpringAnim.DefaultSpringConfig;
 import com.android.quickstep.util.RectFSpringAnim.TaskbarHotseatSpringConfig;
+import com.android.quickstep.util.ScalingWorkspaceRevealAnim;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
@@ -174,7 +175,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 /**
  * Manages the opening and closing app transitions from Launcher
@@ -1630,10 +1630,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             anim.play(getUnlockWindowAnimator(appTargets, wallpaperTargets));
         } else if (ENABLE_BACK_SWIPE_HOME_ANIMATION.get()
                 && !playFallBackAnimation) {
-            // Use a fixed velocity to start the animation.
-            float velocityPxPerS = DynamicResource.provider(mLauncher)
-                    .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
-            PointF velocity = new PointF(0, -velocityPxPerS);
+            PointF velocity;
+            if (enableScalingRevealHomeAnimation()) {
+                velocity = new PointF();
+            } else {
+                // Use a fixed velocity to start the animation.
+                float velocityPxPerS = DynamicResource.provider(mLauncher)
+                        .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
+                velocity = new PointF(0, -velocityPxPerS);
+            }
             rectFSpringAnim = getClosingWindowAnimators(
                     anim, appTargets, launcherView, velocity, startRect,
                     startWindowCornerRadius);
@@ -1642,8 +1647,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 // layout bounds.
                 skipAllAppsScale = true;
             } else if (!fromPredictiveBack) {
-                anim.play(new StaggeredWorkspaceAnim(mLauncher, velocity.y,
-                        true /* animateOverviewScrim */, launcherView).getAnimators());
+                if (enableScalingRevealHomeAnimation()) {
+                    anim.play(
+                            new ScalingWorkspaceRevealAnim(
+                                    mLauncher, rectFSpringAnim,
+                                    rectFSpringAnim.getTargetRect()).getAnimators());
+                } else {
+                    anim.play(new StaggeredWorkspaceAnim(mLauncher, velocity.y,
+                            true /* animateOverviewScrim */, launcherView).getAnimators());
+                }
 
                 if (!areAllTargetsTranslucent(appTargets)) {
                     anim.play(ObjectAnimator.ofFloat(mLauncher.getDepthController().stateDepth,
