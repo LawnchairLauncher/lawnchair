@@ -27,7 +27,6 @@ import android.view.Display
 import android.view.Surface
 import androidx.test.annotation.UiThreadTest
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
@@ -55,7 +54,7 @@ import org.mockito.stubbing.Answer
 
 /** Unit tests for {@link DisplayController} */
 @SmallTest
-@RunWith(AndroidJUnit4::class)
+@RunWith(LauncherMultivalentJUnit::class)
 class DisplayControllerTest {
 
     private val appContext: Context = ApplicationProvider.getApplicationContext()

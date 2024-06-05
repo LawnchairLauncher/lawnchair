@@ -49,7 +49,6 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import android.view.View;
 
 import androidx.test.annotation.UiThreadTest;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.allapps.PrivateProfileManager;
@@ -60,6 +59,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LauncherModelHelper.SandboxModelContext;
+import com.android.launcher3.util.LauncherMultivalentJUnit;
 import com.android.launcher3.util.TestSandboxModelContextWrapper;
 import com.android.launcher3.util.UserIconInfo;
 import com.android.launcher3.views.BaseDragLayer;
@@ -76,7 +76,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 
 @SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(LauncherMultivalentJUnit.class)
 public class SystemShortcutTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule(DEVICE_DEFAULT);
     private static final UserHandle PRIVATE_HANDLE = new UserHandle(11);
