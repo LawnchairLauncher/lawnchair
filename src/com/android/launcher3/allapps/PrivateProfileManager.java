@@ -20,7 +20,6 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PRIVATESPACE;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ICON;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
@@ -207,15 +206,16 @@ public class PrivateProfileManager extends UserProfileManager {
      * when animation is not running.
      */
     public void reset() {
+        // Ensure the state of the header views is what it should be before animating.
+        updateView();
         getMainRecyclerView().setChildAttachedConsumer(null);
         int previousState = getCurrentState();
         boolean isEnabled = !mAllApps.getAppsStore()
                 .hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED);
         int updatedState = isEnabled ? STATE_ENABLED : STATE_DISABLED;
         setCurrentState(updatedState);
-        mFloatingMaskView = null;
-        if (mPSHeader != null) {
-            mPSHeader.setAlpha(1);
+        if (Flags.privateSpaceAddFloatingMaskView()) {
+            mFloatingMaskView = null;
         }
         // It's possible that previousState is 0 when reset is first called.
         mIsStateTransitioning = previousState != STATE_UNKNOWN && previousState != updatedState;
@@ -224,7 +224,7 @@ public class PrivateProfileManager extends UserProfileManager {
         } else if (previousState == STATE_ENABLED && updatedState == STATE_DISABLED){
             executeLock();
         }
-        resetPrivateSpaceDecorator(updatedState);
+        addPrivateSpaceDecorator(updatedState);
     }
 
     /** Returns whether or not Private Space Settings Page is available. */
@@ -257,8 +257,9 @@ public class PrivateProfileManager extends UserProfileManager {
         setPrivateSpaceSettingsAvailable(apiWrapper.getPrivateSpaceSettingsIntent() != null);
     }
 
+    /** Adds a private space decorator only when STATE_ENABLED. */
     @VisibleForTesting
-    void resetPrivateSpaceDecorator(int updatedState) {
+    void addPrivateSpaceDecorator(int updatedState) {
         ActivityAllAppsContainerView<?>.AdapterHolder mainAdapterHolder = mAllApps.mAH.get(MAIN);
         if (updatedState == STATE_ENABLED) {
             // Create a new decorator instance if not already available.
@@ -275,11 +276,6 @@ public class PrivateProfileManager extends UserProfileManager {
             }
             // Add Private Space Decorator to the Recycler view.
             mainAdapterHolder.mRecyclerView.addItemDecoration(mPrivateAppsSectionDecorator);
-        } else {
-            // Remove Private Space Decorator from the Recycler view.
-            if (mPrivateAppsSectionDecorator != null && !mIsAnimationRunning) {
-                mainAdapterHolder.mRecyclerView.removeItemDecoration(mPrivateAppsSectionDecorator);
-            }
         }
     }
 
@@ -349,61 +345,57 @@ public class PrivateProfileManager extends UserProfileManager {
             // Ensure any unwanted animations to not happen.
             settingAndLockGroup.setLayoutTransition(null);
         }
+        updateView();
+    }
 
-        //Add quietMode image and action for lock/unlock button
-        ViewGroup lockButton = mPSHeader.findViewById(R.id.ps_lock_unlock_button);
-        assert lockButton != null;
-        updateLockButton(lockButton);
-
-        //Trigger lock/unlock action from header.
-        updateHeaderOnClickListener(mPSHeader);
-
-        //Add image and action for private space settings button
+    /** Update the states of the views that make up the header at the state it is called in. */
+    private void updateView() {
+        if (mPSHeader == null) {
+            return;
+        }
+        mPSHeader.setAlpha(1);
+        ViewGroup lockPill = mPSHeader.findViewById(R.id.ps_lock_unlock_button);
+        assert lockPill != null;
+        TextView lockText = lockPill.findViewById(R.id.lock_text);
         PrivateSpaceSettingsButton settingsButton = mPSHeader.findViewById(R.id.ps_settings_button);
         assert settingsButton != null;
-        updatePrivateSpaceSettingsButton(settingsButton);
-
         //Add image for private space transitioning view
-        ImageView transitionView = parent.findViewById(R.id.ps_transition_image);
+        ImageView transitionView = mPSHeader.findViewById(R.id.ps_transition_image);
         assert transitionView != null;
-        updateTransitionImage(transitionView);
-    }
-
-    /**
-     *  Adds the quietModeButton and attach onClickListener for the header to animate different
-     *  states when clicked.
-     */
-    private void updateLockButton(ViewGroup lockButton) {
-        TextView lockText = lockButton.findViewById(R.id.lock_text);
-        switch (getCurrentState()) {
+        switch(getCurrentState()) {
             case STATE_ENABLED -> {
+                mPSHeader.setOnClickListener(null);
+                mPSHeader.setClickable(false);
+                // Remove header from accessibility target when enabled.
+                mPSHeader.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+
                 lockText.setVisibility(VISIBLE);
-                lockButton.setVisibility(VISIBLE);
-                lockButton.setOnClickListener(view -> lockingAction(/* lock */ true));
-                lockButton.setContentDescription(mUnLockedStateContentDesc);
+                lockPill.setVisibility(VISIBLE);
+                lockPill.setOnClickListener(view -> lockingAction(/* lock */ true));
+                lockPill.setContentDescription(mUnLockedStateContentDesc);
+
+                settingsButton.setVisibility(isPrivateSpaceSettingsAvailable() ? VISIBLE : GONE);
+                transitionView.setVisibility(GONE);
             }
             case STATE_DISABLED -> {
-                lockText.setVisibility(GONE);
-                lockButton.setVisibility(VISIBLE);
-                lockButton.setOnClickListener(view -> lockingAction(/* lock */ false));
-                lockButton.setContentDescription(mLockedStateContentDesc);
-            }
-            default -> lockButton.setVisibility(GONE);
-        }
-    }
+                mPSHeader.setOnClickListener(view -> lockingAction(/* lock */ false));
+                mPSHeader.setClickable(true);
+                // Add header as accessibility target when disabled.
+                mPSHeader.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
+                mPSHeader.setContentDescription(mLockedStateContentDesc);
 
-    private void updateHeaderOnClickListener(RelativeLayout header) {
-        if (getCurrentState() == STATE_DISABLED) {
-            header.setOnClickListener(view -> lockingAction(/* lock */ false));
-            header.setClickable(true);
-            // Add header as accessibility target when disabled.
-            header.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
-            header.setContentDescription(mLockedStateContentDesc);
-        } else {
-            header.setOnClickListener(null);
-            header.setClickable(false);
-            // Remove header from accessibility target when enabled.
-            header.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+                lockText.setVisibility(GONE);
+                lockPill.setVisibility(VISIBLE);
+                lockPill.setOnClickListener(view -> lockingAction(/* lock */ false));
+                lockPill.setContentDescription(mLockedStateContentDesc);
+
+                settingsButton.setVisibility(GONE);
+                transitionView.setVisibility(GONE);
+            }
+            case STATE_TRANSITION -> {
+                transitionView.setVisibility(VISIBLE);
+                lockPill.setVisibility(GONE);
+            }
         }
     }
 
@@ -411,23 +403,6 @@ public class PrivateProfileManager extends UserProfileManager {
     private void lockingAction(boolean lock) {
         logEvents(lock ? LAUNCHER_PRIVATE_SPACE_LOCK_TAP : LAUNCHER_PRIVATE_SPACE_UNLOCK_TAP);
         setQuietMode(lock);
-    }
-
-    private void updatePrivateSpaceSettingsButton(PrivateSpaceSettingsButton settingsButton) {
-        if (getCurrentState() == STATE_ENABLED
-                && isPrivateSpaceSettingsAvailable()) {
-            settingsButton.setVisibility(VISIBLE);
-        } else {
-            settingsButton.setVisibility(GONE);
-        }
-    }
-
-    private void updateTransitionImage(ImageView transitionImage) {
-        if (getCurrentState() == STATE_TRANSITION) {
-            transitionImage.setVisibility(VISIBLE);
-        } else {
-            transitionImage.setVisibility(GONE);
-        }
     }
 
     /** Finds the private space header to scroll to and set the private space icons to GONE. */
@@ -644,6 +619,8 @@ public class PrivateProfileManager extends UserProfileManager {
                             : LAUNCHER_PRIVATE_SPACE_LOCK_ANIMATION_END,
                     mAllApps.getActiveRecyclerView());
             if (!expand) {
+                mAllApps.mAH.get(MAIN).mRecyclerView.removeItemDecoration(
+                        mPrivateAppsSectionDecorator);
                 // Call onAppsUpdated() because it may be canceled when this animation occurs.
                 mAllApps.getPersonalAppList().onAppsUpdated();
                 if (isPrivateSpaceHidden()) {

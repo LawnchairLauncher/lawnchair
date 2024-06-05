@@ -2667,6 +2667,20 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             // Let system take care of the rotation
             return;
         }
+
+        if (mRunningTaskShowScreenshot) {
+            animateRotation(newRotation);
+        } else {
+            // Animate the rotation and stops running task
+            switchToScreenshot(() -> {
+                animateRotation(newRotation);
+                finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                        null /* onFinishComplete */);
+            });
+        }
+    }
+
+    private void animateRotation(int newRotation) {
         AnimatorSet pa = setRecentsChangedOrientation(true);
         pa.addListener(AnimatorListeners.forSuccessCallback(() -> {
             setLayoutRotation(newRotation, mOrientationState.getDisplayRotation());
@@ -2948,7 +2962,6 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         int taskCount = getTaskViewCount();
         for (int i = 0; i < taskCount; i++) {
             TaskView taskView = requireTaskViewAt(i);
-            taskView.setIconScaleAnimStartProgress(0f);
             taskView.animateIconScaleAndDimIntoView();
         }
     }
@@ -3781,7 +3794,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                     anim.setFloat(taskView, taskView.getSecondaryDismissTranslationProperty(),
                             secondaryTranslation, clampToProgress(LINEAR, animationStartProgress,
                                     dismissTranslationInterpolationEnd));
-                    anim.setFloat(taskView, TaskView.FOCUS_TRANSITION, 0f,
+                    anim.setFloat(taskView, TaskView.SCALE_AND_DIM_OUT, 0f,
                             clampToProgress(LINEAR, 0f, ANIMATION_DISMISS_PROGRESS_MIDPOINT));
                 } else {
                     float primaryTranslation =
@@ -5925,7 +5938,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             return;
         }
 
-        taskView.setShouldShowScreenshot(true);
+        setRunningTaskViewShowScreenshot(true);
         for (TaskContainer container : taskView.getTaskContainers()) {
             if (container == null) {
                 continue;

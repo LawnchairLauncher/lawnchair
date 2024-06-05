@@ -487,4 +487,7 @@
     <dimen name="keyboard_quick_switch_no_recent_items_icon_size">24dp</dimen>
     <dimen name="keyboard_quick_switch_no_recent_items_icon_margin">8dp</dimen>
 
+    <!-- Digital Wellbeing -->
+    <dimen name="digital_wellbeing_toast_height">48dp</dimen>
+
 </resources>

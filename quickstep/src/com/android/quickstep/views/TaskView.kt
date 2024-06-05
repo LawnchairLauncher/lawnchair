@@ -52,7 +52,6 @@ import com.android.launcher3.Flags.enableOverviewIconMenu
 import com.android.launcher3.Flags.enableRefactorTaskThumbnail
 import com.android.launcher3.Flags.privateSpaceRestrictAccessibilityDrag
 import com.android.launcher3.LauncherSettings
-import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.config.FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH
@@ -65,6 +64,8 @@ import com.android.launcher3.testing.TestLogging
 import com.android.launcher3.testing.shared.TestProtocol
 import com.android.launcher3.util.CancellableTask
 import com.android.launcher3.util.Executors
+import com.android.launcher3.util.MultiPropertyFactory
+import com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE
 import com.android.launcher3.util.RunnableList
 import com.android.launcher3.util.SafeCloseable
 import com.android.launcher3.util.SplitConfigurationOptions
@@ -265,12 +266,14 @@ constructor(
             field = Utilities.boundToRange(value, 0f, 1f)
             onFullscreenProgressChanged(field)
         }
+
     // gridProgress 0 = carousel; 1 = 2 row grid.
     protected var gridProgress = 0f
         set(value) {
             field = value
             onGridProgressChanged()
         }
+
     /**
      * The modalness of this view is how it should be displayed when it is shown on its own in the
      * modal state of overview. 0 being in context with other tasks, 1 being shown on its own.
@@ -337,12 +340,14 @@ constructor(
             field = value
             applyTranslationY()
         }
+
     // The following translation variables should only be used in the same orientation as Launcher.
     private var boxTranslationY = 0f
         set(value) {
             field = value
             applyTranslationY()
         }
+
     // The following grid translations scales with mGridProgress.
     protected var gridTranslationX = 0f
         set(value) {
@@ -355,12 +360,14 @@ constructor(
             field = value
             applyTranslationY()
         }
+
     // The following grid translation is used to animate closing the gap between grid and clear all.
     private var gridEndTranslationX = 0f
         set(value) {
             field = value
             applyTranslationX()
         }
+
     // Applied as a complement to gridTranslation, for adjusting the carousel overview and quick
     // switch.
     protected var nonGridTranslationX = 0f
@@ -374,6 +381,7 @@ constructor(
             field = value
             applyTranslationX()
         }
+
     // Used when in SplitScreenSelectState
     private var splitSelectTranslationY = 0f
         set(value) {
@@ -395,6 +403,7 @@ constructor(
 
     protected var shouldShowScreenshot = false
         get() = !isRunningTask || field
+
     /** Enable or disable showing border on hover and focus change */
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     var borderEnabled = false
@@ -409,8 +418,35 @@ constructor(
             focusBorderAnimator?.setBorderVisibility(visible = field && isFocused, animated = true)
         }
 
-    protected var iconScaleAnimStartProgress = 0f
     private var focusTransitionProgress = 1f
+        set(value) {
+            field = value
+            onFocusTransitionProgressUpdated(field)
+        }
+
+    private val focusTransitionPropertyFactory =
+        MultiPropertyFactory(
+            this,
+            FOCUS_TRANSITION,
+            FOCUS_TRANSITION_INDEX_COUNT,
+            { x: Float, y: Float -> x * y },
+            1f
+        )
+    private val focusTransitionFullscreen =
+        focusTransitionPropertyFactory.get(FOCUS_TRANSITION_INDEX_FULLSCREEN)
+    private val focusTransitionScaleAndDim =
+        focusTransitionPropertyFactory.get(FOCUS_TRANSITION_INDEX_SCALE_AND_DIM)
+    /**
+     * Variant of [focusTransitionScaleAndDim] that has a built-in interpolator, to be used with
+     * [com.android.launcher3.anim.PendingAnimation] via [SCALE_AND_DIM_OUT] only. PendingAnimation
+     * doesn't support interpolator per animation, so we'll have to interpolate inside the property.
+     */
+    private var focusTransitionScaleAndDimOut = focusTransitionScaleAndDim.value
+        set(value) {
+            field = value
+            focusTransitionScaleAndDim.value =
+                FOCUS_TRANSITION_FAST_OUT_INTERPOLATOR.getInterpolation(field)
+        }
 
     private var iconAndDimAnimator: ObjectAnimator? = null
     // The current background requests to load the task thumbnail and icon
@@ -1301,43 +1337,23 @@ constructor(
         }
     }
 
-    protected open fun setIconsAndBannersFullscreenProgress(progress: Float) {
-        // Animate icons and DWB banners in/out, except in QuickSwitch state, when tiles are
-        // oversized and banner would look disproportionately large.
-        if (recentsView?.stateManager?.state == LauncherState.BACKGROUND_APP) {
-            return
-        }
-        setIconsAndBannersTransitionProgress(progress, invert = true)
-    }
-
     /**
      * Called to animate a smooth transition when going directly from an app into Overview (and vice
      * versa). Icons fade in, and DWB banners slide in with a "shift up" animation.
      */
-    protected open fun setIconsAndBannersTransitionProgress(progress: Float, invert: Boolean) {
-        focusTransitionProgress = if (invert) 1 - progress else progress
-        getIconContentScale(invert).let { iconContentScale ->
-            taskContainers.forEach {
-                it.iconView.setContentAlpha(iconContentScale)
-                it.digitalWellBeingToast?.updateBannerOffset(1f - iconContentScale)
-            }
+    private fun onFocusTransitionProgressUpdated(focusTransitionProgress: Float) {
+        taskContainers.forEach {
+            it.iconView.setContentAlpha(focusTransitionProgress)
+            it.digitalWellBeingToast?.updateBannerOffset(1f - focusTransitionProgress)
         }
-    }
-
-    private fun getIconContentScale(invert: Boolean): Float {
-        val iconScalePercentage = SCALE_ICON_DURATION.toFloat() / DIM_ANIM_DURATION
-        val lowerClamp = if (invert) 1f - iconScalePercentage else 0f
-        val upperClamp = if (invert) 1f else iconScalePercentage
-        return Interpolators.clampToProgress(Interpolators.FAST_OUT_SLOW_IN, lowerClamp, upperClamp)
-            .getInterpolation(focusTransitionProgress)
     }
 
     fun animateIconScaleAndDimIntoView() {
         iconAndDimAnimator?.cancel()
         iconAndDimAnimator =
-            ObjectAnimator.ofFloat(this, FOCUS_TRANSITION, 1f).apply {
-                setCurrentFraction(iconScaleAnimStartProgress)
-                setDuration(DIM_ANIM_DURATION).interpolator = Interpolators.LINEAR
+            ObjectAnimator.ofFloat(focusTransitionScaleAndDim, MULTI_PROPERTY_VALUE, 0f, 1f).apply {
+                duration = SCALE_ICON_DURATION
+                interpolator = Interpolators.LINEAR
                 addListener(
                     object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
@@ -1351,7 +1367,7 @@ constructor(
 
     fun setIconScaleAndDim(iconScale: Float) {
         iconAndDimAnimator?.cancel()
-        setIconsAndBannersTransitionProgress(iconScale, invert = false)
+        focusTransitionScaleAndDim.value = iconScale
     }
 
     /** Set a color tint on the snapshot and supporting views. */
@@ -1454,7 +1470,8 @@ constructor(
             it.iconView.setVisibility(if (fullscreenProgress < 1) VISIBLE else INVISIBLE)
             it.overlay.setFullscreenProgress(fullscreenProgress)
         }
-        setIconsAndBannersFullscreenProgress(fullscreenProgress)
+        focusTransitionFullscreen.value =
+            FOCUS_TRANSITION_FAST_OUT_INTERPOLATOR.getInterpolation(1 - fullscreenProgress)
         updateSnapshotRadius()
     }
 
@@ -1638,21 +1655,43 @@ constructor(
         const val FLAG_UPDATE_ALL =
             (FLAG_UPDATE_ICON or FLAG_UPDATE_THUMBNAIL or FLAG_UPDATE_CORNER_RADIUS)
 
+        const val FOCUS_TRANSITION_INDEX_FULLSCREEN = 0
+        const val FOCUS_TRANSITION_INDEX_SCALE_AND_DIM = 1
+        const val FOCUS_TRANSITION_INDEX_COUNT = 2
+
         /** The maximum amount that a task view can be scrimmed, dimmed or tinted. */
         const val MAX_PAGE_SCRIM_ALPHA = 0.4f
         const val SCALE_ICON_DURATION: Long = 120
         private const val DIM_ANIM_DURATION: Long = 700
+        private const val FOCUS_TRANSITION_THRESHOLD =
+            SCALE_ICON_DURATION.toFloat() / DIM_ANIM_DURATION
+        val FOCUS_TRANSITION_FAST_OUT_INTERPOLATOR =
+            Interpolators.clampToProgress(
+                Interpolators.FAST_OUT_SLOW_IN,
+                1f - FOCUS_TRANSITION_THRESHOLD,
+                1f
+            )!!
         private val SYSTEM_GESTURE_EXCLUSION_RECT = listOf(Rect())
 
-        @JvmField
-        val FOCUS_TRANSITION: FloatProperty<TaskView> =
+        private val FOCUS_TRANSITION: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("focusTransition") {
                 override fun setValue(taskView: TaskView, v: Float) {
-                    taskView.setIconsAndBannersTransitionProgress(v, false /* invert */)
+                    taskView.focusTransitionProgress = v
                 }
 
                 override fun get(taskView: TaskView) = taskView.focusTransitionProgress
             }
+
+        @JvmField
+        val SCALE_AND_DIM_OUT: FloatProperty<TaskView> =
+            object : FloatProperty<TaskView>("scaleAndDimFastOut") {
+                override fun setValue(taskView: TaskView, v: Float) {
+                    taskView.focusTransitionScaleAndDimOut = v
+                }
+
+                override fun get(taskView: TaskView) = taskView.focusTransitionScaleAndDimOut
+            }
+
         private val SPLIT_SELECT_TRANSLATION_X: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("splitSelectTranslationX") {
                 override fun setValue(taskView: TaskView, v: Float) {
@@ -1661,6 +1700,7 @@ constructor(
 
                 override fun get(taskView: TaskView) = taskView.splitSelectTranslationX
             }
+
         private val SPLIT_SELECT_TRANSLATION_Y: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("splitSelectTranslationY") {
                 override fun setValue(taskView: TaskView, v: Float) {
@@ -1669,6 +1709,7 @@ constructor(
 
                 override fun get(taskView: TaskView) = taskView.splitSelectTranslationY
             }
+
         private val DISMISS_TRANSLATION_X: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("dismissTranslationX") {
                 override fun setValue(taskView: TaskView, v: Float) {
@@ -1677,6 +1718,7 @@ constructor(
 
                 override fun get(taskView: TaskView) = taskView.dismissTranslationX
             }
+
         private val DISMISS_TRANSLATION_Y: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("dismissTranslationY") {
                 override fun setValue(taskView: TaskView, v: Float) {
@@ -1685,6 +1727,7 @@ constructor(
 
                 override fun get(taskView: TaskView) = taskView.dismissTranslationY
             }
+
         private val TASK_OFFSET_TRANSLATION_X: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("taskOffsetTranslationX") {
                 override fun setValue(taskView: TaskView, v: Float) {
@@ -1693,6 +1736,7 @@ constructor(
 
                 override fun get(taskView: TaskView) = taskView.taskOffsetTranslationX
             }
+
         private val TASK_OFFSET_TRANSLATION_Y: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("taskOffsetTranslationY") {
                 override fun setValue(taskView: TaskView, v: Float) {
@@ -1701,6 +1745,7 @@ constructor(
 
                 override fun get(taskView: TaskView) = taskView.taskOffsetTranslationY
             }
+
         private val TASK_RESISTANCE_TRANSLATION_X: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("taskResistanceTranslationX") {
                 override fun setValue(taskView: TaskView, v: Float) {
@@ -1709,6 +1754,7 @@ constructor(
 
                 override fun get(taskView: TaskView) = taskView.taskResistanceTranslationX
             }
+
         private val TASK_RESISTANCE_TRANSLATION_Y: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("taskResistanceTranslationY") {
                 override fun setValue(taskView: TaskView, v: Float) {
@@ -1717,6 +1763,7 @@ constructor(
 
                 override fun get(taskView: TaskView) = taskView.taskResistanceTranslationY
             }
+
         @JvmField
         val GRID_END_TRANSLATION_X: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("gridEndTranslationX") {
@@ -1726,6 +1773,7 @@ constructor(
 
                 override fun get(taskView: TaskView) = taskView.gridEndTranslationX
             }
+
         @JvmField
         val DISMISS_SCALE: FloatProperty<TaskView> =
             object : FloatProperty<TaskView>("dismissScale") {

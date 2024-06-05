@@ -173,14 +173,10 @@ public class LauncherSwipeHandlerV2 extends
             }
 
             @Override
-            public void playAtomicAnimation(float velocity) {
-                if (enableScalingRevealHomeAnimation()) {
-                    if (mContainer != null) {
-                        new ScalingWorkspaceRevealAnim(
-                                mContainer, mSiblingAnimation, getWindowTargetRect()).start();
-                    }
-                } else {
-                    super.playAtomicAnimation(velocity);
+            protected void playScalingRevealAnimation() {
+                if (mContainer != null) {
+                    new ScalingWorkspaceRevealAnim(mContainer, mSiblingAnimation,
+                            getWindowTargetRect()).start();
                 }
             }
 
@@ -370,9 +366,25 @@ public class LauncherSwipeHandlerV2 extends
 
         @Override
         public void playAtomicAnimation(float velocity) {
-            new StaggeredWorkspaceAnim(mContainer, velocity, true /* animateOverviewScrim */,
-                    getViewIgnoredInWorkspaceRevealAnimation())
-                    .start();
+            if (enableScalingRevealHomeAnimation()) {
+                playScalingRevealAnimation();
+            } else {
+                new StaggeredWorkspaceAnim(mContainer, velocity, true /* animateOverviewScrim */,
+                        getViewIgnoredInWorkspaceRevealAnimation())
+                        .start();
+            }
+        }
+
+        /**
+         * Extracted in a different method so subclasses that have a custom window animation with a
+         * target (icons, widgets) can pass the optional parameters.
+         */
+        protected void playScalingRevealAnimation() {
+            if (mContainer != null) {
+                new ScalingWorkspaceRevealAnim(
+                        mContainer, null /* siblingAnimation */,
+                        null /* windowTargetRect */).start();
+            }
         }
     }
 }
