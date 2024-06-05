@@ -158,6 +158,11 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             final PointF appWidgetScale = dp.getAppWidgetScale((ItemInfo) child.getTag());
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
                     appWidgetScale.x, appWidgetScale.y, mBorderSpace, dp.widgetPadding);
+        } else if (isChildQsb(child)) {
+            lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
+                    mBorderSpace);
+            // No need to add padding for Qsb, which is either Smartspace (actual or preview), or
+            // QsbContainerView.
         } else {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
                     mBorderSpace);
@@ -183,6 +188,10 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
         int childheightMeasureSpec = MeasureSpec.makeMeasureSpec(lp.height, MeasureSpec.EXACTLY);
         child.measure(childWidthMeasureSpec, childheightMeasureSpec);
+    }
+
+    private boolean isChildQsb(View child) {
+        return child.getId() == R.id.search_container_workspace;
     }
 
     public boolean invertLayoutHorizontally() {
