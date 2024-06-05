@@ -69,8 +69,6 @@ constructor(
 
     private lateinit var dividerView: View
 
-    private val menuWidth =
-        resources.getDimensionPixelSize(R.dimen.taskbar_pinning_popup_menu_width)
     private val popupCornerRadius = Themes.getDialogCornerRadius(context)
     private val arrowWidth = resources.getDimension(R.dimen.popup_arrow_width)
     private val arrowHeight = resources.getDimension(R.dimen.popup_arrow_height)
@@ -130,7 +128,7 @@ constructor(
     /** Orient object as usual and then center object horizontally. */
     override fun orientAboutObject() {
         super.orientAboutObject()
-        x = mTempRect.centerX() - menuWidth / 2f
+        x = mTempRect.centerX() - measuredWidth / 2f
     }
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent?): Boolean {

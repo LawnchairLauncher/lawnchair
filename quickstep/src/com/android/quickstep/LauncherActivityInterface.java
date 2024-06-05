@@ -308,7 +308,8 @@ public final class LauncherActivityInterface extends
             return;
         }
         LauncherOverlayManager om = launcher.getOverlayManager();
-        if (!launcher.isStarted() || launcher.isForceInvisible()) {
+        if (!SystemUiProxy.INSTANCE.get(launcher).getHomeVisibilityState().isHomeVisible()
+                || launcher.isForceInvisible()) {
             om.hideOverlay(false /* animate */);
         } else {
             om.hideOverlay(150);

@@ -217,6 +217,7 @@ import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
+import com.android.wm.shell.common.desktopmode.DesktopModeTransitionSource;
 import com.android.wm.shell.common.pip.IPipAnimationListener;
 import com.android.wm.shell.shared.DesktopModeStatus;
 
@@ -2675,17 +2676,9 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
         pa.start();
     }
 
-    public AnimatorSet setRecentsChangedOrientation(boolean fadeInChildren) {
-        getRunningTaskIndex();
-        int runningIndex = getCurrentPage();
+    public AnimatorSet setRecentsChangedOrientation(boolean fadeOut) {
         AnimatorSet as = new AnimatorSet();
-        for (int i = 0; i < getTaskViewCount(); i++) {
-            View taskView = requireTaskViewAt(i);
-            if (runningIndex == i && taskView.getAlpha() != 0) {
-                continue;
-            }
-            as.play(ObjectAnimator.ofFloat(taskView, View.ALPHA, fadeInChildren ? 0 : 1));
-        }
+        as.play(ObjectAnimator.ofFloat(this, View.ALPHA, fadeOut ? 0 : 1));
         return as;
     }
 
@@ -6304,20 +6297,22 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      * Moves the provided task into desktop mode, and invoke {@code successCallback} if succeeded.
      */
     public void moveTaskToDesktop(TaskContainer taskContainer,
+            DesktopModeTransitionSource transitionSource,
             Runnable successCallback) {
         if (!DesktopModeStatus.canEnterDesktopMode(mContext)) {
             return;
         }
         switchToScreenshot(() -> finishRecentsAnimation(/* toRecents= */true, /* shouldPip= */false,
-                () -> moveTaskToDesktopInternal(taskContainer, successCallback)));
+                () -> moveTaskToDesktopInternal(taskContainer, successCallback, transitionSource)));
     }
 
     private void moveTaskToDesktopInternal(TaskContainer taskContainer,
-            Runnable successCallback) {
+            Runnable successCallback, DesktopModeTransitionSource transitionSource) {
         if (mDesktopRecentsTransitionController == null) {
             return;
         }
-        mDesktopRecentsTransitionController.moveToDesktop(taskContainer.getTask().key.id);
+        mDesktopRecentsTransitionController.moveToDesktop(taskContainer.getTask().key.id,
+                transitionSource);
         successCallback.run();
     }
 

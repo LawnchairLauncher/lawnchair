@@ -28,9 +28,11 @@ import android.content.Intent;
 import android.graphics.PointF;
 import android.os.SystemClock;
 import android.os.Trace;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.BinderThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
@@ -58,6 +60,7 @@ import java.util.HashMap;
  * Helper class to handle various atomic commands for switching between Overview.
  */
 public class OverviewCommandHelper {
+    private static final String TAG = "OverviewCommandHelper";
 
     public static final int TYPE_SHOW = 1;
     public static final int TYPE_KEYBOARD_INPUT = 2;
@@ -105,10 +108,19 @@ public class OverviewCommandHelper {
      * Called when the command finishes execution.
      */
     private void scheduleNextTask(CommandInfo command) {
-        if (!mPendingCommands.isEmpty() && mPendingCommands.get(0) == command) {
-            mPendingCommands.remove(0);
-            executeNext();
+        if (mPendingCommands.isEmpty()) {
+            Log.d(TAG, "no pending commands to schedule");
+            return;
         }
+        if (mPendingCommands.get(0) != command) {
+            Log.d(TAG, "next task not scheduled."
+                    + " mPendingCommands[0] type is " + mPendingCommands.get(0)
+                    + " - command type is: " + command);
+            return;
+        }
+        Log.d(TAG, "scheduleNextTask called: " + command);
+        mPendingCommands.remove(0);
+        executeNext();
     }
 
     /**
@@ -119,10 +131,14 @@ public class OverviewCommandHelper {
     @UiThread
     private void executeNext() {
         if (mPendingCommands.isEmpty()) {
+            Log.d(TAG, "executeNext - mPendingCommands is empty");
             return;
         }
         CommandInfo cmd = mPendingCommands.get(0);
-        if (executeCommand(cmd)) {
+
+        boolean result = executeCommand(cmd);
+        Log.d(TAG, "executeNext cmd type: " + cmd + ", result: " + result);
+        if (result) {
             scheduleNextTask(cmd);
         }
     }
@@ -144,14 +160,18 @@ public class OverviewCommandHelper {
     @BinderThread
     public void addCommand(int type) {
         if (mPendingCommands.size() >= MAX_QUEUE_SIZE) {
+            Log.d(TAG, "the pending command queue is full (" + mPendingCommands.size() + "). "
+                    + "command not added: " + type);
             return;
         }
+        Log.d(TAG, "adding command type: " + type);
         CommandInfo cmd = new CommandInfo(type);
         MAIN_EXECUTOR.execute(() -> addCommand(cmd));
     }
 
     @UiThread
     public void clearPendingCommands() {
+        Log.d(TAG, "clearing pending commands - size: " + mPendingCommands.size());
         mPendingCommands.clear();
     }
 
@@ -182,9 +202,11 @@ public class OverviewCommandHelper {
 
         if (callbackList != null) {
             callbackList.add(() -> {
+                Log.d(TAG, "launching task callback: " + cmd);
                 scheduleNextTask(cmd);
                 mWaitForToggleCommandComplete = false;
             });
+            Log.d(TAG, "launching task - waiting for callback: " + cmd);
             return false;
         } else {
             recents.startHome();
@@ -200,12 +222,17 @@ public class OverviewCommandHelper {
     private <T extends StatefulActivity<?> & RecentsViewContainer> boolean executeCommand(
             CommandInfo cmd) {
         if (mWaitForToggleCommandComplete && cmd.type == TYPE_TOGGLE) {
+            Log.d(TAG, "executeCommand: " + cmd
+                    + " - waiting for toggle command complete");
             return true;
         }
         BaseActivityInterface<?, T> activityInterface =
                 mOverviewComponentObserver.getActivityInterface();
         RecentsView visibleRecentsView = activityInterface.getVisibleRecentsView();
         RecentsView createdRecentsView;
+
+        Log.d(TAG, "executeCommand: " + cmd
+                + " - visibleRecentsView: " + visibleRecentsView);
         if (visibleRecentsView == null) {
             T activity = activityInterface.getCreatedContainer();
             createdRecentsView = activity == null ? null : activity.getOverviewPanel();
@@ -292,14 +319,17 @@ public class OverviewCommandHelper {
                 updateRecentsViewFocus(cmd);
                 logShowOverviewFrom(cmd.type);
             }
+
             @Override
             public void onAnimationEnd(Animator animation) {
+                Log.d(TAG, "switching to Overview state - onAnimationEnd: " + cmd);
                 super.onAnimationEnd(animation);
                 onRecentsViewFocusUpdated(cmd);
                 scheduleNextTask(cmd);
             }
         };
         if (activityInterface.switchToRecentsIfVisible(animatorListener)) {
+            Log.d(TAG, "switching to Overview state - waiting: " + cmd);
             // If successfully switched, wait until animation finishes
             return false;
         }
@@ -366,10 +396,12 @@ public class OverviewCommandHelper {
             cmd.mActiveCallbacks.addListener(recentAnimListener);
         }
         Trace.beginAsyncSection(TRANSITION_NAME, 0);
+        Log.d(TAG, "switching via recents animation - onGestureStarted: " + cmd);
         return false;
     }
 
     private void onTransitionComplete(CommandInfo cmd, AbsSwipeUpHandler handler) {
+        Log.d(TAG, "switching via recents animation - onTransitionComplete: " + cmd);
         cmd.removeListener(handler);
         Trace.endAsyncSection(TRANSITION_NAME, 0);
         onRecentsViewFocusUpdated(cmd);
@@ -477,6 +509,16 @@ public class OverviewCommandHelper {
             if (mActiveCallbacks != null) {
                 mActiveCallbacks.removeListener(listener);
             }
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "CommandInfo("
+                    + "type=" + type + ", "
+                    + "createTime=" + createTime + ", "
+                    + "mActiveCallbacks=" + mActiveCallbacks
+                    + ")";
         }
     }
 }

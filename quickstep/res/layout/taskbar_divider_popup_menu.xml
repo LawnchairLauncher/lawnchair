@@ -16,8 +16,9 @@
 -->
 <com.android.launcher3.taskbar.TaskbarDividerPopupView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/taskbar_pinning_popup_menu_width"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:minWidth="@dimen/taskbar_pinning_popup_menu_width"
     android:focusable="true"
     android:background="@drawable/popup_background"
     android:orientation="vertical">
@@ -54,10 +55,10 @@
             android:gravity="start|center_vertical"
             android:textAlignment="viewStart"
             android:paddingStart="12dp"
+            android:switchPadding="12dp"
             android:layout_weight="1"
             android:fontFamily="@*android:string/config_bodyFontFamilyMedium"
             android:lines="1"
-            android:ellipsize="end"
             android:textSize="14sp"
             android:textColor="?android:attr/textColorPrimary"
             android:text="@string/always_show_taskbar" />
