@@ -29,8 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"Accueil"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Écran divisé"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Renseignements sur l\'appli pour %1$s"</string>
-    <!-- no translation found for split_app_usage_settings (7214375263347964093) -->
-    <skip />
+    <string name="split_app_usage_settings" msgid="7214375263347964093">"Paramètres d\'utilisation pour %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Enr. paire d\'applis"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Cette paire d\'applications n\'est pas prise en charge sur cet appareil"</string>
@@ -195,5 +194,4 @@
     <string name="ps_container_transition" msgid="8667331812048014412">"Transition vers l\'Espace privé"</string>
     <string name="ps_add_button_label" msgid="8127988716897128773">"Installer"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Installer des applications dans l\'Espace privé"</string>
-    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Menu à développer"</string>
 </resources>
