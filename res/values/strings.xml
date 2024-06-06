@@ -498,8 +498,4 @@
     <string name="ps_add_button_label">Install</string>
     <!-- Content description for install app icon -->
     <string name="ps_add_button_content_description">Install apps to Private Space</string>
-
-    <!-- Strings for bubble bar -->
-    <!-- content description for the overflow bubble [CHAR_LIMIT=none] -->
-    <string name="bubble_bar_overflow_description">Overflow</string>
 </resources>
