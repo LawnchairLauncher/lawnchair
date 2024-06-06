@@ -719,6 +719,8 @@ public class BubbleBarView extends FrameLayout {
                     } else if (i == MAX_VISIBLE_BUBBLES_COLLAPSED - 1
                             && bubbleCount == MAX_VISIBLE_BUBBLES_COLLAPSED) {
                         bv.setAlpha(0);
+                    } else {
+                        bv.setAlpha(1);
                     }
                 }
             }
