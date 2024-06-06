@@ -140,4 +140,12 @@
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Pokaż jeszcze # aplikację.}few{Pokaż jeszcze # aplikacje.}many{Pokaż jeszcze # aplikacji.}other{Pokaż jeszcze # aplikacji.}}"</string>
     <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Pokaż # aplikację komputerową.}few{Pokaż # aplikacje komputerowe.}many{Pokaż # aplikacji komputerowych.}other{Pokaż # aplikacji komputerowej.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> i <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <!-- no translation found for bubble_bar_bubble_fallback_description (7811684548953452009) -->
+    <skip />
+    <!-- no translation found for bubble_bar_overflow_description (8617628132733151708) -->
+    <skip />
+    <!-- no translation found for bubble_bar_bubble_description (1882466152448446446) -->
+    <skip />
+    <!-- no translation found for bubble_bar_description_multiple_bubbles (3922207715357143648) -->
+    <skip />
 </resources>
