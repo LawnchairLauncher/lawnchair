@@ -278,7 +278,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         boolean showSingleTaskActions = !mIsGroupedTask;
         boolean showGroupActions = mIsGroupedTask && mDp.isTablet && mCanSaveAppPair;
         Log.d(TAG, "updateActionButtonsVisibility() called: showSingleTaskActions = ["
-                + showSingleTaskActions + ", showGroupActions = [" + showGroupActions + "]");
+                + showSingleTaskActions + "], showGroupActions = [" + showGroupActions + "]");
         getActionsAlphas().get(INDEX_GROUPED_ALPHA).setValue(showSingleTaskActions ? 1 : 0);
         getGroupActionsAlphas().get(INDEX_GROUPED_ALPHA).setValue(showGroupActions ? 1 : 0);
     }

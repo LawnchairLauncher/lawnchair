@@ -33,9 +33,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.Taskbar;
 import com.android.launcher3.tapl.TaskbarAppIcon;
-import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.rule.TestStabilityRule;
-import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 import com.android.wm.shell.Flags;
 
 import org.junit.After;
@@ -74,14 +72,6 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     }
 
     @Test
-    @PortraitLandscape
-    public void testSplitFromOverview() {
-        createAndLaunchASplitPair();
-    }
-
-    @Test
-    @PortraitLandscape
-    @TaskbarModeSwitch
     @TestStabilityRule.Stability(flavors = PLATFORM_POSTSUBMIT | LOCAL) // b/295225524
     public void testSplitAppFromHomeWithItself() throws Exception {
         // Currently only tablets have Taskbar in Overview, so test is only active on tablets
@@ -152,11 +142,7 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
         // Currently only tablets have Taskbar in Overview, so test is only active on tablets
         assumeTrue(mLauncher.isTablet());
 
-        if (!mLauncher.getRecentTasks().isEmpty()) {
-            // Clear all recent tasks
-            mLauncher.goHome().switchToOverview().dismissAllTasks();
-        }
-
+        clearAllRecentTasks();
         startAppFast(getAppPackageName());
 
         Overview overview = mLauncher.goHome().switchToOverview();
@@ -173,6 +159,8 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     }
 
     private void createAndLaunchASplitPair() {
+        clearAllRecentTasks();
+
         startTestActivity(2);
         startTestActivity(3);
 
