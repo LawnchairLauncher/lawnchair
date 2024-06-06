@@ -35,7 +35,6 @@ import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.rule.ScreenRecordRule;
 
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -167,7 +166,6 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
 
     @Test
     @ScreenRecordRule.ScreenRecord // b/334946529
-    @Ignore("b/339179262")
     public void testPrivateSpaceLockingBehaviour() throws IOException {
         // Scroll to the bottom of All Apps
         executeOnLauncher(launcher -> launcher.getAppsView().resetAndScrollToPrivateSpaceHeader());
