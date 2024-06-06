@@ -434,7 +434,7 @@ spotless {
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.4.3",
+            "io.nlopez.compose.rules:ktlint:0.4.4",
         ]).editorConfigOverride([
             "ktlint_compose_compositionlocal-allowlist": "disabled",
         ])
