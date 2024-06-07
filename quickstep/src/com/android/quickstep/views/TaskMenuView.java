@@ -112,11 +112,7 @@ public class TaskMenuView extends AbstractFloatingView {
 
     @Override
     protected void handleClose(boolean animate) {
-        if (animate || enableOverviewIconMenu()) {
-            animateClose();
-        } else {
-            closeComplete();
-        }
+        animateClose();
     }
 
     @Override
