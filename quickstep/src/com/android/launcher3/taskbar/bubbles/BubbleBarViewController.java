@@ -402,8 +402,8 @@ public class BubbleBarViewController {
      */
     public void addBubble(BubbleBarItem b, boolean isExpanding, boolean suppressAnimation) {
         if (b != null) {
-            mBarView.addView(b.getView(), 0,
-                    new FrameLayout.LayoutParams(mIconSize, mIconSize, Gravity.LEFT));
+            mBarView.addBubble(
+                    b.getView(), new FrameLayout.LayoutParams(mIconSize, mIconSize, Gravity.LEFT));
             b.getView().setOnClickListener(mBubbleClickListener);
             mBubbleDragController.setupBubbleView(b.getView());
 
