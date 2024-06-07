@@ -73,7 +73,7 @@
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Pühkige kindlasti ekraani alumisest servast üles."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Hoidke sõrme aknal pisut kauem, enne kui vabastate"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Pühkige kindlasti otse üles, seejärel peatuge"</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Õppisite liigutusi kasutama. Liigutuste väljalülitamiseks avage seaded."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Õppisite liigutusi kasutama. Liigutuste väljalülitamiseks avage Seaded."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Tegite rakenduste vahel vahetamise liigutuse"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Pühkige rakenduste vahetamiseks"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Rakenduste vahel vahetamiseks pühkige ekraanikuva alaosast üles, hoidke ja seejärel vabastage."</string>
@@ -140,4 +140,12 @@
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Kuva veel # rakendus.}other{Kuva veel # rakendust.}}"</string>
     <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Kuva # töölauarakendus.}other{Kuva # töölauarakendust.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ja <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <!-- no translation found for bubble_bar_bubble_fallback_description (7811684548953452009) -->
+    <skip />
+    <!-- no translation found for bubble_bar_overflow_description (8617628132733151708) -->
+    <skip />
+    <!-- no translation found for bubble_bar_bubble_description (1882466152448446446) -->
+    <skip />
+    <!-- no translation found for bubble_bar_description_multiple_bubbles (3922207715357143648) -->
+    <skip />
 </resources>
