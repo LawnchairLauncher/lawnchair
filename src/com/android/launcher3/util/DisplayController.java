@@ -174,7 +174,9 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     }
 
     /**
-     * Returns whether taskbar is transient.
+     * Returns whether taskbar is transient or persistent.
+     *
+     * @return {@code true} if transient, {@code false} if persistent.
      */
     public static boolean isTransientTaskbar(Context context) {
         return INSTANCE.get(context).getInfo().isTransientTaskbar();
