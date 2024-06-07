@@ -80,7 +80,7 @@
              android:stateNotNeeded="true"
              android:theme="@style/LauncherTheme"
              android:screenOrientation="behind"
-             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
              android:resizeableActivity="true"
              android:resumeWhilePausing="true"
              android:enableOnBackInvokedCallback="false"
