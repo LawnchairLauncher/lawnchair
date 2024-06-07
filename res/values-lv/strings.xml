@@ -29,8 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"Sākums"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Sadalīt ekrānu"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s: informācija par lietotni"</string>
-    <!-- no translation found for split_app_usage_settings (7214375263347964093) -->
-    <skip />
+    <string name="split_app_usage_settings" msgid="7214375263347964093">"Lietojuma iestatījumi: %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Saglabāt lietotņu pāri"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Šis lietotņu pāris netiek atbalstīts šajā ierīcē"</string>
@@ -195,5 +194,4 @@
     <string name="ps_container_transition" msgid="8667331812048014412">"Pāriet uz privāto mapi"</string>
     <string name="ps_add_button_label" msgid="8127988716897128773">"Instalēt"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalējiet lietotnes privātajā telpā."</string>
-    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"Pārpilde"</string>
 </resources>
