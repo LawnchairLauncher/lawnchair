@@ -464,4 +464,8 @@
     <dimen name="desktop_mode_floating_app_select_text_size">14sp</dimen>
     <dimen name="desktop_mode_floating_app_select_text_margin">8dp</dimen>
 
+    <!-- Splitscreen -->
+    <!-- Max width of the split instructions view -->
+    <dimen name="split_instructions_view_max_width">220dp</dimen>
+
 </resources>
