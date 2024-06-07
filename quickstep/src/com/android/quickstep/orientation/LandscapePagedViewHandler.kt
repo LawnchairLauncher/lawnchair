@@ -121,6 +121,10 @@ open class LandscapePagedViewHandler : RecentsPagedOrientationHandler {
 
     override fun getEnd(rect: RectF): Float = rect.bottom
 
+    override fun rotateInsets(insets: Rect, outInsets: Rect) {
+        outInsets.set(insets.bottom, insets.left, insets.top, insets.right)
+    }
+
     override fun getClearAllSidePadding(view: View, isRtl: Boolean): Int =
         if (isRtl) view.paddingBottom / 2 else -view.paddingTop / 2
 

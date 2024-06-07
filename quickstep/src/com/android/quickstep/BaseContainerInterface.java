@@ -41,7 +41,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.taskbar.TaskbarUIController;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
@@ -207,10 +206,10 @@ public abstract class BaseContainerInterface<STATE_TYPE extends BaseState<STATE_
     }
 
     public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect,
-            PagedOrientationHandler orientedState) {
+            RecentsPagedOrientationHandler orientationHandler) {
         if (dp.isTablet) {
             if (Flags.enableGridOnlyOverview()) {
-                calculateGridTaskSize(context, dp, outRect, orientedState);
+                calculateGridTaskSize(context, dp, outRect, orientationHandler);
             } else {
                 calculateFocusTaskSize(context, dp, outRect);
             }
@@ -218,15 +217,19 @@ public abstract class BaseContainerInterface<STATE_TYPE extends BaseState<STATE_
             Resources res = context.getResources();
             float maxScale = res.getFloat(R.dimen.overview_max_scale);
             int taskMargin = dp.overviewTaskMarginPx;
+            // In fake orientation, OverviewActions is hidden and we only leave a margin there.
+            int overviewActionsClaimedSpace = orientationHandler.isLayoutNaturalToLauncher()
+                    ? dp.getOverviewActionsClaimedSpace() : dp.overviewActionsTopMarginPx;
             calculateTaskSizeInternal(
                     context,
                     dp,
                     dp.overviewTaskThumbnailTopMarginPx,
-                    dp.getOverviewActionsClaimedSpace(),
+                    overviewActionsClaimedSpace,
                     res.getDimensionPixelSize(R.dimen.overview_minimum_next_prev_size) + taskMargin,
                     maxScale,
                     Gravity.CENTER,
-                    outRect);
+                    outRect,
+                    orientationHandler);
         }
     }
 
@@ -234,7 +237,7 @@ public abstract class BaseContainerInterface<STATE_TYPE extends BaseState<STATE_
      * Calculates the taskView size for carousel during app to overview animation on tablets.
      */
     public final void calculateCarouselTaskSize(Context context, DeviceProfile dp, Rect outRect,
-            PagedOrientationHandler orientedState) {
+            RecentsPagedOrientationHandler orientationHandler) {
         if (dp.isTablet && dp.isGestureMode) {
             Resources res = context.getResources();
             float minScale = res.getFloat(R.dimen.overview_carousel_min_scale);
@@ -243,7 +246,7 @@ public abstract class BaseContainerInterface<STATE_TYPE extends BaseState<STATE_
             calculateTaskSizeInternal(context, dp, gridRect, minScale, Gravity.CENTER | Gravity.TOP,
                     outRect);
         } else {
-            calculateTaskSize(context, dp, outRect, orientedState);
+            calculateTaskSize(context, dp, outRect, orientationHandler);
         }
     }
 
@@ -257,16 +260,39 @@ public abstract class BaseContainerInterface<STATE_TYPE extends BaseState<STATE_
 
     private void calculateTaskSizeInternal(Context context, DeviceProfile dp, int claimedSpaceAbove,
             int claimedSpaceBelow, int minimumHorizontalPadding, float maxScale, int gravity,
-            Rect outRect) {
-        Rect insets = dp.getInsets();
-
+            Rect outRect, RecentsPagedOrientationHandler orientationHandler) {
         Rect potentialTaskRect = new Rect(0, 0, dp.widthPx, dp.heightPx);
-        potentialTaskRect.inset(insets.left, insets.top, insets.right, insets.bottom);
-        potentialTaskRect.inset(
+
+        Rect insets;
+        if (orientationHandler.isLayoutNaturalToLauncher()) {
+            insets = dp.getInsets();
+        } else {
+            Rect portraitInsets = dp.getInsets();
+            DisplayController displayController = DisplayController.INSTANCE.get(context);
+            Rect deviceRotationInsets = displayController.getInfo().getCurrentBounds().get(
+                    orientationHandler.getRotation()).insets;
+            // Obtain the landscape/seascape insets, and rotate it to portrait perspective.
+            orientationHandler.rotateInsets(deviceRotationInsets, outRect);
+            // Then combine with portrait's insets to leave space for status bar/nav bar in
+            // either orientations.
+            outRect.set(
+                    Math.max(outRect.left, portraitInsets.left),
+                    Math.max(outRect.top, portraitInsets.top),
+                    Math.max(outRect.right, portraitInsets.right),
+                    Math.max(outRect.bottom, portraitInsets.bottom)
+            );
+            insets = outRect;
+        }
+        potentialTaskRect.inset(insets);
+
+        outRect.set(
                 minimumHorizontalPadding,
                 claimedSpaceAbove,
                 minimumHorizontalPadding,
                 claimedSpaceBelow);
+        // Rotate the paddings to portrait perspective,
+        orientationHandler.rotateInsets(outRect, outRect);
+        potentialTaskRect.inset(outRect);
 
         calculateTaskSizeInternal(context, dp, potentialTaskRect, maxScale, gravity, outRect);
     }
@@ -326,7 +352,7 @@ public abstract class BaseContainerInterface<STATE_TYPE extends BaseState<STATE_
      * Calculates the overview grid non-focused task size for the provided device configuration.
      */
     public final void calculateGridTaskSize(Context context, DeviceProfile dp, Rect outRect,
-            PagedOrientationHandler orientedState) {
+            RecentsPagedOrientationHandler orientationHandler) {
         Resources res = context.getResources();
         Rect potentialTaskRect = new Rect();
         if (Flags.enableGridOnlyOverview()) {
@@ -344,7 +370,7 @@ public abstract class BaseContainerInterface<STATE_TYPE extends BaseState<STATE_
         int outHeight = Math.round(scale * taskDimension.y);
 
         int gravity = Gravity.TOP;
-        gravity |= orientedState.getRecentsRtlSetting(res) ? Gravity.RIGHT : Gravity.LEFT;
+        gravity |= orientationHandler.getRecentsRtlSetting(res) ? Gravity.RIGHT : Gravity.LEFT;
         Gravity.apply(gravity, outWidth, outHeight, potentialTaskRect, outRect);
     }
 
@@ -352,8 +378,8 @@ public abstract class BaseContainerInterface<STATE_TYPE extends BaseState<STATE_
      * Calculates the modal taskView size for the provided device configuration
      */
     public final void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect,
-            PagedOrientationHandler orientedState) {
-        calculateTaskSize(context, dp, outRect, orientedState);
+            RecentsPagedOrientationHandler orientationHandler) {
+        calculateTaskSize(context, dp, outRect, orientationHandler);
         boolean isGridOnlyOverview = dp.isTablet && Flags.enableGridOnlyOverview();
         int claimedSpaceBelow = isGridOnlyOverview
                 ? dp.overviewActionsTopMarginPx + dp.overviewActionsHeight + dp.stashedTaskbarHeight
@@ -372,6 +398,7 @@ public abstract class BaseContainerInterface<STATE_TYPE extends BaseState<STATE_
                 minimumHorizontalPadding,
                 1f /*maxScale*/,
                 Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM,
-                outRect);
+                outRect,
+                orientationHandler);
     }
 }
