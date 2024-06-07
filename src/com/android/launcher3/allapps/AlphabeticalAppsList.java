@@ -337,6 +337,8 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 && !mPrivateApps.isEmpty()) {
             // Always add PS Header if Space is present and visible.
             position = mPrivateProviderManager.addPrivateSpaceHeader(mAdapterItems);
+            mFastScrollerSections.add(new FastScrollSectionInfo(
+                    mPrivateProfileAppScrollerBadge, position));
             int privateSpaceState = mPrivateProviderManager.getCurrentState();
             switch (privateSpaceState) {
                 case PrivateProfileManager.STATE_DISABLED:
