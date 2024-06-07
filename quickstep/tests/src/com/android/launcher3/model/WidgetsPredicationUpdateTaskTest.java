@@ -184,7 +184,7 @@ public final class WidgetsPredicationUpdateTaskTest {
     }
 
     @Test
-    public void widgetsRecommendationRan_shouldReturnPackageWidgetsWhenEmpty() {
+    public void widgetsRecommendationRan_shouldReturnEmptyWidgetsWhenEmpty() {
         runOnExecutorSync(MODEL_EXECUTOR, () -> {
 
             // Not installed widget
@@ -204,19 +204,12 @@ public final class WidgetsPredicationUpdateTaskTest {
                     newWidgetsPredicationTask(List.of(widget5, widget3, widget4, widget1)));
             runOnExecutorSync(MAIN_EXECUTOR, () -> { });
 
-            // THEN only 2 widgets are returned because the launcher only filters out
-            // non-exist widgets.
+            // Only widgets suggested by prediction system are returned.
             List<PendingAddWidgetInfo> recommendedWidgets = mCallback.mRecommendedWidgets.items
                     .stream()
                     .map(itemInfo -> (PendingAddWidgetInfo) itemInfo)
                     .collect(Collectors.toList());
-            assertThat(recommendedWidgets).hasSize(2);
-            recommendedWidgets.forEach(pendingAddWidgetInfo ->
-                    assertThat(pendingAddWidgetInfo.recommendationCategory).isNotNull()
-            );
-            // Another widget from the same package
-            assertWidgetInfo(recommendedWidgets.get(0).info, mApp4Provider2);
-            assertWidgetInfo(recommendedWidgets.get(1).info, mApp1Provider1);
+            assertThat(recommendedWidgets).hasSize(0);
         });
     }
 

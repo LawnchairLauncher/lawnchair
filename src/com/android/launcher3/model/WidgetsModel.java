@@ -32,6 +32,7 @@ import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
@@ -127,6 +128,22 @@ public class WidgetsModel {
             }
         });
         return packagesToWidgets;
+    }
+
+    /**
+     * Returns a map of widget component keys to corresponding widget items. Excludes the
+     * shortcuts.
+     */
+    public synchronized Map<ComponentKey, WidgetItem> getAllWidgetComponentsWithoutShortcuts() {
+        if (!WIDGETS_ENABLED) {
+            return Collections.emptyMap();
+        }
+        Map<ComponentKey, WidgetItem> widgetsMap = new HashMap<>();
+        mWidgetsList.forEach((packageItemInfo, widgetsAndShortcuts) ->
+                widgetsAndShortcuts.stream().filter(item -> item.widgetInfo != null).forEach(
+                        item -> widgetsMap.put(new ComponentKey(item.componentName, item.user),
+                                item)));
+        return widgetsMap;
     }
 
     /**
