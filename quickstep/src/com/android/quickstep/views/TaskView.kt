@@ -825,7 +825,10 @@ constructor(
         taskContainers.forEach {
             val thumbnailBounds = Rect()
             if (relativeToDragLayer) {
-                container.dragLayer.getDescendantRectRelativeToSelf(it.snapshotView, bounds)
+                container.dragLayer.getDescendantRectRelativeToSelf(
+                    it.snapshotView,
+                    thumbnailBounds
+                )
             } else {
                 thumbnailBounds.set(it.snapshotView)
             }
