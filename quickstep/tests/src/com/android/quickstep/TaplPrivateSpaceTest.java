@@ -35,7 +35,6 @@ import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.rule.ScreenRecordRule;
 
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -50,6 +49,7 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
 
     private static final String PRIVATE_PROFILE_NAME = "LauncherPrivateProfile";
     private static final String INSTALLED_APP_NAME = "Aardwolf";
+    private static final int MAX_STATE_TOGGLE_TRIES = 2;
     private static final String TAG = "TaplPrivateSpaceTest";
 
     @Override
@@ -167,14 +167,15 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
 
     @Test
     @ScreenRecordRule.ScreenRecord // b/334946529
-    @Ignore("b/339179262")
     public void testPrivateSpaceLockingBehaviour() throws IOException {
         // Scroll to the bottom of All Apps
         executeOnLauncher(launcher -> launcher.getAppsView().resetAndScrollToPrivateSpaceHeader());
         HomeAllApps homeAllApps = mLauncher.getAllApps();
 
         // Disable Private Space
-        togglePrivateSpace(PrivateProfileManager.STATE_DISABLED, homeAllApps);
+        togglePrivateSpaceWithRetry(PrivateProfileManager.STATE_DISABLED, homeAllApps);
+        // Scroll to the bottom of All Apps
+        executeOnLauncher(launcher -> launcher.getAppsView().resetAndScrollToPrivateSpaceHeader());
 
         homeAllApps.freeze();
         try {
@@ -186,7 +187,9 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
         }
 
         // Enable Private Space
-        togglePrivateSpace(PrivateProfileManager.STATE_ENABLED, homeAllApps);
+        togglePrivateSpaceWithRetry(PrivateProfileManager.STATE_ENABLED, homeAllApps);
+        // Scroll to the bottom of All Apps
+        executeOnLauncher(launcher -> launcher.getAppsView().resetAndScrollToPrivateSpaceHeader());
 
         homeAllApps.freeze();
         try {
@@ -217,6 +220,25 @@ public class TaplPrivateSpaceTest extends AbstractQuickStepTest {
                 LauncherInstrumentation.WAIT_TIME_MS);
         // Wait for Launcher UI to be updated with Private Space Items.
         waitForLauncherUIUpdate();
+    }
+
+    private void togglePrivateSpaceWithRetry(int state, HomeAllApps homeAllApps) {
+        int togglePsCount = 0;
+        boolean shouldRetry;
+        do {
+            togglePsCount ++;
+            try {
+                togglePrivateSpace(state, homeAllApps);
+                // No need to retry if the toggle was successful.
+                shouldRetry = false;
+            } catch (AssertionError error) {
+                if (togglePsCount < MAX_STATE_TOGGLE_TRIES) {
+                    shouldRetry = true;
+                } else {
+                    throw error;
+                }
+            }
+        } while (shouldRetry);
     }
 
     private void waitForPrivateSpaceSetup() {
