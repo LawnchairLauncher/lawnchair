@@ -490,4 +490,8 @@
     <!-- Digital Wellbeing -->
     <dimen name="digital_wellbeing_toast_height">48dp</dimen>
 
+    <!-- Splitscreen -->
+    <!-- Max width of the split instructions view -->
+    <dimen name="split_instructions_view_max_width">220dp</dimen>
+
 </resources>

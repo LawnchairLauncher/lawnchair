@@ -29,6 +29,7 @@
         android:id="@+id/split_instructions_text"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:maxWidth="@dimen/split_instructions_view_max_width"
         android:textColor="?androidprv:attr/textColorOnAccent"
         android:text="@string/toast_split_select_app" />
 
@@ -36,6 +37,7 @@
         android:id="@+id/split_instructions_text_cancel"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical"
         android:textColor="?androidprv:attr/textColorOnAccent"
         android:layout_marginStart="@dimen/split_instructions_start_margin_cancel"
         android:text="@string/toast_split_select_app_cancel"

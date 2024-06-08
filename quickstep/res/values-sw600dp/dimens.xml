@@ -45,4 +45,8 @@
     <dimen name="allset_page_allset_text_size">38sp</dimen>
     <dimen name="allset_page_swipe_up_text_size">15sp</dimen>
 
+    <!-- Splitscreen -->
+    <!-- Max width of the split instructions view -->
+    <dimen name="split_instructions_view_max_width">300dp</dimen>
+
 </resources>
