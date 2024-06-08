@@ -242,11 +242,26 @@ public class FolderAnimationManager {
         // Create reveal animator for the folder content (capture the top 4 icons 2x2)
         int width = mDeviceProfile.folderCellLayoutBorderSpacePx.x
                 + mDeviceProfile.folderCellWidthPx * 2;
+        int rtlExtraWidth = 0;
         int height = mDeviceProfile.folderCellLayoutBorderSpacePx.y
                 + mDeviceProfile.folderCellHeightPx * 2;
         int page = mIsOpening ? mContent.getCurrentPage() : mContent.getDestinationPage();
+        // In RTL we want to move to the last 2 columns of icons in the folder.
+        if (Utilities.isRtl(mContext.getResources())) {
+            page = (mContent.getPageCount() - 1) - page;
+            CellLayout clAtPage = mContent.getPageAt(page);
+            if (clAtPage != null) {
+                int numExtraRows = clAtPage.getCountX() - 2;
+                rtlExtraWidth = (int) Math.max(numExtraRows * (mDeviceProfile.folderCellWidthPx
+                        + mDeviceProfile.folderCellLayoutBorderSpacePx.x), rtlExtraWidth);
+            }
+        }
         int left = mContent.getPaddingLeft() + page * lp.width;
-        Rect contentStart = new Rect(left, 0, left + width, height);
+        Rect contentStart = new Rect(
+                left + rtlExtraWidth,
+                0,
+                left + width + mContent.getPaddingRight() + rtlExtraWidth,
+                height);
         Rect contentEnd = new Rect(left, 0, left + lp.width, lp.height);
         play(a, shapeDelegate.createRevealAnimator(
                 mFolder.getContent(), contentStart, contentEnd, finalRadius, !mIsOpening));
