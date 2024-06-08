@@ -1154,7 +1154,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         if (ENABLE_SHELL_TRANSITIONS && LawnchairQuickstepCompat.ATLEAST_U)
             SystemUiProxy.INSTANCE.get(mLauncher).shareTransactionQueue();
-        if (hasControlRemoteAppTransitionPermission()) {
+        if (hasControlRemoteAppTransitionPermission() && LawnchairQuickstepCompat.ATLEAST_Q) {
             mWallpaperOpenTransitionRunner = createWallpaperOpenRunner(false /* fromUnlock */);
             mLauncherOpenTransition = LawnchairQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(
                     new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
