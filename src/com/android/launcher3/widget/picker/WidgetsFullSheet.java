@@ -330,8 +330,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        LauncherAppState.getInstance(mActivityContext).getModel()
-                .refreshAndBindWidgetsAndShortcuts(null);
+        onWidgetsBound();
     }
 
     @Override
