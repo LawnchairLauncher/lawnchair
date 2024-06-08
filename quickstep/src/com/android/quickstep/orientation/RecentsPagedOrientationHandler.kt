@@ -70,6 +70,9 @@ interface RecentsPagedOrientationHandler : PagedOrientationHandler {
 
     fun getEnd(rect: RectF): Float
 
+    /** Rotate the provided insets to portrait perspective. */
+    fun rotateInsets(insets: Rect, outInsets: Rect)
+
     fun getClearAllSidePadding(view: View, isRtl: Boolean): Int
 
     fun getSecondaryDimension(view: View): Int

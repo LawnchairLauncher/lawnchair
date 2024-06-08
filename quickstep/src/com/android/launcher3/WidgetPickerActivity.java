@@ -194,6 +194,11 @@ public class WidgetPickerActivity extends BaseActivity {
                 return false;
             }
 
+            View dragView = widgetCell.getDragAndDropView();
+            if (dragView == null) {
+                return false;
+            }
+
             ClipData clipData = new ClipData(
                     new ClipDescription(
                             /* label= */ "", // not displayed anywhere; so, set to empty.
@@ -209,9 +214,9 @@ public class WidgetPickerActivity extends BaseActivity {
                     .putExtra(EXTRA_IS_PENDING_WIDGET_DRAG, true));
 
             // DRAG_FLAG_GLOBAL permits dragging data beyond app window.
-            return view.startDragAndDrop(
+            return dragView.startDragAndDrop(
                     clipData,
-                    new View.DragShadowBuilder(view),
+                    new View.DragShadowBuilder(dragView),
                     /* myLocalState= */ null,
                     View.DRAG_FLAG_GLOBAL
             );

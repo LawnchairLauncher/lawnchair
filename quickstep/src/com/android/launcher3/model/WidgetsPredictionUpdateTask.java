@@ -19,6 +19,7 @@ import static com.android.launcher3.Flags.enableCategorizedWidgetSuggestions;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
 
 import android.app.prediction.AppTarget;
+import android.content.ComponentName;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -29,7 +30,6 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.picker.WidgetRecommendationCategoryProvider;
 
@@ -64,36 +64,24 @@ public final class WidgetsPredictionUpdateTask implements ModelUpdateTask {
                 widget -> new ComponentKey(widget.providerName, widget.user)).collect(
                 Collectors.toSet());
         Predicate<WidgetItem> notOnWorkspace = w -> !widgetsInWorkspace.contains(w);
-        Map<PackageUserKey, List<WidgetItem>> allWidgets =
-                dataModel.widgetsModel.getAllWidgetsWithoutShortcuts();
+        Map<ComponentKey, WidgetItem> allWidgets =
+                dataModel.widgetsModel.getAllWidgetComponentsWithoutShortcuts();
 
         List<WidgetItem> servicePredictedItems = new ArrayList<>();
-        List<WidgetItem> localFilteredWidgets = new ArrayList<>();
 
         for (AppTarget app : mTargets) {
-            PackageUserKey packageUserKey = new PackageUserKey(app.getPackageName(), app.getUser());
-            List<WidgetItem> widgets = allWidgets.get(packageUserKey);
-            if (widgets == null || widgets.isEmpty()) {
+            ComponentKey componentKey = new ComponentKey(
+                    new ComponentName(app.getPackageName(), app.getClassName()), app.getUser());
+            WidgetItem widget = allWidgets.get(componentKey);
+            if (widget == null) {
                 continue;
             }
             String className = app.getClassName();
             if (!TextUtils.isEmpty(className)) {
-                WidgetItem item = widgets.stream()
-                        .filter(w -> className.equals(w.componentName.getClassName()))
-                        .filter(notOnWorkspace)
-                        .findFirst()
-                        .orElse(null);
-                if (item != null) {
-                    servicePredictedItems.add(item);
-                    continue;
+                if (notOnWorkspace.test(widget)) {
+                    servicePredictedItems.add(widget);
                 }
             }
-            // No widget was added by the service, try local filtering
-            widgets.stream().filter(notOnWorkspace).findFirst()
-                    .ifPresent(localFilteredWidgets::add);
-        }
-        if (servicePredictedItems.isEmpty()) {
-            servicePredictedItems.addAll(localFilteredWidgets);
         }
 
         List<ItemInfo> items;

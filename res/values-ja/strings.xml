@@ -194,5 +194,4 @@
     <string name="ps_container_transition" msgid="8667331812048014412">"プライベート スペース移行中"</string>
     <string name="ps_add_button_label" msgid="8127988716897128773">"インストール"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"プライベート スペースにアプリをインストールします"</string>
-    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"オーバーフロー"</string>
 </resources>

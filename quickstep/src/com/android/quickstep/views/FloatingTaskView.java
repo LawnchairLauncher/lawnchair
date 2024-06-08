@@ -187,7 +187,13 @@ public class FloatingTaskView extends FrameLayout {
                     viewBounds, false /* ignoreTransform */, null /* recycle */,
                     mStartingPosition);
         }
-
+        // In some cases originalView is off-screen so we don't get a valid starting position
+        // ex. on rotation
+        // TODO(b/345556328) We shouldn't be animating if starting position of view isn't ready
+        if (mStartingPosition.isEmpty()) {
+            // Set to non empty for now so calculations in #update() don't break
+            mStartingPosition.set(0, 0, 1, 1);
+        }
         final BaseDragLayer.LayoutParams lp = new BaseDragLayer.LayoutParams(
                 Math.round(mStartingPosition.width()),
                 Math.round(mStartingPosition.height()));

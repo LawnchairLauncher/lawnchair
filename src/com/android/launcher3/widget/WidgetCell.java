@@ -372,6 +372,13 @@ public class WidgetCell extends LinearLayout {
         }
     }
 
+    /**
+     * Returns a view (holding the previews) that can be dragged and dropped.
+     */
+    public View getDragAndDropView() {
+        return mWidgetImageContainer;
+    }
+
     public WidgetImageView getWidgetView() {
         return mWidgetImage;
     }

@@ -44,6 +44,10 @@ import com.android.launcher3.views.BaseDragLayer
 import com.android.quickstep.views.IconAppChipView
 
 class SeascapePagedViewHandler : LandscapePagedViewHandler() {
+    override fun rotateInsets(insets: Rect, outInsets: Rect) {
+        outInsets.set(insets.top, insets.right, insets.bottom, insets.left)
+    }
+
     override val secondaryTranslationDirectionFactor: Int = -1
 
     override fun getSplitTranslationDirectionFactor(
