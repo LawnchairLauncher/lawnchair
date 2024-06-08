@@ -18,12 +18,12 @@ import android.widget.RemoteViews
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.launcher3.Flags.FLAG_ENABLE_GENERATED_PREVIEWS
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.icons.IconCache
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.model.WidgetItem
-import com.android.launcher3.tests.R
 import com.android.launcher3.util.ActivityContextWrapper
 import com.android.launcher3.util.Executors
 import com.google.common.truth.Truth.assertThat
@@ -41,7 +41,10 @@ class GeneratedPreviewTest {
             "com.android.launcher3.tests",
             "com.android.launcher3.testcomponent.AppWidgetNoConfig"
         )
-    private val generatedPreviewLayout = R.layout.test_layout_appwidget_blue
+    private val generatedPreviewLayout =
+        getInstrumentation().context.run {
+            resources.getIdentifier("test_layout_appwidget_blue", "layout", packageName)
+        }
     private lateinit var context: Context
     private lateinit var generatedPreview: RemoteViews
     private lateinit var widgetCell: WidgetCell
@@ -137,6 +140,7 @@ class GeneratedPreviewTest {
         assertThat(widgetItem.hasGeneratedPreview(WIDGET_CATEGORY_KEYGUARD)).isFalse()
         assertThat(widgetItem.hasGeneratedPreview(WIDGET_CATEGORY_SEARCHBOX)).isFalse()
     }
+
     @Test
     @RequiresFlagsEnabled(FLAG_ENABLE_GENERATED_PREVIEWS)
     fun widgetItem_getGeneratedPreview() {
@@ -148,6 +152,7 @@ class GeneratedPreviewTest {
     @RequiresFlagsEnabled(FLAG_ENABLE_GENERATED_PREVIEWS)
     fun widgetCell_showGeneratedPreview() {
         widgetCell.applyFromCellItem(widgetItem)
+        DatabaseWidgetPreviewLoader.getLoaderExecutor().submit {}.get()
         assertThat(widgetCell.appWidgetHostViewPreview).isNotNull()
         assertThat(widgetCell.appWidgetHostViewPreview?.appWidgetInfo)
             .isEqualTo(appWidgetProviderInfo)
@@ -157,6 +162,7 @@ class GeneratedPreviewTest {
     @RequiresFlagsDisabled(FLAG_ENABLE_GENERATED_PREVIEWS)
     fun widgetCell_showGeneratedPreview_flagDisabled() {
         widgetCell.applyFromCellItem(widgetItem)
+        DatabaseWidgetPreviewLoader.getLoaderExecutor().submit {}.get()
         assertThat(widgetCell.appWidgetHostViewPreview).isNull()
     }
 }

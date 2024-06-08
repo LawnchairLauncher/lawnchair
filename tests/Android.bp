@@ -211,6 +211,7 @@ android_robolectric_test {
         "Launcher3TestResources",
         "SystemUISharedLib",
         "launcher-testing-shared",
+        "android.appwidget.flags-aconfig-java",
     ],
     libs: [
         "android.test.runner",
