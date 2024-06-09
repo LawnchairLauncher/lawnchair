@@ -441,5 +441,6 @@
     <string name="search_algorithm_global_search_via_asi">Global qidiruv (ASI orqali)</string>
     <string name="app_search_algorithm">Qidiruv algoritmi</string>
     <string name="all_apps_search_result_calculator">Kalkulyator</string>
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Imo-ishorani bajarayotganda telefoningizni qulflash uchun Lawnchair maxsus imkoniyatlarga kirishni talab qiladi.\n\nLawnchair hech qanday foydalanuvchi harakatini kuzatmaydi, lekin bu imtiyoz barcha maxsus imkoniyatlar xizmatlari uchun talab qilinadi.
+Lawnchair tizim tomonidan yuborilgan har qanday hodisani bekor qiladi.\n\nTelefoningizni qulflash uchun Lawnchair Global Action Accessibility xizmatidan foydalanadi.</string>
 </resources>
