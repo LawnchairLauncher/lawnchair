@@ -441,5 +441,5 @@
     <string name="search_algorithm_global_search_via_asi">Global sökning (via ASI)</string>
     <string name="app_search_algorithm">Sökalgoritm</string>
     <string name="all_apps_search_result_calculator">Kalkylator</string>
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">För att kunna låsa din telefon när en gest görs kräver Lawnchair tillgänglighetsåtkomst.\n\nLawnchair övervakar inte några användaraktiviteter, men behörigheten att göra detta krävs för alla tillgänglighetstjänster. Lawnchair förkastar alla händelser som skickas av systemet.\n\nFör att kunna låsa din telefon använder Lawnchair tillgänglighetstjänsten performGlobalAction.</string>
 </resources>

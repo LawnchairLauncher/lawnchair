@@ -398,12 +398,12 @@
     <string name="perform_wide_search_title">Penelusuran Perangkat</string>
     <string name="perform_wide_search_description">Mencari kontak, file, dan pengaturan ponsel Anda</string>
     <string name="max_apps_result_count_title">Jumlah Hasil Aplikasi Maksimum</string>
-    <string name="max_people_result_count_title">Maximum People Result Count</string>
-    <string name="max_file_result_count_title">Maximum Files Result Count</string>
-    <string name="max_settings_entry_result_count_title">Maximum Settings Result Count</string>
+    <string name="max_people_result_count_title">Jumlah Hasil Orang Maksimal</string>
+    <string name="max_file_result_count_title">Jumlah Hasil Orang Maksimal</string>
+    <string name="max_settings_entry_result_count_title">Jumlah Hasil Orang Maksimal</string>
     <string name="max_recent_result_count_title">Jumlah Maksimum Riwayat Pencarian</string>
-    <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
-    <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
+    <string name="max_suggestion_result_count_title">Jumlah Hasil Saran Maksimal</string>
+    <string name="max_web_suggestion_delay"></string>
     <string name="all_apps_search_market_message">Cari Lebih Banyak Aplikasi</string>
     <string name="all_apps_search_startpage_message">Cari di <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Tidak ada toko aplikasi atau browser yang terinstal.</string>

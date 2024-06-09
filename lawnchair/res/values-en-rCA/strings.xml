@@ -28,7 +28,7 @@
     <string name="dock_description">Search Bar, Icon Count</string>
     <string name="app_drawer_label">App Drawer</string>
     <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
-    <string name="drawer_search_label">Drawer Search</string>
+    <string name="drawer_search_label"></string>
     <string name="drawer_search_description">Web Suggestions, Global Search</string>
     <string name="folders_label">Folders</string>
     <string name="folders_description">Row and Column Count</string>

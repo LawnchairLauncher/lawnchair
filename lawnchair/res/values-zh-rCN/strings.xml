@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">设置 Lawnchair 为您的默认启动器以便访问快捷方式或更多功能。</string>
+    <string name="set_default_launcher_tip">将 Lawnchair 设置为为您的默认启动器可启用快捷方式和更多功能。</string>
     <string name="settings">设置</string>
     <string name="general_label">通用</string>
     <string name="general_description">颜色、图标包与通知圆点</string>
@@ -51,7 +51,7 @@
     <string name="always_reload_icons_label">使用最新的图标</string>
     <string name="always_reload_icons_description">不使用图标包中的已缓存图标</string>
     <string name="recents_lock_unlock">锁定/解锁</string>
-    <string name="recents_lock_unlock_description">使选中的应用在清除全部时保留</string>
+    <string name="recents_lock_unlock_description">在清除全部时保留选中的应用</string>
     <!-- Relating to label/icon size -->
     <string name="icons">图标</string>
     <string name="icon_size">图标大小</string>
@@ -179,7 +179,7 @@
     <string name="wallpaper">壁纸</string>
     <string name="wallpaper_scrolling_label">壁纸跟随屏幕滚动</string>
     <string name="wallpaper_depth_effect_label">壁纸深度效果</string>
-    <string name="wallpaper_depth_effect_description">在过渡启动器区域时缩放壁纸</string>
+    <string name="wallpaper_depth_effect_description">在打开应用抽屉时缩放壁纸</string>
     <string name="show_sys_ui_scrim">顶部阴影</string>
     <string name="layout">布局</string>
     <string name="home_screen_grid">桌面图标行列数</string>
@@ -188,9 +188,9 @@
     <string name="home_screen_unlock">解锁主屏幕布局</string>
     <string name="home_screen_locked">主屏幕布局已锁定</string>
     <string name="show_dot_pagination_label">使用多点分页</string>
-    <string name="show_dot_pagination_description">使用多个点而不是线条来显示页数</string>
+    <string name="show_dot_pagination_description">使用点而不是线段作为页面指示器</string>
     <string name="show_material_u_popup_label">使用新的弹窗样式</string>
-    <string name="show_material_u_popup_description">使用 Material You 的弹跳且略微紧凑的弹窗风格</string>
+    <string name="show_material_u_popup_description">使用 Material You 弹出后略微缩小的弹窗风格</string>
     <string name="popup_menu">弹出菜单</string>
     <string name="home_screen_lock_toggle_from_home_popup">显示锁定主屏幕布局按钮</string>
     <string name="show_system_settings_entry">显示系统设置项目</string>
@@ -203,8 +203,8 @@
     <string name="color_dark">深色</string>
     <string name="force_rounded_widgets">使用圆角</string>
     <string name="allow_widget_overlap">允许重叠</string>
-    <string name="force_widget_resize_label">强制调整小部件的大小</string>
-    <string name="force_widget_resize_description">允许调整受限于特定尺寸的小部件的大小</string>
+    <string name="force_widget_resize_label">强制调整小组件尺寸</string>
+    <string name="force_widget_resize_description">允许调整固定尺寸的小组件大小</string>
     <string name="widget_unlimited_size_label">删除大小限制</string>
     <string name="widget_unlimited_size_description">删除小部件的最小和最大大小限制</string>
     <!-- HomeScreenGridPreferences -->
@@ -240,7 +240,7 @@
     <string name="smartspace_calendar_persian">波斯历</string>
     <string name="smartspace_preferences">设置</string>
     <string name="smartspace_widget_toggle_label">在主屏幕上显示</string>
-    <string name="smartspace_widget_toggle_description">资讯一览同时也是 “Lawnchair” 的微件，可以手动添加。</string>
+    <string name="smartspace_widget_toggle_description">资讯一览同时可以作为 “Lawnchair” 的小组件被手动添加。</string>
     <string name="smartspace_mode_label">资讯一览源</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google 搜索</string>
@@ -259,7 +259,7 @@
     <string name="hotseat_bottom_space_label">底部边距</string>
     <!-- SearchProviderPreferences -->
     <string name="search_provider_app_search">应用搜索</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair 使用收入分成协议.\n\n 使用 %1$s 搜索来支持 Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair 有收入分成协议。\n\n 使用 %1$s 搜索来支持 Lawnchair。</string>
     <string name="app_label">应用</string>
     <string name="website_label">网站</string>
     <string name="qsb_search_provider_app_required">未安装应用</string>
@@ -269,7 +269,7 @@
     <string name="show_enable_smart_hide">在输入全名时显示</string>
     <string name="hide_hidden_apps_search">在搜索结果中隐藏</string>
     <string name="pref_all_apps_bulk_icon_loading_title">批量加载应用图标</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">同时加载和显示所有图标，而不是单独加载和显示图标。可以通过搜索解决问题，但会增加加载时间。</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">并行而不是逐个加载和显示图标。可以解决搜索时的问题，但会增加加载时间。</string>
     <string name="pref_all_apps_remember_position_title">记住位置</string>
     <string name="pref_all_apps_remember_position_description">离开抽屉后记住应用抽屉位置</string>
     <string name="pref_all_apps_show_scrollbar_title">显示滚动条</string>
@@ -318,7 +318,7 @@
     <string name="task_menu_force_stop">结束</string>
     <string name="window_corner_radius_label">窗口圆角半径</string>
     <string name="override_window_corner_radius_label">自定义窗口圆角半径</string>
-    <string name="window_corner_radius_description">当您向上滑动以打开最近应用列表时，当前应用窗口会随着您的手指移动而变小。 使用滑块来调整窗口的圆角半径，使它符合屏幕的圆角，贴合您屏幕的边缘。</string>
+    <string name="window_corner_radius_description">当您向上滑动来打开最近应用列表时，当前应用窗口会随着您的手指移动而变小。 使用滑块来调整窗口的圆角半径，使它符合屏幕的圆角，贴合您屏幕的边缘。</string>
     <string name="taskbar_label">任务栏</string>
     <string name="enable_taskbar_experimental">启用任务栏（实验性）</string>
     <!-- about/About.kt -->
@@ -344,7 +344,7 @@
     <string name="item_removed">已移除</string>
     <string name="all_apps_no_search_results">没有找到与 “<xliff:g example="Android" id="query">%1$s</xliff:g>” 匹配的应用。</string>
     <string name="dt2s_admin_hint_title">需要管理员权限</string>
-    <string name="dt2s_admin_hint">若要使用双击息屏，请设置 Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"启用此设备管理应用\"。</string>
+    <string name="dt2s_admin_hint">要使用双击息屏，请将 Lawnchair 设置为设备管理应用。点击“打开设置”，然后点击“启用此设备管理应用”。</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
     <string name="dt2s_a11y_hint_title">启用无障碍服务</string>
     <string name="dt2s_a11y_hint">若要使用双击息屏，请先启用 Lawnchair 无障碍服务。点击\"打开设置\"，然后选择 \"Lawnchair \"并启用 Lawnchair 无障碍服务。</string>
@@ -382,7 +382,7 @@
     <string name="search_pref_result_contacts_description">联系人及更多</string>
     <string name="search_pref_result_web_description">通过 <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="warn_contact_permission_content">要搜索联系人，请授予 Lawnchair 联系人和电话权限。</string>
-    <string name="warn_files_permission_content">要搜索您的文件，请授予 Lawnchair 以存储权限。</string>
+    <string name="warn_files_permission_content">要搜索您的文件，请授予 Lawnchair 存储权限。</string>
     <string name="grant_requested_permissions">授予权限</string>
     <string name="pref_suggestion_label">建议</string>
     <string name="all_apps_device_search_hint">搜索</string>
@@ -396,11 +396,11 @@
     <string name="label_voice_search">语音搜索</string>
     <string name="pref_advance_search_category">高级搜索</string>
     <string name="perform_wide_search_title">大范围搜索</string>
-    <string name="perform_wide_search_description">搜索您的手机的联系人、文件和设置</string>
+    <string name="perform_wide_search_description">搜索您手机上的联系人、文件和设置项</string>
     <string name="max_apps_result_count_title">最大应用结果数</string>
     <string name="max_people_result_count_title">最大联系人结果数</string>
     <string name="max_file_result_count_title">最大文件结果数</string>
-    <string name="max_settings_entry_result_count_title">最大设置结果数</string>
+    <string name="max_settings_entry_result_count_title">最大设置项结果数</string>
     <string name="max_recent_result_count_title">最大搜索历史数</string>
     <string name="max_suggestion_result_count_title">最大网络建议结果数</string>
     <string name="max_web_suggestion_delay">网络搜索建议超时</string>
@@ -408,7 +408,7 @@
     <string name="all_apps_search_startpage_message">在 <xliff:g id="startpage">Startpage</xliff:g> 上搜索</string>
     <string name="error_no_market_or_browser_installed">没有安装应用商店或浏览器。</string>
     <string name="quickstep_incompatible">不兼容的系统集成</string>
-    <string name="quickstep_incompatible_description">您的设备被配置为由 %1$s 提供的系统手势（称为Quickstep），但这个版本的 %1$s 与您的 Android 版本不兼容。 要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 系统手势提供者。</string>
+    <string name="quickstep_incompatible_description">您的设备设置了由 %1$s 提供的系统手势（被称为Quickstep），但这个版本的 %1$s 与您的 Android 版本不兼容。 要继续使用您的设备，请卸载 %1$s 的更新或禁用 %1$s 系统手势提供者。</string>
     <string name="delete">删除</string>
     <!-- Backup -->
     <string name="create_backup">创建备份</string>
@@ -440,5 +440,5 @@
     <string name="search_algorithm_global_search_via_asi">全局搜索（通过 ASI）</string>
     <string name="app_search_algorithm">搜索算法</string>
     <string name="all_apps_search_result_calculator">计算器</string>
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">需要给予 Lawnchair 无障碍权限以使用手势锁屏。\n\nLawnchair 不会获取屏幕内容和用户操作，即使此权限允许这样做，Lawnchair 不接收任何输入。\n\nLawnchair 使用 performGlobalAction 服务来锁屏。</string>
 </resources>
