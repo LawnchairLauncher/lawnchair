@@ -89,7 +89,7 @@ public class DeviceProfile {
     private static final int DEFAULT_DOT_SIZE = 100;
     private static final float ALL_APPS_TABLET_MAX_ROWS = 5.5f;
     private static final float MIN_FOLDER_TEXT_SIZE_SP = 16f;
-    private static final float MIN_WIDGET_PADDING_DP = 6f;
+    private static final float MIN_WIDGET_PADDING_DP = 8f;
 
     public static final PointF DEFAULT_SCALE = new PointF(1.0f, 1.0f);
     public static final ViewScaleProvider DEFAULT_PROVIDER = itemInfo -> DEFAULT_SCALE;
@@ -366,7 +366,7 @@ public class DeviceProfile {
         isPhone = !isTablet;
         isTwoPanels = isTablet && isMultiDisplay;
         boolean isTaskBarEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableTaskbarOnPhone());
-        isTaskbarPresent = isTaskBarEnabled && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS;
+        isTaskbarPresent = isTaskBarEnabled && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS || isTablet;
 
         // Some more constants.
         context = getContext(context, info, isVerticalBarLayout() || (isTablet && isLandscape)
@@ -702,7 +702,7 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size_grid);
         overviewTaskIconAppChipMenuDrawableSizePx = res.getDimensionPixelSize(
                 R.dimen.task_thumbnail_icon_menu_drawable_size);
-        overviewTaskThumbnailTopMarginPx = 0;
+        overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx;
         // Don't add margin with floating search bar to minimize risk of overlapping.
         overviewActionsTopMarginPx = FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get() ? 0
                 : res.getDimensionPixelSize(R.dimen.overview_actions_top_margin);
@@ -918,6 +918,10 @@ public class DeviceProfile {
                     + hotseatBarBottomSpacePx
                     + space;
         }
+        var isHotseatEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.isHotseatEnabled());
+        if (!isHotseatEnabled) {
+            hotseatBarSizePx = 0;
+        }
     }
 
     /**
@@ -925,7 +929,6 @@ public class DeviceProfile {
      * necessary.
      */
     public void recalculateHotseatWidthAndBorderSpace() {
-        if (!mIsScalableGrid) return;
 
         int columns = inv.hotseatColumnSpan[mTypeIndex];
         float hotseatWidthPx = getIconToIconWidthForColumns(columns);
@@ -1278,6 +1281,8 @@ public class DeviceProfile {
             }
         }
 
+        iconTextSizePx *= mTextFactors.getIconTextSizeFactor();
+
         // All apps
         if (mIsResponsiveGrid) {
             updateAllAppsWithResponsiveMeasures();
@@ -1285,7 +1290,7 @@ public class DeviceProfile {
             updateAllAppsIconSize(scale, res);
         }
         updateAllAppsContainerWidth();
-        if (isVerticalBarLayout()) {
+        if (isVerticalBarLayout() || PreferenceExtensionsKt.firstBlocking(preferenceManager2.getShowIconLabelsOnHomeScreen())) {
             hideWorkspaceLabelsIfNotEnoughSpace();
         }
         if (FeatureFlags.twoLineAllApps(LawnchairApp.Companion.getInstance())) {
@@ -1450,6 +1455,12 @@ public class DeviceProfile {
                     Math.max(0, desiredWorkspaceHorizontalMarginPx + cellLayoutHorizontalPadding
                             - (allAppsBorderSpacePx.x / 2));
         }
+        var allAppLeftRightMarginMultiplier = PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getDrawerLeftRightMarginFactor());
+        var marginMultiplier = allAppLeftRightMarginMultiplier * (!isTablet ? 100 : 2);
+        allAppsLeftRightMargin = (int) (allAppsLeftRightMargin * marginMultiplier);
+        allAppsPadding.left = (int) (allAppsPadding.left * marginMultiplier);
+        allAppsPadding.right = (int) (allAppsPadding.right * marginMultiplier);
     }
 
     private void setupAllAppsStyle(Context context) {
@@ -1585,6 +1596,9 @@ public class DeviceProfile {
 
             folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
         }
+
+        folderLabelTextSizePx *= mTextFactors.getIconFolderTextSizeFactor();
+        folderChildTextSizePx *= mTextFactors.getIconFolderTextSizeFactor();
     }
 
     public void updateInsets(Rect insets) {
@@ -1819,7 +1833,7 @@ public class DeviceProfile {
                 hotseatBarPadding.set(mHotseatBarWorkspaceSpacePx, paddingTop,
                         mInsets.right + mHotseatBarEdgePaddingPx, paddingBottom);
             }
-        } else if (isTaskbarPresent) {
+        } else if (isTaskbarPresent || isTablet) {
             // Center the QSB vertically with hotseat
             int hotseatBarBottomPadding = getHotseatBarBottomPadding();
             int hotseatBarTopPadding =

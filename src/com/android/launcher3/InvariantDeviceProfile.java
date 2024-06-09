@@ -394,7 +394,7 @@ public class InvariantDeviceProfile {
                 closestProfile = displayOption.grid;
                 numRows = dbGridInfo.getNumRows();
                 numColumns = dbGridInfo.getNumColumns();
-                numSearchContainerColumns = dbGridInfo.getNumHotseatColumns();
+                numSearchContainerColumns = closestProfile.numSearchContainerColumns;
                 dbFile = dbGridInfo.getDbFile();
                 defaultLayoutId = closestProfile.defaultLayoutId;
                 demoModeLayoutId = closestProfile.demoModeLayoutId;
@@ -441,7 +441,7 @@ public class InvariantDeviceProfile {
                 horizontalMargin = displayOption.horizontalMargin;
 
                 numShownHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
-                        ? closestProfile.numSearchContainerColumns : numSearchContainerColumns;
+                        ? closestProfile.numHotseatIcons : dbGridInfo.getNumHotseatColumns();
                 numDatabaseHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
                         ? closestProfile.numDatabaseHotseatIcons : numShownHotseatIcons;
                 hotseatColumnSpan = closestProfile.hotseatColumnSpan;
