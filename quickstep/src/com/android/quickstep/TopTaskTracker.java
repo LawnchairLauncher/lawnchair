@@ -233,7 +233,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
          * If the given task holds an activity that is excluded from recents, and there
          * is another running task that is not excluded from recents, returns that underlying task.
          */
-        public @Nullable CachedTaskInfo otherVisibleTaskThisIsExcludedOver() {
+        public @Nullable CachedTaskInfo getVisibleNonExcludedTask() {
             if (mTopTask == null
                     || (mTopTask.baseIntent.getFlags() & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) == 0) {
                 // Not an excluded task.
@@ -241,7 +241,9 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
             }
             List<RunningTaskInfo> visibleNonExcludedTasks = mAllCachedTasks.stream()
                     .filter(t -> t.isVisible
-                            && (t.baseIntent.getFlags() & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) == 0)
+                            && (t.baseIntent.getFlags() & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) == 0
+                            && t.getActivityType() != ACTIVITY_TYPE_HOME
+                            && t.getActivityType() != ACTIVITY_TYPE_RECENTS)
                     .toList();
             return visibleNonExcludedTasks.isEmpty() ? null
                     : new CachedTaskInfo(visibleNonExcludedTasks);

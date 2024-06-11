@@ -1162,7 +1162,7 @@ public class TouchInteractionService extends Service {
         // running activity as the task behind the overlay.
         TopTaskTracker.CachedTaskInfo otherVisibleTask = runningTask == null
                 ? null
-                : runningTask.otherVisibleTaskThisIsExcludedOver();
+                : runningTask.getVisibleNonExcludedTask();
         if (otherVisibleTask != null) {
             ActiveGestureLog.INSTANCE.addLog(new CompoundString("Changing active task to ")
                     .append(otherVisibleTask.getPackageName())
