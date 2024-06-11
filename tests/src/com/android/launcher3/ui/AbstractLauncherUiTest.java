@@ -699,4 +699,11 @@ public abstract class AbstractLauncherUiTest<LAUNCHER_TYPE extends Launcher> {
         UiDevice.getInstance(getInstrumentation()).pressHome();
         mLauncher.waitForLauncherInitialized();
     }
+
+    /** Clears all recent tasks */
+    protected void clearAllRecentTasks() {
+        if (!mLauncher.getRecentTasks().isEmpty()) {
+            mLauncher.goHome().switchToOverview().dismissAllTasks();
+        }
+    }
 }

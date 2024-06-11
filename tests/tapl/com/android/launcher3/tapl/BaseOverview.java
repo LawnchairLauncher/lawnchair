@@ -23,6 +23,7 @@ import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
  * Common overview panel for both Launcher and fallback recents
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
+    private static final String TAG = "BaseOverview";
     protected static final String TASK_RES_ID = "task";
     private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
@@ -384,25 +386,31 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
     protected boolean isActionsViewVisible() {
         if (!hasTasks() || isClearAllVisible()) {
+            Log.d(TAG, "Not expecting an actions bar: no tasks/'Clear all' is visible");
             return false;
         }
         boolean isTablet = mLauncher.isTablet();
         if (isTablet && mLauncher.isGridOnlyOverviewEnabled()) {
+            Log.d(TAG, "Not expecting an actions bar: device is tablet with grid-only Overview");
             return false;
         }
         OverviewTask task = isTablet ? getFocusedTaskForTablet() : getCurrentTask();
         if (task == null) {
+            Log.d(TAG, "Not expecting an actions bar: no current task");
             return false;
         }
         // In tablets, if focused task is not in center, overview actions aren't visible.
         if (isTablet && Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX()) >= 1) {
+            Log.d(TAG, "Not expecting an actions bar: device is tablet and task is not centered");
             return false;
         }
         if (task.isTaskSplit() && (!mLauncher.isAppPairsEnabled() || !isTablet)) {
+            Log.d(TAG, "Not expecting an actions bar: device is phone and task is split");
             // Overview actions aren't visible for split screen tasks, except for save app pair
             // button on tablets.
             return false;
         }
+        Log.d(TAG, "Expecting an actions bar");
         return true;
     }
 
@@ -447,10 +455,20 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     }
 
     private void verifyActionsViewVisibility() {
+        // If no running tasks, no need to verify actions view visibility.
+        if (getTasks().isEmpty()) {
+            return;
+        }
+
+        boolean isTablet = mLauncher.isTablet();
+        OverviewTask task = isTablet ? getFocusedTaskForTablet() : getCurrentTask();
+
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to assert overview actions view visibility")) {
-            boolean isTablet = mLauncher.isTablet();
-            OverviewTask task = isTablet ? getFocusedTaskForTablet() : getCurrentTask();
+                "want to assert overview actions view visibility="
+                        + isActionsViewVisible()
+                        + ", focused task is "
+                        + (task == null ? "null" : (task.isTaskSplit() ? "split" : "not split"))
+                )) {
 
             if (isActionsViewVisible()) {
                 if (task.isTaskSplit()) {

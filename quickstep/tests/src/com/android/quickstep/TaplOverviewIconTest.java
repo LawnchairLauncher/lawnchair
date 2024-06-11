@@ -88,6 +88,8 @@ public class TaplOverviewIconTest extends AbstractLauncherUiTest<QuickstepLaunch
     }
 
     private void createAndLaunchASplitPair() {
+        clearAllRecentTasks();
+
         startTestActivity(2);
         startTestActivity(3);
 
