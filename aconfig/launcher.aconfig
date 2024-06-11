@@ -284,3 +284,21 @@ flag {
     description: "Enables folders in all apps"
     bug: "341582436"
 }
+
+flag {
+    name: "enable_recents_in_taskbar"
+    namespace: "launcher"
+    description: "Replace hybrid hotseat app predictions with strictly Recent Apps"
+    bug: "315354060"
+}
+
+flag {
+  name: "enable_first_screen_broadcast_archiving_extras"
+  namespace: "launcher"
+  description: "adds Extras to first screen broadcast for archived apps"
+  bug: "322314760"
+  is_fixed_read_only: true
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}

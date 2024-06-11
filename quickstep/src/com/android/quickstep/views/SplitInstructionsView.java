@@ -18,13 +18,16 @@ package com.android.quickstep.views;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SPLIT_SELECTION_EXIT_CANCEL_BUTTON;
+import static com.android.settingslib.widget.theme.R.dimen.settingslib_preferred_minimum_touch_target;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.view.TouchDelegate;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,9 +44,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
-import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.states.StateAnimationConfig;
-
 import com.android.quickstep.util.SplitSelectStateController;
 
 /**
@@ -133,6 +134,28 @@ public class SplitInstructionsView extends LinearLayout {
             cancelTextView.setVisibility(VISIBLE);
             cancelTextView.setOnClickListener((v) -> exitSplitSelection());
             instructionTextView.setText(R.string.toast_contextual_split_select_app);
+
+            // After layout, expand touch target of cancel button to meet minimum a11y measurements.
+            post(() -> {
+                int minTouchSize = getResources()
+                        .getDimensionPixelSize(settingslib_preferred_minimum_touch_target);
+                Rect r = new Rect();
+                cancelTextView.getHitRect(r);
+
+                if (r.width() < minTouchSize) {
+                    // add 1 to ensure ceiling on int division
+                    int expandAmount = (minTouchSize + 1 - r.width()) / 2;
+                    r.left -= expandAmount;
+                    r.right += expandAmount;
+                }
+                if (r.height() < minTouchSize) {
+                    int expandAmount = (minTouchSize + 1 - r.height()) / 2;
+                    r.top -= expandAmount;
+                    r.bottom += expandAmount;
+                }
+
+                setTouchDelegate(new TouchDelegate(r, cancelTextView));
+            });
         }
 
         // Set accessibility title, will be announced by a11y tools.

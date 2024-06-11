@@ -267,6 +267,10 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         return mAppBounds;
     }
 
+    public Rect getSourceRectHint() {
+        return mSourceRectHint;
+    }
+
     @Nullable
     public SurfaceControl getContentOverlay() {
         return mPipContentOverlay == null ? null : mPipContentOverlay.getLeash();

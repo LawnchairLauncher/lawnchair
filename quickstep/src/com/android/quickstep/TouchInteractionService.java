@@ -47,8 +47,6 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNFOLD_ANIMATION_FORWARDER;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNLOCK_ANIMATION_CONTROLLER;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.wm.shell.Flags.enableBubblesLongPressNavHandle;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BACK_ANIMATION;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BUBBLES;
@@ -719,16 +717,7 @@ public class TouchInteractionService extends Service {
             SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(systemUiStateFlags);
             mOverviewComponentObserver.onSystemUiStateChanged();
             mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
-
-            long isShadeExpandedFlag =
-                    SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
-            boolean wasExpanded = (lastSysUIFlags & isShadeExpandedFlag) != 0;
-            boolean isExpanded = (systemUiStateFlags & isShadeExpandedFlag) != 0;
-            if (wasExpanded != isExpanded && isExpanded) {
-                // End live tile when expanding the notification panel for the first time from
-                // overview.
-                mTaskAnimationManager.endLiveTile();
-            }
+            mTaskAnimationManager.onSystemUiFlagsChanged(lastSysUIFlags, systemUiStateFlags);
         }
     }
 

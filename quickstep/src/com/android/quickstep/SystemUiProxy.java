@@ -684,11 +684,11 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
      * should be responsible for cleaning up the overlay.
      */
     public void stopSwipePipToHome(int taskId, ComponentName componentName, Rect destinationBounds,
-            SurfaceControl overlay, Rect appBounds) {
+            SurfaceControl overlay, Rect appBounds, Rect sourceRectHint) {
         if (mPip != null) {
             try {
                 mPip.stopSwipePipToHome(taskId, componentName, destinationBounds, overlay,
-                        appBounds);
+                        appBounds, sourceRectHint);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call stopSwipePipToHome");
             }
