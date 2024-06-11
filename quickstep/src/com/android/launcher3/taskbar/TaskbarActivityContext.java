@@ -1406,6 +1406,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /**
+     * Plays the taskbar background alpha animation if one is not currently playing.
+     */
+    public void playTaskbarBackgroundAlphaAnimation() {
+        mControllers.taskbarStashController.playTaskbarBackgroundAlphaAnimation();
+    }
+
+    /**
      * Called to start the taskbar translation spring to its settled translation (0).
      */
     public void startTranslationSpring() {
