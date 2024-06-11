@@ -364,6 +364,7 @@
     <dimen name="transient_taskbar_min_width">150dp</dimen>
     <dimen name="transient_taskbar_bottom_margin">24dp</dimen>
     <dimen name="transient_taskbar_shadow_blur">40dp</dimen>
+    <dimen name="transient_taskbar_stroke_width">1dp</dimen>
     <dimen name="transient_taskbar_key_shadow_distance">10dp</dimen>
     <dimen name="transient_taskbar_stashed_height">32dp</dimen>
     <dimen name="transient_taskbar_all_apps_button_translation_x_offset">8dp</dimen>

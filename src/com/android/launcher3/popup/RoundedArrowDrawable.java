@@ -175,7 +175,10 @@ public class RoundedArrowDrawable extends Drawable {
         mPaint.setShadowLayer(shadowBlur, dx, dy, shadowColor);
     }
 
-    private static void addDownPointingRoundedTriangleToPath(float width, float height,
+    /**
+     * Adds rounded triangle pointing down to the provided {@link Path path} argument
+     */
+    public static void addDownPointingRoundedTriangleToPath(float width, float height,
             float radius, Path path) {
         // Calculated for the arrow pointing down, will be flipped later if needed.
 
