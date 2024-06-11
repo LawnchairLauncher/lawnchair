@@ -1614,7 +1614,8 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                         mSwipePipToHomeAnimator.getComponentName(),
                         mSwipePipToHomeAnimator.getDestinationBounds(),
                         mSwipePipToHomeAnimator.getContentOverlay(),
-                        mSwipePipToHomeAnimator.getAppBounds());
+                        mSwipePipToHomeAnimator.getAppBounds(),
+                        mSwipePipToHomeAnimator.getSourceRectHint());
 
                 windowAnim = mSwipePipToHomeAnimators;
             } else {
