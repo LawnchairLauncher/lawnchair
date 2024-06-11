@@ -578,6 +578,7 @@ public class TouchInteractionService extends Service {
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
         mDeviceState = new RecentsAnimationDeviceState(this, true);
+        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mAllAppsActionManager = new AllAppsActionManager(
                 this, UI_HELPER_EXECUTOR, this::createAllAppsPendingIntent);
         mInputManager = getSystemService(InputManager.class);
@@ -590,7 +591,6 @@ public class TouchInteractionService extends Service {
             }
         }
         mTaskbarManager = new TaskbarManager(this, mAllAppsActionManager, mNavCallbacks);
-        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         mInputConsumer = InputConsumerController.getRecentsAnimationInputConsumer();
 
         // Call runOnUserUnlocked() before any other callbacks to ensure everything is initialized.
