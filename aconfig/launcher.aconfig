@@ -284,3 +284,10 @@ flag {
     description: "Enables folders in all apps"
     bug: "341582436"
 }
+
+flag {
+    name: "enable_recents_in_taskbar"
+    namespace: "launcher"
+    description: "Replace hybrid hotseat app predictions with strictly Recent Apps"
+    bug: "315354060"
+}

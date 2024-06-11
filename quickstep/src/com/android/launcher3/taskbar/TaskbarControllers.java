@@ -180,8 +180,9 @@ public class TaskbarControllers {
                 taskbarUnfoldAnimationController, taskbarKeyguardController,
                 stashedHandleViewController, taskbarStashController,
                 taskbarAutohideSuspendController, taskbarPopupController, taskbarInsetsController,
-                voiceInteractionWindowController, taskbarTranslationController,
-                taskbarEduTooltipController, keyboardQuickSwitchController, taskbarPinningController
+                voiceInteractionWindowController, taskbarRecentAppsController,
+                taskbarTranslationController, taskbarEduTooltipController,
+                keyboardQuickSwitchController, taskbarPinningController,
         };
         mBackgroundRendererControllers = new BackgroundRendererController[] {
                 taskbarDragLayerController, taskbarScrimViewController,

@@ -41,8 +41,6 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.util.AnimUtils.completeRunnableListCallback;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING;
-import static com.android.window.flags.Flags.enableDesktopWindowingMode;
-import static com.android.window.flags.Flags.enableDesktopWindowingTaskbarRunningApps;
 import static com.android.wm.shell.Flags.enableTinyTaskbar;
 
 import android.animation.AnimatorSet;
@@ -304,7 +302,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new VoiceInteractionWindowController(this),
                 new TaskbarTranslationController(this),
                 new TaskbarSpringOnStashController(this),
-                createTaskbarRecentAppsController(),
+                new TaskbarRecentAppsController(
+                        RecentsModel.INSTANCE.get(this),
+                        LauncherActivityInterface.INSTANCE::getDesktopVisibilityController),
                 TaskbarEduTooltipController.newInstance(this),
                 new KeyboardQuickSwitchController(),
                 new TaskbarPinningController(this, () ->
@@ -312,16 +312,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 bubbleControllersOptional);
 
         mLauncherPrefs = LauncherPrefs.get(this);
-    }
-
-    private TaskbarRecentAppsController createTaskbarRecentAppsController() {
-        // TODO(b/335401172): unify DesktopMode checks in Launcher
-        if (enableDesktopWindowingMode() && enableDesktopWindowingTaskbarRunningApps()) {
-            return new DesktopTaskbarRunningAppsController(
-                    RecentsModel.INSTANCE.get(this),
-                    LauncherActivityInterface.INSTANCE::getDesktopVisibilityController);
-        }
-        return TaskbarRecentAppsController.DEFAULT;
     }
 
     /** Updates {@link DeviceProfile} instances for any Taskbar windows. */
