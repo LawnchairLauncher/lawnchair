@@ -140,12 +140,8 @@
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{ተጨማሪ # መተግበሪያ አሳይ።}one{ተጨማሪ # መተግበሪያ አሳይ።}other{ተጨማሪ # መተግበሪያዎች አሳይ።}}"</string>
     <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# የዴስክቶፕ መተግበሪያ አሳይ።}one{# የዴስክቶፕ መተግበሪያ አሳይ።}other{# የዴስክቶፕ መተግበሪያዎች አሳይ።}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> እና <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
-    <!-- no translation found for bubble_bar_bubble_fallback_description (7811684548953452009) -->
-    <skip />
-    <!-- no translation found for bubble_bar_overflow_description (8617628132733151708) -->
-    <skip />
-    <!-- no translation found for bubble_bar_bubble_description (1882466152448446446) -->
-    <skip />
-    <!-- no translation found for bubble_bar_description_multiple_bubbles (3922207715357143648) -->
-    <skip />
+    <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"አረፋ"</string>
+    <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"ትርፍ ፍሰት"</string>
+    <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> ከ<xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> እና <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> ተጨማሪ"</string>
 </resources>

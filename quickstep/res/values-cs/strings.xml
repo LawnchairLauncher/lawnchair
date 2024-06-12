@@ -73,7 +73,7 @@
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Přejeďte prstem nahoru z dolního okraje obrazovky"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Zkuste podržet okno delší dobu, než ho uvolníte"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Přejeďte prstem přímo nahoru a pak udělejte pauzu"</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Naučili jste se používat gesta. Vypnout je můžete v nastavení."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Naučili jste se používat gesta. Vypnout je můžete v Nastavení."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Dokončili jste gesto pro přepínání aplikací"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Přepínání aplikací přejetím prstem"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Přejeďte nahoru z dolního okraje obrazovky, podržte obrazovku a uvolněte."</string>
@@ -140,12 +140,8 @@
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Zobrazit # další aplikaci.}few{Zobrazit # další aplikace.}many{Zobrazit # další aplikace.}other{Zobrazit # dalších aplikací.}}"</string>
     <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Zobrazit # aplikaci pro počítač.}few{Zobrazit # aplikace pro počítač.}many{Zobrazit # aplikace pro počítač.}other{Zobrazit # aplikací pro počítač.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> a <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
-    <!-- no translation found for bubble_bar_bubble_fallback_description (7811684548953452009) -->
-    <skip />
-    <!-- no translation found for bubble_bar_overflow_description (8617628132733151708) -->
-    <skip />
-    <!-- no translation found for bubble_bar_bubble_description (1882466152448446446) -->
-    <skip />
-    <!-- no translation found for bubble_bar_description_multiple_bubbles (3922207715357143648) -->
-    <skip />
+    <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Bublina"</string>
+    <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"Rozbalovací nabídka"</string>
+    <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> z aplikace <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> a ještě <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g>"</string>
 </resources>
