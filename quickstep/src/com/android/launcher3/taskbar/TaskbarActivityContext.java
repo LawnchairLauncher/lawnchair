@@ -1602,4 +1602,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     boolean canToggleHomeAllApps() {
         return mControllers.uiController.canToggleHomeAllApps();
     }
+
+    @VisibleForTesting
+    public TaskbarControllers getControllers() {
+        return mControllers;
+    }
 }
