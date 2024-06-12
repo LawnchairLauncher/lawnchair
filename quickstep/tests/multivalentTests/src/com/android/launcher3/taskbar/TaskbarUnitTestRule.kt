@@ -16,6 +16,7 @@
 
 package com.android.launcher3.taskbar
 
+import android.app.Instrumentation
 import android.app.PendingIntent
 import android.content.IIntentSender
 import android.content.Intent
@@ -37,6 +38,25 @@ import org.junit.runners.model.Statement
  * Manages the Taskbar lifecycle for unit tests.
  *
  * See [InjectController] for grabbing controller(s) under test with minimal boilerplate.
+ *
+ * The rule interacts with [TaskbarManager] on the main thread. A good rule of thumb for tests is
+ * that code that is executed on the main thread in production should also happen on that thread
+ * when tested.
+ *
+ * `@UiThreadTest` is a simple way to run an entire test body on the main thread. But if a test
+ * executes code that appends message(s) to the main thread's `MessageQueue`, the annotation will
+ * prevent those messages from being processed until after the test body finishes.
+ *
+ * To test pending messages, instead use something like [Instrumentation.runOnMainSync] to perform
+ * only sections of the test body on the main thread synchronously:
+ * ```
+ * @Test
+ * fun example() {
+ *     instrumentation.runOnMainSync { doWorkThatPostsMessage() }
+ *     // Second lambda will not execute until message is processed.
+ *     instrumentation.runOnMainSync { verifyMessageResults() }
+ * }
+ * ```
  */
 class TaskbarUnitTestRule : MethodRule {
     private val instrumentation = InstrumentationRegistry.getInstrumentation()
