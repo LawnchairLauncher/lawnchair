@@ -192,6 +192,6 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"தனிப்பட்டது, லாக் செய்யப்பட்டுள்ளது."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"பூட்டு"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"தனிப்பட்ட சேமிப்பிடத்திற்கு மாற்றுகிறது"</string>
-    <string name="ps_add_button_label" msgid="8127988716897128773">"நிறுவுதல்"</string>
+    <string name="ps_add_button_label" msgid="8127988716897128773">"நிறுவுக"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"தனிப்பட்ட சேமிப்பிடத்தில் ஆப்ஸை நிறுவும்"</string>
 </resources>

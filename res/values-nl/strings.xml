@@ -88,7 +88,7 @@
     <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"App verwijderen"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Installeren"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Geen app voorstellen"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Vastzetvoorspelling"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Voorspelling vastzetten"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"Snelle links instellen"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Een app toestaan snelkoppelingen toe te voegen zonder tussenkomst van de gebruiker."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"instellingen en snelkoppelingen op startscherm lezen"</string>

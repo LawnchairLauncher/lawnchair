@@ -184,7 +184,7 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Ativar"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrar"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Falha: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"Espaço particular"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Espaço privado"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"Toque para configurar ou abrir"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"Particular"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"Configurações do Espaço particular"</string>
