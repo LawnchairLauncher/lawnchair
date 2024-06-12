@@ -16,10 +16,12 @@
 
 package com.android.launcher3.util;
 
+import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_HOME_ROLE;
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 
 import android.app.ActivityOptions;
 import android.app.Person;
+import android.app.role.RoleManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
@@ -33,6 +35,7 @@ import android.util.ArrayMap;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BuildConfig;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -134,6 +137,23 @@ public class ApiWrapper implements ResourceBasedOverride, SafeCloseable {
     public boolean isNonResizeableActivity(LauncherActivityInfo lai) {
         // Overridden in quickstep
         return false;
+    }
+
+    /**
+     * Starts an Activity which can be used to set this Launcher as the HOME app, via a consent
+     * screen. In case the consent screen cannot be shown, or the user does not set current Launcher
+     * as HOME app, a toast asking the user to do the latter is shown.
+     */
+    public void assignDefaultHomeRole(Context context) {
+        RoleManager roleManager = context.getSystemService(RoleManager.class);
+        assert roleManager != null;
+        if (roleManager.isRoleAvailable(RoleManager.ROLE_HOME)
+                && !roleManager.isRoleHeld(RoleManager.ROLE_HOME)) {
+            Intent roleRequestIntent = roleManager.createRequestRoleIntent(
+                    RoleManager.ROLE_HOME);
+            Launcher launcher = Launcher.getLauncher(context);
+            launcher.startActivityForResult(roleRequestIntent, REQUEST_HOME_ROLE);
+        }
     }
 
     @Override

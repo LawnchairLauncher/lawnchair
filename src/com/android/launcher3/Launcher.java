@@ -38,6 +38,7 @@ import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_BIND
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_CREATE_APPWIDGET;
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_CREATE_SHORTCUT;
+import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_HOME_ROLE;
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_PICK_APPWIDGET;
 import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_RECONFIGURE_APPWIDGET;
 import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE;
@@ -151,6 +152,7 @@ import android.view.WindowInsetsAnimation;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Toast;
 import android.window.BackEvent;
 import android.window.OnBackAnimationCallback;
 
@@ -891,6 +893,17 @@ public class Launcher extends StatefulActivity<LauncherState>
             return;
         }
         mPendingActivityResult = null;
+
+        if (requestCode == REQUEST_HOME_ROLE) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(
+                        this,
+                        this.getString(R.string.set_default_home_app,
+                                this.getString(R.string.derived_app_name)),
+                        Toast.LENGTH_LONG).show();
+            }
+            return;
+        }
 
         // Reset the startActivity waiting flag
         final PendingRequestArgs requestArgs = mPendingRequestArgs;

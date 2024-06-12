@@ -55,12 +55,11 @@ public abstract class UserProfileManager {
     public @interface UserProfileState { }
 
     protected final StatsLogManager mStatsLogManager;
+    protected final UserManager mUserManager;
+    protected final UserCache mUserCache;
+
     @UserProfileState
     private int mCurrentState;
-
-    private final UserManager mUserManager;
-    private final UserCache mUserCache;
-
     protected UserProfileManager(UserManager userManager,
             StatsLogManager statsLogManager,
             UserCache userCache) {

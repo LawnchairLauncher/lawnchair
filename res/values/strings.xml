@@ -36,6 +36,8 @@
     <string name="shortcut_not_available">Shortcut isn\'t available</string>
     <!-- User visible name for the launcher/home screen. [CHAR_LIMIT=30] -->
     <string name="home_screen">Home</string>
+    <!-- Description for setting the current launcher as the default home app. [CHAR_LIMIT=none]-->
+    <string name="set_default_home_app">Set <xliff:g id="launcher_name" example="Launcher3">%1$s</xliff:g> as default home app in Settings</string>
 
     <!-- Options for recent tasks -->
     <!-- Title for an option to enter split screen mode for a given app -->
