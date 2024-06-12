@@ -793,7 +793,7 @@ public class BubbleBarView extends FrameLayout {
             }
         }
         mBubbleBarBackground.setArrowPosition(arrowPosition);
-        mBubbleBarBackground.setArrowAlpha((int) (255 * widthState));
+        mBubbleBarBackground.setArrowHeightFraction(widthState);
         mBubbleBarBackground.setWidth(interpolatedWidth);
     }
 
@@ -987,7 +987,8 @@ public class BubbleBarView extends FrameLayout {
             // bubbles than the current bubble and overflow.
             bubblePosition = index == 0 && getChildCount() > MAX_VISIBLE_BUBBLES_COLLAPSED ? 1 : 0;
         } else {
-            bubblePosition = index;
+            bubblePosition = index >= MAX_VISIBLE_BUBBLES_COLLAPSED
+                    ? MAX_VISIBLE_BUBBLES_COLLAPSED - 1 : index;
         }
         return getPaddingStart() + bubblePosition * (mIconOverlapAmount) + mIconSize / 2f;
     }
