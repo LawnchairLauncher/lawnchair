@@ -302,3 +302,10 @@ flag {
     purpose: PURPOSE_BUGFIX
   }
 }
+
+flag {
+    name: "floating_search_bar"
+    namespace: "launcher"
+    description: "Search bar persists at the bottom of the screen across Launcher states"
+    bug: "346408388"
+}
