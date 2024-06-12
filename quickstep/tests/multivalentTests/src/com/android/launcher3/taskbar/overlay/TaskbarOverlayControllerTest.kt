@@ -30,6 +30,7 @@ import com.android.launcher3.taskbar.TaskbarUnitTestRule
 import com.android.launcher3.taskbar.TaskbarUnitTestRule.InjectController
 import com.android.launcher3.util.LauncherMultivalentJUnit
 import com.android.launcher3.util.LauncherMultivalentJUnit.EmulatedDevices
+import com.android.launcher3.views.BaseDragLayer
 import com.android.systemui.shared.system.TaskStackChangeListeners
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
@@ -66,6 +67,17 @@ class TaskbarOverlayControllerTest {
 
     @Test
     @UiThreadTest
+    fun testRequestWindow_afterHidingOverlay_createsNewWindow() {
+        val context1 = overlayController.requestWindow()
+        TestOverlayView.show(context1)
+        overlayController.hideWindow()
+
+        val context2 = overlayController.requestWindow()
+        assertThat(context1).isNotSameInstanceAs(context2)
+    }
+
+    @Test
+    @UiThreadTest
     fun testRequestWindow_addsProxyView() {
         TestOverlayView.show(overlayController.requestWindow())
         assertThat(hasOpenView(taskbarContext, TYPE_TASKBAR_OVERLAY_PROXY)).isTrue()
@@ -80,11 +92,36 @@ class TaskbarOverlayControllerTest {
     }
 
     @Test
+    fun testRequestWindow_attachesDragLayer() {
+        lateinit var dragLayer: BaseDragLayer<*>
+        getInstrumentation().runOnMainSync {
+            dragLayer = overlayController.requestWindow().dragLayer
+        }
+
+        // Allow drag layer to attach before checking.
+        getInstrumentation().runOnMainSync { assertThat(dragLayer.isAttachedToWindow).isTrue() }
+    }
+
+    @Test
     @UiThreadTest
     fun testHideWindow_closesOverlay() {
         val overlay = TestOverlayView.show(overlayController.requestWindow())
         overlayController.hideWindow()
         assertThat(overlay.isOpen).isFalse()
+    }
+
+    @Test
+    fun testHideWindow_detachesDragLayer() {
+        lateinit var dragLayer: BaseDragLayer<*>
+        getInstrumentation().runOnMainSync {
+            dragLayer = overlayController.requestWindow().dragLayer
+        }
+
+        // Wait for drag layer to be attached to window before hiding.
+        getInstrumentation().runOnMainSync {
+            overlayController.hideWindow()
+            assertThat(dragLayer.isAttachedToWindow).isFalse()
+        }
     }
 
     @Test
