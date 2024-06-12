@@ -23,7 +23,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
-import com.android.launcher3.tests.R
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -44,7 +43,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
 
     @Test
     fun parseValidFile() {
-        val resourceHelper = TestResourceHelper(context, R.xml.valid_folders_specs)
+        val resourceHelper = TestResourceHelper(context, "valid_folders_specs".xmlToId())
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
         val specs = folderSpecs.getSpecsByAspectRatio(aspectRatio)
 
@@ -92,25 +91,25 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_missingTag_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_folders_specs_1)
+        val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_1".xmlToId())
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_moreThanOneValuePerTag_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_folders_specs_2)
+        val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_2".xmlToId())
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_valueBiggerThan1_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_folders_specs_3)
+        val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_3".xmlToId())
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_missingSpecs_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_folders_specs_4)
+        val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_4".xmlToId())
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
     }
 
@@ -132,7 +131,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
         val calculatedWorkspaceSpec =
             CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_folders_specs_5)
+        val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_5".xmlToId())
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
         folderSpecs.getCalculatedSpec(
             aspectRatio,
@@ -161,7 +160,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
         val calculatedWorkspaceSpec =
             CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_folders_specs_5)
+        val resourceHelper = TestResourceHelper(context, "invalid_folders_specs_5".xmlToId())
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
         folderSpecs.getCalculatedSpec(
             aspectRatio,
@@ -190,7 +189,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
         val calculatedWorkspaceSpec =
             CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
-        val resourceHelper = TestResourceHelper(context, R.xml.valid_folders_specs)
+        val resourceHelper = TestResourceHelper(context, "valid_folders_specs".xmlToId())
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
         val calculatedWidthSpec =
             folderSpecs.getCalculatedSpec(
@@ -227,7 +226,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
         val calculatedWorkspaceSpec =
             CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
-        val resourceHelper = TestResourceHelper(context, R.xml.valid_folders_specs)
+        val resourceHelper = TestResourceHelper(context, "valid_folders_specs".xmlToId())
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
         folderSpecs.getCalculatedSpec(
             aspectRatio,
@@ -256,7 +255,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
         val calculatedWorkspaceSpec =
             CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
-        val resourceHelper = TestResourceHelper(context, R.xml.valid_folders_specs)
+        val resourceHelper = TestResourceHelper(context, "valid_folders_specs".xmlToId())
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
         val calculatedHeightSpec =
             folderSpecs.getCalculatedSpec(
@@ -293,7 +292,7 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
         val calculatedWorkspaceSpec =
             CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
-        val resourceHelper = TestResourceHelper(context, R.xml.valid_folders_specs)
+        val resourceHelper = TestResourceHelper(context, "valid_folders_specs".xmlToId())
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
         folderSpecs.getCalculatedSpec(
             aspectRatio,

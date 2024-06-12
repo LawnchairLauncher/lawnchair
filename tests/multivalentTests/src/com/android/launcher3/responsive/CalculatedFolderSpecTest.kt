@@ -23,7 +23,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
-import com.android.launcher3.tests.R
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -47,12 +46,12 @@ class CalculatedFolderSpecTest : AbstractDeviceProfileTest() {
         val columns = 6
 
         // Loading workspace specs
-        val resourceHelperWorkspace = TestResourceHelper(context, R.xml.valid_workspace_file)
+        val resourceHelperWorkspace = TestResourceHelper(context, "valid_workspace_file".xmlToId())
         val workspaceSpecs =
             ResponsiveSpecsProvider.create(resourceHelperWorkspace, ResponsiveSpecType.Workspace)
 
         // Loading folders specs
-        val resourceHelperFolder = TestResourceHelper(context, R.xml.valid_folders_specs)
+        val resourceHelperFolder = TestResourceHelper(context, "valid_folders_specs".xmlToId())
         val folderSpecs =
             ResponsiveSpecsProvider.create(resourceHelperFolder, ResponsiveSpecType.Folder)
         val specs = folderSpecs.getSpecsByAspectRatio(aspectRatio)
@@ -123,12 +122,12 @@ class CalculatedFolderSpecTest : AbstractDeviceProfileTest() {
         val rows = 5
 
         // Loading workspace specs
-        val resourceHelperWorkspace = TestResourceHelper(context, R.xml.valid_workspace_file)
+        val resourceHelperWorkspace = TestResourceHelper(context, "valid_workspace_file".xmlToId())
         val workspaceSpecs =
             ResponsiveSpecsProvider.create(resourceHelperWorkspace, ResponsiveSpecType.Workspace)
 
         // Loading folders specs
-        val resourceHelperFolder = TestResourceHelper(context, R.xml.valid_folders_specs)
+        val resourceHelperFolder = TestResourceHelper(context, "valid_folders_specs".xmlToId())
         val folderSpecs =
             ResponsiveSpecsProvider.create(resourceHelperFolder, ResponsiveSpecType.Folder)
         val specs = folderSpecs.getSpecsByAspectRatio(aspectRatio)

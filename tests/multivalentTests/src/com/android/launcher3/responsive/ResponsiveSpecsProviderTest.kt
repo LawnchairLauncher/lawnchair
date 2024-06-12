@@ -23,7 +23,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
-import com.android.launcher3.tests.R
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -44,7 +43,7 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
 
     @Test
     fun parseValidFile() {
-        val resourceHelper = TestResourceHelper(context, R.xml.valid_responsive_spec_unsorted)
+        val resourceHelper = TestResourceHelper(context, "valid_responsive_spec_unsorted".xmlToId())
         val provider = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
 
         // Validate Portrait
@@ -111,44 +110,44 @@ class ResponsiveSpecsProviderTest : AbstractDeviceProfileTest() {
 
     @Test(expected = IllegalStateException::class)
     fun parseValidFile_invalidAspectRatio_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.valid_responsive_spec_unsorted)
+        val resourceHelper = TestResourceHelper(context, "valid_responsive_spec_unsorted".xmlToId())
         val provider = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
         provider.getSpecsByAspectRatio(0f)
     }
 
     @Test(expected = InvalidResponsiveGridSpec::class)
     fun parseInvalidFile_missingGroups_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_responsive_spec_1)
+        val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_1".xmlToId())
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
     }
 
     @Test(expected = InvalidResponsiveGridSpec::class)
     fun parseInvalidFile_partialGroups_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_responsive_spec_2)
+        val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_2".xmlToId())
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_invalidAspectRatio_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_responsive_spec_3)
+        val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_3".xmlToId())
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_invalidRemainderSpace_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_responsive_spec_4)
+        val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_4".xmlToId())
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_invalidAvailableSpace_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_responsive_spec_5)
+        val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_5".xmlToId())
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_invalidFixedSize_throwsError() {
-        val resourceHelper = TestResourceHelper(context, R.xml.invalid_responsive_spec_6)
+        val resourceHelper = TestResourceHelper(context, "invalid_responsive_spec_6".xmlToId())
         ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Workspace)
     }
 
