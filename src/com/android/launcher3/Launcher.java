@@ -164,6 +164,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.os.BuildCompat;
 import androidx.window.embedding.RuleController;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
@@ -2783,7 +2784,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     private void updateDisallowBack() {
-        if (BuildCompat.isAtLeastV() && Flags.enableDesktopWindowingMode()) {
+        if (BuildCompat.isAtLeastV() && Flags.enableDesktopWindowingMode()
+            && mDeviceProfile.isTablet) {
             // TODO(b/330183377) disable back in launcher when when we productionize
             return;
         }

@@ -347,6 +347,11 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         float allAppIconTranslateRange = mapRange(scale, transientTaskbarAllAppsOffset,
                 persistentTaskbarAllAppsOffset);
 
+        // no x translation required when all apps button is the only icon in taskbar.
+        if (iconViews.length <= 1) {
+            allAppIconTranslateRange = 0f;
+        }
+
         if (mIsRtl) {
             allAppIconTranslateRange *= -1;
         }
@@ -377,7 +382,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                         -finalMarginScale * (iconIndex - halfIconCount));
             }
 
-            if (iconView.equals(mTaskbarView.getAllAppsButtonView()) && iconViews.length > 1) {
+            if (iconView.equals(mTaskbarView.getAllAppsButtonView())) {
                 ((IconButtonView) iconView).setTranslationXForTaskbarAllAppsIcon(
                         allAppIconTranslateRange);
             }

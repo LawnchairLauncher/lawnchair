@@ -64,7 +64,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub
         implements TaskStackChangeListener, SafeCloseable {
 
     private static final String TAG = "TopTaskTracker";
-    
+
     private static final boolean DEBUG = true;
 
     public static MainThreadInitializedObject<TopTaskTracker> INSTANCE =
@@ -204,7 +204,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub
 
     /**
      * @return index 0 will be task in left/top position, index 1 in right/bottom position.
-     *         Will return empty array if device is not in staged split
+     * Will return empty array if device is not in staged split
      */
     public int[] getRunningSplitTaskIds() {
         if (mMainStagePosition.taskId == INVALID_TASK_ID
@@ -337,7 +337,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub
          */
         public Task[] getPlaceholderTasks() {
             return mTopTask == null ? new Task[0]
-                    : new Task[] {Task.from(new TaskKey(mTopTask), mTopTask, false)};
+                    : new Task[]{Task.from(new TaskKey(mTopTask), mTopTask, false)};
         }
 
         /**
