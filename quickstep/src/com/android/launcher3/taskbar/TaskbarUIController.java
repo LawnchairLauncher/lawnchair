@@ -411,4 +411,11 @@ public class TaskbarUIController {
     public void setSkipNextRecentsAnimEnd() {
         // Overridden
     }
+
+    /**
+     * Sets whether the user is going home based on the current gesture.
+     */
+    public void setUserIsGoingHome(boolean isGoingHome) {
+        mControllers.taskbarStashController.setUserIsGoingHome(isGoingHome);
+    }
 }
