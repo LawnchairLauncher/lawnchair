@@ -27,6 +27,8 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Қауіпсіз режимде виджеттер өшіріледі"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Таңбаша қолжетімді емес"</string>
     <string name="home_screen" msgid="5629429142036709174">"Негізгі экран"</string>
+    <!-- no translation found for set_default_home_app (5808906607627586381) -->
+    <skip />
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Экранды бөлу"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s қолданбасы туралы ақпарат"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s пайдалану параметрлері"</string>
@@ -88,7 +90,7 @@
     <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"Қолданбаны жою"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Орнату"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Қолданба ұсынбау"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Болжанған қолданбаны бекіту"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Болжамды бекіту"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"таңбаша орнату"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Қолданбаға пайдаланушының қатысуынсыз төте пернелерді қосу мүмкіндігін береді."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"негізгі экран параметрлері мен таңбашаларын оқу"</string>

@@ -27,6 +27,8 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgeti su onemogućeni u Sigurnom načinu rada"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Prečac nije dostupan"</string>
     <string name="home_screen" msgid="5629429142036709174">"Početni zaslon"</string>
+    <!-- no translation found for set_default_home_app (5808906607627586381) -->
+    <skip />
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Podijeljeni zaslon"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informacije o aplikaciji %1$s"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"Postavke upotrebe za %1$s"</string>
@@ -192,6 +194,6 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privatno, zaključano."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Zaključavanje"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Prelazak na privatni prostor"</string>
-    <string name="ps_add_button_label" msgid="8127988716897128773">"Instaliraj"</string>
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Instalirajte"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instaliranje aplikacija u privatni prostor"</string>
 </resources>

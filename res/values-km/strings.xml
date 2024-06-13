@@ -27,6 +27,8 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"បាន​បិទ​ធាតុ​ក្រាហ្វិក​ក្នុង​របៀប​សុវត្ថិភាព"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ផ្លូវកាត់មិនអាចប្រើបានទេ"</string>
     <string name="home_screen" msgid="5629429142036709174">"អេក្រង់ដើម"</string>
+    <!-- no translation found for set_default_home_app (5808906607627586381) -->
+    <skip />
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"មុខងារ​បំបែកអេក្រង់"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"ព័ត៌មានកម្មវិធី​សម្រាប់ %1$s"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"ការកំណត់ការប្រើប្រាស់សម្រាប់ %1$s"</string>
