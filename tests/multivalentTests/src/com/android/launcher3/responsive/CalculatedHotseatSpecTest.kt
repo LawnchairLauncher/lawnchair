@@ -22,7 +22,6 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
-import com.android.launcher3.tests.R as TestR
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -47,7 +46,7 @@ class CalculatedHotseatSpecTest : AbstractDeviceProfileTest() {
         val availableHeight = deviceSpec.naturalSize.second
 
         val hotseatSpecsProvider =
-            HotseatSpecsProvider.create(TestResourceHelper(context, TestR.xml.valid_hotseat_file))
+            HotseatSpecsProvider.create(TestResourceHelper(context, "valid_hotseat_file".xmlToId()))
         val heightSpec =
             hotseatSpecsProvider.getCalculatedSpec(
                 aspectRatio,
@@ -73,7 +72,7 @@ class CalculatedHotseatSpecTest : AbstractDeviceProfileTest() {
         val availableHeight = deviceSpec.naturalSize.second
 
         val hotseatSpecsProvider =
-            HotseatSpecsProvider.create(TestResourceHelper(context, TestR.xml.valid_hotseat_file))
+            HotseatSpecsProvider.create(TestResourceHelper(context, "valid_hotseat_file".xmlToId()))
         val heightSpec =
             hotseatSpecsProvider.getCalculatedSpec(
                 aspectRatio,
@@ -99,7 +98,7 @@ class CalculatedHotseatSpecTest : AbstractDeviceProfileTest() {
 
         val hotseatSpecsProvider =
             HotseatSpecsProvider.create(
-                TestResourceHelper(context, TestR.xml.valid_hotseat_land_file)
+                TestResourceHelper(context, "valid_hotseat_land_file".xmlToId())
             )
         val widthSpec =
             hotseatSpecsProvider.getCalculatedSpec(aspectRatio, DimensionType.WIDTH, availableWidth)
