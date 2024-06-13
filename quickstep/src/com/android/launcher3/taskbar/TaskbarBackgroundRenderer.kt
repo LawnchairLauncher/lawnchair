@@ -37,8 +37,6 @@ import kotlin.math.min
 class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
 
     private val isInSetup: Boolean = !context.isUserSetupComplete
-    private val DARK_THEME_SHADOW_ALPHA = 51f
-    private val LIGHT_THEME_SHADOW_ALPHA = 25f
 
     private val maxTransientTaskbarHeight =
         context.transientTaskbarDeviceProfile.taskbarHeight.toFloat()
@@ -54,6 +52,7 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
     var isAnimatingPinning = false
 
     val paint = Paint()
+    private val strokePaint = Paint()
     val lastDrawnTransientRect = RectF()
     var backgroundHeight = context.deviceProfile.taskbarHeight.toFloat()
     var translationYForSwipe = 0f
@@ -62,6 +61,7 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
     private val transientBackgroundBounds = context.transientTaskbarBounds
 
     private val shadowAlpha: Float
+    private val strokeAlpha: Int
     private var shadowBlur = 0f
     private var keyShadowDistance = 0f
     private var bottomMargin = 0
@@ -86,10 +86,18 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
         paint.color = context.getColor(R.color.taskbar_background)
         paint.flags = Paint.ANTI_ALIAS_FLAG
         paint.style = Paint.Style.FILL
-
-        shadowAlpha =
-            if (Utilities.isDarkTheme(context)) DARK_THEME_SHADOW_ALPHA
-            else LIGHT_THEME_SHADOW_ALPHA
+        strokePaint.color = context.getColor(R.color.taskbar_stroke)
+        strokePaint.flags = Paint.ANTI_ALIAS_FLAG
+        strokePaint.style = Paint.Style.STROKE
+        strokePaint.strokeWidth =
+            context.resources.getDimension(R.dimen.transient_taskbar_stroke_width)
+        if (Utilities.isDarkTheme(context)) {
+            strokeAlpha = DARK_THEME_STROKE_ALPHA
+            shadowAlpha = DARK_THEME_SHADOW_ALPHA
+        } else {
+            strokeAlpha = LIGHT_THEME_STROKE_ALPHA
+            shadowAlpha = LIGHT_THEME_SHADOW_ALPHA
+        }
 
         setCornerRoundness(DEFAULT_ROUNDNESS)
     }
@@ -236,6 +244,7 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
             keyShadowDistance,
             setColorAlphaBound(Color.BLACK, Math.round(newShadowAlpha))
         )
+        strokePaint.alpha = (paint.alpha * strokeAlpha) / 255
 
         lastDrawnTransientRect.set(
             transientBackgroundBounds.left + halfWidthDelta,
@@ -247,6 +256,7 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
         lastDrawnTransientRect.inset(horizontalInset, 0f)
 
         canvas.drawRoundRect(lastDrawnTransientRect, radius, radius, paint)
+        canvas.drawRoundRect(lastDrawnTransientRect, radius, radius, strokePaint)
     }
 
     /**
@@ -259,5 +269,9 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
 
     companion object {
         const val DEFAULT_ROUNDNESS = 1f
+        private const val DARK_THEME_STROKE_ALPHA = 51
+        private const val LIGHT_THEME_STROKE_ALPHA = 41
+        private const val DARK_THEME_SHADOW_ALPHA = 51f
+        private const val LIGHT_THEME_SHADOW_ALPHA = 25f
     }
 }
