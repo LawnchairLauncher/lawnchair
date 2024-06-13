@@ -418,9 +418,7 @@ public class RestoreDbTask {
         DeviceGridState deviceGridState = new DeviceGridState(context);
         FileLog.d(TAG, "restore initiated from backup: DeviceGridState=" + deviceGridState);
         LauncherPrefs.get(context).putSync(RESTORE_DEVICE.to(deviceGridState.getDeviceType()));
-        if (enableLauncherBrMetricsFixed()) {
-            LauncherPrefs.get(context).putSync(IS_FIRST_LOAD_AFTER_RESTORE.to(true));
-        }
+        LauncherPrefs.get(context).putSync(IS_FIRST_LOAD_AFTER_RESTORE.to(true));
     }
 
     @WorkerThread

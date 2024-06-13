@@ -96,7 +96,7 @@ public class FirstScreenBroadcast {
                 .collect(groupingBy(SessionInfo::getInstallerPackageName,
                         mapping(SessionInfo::getAppPackageName, Collectors.toSet())))
                 .forEach((installer, packages) ->
-                    sendBroadcastToInstaller(context, installer, packages, firstScreenItems));
+                        sendBroadcastToInstaller(context, installer, packages, firstScreenItems));
     }
 
     /**
