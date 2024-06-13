@@ -163,9 +163,8 @@ public class SplitToWorkspaceController {
                 new RectF(firstTaskStartingBounds), firstTaskEndingBounds,
                 false /* fadeWithThumbnail */, true /* isStagedTask */);
 
-        View mSplitDividerPlaceholderView = recentsView.getSplitSelectController()
-                .getSplitAnimationController().addDividerPlaceholderViewToAnim(pendingAnimation,
-                        mLauncher, secondTaskEndingBounds, view.getContext());
+        View backingScrim = recentsView.getSplitSelectController().getSplitAnimationController()
+                .addScrimBehindAnim(pendingAnimation, mLauncher, view.getContext());
 
         FloatingTaskView secondFloatingTaskView = FloatingTaskView.getFloatingTaskView(mLauncher,
                 view, bitmap, icon, secondTaskStartingBounds);
@@ -197,7 +196,7 @@ public class SplitToWorkspaceController {
             private void cleanUp() {
                 mLauncher.getDragLayer().removeView(firstFloatingTaskView);
                 mLauncher.getDragLayer().removeView(secondFloatingTaskView);
-                mLauncher.getDragLayer().removeView(mSplitDividerPlaceholderView);
+                mLauncher.getDragLayer().removeView(backingScrim);
                 mController.getSplitAnimationController().removeSplitInstructionsView(mLauncher);
                 mController.resetState();
             }

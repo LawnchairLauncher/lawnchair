@@ -738,7 +738,11 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     private int mSplitHiddenTaskViewIndex = -1;
     @Nullable
     private FloatingTaskView mSecondFloatingTaskView;
-    private View mSplitDividerPlaceholderView;
+    /**
+     * A fullscreen scrim that goes behind the splitscreen animation to hide color conflicts and
+     * possible flickers. Removed after tasks + divider finish animating in.
+     */
+    private View mSplitScrim;
 
     /**
      * The task to be removed and immediately re-added. Should not be added to task pool.
@@ -4926,9 +4930,8 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                 mSplitSelectStateController.getActiveSplitStagePosition(), firstTaskEndingBounds,
                 secondTaskEndingBounds);
 
-        mSplitDividerPlaceholderView = mSplitSelectStateController
-                .getSplitAnimationController().addDividerPlaceholderViewToAnim(pendingAnimation,
-                        mContainer, secondTaskEndingBounds, getContext());
+        mSplitScrim = mSplitSelectStateController.getSplitAnimationController()
+                .addScrimBehindAnim(pendingAnimation, mContainer, getContext());
         FloatingTaskView firstFloatingTaskView =
                 mSplitSelectStateController.getFirstFloatingTaskView();
         firstFloatingTaskView.getBoundsOnScreen(firstTaskStartingBounds);
@@ -4983,7 +4986,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             safeRemoveDragLayerView(mSplitSelectStateController.getFirstFloatingTaskView());
             safeRemoveDragLayerView(mSecondFloatingTaskView);
             safeRemoveDragLayerView(mSplitSelectStateController.getSplitInstructionsView());
-            safeRemoveDragLayerView(mSplitDividerPlaceholderView);
+            safeRemoveDragLayerView(mSplitScrim);
             mSecondFloatingTaskView = null;
             mSplitSelectSource = null;
             mSplitSelectStateController.getSplitAnimationController()

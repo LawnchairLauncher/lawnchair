@@ -27,6 +27,8 @@ public class TabletSplitToConfirmTimings
     public int getPlaceholderIconFadeInEnd() { return 250; }
     public int getStagedRectSlideStart() { return 0; }
     public int getStagedRectSlideEnd() { return 500; }
+    public int getBackingScrimFadeInStart() { return 0; }
+    public int getBackingScrimFadeInEnd() { return 400; }
 
     public int getDuration() { return TABLET_CONFIRM_DURATION; }
 }
