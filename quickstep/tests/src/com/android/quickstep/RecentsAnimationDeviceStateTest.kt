@@ -9,8 +9,19 @@ import com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE
 import com.android.launcher3.util.DisplayController.CHANGE_ROTATION
 import com.android.launcher3.util.DisplayController.Info
 import com.android.launcher3.util.NavigationMode
-import com.android.launcher3.util.window.WindowManagerProxy
 import com.android.quickstep.util.GestureExclusionManager
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DREAMING
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DISABLE_GESTURE_SPLIT_INVOCATION
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_MAGNIFICATION_OVERLAP
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
+import com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TOUCHPAD_GESTURES_DISABLED
+import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,7 +39,6 @@ import org.mockito.kotlin.whenever
 class RecentsAnimationDeviceStateTest {
 
     @Mock private lateinit var exclusionManager: GestureExclusionManager
-    @Mock private lateinit var windowManagerProxy: WindowManagerProxy
     @Mock private lateinit var info: Info
 
     private val context = ApplicationProvider.getApplicationContext() as Context
@@ -108,4 +118,88 @@ class RecentsAnimationDeviceStateTest {
 
         verifyZeroInteractions(exclusionManager)
     }
+
+    @Test
+    fun trackpadGesturesNotAllowedForSelectedStates() {
+        val disablingStates = GESTURE_DISABLING_SYSUI_STATES +
+                SYSUI_STATE_TOUCHPAD_GESTURES_DISABLED
+
+        allSysUiStates().forEach { state ->
+            val canStartGesture = !disablingStates.contains(state)
+            underTest.setSystemUiFlags(state)
+            assertThat(underTest.canStartTrackpadGesture()).isEqualTo(canStartGesture)
+        }
+    }
+
+    @Test
+    fun trackpadGesturesNotAllowedIfHomeAndOverviewIsDisabled() {
+        val stateToExpectedResult = mapOf(
+            SYSUI_STATE_HOME_DISABLED to true,
+            SYSUI_STATE_OVERVIEW_DISABLED to true,
+            DEFAULT_STATE
+                .enable(SYSUI_STATE_OVERVIEW_DISABLED)
+                .enable(SYSUI_STATE_HOME_DISABLED) to false
+        )
+
+        stateToExpectedResult.forEach { (state, allowed) ->
+            underTest.setSystemUiFlags(state)
+            assertThat(underTest.canStartTrackpadGesture()).isEqualTo(allowed)
+        }
+    }
+
+    @Test
+    fun systemGesturesNotAllowedForSelectedStates() {
+        val disablingStates = GESTURE_DISABLING_SYSUI_STATES + SYSUI_STATE_NAV_BAR_HIDDEN
+
+        allSysUiStates().forEach { state ->
+            val canStartGesture = !disablingStates.contains(state)
+            underTest.setSystemUiFlags(state)
+            assertThat(underTest.canStartSystemGesture()).isEqualTo(canStartGesture)
+        }
+    }
+
+    @Test
+    fun systemGesturesNotAllowedWhenGestureStateDisabledAndNavBarVisible() {
+        val stateToExpectedResult = mapOf(
+            DEFAULT_STATE
+                .enable(SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY)
+                .disable(SYSUI_STATE_NAV_BAR_HIDDEN) to true,
+            DEFAULT_STATE
+                .enable(SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY)
+                .enable(SYSUI_STATE_NAV_BAR_HIDDEN) to true,
+            DEFAULT_STATE
+                .disable(SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY)
+                .disable(SYSUI_STATE_NAV_BAR_HIDDEN) to true,
+            DEFAULT_STATE
+                .disable(SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY)
+                .enable(SYSUI_STATE_NAV_BAR_HIDDEN) to false,
+        )
+
+        stateToExpectedResult.forEach {(state, gestureAllowed) ->
+            underTest.setSystemUiFlags(state)
+            assertThat(underTest.canStartSystemGesture()).isEqualTo(gestureAllowed)
+        }
+    }
+
+    private fun allSysUiStates(): List<Long> {
+        // SYSUI_STATES_* are binary flags
+        return (0..SYSUI_STATES_COUNT).map { 1L shl it }
+    }
+
+    companion object {
+        private val GESTURE_DISABLING_SYSUI_STATES = listOf(
+            SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED,
+            SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING,
+            SYSUI_STATE_QUICK_SETTINGS_EXPANDED,
+            SYSUI_STATE_MAGNIFICATION_OVERLAP,
+            SYSUI_STATE_DEVICE_DREAMING,
+            SYSUI_STATE_DISABLE_GESTURE_SPLIT_INVOCATION,
+        )
+        private const val SYSUI_STATES_COUNT = 33
+        private const val DEFAULT_STATE = 0L
+    }
+
+    private fun Long.enable(state: Long) = this or state
+
+    private fun Long.disable(state: Long) = this and state.inv()
 }

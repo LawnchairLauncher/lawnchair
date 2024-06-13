@@ -49,7 +49,7 @@
     <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"खबरों और पत्रिकाओं वाले ऐप्लिकेशन"</string>
     <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"मनोरंजन से जुड़े ऐप्लिकेशन"</string>
     <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"सोशल मीडिया ऐप्लिकेशन"</string>
-    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"आपके लिए सुझाए गए ऐप्लिकेशन"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"आपके लिए सुझाए गए"</string>
     <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> के विजेट दाईं ओर, खोज का विजेट और अन्य विकल्प बाईं ओर"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# विजेट}one{# विजेट}other{# विजेट}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# शॉर्टकट}one{# शॉर्टकट}other{# शॉर्टकट}}"</string>

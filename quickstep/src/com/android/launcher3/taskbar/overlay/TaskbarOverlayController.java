@@ -133,14 +133,17 @@ public final class TaskbarOverlayController {
      * <p>
      * This method should be called after an exit animation finishes, if applicable.
      */
-    @SuppressLint("WrongConstant")
     void maybeCloseWindow() {
-        if (mOverlayContext != null && (AbstractFloatingView.hasOpenView(mOverlayContext, TYPE_ALL)
-                || mOverlayContext.getDragController().isSystemDragInProgress())) {
-            return;
-        }
+        if (!canCloseWindow()) return;
         mProxyView.close(false);
         onDestroy();
+    }
+
+    @SuppressLint("WrongConstant")
+    private boolean canCloseWindow() {
+        if (mOverlayContext == null) return true;
+        if (AbstractFloatingView.hasOpenView(mOverlayContext, TYPE_ALL)) return false;
+        return !mOverlayContext.getDragController().isSystemDragInProgress();
     }
 
     /** Destroys the controller and any overlay window if present. */
@@ -212,10 +215,17 @@ public final class TaskbarOverlayController {
 
         @Override
         protected void handleClose(boolean animate) {
-            if (mIsOpen) {
-                mTaskbarContext.getDragLayer().removeView(this);
-                Optional.ofNullable(mOverlayContext).ifPresent(c -> closeAllOpenViews(c, animate));
-            }
+            if (!mIsOpen) return;
+            mTaskbarContext.getDragLayer().removeView(this);
+            Optional.ofNullable(mOverlayContext).ifPresent(c -> {
+                if (canCloseWindow()) {
+                    onDestroy(); // Window is already ready to be destroyed.
+                } else {
+                    // Close window's AFVs before destroying it. Its drag layer will attempt to
+                    // close the proxy view again once its children are removed.
+                    closeAllOpenViews(c, animate);
+                }
+            });
         }
 
         @Override

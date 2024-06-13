@@ -281,8 +281,26 @@ public class PrivateProfileManager extends UserProfileManager {
 
     @Override
     public void setQuietMode(boolean enable) {
-        super.setQuietMode(enable);
+        UI_HELPER_EXECUTOR.post(() ->
+                mUserCache.getUserProfiles()
+                        .stream()
+                        .filter(getUserMatcher())
+                        .findFirst()
+                        .ifPresent(userHandle -> setQuietModeSafely(enable, userHandle)));
         mReadyToAnimate = true;
+    }
+
+    /**
+     * Sets Quiet Mode for Private Profile.
+     * If {@link SecurityException} is thrown, prompts the user to set this launcher as HOME app.
+     */
+    private void setQuietModeSafely(boolean enable, UserHandle userHandle) {
+        try {
+            mUserManager.requestQuietModeEnabled(enable, userHandle);
+        } catch (SecurityException ex) {
+            ApiWrapper.INSTANCE.get(mAllApps.mActivityContext)
+                    .assignDefaultHomeRole(mAllApps.mActivityContext);
+        }
     }
 
     /**

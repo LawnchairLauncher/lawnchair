@@ -22,6 +22,7 @@ import android.service.notification.StatusBarNotification;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Utilities;
 
@@ -37,6 +38,11 @@ public class NotificationKeyData {
     @NonNull
     public final String[] personKeysFromNotification;
     public int count;
+
+    @VisibleForTesting
+    public NotificationKeyData(String notificationKey) {
+        this(notificationKey, null, 1, new String[]{});
+    }
 
     private NotificationKeyData(String notificationKey, String shortcutId, int count,
             String[] personKeysFromNotification) {

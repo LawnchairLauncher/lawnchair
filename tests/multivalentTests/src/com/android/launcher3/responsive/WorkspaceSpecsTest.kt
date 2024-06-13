@@ -22,7 +22,6 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
-import com.android.launcher3.tests.R as TestR
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -45,7 +44,7 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
     fun parseValidFile() {
         val workspaceSpecs =
             ResponsiveSpecsProvider.create(
-                TestResourceHelper(context, TestR.xml.valid_workspace_file),
+                TestResourceHelper(context, "valid_workspace_file".xmlToId()),
                 ResponsiveSpecType.Workspace
             )
 
@@ -169,7 +168,7 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_missingTag_throwsError() {
         ResponsiveSpecsProvider.create(
-            TestResourceHelper(context, TestR.xml.invalid_workspace_file_case_1),
+            TestResourceHelper(context, "invalid_workspace_file_case_1".xmlToId()),
             ResponsiveSpecType.Workspace
         )
     }
@@ -177,7 +176,7 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_moreThanOneValuePerTag_throwsError() {
         ResponsiveSpecsProvider.create(
-            TestResourceHelper(context, TestR.xml.invalid_workspace_file_case_2),
+            TestResourceHelper(context, "invalid_workspace_file_case_2".xmlToId()),
             ResponsiveSpecType.Workspace
         )
     }
@@ -185,7 +184,7 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_valueBiggerThan1_throwsError() {
         ResponsiveSpecsProvider.create(
-            TestResourceHelper(context, TestR.xml.invalid_workspace_file_case_3),
+            TestResourceHelper(context, "invalid_workspace_file_case_3".xmlToId()),
             ResponsiveSpecType.Workspace
         )
     }
@@ -193,7 +192,7 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_matchWorkspace_true_throwsError() {
         ResponsiveSpecsProvider.create(
-            TestResourceHelper(context, TestR.xml.invalid_workspace_file_case_4),
+            TestResourceHelper(context, "invalid_workspace_file_case_4".xmlToId()),
             ResponsiveSpecType.Workspace
         )
     }

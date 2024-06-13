@@ -32,6 +32,7 @@ import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.Flags.enableAdditionalHomeAnimations;
 import static com.android.launcher3.Flags.enableGridOnlyOverview;
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.PagedView.INVALID_PAGE;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
@@ -1193,6 +1194,10 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
                 setDividerShown(true);
                 break;
         }
+        if (mContainerInterface.getTaskbarController() != null) {
+            // Resets this value as the gesture is now complete.
+            mContainerInterface.getTaskbarController().setUserIsGoingHome(false);
+        }
         ActiveGestureLog.INSTANCE.addLog(
                 new ActiveGestureLog.CompoundString("onSettledOnEndTarget ")
                         .append(endTarget.name()),
@@ -1340,6 +1345,13 @@ public abstract class AbsSwipeUpHandler<T extends RecentsViewContainer,
         // Set the state, but don't notify until the animation completes
         mGestureState.setEndTarget(endTarget, false /* isAtomic */);
         mAnimationFactory.setEndTarget(endTarget);
+
+        if (enableScalingRevealHomeAnimation()
+                && mIsTransientTaskbar
+                && mContainerInterface.getTaskbarController() != null) {
+            mContainerInterface.getTaskbarController()
+                    .setUserIsGoingHome(endTarget == GestureState.GestureEndTarget.HOME);
+        }
 
         float endShift = endTarget == ALL_APPS ? mDragLengthFactor
                 : endTarget.isLauncher ? 1 : 0;
