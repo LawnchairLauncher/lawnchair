@@ -154,7 +154,8 @@ public final class FallbackActivityInterface extends
 
     @Override
     public void onExitOverview(RotationTouchHelper deviceState, Runnable exitRunnable) {
-        final StateManager<RecentsState> stateManager = getCreatedContainer().getStateManager();
+        final StateManager<RecentsState, RecentsActivity> stateManager =
+                getCreatedContainer().getStateManager();
         if (stateManager.getState() == HOME) {
             exitRunnable.run();
             notifyRecentsOfOrientation(deviceState);

@@ -78,7 +78,7 @@ class SplitAnimationControllerTest {
     private val mockSplitSourceDrawable: Drawable = mock()
     private val mockSplitSourceView: View = mock()
 
-    private val stateManager: StateManager<*> = mock()
+    private val stateManager: StateManager<*, *> = mock()
     private val depthController: DepthController = mock()
     private val transitionInfo: TransitionInfo = mock()
     private val transaction: Transaction = mock()

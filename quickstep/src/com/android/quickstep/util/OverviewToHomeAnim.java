@@ -62,7 +62,7 @@ public class OverviewToHomeAnim {
      * {@link WorkspaceRevealAnim}.
      */
     public void animateWithVelocity(float velocity) {
-        StateManager<LauncherState> stateManager = mLauncher.getStateManager();
+        StateManager<LauncherState, Launcher> stateManager = mLauncher.getStateManager();
         LauncherState startState = stateManager.getState();
         if (startState != OVERVIEW) {
             Log.e(TAG, "animateFromOverviewToHome: unexpected start state " + startState);

@@ -27,6 +27,7 @@ import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_COUNT;
 import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.util.OnboardingPrefs.HOTSEAT_DISCOVERY_TIP_COUNT;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
@@ -48,7 +49,7 @@ public class QuickstepOnboardingPrefs {
      * Sets up the initial onboarding behavior for the launcher
      */
     public static void setup(QuickstepLauncher launcher) {
-        StateManager<LauncherState> stateManager = launcher.getStateManager();
+        StateManager<LauncherState, Launcher> stateManager = launcher.getStateManager();
         if (!HOME_BOUNCE_SEEN.get(launcher)) {
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 @Override

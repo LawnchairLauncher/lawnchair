@@ -35,7 +35,7 @@ import java.util.function.Consumer
 
 /** Manage recents related operations with desktop tasks */
 class DesktopRecentsTransitionController(
-    private val stateManager: StateManager<*>,
+    private val stateManager: StateManager<*, *>,
     private val systemUiProxy: SystemUiProxy,
     private val appThread: IApplicationThread,
     private val depthController: DepthController?
@@ -64,7 +64,7 @@ class DesktopRecentsTransitionController(
 
     private class RemoteDesktopLaunchTransitionRunner(
         private val desktopTaskView: DesktopTaskView,
-        private val stateManager: StateManager<*>,
+        private val stateManager: StateManager<*, *>,
         private val depthController: DepthController?,
         private val successCallback: Consumer<Boolean>?
     ) : RemoteTransitionStub() {

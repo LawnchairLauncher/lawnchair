@@ -312,7 +312,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private static boolean sIsNewProcess = true;
 
-    private StateManager<LauncherState> mStateManager;
+    private StateManager<LauncherState, Launcher> mStateManager;
 
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
 
@@ -2775,7 +2775,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     @Override
-    protected void collectStateHandlers(List<StateHandler> out) {
+     public void collectStateHandlers(List<StateHandler<LauncherState>> out) {
         out.add(getAllAppsController());
         out.add(getWorkspace());
     }
@@ -2996,7 +2996,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     @Override
-    public StateManager<LauncherState> getStateManager() {
+    public StateManager<LauncherState, Launcher> getStateManager() {
         return mStateManager;
     }
 
