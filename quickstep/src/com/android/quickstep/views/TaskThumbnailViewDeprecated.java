@@ -61,6 +61,8 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 
+import java.util.Objects;
+
 /**
  * A task in the Recents view.
  *
@@ -222,14 +224,16 @@ public class TaskThumbnailViewDeprecated extends View implements ViewPool.Reusab
     public void setThumbnail(@Nullable Task task, @Nullable ThumbnailData thumbnailData,
             boolean refreshNow) {
         mTask = task;
-        boolean thumbnailWasNull = mThumbnailData == null;
+        ThumbnailData oldThumbnailData = mThumbnailData;
         mThumbnailData = (thumbnailData != null && thumbnailData.getThumbnail() != null)
                 ? thumbnailData : null;
         if (mTask != null) {
             updateSplashView(mTask.icon);
         }
         if (refreshNow) {
-            refresh(thumbnailWasNull && mThumbnailData != null);
+            Long oldSnapshotId = oldThumbnailData != null ? oldThumbnailData.getSnapshotId() : null;
+            Long snapshotId = mThumbnailData != null ? mThumbnailData.getSnapshotId() : null;
+            refresh(snapshotId != null && !Objects.equals(oldSnapshotId, snapshotId));
         }
     }
 
