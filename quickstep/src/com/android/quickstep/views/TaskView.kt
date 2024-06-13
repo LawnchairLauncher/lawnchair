@@ -63,6 +63,7 @@ import com.android.launcher3.pm.UserCache
 import com.android.launcher3.testing.TestLogging
 import com.android.launcher3.testing.shared.TestProtocol
 import com.android.launcher3.util.CancellableTask
+import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.MultiPropertyFactory
 import com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE
@@ -76,6 +77,7 @@ import com.android.launcher3.util.TraceHelper
 import com.android.launcher3.util.TransformingTouchDelegate
 import com.android.launcher3.util.ViewPool
 import com.android.launcher3.util.rects.set
+import com.android.launcher3.views.ActivityContext
 import com.android.quickstep.RecentsModel
 import com.android.quickstep.RemoteAnimationTargets
 import com.android.quickstep.TaskAnimationManager
@@ -1574,7 +1576,20 @@ constructor(
 
         @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
         open fun computeWindowCornerRadius(context: Context): Float {
-            return QuickStepContract.getWindowCornerRadius(context)
+            val activityContext: ActivityContext? = ActivityContext.lookupContextNoThrow(context)
+
+            // The corner radius is fixed to match when Taskbar is persistent mode
+            return if (
+                activityContext != null &&
+                    activityContext.deviceProfile?.isTaskbarPresent == true &&
+                    DisplayController.isTransientTaskbar(context)
+            ) {
+                context.resources
+                    .getDimensionPixelSize(R.dimen.persistent_taskbar_corner_radius)
+                    .toFloat()
+            } else {
+                QuickStepContract.getWindowCornerRadius(context)
+            }
         }
 
         /** Sets the progress in range [0, 1] */
