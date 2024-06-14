@@ -42,6 +42,7 @@ import com.android.launcher3.widget.WidgetSections;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.wm.shell.Flags;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -218,6 +219,7 @@ public class WidgetsModel {
         // add and update.
         mWidgetsList.putAll(rawWidgetsShortcuts.stream()
                 .filter(new WidgetValidityCheck(app))
+                .filter(new WidgetFlagCheck())
                 .flatMap(widgetItem -> getPackageUserKeys(app.getContext(), widgetItem).stream()
                         .map(key -> new Pair<>(packageItemInfoCache.getOrCreate(key), widgetItem)))
                 .collect(groupingBy(pair -> pair.first, mapping(pair -> pair.second, toList()))));
@@ -373,6 +375,21 @@ public class WidgetsModel {
                 return false;
             }
 
+            return true;
+        }
+    }
+
+    private static class WidgetFlagCheck implements Predicate<WidgetItem> {
+
+        private static final String BUBBLES_SHORTCUT_WIDGET =
+                "com.android.systemui/com.android.wm.shell.bubbles.shortcut"
+                        + ".CreateBubbleShortcutActivity";
+
+        @Override
+        public boolean test(WidgetItem widgetItem) {
+            if (BUBBLES_SHORTCUT_WIDGET.equals(widgetItem.componentName.flattenToString())) {
+                return Flags.enableRetrievableBubbles();
+            }
             return true;
         }
     }
