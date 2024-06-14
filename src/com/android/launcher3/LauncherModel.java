@@ -480,7 +480,7 @@ public class LauncherModel implements InstallSessionTracker.Callback {
                 }
             }
 
-            if (!removedIds.isEmpty()) {
+            if (!removedIds.isEmpty() && !isAppArchived) {
                 taskController.deleteAndBindComponentsRemoved(
                         ItemInfoMatcher.ofItemIds(removedIds),
                         "removed because install session failed");
