@@ -79,6 +79,13 @@ flag {
 }
 
 flag {
+    name: "enable_taskbar_customization"
+    namespace: "launcher"
+    description: "Enables taskbar customization framework."
+    bug: "347281365"
+}
+
+flag {
     name: "enable_unfolded_two_pane_picker"
     namespace: "launcher"
     description: "Enables two pane widget picker for unfolded foldables"
