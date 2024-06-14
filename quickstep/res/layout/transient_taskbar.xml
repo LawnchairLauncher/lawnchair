@@ -45,8 +45,6 @@
         android:layout_gravity="bottom|end"
         android:layout_marginHorizontal="@dimen/transient_taskbar_bottom_margin"
         android:paddingTop="@dimen/bubblebar_pointer_visible_size"
-        android:paddingEnd="@dimen/taskbar_icon_spacing"
-        android:paddingStart="@dimen/taskbar_icon_spacing"
         android:visibility="gone"
         android:gravity="center"
         android:clipChildren="false"

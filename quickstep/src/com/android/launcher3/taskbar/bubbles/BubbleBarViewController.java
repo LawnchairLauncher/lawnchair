@@ -108,9 +108,11 @@ public class BubbleBarViewController {
         mBubbleDragController = bubbleControllers.bubbleDragController;
         mTaskbarStashController = controllers.taskbarStashController;
         mTaskbarInsetsController = controllers.taskbarInsetsController;
+        mBubbleBarViewAnimator = new BubbleBarViewAnimator(mBarView, mBubbleStashController);
 
-        mActivity.addOnDeviceProfileChangeListener(dp -> setBubbleBarIconSize(dp.taskbarIconSize));
-        setBubbleBarIconSize(mActivity.getDeviceProfile().taskbarIconSize);
+        mActivity.addOnDeviceProfileChangeListener(
+                dp -> updateBubbleBarIconSize(dp.taskbarIconSize, /* animate= */ true));
+        updateBubbleBarIconSize(mActivity.getDeviceProfile().taskbarIconSize, /* animate= */ false);
         mBubbleBarScale.updateValue(1f);
         mBubbleClickListener = v -> onBubbleClicked(v);
         mBubbleBarClickListener = v -> onBubbleBarClicked();
@@ -123,8 +125,6 @@ public class BubbleBarViewController {
                         mBoundsChangeListener.onBoundsChanged();
                     }
                 });
-
-        mBubbleBarViewAnimator = new BubbleBarViewAnimator(mBarView, mBubbleStashController);
         mBarView.setController(new BubbleBarView.Controller() {
             @Override
             public float getBubbleBarTranslationY() {
@@ -299,33 +299,6 @@ public class BubbleBarViewController {
         }
     }
 
-    private void setBubbleBarIconSize(int newIconSize) {
-        if (newIconSize == mIconSize) {
-            return;
-        }
-        Resources res = mActivity.getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        float smallIconSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                APP_ICON_SMALL_DP, dm);
-        float mediumIconSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                APP_ICON_MEDIUM_DP, dm);
-        float largeIconSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                APP_ICON_LARGE_DP, dm);
-        float smallMediumThreshold = (smallIconSize + mediumIconSize) / 2f;
-        float mediumLargeThreshold = (mediumIconSize + largeIconSize) / 2f;
-        mIconSize = newIconSize <= smallMediumThreshold
-                ? res.getDimensionPixelSize(R.dimen.bubblebar_icon_size_small) :
-                res.getDimensionPixelSize(R.dimen.bubblebar_icon_size);
-        float bubbleBarPadding = newIconSize >= mediumLargeThreshold
-                ? res.getDimensionPixelSize(R.dimen.bubblebar_icon_spacing_large) :
-                res.getDimensionPixelSize(R.dimen.bubblebar_icon_spacing);
-
-        mBarView.setIconSizeAndPadding(mIconSize, bubbleBarPadding);
-        mBarView.setPadding((int) bubbleBarPadding, mBarView.getPaddingTop(),
-                (int) bubbleBarPadding,
-                mBarView.getPaddingBottom());
-    }
-
     /** Sets a callback that updates the selected bubble after the bubble bar collapses. */
     public void setUpdateSelectedBubbleAfterCollapse(
             Consumer<String> updateSelectedBubbleAfterCollapse) {
@@ -359,6 +332,30 @@ public class BubbleBarViewController {
     //
     // Modifying view related properties.
     //
+
+    private void updateBubbleBarIconSize(int newIconSize, boolean animate) {
+        Resources res = mActivity.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        float smallIconSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                APP_ICON_SMALL_DP, dm);
+        float mediumIconSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                APP_ICON_MEDIUM_DP, dm);
+        float largeIconSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                APP_ICON_LARGE_DP, dm);
+        float smallMediumThreshold = (smallIconSize + mediumIconSize) / 2f;
+        float mediumLargeThreshold = (mediumIconSize + largeIconSize) / 2f;
+        mIconSize = newIconSize <= smallMediumThreshold
+                ? res.getDimensionPixelSize(R.dimen.bubblebar_icon_size_small) :
+                res.getDimensionPixelSize(R.dimen.bubblebar_icon_size);
+        float bubbleBarPadding = newIconSize >= mediumLargeThreshold
+                ? res.getDimensionPixelSize(R.dimen.bubblebar_icon_spacing_large) :
+                res.getDimensionPixelSize(R.dimen.bubblebar_icon_spacing);
+        if (animate) {
+            mBarView.animateBubbleBarIconSize(mIconSize, bubbleBarPadding);
+        } else {
+            mBarView.setIconSizeAndPadding(mIconSize, bubbleBarPadding);
+        }
+    }
 
     /**
      * Sets the translation of the bubble bar during the swipe up gesture.
