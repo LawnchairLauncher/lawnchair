@@ -27,6 +27,8 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"பாதுகாப்புப் பயன்முறையில் விட்ஜெட்கள் முடக்கப்பட்டுள்ளன"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ஷார்ட்கட் இல்லை"</string>
     <string name="home_screen" msgid="5629429142036709174">"முகப்பு"</string>
+    <!-- no translation found for set_default_home_app (5808906607627586381) -->
+    <skip />
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"திரைப் பிரிப்பு"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$sக்கான ஆப்ஸ் தகவல்கள்"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$sக்கான உபயோக அமைப்புகள்"</string>
@@ -88,7 +90,7 @@
     <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"ஆப்ஸை நிறுவல் நீக்கு"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"நிறுவு"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"பரிந்துரைக்காதே"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"கணிக்கப்பட்ட ஆப்ஸைப் பின் செய்தல்"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"கணிக்கப்பட்டதைப் பின் செய்"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"குறுக்குவழிகளை நிறுவுதல்"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"பயனரின் அனுமதி இல்லாமல் குறுக்குவழிகளைச் சேர்க்கப் ஆப்ஸை அனுமதிக்கிறது."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"முகப்புத் திரையின் அமைப்புகளையும் ஷார்ட்கட்களையும் படித்தல்"</string>
