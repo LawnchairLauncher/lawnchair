@@ -39,6 +39,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.quickstep.DeviceConfigWrapper;
@@ -163,7 +164,8 @@ public class AnimatorControllerWithResistance {
                     recentsOrientedState.getContainerInterface().getCreatedContainer();
             if (container != null) {
                 RecentsView recentsView = container.getOverviewPanel();
-                StateManager<LauncherState> stateManager = recentsView.getStateManager();
+                StateManager<LauncherState, StatefulActivity<LauncherState>> stateManager =
+                        recentsView.getStateManager();
                 if (stateManager.isInStableState(LauncherState.BACKGROUND_APP)
                         && stateManager.isInTransition()) {
 

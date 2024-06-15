@@ -17,6 +17,7 @@
 package com.android.quickstep.util;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.app.animation.Interpolators.LINEAR;
 
 import android.view.animation.Interpolator;
 
@@ -31,6 +32,8 @@ abstract class SplitToConfirmTimings implements SplitAnimationTimings {
     abstract public int getPlaceholderIconFadeInEnd();
     abstract public int getStagedRectSlideStart();
     abstract public int getStagedRectSlideEnd();
+    abstract public int getBackingScrimFadeInStart();
+    abstract public int getBackingScrimFadeInEnd();
 
     // Common timings
     public int getInstructionsFadeStart() { return 0; }
@@ -39,6 +42,7 @@ abstract class SplitToConfirmTimings implements SplitAnimationTimings {
     public Interpolator getStagedRectYInterpolator() { return EMPHASIZED; }
     public Interpolator getStagedRectScaleXInterpolator() { return EMPHASIZED; }
     public Interpolator getStagedRectScaleYInterpolator() { return EMPHASIZED; }
+    public Interpolator getBackingScrimFadeInterpolator() { return LINEAR; }
 
     abstract public int getDuration();
 
@@ -47,5 +51,11 @@ abstract class SplitToConfirmTimings implements SplitAnimationTimings {
     }
     public float getInstructionsFadeEndOffset() {
         return (float) getInstructionsFadeEnd() / getDuration();
+    }
+    public float getBackingScrimFadeInStartOffset() {
+        return (float) getBackingScrimFadeInStart() / getDuration();
+    }
+    public float getBackingScrimFadeInEndOffset() {
+        return (float) getBackingScrimFadeInEnd() / getDuration();
     }
 }

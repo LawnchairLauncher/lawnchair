@@ -1118,7 +1118,7 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
     }
 
     @Override
-    protected void collectStateHandlers(List<StateHandler> out) {
+    public void collectStateHandlers(List<StateHandler<LauncherState>> out) {
         super.collectStateHandlers(out);
         out.add(getDepthController());
         out.add(new RecentsViewStateController(this));

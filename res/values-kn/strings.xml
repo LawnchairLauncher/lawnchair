@@ -27,6 +27,8 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"ಸುರಕ್ಷಿತ ಮೋಡ್‌ನಲ್ಲಿ ವಿಜೆಟ್‌ಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ಶಾರ್ಟ್‌ಕಟ್ ಲಭ್ಯವಿಲ್ಲ"</string>
     <string name="home_screen" msgid="5629429142036709174">"ಹೋಮ್"</string>
+    <!-- no translation found for set_default_home_app (5808906607627586381) -->
+    <skip />
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ಗಾಗಿ ಆ್ಯಪ್ ಮಾಹಿತಿ"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s ಗೆ ಸಂಬಂಧಿಸಿದ ಬಳಕೆಯ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
@@ -85,7 +87,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ಆ್ಯಪ್ ಮಾಹಿತಿ"</string>
     <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"ಖಾಸಗಿಯಾಗಿ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"</string>
-    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"ಆ್ಯಪ್‌ ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"ಆ್ಯಪ್‌ ಅನ್ಇನ್ಸ್ಟಾಲ್ ಮಾಡಿ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ಸ್ಥಾಪಿಸಿ"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ಆ್ಯಪ್ ಅನ್ನು ಸೂಚಿಸಬೇಡಿ"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"ಮುನ್ನೋಟ ಪಿನ್ ಮಾಡಿ"</string>
@@ -192,6 +194,6 @@
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ಖಾಸಗಿ, ಲಾಕ್ ಮಾಡಲಾಗಿದೆ."</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ಲಾಕ್ ಮಾಡಿ"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಪರಿವರ್ತನೆಯಾಗುತ್ತಿದೆ"</string>
-    <string name="ps_add_button_label" msgid="8127988716897128773">"ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"</string>
+    <string name="ps_add_button_label" msgid="8127988716897128773">"ಇನ್‌ಸ್ಟಾಲ್"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"ಆ್ಯಪ್‌ಗಳನ್ನು ಪ್ರೈವೇಟ್ ಸ್ಪೇಸ್‌ನಲ್ಲಿ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ"</string>
 </resources>
