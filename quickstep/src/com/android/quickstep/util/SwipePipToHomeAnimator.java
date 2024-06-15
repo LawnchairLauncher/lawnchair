@@ -50,6 +50,8 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
 
     private static final float END_PROGRESS = 1.0f;
 
+    private static final float PIP_ASPECT_RATIO_MISMATCH_THRESHOLD = 0.01f;
+
     private final int mTaskId;
     private final ActivityInfo mActivityInfo;
     private final SurfaceControl mLeash;
@@ -135,6 +137,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         mDestinationBoundsTransformed.set(destinationBoundsTransformed);
         mSurfaceTransactionHelper = new PipSurfaceTransactionHelper(cornerRadius, shadowRadius);
 
+        final float aspectRatio = destinationBounds.width() / (float) destinationBounds.height();
         String reasonForCreateOverlay = null; // For debugging purpose.
         if (sourceRectHint.isEmpty()) {
             reasonForCreateOverlay = "Source rect hint is empty";
@@ -149,15 +152,20 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         } else if (!appBounds.contains(sourceRectHint)) {
             // This is a situation in which the source hint rect is outside the app bounds, so it is
             // not a valid rectangle to use for cropping app surface
-            sourceRectHint.setEmpty();
             reasonForCreateOverlay = "Source rect hint exceeds display bounds " + sourceRectHint;
+            sourceRectHint.setEmpty();
+        } else if (Math.abs(
+                aspectRatio - (sourceRectHint.width() / (float) sourceRectHint.height()))
+                > PIP_ASPECT_RATIO_MISMATCH_THRESHOLD) {
+            // The source rect hint does not aspect ratio
+            reasonForCreateOverlay = "Source rect hint does not match aspect ratio "
+                    + sourceRectHint + " aspect ratio " + aspectRatio;
+            sourceRectHint.setEmpty();
         }
 
         if (sourceRectHint.isEmpty()) {
             // Crop a Rect matches the aspect ratio and pivots at the center point.
             // To make the animation path simplified.
-            final float aspectRatio = destinationBounds.width()
-                    / (float) destinationBounds.height();
             if ((appBounds.width() / (float) appBounds.height()) > aspectRatio) {
                 // use the full height.
                 mSourceRectHint.set(0, 0,
