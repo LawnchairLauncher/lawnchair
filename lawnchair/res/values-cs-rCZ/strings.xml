@@ -433,15 +433,15 @@
     <string name="system_settings">Systémová nastavení</string>
     <string name="action_unlock">Odemknout</string>
     <string name="action_lock">Uzamknout</string>
-    <string name="allapps_twoline_label">Use Multiple Lines</string>
-    <string name="hidden_apps_show_always">Always</string>
-    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
-    <string name="hidden_apps_show_never">Never</string>
-    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="allapps_twoline_label">Použít několik řádků</string>
+    <string name="hidden_apps_show_always">Vždy</string>
+    <string name="hidden_apps_show_name_typed">Pokud je celý název zadán</string>
+    <string name="hidden_apps_show_never">Nikdy</string>
+    <string name="show_hidden_apps_in_search_results">Zobrazit skryté aplikace ve vyhledávání</string>
     <string name="search_algorithm_app_search">Hledání aplikací</string>
-    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
-    <string name="app_search_algorithm">Search Algorithm</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="search_algorithm_global_search_on_device">Globální vyhledávání (v zařízení)</string>
+    <string name="search_algorithm_global_search_via_asi">Globální vyhledávání (prostřednictvím ASI)</string>
+    <string name="app_search_algorithm">Algoritmus Hledání</string>
+    <string name="all_apps_search_result_calculator">Kalkulačka</string>
+    <string name="accessibility_service_description">K uzamčení telefonu při provádění gesta vyžaduje Lawnchair přístup k usnadnění.\n\nLawnchair nesleduje žádnou akci uživatele, ačkoli oprávnění k tomu je vyžadováno pro všechny služby usnadnění. Lawnchair zahodí jakoukoli událost odeslanou systémem.\n\nAby byl váš telefon uzamčen, používá Lawnchair službu usnadnění performGlobalAction.</string>
 </resources>
