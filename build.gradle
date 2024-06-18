@@ -406,7 +406,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$roomVersion"
     ksp "androidx.room:room-compiler:$roomVersion"
 
-    implementation "com.github.topjohnwu.libsu:service:5.2.2"
+    implementation "com.github.topjohnwu.libsu:service:5.3.0"
 
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
@@ -446,7 +446,7 @@ licensee {
     allow("BSD-3-Clause")
     allow("GPL-2.0-or-later")
     allowDependency("com.github.topjohnwu.libsu", "core", "5.2.2")
-    allowDependency("com.github.topjohnwu.libsu", "service", "5.2.2")
+    allowDependency("com.github.topjohnwu.libsu", "service", "5.3.0")
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
     allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
     allowUrl("https://opensource.org/licenses/mit-license.php")
