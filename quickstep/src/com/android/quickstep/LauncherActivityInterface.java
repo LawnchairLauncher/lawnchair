@@ -35,7 +35,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherInitListener;
@@ -213,10 +212,7 @@ public final class LauncherActivityInterface extends
         if (launcher.isStarted() && (isInLiveTileMode() || launcher.hasBeenResumed())) {
             return launcher;
         }
-        if (Flags.useActivityOverlay()
-                && SystemUiProxy.INSTANCE.get(launcher).getHomeVisibilityState().isHomeVisible()) {
-            return launcher;
-        }
+
         return null;
     }
 
