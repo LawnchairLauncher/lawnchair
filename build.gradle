@@ -24,7 +24,7 @@ allprojects {
         apply plugin: 'org.gradle.android.cache-fix'
 
         android {
-            compileSdk 34
+            compileSdk 35
             defaultConfig {
                 minSdk 26
                 targetSdk 34
