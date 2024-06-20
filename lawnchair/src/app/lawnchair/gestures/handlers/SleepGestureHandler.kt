@@ -68,7 +68,7 @@ class SleepMethodRoot(context: Context) : SleepGestureHandler.SleepMethod(contex
     override suspend fun isSupported() = Shell.getShell().isRoot
 
     override suspend fun sleep(launcher: LawnchairLauncher) {
-        Shell.su("input keyevent 26").exec()
+        Shell.cmd("input keyevent 26").exec()
     }
 }
 
