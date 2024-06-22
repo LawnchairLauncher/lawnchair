@@ -1,42 +1,42 @@
 {
     "labels": [
-        "dependencies"
+        "dependencies",
     ],
     "extends": [
-        "config:base"
+        "config:base",
     ],
     "packageRules": [
         {
             "groupName": "Kotlin and KSP",
             "matchPackagePrefixes": [
-                "com.google.devtools.ksp"
+                "com.google.devtools.ksp",
             ],
             "matchPackagePatterns": [
-                "org.jetbrains.kotlin.*"
+                "org.jetbrains.kotlin.*",
             ]
         },
         {
             "groupName": "AGP",
             "matchPackagePatterns": [
-                "com.android.*"
+                "com.android.*",
             ]
         },
         {
             "groupName": "dev.rikka.tools.refine",
             "matchPackagePrefixes": [
-                "dev.rikka.tools.refine"
+                "dev.rikka.tools.refine",
             ]
         },
         {
             "groupName": "androidx.lifecycle",
             "matchPackagePatterns": [
-                "androidx.lifecycle:*"
+                "androidx.lifecycle:*",
             ]
         },
         {
             "groupName": "Dagger",
             "matchPackagePrefixes": [
-                "com.google.dagger"
+                "com.google.dagger",
             ]
         }
     ]
