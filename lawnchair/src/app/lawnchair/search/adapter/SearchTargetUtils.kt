@@ -50,7 +50,7 @@ fun createSearchTarget(
 ): SearchTargetCompat {
     return SearchTargetCompat.Builder(
         SearchTargetCompat.RESULT_TYPE_REDIRECTION,
-        LayoutType.SMALL_ICON_HORIZONTAL_TEXT,
+        LayoutType.ICON_HORIZONTAL_TEXT,
         generateHashKey(id),
     )
         .setPackageName(pkg)
