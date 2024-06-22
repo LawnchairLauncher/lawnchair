@@ -53,6 +53,6 @@ fun ColorPreference(
         description = {
             Text(text = adapter.state.value.colorPreferenceEntry.label())
         },
-        modifier = modifier.clickable { navController.navigate(route = "/colorSelection/${model.prefObject.key.name}/") },
+        modifier = modifier.clickable { navController.navigate(route = "colorSelection/${model.prefObject.key.name}") },
     )
 }

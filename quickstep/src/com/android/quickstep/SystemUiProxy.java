@@ -52,6 +52,7 @@ import android.window.IOnBackInvokedCallback;
 import android.window.RemoteTransition;
 import android.window.TaskSnapshot;
 import android.window.TransitionFilter;
+import android.window.TransitionInfo;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
@@ -1467,6 +1468,27 @@ public class SystemUiProxy implements ISystemUiProxy {
             public void onAnimationStart(IRecentsAnimationController controller,
                     RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
                     Rect homeContentInsets, Rect minimizedHomeBounds) {
+                listener.onAnimationStart(new RecentsAnimationControllerCompat(controller), apps,
+                        wallpapers, homeContentInsets, minimizedHomeBounds);
+            }
+
+            // Android 14 QPR2
+            public void onAnimationStart(IRecentsAnimationController controller,
+                                         RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+                                         Rect homeContentInsets, Rect minimizedHomeBounds, Bundle bundle) {
+                listener.onAnimationStart(new RecentsAnimationControllerCompat(controller), apps,
+                        wallpapers, homeContentInsets, minimizedHomeBounds);
+            }
+
+            // NothingOS with Android 14 2.5.5
+            public void onAnimationStartWithSurfaceTransaction(
+                    IRecentsAnimationController controller,
+                    TransitionInfo transitionInfo,
+                    SurfaceControl.Transaction transaction,
+                    RemoteAnimationTarget[] apps,
+                    RemoteAnimationTarget[] wallpapers,
+                    Rect homeContentInsets,
+                    Rect minimizedHomeBounds) {
                 listener.onAnimationStart(new RecentsAnimationControllerCompat(controller), apps,
                         wallpapers, homeContentInsets, minimizedHomeBounds);
             }

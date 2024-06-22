@@ -34,7 +34,6 @@ import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
@@ -43,7 +42,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
-import app.lawnchair.ui.preferences.subRoute
+import app.lawnchair.ui.preferences.navigation.Routes
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
@@ -51,6 +50,8 @@ import com.android.launcher3.R
 
 @Composable
 fun PreferencesDashboard(
+    currentRoute: String,
+    onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -65,67 +66,78 @@ fun PreferencesDashboard(
     ) {
         AnnouncementPreference()
 
-        if (BuildConfig.DEBUG) PreferencesDebugWarning()
+        if (BuildConfig.DEBUG) {
+            PreferencesDebugWarning()
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         if (!context.isDefaultLauncher()) {
-            Spacer(modifier = Modifier.height(16.dp))
             PreferencesSetDefaultLauncherWarning()
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
         PreferenceCategory(
             label = stringResource(R.string.general_label),
             description = stringResource(R.string.general_description),
             iconResource = R.drawable.ic_general,
-            route = Routes.GENERAL,
+            onNavigate = { onNavigate(Routes.GENERAL) },
+            isSelected = currentRoute.contains(Routes.GENERAL),
         )
 
         PreferenceCategory(
             label = stringResource(R.string.home_screen_label),
             description = stringResource(R.string.home_screen_description),
             iconResource = R.drawable.ic_home_screen,
-            route = Routes.HOME_SCREEN,
+            onNavigate = { onNavigate(Routes.HOME_SCREEN) },
+            isSelected = currentRoute.contains(Routes.HOME_SCREEN),
         )
 
         PreferenceCategory(
             label = stringResource(id = R.string.smartspace_widget),
             description = stringResource(R.string.smartspace_widget_description),
             iconResource = R.drawable.ic_smartspace,
-            route = Routes.SMARTSPACE,
+            onNavigate = { onNavigate(Routes.SMARTSPACE) },
+            isSelected = currentRoute.contains(Routes.SMARTSPACE),
         )
 
         PreferenceCategory(
             label = stringResource(R.string.dock_label),
             description = stringResource(R.string.dock_description),
             iconResource = R.drawable.ic_dock,
-            route = Routes.DOCK,
+            onNavigate = { onNavigate(Routes.DOCK) },
+            isSelected = currentRoute.contains(Routes.DOCK),
         )
 
         PreferenceCategory(
             label = stringResource(R.string.app_drawer_label),
             description = stringResource(R.string.app_drawer_description),
             iconResource = R.drawable.ic_app_drawer,
-            route = Routes.APP_DRAWER,
+            onNavigate = { onNavigate(Routes.APP_DRAWER) },
+            isSelected = currentRoute.contains(Routes.APP_DRAWER),
         )
 
         PreferenceCategory(
             label = stringResource(R.string.drawer_search_label),
             description = stringResource(R.string.drawer_search_description),
             iconResource = R.drawable.ic_search,
-            route = Routes.SEARCH,
+            onNavigate = { onNavigate(Routes.SEARCH) },
+            isSelected = currentRoute.contains(Routes.SEARCH),
         )
 
         PreferenceCategory(
             label = stringResource(R.string.folders_label),
             description = stringResource(R.string.folders_description),
             iconResource = R.drawable.ic_folder,
-            route = Routes.FOLDERS,
+            onNavigate = { onNavigate(Routes.FOLDERS) },
+            isSelected = currentRoute.contains(Routes.FOLDERS),
         )
 
         PreferenceCategory(
             label = stringResource(id = R.string.gestures_label),
             description = stringResource(R.string.gestures_description),
             iconResource = R.drawable.ic_gestures,
-            route = Routes.GESTURES,
+            onNavigate = { onNavigate(Routes.GESTURES) },
+            isSelected = currentRoute.contains(Routes.GESTURES),
         )
 
         if (LawnchairApp.isRecentsEnabled || BuildConfig.DEBUG) {
@@ -133,7 +145,8 @@ fun PreferencesDashboard(
                 label = stringResource(id = R.string.quickstep_label),
                 description = stringResource(id = R.string.quickstep_description),
                 iconResource = R.drawable.ic_quickstep,
-                route = Routes.QUICKSTEP,
+                onNavigate = { onNavigate(Routes.QUICKSTEP) },
+                isSelected = currentRoute.contains(Routes.QUICKSTEP),
             )
         }
 
@@ -141,7 +154,8 @@ fun PreferencesDashboard(
             label = stringResource(R.string.about_label),
             description = "${context.getString(R.string.derived_app_name)} ${BuildConfig.MAJOR_VERSION}",
             iconResource = R.drawable.ic_about,
-            route = Routes.ABOUT,
+            onNavigate = { onNavigate(Routes.ABOUT) },
+            isSelected = currentRoute.contains(Routes.ABOUT),
         )
     }
 }
@@ -152,9 +166,9 @@ fun PreferencesOverflowMenu(
 ) {
     val navController = LocalNavController.current
     val enableDebug by preferenceManager().enableDebugMenu.observeAsState()
-    val experimentalFeaturesRoute = subRoute(name = Routes.EXPERIMENTAL_FEATURES)
+    val experimentalFeaturesRoute = Routes.EXPERIMENTAL_FEATURES
     if (enableDebug) {
-        val resolvedRoute = subRoute(name = Routes.DEBUG_MENU)
+        val resolvedRoute = Routes.DEBUG_MENU
         ClickableIcon(
             imageVector = Icons.Rounded.Build,
             onClick = { navController.navigate(resolvedRoute) },
@@ -185,7 +199,7 @@ fun PreferencesOverflowMenu(
         })
         PreferenceDivider(modifier = Modifier.padding(vertical = 8.dp))
         DropdownMenuItem(onClick = {
-            navController.navigate("/${Routes.CREATE_BACKUP}/")
+            navController.navigate(Routes.CREATE_BACKUP)
             hideMenu()
         }, text = {
             Text(text = stringResource(id = R.string.create_backup))

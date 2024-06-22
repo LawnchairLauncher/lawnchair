@@ -17,13 +17,13 @@ class LawnchairProcessInitializer(context: Context) : QuickstepProcessInitialize
         ThemedIconDrawable.COLORS_LOADER = Function {
             if (Utilities.isDarkTheme(it)) {
                 intArrayOf(
-                    ColorTokens.Neutral1_800.resolveColor(it),
-                    ColorTokens.Accent1_100.resolveColor(it),
+                    ColorTokens.Accent2_800.resolveColor(it),
+                    ColorTokens.Accent1_200.resolveColor(it),
                 )
             } else {
                 intArrayOf(
                     ColorTokens.Accent1_100.resolveColor(it),
-                    ColorTokens.Neutral2_700.resolveColor(it),
+                    ColorTokens.Accent1_700.resolveColor(it),
                 )
             }
         }

@@ -45,6 +45,7 @@ import com.android.launcher3.widget.util.WidgetsTableUtils;
 
 import java.util.List;
 
+import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
@@ -117,6 +118,11 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.widgets_bottom_sheet);
+        TextView mTitle = findViewById(R.id.title);
+
+        FontManager fontManager = FontManager.INSTANCE.get(getContext());
+        fontManager.setCustomFont(mTitle, R.id.font_heading);
+
         mContent.setBackground(DrawableTokens.WidgetsBottomSheetBackground.resolve(getContext()));
     }
 

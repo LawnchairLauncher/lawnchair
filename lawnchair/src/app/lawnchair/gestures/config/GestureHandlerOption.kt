@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import app.lawnchair.BlankActivity
 import app.lawnchair.ui.preferences.PreferenceActivity
-import app.lawnchair.ui.preferences.Routes
+import app.lawnchair.ui.preferences.navigation.Routes
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
 
@@ -35,7 +35,7 @@ sealed class GestureHandlerOption(
         GestureHandlerConfig.OpenApp::class.java,
     ) {
         override suspend fun buildConfig(activity: Activity): GestureHandlerConfig? {
-            val intent = PreferenceActivity.createIntent(activity, "/${Routes.PICK_APP_FOR_GESTURE}/")
+            val intent = PreferenceActivity.createIntent(activity, Routes.PICK_APP_FOR_GESTURE)
             val result = BlankActivity.startBlankActivityForResult(activity, intent)
             val configString = result.data?.getStringExtra("config") ?: return null
             return kotlinxJson.decodeFromString(configString)

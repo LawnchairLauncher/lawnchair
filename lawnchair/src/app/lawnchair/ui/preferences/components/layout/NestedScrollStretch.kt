@@ -93,7 +93,7 @@ private class NestedScrollStretchConnection(context: Context, invalidate: Runnab
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
         val availableY = available.y
         when {
-            source != NestedScrollSource.Drag || height == 0 -> return Offset.Zero
+            source != NestedScrollSource.UserInput || height == 0 -> return Offset.Zero
             availableY != 0f -> {
                 if (availableY < 0f) {
                     val consumed = topEdgeEffect.onPullDistance(availableY / height, 0f)
@@ -117,7 +117,7 @@ private class NestedScrollStretchConnection(context: Context, invalidate: Runnab
     ): Offset {
         val availableY = available.y
         when {
-            source != NestedScrollSource.Drag || height == 0 -> return Offset.Zero
+            source != NestedScrollSource.UserInput || height == 0 -> return Offset.Zero
             availableY != 0f -> {
                 if (availableY > 0f) {
                     topEdgeEffect.onPull(availableY / height)

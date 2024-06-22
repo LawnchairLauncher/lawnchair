@@ -28,7 +28,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
-import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -51,12 +50,12 @@ import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.function.Consumer;
 
 import app.lawnchair.LawnchairAppWidgetHostView;
+import app.lawnchair.font.FontManager;
 
 /**
  * Represents the individual cell of the widget inside the widget tray. The
@@ -140,6 +139,10 @@ public class WidgetCell extends LinearLayout {
         mWidgetName = findViewById(R.id.widget_name);
         mWidgetDims = findViewById(R.id.widget_dims);
         mWidgetDescription = findViewById(R.id.widget_description);
+        
+        FontManager fontManager = FontManager.INSTANCE.get(getContext());
+        fontManager.setCustomFont(mWidgetName, R.id.font_body_medium);
+        fontManager.setCustomFont(mWidgetDescription, R.id.font_body);
     }
 
     public void setRemoteViewsPreview(RemoteViews view) {

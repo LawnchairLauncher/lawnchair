@@ -20,12 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences2.IdpPreference
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.firstBlocking
@@ -126,7 +126,7 @@ fun IdpPreference.getAdapter(): PreferenceAdapter<Int> {
     val context = LocalContext.current
     val idp = remember { InvariantDeviceProfile.INSTANCE.get(context) }
     val defaultGrid = idp.closestProfile
-    val state = get(defaultGrid).collectAsState(initial = firstBlocking(defaultGrid))
+    val state = get(defaultGrid).collectAsStateWithLifecycle(initialValue = firstBlocking(defaultGrid))
     return createStateAdapter(state = state, set = { set(it, defaultGrid) })
 }
 

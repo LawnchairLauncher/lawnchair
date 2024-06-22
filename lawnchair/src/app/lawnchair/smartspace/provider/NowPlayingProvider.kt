@@ -9,9 +9,9 @@ import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceScores
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.ui.preferences.PreferenceActivity
-import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.isNotificationServiceEnabled
 import app.lawnchair.ui.preferences.components.notificationDotsEnabled
+import app.lawnchair.ui.preferences.navigation.Routes
 import com.android.launcher3.R
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -65,7 +65,7 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(
             notificationDotsEnabled(context = context).first().not()
 
     override suspend fun startSetup(activity: Activity) {
-        val intent = PreferenceActivity.createIntent(activity, "/${Routes.GENERAL}/")
+        val intent = PreferenceActivity.createIntent(activity, Routes.GENERAL)
         val message = activity.getString(
             R.string.event_provider_missing_notification_dots,
             activity.getString(providerName),

@@ -439,8 +439,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             // starting the gesture. In that case, we need to clean-up an unfinished or un-started
             // animation.
             if (mActiveCallbacks != null && mInteractionHandler != null) {
-                if (mTaskAnimationManager.isRecentsAnimationRunning()
-                        && !allowInterceptByParent()) {
+                if (mTaskAnimationManager.isRecentsAnimationRunning()) {
                     // The animation started, but with no movement, in this case, there will be no
                     // animateToProgress so we have to manually finish here. In the case of
                     // ACTION_CANCEL, someone else may be doing something so finish synchronously.

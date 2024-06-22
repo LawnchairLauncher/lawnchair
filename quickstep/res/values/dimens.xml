@@ -354,6 +354,7 @@
     <dimen name="taskbar_edu_features_horizontal_spacing">24dp</dimen>
     <dimen name="taskbar_edu_features_tooltip_width_persistent">624dp</dimen>
     <dimen name="taskbar_edu_features_tooltip_width_transient">428dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_drawable_size">24dp</dimen>
 
     <!--- Taskbar Pinning -->
     <dimen name="taskbar_pinning_popup_menu_width">300dp</dimen>
@@ -382,6 +383,7 @@
     <dimen name="bubblebar_dismiss_target_icon_size">24dp</dimen>
     <dimen name="bubblebar_dismiss_target_bottom_margin">50dp</dimen>
     <dimen name="bubblebar_dismiss_floating_gradient_height">548dp</dimen>
+    <dimen name="bubblebar_hotseat_adjustment_threshold">90dp</dimen>
 
     <!-- Launcher splash screen -->
     <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->

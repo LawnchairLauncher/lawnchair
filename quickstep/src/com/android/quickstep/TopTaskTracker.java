@@ -252,7 +252,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
                 return null;
             }
             List<RunningTaskInfo> visibleNonExcludedTasks = mAllCachedTasks.stream()
-                    .filter(t -> (t.isVisible && LawnchairQuickstepCompat.ATLEAST_S)
+                    .filter(t -> (LawnchairQuickstepCompat.ATLEAST_S && t.isVisible)
                             && (t.baseIntent.getFlags() & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) == 0)
                     .collect(Collectors.toList());
             return visibleNonExcludedTasks.isEmpty() ? null

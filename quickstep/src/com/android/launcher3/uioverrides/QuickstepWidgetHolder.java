@@ -222,7 +222,11 @@ public class QuickstepWidgetHolder extends LauncherWidgetHolder {
             return;
         }
 
-        sWidgetHost.setAppWidgetHidden();
+        try {
+            sWidgetHost.setAppWidgetHidden();
+        } catch (Throwable t) {
+            // Ignore
+        }
         setListeningFlag(false);
     }
 

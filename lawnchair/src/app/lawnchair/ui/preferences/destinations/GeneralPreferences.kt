@@ -17,21 +17,20 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavGraphBuilder
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.FontPreference
-import app.lawnchair.ui.preferences.components.IconShapePreview
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.NotificationDotsPreference
 import app.lawnchair.ui.preferences.components.ThemePreference
@@ -40,16 +39,12 @@ import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
-import app.lawnchair.ui.preferences.components.iconShapeEntries
-import app.lawnchair.ui.preferences.components.iconShapeGraph
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.notificationDotsEnabled
 import app.lawnchair.ui.preferences.components.notificationServiceEnabled
-import app.lawnchair.ui.preferences.preferenceGraph
-import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
 
 object GeneralRoutes {
@@ -57,19 +52,12 @@ object GeneralRoutes {
     const val ICON_SHAPE = "iconShape"
 }
 
-fun NavGraphBuilder.generalGraph(route: String) {
-    preferenceGraph(route, { GeneralPreferences() }) { subRoute ->
-        iconPackGraph(route = subRoute(GeneralRoutes.ICON_PACK))
-        iconShapeGraph(route = subRoute(GeneralRoutes.ICON_SHAPE))
-    }
-}
-
 @Composable
 fun GeneralPreferences() {
     val context = LocalContext.current
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
-    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
+    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
     val themedIconsAdapter = prefs.themedIcons.getAdapter()
     val drawerThemedIconsAdapter = prefs.drawerThemedIcons.getAdapter()
     val iconShapeAdapter = prefs2.iconShape.getAdapter()
@@ -95,7 +83,10 @@ fun GeneralPreferences() {
         ?.label?.invoke()
         ?: stringResource(id = R.string.custom)
 
-    PreferenceLayout(label = stringResource(id = R.string.general_label)) {
+    PreferenceLayout(
+        backArrowVisible = !LocalIsExpandedScreen.current,
+        label = stringResource(id = R.string.general_label),
+    ) {
         PreferenceGroup {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),
@@ -136,7 +127,7 @@ fun GeneralPreferences() {
         ) {
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_style),
-                destination = subRoute(name = GeneralRoutes.ICON_PACK),
+                destination = GeneralRoutes.ICON_PACK,
                 subtitle = iconStyleSubtitle,
             )
             ExpandAndShrink(visible = themedIconsEnabled) {
@@ -148,7 +139,7 @@ fun GeneralPreferences() {
             }
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_shape_label),
-                destination = subRoute(name = GeneralRoutes.ICON_SHAPE),
+                destination = GeneralRoutes.ICON_SHAPE,
                 subtitle = iconShapeSubtitle,
                 endWidget = {
                     IconShapePreview(iconShape = iconShapeAdapter.state.value)
@@ -177,7 +168,7 @@ fun GeneralPreferences() {
         }
 
         PreferenceGroup(heading = stringResource(id = R.string.notification_dots)) {
-            val enabled by remember { notificationDotsEnabled(context) }.collectAsState(initial = false)
+            val enabled by remember { notificationDotsEnabled(context) }.collectAsStateWithLifecycle(initialValue = false)
             val serviceEnabled = notificationServiceEnabled()
             NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
             if (enabled && serviceEnabled) {

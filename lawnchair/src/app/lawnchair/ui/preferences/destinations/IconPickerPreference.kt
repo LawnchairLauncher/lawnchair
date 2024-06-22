@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,10 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
-import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.icons.CustomIconPack
 import app.lawnchair.icons.IconPack
 import app.lawnchair.icons.IconPackProvider
@@ -48,7 +44,6 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceGroupDescription
 import app.lawnchair.ui.preferences.components.layout.PreferenceLazyColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceSearchScaffold
 import app.lawnchair.ui.preferences.components.layout.verticalGridItems
-import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.util.LazyGridLayout
 import app.lawnchair.ui.util.resultSender
 import app.lawnchair.util.requireSystemService
@@ -57,23 +52,6 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-
-fun NavGraphBuilder.iconPickerGraph(route: String) {
-    preferenceGraph(route, {
-        IconPickerPreference(packageName = "")
-    }) { subRoute ->
-        composable(
-            route = subRoute("{packageName}"),
-            arguments = listOf(
-                navArgument("packageName") { type = NavType.StringType },
-            ),
-        ) { backStackEntry ->
-            val args = backStackEntry.arguments!!
-            val packageName = args.getString("packageName")!!
-            IconPickerPreference(packageName)
-        }
-    }
-}
 
 @Composable
 fun IconPickerPreference(
@@ -159,7 +137,7 @@ fun IconPickerGrid(
         iconPack.getAllIcons()
             .catch { loadFailed = true }
     }
-    val categories by categoriesFlow.collectAsState(emptyList())
+    val categories by categoriesFlow.collectAsStateWithLifecycle(emptyList())
     val filteredCategories by remember(searchQuery) {
         derivedStateOf {
             categories.asSequence()

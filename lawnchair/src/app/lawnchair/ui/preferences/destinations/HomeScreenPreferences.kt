@@ -23,13 +23,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorMode
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.FeedPreference
 import app.lawnchair.ui.preferences.components.GestureHandlerPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -41,8 +41,6 @@ import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
-import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -50,12 +48,6 @@ import kotlinx.coroutines.launch
 
 object HomeScreenRoutes {
     const val GRID = "grid"
-}
-
-fun NavGraphBuilder.homeScreenGraph(route: String) {
-    preferenceGraph(route, { HomeScreenPreferences() }) { subRoute ->
-        homeScreenGridGraph(route = subRoute(HomeScreenRoutes.GRID))
-    }
 }
 
 @Composable
@@ -67,6 +59,7 @@ fun HomeScreenPreferences(
     val scope = rememberCoroutineScope()
     PreferenceLayout(
         label = stringResource(id = R.string.home_screen_label),
+        backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
         val lockHomeScreenAdapter = prefs2.lockHomeScreen.getAdapter()
@@ -120,7 +113,7 @@ fun HomeScreenPreferences(
             val rows by prefs.workspaceRows.getAdapter()
             NavigationActionPreference(
                 label = stringResource(id = R.string.home_screen_grid),
-                destination = subRoute(name = HomeScreenRoutes.GRID),
+                destination = HomeScreenRoutes.GRID,
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
             )
             DividerColumn {

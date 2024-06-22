@@ -2,6 +2,7 @@ package app.lawnchair.override
 
 import android.app.Activity
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -33,10 +34,10 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.PreferenceActivity
-import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
+import app.lawnchair.ui.preferences.navigation.Routes
 import app.lawnchair.ui.util.addIfNotNull
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 import com.android.launcher3.LauncherAppState
@@ -125,8 +126,10 @@ fun CustomizeAppDialog(
         onClose()
     }
 
+    Log.d("TEST", "${Routes.SELECT_ICON}/$componentKey")
+
     val openIconPicker = {
-        val destination = "/${Routes.SELECT_ICON}/$componentKey/"
+        val destination = "${Routes.SELECT_ICON}/$componentKey/"
         request.launch(PreferenceActivity.createIntent(context, destination))
     }
 

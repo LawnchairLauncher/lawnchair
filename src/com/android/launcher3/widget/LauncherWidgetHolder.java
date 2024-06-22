@@ -342,7 +342,11 @@ public class LauncherWidgetHolder {
                 }
             }
         }
-        mWidgetHost.stopListening();
+        try {
+            mWidgetHost.stopListening();
+        } catch (Throwable t) {
+            // Ignore
+        }
         setListeningFlag(false);
     }
 

@@ -82,6 +82,10 @@ public final class FeatureFlags {
             PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
             return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableMaterialUPopUp());
     }
+    public static boolean twoLineAllApps(Context context) {
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
+        return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getTwoLineAllApps());
+    }
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
      * <p>
@@ -425,7 +429,7 @@ public final class FeatureFlags {
     // TODO(Block 32): Empty block
 
     public static final BooleanFlag ENABLE_RESPONSIVE_WORKSPACE = getDebugFlag(241386436,
-            "ENABLE_RESPONSIVE_WORKSPACE", DISABLED,
+            "ENABLE_RESPONSIVE_WORKSPACE", ENABLED,
             "Enables new workspace grid calculations method.");
     // TODO(Block 33): Clean up flags
     public static final BooleanFlag ENABLE_ALL_APPS_RV_PREINFLATION = getDebugFlag(288161355,

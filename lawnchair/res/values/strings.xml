@@ -391,6 +391,7 @@
     <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
 
     <string name="translucent_background">Translucent background</string>
+    <string name="translucent_background_alpha">Background opacity</string>
 
     <string name="recents_actions_label">Quick actions</string>
     <string name="action_share">Share</string>
@@ -498,9 +499,9 @@
     <string name="search_input_action_clear_results">Clear search box</string>
 
     <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your phone settings</string>
+    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
+    <string name="all_apps_search_result_files">Files from device</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
 
     <string name="label_search">Search</string>
     <string name="label_lens">Google Lens</string>
@@ -553,4 +554,16 @@
 
     <string name="action_unlock">Unlock</string>
     <string name="action_lock">Lock</string>
+
+    <string name="allapps_twoline_label">Use Multiple Lines</string>
+    <string name="hidden_apps_show_always">Always</string>
+    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
+    <string name="hidden_apps_show_never">Never</string>
+    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="search_algorithm_app_search">App Search</string>
+    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
+    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
+    <string name="app_search_algorithm">Search Algorithm</string>
+    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
 </resources>
