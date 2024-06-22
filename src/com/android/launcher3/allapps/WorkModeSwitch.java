@@ -131,7 +131,8 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         View parent = (View) getParent();
-        int allAppsLeftRightPadding = mActivityContext.getDeviceProfile().allAppsLeftRightPadding;
+        var dp = mActivityContext.getDeviceProfile();
+        int allAppsLeftRightPadding = dp.allAppsPadding.left + dp.allAppsPadding.right;
         int size = parent.getWidth() - parent.getPaddingLeft() - parent.getPaddingRight()
                 - 2 * allAppsLeftRightPadding;
         int tabWidth = getTabWidth(getContext(), size);

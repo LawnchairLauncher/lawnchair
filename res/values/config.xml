@@ -225,6 +225,8 @@
     <dimen name="iconSize66dp">72dp</dimen>
     <dimen name="iconSize72dp">79dp</dimen>
 
+    <dimen name="minimum_icon_label_size">8sp</dimen>
+
     <!--  Icon size steps in dp  -->
     <integer-array name="icon_size_steps">
         <item>@dimen/iconSize48dp</item>

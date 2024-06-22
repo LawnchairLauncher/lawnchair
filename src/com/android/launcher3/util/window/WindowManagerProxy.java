@@ -18,7 +18,6 @@ package com.android.launcher3.util.window;
 import static android.view.Display.DEFAULT_DISPLAY;
 
 import static com.android.launcher3.Utilities.dpiFromPx;
-
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT;
 import static com.android.launcher3.testing.shared.ResourceUtils.NAVBAR_HEIGHT_LANDSCAPE;
@@ -136,7 +135,7 @@ public class WindowManagerProxy implements ResourceBasedOverride {
      */
     @TargetApi(Build.VERSION_CODES.R)
     public WindowInsets normalizeWindowInsets(Context context, WindowInsets oldInsets,
-            Rect outInsets) {
+                                              Rect outInsets) {
         if (!Utilities.ATLEAST_R || !mTaskbarDrawnInProcess) {
             outInsets.set(oldInsets.getSystemWindowInsetLeft(), oldInsets.getSystemWindowInsetTop(),
                     oldInsets.getSystemWindowInsetRight(), oldInsets.getSystemWindowInsetBottom());
@@ -156,10 +155,10 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         int bottomNav = isTablet
                 ? 0
                 : (isPortrait
-                        ? getDimenByName(systemRes, NAVBAR_HEIGHT)
-                        : (isGesture
-                                ? getDimenByName(systemRes, NAVBAR_HEIGHT_LANDSCAPE)
-                                : 0));
+                ? getDimenByName(systemRes, NAVBAR_HEIGHT)
+                : (isGesture
+                ? getDimenByName(systemRes, NAVBAR_HEIGHT_LANDSCAPE)
+                : 0));
         Insets newNavInsets = Insets.of(navInsets.left, navInsets.top, navInsets.right, bottomNav);
         insetsBuilder.setInsets(WindowInsets.Type.navigationBars(), newNavInsets);
         insetsBuilder.setInsetsIgnoringVisibility(WindowInsets.Type.navigationBars(), newNavInsets);
@@ -205,7 +204,7 @@ public class WindowManagerProxy implements ResourceBasedOverride {
      * Returns a list of possible WindowBounds for the display keyed on the 4 surface rotations
      */
     protected List<WindowBounds> estimateWindowBounds(Context context,
-            CachedDisplayInfo displayInfo) {
+                                                      CachedDisplayInfo displayInfo) {
         int densityDpi = context.getResources().getConfiguration().densityDpi;
         int rotation = displayInfo.rotation;
         Rect safeCutout = displayInfo.cutout;
@@ -236,14 +235,14 @@ public class WindowManagerProxy implements ResourceBasedOverride {
 
         navBarHeightPortrait = isTablet
                 ? (mTaskbarDrawnInProcess
-                        ? 0 : systemRes.getDimensionPixelSize(R.dimen.taskbar_size))
+                ? 0 : systemRes.getDimensionPixelSize(R.dimen.taskbar_size))
                 : getDimenByName(systemRes, NAVBAR_HEIGHT);
 
         navBarHeightLandscape = isTablet
                 ? (mTaskbarDrawnInProcess
-                        ? 0 : systemRes.getDimensionPixelSize(R.dimen.taskbar_size))
+                ? 0 : systemRes.getDimensionPixelSize(R.dimen.taskbar_size))
                 : (isTabletOrGesture
-                        ? getDimenByName(systemRes, NAVBAR_HEIGHT_LANDSCAPE) : 0);
+                ? getDimenByName(systemRes, NAVBAR_HEIGHT_LANDSCAPE) : 0);
         navbarWidthLandscape = isTabletOrGesture
                 ? 0
                 : getDimenByName(systemRes, NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE);
@@ -336,6 +335,20 @@ public class WindowManagerProxy implements ResourceBasedOverride {
                     cutout.getSafeInsetRight(), cutout.getSafeInsetBottom());
         }
         return new CachedDisplayInfo(size, rotation, cutoutRect);
+    }
+
+    /**
+     * Returns bounds of the display associated with the context, or bounds of DEFAULT_DISPLAY
+     * if the context isn't associated with a display.
+     */
+    public Rect getCurrentBounds(Context displayInfoContext) {
+        Resources res = displayInfoContext.getResources();
+        Configuration config = res.getConfiguration();
+
+        float screenWidth = config.screenWidthDp * res.getDisplayMetrics().density;
+        float screenHeight = config.screenHeightDp * res.getDisplayMetrics().density;
+
+        return new Rect(0, 0, (int) screenWidth, (int) screenHeight);
     }
 
     /**

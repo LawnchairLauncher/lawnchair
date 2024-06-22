@@ -16,81 +16,107 @@
 
 package com.android.launcher3.responsive
 
+import android.content.res.TypedArray
 import android.util.Log
+import com.android.launcher3.R
+import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
 
 /**
- * Base class for responsive specs that holds a list of width and height specs.
+ * Interface for responsive grid specs
  *
- * @param widthSpecs List of width responsive specifications
- * @param heightSpecs List of height responsive specifications
+ * @property maxAvailableSize indicates the breakpoint to use this specification.
+ * @property dimensionType indicates whether the paddings and gutters will be applied vertically or
+ *   horizontally.
+ * @property specType a [ResponsiveSpecType] that indicates the type of the spec.
  */
-abstract class ResponsiveSpecs<T : ResponsiveSpec>(
-    val widthSpecs: List<T>,
-    val heightSpecs: List<T>
-) {
-
-    init {
-        check(widthSpecs.isNotEmpty() && heightSpecs.isNotEmpty()) {
-            "${this::class.simpleName} is incomplete - " +
-                "width list size = ${widthSpecs.size}; " +
-                "height list size = ${heightSpecs.size}."
-        }
-    }
-
-    /**
-     * Get a [ResponsiveSpec] for width within the breakpoint.
-     *
-     * @param availableWidth The width breakpoint for the spec
-     * @return A [ResponsiveSpec] for width.
-     */
-    fun getWidthSpec(availableWidth: Int): T {
-        val spec = widthSpecs.firstOrNull { availableWidth <= it.maxAvailableSize }
-        check(spec != null) { "No available width spec found within $availableWidth." }
-        return spec
-    }
-
-    /**
-     * Get a [ResponsiveSpec] for height within the breakpoint.
-     *
-     * @param availableHeight The height breakpoint for the spec
-     * @return A [ResponsiveSpec] for height.
-     */
-    fun getHeightSpec(availableHeight: Int): T {
-        val spec = heightSpecs.firstOrNull { availableHeight <= it.maxAvailableSize }
-        check(spec != null) { "No available height spec found within $availableHeight." }
-        return spec
-    }
+interface IResponsiveSpec {
+    val maxAvailableSize: Int
+    val dimensionType: ResponsiveSpec.DimensionType
+    val specType: ResponsiveSpecType
 }
 
 /**
- * Base class for a responsive specification that is used to calculate the paddings, gutter and cell
+ * Class for a responsive specification that is used to calculate the paddings, gutter and cell
  * size.
  *
  * @param maxAvailableSize indicates the breakpoint to use this specification.
- * @param specType indicates whether the paddings and gutters will be applied vertically or
+ * @param dimensionType indicates whether the paddings and gutters will be applied vertically or
  *   horizontally.
+ * @param specType a [ResponsiveSpecType] that indicates the type of the spec.
  * @param startPadding padding used at the top or left (right in RTL) in the workspace folder.
  * @param endPadding padding used at the bottom or right (left in RTL) in the workspace folder.
- * @param gutter the space between the cells vertically or horizontally depending on the [specType].
- * @param cellSize height or width of the cell depending on the [specType].
+ * @param gutter the space between the cells vertically or horizontally depending on the
+ *   [dimensionType].
+ * @param cellSize height or width of the cell depending on the [dimensionType].
  */
-abstract class ResponsiveSpec(
-    open val maxAvailableSize: Int,
-    open val specType: SpecType,
-    open val startPadding: SizeSpec,
-    open val endPadding: SizeSpec,
-    open val gutter: SizeSpec,
-    open val cellSize: SizeSpec
-) {
-    open fun isValid(): Boolean {
+data class ResponsiveSpec(
+    override val maxAvailableSize: Int,
+    override val dimensionType: DimensionType,
+    override val specType: ResponsiveSpecType,
+    val startPadding: SizeSpec,
+    val endPadding: SizeSpec,
+    val gutter: SizeSpec,
+    val cellSize: SizeSpec,
+) : IResponsiveSpec {
+    init {
+        check(isValid()) { "Invalid ResponsiveSpec found." }
+    }
+
+    constructor(
+        responsiveSpecType: ResponsiveSpecType,
+        attrs: TypedArray,
+        specs: Map<String, SizeSpec>
+    ) : this(
+        maxAvailableSize =
+            attrs.getDimensionPixelSize(R.styleable.ResponsiveSpec_maxAvailableSize, 0),
+        dimensionType =
+            DimensionType.entries[
+                    attrs.getInt(
+                        R.styleable.ResponsiveSpec_dimensionType,
+                        DimensionType.HEIGHT.ordinal
+                    )],
+        specType = responsiveSpecType,
+        startPadding = specs.getOrError(SizeSpec.XmlTags.START_PADDING),
+        endPadding = specs.getOrError(SizeSpec.XmlTags.END_PADDING),
+        gutter = specs.getOrError(SizeSpec.XmlTags.GUTTER),
+        cellSize = specs.getOrError(SizeSpec.XmlTags.CELL_SIZE)
+    )
+
+    fun isValid(): Boolean {
+        if (
+            (specType == ResponsiveSpecType.Workspace) &&
+                (startPadding.matchWorkspace ||
+                    endPadding.matchWorkspace ||
+                    gutter.matchWorkspace ||
+                    cellSize.matchWorkspace)
+        ) {
+            logError("Workspace spec provided must not have any match workspace value.")
+            return false
+        }
+
         if (maxAvailableSize <= 0) {
-            Log.e(LOG_TAG, "${this::class.simpleName}#isValid - maxAvailableSize <= 0")
+            logError("The property maxAvailableSize must be higher than 0.")
             return false
         }
 
         // All specs need to be individually valid
         if (!allSpecsAreValid()) {
-            Log.e(LOG_TAG, "${this::class.simpleName}#isValid - !allSpecsAreValid()")
+            logError("One or more specs are invalid!")
+            return false
+        }
+
+        if (!isValidRemainderSpace()) {
+            logError("The total Remainder Space used must be lower or equal to 100%.")
+            return false
+        }
+
+        if (!isValidAvailableSpace()) {
+            logError("The total Available Space used must be lower or equal to 100%.")
+            return false
+        }
+
+        if (!isValidFixedSize()) {
+            logError("The total Fixed Size used must be lower or equal to $maxAvailableSize.")
             return false
         }
 
@@ -104,13 +130,47 @@ abstract class ResponsiveSpec(
             cellSize.isValid()
     }
 
-    enum class SpecType {
+    private fun isValidRemainderSpace(): Boolean {
+        // TODO(b/313621277): This validation must be update do accept only 0 or 1 instead of <= 1f.
+        return startPadding.ofRemainderSpace +
+            endPadding.ofRemainderSpace +
+            gutter.ofRemainderSpace +
+            cellSize.ofRemainderSpace <= 1f
+    }
+
+    private fun isValidAvailableSpace(): Boolean {
+        return startPadding.ofAvailableSpace +
+            endPadding.ofAvailableSpace +
+            gutter.ofAvailableSpace +
+            cellSize.ofAvailableSpace < 1f
+    }
+
+    private fun isValidFixedSize(): Boolean {
+        return startPadding.fixedSize +
+            endPadding.fixedSize +
+            gutter.fixedSize +
+            cellSize.fixedSize <= maxAvailableSize
+    }
+
+    private fun logError(message: String) {
+        Log.e(LOG_TAG, "${this::class.simpleName}#isValid - $message - $this")
+    }
+
+    enum class DimensionType {
         HEIGHT,
         WIDTH
     }
 
     companion object {
         private const val LOG_TAG = "ResponsiveSpec"
+
+        enum class ResponsiveSpecType(val xmlTag: String) {
+            AllApps("allAppsSpec"),
+            Folder("folderSpec"),
+            Workspace("workspaceSpec"),
+            Hotseat("hotseatSpec"),
+            Cell("cellSpec")
+        }
     }
 }
 
@@ -118,7 +178,10 @@ abstract class ResponsiveSpec(
  * Calculated responsive specs contains the final paddings, gutter and cell size in pixels after
  * they are calculated from the available space, cells and workspace specs.
  */
-sealed class CalculatedResponsiveSpec {
+class CalculatedResponsiveSpec {
+    var aspectRatio: Float = Float.NaN
+        private set
+
     var availableSpace: Int = 0
         private set
 
@@ -141,11 +204,13 @@ sealed class CalculatedResponsiveSpec {
         private set
 
     constructor(
+        aspectRatio: Float,
         availableSpace: Int,
         cells: Int,
         spec: ResponsiveSpec,
-        calculatedWorkspaceSpec: CalculatedWorkspaceSpec
+        calculatedWorkspaceSpec: CalculatedResponsiveSpec
     ) {
+        this.aspectRatio = aspectRatio
         this.availableSpace = availableSpace
         this.cells = cells
         this.spec = spec
@@ -165,7 +230,8 @@ sealed class CalculatedResponsiveSpec {
         updateRemainderSpaces(availableSpace, cells, spec)
     }
 
-    constructor(availableSpace: Int, cells: Int, spec: ResponsiveSpec) {
+    constructor(aspectRatio: Float, availableSpace: Int, cells: Int, spec: ResponsiveSpec) {
+        this.aspectRatio = aspectRatio
         this.availableSpace = availableSpace
         this.cells = cells
         this.spec = spec
@@ -178,6 +244,8 @@ sealed class CalculatedResponsiveSpec {
 
         updateRemainderSpaces(availableSpace, cells, spec)
     }
+
+    fun isResponsiveSpecType(type: ResponsiveSpecType) = spec.specType == type
 
     private fun updateRemainderSpaces(availableSpace: Int, cells: Int, spec: ResponsiveSpec) {
         val gutters = cells - 1
@@ -213,10 +281,11 @@ sealed class CalculatedResponsiveSpec {
     }
 
     override fun toString(): String {
-        return "${this::class.simpleName}(" +
+        return "Calculated${spec.specType}Spec(" +
             "availableSpace=$availableSpace, cells=$cells, startPaddingPx=$startPaddingPx, " +
             "endPaddingPx=$endPaddingPx, gutterPx=$gutterPx, cellSizePx=$cellSizePx, " +
-            "${spec::class.simpleName}.maxAvailableSize=${spec.maxAvailableSize}" +
+            "aspectRatio=${aspectRatio}, " +
+            "${spec.specType}Spec.maxAvailableSize=${spec.maxAvailableSize}" +
             ")"
     }
 }
