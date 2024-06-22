@@ -1,9 +1,7 @@
 package app.lawnchair.search.algorithms
 
 import android.content.Context
-import android.content.pm.ShortcutInfo
 import android.os.Handler
-import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairSearchAdapterProvider
@@ -32,7 +30,6 @@ import app.lawnchair.search.algorithms.data.findSettingsByNameAndAction
 import app.lawnchair.search.algorithms.data.getRecentKeyword
 import app.lawnchair.search.algorithms.data.getStartPageSuggestions
 import app.lawnchair.search.algorithms.data.queryFilesInMediaStore
-import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.requestContactPermissionGranted
@@ -43,13 +40,9 @@ import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.BaseModelUpdateTask
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.data.AppInfo
-import com.android.launcher3.popup.PopupPopulator
 import com.android.launcher3.search.SearchCallback
-import com.android.launcher3.search.StringMatcherUtility
-import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.Executors
 import com.patrykmichalik.opto.core.onEach
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
@@ -57,8 +50,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import me.xdrop.fuzzywuzzy.FuzzySearch
-import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 
 class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 

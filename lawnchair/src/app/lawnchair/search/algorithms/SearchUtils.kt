@@ -57,7 +57,7 @@ class SearchUtils(
 fun Sequence<AppInfo>.filterHiddenApps(
     query: String,
     hiddenApps: Set<String>,
-    hiddenAppsInSearch: String
+    hiddenAppsInSearch: String,
 ): Sequence<AppInfo> {
     return when (hiddenAppsInSearch) {
         HiddenAppsInSearch.ALWAYS -> {

@@ -1,17 +1,13 @@
 package app.lawnchair.search.algorithms
 
 import android.content.Context
-import android.content.pm.ShortcutInfo
 import android.os.Handler
-import app.lawnchair.launcher
-import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.search.adapter.GenerateSearchTarget
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.createSearchTarget
-import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.allapps.BaseAllAppsAdapter
@@ -19,18 +15,12 @@ import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.BaseModelUpdateTask
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.data.AppInfo
-import com.android.launcher3.popup.PopupPopulator
 import com.android.launcher3.search.SearchCallback
-import com.android.launcher3.search.StringMatcherUtility
-import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.Executors
 import com.patrykmichalik.opto.core.onEach
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import me.xdrop.fuzzywuzzy.FuzzySearch
-import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
