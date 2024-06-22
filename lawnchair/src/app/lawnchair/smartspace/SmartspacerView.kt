@@ -109,7 +109,7 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
         if (settingsIntent == null) return null
         return OptionsPopupView.OptionItem(
             context,
-            R.string.customize_button_text,
+            R.string.action_customize,
             R.drawable.ic_setting,
             StatsLogManager.LauncherEvent.IGNORE,
         ) {
@@ -120,7 +120,7 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
 
     private fun getCustomizeOptionFallback() = OptionsPopupView.OptionItem(
         context,
-        R.string.customize_button_text,
+        R.string.action_customize,
         R.drawable.ic_setting,
         StatsLogManager.LauncherEvent.IGNORE,
     ) {

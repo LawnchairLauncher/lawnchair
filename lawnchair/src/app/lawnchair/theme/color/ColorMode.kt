@@ -11,7 +11,7 @@ enum class ColorMode(
     @StringRes val labelResourceId: Int,
 ) {
     AUTO(
-        labelResourceId = R.string.launcher_default_color,
+        labelResourceId = R.string.managed_by_lawnchair,
     ),
     LIGHT(
         labelResourceId = R.string.color_light,

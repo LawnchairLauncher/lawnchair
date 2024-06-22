@@ -86,7 +86,7 @@ fun ColorSelection(
                         .fillMaxWidth()
                         .padding(all = 16.dp),
                 ) {
-                    Text(text = stringResource(id = R.string.apply_grid))
+                    Text(text = stringResource(id = R.string.action_apply))
                 }
                 BottomSpacer()
             }

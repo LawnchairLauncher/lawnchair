@@ -209,7 +209,7 @@ fun ColumnScope.RestoreBackupOptions(
                 .fillMaxWidth(),
             enabled = contents != 0 && !restoringBackup,
         ) {
-            Text(text = stringResource(id = R.string.restore_backup_action))
+            Text(text = stringResource(id = R.string.action_restore))
         }
     }
 }

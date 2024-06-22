@@ -92,9 +92,9 @@ fun CustomIconShapePreference(
                 ) {
                     Text(
                         text = if (appliedIconShape != null) {
-                            stringResource(id = R.string.apply_grid)
+                            stringResource(id = R.string.action_apply)
                         } else {
-                            stringResource(id = R.string.create)
+                            stringResource(id = R.string.action_create)
                         },
                     )
                 }
@@ -134,7 +134,7 @@ private fun IconShapeCornerPreferenceGroup(
         heading = stringResource(id = R.string.color_sliders),
     ) {
         IconShapeCornerPreference(
-            title = stringResource(id = R.string.icon_shape_top_left),
+            title = stringResource(id = R.string.custom_icon_shape_top_left),
             scale = selectedIconShape.topLeft.scale.x,
             onScaleChange = {
                 onSelectedIconShapeChange(selectedIconShape.copy(topLeftScale = it))
@@ -145,7 +145,7 @@ private fun IconShapeCornerPreferenceGroup(
             },
         )
         IconShapeCornerPreference(
-            title = stringResource(id = R.string.icon_shape_top_right),
+            title = stringResource(id = R.string.custom_icon_shape_top_right),
             scale = selectedIconShape.topRight.scale.x,
             onScaleChange = {
                 onSelectedIconShapeChange(selectedIconShape.copy(topRightScale = it))
@@ -156,7 +156,7 @@ private fun IconShapeCornerPreferenceGroup(
             },
         )
         IconShapeCornerPreference(
-            title = stringResource(id = R.string.icon_shape_bottom_left),
+            title = stringResource(id = R.string.custom_icon_shape_bottom_left),
             scale = selectedIconShape.bottomLeft.scale.x,
             onScaleChange = {
                 onSelectedIconShapeChange(selectedIconShape.copy(bottomLeftScale = it))
@@ -167,7 +167,7 @@ private fun IconShapeCornerPreferenceGroup(
             },
         )
         IconShapeCornerPreference(
-            title = stringResource(id = R.string.icon_shape_bottom_right),
+            title = stringResource(id = R.string.custom_icon_shape_bottom_right),
             scale = selectedIconShape.bottomRight.scale.x,
             onScaleChange = {
                 onSelectedIconShapeChange(selectedIconShape.copy(bottomRightScale = it))
@@ -335,7 +335,7 @@ private fun CornerSlider(
                     .clickable {
                         bottomSheetHandler.show {
                             ModalBottomSheetContent(
-                                title = { Text(stringResource(id = R.string.icon_shape_corner)) },
+                                title = { Text(stringResource(id = R.string.custom_icon_shape_corner)) },
                                 buttons = {
                                     OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
                                         Text(text = stringResource(id = android.R.string.cancel))
@@ -394,7 +394,7 @@ private fun CornerSlider(
 
 @Composable
 private fun IconCornerShape.getLabel() = when (this) {
-    IconCornerShape.Squircle -> stringResource(id = R.string.icon_shape_corner_squircle)
-    IconCornerShape.Cut -> stringResource(id = R.string.icon_shape_corner_cut)
-    else -> stringResource(id = R.string.icon_shape_corner_round)
+    IconCornerShape.Squircle -> stringResource(id = R.string.custom_icon_shape_corner_squircle)
+    IconCornerShape.Cut -> stringResource(id = R.string.custom_icon_shape_corner_cut)
+    else -> stringResource(id = R.string.custom_icon_shape_corner_round)
 }

@@ -164,7 +164,7 @@ fun HomeScreenPreferences(
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(
-                label = stringResource(id = R.string.icon_size),
+                label = stringResource(id = R.string.icon_sizes),
                 adapter = prefs2.homeIconSizeFactor.getAdapter(),
                 step = 0.1f,
                 valueRange = 0.5F..1.5F,
@@ -173,7 +173,7 @@ fun HomeScreenPreferences(
             val homeScreenLabelsAdapter = prefs2.showIconLabelsOnHomeScreen.getAdapter()
             SwitchPreference(
                 adapter = homeScreenLabelsAdapter,
-                label = stringResource(id = R.string.show_home_labels),
+                label = stringResource(id = R.string.show_labels),
             )
             ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
                 SliderPreference(

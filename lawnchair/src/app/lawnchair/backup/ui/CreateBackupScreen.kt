@@ -185,7 +185,7 @@ fun CreateBackupScreen(
                     .fillMaxWidth(),
                 enabled = contents != 0 && screenshotDone && !creatingBackup,
             ) {
-                Text(text = stringResource(id = R.string.create_backup_action))
+                Text(text = stringResource(id = R.string.action_create))
             }
         }
     }

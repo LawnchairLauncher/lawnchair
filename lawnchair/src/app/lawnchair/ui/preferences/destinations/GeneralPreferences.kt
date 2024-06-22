@@ -126,14 +126,14 @@ fun GeneralPreferences() {
             showDescription = wrapAdaptiveIcons.state.value,
         ) {
             NavigationActionPreference(
-                label = stringResource(id = R.string.icon_style),
+                label = stringResource(id = R.string.icon_style_label),
                 destination = GeneralRoutes.ICON_PACK,
                 subtitle = iconStyleSubtitle,
             )
             ExpandAndShrink(visible = themedIconsEnabled) {
                 SwitchPreference(
                     adapter = prefs.transparentIconBackground.getAdapter(),
-                    label = stringResource(id = R.string.transparent_background_icons),
+                    label = stringResource(id = R.string.transparent_background_icons_label),
                     description = stringResource(id = R.string.transparent_background_icons_description),
                 )
             }

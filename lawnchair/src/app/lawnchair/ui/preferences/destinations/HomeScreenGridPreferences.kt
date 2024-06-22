@@ -105,7 +105,7 @@ fun HomeScreenGridPreferences(
                     .fillMaxWidth(),
                 enabled = columns.intValue != originalColumns || rows.intValue != originalRows,
             ) {
-                Text(text = stringResource(id = R.string.apply_grid))
+                Text(text = stringResource(id = R.string.action_apply))
             }
         }
     }

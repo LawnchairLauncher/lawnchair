@@ -72,7 +72,7 @@ class LawnchairShortcut {
         private val appInfo: ModelAppInfo,
         itemInfo: ItemInfo,
         originalView: View,
-    ) : SystemShortcut<LawnchairLauncher>(R.drawable.ic_edit, R.string.customize_button_text, launcher, itemInfo, originalView) {
+    ) : SystemShortcut<LawnchairLauncher>(R.drawable.ic_edit, R.string.action_customize, launcher, itemInfo, originalView) {
 
         override fun onClick(v: View) {
             val outObj = Array<Any?>(1) { null }
