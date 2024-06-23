@@ -8,10 +8,12 @@ import android.icu.text.DisplayContext
 import android.os.SystemClock
 import android.text.format.DateFormat.is24HourFormat
 import android.util.AttributeSet
+import android.util.Log
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.util.broadcastReceiverFlow
+import app.lawnchair.util.firstBlocking
 import app.lawnchair.util.repeatOnAttached
 import app.lawnchair.util.subscribeBlocking
 import com.android.launcher3.R
@@ -95,10 +97,31 @@ class IcuDateTextView @JvmOverloads constructor(
         }
         val formatter = when (calendar) {
             SmartspaceCalendar.Persian -> createPersianFormatter()
+            SmartspaceCalendar.Custom -> createCustomFormatter()
             else -> createGregorianFormatter()
         }
         formatterFunction = formatter
         return formatter
+    }
+
+    private fun createCustomFormatter(): FormatterFunction {
+        val TAG = "createCustomFormatter"
+
+        var format: String
+        if (dateTimeOptions.showTime) {
+            format = prefs.smartspaceCustomTimeFormat.get().firstBlocking()
+            if (dateTimeOptions.showDate) format = prefs.smartspaceCustomDate.get().firstBlocking() + format
+        } else {
+            format = prefs.smartspaceCustomDateWithoutYear.get().firstBlocking()
+        }
+        try {
+            val formatter = DateFormat.getInstanceForSkeleton(format, Locale.getDefault())
+            formatter.setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE)
+            return { formatter.format(it) }
+        } catch(T: Throwable) {
+            Log.w(TAG, "Fallback to Gregorian formatter", T)
+            return createGregorianFormatter()
+        }
     }
 
     private fun createPersianFormatter(): FormatterFunction {

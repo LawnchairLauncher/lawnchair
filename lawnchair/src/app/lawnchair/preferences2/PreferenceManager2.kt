@@ -531,6 +531,21 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         save = { it.toString() },
     )
 
+    val smartspaceCustomTimeFormat  = preference(
+        key = stringPreferencesKey(name = "smartspace_custom_time_format"),
+        defaultValue = context.getString(R.string.smartspace_icu_date_pattern_custom_time),
+    )
+
+    val smartspaceCustomDate  = preference(
+        key = stringPreferencesKey(name = "smartspace_custom_date"),
+        defaultValue = context.getString(R.string.smartspace_icu_date_pattern_custom_date),
+    )
+
+    val smartspaceCustomDateWithoutYear = preference(
+        key = stringPreferencesKey(name = "smartspace_custom_date_wmd"),
+        defaultValue = context.getString(R.string.smartspace_icu_date_pattern_custom_wday_month_day_no_year),
+    )
+
     val wallpaperDepthEffect = preference(
         key = booleanPreferencesKey(name = "enable_wallpaper_depth_effect"),
         defaultValue = true,
