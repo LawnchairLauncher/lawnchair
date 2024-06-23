@@ -15,112 +15,144 @@
   ~ limitations under the License.
   -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
-    <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Set Lawnchair as your default launcher to access shortcuts and more.</string>
+    <!-- TODO: Rename all strings to follow CONTRIBUTING.md guidelines -->
+    <!--
+
+    Actions and Verbs
+
+    -->
+    <string name="preview_label">Parashikim</string>
+    <string name="action_create">Krijo</string>
+    <string name="action_backup">Backup</string>
+    <string name="action_restore">Rikthe</string>
+    <string name="action_delete">Fshij</string>
+    <string name="action_reset">Rivendos</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="action_apply">Vendos</string>
+    <string name="action_customize">Personalizo</string>
+    <string name="always_choice">Always</string>
+    <string name="never_choice">Never</string>
+    <string name="clipboard">Tabelë</string>
+    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy">Kopjo</string>
+    <string name="action_paste">Ngjit</string>
+    <string name="loading">Po ngarkohet…</string>
+    <string name="managed_by_lawnchair">Menaxhuar nga Lawnchair</string>
+    <!-- When mentioning settings UI -->
+    <string name="smartspace_preferences">Preferencat</string>
+    <string name="settings_button_text">Home settings</string>
+    <string name="system_settings">System settings</string>
+    <string name="title_change_settings">Change settings</string>
+    <!--
+
+    General "words" used throughout Lawnchair
+
+    -->
+    <!-- Selection options -->
+    <string name="dynamic">Dinamike</string>
+    <string name="presets">Parapërcaktime</string>
+    <string name="custom">E veqantë</string>
+    <string name="feed_default">Default</string>
+    <string name="system">Sistemi</string>
+    <!-- Relating to the Launcher ui -->
+    <string name="columns">Kolonat</string>
+    <string name="rows">Rreshtat</string>
+    <string name="label">Emërtimi</string>
+    <string name="icons">Ikonat</string>
+    <string name="grid">Rrjeta</string>
+    <string name="layout">Plan</string>
+    <!-- Generic styling options -->
+    <string name="wallpaper">Sfondi</string>
+    <string name="background_opacity">Background opacity</string>
+    <!-- Toast text and tips -->
+    <string name="copied_toast">Copied to clipboard</string>
+    <string name="item_removed">Item removed</string>
+    <!-- Miscellaneous -->
+    <string name="what_to_show">What to show</string>
+    <!-- A11y description -->
+    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="x_and_y">%s&amp;%s</string>
+    <!--
+
+    Preference Dashboard
+
+    -->
     <string name="settings">Cilësimet</string>
     <string name="general_label">Të përgjithshme</string>
-    <string name="general_description">Ngjyrat, Paketa e Ikonave, Pikat e Njoftimit</string>
-    <string name="home_screen_label">Ekrani Kryesorë</string>
-    <string name="home_screen_description">Lajmet, Rrjeta, Ikonat</string>
-    <string name="what_to_show">Çfarë te Shfaqet</string>
+    <string name="general_description">Colors, icon packs, notification dots</string>
+    <string name="home_screen_label">Home screen</string>
+    <string name="home_screen_description">Feed, grid, icons</string>
     <string name="dock_label">Dock-u</string>
-    <string name="dock_description">Shiriti i kërkimit, Numri i ikonave</string>
-    <string name="app_drawer_label">Sirtari i aplikacioneve</string>
-    <string name="app_drawer_description">Aplikacionet e fshehura, Nurmri i kolonave, Ikonat</string>
-    <string name="drawer_search_label">Drawer Search</string>
-    <string name="drawer_search_description">Web Suggestions, Global Search</string>
+    <string name="dock_description">Search bar, icon count</string>
+    <string name="app_drawer_label">App drawer</string>
+    <string name="app_drawer_description">Hidden apps, column count, icons</string>
+    <string name="drawer_search_label">Drawer search</string>
+    <string name="drawer_search_description">Web suggestions, global search</string>
     <string name="folders_label">Dosjet</string>
-    <string name="folders_description">Numri i Rreshtave dhe Kolonave</string>
+    <string name="folders_description">Row and column count</string>
     <string name="gestures_label">Gjestet</string>
-    <string name="gestures_description">Prekjet dhe Rrëshqitjet</string>
+    <string name="gestures_description">Taps and swipes</string>
     <string name="quickstep_label">Të fundit</string>
-    <string name="quickstep_description">Butoni që Heq të Gjitha, Rrezja e Këndeve</string>
+    <string name="quickstep_description">Clear All button, corner radius</string>
     <string name="about_label">Rreth</string>
-    <string name="app_info_drop_target_label">Informacioni i Aplikacionit</string>
+    <string name="app_info_drop_target_label">App info</string>
     <string name="debug_restart_launcher">Rifillo Lawnchair</string>
-    <string name="experimental_features_label">Veçoritë Eksperimentale</string>
-    <!-- ExperimentalFeaturesPreferences -->
-    <!-- <string name="experimental_features_label" />-->
-    <string name="font_picker_label">Personalizimi i Fonteve</string>
+    <string name="experimental_features_label">Experimental features</string>
+    <!-- Experimental features -->
+    <string name="font_picker_label">Font customization</string>
     <string name="font_picker_description">Some text remains unchanged</string>
-    <string name="smartspace_calendar_label">Në pamje të parë Personalizimi i Kalendarit</string>
+    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Maximum Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the maximum allowed Home Screen grid size from 10 x 10 to 20 x 20o</string>
-    <string name="always_reload_icons_label">Gjithmonë Ringarko Ikonat</string>
+    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
+    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
+    <string name="always_reload_icons_label">Always reload icons</string>
     <string name="always_reload_icons_description">Shmang përdorimin e ikonave të ruajtura nga paketat e ikonave</string>
-    <string name="recents_lock_unlock">Lock/Unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing “Clear All”</string>
-    <!-- Relating to label/icon size -->
-    <string name="icons">Ikonat</string>
-    <string name="icon_size">Madhësia e Ikonave</string>
-    <string name="show_home_labels">Shfaq Emërtimet</string>
-    <string name="label_size">Madhësia e Emërtimeve</string>
-    <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">Rrotullimi i ekranit</string>
-    <string name="home_screen_rotation_description">When device is rotated</string>
-    <string name="font_label">Fonte (Eksperimentale)</string>
-    <string name="fontWorkspace">Të përgjithshme</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (Medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (Medium)</string>
-    <string name="icon_style">Sili i ikonave</string>
-    <string name="transparent_background_icons">Ikona me temë transparente</string>
+    <string name="recents_lock_unlock">Lock/unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <!--
+
+    Notifications
+
+    -->
+    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
+    <string name="notification_dots">Notification dots</string>
+    <string name="show_notification_count">Show notification counter</string>
+    <string name="notification_dots_color">Notification dot color</string>
+    <string name="notification_dots_text_color">Notification counter color</string>
+    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="missing_notification_access_label">Notification access needed</string>
+    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <!--
+
+    Icons
+
+    -->
+    <!-- General strings -->
+    <string name="icon_style_label">Icon style</string>
+    <string name="icon_shape_label">Icon shape</string>
+    <string name="icon_sizes">Icon size</string>
+    <string name="show_labels">Show labels</string>
+    <string name="label_size">Label size</string>
+    <string name="twoline_label">Use multiple lines</string>
+    <!-- Icon-related settings -->
+    <string name="transparent_background_icons_label">Transparent themed icons</string>
     <string name="transparent_background_icons_description">Përdor sfond transfarent në ikonat me temë</string>
-    <string name="icon_shape_label">Forma e Ikonave</string>
-    <string name="auto_adaptive_icons_label">Ikonat Përshtatese Automatike</string>
-    <string name="auto_adaptive_icons_description">Për të gjitha Ikonat jo-Pershtatëse.</string>
-    <string name="background_lightness_label">Ndriçimi i Sfondit</string>
-    <string name="adaptive_icon_background_description">Përdor Ndriçim 100% për sfond të bardhë.</string>
-    <string name="reset_custom_icons">Rivendos Ikonat e Sistemit</string>
+    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
+    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
+    <string name="background_lightness_label">Background lightness</string>
+    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
+    <string name="reset_custom_icons">Reset custom icons</string>
     <string name="reset_custom_icons_confirmation">Të gjitha ikonat e parazgjedhura do të rivendosen. Do të vazhdosh?</string>
-    <string name="notification_dots">Pikat e Njoftimeve</string>
-    <string name="show_notification_count">Sfaq Numrin e Njoftimeve</string>
-    <string name="notification_dots_color">Ngjyra e Pikës së Njoftimeve</string>
-    <string name="notification_dots_text_color">Ngjyra e numërimit të njoftimeve</string>
-    <string name="notification_dots_color_contrast_warning_always">Paralajmërim: Pika e Njoftimeve &amp; Ngjyrat e kundërta nuk kanë shumë kontrast me njëra tjetrën</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Paralajmërim: Pika e Njoftimeve &amp; Ngjyrat e kundërta mund të mos kenë gjithmonë kontrast të mjaftueshëm me njëra tjetrën</string>
-    <!-- Notification popup -->
-    <string name="missing_notification_access_label">Nevojitet Aksesi te Njoftimet</string>
-    <string name="missing_notification_access_description">Notification access needed</string>
-    <string name="msg_missing_notification_access">Për të përdorur pikat e njoftimeve lejo <xliff:g id="name" example="My App">%1$s</xliff:g> akses të njoftimeve.</string>
-    <string name="title_change_settings">Ndrysho Cilësimet</string>
-    <string name="colors">Ngjyrat</string>
-    <string name="theme_label">Temat</string>
-    <string name="theme_light">Bardhë</string>
-    <string name="theme_dark">Errët</string>
-    <string name="theme_system_default">Sistemi</string>
-    <string name="theme_follow_wallpaper">Përshtat me Sfondin</string>
-    <string name="accent_color">Ngjyra e theksuar</string>
-    <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Formë a Ikonave e Veqantë</string>
-    <string name="custom_icon_shape_create">Krijo Formë të veqantë të Ikonave</string>
-    <string name="custom_icon_shape_edit">Edito Formën e Veqantë të Ikonave</string>
-    <string name="icon_shape_corner">Forma e Këndeve</string>
-    <string name="icon_shape_corner_round">Rrumbullake</string>
-    <string name="icon_shape_corner_squircle">E Lëmuar</string>
-    <string name="icon_shape_corner_cut">Prej</string>
-    <string name="icon_shape_top_left">Lartë në të majtë</string>
-    <string name="icon_shape_top_right">Lartë në të djathtë</string>
-    <string name="icon_shape_bottom_left">Poshtë në të majtë</string>
-    <string name="icon_shape_bottom_right">Poshtë në të djathtë</string>
-    <string name="create">Krijo</string>
-    <string name="clipboard">Tabelë</string>
-    <string name="export_to_clipboard">Eksporto në Tabelë</string>
-    <string name="import_from_clipboard">Importo në Tabelë</string>
-    <string name="icon_shape_clipboard_import_error">Tabela nuk përmban forma të ikonave valide</string>
-    <!-- IconPackPreferences -->
-    <string name="icon_pack">Paketa Ikonave</string>
-    <string name="themed_icon_pack">Burimi i Ikonës me temë</string>
-    <string name="system_icons">Ikonat e Sistemit</string>
-    <string name="themed_icon_title">Ikona me Temë</string>
-    <string name="themed_icons_off_label">Fikur</string>
-    <string name="themed_icons_home_label">Ekrani Kryesorë</string>
-    <string name="themed_icons_home_and_drawer_label">Ekrani Kryesorë &amp; Sirtari i Aplikacioneve</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
-    <!-- IconPickerPreference -->
+    <!-- Icon picker -->
+    <string name="icon_picker_default_category">Ikonat</string>
+    <string name="icon_picker_reset_to_default">Reset to default</string>
+    <string name="icon_pack_external_picker">Open external picker</string>
+    <string name="pick_icon_from_label">Pick icon from</string>
+    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <!-- Icon shapes  -->
     <string name="icon_shape_system">Sistemi</string>
     <string name="icon_shape_circle">Rreth</string>
     <string name="icon_shape_cylinder">Cilindër</string>
@@ -129,31 +161,70 @@
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Tetëkëndësh</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Katror i Rrumbullakosur</string>
-    <string name="icon_shape_sharp_square">Katror i Mprehtë</string>
+    <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="icon_shape_sharp_square">Sharp square</string>
     <string name="icon_shape_square">Katror</string>
     <string name="icon_shape_squircle">Kungull</string>
     <string name="icon_shape_teardrop">Lot i derdhur</string>
-    <!-- FontSelectionPreferences -->
-    <string name="pref_fonts_add_fonts">Shto Fonte</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fonts are supported</string>
+    <!-- Custom icon shapes -->
+    <string name="custom_icon_shape">Custom icon shape</string>
+    <string name="custom_icon_shape_create">Create custom icon shape</string>
+    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
+    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape_corner_round">Rrumbullake</string>
+    <string name="custom_icon_shape_corner_squircle">E Lëmuar</string>
+    <string name="custom_icon_shape_corner_cut">Prej</string>
+    <string name="custom_icon_shape_top_left">Top left</string>
+    <string name="custom_icon_shape_top_right">Top right</string>
+    <string name="custom_icon_shape_bottom_left">Bottom left</string>
+    <string name="custom_icon_shape_bottom_right">Bottom right</string>
+    <string name="export_to_clipboard">Export to clipboard</string>
+    <string name="import_from_clipboard">Import from clipboard</string>
+    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <!-- Icon pack settings -->
+    <string name="icon_pack">Icon pack</string>
+    <string name="themed_icon_pack">Themed icon source</string>
+    <string name="system_icons">System icons</string>
+    <string name="themed_icon_title">Themed icons</string>
+    <string name="themed_icons_off_label">Fikur</string>
+    <string name="themed_icons_home_label">Home screen</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen &amp; app drawer</string>
+    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <!-- Fonts -->
+    <string name="pref_fonts_add_fonts">Add fonts</string>
+    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
     <string name="pref_fonts_missing_font">Font not found</string>
+    <string name="font_label">Font (experimental)</string>
+    <string name="fontWorkspace">Të përgjithshme</string>
+    <string name="fontHeading">Headings</string>
+    <string name="fontHeadingMedium">Headings (medium)</string>
+    <string name="fontBody">Body</string>
+    <string name="fontBodyMedium">Body (medium)</string>
     <string name="font_variant_italic">Italik</string>
     <string name="font_weight_thin">I hollë</string>
-    <string name="font_weight_extra_light">Ekstra e lehtë</string>
+    <string name="font_weight_extra_light">Extra light</string>
     <string name="font_weight_light">E Lehtë</string>
     <string name="font_weight_regular">I rregullt</string>
     <string name="font_weight_medium">Mesatar</string>
     <string name="font_weight_semi_bold">Gjysmë i theksuar</string>
     <string name="font_weight_bold">I Theksuar</string>
-    <string name="font_weight_extra_bold">Shumë i Theksuar</string>
+    <string name="font_weight_extra_bold">Extra bold</string>
     <string name="font_weight_extra_black">I zi</string>
-    <string name="reset_font">Rivendos</string>
-    <!-- colorpreference/* -->
-    <string name="dynamic">Dinamike</string>
+    <!--
+
+    Colors and theme
+
+    -->
+    <!-- Theme -->
+    <string name="theme_label">Temat</string>
+    <string name="theme_light">Bardhë</string>
+    <string name="theme_dark">Errët</string>
+    <string name="theme_system_default">Sistemi</string>
+    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <!-- Accent color and color picker -->
+    <string name="colors">Ngjyrat</string>
+    <string name="accent_color">Accent color</string>
     <string name="swatches">Shkëmbim</string>
-    <string name="presets">Parapërcaktime</string>
-    <string name="custom">E veqantë</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">E kuqe</string>
     <string name="rgb_green">E gjelbër</string>
@@ -164,282 +235,280 @@
     <string name="hsb_brightness">Shkëlqimi</string>
     <string name="hex">Heks</string>
     <string name="color_sliders">Rrëshqitës</string>
-    <string name="action_copy">Kopjo</string>
-    <string name="action_paste">Ngjit</string>
-    <string name="copied_toast">Kopjuar në clipboard.</string>
-    <string name="invalid_color">Ngjyrë e pavlefshme</string>
-    <string name="launcher_default_color">Menaxhuar nga Lawnchair</string>
-    <!-- HomeScreenPreferences -->
-    <string name="auto_add_shortcuts_label">Shto Aplikacionet e Reja në Ekranin Kryesor</string>
-    <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
-    <string name="minus_one">Feed</string>
-    <string name="feed_provider">Feed Provider</string>
-    <string name="feed_default">Default</string>
-    <string name="wallpaper">Sfondi</string>
-    <string name="wallpaper_scrolling_label">Sfond lëvizës</string>
-    <string name="wallpaper_depth_effect_label">Efekti i thellësisë së wallpaper-it</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between areas of the launcher</string>
-    <string name="show_sys_ui_scrim">Hija e Sipërme</string>
-    <string name="layout">Plan</string>
-    <string name="home_screen_grid">Rrjeta e Ekranit Kryesorë</string>
-    <string name="home_screen_lock">Kyç ekranin bazë</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
-    <string name="home_screen_unlock">Shkyç ekranin bazë</string>
-    <string name="home_screen_locked">Home Screen is locked</string>
-    <string name="show_dot_pagination_label">Use Dot Pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use New Popup Style</string>
-    <string name="show_material_u_popup_description">Use Material You’s bouncy and slightly consolidated popup style</string>
-    <string name="popup_menu">Menuja e Pop-up</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Shfaq butonin kyçës</string>
-    <string name="show_system_settings_entry">Shfaq hyrjen e opsioneve të sistemit</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit Button</string>
-    <string name="status_bar_label">Shiriti i Statusit</string>
-    <string name="show_status_bar">Shfaq Shiritin e Statusit</string>
-    <string name="dark_status_bar_label">Shiriti i Statusit i Zi</string>
-    <string name="home_screen_text_color">Ngjyra e tekstit</string>
-    <string name="color_light">Dritë</string>
-    <string name="color_dark">Natë</string>
-    <string name="force_rounded_widgets">Kendet e Rrumbullakosura</string>
-    <string name="allow_widget_overlap">Lejo tejkalimin</string>
-    <string name="force_widget_resize_label">Enforce Widget Resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove Size Constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
-    <!-- HomeScreenGridPreferences -->
-    <string name="columns">Kolonat</string>
-    <string name="rows">Rreshtat</string>
-    <string name="apply_grid">Vendos</string>
-    <!-- Smartspace -->
-    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Karikimi</string>
-    <string name="smartspace_battery_full">Karikuar</string>
-    <string name="smartspace_battery_low">Bateria e Ulët</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% - Mbaron në %2$s"</string>
-    <string name="accessibility_smartspace_page">Faqja %1$d nga %2$d</string>
-    <string name="smartspace_widget">Në një shikim</string>
-    <string name="smartspace_widget_description">Çfarë te Shfaqet</string>
-    <string name="smartspace_widget_placeholder_date">Pre, Mar 3</string>
-    <string name="preview_label">Parashikim</string>
-    <string name="smartspace_calendar">Kalendar</string>
-    <string name="smartspace_date_and_time">Data &amp; Koha</string>
-    <string name="smartspace_date">Data</string>
-    <string name="smartspace_time">Koha</string>
-    <string name="smartspace_time_format">Formati i kohës</string>
-    <string name="smartspace_time_follow_system">Ndiq sistemin</string>
-    <string name="smartspace_time_12_hour_format">Formati 12-orë</string>
-    <string name="smartspace_time_24_hour_format">Formati 24-orë</string>
-    <string name="smartspace_weather">Moti</string>
-    <string name="smartspace_battery_status">Statusi i Baterisë</string>
-    <string name="smartspace_now_playing">Duke Luajtur Tani</string>
-    <string name="smartspace_requires_setup">Shtyp për te Vendosur</string>
-    <string name="event_provider_missing_notification_dots">Të përdorësh <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ndiz Pikat e Notifikacioneve.</string>
-    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="invalid_color">Invalid color</string>
+    <!--
+
+    Smartspace
+
+    -->
+    <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persian</string>
-    <string name="smartspace_preferences">Preferencat</string>
-    <string name="smartspace_widget_toggle_label">Shfaq në ekranin bazë</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
-    <string name="smartspace_mode_label">Ofruesi i në një shikim</string>
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <!-- Battery labels -->
+    <string name="smartspace_battery_charging">Karikimi</string>
+    <string name="smartspace_battery_full">Karikuar</string>
+    <string name="smartspace_battery_low">Battery low</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% - Mbaron në %2$s"</string>
+    <string name="smartspace_widget">Në një shikim</string>
+    <string name="smartspace_widget_description">What to show</string>
+    <!-- Data and time format settings -->
+    <string name="smartspace_calendar">Kalendar</string>
+    <string name="smartspace_date_and_time">Date &amp; time</string>
+    <string name="smartspace_date">Data</string>
+    <string name="smartspace_time">Koha</string>
+    <string name="smartspace_time_format">Time format</string>
+    <string name="smartspace_time_follow_system">Follow system</string>
+    <string name="smartspace_time_12_hour_format">12-hour format</string>
+    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <!-- Available targets -->
+    <string name="smartspace_weather">Moti</string>
+    <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_now_playing">Duke Luajtur Tani</string>
+    <!-- Setup settings -->
+    <string name="smartspace_requires_setup">Tap to set up</string>
+    <string name="event_provider_missing_notification_dots">Të përdorësh <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ndiz Pikat e Notifikacioneve.</string>
+    <!-- Toggle button for enabling Smartspace -->
+    <string name="smartspace_widget_toggle_label">Show on home screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <!-- List of available providers -->
+    <string name="smartspace_mode_label">At a Glance provider</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Search</string>
-    <!-- DockPreferences -->
-    <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Show Dock</string>
-    <string name="search_bar_label">Shiriti i Kërkimit</string>
-    <string name="hotseat_mode_label">Widget-i kerkues</string>
-    <string name="hotseat_mode_disabled">Fikur</string>
-    <string name="hotseat_mode_google_search">Search bar-i Google</string>
-    <string name="corner_radius_label">Rrezja e Këndeve</string>
-    <string name="apply_accent_color_label">Apliko ngjyrën e theksit</string>
-    <string name="search_provider">Ofrimi i Kërkimit</string>
-    <string name="grid">Rrjeta</string>
-    <string name="dock_icons">Ikonat e dock-ut</string>
-    <string name="hotseat_bottom_space_label">Bottom Padding</string>
-    <!-- SearchProviderPreferences -->
-    <string name="search_provider_app_search">Kërko Aplikacione</string>
-    <string name="search_provider_sponsored_description">%1$s&amp; Lawnchair ka një marrëveshje për ndarjen e të ardhurave.\n\nDuke kërkuar me %1$s ndihmon suportimin e Lawnchair.</string>
-    <string name="app_label">Aplikacioni</string>
-    <string name="website_label">Faqja e internetit</string>
-    <string name="qsb_search_provider_app_required">App required</string>
-    <!-- AppDrawerPrefences -->
-    <string name="background_opacity">Dukshmëria e Sfondit</string>
-    <string name="hidden_apps_label">Aplikacionet e fshehura</string>
-    <string name="show_enable_smart_hide">Shfaq kur emri i plotë është shkruar</string>
-    <string name="hide_hidden_apps_search">Fsheh në Rezultatet e Kërkimit</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load Apps in Bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
-    <string name="pref_all_apps_remember_position_title">Remember Position</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show Scrollbar</string>
-    <string name="pref_category_search">Kërko</string>
-    <string name="show_app_search_bar">Shfaq Shiritin e Kërkimit</string>
-    <string name="pref_search_auto_show_keyboard">Shfaq Tastierën Automatikisht</string>
-    <string name="fuzzy_search_title">Kërkim i përafërt</string>
-    <string name="fuzzy_search_desc">Kërkimi me përafërsi për aplikacionet.</string>
-    <string name="clear_history">Clear Search History</string>
-    <string name="app_drawer_columns">Kolonat e Sirtarit te Aplikacioneve</string>
-    <string name="row_height_label">Gjatësia e Rreshtave</string>
-    <string name="app_drawer_indent_label">Horizontal Padding</string>
-    <!-- HiddenAppsPreferences -->
-    <string name="hidden_apps_label_with_count">Aplikacionet e Fshehura (%1$d)</string>
-    <plurals name="apps_count">
-        <item quantity="one">%1$d Aplikacion</item>
-        <item quantity="other">%1$d Aplikacione</item>
-    </plurals>
-    <!-- FolderPreferences -->
-    <string name="folder_preview_bg_opacity_label">Dukshmëria e Sfondit të Ikonave</string>
-    <string name="folder_preview_bg_color_label">Ngjyra e Sfondit të Ikonave</string>
-    <string name="max_folder_columns">Maximum Folder Columns</string>
-    <string name="max_folder_rows">Maximum Folder Rows</string>
-    <!-- GesturePreference -->
-    <string name="gesture_double_tap">Trokitje e dyfishtë</string>
-    <string name="gesture_swipe_up">Ngreh Lartë</string>
-    <string name="gesture_swipe_down">Ngreh Poshtë</string>
-    <string name="gesture_home_tap">Prekja e Butonit Kryesorë</string>
-    <string name="gesture_back_tap">Prekja e Butonit të Kthimit</string>
-    <string name="gesture_handler_no_op">Mos bëj asgje</string>
-    <string name="gesture_handler_sleep">Fle</string>
-    <string name="gesture_handler_open_notifications">Hap Panelin e Njoftimeve</string>
-    <string name="gesture_handler_open_app_option">Hap Aplikacionin</string>
-    <string name="gesture_handler_open_app_config">Hap %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Hap Sirtarin e Aplikacioneve</string>
-    <string name="gesture_handler_open_app_search">Hap Sirtarin e Kërkimit</string>
-    <string name="gesture_handler_open_search">Hap Kërko</string>
-    <string name="pick_app_for_gesture">Zgjedh Aplikacionin</string>
-    <!-- QuickstepPreferences -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair is not set as the Recents provider.</string>
-    <string name="translucent_background">Sfondi i Tejdukshëm</string>
-    <string name="translucent_background_alpha">Dukshmëria e Sfondit</string>
-    <string name="recents_actions_label">Vepeimet e Shpejta</string>
-    <string name="action_share">Shpërndaj</string>
-    <string name="action_lens">Lente</string>
-    <string name="recents_clear_all">Pastro të Gjitha</string>
-    <string name="task_menu_force_stop">Force close</string>
-    <string name="window_corner_radius_label">Rrezet e këndit të ekranit</string>
-    <string name="override_window_corner_radius_label">Rrezet e këndit të ekranit të Veqantë</string>
-    <string name="window_corner_radius_description">Kur tërheq lartë për të hapur të fundit, Aplikacioni aktual ndjek gishtin tënd, duke u tkurrur në një letër. Përdor këtë rrëshqitës për të përshtatur rrezet e ekranit të letrës kur është gati në ekran të plotë i tillë që përputhet me këndet e ekranit tënd.</string>
-    <string name="taskbar_label">Shiriti i Detyrave</string>
-    <string name="enable_taskbar_experimental">Show Taskbar (Experimental)</string>
-    <!-- about/About.kt -->
+    <!-- Miscellaneous Smartspace strings -->
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="accessibility_smartspace_page">Faqja %1$d nga %2$d</string>
+    <string name="smartspace_widget_placeholder_date">Pre, Mar 3</string>
+    <!--
+
+    About the app
+
+    -->
     <string name="news">Të Rejat</string>
     <string name="support">Suport</string>
     <string name="product">Produkti</string>
-    <string name="design_and_development">Dizenjimi &amp; Zhvillimi</string>
+    <string name="design_and_development">Design &amp; development</string>
     <string name="development">Zhvillimi</string>
-    <string name="quickswitch_maintenance">Mirëmbajtja e QuickSwitch</string>
+    <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Suporti &amp; PR</string>
     <string name="acknowledgements">Mirënjohjet</string>
     <string name="translate">Përkthimi</string>
-    <!-- IconPickerPreference -->
-    <string name="icon_picker_default_category">Ikonat</string>
-    <string name="icon_picker_reset_to_default">Rivendos Përzgjedhjen</string>
-    <string name="icon_pack_external_picker">Hap Zgjedhësin e Jashtëm</string>
-    <string name="pick_icon_from_label">Zgjidh Ikonën Nga</string>
-    <string name="icon_picker_load_failed">Nuk mund të ngarohen më shumë ikona.</string>
-    <!-- Misc -->
-    <string name="all_apps_search_bar_hint">Kërko aplikacione</string>
-    <string name="settings_button_text">Cilësimet e Shtëpisë</string>
-    <string name="item_removed">Item removed</string>
-    <string name="all_apps_no_search_results">Nuk u gjet aplikacione që përputhen me “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="dt2s_admin_hint_title">Kërkohet Leje Administorit</string>
-    <string name="dt2s_admin_hint">Për të përdorur Trokitje e Dzfidhtë për të fikur, vendos Lawnchair si administrator i aplikackionit së paisjes. Prek Hap Cilësimet, Pastaj prek \"Aktivizo këtë aplikacion të administratorit të pajisjes.\"</string>
+    <!--
+
+    Backup and restore
+
+    -->
+    <string name="create_backup">Create backup</string>
+    <string name="what_to_backup">What to back up</string>
+    <string name="backup_content_layout_and_settings">Layout and settings</string>
+    <string name="backup_content_wallpaper">Sfondi</string>
+    <string name="backup_create_success">Backup created</string>
+    <string name="backup_create_error">Failed to create backup</string>
+    <string name="restore_backup">Restore backup</string>
+    <string name="what_to_restore">What to restore</string>
+    <string name="backup_restore_success">Backup restored</string>
+    <string name="backup_restore_error">Failed to restore backup</string>
+    <string name="invalid_backup_file">Invalid backup file</string>
+    <!--
+
+    Gesture settings
+
+    -->
+    <string name="gesture_double_tap">Double tap</string>
+    <string name="gesture_swipe_up">Swipe up</string>
+    <string name="gesture_swipe_down">Swipe down</string>
+    <string name="gesture_home_tap">Home button</string>
+    <string name="gesture_back_tap">Back button</string>
+    <string name="gesture_handler_no_op">Do nothing</string>
+    <string name="gesture_handler_sleep">Fle</string>
+    <string name="gesture_handler_open_notifications">Open notification panel</string>
+    <string name="gesture_handler_open_app_option">Open app</string>
+    <string name="gesture_handler_open_app_config">Hap %1$s</string>
+    <string name="gesture_handler_open_app_drawer">Open app drawer</string>
+    <string name="gesture_handler_open_app_search">Open app search</string>
+    <string name="gesture_handler_open_search">Open search</string>
+    <string name="pick_app_for_gesture">Pick app</string>
+    <string name="dt2s_admin_hint_title">Admin permissions required</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">Kliko Dy Herë per te Kyqur do të çaktivizohet.</string>
-    <string name="dt2s_a11y_hint_title">Aktivizo Shërbimet e Aksesibilitetit</string>
-    <string name="dt2s_a11y_hint">Për të përdorur Trokitje e Dzfidhtë për të fikur, aktivizo Shërbimet e Aksesebilitetit të Lawnchair. Prek Hap Cilësimet dhe aktivizo përdorimin e Lawnchair.</string>
-    <string name="dt2s_warning_open_settings">Hap Cilësimet</string>
-    <string name="loading">Po ngarkohet…</string>
-    <string name="system">Sistemi</string>
-    <string name="customize_button_text">Personalizo</string>
-    <string name="label">Emërtimi</string>
-    <string name="hide_from_drawer">Fshih nga Sirtari i Aplikacioneve</string>
-    <string name="suggestion_pref_screen_title">Sugjerimet</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the app drawer</string>
-    <!-- Bug reporting -->
-    <string name="lawnchair_bug_report">Raporto ndonjë problem të Lawnchair</string>
-    <string name="crash_report_notif_title">%1$s u rrëzua</string>
-    <string name="action_upload_crash_report">Ngarko regjistrin ë rrëzimit</string>
-    <string name="action_copy_link">Kopjo Linkun</string>
+    <string name="dt2s_a11y_hint_title">Turn on accessibility service</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="dt2s_warning_open_settings">Open settings</string>
+    <!--
+
+    Bug reporting
+
+    -->
+    <string name="lawnchair_bug_report">Lawnchair bug report</string>
+    <string name="crash_report_notif_title">%1$s crashed</string>
+    <string name="action_upload_crash_report">Upload crash log</string>
     <string name="action_upload_error">Ngarkimi dështoi</string>
     <string name="dogbin_uploading">Duke ngarkuar…</string>
-    <string name="bugreport_channel_name">Raportimi i Problemeve</string>
-    <string name="status_channel_name">Statusi i Ngarkimit</string>
-    <string name="bugreport_group_summary">%d raporte të reja.</string>
-    <string name="bugreport_group_summary_multiple">Raportime të shumta të reja.</string>
-    <!-- Search ig -->
-    <string name="action_apply">Vendos</string>
-    <string name="show_search_result_types">Shfaq në Rezultatet e Kërkimit</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
-    <string name="search_pref_result_shortcuts_title">Shkurtoret e aplikacioneve</string>
-    <string name="search_pref_result_people_title">Njerëzit</string>
-    <string name="search_pref_result_tips_title">Këshilla për pixel</string>
-    <string name="search_pref_result_settings_title">Android Settings</string>
-    <string name="search_pref_result_files_title">Files</string>
-    <string name="search_pref_result_web_title">Web suggestions</string>
-    <string name="search_pref_result_history_title">Search History</string>
-    <string name="search_pref_result_files_description">Media, files, and more</string>
-    <string name="search_pref_result_contacts_description">Contacts and more</string>
-    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
-    <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
-    <string name="grant_requested_permissions">Grant Permissions</string>
-    <string name="pref_suggestion_label">Sugjerimet</string>
-    <string name="all_apps_device_search_hint">Kërko</string>
-    <string name="search_input_action_clear_results">Pastro Kutinë e Kërkimit</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
-    <string name="all_apps_search_result_files">From your files</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your phone’s settings</string>
+    <string name="bugreport_channel_name">Bug reports</string>
+    <string name="status_channel_name">Upload status</string>
+    <string name="bugreport_group_summary">%d new reports</string>
+    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
+    <!--
+
+    Preferences (without special screens)
+
+    -->
+    <!-- General and home screen settings -->
+    <string name="home_screen_rotation_label">Home screen rotation</string>
+    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
+    <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
+    <string name="minus_one_enable">Show feed</string>
+    <string name="minus_one_unavailable">No feed apps installed</string>
+    <string name="minus_one">Feed</string>
+    <string name="feed_provider">Feed provider</string>
+    <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
+    <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
+    <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
+    <string name="show_sys_ui_scrim">Top shadow</string>
+    <string name="home_screen_grid">Home screen grid</string>
+    <string name="home_screen_lock">Lock home screen</string>
+    <string name="home_screen_unlock">Unlock home screen</string>
+    <string name="home_screen_locked">Home screen is locked</string>
+    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
+    <string name="show_material_u_popup_label">Use new pop-up style</string>
+    <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
+    <string name="popup_menu">Pop-up menu</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
+    <string name="show_system_settings_entry">Show system settings entry</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit button</string>
+    <string name="status_bar_label">Status bar</string>
+    <string name="show_status_bar">Show status bar</string>
+    <string name="dark_status_bar_label">Dark status bar</string>
+    <string name="home_screen_text_color">Text color</string>
+    <string name="color_light">Dritë</string>
+    <string name="color_dark">Natë</string>
+    <string name="force_rounded_widgets">Rounded corners</string>
+    <string name="allow_widget_overlap">Allow overlap</string>
+    <string name="force_widget_resize_label">Enforce widget resizing</string>
+    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
+    <string name="widget_unlimited_size_label">Remove size constraints</string>
+    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <!-- Dock settings -->
+    <string name="show_hotseat_title">Show dock</string>
+    <string name="search_bar_label">Search bar</string>
+    <string name="hotseat_mode_label">Search bar widget</string>
+    <string name="hotseat_mode_disabled">Fikur</string>
+    <string name="hotseat_mode_google_search">Google Search bar</string>
+    <string name="corner_radius_label">Corner radius</string>
+    <string name="apply_accent_color_label">Apply accent color</string>
+    <string name="search_provider">Search provider</string>
+    <string name="dock_icons">Dock icons</string>
+    <string name="hotseat_bottom_space_label">Bottom padding</string>
+    <!-- Search providers -->
+    <string name="search_provider_app_search">App search</string>
+    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="app_label">Aplikacioni</string>
+    <string name="website_label">Faqja e internetit</string>
+    <string name="qsb_search_provider_app_required">App required</string>
+    <!-- Dock search bar a11y -->
     <string name="label_search">Kërko</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Kërkimi me zë</string>
-    <string name="pref_advance_search_category">Advanced Search</string>
-    <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
-    <string name="max_apps_result_count_title">Maximum App Result Count</string>
-    <string name="max_people_result_count_title">Maximum People Result Count</string>
-    <string name="max_file_result_count_title">Maximum Files Result Count</string>
-    <string name="max_settings_entry_result_count_title">Maximum Settings Result Count</string>
-    <string name="max_recent_result_count_title">Maximum Search History Count</string>
-    <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
-    <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
-    <string name="all_apps_search_market_message">Kërko për më shumë Aplikacione</string>
+    <!-- App drawer settings -->
+    <string name="hidden_apps_label">Hidden apps</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load apps in bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
+    <string name="pref_all_apps_remember_position_title">Remember position</string>
+    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
+    <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
+    <string name="app_drawer_columns">App drawer columns</string>
+    <string name="row_height_label">Row height</string>
+    <string name="app_drawer_indent_label">Horizontal padding</string>
+    <!-- HiddenAppsPreferences -->
+    <string name="hide_from_drawer">Hide from app drawer</string>
+    <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d app</item>
+        <item quantity="other">%1$d apps</item>
+    </plurals>
+    <!-- Folder settings -->
+    <string name="folder_preview_bg_opacity_label">Icon background opacity</string>
+    <string name="folder_preview_bg_color_label">Icon background color</string>
+    <string name="max_folder_columns">Maximum folder columns</string>
+    <string name="max_folder_rows">Maximum folder rows</string>
+    <!-- Quickstep settings -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
+    <string name="quickstep_incompatible">Incompatible system integration</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
+    <string name="translucent_background">Translucent background</string>
+    <string name="translucent_background_alpha">Background opacity</string>
+    <string name="recents_actions_label">Quick actions</string>
+    <string name="action_share">Shpërndaj</string>
+    <string name="action_lens">Lente</string>
+    <string name="recents_clear_all">Clear all</string>
+    <string name="task_menu_force_stop">Force close</string>
+    <string name="window_corner_radius_label">Screen corner radius</string>
+    <string name="override_window_corner_radius_label">Custom screen corner radius</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="taskbar_label">Shiriti i Detyrave</string>
+    <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <!--
+
+    All Apps search
+
+    -->
+    <!-- Launcher strings used -->
+    <string name="all_apps_device_search_hint">Kërko</string>
+    <string name="all_apps_search_bar_hint">Kërko aplikacione</string>
+    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+    <string name="all_apps_search_result_suggestions">From the web</string>
+    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
+    <string name="all_apps_search_result_files">Files from device</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
+    <string name="all_apps_search_market_message">Search for more apps</string>
     <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">Asnjë Dyqan i aplikacioneve apo Shfletues të instaluar.</string>
-    <string name="quickstep_incompatible">Integrim i Papërshkueshëm i Sistemit</string>
-    <string name="quickstep_incompatible_description">Pajisja jote është konfiguruar të ketë gjestet e sistemit (njohut si Quickstep) ofruar nga %1$s, por ky version i %1$s nuk është i pajtueshëm me versionin tënd të Android. Nëse do të vazhdosh te përdorësh pajisjen tënde, ju lutemi ç\'instaloni përditësimet e %1$s ose fik %1$s si ofruesit e gjesteve të sistemit.</string>
-    <string name="delete">Fshij</string>
-    <!-- Backup -->
-    <string name="create_backup">Krijo rezervë</string>
-    <string name="create_backup_action">Krijo</string>
-    <string name="what_to_backup">Çfarë të rezervosh</string>
-    <string name="backup_content_layout_and_settings">Plani dhe Opsionet</string>
-    <string name="backup_content_wallpaper">Sfondi</string>
-    <string name="backup_create_success">Rezerva u krijua.</string>
-    <string name="backup_create_error">Deshtoi të krijohet rezerva.</string>
-    <string name="restore_backup">Rikthe rezervën</string>
-    <string name="restore_backup_action">Rikthe</string>
-    <string name="what_to_restore">Cfarë të Rikthesh</string>
-    <string name="backup_restore_success">Rezerva u rikthye.</string>
-    <string name="backup_restore_error">Deshtoi të rikthehet rezerva.</string>
-    <string name="invalid_backup_file">Dosje rezerve e pavlefshme.</string>
-    <!-- Miscellaneous -->
-    <string name="x_by_y">%1$d × %2$d</string>
-    <string name="x_and_y">%s&amp;%s</string>
-    <string name="system_settings">Opsionet e Sistemit</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="allapps_twoline_label">Use Multiple Lines</string>
-    <string name="hidden_apps_show_always">Always</string>
-    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
-    <string name="hidden_apps_show_never">Never</string>
-    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
+    <string name="clear_history">Clear search history</string>
+    <string name="search_input_action_clear_results">Clear search box</string>
+    <!-- Search settings -->
+    <string name="pref_category_search">Kërko</string>
+    <string name="show_app_search_bar">Show search bar</string>
+    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
+    <string name="fuzzy_search_title">Fuzzy search</string>
+    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
+    <string name="suggestion_pref_screen_title">Sugjerimet</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
+    <string name="perform_wide_search_title">Device search</string>
+    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
+    <string name="show_hidden_apps_in_search_results">Show hidden apps in search results</string>
+    <string name="hidden_apps_show_name_typed">If full name is typed</string>
+    <string name="app_search_algorithm">Search algorithm</string>
     <string name="search_algorithm_app_search">Kërko Aplikacione</string>
-    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
-    <string name="app_search_algorithm">Search Algorithm</string>
+    <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
+    <string name="search_algorithm_global_search_via_asi">Global search (via ASI)</string>
+    <!-- Labels of each search result types -->
+    <string name="show_search_result_types">Show in search results</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">App shortcuts</string>
+    <string name="search_pref_result_people_title">Njerëzit</string>
+    <string name="search_pref_result_tips_title">Pixel tips</string>
+    <string name="search_pref_result_settings_title">Android settings</string>
+    <string name="search_pref_result_files_title">Files</string>
+    <string name="search_pref_result_web_title">Web suggestions</string>
+    <string name="search_pref_result_history_title">Search history</string>
     <string name="all_apps_search_result_calculator">Calculator</string>
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <!-- Description for each search result type -->
+    <string name="search_pref_result_files_description">Media, files, and more</string>
+    <string name="search_pref_result_contacts_description">Contacts and more</string>
+    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
+    <!-- Maximum xyz for each search result type -->
+    <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
+    <string name="max_people_result_count_title">Maximum number of people in search results</string>
+    <string name="max_file_result_count_title">Maximum number of files in search results</string>
+    <string name="max_settings_entry_result_count_title">Maximum number of settings entries in search results</string>
+    <string name="max_recent_result_count_title">Maximum number of history entries in search results</string>
+    <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
+    <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
+    <!-- Permission warnings -->
+    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
+    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
+    <string name="grant_requested_permissions">Grant permissions</string>
 </resources>

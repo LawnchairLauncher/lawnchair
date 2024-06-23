@@ -15,145 +15,216 @@
   ~ limitations under the License.
   -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
-    <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Stel Lawnchair in als uw standaard launcher voor toegang tot snelkoppelingen en meer.</string>
+    <!-- TODO: Rename all strings to follow CONTRIBUTING.md guidelines -->
+    <!--
+
+    Actions and Verbs
+
+    -->
+    <string name="preview_label">Voorbeeld</string>
+    <string name="action_create">Aanmaken</string>
+    <string name="action_backup">Backup</string>
+    <string name="action_restore">Terugzetten</string>
+    <string name="action_delete">Verwijderen</string>
+    <string name="action_reset">Reset</string>
+    <string name="action_unlock">Ontgrendelen</string>
+    <string name="action_lock">Vergrendelen</string>
+    <string name="action_apply">Toepassen</string>
+    <string name="action_customize">Aanpassen</string>
+    <string name="always_choice">Altijd</string>
+    <string name="never_choice">Nooit</string>
+    <string name="clipboard">Klembord</string>
+    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy">Kopiëren</string>
+    <string name="action_paste">Plakken</string>
+    <string name="loading">Laden…</string>
+    <string name="managed_by_lawnchair">Beheerd door Lawnchair</string>
+    <!-- When mentioning settings UI -->
+    <string name="smartspace_preferences">Voorkeuren</string>
+    <string name="settings_button_text">Home settings</string>
+    <string name="system_settings">System settings</string>
+    <string name="title_change_settings">Change settings</string>
+    <!--
+
+    General "words" used throughout Lawnchair
+
+    -->
+    <!-- Selection options -->
+    <string name="dynamic">Dynamisch</string>
+    <string name="presets">Voorinstellingen</string>
+    <string name="custom">Aangepast</string>
+    <string name="feed_default">Standaard</string>
+    <string name="system">Systeem</string>
+    <!-- Relating to the Launcher ui -->
+    <string name="columns">Kolommen</string>
+    <string name="rows">Rijen</string>
+    <string name="label">Label</string>
+    <string name="icons">Pictogrammen</string>
+    <string name="grid">Raster</string>
+    <string name="layout">Lay-out</string>
+    <!-- Generic styling options -->
+    <string name="wallpaper">Achtergrond</string>
+    <string name="background_opacity">Background opacity</string>
+    <!-- Toast text and tips -->
+    <string name="copied_toast">Copied to clipboard</string>
+    <string name="item_removed">Item verwijderd</string>
+    <!-- Miscellaneous -->
+    <string name="what_to_show">What to show</string>
+    <!-- A11y description -->
+    <string name="accessibility_service_description">Om je telefoon te vergrendelen bij het uitvoeren van een gebaar, heeft Lawnchair toegang tot toegankelijkheid nodig.\n\nLawnchair kijkt niet naar gebruikersacties, hoewel het voorrecht om dit te doen vereist is voor alle toegankelijkheidsdiensten. Lawnchair negeert elke gebeurtenis die door het systeem wordt gemeld.\n\nOm je telefoon te vergrendelen, gebruikt Lawnchair de performGlobalAction Accessibility service.</string>
+    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <!--
+
+    Preference Dashboard
+
+    -->
     <string name="settings">Instellingen</string>
     <string name="general_label">Algemeen</string>
-    <string name="general_description">Kleuren, Icoon Pakket, Notificatie stippen</string>
-    <string name="home_screen_label">Startscherm</string>
-    <string name="home_screen_description">Feed, Raster, Iconen</string>
-    <string name="what_to_show">Wat te tonen</string>
+    <string name="general_description">Colors, icon packs, notification dots</string>
+    <string name="home_screen_label">Home screen</string>
+    <string name="home_screen_description">Feed, grid, icons</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">Zoekbalk, iconen aantal</string>
-    <string name="app_drawer_label">App-Overzicht</string>
-    <string name="app_drawer_description">Verborgen apps, kolom aantal, iconen</string>
-    <string name="drawer_search_label">App-overzicht Zoeken</string>
-    <string name="drawer_search_description">Web Suggesties, Globaal Zoeken</string>
+    <string name="dock_description">Search bar, icon count</string>
+    <string name="app_drawer_label">App drawer</string>
+    <string name="app_drawer_description">Hidden apps, column count, icons</string>
+    <string name="drawer_search_label">Drawer search</string>
+    <string name="drawer_search_description">Web suggestions, global search</string>
     <string name="folders_label">Mappen</string>
-    <string name="folders_description">Aantal rijen en kolommen</string>
+    <string name="folders_description">Row and column count</string>
     <string name="gestures_label">Gebaren</string>
-    <string name="gestures_description">Tikken en vegen</string>
+    <string name="gestures_description">Taps and swipes</string>
     <string name="quickstep_label">Recente apps</string>
-    <string name="quickstep_description">Wis alles knop, hoek radius</string>
-    <string name="about_label">Informatie</string>
-    <string name="app_info_drop_target_label">App informatie</string>
-    <string name="debug_restart_launcher">Herstart Lawnchair</string>
-    <string name="experimental_features_label">Experimentele functies</string>
-    <!-- ExperimentalFeaturesPreferences -->
-    <!-- <string name="experimental_features_label" />-->
-    <string name="font_picker_label">Lettertype aanpassen</string>
+    <string name="quickstep_description">Clear All button, corner radius</string>
+    <string name="about_label">Over</string>
+    <string name="app_info_drop_target_label">App info</string>
+    <string name="debug_restart_launcher">Lawnchair opnieuw starten</string>
+    <string name="experimental_features_label">Experimental features</string>
+    <!-- Experimental features -->
+    <string name="font_picker_label">Font customization</string>
     <string name="font_picker_description">Sommige tekst blijft ongewijzigd</string>
-    <string name="smartspace_calendar_label">At a Glance Kalender aanpassingen</string>
-    <string name="smartspace_calendar_description">Sta toe datum te tonen in niet-Gregoriaanse kalendersystemen</string>
-    <string name="workspace_increase_max_grid_size_label">Verhoogde Maximale Startscherm Grid Grootte</string>
-    <string name="workspace_increase_max_grid_size_description">Verhoog het maximale toegestane startscherm-raster van 10 × 10 tot 20 × 20</string>
-    <string name="always_reload_icons_label">Altijd iconen vernieuwen</string>
-    <string name="always_reload_icons_description">Vermijd het gebruik van gecachte iconen van icoonpakketten</string>
-    <string name="recents_lock_unlock">Vergrendelen/Ontgrendelen</string>
-    <string name="recents_lock_unlock_description">Voorkom sluiten van geselecteerde app bij \"Alles Wissen\"</string>
-    <!-- Relating to label/icon size -->
-    <string name="icons">Iconen</string>
-    <string name="icon_size">Icoon grootte</string>
-    <string name="show_home_labels">Toon labels</string>
-    <string name="label_size">Label grootte</string>
-    <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">Startscherm rotatie</string>
-    <string name="home_screen_rotation_description">Wanneer het apparaat gedraaid is</string>
-    <string name="font_label">Lettertype (Experimenteel)</string>
-    <string name="fontWorkspace">Algemeen</string>
-    <string name="fontHeading">Koppen</string>
-    <string name="fontHeadingMedium">Koppen (Middelgroot)</string>
-    <string name="fontBody">Berichttekst</string>
-    <string name="fontBodyMedium">Berichttekst (Middelgroot)</string>
-    <string name="icon_style">Icoon stijl</string>
-    <string name="transparent_background_icons">Transparante gethematiseerde iconen</string>
-    <string name="transparent_background_icons_description">Gebruik transparante achtergrond bij gethematiseerde iconen</string>
-    <string name="icon_shape_label">Icoon vorm</string>
-    <string name="auto_adaptive_icons_label">Automatische adaptieve iconen</string>
-    <string name="auto_adaptive_icons_description">Voor alle niet-adaptieve iconen.</string>
-    <string name="background_lightness_label">Achtergrond helderheid</string>
-    <string name="adaptive_icon_background_description">Gebruik 100% achtergrond helderheid voor wit.</string>
-    <string name="reset_custom_icons">Reset aangepaste iconen</string>
-    <string name="reset_custom_icons_confirmation">Alle aangepaste iconen worden gereset. Wilt u doorgaan?</string>
-    <string name="notification_dots">Meldingsstipje</string>
-    <string name="show_notification_count">Toon aantal meldingen</string>
-    <string name="notification_dots_color">Meldings-stip kleur</string>
-    <string name="notification_dots_text_color">Meldings-telling kleur</string>
-    <string name="notification_dots_color_contrast_warning_always">Waarschuwing: Meldings-stip &amp; Teller kleuren zijn niet voldoende in contrast met elkaar</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Waarschuwing: Meldings-stip &amp; Teller kleuren zijn mogelijk niet altijd voldoende in contrast met elkaar</string>
-    <!-- Notification popup -->
-    <string name="missing_notification_access_label">Notificatie Toegang Nodig</string>
-    <string name="missing_notification_access_description">Notificatie toegang vereist</string>
-    <string name="msg_missing_notification_access">Om meldingsstipjes te gebruiken, geef <xliff:g id="name" example="My App">%1$s</xliff:g> toegang tot meldingen.</string>
-    <string name="title_change_settings">Wijzig Instellingen</string>
-    <string name="colors">Kleuren</string>
-    <string name="theme_label">Thema</string>
-    <string name="theme_light">Licht</string>
-    <string name="theme_dark">Donker</string>
-    <string name="theme_system_default">Systeem</string>
-    <string name="theme_follow_wallpaper">Overeenkomen met achtergrond</string>
-    <string name="accent_color">Accentkleur</string>
-    <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Aangepaste icoonvorm</string>
-    <string name="custom_icon_shape_create">Maak aangepaste icoonvorm</string>
-    <string name="custom_icon_shape_edit">Bewerk aangepaste icoonvorm</string>
-    <string name="icon_shape_corner">Hoek Vorm</string>
-    <string name="icon_shape_corner_round">Rond</string>
-    <string name="icon_shape_corner_squircle">Glad</string>
-    <string name="icon_shape_corner_cut">Knip</string>
-    <string name="icon_shape_top_left">Links boven</string>
-    <string name="icon_shape_top_right">Rechts boven</string>
-    <string name="icon_shape_bottom_left">Links onder</string>
-    <string name="icon_shape_bottom_right">Rechts onder</string>
-    <string name="create">Aanmaken</string>
-    <string name="clipboard">Klembord</string>
-    <string name="export_to_clipboard">Exporteren naar Klembord</string>
-    <string name="import_from_clipboard">Importeren van Klembord</string>
-    <string name="icon_shape_clipboard_import_error">Klembord bevat geen geldige icoonvorm</string>
-    <!-- IconPackPreferences -->
-    <string name="icon_pack">Icoon pakket</string>
-    <string name="themed_icon_pack">Bron van gethematiseerde icoon</string>
-    <string name="system_icons">Systeem iconen</string>
-    <string name="themed_icon_title">Thema Iconen</string>
-    <string name="themed_icons_off_label">Uitgeschakeld</string>
-    <string name="themed_icons_home_label">Startscherm</string>
-    <string name="themed_icons_home_and_drawer_label">Startscherm &amp; App-overzicht</string>
-    <string name="lawnicons_not_installed_description">Geen ondersteunde pictogrampakketten</string>
-    <!-- IconPickerPreference -->
+    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
+    <string name="smartspace_calendar_description">Weergave van datum in niet-Gregoriaanse kalender toestaan</string>
+    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
+    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
+    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="always_reload_icons_description">Gecachte pictogrammen van pictogrampakketten vermijden</string>
+    <string name="recents_lock_unlock">Lock/unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <!--
+
+    Notifications
+
+    -->
+    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
+    <string name="notification_dots">Notification dots</string>
+    <string name="show_notification_count">Show notification counter</string>
+    <string name="notification_dots_color">Notification dot color</string>
+    <string name="notification_dots_text_color">Notification counter color</string>
+    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="missing_notification_access_label">Toegang tot meldingen vereist</string>
+    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <!--
+
+    Icons
+
+    -->
+    <!-- General strings -->
+    <string name="icon_style_label">Icon style</string>
+    <string name="icon_shape_label">Icon shape</string>
+    <string name="icon_sizes">Icon size</string>
+    <string name="show_labels">Show labels</string>
+    <string name="label_size">Label size</string>
+    <string name="twoline_label">Use multiple lines</string>
+    <!-- Icon-related settings -->
+    <string name="transparent_background_icons_label">Transparent themed icons</string>
+    <string name="transparent_background_icons_description">Transparante achtergrond gebruiken bij themapictogrammen</string>
+    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
+    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
+    <string name="background_lightness_label">Background lightness</string>
+    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
+    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="reset_custom_icons_confirmation">Alle aangepaste pictogrammen worden teruggezet. Wil je doorgaan?</string>
+    <!-- Icon picker -->
+    <string name="icon_picker_default_category">Pictogrammen</string>
+    <string name="icon_picker_reset_to_default">Standaardinstellingen herstellen</string>
+    <string name="icon_pack_external_picker">Externe kiezer openen</string>
+    <string name="pick_icon_from_label">Pick icon from</string>
+    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <!-- Icon shapes  -->
     <string name="icon_shape_system">Systeem</string>
     <string name="icon_shape_circle">Cirkel</string>
     <string name="icon_shape_cylinder">Cilinder</string>
-    <string name="icon_shape_diamond">Diamant</string>
+    <string name="icon_shape_diamond">Ruit</string>
     <string name="icon_shape_egg">Ei</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Achthoek</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Afgerond Vierkant</string>
-    <string name="icon_shape_sharp_square">Scherpe Vierkant</string>
+    <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="icon_shape_sharp_square">Sharp square</string>
     <string name="icon_shape_square">Vierkant</string>
     <string name="icon_shape_squircle">Vierkantcirkel</string>
     <string name="icon_shape_teardrop">Teardrop</string>
-    <!-- FontSelectionPreferences -->
-    <string name="pref_fonts_add_fonts">Lettertypen toevoegen</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF lettertypen worden ondersteund</string>
+    <!-- Custom icon shapes -->
+    <string name="custom_icon_shape">Custom icon shape</string>
+    <string name="custom_icon_shape_create">Create custom icon shape</string>
+    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
+    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape_corner_round">Rond</string>
+    <string name="custom_icon_shape_corner_squircle">Glad</string>
+    <string name="custom_icon_shape_corner_cut">Knip</string>
+    <string name="custom_icon_shape_top_left">Top left</string>
+    <string name="custom_icon_shape_top_right">Top right</string>
+    <string name="custom_icon_shape_bottom_left">Bottom left</string>
+    <string name="custom_icon_shape_bottom_right">Bottom right</string>
+    <string name="export_to_clipboard">Export to clipboard</string>
+    <string name="import_from_clipboard">Import from clipboard</string>
+    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <!-- Icon pack settings -->
+    <string name="icon_pack">Icon pack</string>
+    <string name="themed_icon_pack">Themed icon source</string>
+    <string name="system_icons">System icons</string>
+    <string name="themed_icon_title">Themed icons</string>
+    <string name="themed_icons_off_label">Uitgeschakeld</string>
+    <string name="themed_icons_home_label">Home screen</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen &amp; app drawer</string>
+    <string name="lawnicons_not_installed_description">Geen ondersteunde pictogrampakketten</string>
+    <!-- Fonts -->
+    <string name="pref_fonts_add_fonts">Add fonts</string>
+    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
     <string name="pref_fonts_missing_font">Lettertype niet gevonden</string>
+    <string name="font_label">Font (experimental)</string>
+    <string name="fontWorkspace">Algemeen</string>
+    <string name="fontHeading">Koppen</string>
+    <string name="fontHeadingMedium">Headings (medium)</string>
+    <string name="fontBody">Berichttekst</string>
+    <string name="fontBodyMedium">Body (medium)</string>
     <string name="font_variant_italic">Cursief</string>
     <string name="font_weight_thin">Dun</string>
-    <string name="font_weight_extra_light">Extra Licht</string>
+    <string name="font_weight_extra_light">Extra light</string>
     <string name="font_weight_light">Licht</string>
     <string name="font_weight_regular">Normaal</string>
     <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Half dikgedrukt</string>
-    <string name="font_weight_bold">Dikgedrukt</string>
-    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_semi_bold">Halfvet</string>
+    <string name="font_weight_bold">Vet</string>
+    <string name="font_weight_extra_bold">Extra bold</string>
     <string name="font_weight_extra_black">Zwart</string>
-    <string name="reset_font">Reset</string>
-    <!-- colorpreference/* -->
-    <string name="dynamic">Dynamisch</string>
-    <string name="swatches">Stapels</string>
-    <string name="presets">Voorkeursinstellingen</string>
-    <string name="custom">Gepersonaliseerd</string>
+    <!--
+
+    Colors and theme
+
+    -->
+    <!-- Theme -->
+    <string name="theme_label">Thema</string>
+    <string name="theme_light">Licht</string>
+    <string name="theme_dark">Donker</string>
+    <string name="theme_system_default">Systeem</string>
+    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <!-- Accent color and color picker -->
+    <string name="colors">Kleuren</string>
+    <string name="accent_color">Accent color</string>
+    <string name="swatches">Stalen</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Rood</string>
     <string name="rgb_green">Groen</string>
@@ -164,282 +235,280 @@
     <string name="hsb_brightness">Helderheid</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Schuifregelaars</string>
-    <string name="action_copy">Kopiëren</string>
-    <string name="action_paste">Plakken</string>
-    <string name="copied_toast">Gekopieerd naar klembord.</string>
-    <string name="invalid_color">Ongeldige Kleur</string>
-    <string name="launcher_default_color">Beheerd door Lawnchair</string>
-    <!-- HomeScreenPreferences -->
-    <string name="auto_add_shortcuts_label">Voeg nieuwe apps toe aan startscherm</string>
-    <string name="minus_one_enable">Toon feed</string>
-    <string name="minus_one_unavailable">Geen feed apps geïnstalleerd</string>
-    <string name="minus_one">Feed</string>
-    <string name="feed_provider">Feed Aanbieder</string>
-    <string name="feed_default">Standaard</string>
-    <string name="wallpaper">Achtergrond</string>
-    <string name="wallpaper_scrolling_label">Scrollende achtergrond</string>
-    <string name="wallpaper_depth_effect_label">Achtergrond Diepte Effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom de achtergrond in en uit bij de overgang tussen de verschillende schermen</string>
-    <string name="show_sys_ui_scrim">Schaduw bovenzijde</string>
-    <string name="layout">Lay-out</string>
-    <string name="home_screen_grid">Startscherm raster</string>
-    <string name="home_screen_lock">Vergrendel startscherm</string>
-    <string name="home_screen_lock_description">Voorkom wijzigingen van de startscherm lay-out</string>
-    <string name="home_screen_unlock">Startscherm ontgrendelen</string>
-    <string name="home_screen_locked">Startscherm is vergrendeld</string>
-    <string name="show_dot_pagination_label">Gebruik punt-paginering</string>
-    <string name="show_dot_pagination_description">Gebruik punten in plaats van lijnen om het paginanummer te tonen</string>
-    <string name="show_material_u_popup_label">Gebruik nieuwe popup stijl</string>
-    <string name="show_material_u_popup_description">Gebruik materiaal van uw stuiterende en enigszins geconsolideerde popupstijl</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Toon Vergrendelingsknop</string>
-    <string name="show_system_settings_entry">Toon Systeeminstellingenknop</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Toon Bewerkingsknop</string>
-    <string name="status_bar_label">Statusbalk</string>
-    <string name="show_status_bar">Statusbalk weergeven</string>
-    <string name="dark_status_bar_label">Donkere Status Balk</string>
-    <string name="home_screen_text_color">Tekstkleur</string>
-    <string name="color_light">Licht</string>
-    <string name="color_dark">Donker</string>
-    <string name="force_rounded_widgets">Afgeronde Hoeken</string>
-    <string name="allow_widget_overlap">Overlap toestaan</string>
-    <string name="force_widget_resize_label">Forceer formaat wijzigen van de widget</string>
-    <string name="force_widget_resize_description">Aanpassen van de grootte toestaan van widgets die beperkt zijn tot een specifieke grootte</string>
-    <string name="widget_unlimited_size_label">Verwijder beperkingen voor afmetingen</string>
-    <string name="widget_unlimited_size_description">Verwijder de minimale en maximale grootte beperkingen van widgets</string>
-    <!-- HomeScreenGridPreferences -->
-    <string name="columns">Kolommen</string>
-    <string name="rows">Rijen</string>
-    <string name="apply_grid">Toepassen</string>
-    <!-- Smartspace -->
-    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Aan het opladen</string>
-    <string name="smartspace_battery_full">Opgeladen</string>
-    <string name="smartspace_battery_low">Batterij bijna leeg</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Vol in %2$s"</string>
-    <string name="accessibility_smartspace_page">Pagina %1$d van %2$d</string>
-    <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">Wat te tonen</string>
-    <string name="smartspace_widget_placeholder_date">Vr 3 mrt</string>
-    <string name="preview_label">Voorbeeld</string>
-    <string name="smartspace_calendar">Agenda</string>
-    <string name="smartspace_date_and_time">Datum &amp; Tijd</string>
-    <string name="smartspace_date">Datum</string>
-    <string name="smartspace_time">Tijd</string>
-    <string name="smartspace_time_format">Tijdsformaat</string>
-    <string name="smartspace_time_follow_system">Volg systeem</string>
-    <string name="smartspace_time_12_hour_format">12-uurs indeling</string>
-    <string name="smartspace_time_24_hour_format">24-uurs indeling</string>
-    <string name="smartspace_weather">Weer</string>
-    <string name="smartspace_battery_status">Batterij status</string>
-    <string name="smartspace_now_playing">Wordt nu afgespeeld</string>
-    <string name="smartspace_requires_setup">Druk om in te stellen</string>
-    <string name="event_provider_missing_notification_dots">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>te gebruiken, schakel Meldingsstipjes in.</string>
-    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="invalid_color">Invalid color</string>
+    <!--
+
+    Smartspace
+
+    -->
+    <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriaans</string>
     <string name="smartspace_calendar_persian">Perzisch</string>
-    <string name="smartspace_preferences">Voorkeuren</string>
-    <string name="smartspace_widget_toggle_label">Toon op startscherm</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the “Lawnchair” widget</string>
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <!-- Battery labels -->
+    <string name="smartspace_battery_charging">Opladen</string>
+    <string name="smartspace_battery_full">Opgeladen</string>
+    <string name="smartspace_battery_low">Battery low</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Vol in %2$s"</string>
+    <string name="smartspace_widget">At a Glance</string>
+    <string name="smartspace_widget_description">What to show</string>
+    <!-- Data and time format settings -->
+    <string name="smartspace_calendar">Agenda</string>
+    <string name="smartspace_date_and_time">Date &amp; time</string>
+    <string name="smartspace_date">Datum</string>
+    <string name="smartspace_time">Tijd</string>
+    <string name="smartspace_time_format">Time format</string>
+    <string name="smartspace_time_follow_system">Follow system</string>
+    <string name="smartspace_time_12_hour_format">12-hour format</string>
+    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <!-- Available targets -->
+    <string name="smartspace_weather">Weer</string>
+    <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_now_playing">Nu aan het spelen</string>
+    <!-- Setup settings -->
+    <string name="smartspace_requires_setup">Tap to set up</string>
+    <string name="event_provider_missing_notification_dots">Schakel meldingenstippen in om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>te gebruiken.</string>
+    <!-- Toggle button for enabling Smartspace -->
+    <string name="smartspace_widget_toggle_label">Show on home screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <!-- List of available providers -->
     <string name="smartspace_mode_label">At a Glance provider</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Zoeken</string>
-    <!-- DockPreferences -->
-    <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Dock tonen</string>
-    <string name="search_bar_label">Zoekbalk</string>
-    <string name="hotseat_mode_label">Zoekbalkwidget</string>
-    <string name="hotseat_mode_disabled">Uitgeschakeld</string>
-    <string name="hotseat_mode_google_search">Google Zoekbalk</string>
-    <string name="corner_radius_label">Hoek radius</string>
-    <string name="apply_accent_color_label">Pas accentkleur toe</string>
-    <string name="search_provider">Zoek Provider</string>
-    <string name="grid">Raster</string>
-    <string name="dock_icons">Dock iconen</string>
-    <string name="hotseat_bottom_space_label">Onderkant opvulling</string>
-    <!-- SearchProviderPreferences -->
-    <string name="search_provider_app_search">Apps Doorzoeken</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair heeft een overeenkomst over het delen van inkomsten.\n\nZoeken met %1$s helpt Lawnchair te ondersteunen.</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
-    <string name="qsb_search_provider_app_required">App required</string>
-    <!-- AppDrawerPrefences -->
-    <string name="background_opacity">Doorzichtigheid achtergrond</string>
-    <string name="hidden_apps_label">Verborgen apps</string>
-    <string name="show_enable_smart_hide">Weergeven wanneer volledige naam wordt getypt</string>
-    <string name="hide_hidden_apps_search">Verberg in zoekresultaten</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Bulk-App-Downloads</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display all icons at once instead of individually loading and displaying icons. Can fix issues with search but will increase loading time.</string>
-    <string name="pref_all_apps_remember_position_title">Onthoud positie</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
-    <string name="pref_all_apps_show_scrollbar_title">Toon scrollbalk</string>
-    <string name="pref_category_search">Zoek</string>
-    <string name="show_app_search_bar">Zoekbalk weergeven</string>
-    <string name="pref_search_auto_show_keyboard">Toetsenbord Automatisch Weergeven</string>
-    <string name="fuzzy_search_title">Fuzzy zoeken</string>
-    <string name="fuzzy_search_desc">Geschatte overeenkomst voor app zoekopdrachten.</string>
-    <string name="clear_history">Clear Search History</string>
-    <string name="app_drawer_columns">App-Overzicht kolommen</string>
-    <string name="row_height_label">Rij hoogte</string>
-    <string name="app_drawer_indent_label">Horizontale opvulling</string>
-    <!-- HiddenAppsPreferences -->
-    <string name="hidden_apps_label_with_count">Verborgen apps (%1$d)</string>
-    <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Apps</item>
-    </plurals>
-    <!-- FolderPreferences -->
-    <string name="folder_preview_bg_opacity_label">Icoon doorzichtigheid</string>
-    <string name="folder_preview_bg_color_label">Icoon achtergrondkleur</string>
-    <string name="max_folder_columns">Maximum Folder Columns</string>
-    <string name="max_folder_rows">Maximum Folder Rows</string>
-    <!-- GesturePreference -->
-    <string name="gesture_double_tap">Dubbelklik</string>
-    <string name="gesture_swipe_up">Omhoog vegen</string>
-    <string name="gesture_swipe_down">Veeg omlaag</string>
-    <string name="gesture_home_tap">Thuisknopklik</string>
-    <string name="gesture_back_tap">Terugknopklik</string>
-    <string name="gesture_handler_no_op">Niets doen</string>
-    <string name="gesture_handler_sleep">Slapen</string>
-    <string name="gesture_handler_open_notifications">Open meldingspaneel</string>
-    <string name="gesture_handler_open_app_option">App openen</string>
-    <string name="gesture_handler_open_app_config">%1$s openen</string>
-    <string name="gesture_handler_open_app_drawer">Open App-Overzicht</string>
-    <string name="gesture_handler_open_app_search">App zoeken openen</string>
-    <string name="gesture_handler_open_search">Zoeken openen</string>
-    <string name="pick_app_for_gesture">App kiezen</string>
-    <!-- QuickstepPreferences -->
-    <string name="quickswitch_ignored_warning">Deze instellingen worden genegeerd, omdat Lawnchair niet is ingesteld als de aanbieder van Recente apps.</string>
-    <string name="translucent_background">Doorschijnende achtergrond</string>
-    <string name="translucent_background_alpha">Doorzichtigheid achtergrond</string>
-    <string name="recents_actions_label">Snelle Acties</string>
-    <string name="action_share">Delen</string>
-    <string name="action_lens">Lens</string>
-    <string name="recents_clear_all">Alles verwijderen</string>
-    <string name="task_menu_force_stop">Geforceerd sluiten</string>
-    <string name="window_corner_radius_label">Scherm hoek radius</string>
-    <string name="override_window_corner_radius_label">Aangepaste scherm hoek radius</string>
-    <string name="window_corner_radius_description">Als je omhoog veegt om de recente apps te openen volgt de huidige app je vinger, deze vormt zich in een kaart. Gebruik deze schuifregelaar om de hoek radius van de kaart aan te passen wanneer het bijna volledig scherm is, zodat het overeenkomt met de hoeken van uw scherm.</string>
-    <string name="taskbar_label">Taakbalk</string>
-    <string name="enable_taskbar_experimental">Show Taskbar (Experimental)</string>
-    <!-- about/About.kt -->
+    <!-- Miscellaneous Smartspace strings -->
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="accessibility_smartspace_page">Pagina %1$d van %2$d</string>
+    <string name="smartspace_widget_placeholder_date">Vr 3 mrt</string>
+    <!--
+
+    About the app
+
+    -->
     <string name="news">Nieuws</string>
     <string name="support">Ondersteuning</string>
     <string name="product">Product</string>
-    <string name="design_and_development">Ontwerp &amp; ontwikkeling</string>
+    <string name="design_and_development">Design &amp; development</string>
     <string name="development">Ontwikkelaar</string>
-    <string name="quickswitch_maintenance">QuickSwitch Onderhouder</string>
+    <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Ondersteuning &amp; PR</string>
-    <string name="acknowledgements">Erkenningen</string>
+    <string name="acknowledgements">Dankwoord</string>
     <string name="translate">Vertalen</string>
-    <!-- IconPickerPreference -->
-    <string name="icon_picker_default_category">Iconen</string>
-    <string name="icon_picker_reset_to_default">Standaardwaarde herstellen</string>
-    <string name="icon_pack_external_picker">Externe kiezer openen</string>
-    <string name="pick_icon_from_label">Kies icoon uit</string>
-    <string name="icon_picker_load_failed">Kan niet meer iconen laden.</string>
-    <!-- Misc -->
-    <string name="all_apps_search_bar_hint">Zoek Apps</string>
-    <string name="settings_button_text">Startscherm instellingen</string>
-    <string name="item_removed">Item removed</string>
-    <string name="all_apps_no_search_results">Geen apps gevonden die overeenkomen met “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="dt2s_admin_hint_title">Beheerdersrechten vereist</string>
-    <string name="dt2s_admin_hint">Om dubbeltik voor slapen te kunnen gebruiken, maak Lawnchair een apparaat beheerder app. Tik op “Open instellingen” en tik dan op “Activeer deze apparaat beheerder app”</string>
+    <!--
+
+    Backup and restore
+
+    -->
+    <string name="create_backup">Create backup</string>
+    <string name="what_to_backup">What to back up</string>
+    <string name="backup_content_layout_and_settings">Layout and settings</string>
+    <string name="backup_content_wallpaper">Achtergrond</string>
+    <string name="backup_create_success">Back-up gemaakt</string>
+    <string name="backup_create_error">Back-up maken mislukt</string>
+    <string name="restore_backup">Restore backup</string>
+    <string name="what_to_restore">What to restore</string>
+    <string name="backup_restore_success">Back-up teruggezet</string>
+    <string name="backup_restore_error">Back-up herstellen mislukt</string>
+    <string name="invalid_backup_file">Ongeldige back-up bestand</string>
+    <!--
+
+    Gesture settings
+
+    -->
+    <string name="gesture_double_tap">Double tap</string>
+    <string name="gesture_swipe_up">Swipe up</string>
+    <string name="gesture_swipe_down">Swipe down</string>
+    <string name="gesture_home_tap">Home button</string>
+    <string name="gesture_back_tap">Back button</string>
+    <string name="gesture_handler_no_op">Do nothing</string>
+    <string name="gesture_handler_sleep">Slapen</string>
+    <string name="gesture_handler_open_notifications">Open notification panel</string>
+    <string name="gesture_handler_open_app_option">Open app</string>
+    <string name="gesture_handler_open_app_config">%1$s openen</string>
+    <string name="gesture_handler_open_app_drawer">Open app drawer</string>
+    <string name="gesture_handler_open_app_search">Open app search</string>
+    <string name="gesture_handler_open_search">Open search</string>
+    <string name="pick_app_for_gesture">Pick app</string>
+    <string name="dt2s_admin_hint_title">Admin permissions required</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">Dubbeltik om te slapen wordt uitgeschakeld.</string>
-    <string name="dt2s_a11y_hint_title">Toegankelijkheid service vereist</string>
-    <string name="dt2s_a11y_hint">Om dubbeltik voor slapen te kunnen gebruiken, zet de Lawnchair toegankelijkheid dienst aan. Tik op “Open instellingen”, selecteer dan Lawnchair en zet gebruik Lawnchair aan.</string>
-    <string name="dt2s_warning_open_settings">Open instellingen</string>
-    <string name="loading">Aan het laden…</string>
-    <string name="system">Systeem</string>
-    <string name="customize_button_text">Personaliseren</string>
-    <string name="label">Label</string>
-    <string name="hide_from_drawer">Verbergen in App-Overzicht</string>
-    <string name="suggestion_pref_screen_title">Suggesties</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the app drawer</string>
-    <!-- Bug reporting -->
-    <string name="lawnchair_bug_report">Lawnchair Bug Melding</string>
-    <string name="crash_report_notif_title">%1$s is Gecrasht</string>
-    <string name="action_upload_crash_report">Upload Crash Logboek</string>
-    <string name="action_copy_link">Koppeling Kopiëren</string>
+    <string name="dt2s_a11y_hint_title">Turn on accessibility service</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="dt2s_warning_open_settings">Open settings</string>
+    <!--
+
+    Bug reporting
+
+    -->
+    <string name="lawnchair_bug_report">Lawnchair bug report</string>
+    <string name="crash_report_notif_title">%1$s crashed</string>
+    <string name="action_upload_crash_report">Upload crash log</string>
     <string name="action_upload_error">Uploaden mislukt</string>
     <string name="dogbin_uploading">Uploaden…</string>
-    <string name="bugreport_channel_name">Bug Rapportages</string>
-    <string name="status_channel_name">Upload Status</string>
-    <string name="bugreport_group_summary">%d nieuwe rapportages.</string>
-    <string name="bugreport_group_summary_multiple">Meerdere nieuwe rapportages.</string>
-    <!-- Search ig -->
-    <string name="action_apply">Toepassen</string>
-    <string name="show_search_result_types">Toon in zoekresultaten</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
-    <string name="search_pref_result_shortcuts_title">App Snelkoppelingen</string>
-    <string name="search_pref_result_people_title">Personen</string>
-    <string name="search_pref_result_tips_title">Pixel Tips</string>
-    <string name="search_pref_result_settings_title">Android Settings</string>
-    <string name="search_pref_result_files_title">Bestanden</string>
-    <string name="search_pref_result_web_title">Web suggestions</string>
-    <string name="search_pref_result_history_title">Search History</string>
-    <string name="search_pref_result_files_description">Media, files, and more</string>
-    <string name="search_pref_result_contacts_description">Contacten en meer</string>
-    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="warn_contact_permission_content">To search for contacts, grant Contacts and Phone permissions to Lawnchair.</string>
-    <string name="warn_files_permission_content">To search your files, grant Storage permissions to Lawnchair.</string>
-    <string name="grant_requested_permissions">Grant Permissions</string>
-    <string name="pref_suggestion_label">Suggesties</string>
-    <string name="all_apps_device_search_hint">Zoek</string>
-    <string name="search_input_action_clear_results">Leeg Zoekvak</string>
-    <string name="all_apps_search_result_suggestions">Van het internet</string>
-    <string name="all_apps_search_result_contacts_from_device">Uit je contacten</string>
-    <string name="all_apps_search_result_files">Uit je bestanden</string>
-    <string name="all_apps_search_result_settings_entry_from_device">From your phone’s settings</string>
-    <string name="label_search">Zoek</string>
+    <string name="bugreport_channel_name">Bug reports</string>
+    <string name="status_channel_name">Upload status</string>
+    <string name="bugreport_group_summary">%d new reports</string>
+    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
+    <!--
+
+    Preferences (without special screens)
+
+    -->
+    <!-- General and home screen settings -->
+    <string name="home_screen_rotation_label">Home screen rotation</string>
+    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
+    <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
+    <string name="minus_one_enable">Show feed</string>
+    <string name="minus_one_unavailable">Geen feed apps geïnstalleerd</string>
+    <string name="minus_one">Feed</string>
+    <string name="feed_provider">Feed provider</string>
+    <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
+    <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
+    <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
+    <string name="show_sys_ui_scrim">Top shadow</string>
+    <string name="home_screen_grid">Home screen grid</string>
+    <string name="home_screen_lock">Lock home screen</string>
+    <string name="home_screen_unlock">Unlock home screen</string>
+    <string name="home_screen_locked">Home screen is locked</string>
+    <string name="home_screen_lock_description">Wijzigingen aan de lay-out van het startscherm voorkomen</string>
+    <string name="show_dot_pagination_label">Toon stip-paginering</string>
+    <string name="show_dot_pagination_description">Gebruik punten in plaats van lijnen om het paginanummer te tonen</string>
+    <string name="show_material_u_popup_label">Use new pop-up style</string>
+    <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
+    <string name="popup_menu">Pop-up menu</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
+    <string name="show_system_settings_entry">Show system settings entry</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit button</string>
+    <string name="status_bar_label">Status bar</string>
+    <string name="show_status_bar">Show status bar</string>
+    <string name="dark_status_bar_label">Dark status bar</string>
+    <string name="home_screen_text_color">Text color</string>
+    <string name="color_light">Licht</string>
+    <string name="color_dark">Donker</string>
+    <string name="force_rounded_widgets">Rounded corners</string>
+    <string name="allow_widget_overlap">Allow overlap</string>
+    <string name="force_widget_resize_label">Enforce widget resizing</string>
+    <string name="force_widget_resize_description">Aanpassen van de grootte toestaan van widgets die beperkt zijn tot een specifieke grootte</string>
+    <string name="widget_unlimited_size_label">Remove size constraints</string>
+    <string name="widget_unlimited_size_description">Verwijder de minimale en maximale groottebeperkingen van widgets</string>
+    <!-- Dock settings -->
+    <string name="show_hotseat_title">Show dock</string>
+    <string name="search_bar_label">Search bar</string>
+    <string name="hotseat_mode_label">Search bar widget</string>
+    <string name="hotseat_mode_disabled">Uitgeschakeld</string>
+    <string name="hotseat_mode_google_search">Google Search bar</string>
+    <string name="corner_radius_label">Hoek radius</string>
+    <string name="apply_accent_color_label">Apply accent color</string>
+    <string name="search_provider">Search provider</string>
+    <string name="dock_icons">Dock icons</string>
+    <string name="hotseat_bottom_space_label">Bottom padding</string>
+    <!-- Search providers -->
+    <string name="search_provider_app_search">App search</string>
+    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="app_label">App</string>
+    <string name="website_label">Website</string>
+    <string name="qsb_search_provider_app_required">App vereist</string>
+    <!-- Dock search bar a11y -->
+    <string name="label_search">Zoeken</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Spraak Zoeken</string>
-    <string name="pref_advance_search_category">Uitgebreid zoeken</string>
-    <string name="perform_wide_search_title">Zoeken op apparaat</string>
-    <string name="perform_wide_search_description">Search your phone’s contacts, files, and settings</string>
-    <string name="max_apps_result_count_title">Maximum App Result Count</string>
-    <string name="max_people_result_count_title">Maximum People Result Count</string>
-    <string name="max_file_result_count_title">Maximum Files Result Count</string>
-    <string name="max_settings_entry_result_count_title">Maximum Settings Result Count</string>
-    <string name="max_recent_result_count_title">Maximum Search History Count</string>
-    <string name="max_suggestion_result_count_title">Maximum Web Suggestions Result Count</string>
-    <string name="max_web_suggestion_delay">Maximum Web Suggestions Delay</string>
-    <string name="all_apps_search_market_message">Zoeken naar Meer Apps</string>
+    <!-- App drawer settings -->
+    <string name="hidden_apps_label">Hidden apps</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load apps in bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
+    <string name="pref_all_apps_remember_position_title">Remember position</string>
+    <string name="pref_all_apps_remember_position_description">De positie van de app-lade onthouden</string>
+    <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
+    <string name="app_drawer_columns">App drawer columns</string>
+    <string name="row_height_label">Row height</string>
+    <string name="app_drawer_indent_label">Horizontal padding</string>
+    <!-- HiddenAppsPreferences -->
+    <string name="hide_from_drawer">Hide from app drawer</string>
+    <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d app</item>
+        <item quantity="other">%1$d apps</item>
+    </plurals>
+    <!-- Folder settings -->
+    <string name="folder_preview_bg_opacity_label">Icon background opacity</string>
+    <string name="folder_preview_bg_color_label">Icon background color</string>
+    <string name="max_folder_columns">Maximum folder columns</string>
+    <string name="max_folder_rows">Maximum folder rows</string>
+    <!-- Quickstep settings -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
+    <string name="quickstep_incompatible">Incompatible system integration</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
+    <string name="translucent_background">Translucent background</string>
+    <string name="translucent_background_alpha">Background opacity</string>
+    <string name="recents_actions_label">Quick actions</string>
+    <string name="action_share">Delen</string>
+    <string name="action_lens">Lens</string>
+    <string name="recents_clear_all">Clear all</string>
+    <string name="task_menu_force_stop">Geforceerd sluiten</string>
+    <string name="window_corner_radius_label">Screen corner radius</string>
+    <string name="override_window_corner_radius_label">Custom screen corner radius</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="taskbar_label">Taakbalk</string>
+    <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <!--
+
+    All Apps search
+
+    -->
+    <!-- Launcher strings used -->
+    <string name="all_apps_device_search_hint">Zoeken</string>
+    <string name="all_apps_search_bar_hint">Apps zoeken</string>
+    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+    <string name="all_apps_search_result_suggestions">Van het web</string>
+    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
+    <string name="all_apps_search_result_files">Files from device</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
+    <string name="all_apps_search_market_message">Search for more apps</string>
     <string name="all_apps_search_startpage_message">Zoeken met <xliff:g id="startpage">Startpagina</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">Geen appwinkel of browser geïnstalleerd.</string>
-    <string name="quickstep_incompatible">Incompatibele systeem integratie</string>
-    <string name="quickstep_incompatible_description">Uw toestel is geconfigureerd voor systeemgebaren (bekend als Quickstep) geleverd door %1$s, maar deze versie van %1$s is niet compatibel met uw Android-versie. Om uw toestel te blijven gebruiken, dient u %1$s updates te verwijderen of %1$s uit te schakelen als een systeemgebaren provider.</string>
-    <string name="delete">Verwijderen</string>
-    <!-- Backup -->
-    <string name="create_backup">Back-up maken</string>
-    <string name="create_backup_action">Aanmaken</string>
-    <string name="what_to_backup">Wat te back-uppen</string>
-    <string name="backup_content_layout_and_settings">Lay-out en instellingen</string>
-    <string name="backup_content_wallpaper">Achtergrond</string>
-    <string name="backup_create_success">Back-up gemaakt.</string>
-    <string name="backup_create_error">Back-up maken mislukt.</string>
-    <string name="restore_backup">Back-up terugzetten</string>
-    <string name="restore_backup_action">Terugzetten</string>
-    <string name="what_to_restore">Wat terug te zetten</string>
-    <string name="backup_restore_success">Back-up teruggezet.</string>
-    <string name="backup_restore_error">Back-up terugzetten mislukt.</string>
-    <string name="invalid_backup_file">Ongeldig back-upbestand.</string>
-    <!-- Miscellaneous -->
-    <string name="x_by_y">%1$d × %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">Systeeminstellingen</string>
-    <string name="action_unlock">Ontgrendelen</string>
-    <string name="action_lock">Vergrendelen</string>
-    <string name="allapps_twoline_label">Use Multiple Lines</string>
-    <string name="hidden_apps_show_always">Always</string>
-    <string name="hidden_apps_show_name_typed">If Full Name is Typed</string>
-    <string name="hidden_apps_show_never">Never</string>
-    <string name="show_hidden_apps_in_search_results">Show Hidden Apps in Search Results</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
+    <string name="clear_history">Clear search history</string>
+    <string name="search_input_action_clear_results">Clear search box</string>
+    <!-- Search settings -->
+    <string name="pref_category_search">Zoeken</string>
+    <string name="show_app_search_bar">Show search bar</string>
+    <string name="pref_search_auto_show_keyboard">Toetsenbord automatisch weergeven</string>
+    <string name="fuzzy_search_title">Fuzzy search</string>
+    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
+    <string name="suggestion_pref_screen_title">Suggesties</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
+    <string name="perform_wide_search_title">Device search</string>
+    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
+    <string name="show_hidden_apps_in_search_results">Show hidden apps in search results</string>
+    <string name="hidden_apps_show_name_typed">If full name is typed</string>
+    <string name="app_search_algorithm">Search algorithm</string>
     <string name="search_algorithm_app_search">Apps Doorzoeken</string>
-    <string name="search_algorithm_global_search_on_device">Global Search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global Search (via ASI)</string>
-    <string name="app_search_algorithm">Search Algorithm</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
+    <string name="search_algorithm_global_search_via_asi">Global search (via ASI)</string>
+    <!-- Labels of each search result types -->
+    <string name="show_search_result_types">Show in search results</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Sneltoetsen</string>
+    <string name="search_pref_result_shortcuts_title">App shortcuts</string>
+    <string name="search_pref_result_people_title">Personen</string>
+    <string name="search_pref_result_tips_title">Pixel tips</string>
+    <string name="search_pref_result_settings_title">Android settings</string>
+    <string name="search_pref_result_files_title">Bestanden</string>
+    <string name="search_pref_result_web_title">Web-suggesties</string>
+    <string name="search_pref_result_history_title">Search history</string>
+    <string name="all_apps_search_result_calculator">Rekenmachine</string>
+    <!-- Description for each search result type -->
+    <string name="search_pref_result_files_description">Media, bestanden en meer</string>
+    <string name="search_pref_result_contacts_description">Contacten en meer</string>
+    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
+    <!-- Maximum xyz for each search result type -->
+    <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
+    <string name="max_people_result_count_title">Maximum number of people in search results</string>
+    <string name="max_file_result_count_title">Maximum number of files in search results</string>
+    <string name="max_settings_entry_result_count_title">Maximum number of settings entries in search results</string>
+    <string name="max_recent_result_count_title">Maximum number of history entries in search results</string>
+    <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
+    <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
+    <!-- Permission warnings -->
+    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
+    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
+    <string name="grant_requested_permissions">Grant permissions</string>
 </resources>
