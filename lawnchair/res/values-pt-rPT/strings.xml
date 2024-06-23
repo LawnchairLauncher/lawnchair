@@ -15,112 +15,144 @@
   ~ limitations under the License.
   -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
-    <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Definir o Lawnchair como browser predefinido para aceder a atalhos e mais.</string>
+    <!-- TODO: Rename all strings to follow CONTRIBUTING.md guidelines -->
+    <!--
+
+    Actions and Verbs
+
+    -->
+    <string name="preview_label">Pré-visualização</string>
+    <string name="action_create">Criar</string>
+    <string name="action_backup">Backup</string>
+    <string name="action_restore">Restaurar</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_reset">Redefinir</string>
+    <string name="action_unlock">Desbloquear</string>
+    <string name="action_lock">Bloquear</string>
+    <string name="action_apply">Aplicar</string>
+    <string name="action_customize">Personalizar</string>
+    <string name="always_choice">Sempre</string>
+    <string name="never_choice">Nunca</string>
+    <string name="clipboard">Área de Transferência</string>
+    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy">Copiar</string>
+    <string name="action_paste">Colar</string>
+    <string name="loading">Carregando…</string>
+    <string name="managed_by_lawnchair">Gerido por Lawnchair</string>
+    <!-- When mentioning settings UI -->
+    <string name="smartspace_preferences">Preferências</string>
+    <string name="settings_button_text">Home settings</string>
+    <string name="system_settings">System settings</string>
+    <string name="title_change_settings">Change settings</string>
+    <!--
+
+    General "words" used throughout Lawnchair
+
+    -->
+    <!-- Selection options -->
+    <string name="dynamic">Dinâmico</string>
+    <string name="presets">Predefinições</string>
+    <string name="custom">Personalizado</string>
+    <string name="feed_default">Predefinido</string>
+    <string name="system">Sistema</string>
+    <!-- Relating to the Launcher ui -->
+    <string name="columns">Colunas</string>
+    <string name="rows">Linhas</string>
+    <string name="label">Etiqueta</string>
+    <string name="icons">Ícones</string>
+    <string name="grid">Grelha</string>
+    <string name="layout">Esquema</string>
+    <!-- Generic styling options -->
+    <string name="wallpaper">Papel de Parede</string>
+    <string name="background_opacity">Background opacity</string>
+    <!-- Toast text and tips -->
+    <string name="copied_toast">Copied to clipboard</string>
+    <string name="item_removed">Item removido</string>
+    <!-- Miscellaneous -->
+    <string name="what_to_show">What to show</string>
+    <!-- A11y description -->
+    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <!--
+
+    Preference Dashboard
+
+    -->
     <string name="settings">Definições</string>
     <string name="general_label">Geral</string>
-    <string name="general_description">Cores, Pacote de Ícones, Pontos de Notificação</string>
-    <string name="home_screen_label">Ecrã Inicial</string>
-    <string name="home_screen_description">Feed, Grelha, Ícones</string>
-    <string name="what_to_show">O que Mostrar</string>
+    <string name="general_description">Colors, icon packs, notification dots</string>
+    <string name="home_screen_label">Home screen</string>
+    <string name="home_screen_description">Feed, grid, icons</string>
     <string name="dock_label">Doca</string>
-    <string name="dock_description">Barra de Pesquisa, Contagem de Ícones</string>
-    <string name="app_drawer_label">Gaveta de aplicações</string>
-    <string name="app_drawer_description">Aplicações Ocultas, Contagem de Colunas, Ícones</string>
-    <string name="drawer_search_label">Pesquisa de Gaveta</string>
-    <string name="drawer_search_description">Sugestões da Web, Pesquisa Global</string>
+    <string name="dock_description">Search bar, icon count</string>
+    <string name="app_drawer_label">App drawer</string>
+    <string name="app_drawer_description">Hidden apps, column count, icons</string>
+    <string name="drawer_search_label">Drawer search</string>
+    <string name="drawer_search_description">Web suggestions, global search</string>
     <string name="folders_label">Pastas</string>
-    <string name="folders_description">Número de Linhas e Colunas</string>
+    <string name="folders_description">Row and column count</string>
     <string name="gestures_label">Gestos</string>
-    <string name="gestures_description">Toques e Deslizes</string>
+    <string name="gestures_description">Taps and swipes</string>
     <string name="quickstep_label">Recentes</string>
-    <string name="quickstep_description">Botão Limpar Tudo, Raio dos Cantos</string>
+    <string name="quickstep_description">Clear All button, corner radius</string>
     <string name="about_label">Sobre</string>
-    <string name="app_info_drop_target_label">Informações da Aplicação</string>
+    <string name="app_info_drop_target_label">App info</string>
     <string name="debug_restart_launcher">Reiniciar o Lawnchair</string>
-    <string name="experimental_features_label">Funcionalidades Experimentais</string>
-    <!-- ExperimentalFeaturesPreferences -->
-    <!-- <string name="experimental_features_label" />-->
-    <string name="font_picker_label">Personalização de Fonte</string>
+    <string name="experimental_features_label">Experimental features</string>
+    <!-- Experimental features -->
+    <string name="font_picker_label">Font customization</string>
     <string name="font_picker_description">Algum texto mantém-se inalterado</string>
-    <string name="smartspace_calendar_label">Personalização do Calendário At a Glance</string>
+    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
     <string name="smartspace_calendar_description">Permitir mostrar data em sistemas de calendário não-Gregoriano</string>
-    <string name="workspace_increase_max_grid_size_label">Tamanho Máximo da Grelha do Ecrã Inicial Aumentado</string>
-    <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grelha de Ecrã Inicial de 10 x 10 para 20 x 20o</string>
-    <string name="always_reload_icons_label">Recarregar Ícones Sempre</string>
+    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
+    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
+    <string name="always_reload_icons_label">Always reload icons</string>
     <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
-    <string name="recents_lock_unlock">Bloquear/Desbloquear</string>
-    <string name="recents_lock_unlock_description">Impedir a aplicação atual de fechar quando premir \"Limpar Tudo\"</string>
-    <!-- Relating to label/icon size -->
-    <string name="icons">Ícones</string>
-    <string name="icon_size">Tamanho dos Ícones</string>
-    <string name="show_home_labels">Mostrar Rótulos</string>
-    <string name="label_size">Tamanho do Rótulo</string>
-    <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">Rotação de Ecrã Inicial</string>
-    <string name="home_screen_rotation_description">Quando o dispositivo é rodado</string>
-    <string name="font_label">Fonte (Experimental)</string>
-    <string name="fontWorkspace">Geral</string>
-    <string name="fontHeading">Títulos</string>
-    <string name="fontHeadingMedium">Títulos (Médio)</string>
-    <string name="fontBody">Corpo</string>
-    <string name="fontBodyMedium">Corpo (Médio)</string>
-    <string name="icon_style">Estilo de Ícones</string>
-    <string name="transparent_background_icons">Ícones Temáticos Transparentes</string>
+    <string name="recents_lock_unlock">Lock/unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <!--
+
+    Notifications
+
+    -->
+    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
+    <string name="notification_dots">Notification dots</string>
+    <string name="show_notification_count">Show notification counter</string>
+    <string name="notification_dots_color">Notification dot color</string>
+    <string name="notification_dots_text_color">Notification counter color</string>
+    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="missing_notification_access_label">Necessário acesso às notificações</string>
+    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <!--
+
+    Icons
+
+    -->
+    <!-- General strings -->
+    <string name="icon_style_label">Icon style</string>
+    <string name="icon_shape_label">Icon shape</string>
+    <string name="icon_sizes">Icon size</string>
+    <string name="show_labels">Show labels</string>
+    <string name="label_size">Label size</string>
+    <string name="twoline_label">Use multiple lines</string>
+    <!-- Icon-related settings -->
+    <string name="transparent_background_icons_label">Transparent themed icons</string>
     <string name="transparent_background_icons_description">Usar fundo transparente nos ícones temáticos</string>
-    <string name="icon_shape_label">Formato dos Ícones</string>
-    <string name="auto_adaptive_icons_label">Ícones Adaptativos Automáticos</string>
-    <string name="auto_adaptive_icons_description">Para todos os ícones não-Adaptativos.</string>
-    <string name="background_lightness_label">Luminosidade de Fundo</string>
-    <string name="adaptive_icon_background_description">Utilizar 100% da luminosidade de fundo para branco.</string>
-    <string name="reset_custom_icons">Redefinir os Ícones Personalizados</string>
+    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
+    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
+    <string name="background_lightness_label">Background lightness</string>
+    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
+    <string name="reset_custom_icons">Reset custom icons</string>
     <string name="reset_custom_icons_confirmation">Todos os ícones personalizados vão ser redefinidos. Quer continuar?</string>
-    <string name="notification_dots">Pontos de Notificação</string>
-    <string name="show_notification_count">Mostrar Contador de Notificações</string>
-    <string name="notification_dots_color">Cor do Ponto de Notificação</string>
-    <string name="notification_dots_text_color">Cor da Contagem de Notificações</string>
-    <string name="notification_dots_color_contrast_warning_always">Aviso: Ponto de Notificação &amp; Cores do contador não têm contraste suficiente entre elas</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Aviso: Ponto de Notificação &amp; Cores do contador poderão não ter contraste suficiente entre elas</string>
-    <!-- Notification popup -->
-    <string name="missing_notification_access_label">Acesso às notificações necessário</string>
-    <string name="missing_notification_access_description">Necessário acesso às notificações</string>
-    <string name="msg_missing_notification_access">Para usar os Pontos de Notificação, conceda acesso de <xliff:g id="name" example="My App">%1$s</xliff:g> às notificações.</string>
-    <string name="title_change_settings">Alterar Definições</string>
-    <string name="colors">Cores</string>
-    <string name="theme_label">Tema</string>
-    <string name="theme_light">Luz</string>
-    <string name="theme_dark">Escuro</string>
-    <string name="theme_system_default">Sistema</string>
-    <string name="theme_follow_wallpaper">Corresponder o Wallpaper</string>
-    <string name="accent_color">Cor de Destaque</string>
-    <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Formato de Ícones Personalizado</string>
-    <string name="custom_icon_shape_create">Criar Formato de Ícones Personalizado</string>
-    <string name="custom_icon_shape_edit">Editar Formato de Ícones Personalizado</string>
-    <string name="icon_shape_corner">Formato dos Cantos</string>
-    <string name="icon_shape_corner_round">Redondo</string>
-    <string name="icon_shape_corner_squircle">Suave</string>
-    <string name="icon_shape_corner_cut">Cortado</string>
-    <string name="icon_shape_top_left">Superior Esquerdo</string>
-    <string name="icon_shape_top_right">Superior Direito</string>
-    <string name="icon_shape_bottom_left">Inferior Esquerdo</string>
-    <string name="icon_shape_bottom_right">Inferior Direito</string>
-    <string name="create">Criar</string>
-    <string name="clipboard">Área de Transferência</string>
-    <string name="export_to_clipboard">Exportar para a Área de Transferência</string>
-    <string name="import_from_clipboard">Importar da Área de Transferência</string>
-    <string name="icon_shape_clipboard_import_error">A Área de Transferência não contém um formato de ícone válido</string>
-    <!-- IconPackPreferences -->
-    <string name="icon_pack">Pacote de Ícones</string>
-    <string name="themed_icon_pack">Fonte do Ícone Temático</string>
-    <string name="system_icons">Ícones de Sistema</string>
-    <string name="themed_icon_title">Ícones de Tema</string>
-    <string name="themed_icons_off_label">Desligado</string>
-    <string name="themed_icons_home_label">Ecrã Inicial</string>
-    <string name="themed_icons_home_and_drawer_label">Ecrã Inicial &amp; Gaveta de Aplicações</string>
-    <string name="lawnicons_not_installed_description">Sem pacotes de ícones suportados</string>
-    <!-- IconPickerPreference -->
+    <!-- Icon picker -->
+    <string name="icon_picker_default_category">Ícones</string>
+    <string name="icon_picker_reset_to_default">Redefinir para padrão</string>
+    <string name="icon_pack_external_picker">Abrir selecionador externo</string>
+    <string name="pick_icon_from_label">Pick icon from</string>
+    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <!-- Icon shapes  -->
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Círculo</string>
     <string name="icon_shape_cylinder">Cilindro</string>
@@ -129,31 +161,70 @@
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octágono</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Quadrado Arredondado</string>
-    <string name="icon_shape_sharp_square">Quadrado Afiado</string>
+    <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="icon_shape_sharp_square">Sharp square</string>
     <string name="icon_shape_square">Quadrado</string>
     <string name="icon_shape_squircle">Quadrado Arredondado</string>
     <string name="icon_shape_teardrop">Lágrima</string>
-    <!-- FontSelectionPreferences -->
-    <string name="pref_fonts_add_fonts">Adicionar Fontes</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF fontes são suportadas</string>
+    <!-- Custom icon shapes -->
+    <string name="custom_icon_shape">Custom icon shape</string>
+    <string name="custom_icon_shape_create">Create custom icon shape</string>
+    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
+    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape_corner_round">Redondo</string>
+    <string name="custom_icon_shape_corner_squircle">Suave</string>
+    <string name="custom_icon_shape_corner_cut">Cortado</string>
+    <string name="custom_icon_shape_top_left">Top left</string>
+    <string name="custom_icon_shape_top_right">Top right</string>
+    <string name="custom_icon_shape_bottom_left">Bottom left</string>
+    <string name="custom_icon_shape_bottom_right">Bottom right</string>
+    <string name="export_to_clipboard">Export to clipboard</string>
+    <string name="import_from_clipboard">Import from clipboard</string>
+    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <!-- Icon pack settings -->
+    <string name="icon_pack">Icon pack</string>
+    <string name="themed_icon_pack">Themed icon source</string>
+    <string name="system_icons">System icons</string>
+    <string name="themed_icon_title">Themed icons</string>
+    <string name="themed_icons_off_label">Desligado</string>
+    <string name="themed_icons_home_label">Home screen</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen &amp; app drawer</string>
+    <string name="lawnicons_not_installed_description">Sem pacotes de ícones suportados</string>
+    <!-- Fonts -->
+    <string name="pref_fonts_add_fonts">Add fonts</string>
+    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
     <string name="pref_fonts_missing_font">Fonte não encontrada</string>
+    <string name="font_label">Font (experimental)</string>
+    <string name="fontWorkspace">Geral</string>
+    <string name="fontHeading">Títulos</string>
+    <string name="fontHeadingMedium">Headings (medium)</string>
+    <string name="fontBody">Corpo</string>
+    <string name="fontBodyMedium">Body (medium)</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
-    <string name="font_weight_extra_light">Extra Leve</string>
+    <string name="font_weight_extra_light">Extra light</string>
     <string name="font_weight_light">Luz</string>
     <string name="font_weight_regular">Normal</string>
     <string name="font_weight_medium">Médio</string>
     <string name="font_weight_semi_bold">Semi negrito</string>
     <string name="font_weight_bold">Negrito</string>
-    <string name="font_weight_extra_bold">Extra Negrito</string>
+    <string name="font_weight_extra_bold">Extra bold</string>
     <string name="font_weight_extra_black">Preto</string>
-    <string name="reset_font">Redefinir</string>
-    <!-- colorpreference/* -->
-    <string name="dynamic">Dinâmico</string>
+    <!--
+
+    Colors and theme
+
+    -->
+    <!-- Theme -->
+    <string name="theme_label">Tema</string>
+    <string name="theme_light">Luz</string>
+    <string name="theme_dark">Escuro</string>
+    <string name="theme_system_default">Sistema</string>
+    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <!-- Accent color and color picker -->
+    <string name="colors">Cores</string>
+    <string name="accent_color">Accent color</string>
     <string name="swatches">Amostras</string>
-    <string name="presets">Predefinições</string>
-    <string name="custom">Personalizado</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Vermelho</string>
     <string name="rgb_green">Verde</string>
@@ -164,282 +235,280 @@
     <string name="hsb_brightness">Luminosidade</string>
     <string name="hex">Hexadecimal</string>
     <string name="color_sliders">Controlos de cor</string>
-    <string name="action_copy">Copiar</string>
-    <string name="action_paste">Colar</string>
-    <string name="copied_toast">Copiado para a área de transferência.</string>
-    <string name="invalid_color">Cor Inválida</string>
-    <string name="launcher_default_color">Gerido por Lawnchair</string>
-    <!-- HomeScreenPreferences -->
-    <string name="auto_add_shortcuts_label">Adicionar Novas Apps ao Ecrã Inicial</string>
-    <string name="minus_one_enable">Mostrar Feed</string>
-    <string name="minus_one_unavailable">Sem aplicações de feed instaladas</string>
-    <string name="minus_one">Feed</string>
-    <string name="feed_provider">Fornecedor de Feed</string>
-    <string name="feed_default">Predefinido</string>
-    <string name="wallpaper">Papel de Parede</string>
-    <string name="wallpaper_scrolling_label">Rolar Papel de Parede</string>
-    <string name="wallpaper_depth_effect_label">Efeito de Profundidade do Papel de Parede</string>
-    <string name="wallpaper_depth_effect_description">Aproximar ou desaproximar do papel de parede quando transitar entre áreas do navegador</string>
-    <string name="show_sys_ui_scrim">Sombreado superior</string>
-    <string name="layout">Esquema</string>
-    <string name="home_screen_grid">Grelha do Ecrã Inicial</string>
-    <string name="home_screen_lock">Bloquear Ecrã Inicial</string>
-    <string name="home_screen_lock_description">Impedir mudanças ao esquema do ecrã inicial</string>
-    <string name="home_screen_unlock">Desbloquear Ecrã Inicial</string>
-    <string name="home_screen_locked">O ecrã inicial está bloqueado</string>
-    <string name="show_dot_pagination_label">Usar Paginação por Pontos</string>
-    <string name="show_dot_pagination_description">Usar pontos em vez de linhas para mostrar o número da página</string>
-    <string name="show_material_u_popup_label">Usar Novo Estilo de Popup</string>
-    <string name="show_material_u_popup_description">Utilizar o estilo pop-up animado e ligeiramente consolidado do Material You</string>
-    <string name="popup_menu">Menu Flutuante</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Mostrar Botão de Bloqueio</string>
-    <string name="show_system_settings_entry">Mostrar Entrada de Definições de Sistema</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Mostrar Botão Editar</string>
-    <string name="status_bar_label">Barra de Estado</string>
-    <string name="show_status_bar">Mostrar Barra de Estado</string>
-    <string name="dark_status_bar_label">Barra de Estado Escura</string>
-    <string name="home_screen_text_color">Cor do Texto</string>
-    <string name="color_light">Luz</string>
-    <string name="color_dark">Escuro</string>
-    <string name="force_rounded_widgets">Cantos Arredondados</string>
-    <string name="allow_widget_overlap">Permitir Sobreposição</string>
-    <string name="force_widget_resize_label">Forçar Redimensionar o Widget</string>
-    <string name="force_widget_resize_description">Permitir redimensionar widgets que são restritos a um tamanho específico</string>
-    <string name="widget_unlimited_size_label">Remover Restrições de Tamanho</string>
-    <string name="widget_unlimited_size_description">Remover as restrições de tamanho mínimo e máximo de widgets</string>
-    <!-- HomeScreenGridPreferences -->
-    <string name="columns">Colunas</string>
-    <string name="rows">Linhas</string>
-    <string name="apply_grid">Aplicar</string>
-    <!-- Smartspace -->
-    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Carregando</string>
-    <string name="smartspace_battery_full">Carregado</string>
-    <string name="smartspace_battery_low">Bateria Baixa</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Completo em %2$s"</string>
-    <string name="accessibility_smartspace_page">Página %1$d de %2$d</string>
-    <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">O que Mostrar</string>
-    <string name="smartspace_widget_placeholder_date">Sex, mar 3</string>
-    <string name="preview_label">Pré-visualização</string>
-    <string name="smartspace_calendar">Calendário</string>
-    <string name="smartspace_date_and_time">Data e Hora</string>
-    <string name="smartspace_date">Data</string>
-    <string name="smartspace_time">Hora</string>
-    <string name="smartspace_time_format">Formato da Hora</string>
-    <string name="smartspace_time_follow_system">Seguir o Sistema</string>
-    <string name="smartspace_time_12_hour_format">Formato de 12 Horas</string>
-    <string name="smartspace_time_24_hour_format">Formato 24 Horas</string>
-    <string name="smartspace_weather">Meteorologia</string>
-    <string name="smartspace_battery_status">Estado da Bateria</string>
-    <string name="smartspace_now_playing">A Reproduzir</string>
-    <string name="smartspace_requires_setup">Tocar para Configurar</string>
-    <string name="event_provider_missing_notification_dots">Para utilizar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative os Pontos de Notificação.</string>
-    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="invalid_color">Invalid color</string>
+    <!--
+
+    Smartspace
+
+    -->
+    <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriano</string>
     <string name="smartspace_calendar_persian">Persa</string>
-    <string name="smartspace_preferences">Preferências</string>
-    <string name="smartspace_widget_toggle_label">Mostrar no Ecrã Inicial</string>
-    <string name="smartspace_widget_toggle_description">At a Glance pode ser adicionado manualmente ao ecrã inicial ao colocar o widget \"Lawnchair\"</string>
-    <string name="smartspace_mode_label">Fornecedor do Resumo \"At a Glance\"</string>
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <!-- Battery labels -->
+    <string name="smartspace_battery_charging">Carregando</string>
+    <string name="smartspace_battery_full">Carregado</string>
+    <string name="smartspace_battery_low">Battery low</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Completo em %2$s"</string>
+    <string name="smartspace_widget">At a Glance</string>
+    <string name="smartspace_widget_description">What to show</string>
+    <!-- Data and time format settings -->
+    <string name="smartspace_calendar">Calendário</string>
+    <string name="smartspace_date_and_time">Date &amp; time</string>
+    <string name="smartspace_date">Data</string>
+    <string name="smartspace_time">Hora</string>
+    <string name="smartspace_time_format">Time format</string>
+    <string name="smartspace_time_follow_system">Follow system</string>
+    <string name="smartspace_time_12_hour_format">12-hour format</string>
+    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <!-- Available targets -->
+    <string name="smartspace_weather">Meteorologia</string>
+    <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_now_playing">A Reproduzir</string>
+    <!-- Setup settings -->
+    <string name="smartspace_requires_setup">Tap to set up</string>
+    <string name="event_provider_missing_notification_dots">Para utilizar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative os Pontos de Notificação.</string>
+    <!-- Toggle button for enabling Smartspace -->
+    <string name="smartspace_widget_toggle_label">Show on home screen</string>
+    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <!-- List of available providers -->
+    <string name="smartspace_mode_label">At a Glance provider</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Pesquisa do Google</string>
-    <!-- DockPreferences -->
-    <!-- <string name="dock_label" /> -->
-    <string name="show_hotseat_title">Mostrar Doca</string>
-    <string name="search_bar_label">Barra de Pesquisa</string>
-    <string name="hotseat_mode_label">Widget de Barra de Pesquisa</string>
-    <string name="hotseat_mode_disabled">Desativado</string>
-    <string name="hotseat_mode_google_search">Barra de Pesquisa da Google</string>
-    <string name="corner_radius_label">Raio dos Cantos</string>
-    <string name="apply_accent_color_label">Aplicar Cor de Destaque</string>
-    <string name="search_provider">Fornecedor de Pesquisa</string>
-    <string name="grid">Grelha</string>
-    <string name="dock_icons">Ícones da Doca</string>
-    <string name="hotseat_bottom_space_label">Preenchimento Inferior</string>
-    <!-- SearchProviderPreferences -->
-    <string name="search_provider_app_search">Pesquisa de Aplicações</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair tem um acordo de participação de receitas.\n\nPesquisar com %1$s ajuda a suportar o Lawnchair.</string>
-    <string name="app_label">Aplicação</string>
-    <string name="website_label">Website</string>
-    <string name="qsb_search_provider_app_required">Aplicação necessária</string>
-    <!-- AppDrawerPrefences -->
-    <string name="background_opacity">Opacidade de Fundo</string>
-    <string name="hidden_apps_label">Aplicações Ocultas</string>
-    <string name="show_enable_smart_hide">Mostrar quando o Nome Completo é Escrito</string>
-    <string name="hide_hidden_apps_search">Esconder nos Resultados de Pesquisa</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Carregar Apps em massa</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Carregar e mostrar todos os ícones de uma vez ao invés de carregar e mostrar os ícones individualmente. Pode solucionar problemas com pesquisa mas irá aumentar o tempo de carregamento.</string>
-    <string name="pref_all_apps_remember_position_title">Lembrar Posição</string>
-    <string name="pref_all_apps_remember_position_description">Lembrar a posição da gaveta de aplicações após sair desta</string>
-    <string name="pref_all_apps_show_scrollbar_title">Mostrar Barra de Navegação</string>
-    <string name="pref_category_search">Pesquisar</string>
-    <string name="show_app_search_bar">Mostrar Barra de Pesquisa</string>
-    <string name="pref_search_auto_show_keyboard">Mostrar Teclado Automaticamente</string>
-    <string name="fuzzy_search_title">Pesquisa Aproximada</string>
-    <string name="fuzzy_search_desc">Correspondência aproximada para pesquisa de aplicações.</string>
-    <string name="clear_history">Limpar histórico de navegação</string>
-    <string name="app_drawer_columns">Colunas da Gaveta de Aplicações</string>
-    <string name="row_height_label">Altura da Linha</string>
-    <string name="app_drawer_indent_label">Preenchimento Horizontal</string>
-    <!-- HiddenAppsPreferences -->
-    <string name="hidden_apps_label_with_count">Aplicações Ocultas (%1$d)</string>
-    <plurals name="apps_count">
-        <item quantity="one">Aplicação %1$d</item>
-        <item quantity="other">Aplicação %1$d</item>
-    </plurals>
-    <!-- FolderPreferences -->
-    <string name="folder_preview_bg_opacity_label">Opacidade de Fundo dos Ícones</string>
-    <string name="folder_preview_bg_color_label">Cor de Fundo do Ícone</string>
-    <string name="max_folder_columns">Máximo de Colunas da Pasta</string>
-    <string name="max_folder_rows">Máximo de Linhas da Pasta</string>
-    <!-- GesturePreference -->
-    <string name="gesture_double_tap">Duplo Toque</string>
-    <string name="gesture_swipe_up">Deslizar para Cima</string>
-    <string name="gesture_swipe_down">Deslizar para Baixo</string>
-    <string name="gesture_home_tap">Toque no Botão Home</string>
-    <string name="gesture_back_tap">Toque no Botão Voltar</string>
-    <string name="gesture_handler_no_op">Não Fazer Nada</string>
-    <string name="gesture_handler_sleep">Suspender</string>
-    <string name="gesture_handler_open_notifications">Abrir Painel de Notificações</string>
-    <string name="gesture_handler_open_app_option">Abrir Aplicação</string>
-    <string name="gesture_handler_open_app_config">Abrir %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Abrir Gaveta de Aplicações</string>
-    <string name="gesture_handler_open_app_search">Abrir Pesquisa de Aplicações</string>
-    <string name="gesture_handler_open_search">Abrir Pesquisa</string>
-    <string name="pick_app_for_gesture">Escolher Aplicação</string>
-    <!-- QuickstepPreferences -->
-    <string name="quickswitch_ignored_warning">Estas configurações serão ignoradas pois o Lawnchair não está definido como provedor de recentes.</string>
-    <string name="translucent_background">Fundo Translúcido</string>
-    <string name="translucent_background_alpha">Opacidade de Fundo</string>
-    <string name="recents_actions_label">Ações Rápidas</string>
-    <string name="action_share">Partilhar</string>
-    <string name="action_lens">Lente</string>
-    <string name="recents_clear_all">Limpar Tudo</string>
-    <string name="task_menu_force_stop">Fechar forçadamente</string>
-    <string name="window_corner_radius_label">Raio dos Cantos do Ecrã</string>
-    <string name="override_window_corner_radius_label">Raio dos Cantos do Ecrã Personalizado</string>
-    <string name="window_corner_radius_description">Quando deslizar para cima para abrir as aplicações Recentes, a aplicação atual segue o seu dedo, diminuindo num cartão. Utilize este controlo deslizante para ajustar o raio de curvatura do cartão quando este estiver quase em ecrã cheio, de modo a que corresponda aos cantos do seu ecrã.</string>
-    <string name="taskbar_label">Barra de tarefas</string>
-    <string name="enable_taskbar_experimental">Mostrar barra de tarefas (Experimental)</string>
-    <!-- about/About.kt -->
+    <!-- Miscellaneous Smartspace strings -->
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="accessibility_smartspace_page">Página %1$d de %2$d</string>
+    <string name="smartspace_widget_placeholder_date">Sex, mar 3</string>
+    <!--
+
+    About the app
+
+    -->
     <string name="news">Novidades</string>
     <string name="support">Suporte</string>
     <string name="product">Produto</string>
-    <string name="design_and_development">Design &amp; Desenvolvimento</string>
+    <string name="design_and_development">Design &amp; development</string>
     <string name="development">Desenvolvimento</string>
-    <string name="quickswitch_maintenance">Manutenção QuickSwitch</string>
+    <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Suporte &amp; PR</string>
     <string name="acknowledgements">Reconhecimentos</string>
     <string name="translate">Traduzir</string>
-    <!-- IconPickerPreference -->
-    <string name="icon_picker_default_category">Ícones</string>
-    <string name="icon_picker_reset_to_default">Redefinir para Original</string>
-    <string name="icon_pack_external_picker">Abrir Selecionador Externo</string>
-    <string name="pick_icon_from_label">Escolher Ícone De</string>
-    <string name="icon_picker_load_failed">Não foi possível carregar mais ícones.</string>
-    <!-- Misc -->
-    <string name="all_apps_search_bar_hint">Pesquisar Aplicações</string>
-    <string name="settings_button_text">Configurações do Ecrã Inicial</string>
-    <string name="item_removed">Item removido</string>
-    <string name="all_apps_no_search_results">Nenhuma Aplicação encontrada que corresponda a \"<xliff:g example="Android" id="query">%1$s</xliff:g> \".</string>
-    <string name="dt2s_admin_hint_title">Permissões de Administrador Necessárias</string>
-    <string name="dt2s_admin_hint">Para usar o Duplo Toque para Dormir, defina o Lawnchair como uma aplicação de administrador do dispositivo. Toque em \"Abrir Definições,\" e de seguida em \"Ativar a aplicação de administrador deste dispositivo.\"</string>
+    <!--
+
+    Backup and restore
+
+    -->
+    <string name="create_backup">Create backup</string>
+    <string name="what_to_backup">What to back up</string>
+    <string name="backup_content_layout_and_settings">Layout and settings</string>
+    <string name="backup_content_wallpaper">Papel de Parede</string>
+    <string name="backup_create_success">Cópia de Segurança criada</string>
+    <string name="backup_create_error">Falha ao criar cópia de segurança</string>
+    <string name="restore_backup">Restore backup</string>
+    <string name="what_to_restore">What to restore</string>
+    <string name="backup_restore_success">Cópia de Segurança restaurada</string>
+    <string name="backup_restore_error">Falha ao restaurar cópia de segurança</string>
+    <string name="invalid_backup_file">Ficheiro de cópia de segurança inválido</string>
+    <!--
+
+    Gesture settings
+
+    -->
+    <string name="gesture_double_tap">Double tap</string>
+    <string name="gesture_swipe_up">Swipe up</string>
+    <string name="gesture_swipe_down">Swipe down</string>
+    <string name="gesture_home_tap">Home button</string>
+    <string name="gesture_back_tap">Back button</string>
+    <string name="gesture_handler_no_op">Do nothing</string>
+    <string name="gesture_handler_sleep">Suspender</string>
+    <string name="gesture_handler_open_notifications">Open notification panel</string>
+    <string name="gesture_handler_open_app_option">Open app</string>
+    <string name="gesture_handler_open_app_config">Abrir %1$s</string>
+    <string name="gesture_handler_open_app_drawer">Open app drawer</string>
+    <string name="gesture_handler_open_app_search">Open app search</string>
+    <string name="gesture_handler_open_search">Open search</string>
+    <string name="pick_app_for_gesture">Pick app</string>
+    <string name="dt2s_admin_hint_title">Admin permissions required</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">O Duplo Toque para Dormir será desativado.</string>
-    <string name="dt2s_a11y_hint_title">Ative o Serviço se Acessibilidade</string>
-    <string name="dt2s_a11y_hint">Para usar o Duplo Toque para Dormir, ative o serviço de acessibilidade do Lawnchair. Toque em Abrir Definições, e de seguida selecione Lawnchair e ative Usar Lawnchair.</string>
-    <string name="dt2s_warning_open_settings">Abrir Definições</string>
-    <string name="loading">Carregando…</string>
-    <string name="system">Sistema</string>
-    <string name="customize_button_text">Personalizar</string>
-    <string name="label">Etiqueta</string>
-    <string name="hide_from_drawer">Esconder da Gaveta de Aplicações</string>
-    <string name="suggestion_pref_screen_title">Sugestões</string>
-    <string name="show_suggested_apps_at_drawer_top">Mostrar aplicações sugeridas no topo da gaveta de aplicações</string>
-    <!-- Bug reporting -->
-    <string name="lawnchair_bug_report">Relatório de Erros do Lawnchair</string>
-    <string name="crash_report_notif_title">%1$s Bloqueou</string>
-    <string name="action_upload_crash_report">Enviar Relatório de Erros</string>
-    <string name="action_copy_link">Copiar Ligação</string>
+    <string name="dt2s_a11y_hint_title">Turn on accessibility service</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="dt2s_warning_open_settings">Open settings</string>
+    <!--
+
+    Bug reporting
+
+    -->
+    <string name="lawnchair_bug_report">Lawnchair bug report</string>
+    <string name="crash_report_notif_title">%1$s crashed</string>
+    <string name="action_upload_crash_report">Upload crash log</string>
     <string name="action_upload_error">Falha no envio</string>
     <string name="dogbin_uploading">Enviando…</string>
-    <string name="bugreport_channel_name">Relatório de Erros</string>
-    <string name="status_channel_name">Estado de Envio</string>
-    <string name="bugreport_group_summary">%d novos relatórios.</string>
-    <string name="bugreport_group_summary_multiple">Vários relatórios novos.</string>
-    <!-- Search ig -->
-    <string name="action_apply">Aplicar</string>
-    <string name="show_search_result_types">Mostrar nos Resultados da Pesquisa</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Aplicações &amp; Atalhos</string>
-    <string name="search_pref_result_shortcuts_title">Atalhos da Aplicação</string>
-    <string name="search_pref_result_people_title">Pessoas</string>
-    <string name="search_pref_result_tips_title">Dicas de Pixel</string>
-    <string name="search_pref_result_settings_title">Definições do Android</string>
-    <string name="search_pref_result_files_title">Ficheiros</string>
-    <string name="search_pref_result_web_title">Sugestões da Web</string>
-    <string name="search_pref_result_history_title">Histórico de Pesquisa</string>
-    <string name="search_pref_result_files_description">Mídia, ficheiros e mais</string>
-    <string name="search_pref_result_contacts_description">Contactos e mais</string>
-    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="warn_contact_permission_content">Para pesquisar contactos, conceda permissões de Contactos e Telefone ao Lawnchair.</string>
-    <string name="warn_files_permission_content">Para pesquisar os seus ficheiros, conceda permissões de Armazenamento ao Lawnchair.</string>
-    <string name="grant_requested_permissions">Conceder Permisões</string>
-    <string name="pref_suggestion_label">Sugestões</string>
-    <string name="all_apps_device_search_hint">Pesquisar</string>
-    <string name="search_input_action_clear_results">Limpar Caixa de Pesquisa</string>
-    <string name="all_apps_search_result_suggestions">Da web</string>
-    <string name="all_apps_search_result_contacts_from_device">Dos seus contactos</string>
-    <string name="all_apps_search_result_files">Dos seus ficheiros</string>
-    <string name="all_apps_search_result_settings_entry_from_device">Das definições do seu telefone</string>
+    <string name="bugreport_channel_name">Bug reports</string>
+    <string name="status_channel_name">Upload status</string>
+    <string name="bugreport_group_summary">%d new reports</string>
+    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
+    <!--
+
+    Preferences (without special screens)
+
+    -->
+    <!-- General and home screen settings -->
+    <string name="home_screen_rotation_label">Home screen rotation</string>
+    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
+    <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
+    <string name="minus_one_enable">Show feed</string>
+    <string name="minus_one_unavailable">Sem aplicações de feed instaladas</string>
+    <string name="minus_one">Feed</string>
+    <string name="feed_provider">Feed provider</string>
+    <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
+    <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
+    <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
+    <string name="show_sys_ui_scrim">Top shadow</string>
+    <string name="home_screen_grid">Home screen grid</string>
+    <string name="home_screen_lock">Lock home screen</string>
+    <string name="home_screen_unlock">Unlock home screen</string>
+    <string name="home_screen_locked">Home screen is locked</string>
+    <string name="home_screen_lock_description">Impedir mudanças ao esquema do ecrã inicial</string>
+    <string name="show_dot_pagination_label">Mostrar paginação de pontos</string>
+    <string name="show_dot_pagination_description">Usar pontos em vez de linhas para mostrar o número da página</string>
+    <string name="show_material_u_popup_label">Use new pop-up style</string>
+    <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
+    <string name="popup_menu">Pop-up menu</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
+    <string name="show_system_settings_entry">Show system settings entry</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show Edit button</string>
+    <string name="status_bar_label">Status bar</string>
+    <string name="show_status_bar">Show status bar</string>
+    <string name="dark_status_bar_label">Dark status bar</string>
+    <string name="home_screen_text_color">Text color</string>
+    <string name="color_light">Luz</string>
+    <string name="color_dark">Escuro</string>
+    <string name="force_rounded_widgets">Rounded corners</string>
+    <string name="allow_widget_overlap">Allow overlap</string>
+    <string name="force_widget_resize_label">Enforce widget resizing</string>
+    <string name="force_widget_resize_description">Permitir redimensionar widgets que são restritos a um tamanho específico</string>
+    <string name="widget_unlimited_size_label">Remove size constraints</string>
+    <string name="widget_unlimited_size_description">Remover as restrições de tamanho mínimo e máximo de widgets</string>
+    <!-- Dock settings -->
+    <string name="show_hotseat_title">Show dock</string>
+    <string name="search_bar_label">Search bar</string>
+    <string name="hotseat_mode_label">Search bar widget</string>
+    <string name="hotseat_mode_disabled">Desativado</string>
+    <string name="hotseat_mode_google_search">Google Search bar</string>
+    <string name="corner_radius_label">Raio dos cantos</string>
+    <string name="apply_accent_color_label">Apply accent color</string>
+    <string name="search_provider">Search provider</string>
+    <string name="dock_icons">Dock icons</string>
+    <string name="hotseat_bottom_space_label">Bottom padding</string>
+    <!-- Search providers -->
+    <string name="search_provider_app_search">App search</string>
+    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="app_label">Aplicação</string>
+    <string name="website_label">Website</string>
+    <string name="qsb_search_provider_app_required">Aplicação necessária</string>
+    <!-- Dock search bar a11y -->
     <string name="label_search">Pesquisar</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Pesquisa por Voz</string>
-    <string name="pref_advance_search_category">Pesquisa Avançada</string>
-    <string name="perform_wide_search_title">Pesquisa no dispositivo</string>
-    <string name="perform_wide_search_description">Procurar os contactos, ficheiros e definições do telefone</string>
-    <string name="max_apps_result_count_title">Contagem Máxima dos Resultados das Aplicações</string>
-    <string name="max_people_result_count_title">Contagem Máxima dos Resultados de Pessoas</string>
-    <string name="max_file_result_count_title">Contagem Máxima dos Resultados de Ficheiros</string>
-    <string name="max_settings_entry_result_count_title">Contagem Máxima dos Resultados de Definições</string>
-    <string name="max_recent_result_count_title">Contagem Máxima dos do Histórico de Pesquisa</string>
-    <string name="max_suggestion_result_count_title">Contagem Máxima dos Resultados de Sugestões Web</string>
-    <string name="max_web_suggestion_delay">Atraso Máximo das Sugestões Web</string>
-    <string name="all_apps_search_market_message">Procurar Mais Aplicações</string>
+    <!-- App drawer settings -->
+    <string name="hidden_apps_label">Hidden apps</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Load apps in bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
+    <string name="pref_all_apps_remember_position_title">Remember position</string>
+    <string name="pref_all_apps_remember_position_description">Lembrar a posição da gaveta de aplicações após sair desta</string>
+    <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
+    <string name="app_drawer_columns">App drawer columns</string>
+    <string name="row_height_label">Row height</string>
+    <string name="app_drawer_indent_label">Horizontal padding</string>
+    <!-- HiddenAppsPreferences -->
+    <string name="hide_from_drawer">Hide from app drawer</string>
+    <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d app</item>
+        <item quantity="other">%1$d apps</item>
+    </plurals>
+    <!-- Folder settings -->
+    <string name="folder_preview_bg_opacity_label">Icon background opacity</string>
+    <string name="folder_preview_bg_color_label">Icon background color</string>
+    <string name="max_folder_columns">Maximum folder columns</string>
+    <string name="max_folder_rows">Maximum folder rows</string>
+    <!-- Quickstep settings -->
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
+    <string name="quickstep_incompatible">Incompatible system integration</string>
+    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
+    <string name="translucent_background">Translucent background</string>
+    <string name="translucent_background_alpha">Background opacity</string>
+    <string name="recents_actions_label">Quick actions</string>
+    <string name="action_share">Partilhar</string>
+    <string name="action_lens">Lente</string>
+    <string name="recents_clear_all">Clear all</string>
+    <string name="task_menu_force_stop">Fechar forçadamente</string>
+    <string name="window_corner_radius_label">Screen corner radius</string>
+    <string name="override_window_corner_radius_label">Custom screen corner radius</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="taskbar_label">Barra de tarefas</string>
+    <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <!--
+
+    All Apps search
+
+    -->
+    <!-- Launcher strings used -->
+    <string name="all_apps_device_search_hint">Pesquisar</string>
+    <string name="all_apps_search_bar_hint">Pesquisar Aplicações</string>
+    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+    <string name="all_apps_search_result_suggestions">Da web</string>
+    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
+    <string name="all_apps_search_result_files">Files from device</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
+    <string name="all_apps_search_market_message">Search for more apps</string>
     <string name="all_apps_search_startpage_message">Pesquisar em <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">Nenhuma loja de aplicações ou navegador instalado.</string>
-    <string name="quickstep_incompatible">Integração de Sistema Incompatível</string>
-    <string name="quickstep_incompatible_description">O seu dispositivo está configurado para ter gestos do sistema (conhecidos como Quickstep) fornecidos por %1$s, mas esta versão de %1$s não é compatível com a versão do Android. Para continuar a usar o dispositivo, por favor desinstale as atualizações de %1$s ou desative %1$s como fornecedor de gestos do sistema.</string>
-    <string name="delete">Eliminar</string>
-    <!-- Backup -->
-    <string name="create_backup">Criar Cópia de Segurança</string>
-    <string name="create_backup_action">Criar</string>
-    <string name="what_to_backup">O que fazer Cópia de Segurança</string>
-    <string name="backup_content_layout_and_settings">Esquema e Definições</string>
-    <string name="backup_content_wallpaper">Papel de Parede</string>
-    <string name="backup_create_success">Cópia de Segurança criada.</string>
-    <string name="backup_create_error">Falha ao criar cópia de segurança.</string>
-    <string name="restore_backup">Restaurar Cópia de Segurança</string>
-    <string name="restore_backup_action">Restaurar</string>
-    <string name="what_to_restore">O que Restaurar</string>
-    <string name="backup_restore_success">Cópia de Segurança restaurada.</string>
-    <string name="backup_restore_error">Falha ao restaurar cópia de segurança.</string>
-    <string name="invalid_backup_file">Ficheiro de cópia de segurança inválido.</string>
-    <!-- Miscellaneous -->
-    <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">Definições de Sistema</string>
-    <string name="action_unlock">Desbloquear</string>
-    <string name="action_lock">Bloquear</string>
-    <string name="allapps_twoline_label">Utilizar linhas múltiplas</string>
-    <string name="hidden_apps_show_always">Sempre</string>
-    <string name="hidden_apps_show_name_typed">Se o Nome Completo for Digitado</string>
-    <string name="hidden_apps_show_never">Nunca</string>
-    <string name="show_hidden_apps_in_search_results">Mostrar Aplicações Ocultas nos Resultados de Pesquisa</string>
+    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
+    <string name="clear_history">Clear search history</string>
+    <string name="search_input_action_clear_results">Clear search box</string>
+    <!-- Search settings -->
+    <string name="pref_category_search">Pesquisar</string>
+    <string name="show_app_search_bar">Show search bar</string>
+    <string name="pref_search_auto_show_keyboard">Mostrar teclado automaticamente</string>
+    <string name="fuzzy_search_title">Fuzzy search</string>
+    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
+    <string name="suggestion_pref_screen_title">Sugestões</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
+    <string name="perform_wide_search_title">Device search</string>
+    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
+    <string name="show_hidden_apps_in_search_results">Show hidden apps in search results</string>
+    <string name="hidden_apps_show_name_typed">If full name is typed</string>
+    <string name="app_search_algorithm">Search algorithm</string>
     <string name="search_algorithm_app_search">Pesquisa de Aplicações</string>
-    <string name="search_algorithm_global_search_on_device">Pesquisa Global (no dispositivo)</string>
-    <string name="search_algorithm_global_search_via_asi">Pesquisa Global (via ASI)</string>
-    <string name="app_search_algorithm">Algorítmo de Pesquisa</string>
+    <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
+    <string name="search_algorithm_global_search_via_asi">Global search (via ASI)</string>
+    <!-- Labels of each search result types -->
+    <string name="show_search_result_types">Show in search results</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Aplicações &amp; Atalhos</string>
+    <string name="search_pref_result_shortcuts_title">App shortcuts</string>
+    <string name="search_pref_result_people_title">Pessoas</string>
+    <string name="search_pref_result_tips_title">Pixel tips</string>
+    <string name="search_pref_result_settings_title">Android settings</string>
+    <string name="search_pref_result_files_title">Ficheiros</string>
+    <string name="search_pref_result_web_title">Sugestões da Web</string>
+    <string name="search_pref_result_history_title">Search history</string>
     <string name="all_apps_search_result_calculator">Calculadora</string>
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <!-- Description for each search result type -->
+    <string name="search_pref_result_files_description">Mídia, ficheiros e mais</string>
+    <string name="search_pref_result_contacts_description">Contactos e mais</string>
+    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
+    <!-- Maximum xyz for each search result type -->
+    <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
+    <string name="max_people_result_count_title">Maximum number of people in search results</string>
+    <string name="max_file_result_count_title">Maximum number of files in search results</string>
+    <string name="max_settings_entry_result_count_title">Maximum number of settings entries in search results</string>
+    <string name="max_recent_result_count_title">Maximum number of history entries in search results</string>
+    <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
+    <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
+    <!-- Permission warnings -->
+    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
+    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
+    <string name="grant_requested_permissions">Grant permissions</string>
 </resources>
