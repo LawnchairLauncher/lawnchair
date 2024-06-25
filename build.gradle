@@ -327,6 +327,7 @@ dependencies {
     implementation projects.animationlib
 
     // Recents lib dependency
+    implementation 'com.github.farmerbb:libtaskbar:2.2.0'
     withQuickstepCompileOnly projects.hiddenApi
     withQuickstepImplementation projects.systemUIShared
     withQuickstepImplementation projects.systemUIAnim
