@@ -492,18 +492,8 @@ public interface TaskShortcutFactory {
                 TaskContainer taskContainer) {
             boolean isTablet = container.getDeviceProfile().isTablet;
             boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
-            // Extra conditions if it's not grid-only overview
             if (!isGridOnlyOverview) {
-                RecentsOrientedState orientedState = taskContainer.getTaskView().getOrientedState();
-                boolean isFakeLandscape = !orientedState.isRecentsActivityRotationAllowed()
-                        && orientedState.getTouchRotation() != ROTATION_0;
-                if (!isFakeLandscape) {
-                    return null;
-                }
-                // Disallow "Select" when swiping up from landscape due to rotated thumbnail.
-                if (orientedState.getDisplayRotation() != ROTATION_0) {
-                    return null;
-                }
+                return null;
             }
 
             SystemShortcut modalStateSystemShortcut =
