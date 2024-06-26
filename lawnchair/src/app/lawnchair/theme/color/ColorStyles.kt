@@ -42,12 +42,40 @@ object Spritz : ColorStyle(Style.SPRITZ, R.string.color_style_spritz) {
         return "spritz"
     }
 }
-object TonalSpot : ColorStyle(Style.TONAL_SPOT, R.string.color_style_tonal_spot)
-object Vibrant : ColorStyle(Style.VIBRANT, R.string.color_style_vibrant)
-object Expressive : ColorStyle(Style.EXPRESSIVE, R.string.color_style_expressive)
-object Rainbow : ColorStyle(Style.RAINBOW, R.string.color_style_rainbow)
-object FruitSalad : ColorStyle(Style.FRUIT_SALAD, R.string.color_style_fruit_salad)
-object Content : ColorStyle(Style.CONTENT, R.string.color_style_content)
-object Monochromatic : ColorStyle(Style.MONOCHROMATIC, R.string.color_style_monochromatic)
+object TonalSpot : ColorStyle(Style.TONAL_SPOT, R.string.color_style_tonal_spot) {
+    override fun toString(): String {
+        return "tonal_spot"
+    }
+}
+object Vibrant : ColorStyle(Style.VIBRANT, R.string.color_style_vibrant) {
+    override fun toString(): String {
+        return "vibrant"
+    }
+}
+object Expressive : ColorStyle(Style.EXPRESSIVE, R.string.color_style_expressive) {
+    override fun toString(): String {
+        return "expressive"
+    }
+}
+object Rainbow : ColorStyle(Style.RAINBOW, R.string.color_style_rainbow) {
+    override fun toString(): String {
+        return "rainbow"
+    }
+}
+object FruitSalad : ColorStyle(Style.FRUIT_SALAD, R.string.color_style_fruit_salad){
+    override fun toString(): String {
+        return "fruit_salad"
+    }
+}
+object Content : ColorStyle(Style.CONTENT, R.string.color_style_content){
+    override fun toString(): String {
+        return "content"
+    }
+}
+object Monochromatic : ColorStyle(Style.MONOCHROMATIC, R.string.color_style_monochromatic){
+    override fun toString(): String {
+        return "monochromatic"
+    }
+}
 
 

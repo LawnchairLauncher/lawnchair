@@ -171,7 +171,11 @@ fun GeneralPreferences() {
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {
             ThemePreference()
             ColorPreference(preference = prefs2.accentColor)
-            if (prefs2.accentColor.getAdapter().state.value is ColorOption.SystemAccent && !Utilities.ATLEAST_S) {
+            if (Utilities.ATLEAST_S && prefs2.accentColor.getAdapter().state.value == ColorOption.SystemAccent) {
+                if (!Utilities.ATLEAST_S) {
+                    ColorStylePreference(prefs2.colorStyle.getAdapter())
+                }
+            } else {
                 ColorStylePreference(prefs2.colorStyle.getAdapter())
             }
         }
