@@ -28,8 +28,8 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.FontPreference

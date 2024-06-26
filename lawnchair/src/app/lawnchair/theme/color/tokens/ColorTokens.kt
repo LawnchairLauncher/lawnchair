@@ -45,7 +45,6 @@ object ColorTokens {
     val Accent2_600 = SwatchColorToken(Swatch.Accent2, Shade.S600)
     val Accent2_800 = SwatchColorToken(Swatch.Accent2, Shade.S800)
 
-
     val Accent3_10 = SwatchColorToken(Swatch.Accent3, Shade.S10)
     val Accent3_50 = SwatchColorToken(Swatch.Accent3, Shade.S50)
     val Accent3_100 = SwatchColorToken(Swatch.Accent3, Shade.S100)
@@ -56,8 +55,6 @@ object ColorTokens {
 
     val SurfaceLight = Neutral1_500.setLStar(98.0)
     val SurfaceDark = Neutral1_800
-
-
 
     @JvmField val Surface = DayNightColorToken(SurfaceLight, SurfaceDark)
 

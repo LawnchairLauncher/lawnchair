@@ -6,7 +6,7 @@ import com.android.systemui.monet.Style
 
 sealed class ColorStyle(
     val style: Style,
-    @StringRes val nameResourceId: Int
+    @StringRes val nameResourceId: Int,
 ) {
     companion object {
         fun fromString(value: String): ColorStyle = when (value) {
@@ -31,11 +31,10 @@ sealed class ColorStyle(
             Rainbow,
             FruitSalad,
             Content,
-            Monochromatic
+            Monochromatic,
         )
     }
 }
-
 
 object Spritz : ColorStyle(Style.SPRITZ, R.string.color_style_spritz) {
     override fun toString(): String {
@@ -62,20 +61,18 @@ object Rainbow : ColorStyle(Style.RAINBOW, R.string.color_style_rainbow) {
         return "rainbow"
     }
 }
-object FruitSalad : ColorStyle(Style.FRUIT_SALAD, R.string.color_style_fruit_salad){
+object FruitSalad : ColorStyle(Style.FRUIT_SALAD, R.string.color_style_fruit_salad) {
     override fun toString(): String {
         return "fruit_salad"
     }
 }
-object Content : ColorStyle(Style.CONTENT, R.string.color_style_content){
+object Content : ColorStyle(Style.CONTENT, R.string.color_style_content) {
     override fun toString(): String {
         return "content"
     }
 }
-object Monochromatic : ColorStyle(Style.MONOCHROMATIC, R.string.color_style_monochromatic){
+object Monochromatic : ColorStyle(Style.MONOCHROMATIC, R.string.color_style_monochromatic) {
     override fun toString(): String {
         return "monochromatic"
     }
 }
-
-

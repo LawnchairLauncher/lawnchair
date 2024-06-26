@@ -7,12 +7,11 @@ import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
 import android.os.PatternMatcher
-import android.util.SparseArray
 import androidx.core.graphics.ColorUtils
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.AndroidColor
-import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.theme.color.MonetColorSchemeCompat
 import app.lawnchair.theme.color.SystemColorScheme
 import app.lawnchair.ui.theme.getSystemAccent
@@ -98,7 +97,7 @@ class ThemeProvider(private val context: Context) {
 
     private fun getColorScheme(
         colorInt: Int,
-        colorStyle: Style
+        colorStyle: Style,
     ): ColorScheme {
         val key = Pair(colorInt, colorStyle)
         var colorScheme = colorSchemeMap[key]

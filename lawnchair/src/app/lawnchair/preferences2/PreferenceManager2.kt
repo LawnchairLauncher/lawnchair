@@ -40,13 +40,13 @@ import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShape as L3IconShape
-import app.lawnchair.theme.color.ColorStyle
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager

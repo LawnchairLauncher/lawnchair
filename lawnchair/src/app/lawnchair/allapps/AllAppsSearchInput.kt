@@ -39,7 +39,6 @@ import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
 import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
-import com.android.launcher3.util.Themes
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
 import kotlin.math.max

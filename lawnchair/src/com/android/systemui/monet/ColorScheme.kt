@@ -17,7 +17,6 @@
 package com.android.systemui.monet
 
 import android.annotation.ColorInt
-import android.app.WallpaperColors
 import android.graphics.Color
 import com.androidinternal.graphics.ColorUtils
 import com.androidinternal.graphics.cam.Cam
@@ -320,7 +319,7 @@ enum class Style(internal val coreSpec: CoreSpec) {
             n1 = TonalSpec(HueSource(), ChromaConstant(0.0)),
             n2 = TonalSpec(HueSource(), ChromaConstant(0.0)),
         ),
-    )
+    ),
 }
 
 class TonalPalette
@@ -372,7 +371,6 @@ internal constructor(
         val SHADE_KEYS = listOf(10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000)
     }
 }
-
 
 class ColorScheme(
     @ColorInt val seed: Int,
@@ -494,8 +492,11 @@ class ColorScheme(
         private fun score(cam: Cam, proportion: Double): Double {
             val proportionScore = 0.7 * 100.0 * proportion
             val chromaScore =
-                if (cam.chroma < ACCENT1_CHROMA) 0.1 * (cam.chroma - ACCENT1_CHROMA)
-                else 0.3 * (cam.chroma - ACCENT1_CHROMA)
+                if (cam.chroma < ACCENT1_CHROMA) {
+                    0.1 * (cam.chroma - ACCENT1_CHROMA)
+                } else {
+                    0.3 * (cam.chroma - ACCENT1_CHROMA)
+                }
             return chromaScore + proportionScore
         }
 

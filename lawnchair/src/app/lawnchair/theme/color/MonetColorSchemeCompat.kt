@@ -9,12 +9,12 @@ import dev.kdrag0n.monet.theme.ColorSwatch
 
 class MonetColorSchemeCompat(
     @ColorInt private val seedColor: Int,
-    val style: Style = Style.TONAL_SPOT
+    val style: Style = Style.TONAL_SPOT,
 ) : ColorScheme() {
 
     private val scheme = MonetColorScheme(
         seedColor,
-        style
+        style,
     )
 
     override val neutral1: ColorSwatch = mapColors(scheme.neutral1.allShades)
