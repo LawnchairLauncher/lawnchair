@@ -10,12 +10,12 @@ class MonetColorSchemeCompat(@ColorInt private val seedColor: Int) : ColorScheme
 
     private val scheme = MonetColorScheme(seedColor, darkTheme = false)
 
-    override val neutral1: ColorSwatch = mapColors(scheme.neutral1)
-    override val neutral2: ColorSwatch = mapColors(scheme.neutral2)
+    override val neutral1: ColorSwatch = mapColors(scheme.neutral1.allShades)
+    override val neutral2: ColorSwatch = mapColors(scheme.neutral2.allShades)
 
-    override val accent1: ColorSwatch = mapColors(scheme.accent1)
-    override val accent2: ColorSwatch = mapColors(scheme.accent2)
-    override val accent3: ColorSwatch = mapColors(scheme.accent3)
+    override val accent1: ColorSwatch = mapColors(scheme.accent1.allShades)
+    override val accent2: ColorSwatch = mapColors(scheme.accent2.allShades)
+    override val accent3: ColorSwatch = mapColors(scheme.accent3.allShades)
 
     private fun mapColors(colors: List<Int>): Map<Int, Color> {
         val paletteSize = colors.size
