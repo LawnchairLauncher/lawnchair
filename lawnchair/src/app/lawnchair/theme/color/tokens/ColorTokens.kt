@@ -22,6 +22,7 @@ object ColorTokens {
     val Neutral2_200 = SwatchColorToken(Swatch.Neutral2, Shade.S200)
     val Neutral2_300 = SwatchColorToken(Swatch.Neutral2, Shade.S300)
     val Neutral2_500 = SwatchColorToken(Swatch.Neutral2, Shade.S500)
+    val Neutral2_600 = SwatchColorToken(Swatch.Neutral2, Shade.S600)
     val Neutral2_700 = SwatchColorToken(Swatch.Neutral2, Shade.S700)
     val Neutral2_800 = SwatchColorToken(Swatch.Neutral2, Shade.S800)
     val Neutral2_900 = SwatchColorToken(Swatch.Neutral2, Shade.S900)
@@ -35,6 +36,8 @@ object ColorTokens {
     val Accent1_500 = SwatchColorToken(Swatch.Accent1, Shade.S500)
     val Accent1_600 = SwatchColorToken(Swatch.Accent1, Shade.S600)
     val Accent1_700 = SwatchColorToken(Swatch.Accent1, Shade.S700)
+    val Accent1_900 = SwatchColorToken(Swatch.Accent1, Shade.S900)
+
     val Accent2_50 = SwatchColorToken(Swatch.Accent2, Shade.S50)
     val Accent2_100 = SwatchColorToken(Swatch.Accent2, Shade.S100)
     val Accent2_300 = SwatchColorToken(Swatch.Accent2, Shade.S300)
@@ -42,14 +45,19 @@ object ColorTokens {
     val Accent2_600 = SwatchColorToken(Swatch.Accent2, Shade.S600)
     val Accent2_800 = SwatchColorToken(Swatch.Accent2, Shade.S800)
 
+
+    val Accent3_10 = SwatchColorToken(Swatch.Accent3, Shade.S10)
     val Accent3_50 = SwatchColorToken(Swatch.Accent3, Shade.S50)
     val Accent3_100 = SwatchColorToken(Swatch.Accent3, Shade.S100)
     val Accent3_200 = SwatchColorToken(Swatch.Accent3, Shade.S200)
     val Accent3_400 = SwatchColorToken(Swatch.Accent3, Shade.S400)
     val Accent3_600 = SwatchColorToken(Swatch.Accent3, Shade.S600)
+    val Accent3_800 = SwatchColorToken(Swatch.Accent3, Shade.S800)
 
     val SurfaceLight = Neutral1_500.setLStar(98.0)
     val SurfaceDark = Neutral1_800
+
+
 
     @JvmField val Surface = DayNightColorToken(SurfaceLight, SurfaceDark)
 
@@ -70,6 +78,8 @@ object ColorTokens {
 
     @JvmField val TextColorSecondary = DayNightColorToken(StaticColorToken(0xde000000), Neutral2_200)
 
+    @JvmField val TextColorTertiary = DayNightColorToken(Accent3_800, Accent3_10)
+
     @JvmField val AllAppsHeaderProtectionColor = DayNightColorToken(Neutral1_100, Neutral1_700)
 
     @JvmField val AllAppsScrimColor = ColorBackground
@@ -79,6 +89,8 @@ object ColorTokens {
     @JvmField val FocusHighlight = DayNightColorToken(Neutral1_0, Neutral1_700)
 
     @JvmField val GroupHighlight = Surface
+
+    @JvmField val OverviewScrimColor = DayNightColorToken(Neutral2_500.setLStar(87.0), Neutral1_800)
 
     @JvmField val OverviewScrim = DayNightColorToken(Neutral2_500.setLStar(87.0), Neutral1_800)
         .withPreferences { prefs ->
@@ -127,7 +139,13 @@ object ColorTokens {
 
     @JvmField val WorkspaceAccentColor = DarkTextColorToken(Accent1_100, Accent2_600)
 
+    @JvmField val DropTargetHoverTextColor = DarkTextColorToken(Accent1_900, Accent1_100)
+
     @JvmField val WidgetListRowColor = DayNightColorToken(Neutral1_10, Neutral2_800)
+
+    @JvmField val SurfaceDimColor = DayNightColorToken(Neutral2_600.setLStar(87.0), Neutral2_600.setLStar(6.0))
+
+    @JvmField val SurfaceBrightColor = DayNightColorToken(Neutral2_600.setLStar(98.0), Neutral2_600.setLStar(24.0))
 
     val SwitchThumbOn = Accent1_100
     val SwitchThumbOff = DayNightColorToken(Neutral2_300, Neutral1_400)

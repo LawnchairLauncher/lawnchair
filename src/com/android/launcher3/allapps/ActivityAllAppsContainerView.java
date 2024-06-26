@@ -25,6 +25,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE;
+import static com.topjohnwu.superuser.internal.Utils.context;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -306,7 +307,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 0 // Bottom left
         };
         mBottomSheetBackgroundColor =
-                Themes.getAttrColor(getContext(), R.attr.materialColorSurfaceDim);
+                ColorTokens.SurfaceDimColor.resolveColor(getContext());
         updateBackgroundVisibility(mActivityContext.getDeviceProfile());
         mSearchUiManager.initializeSearch(this);
     }

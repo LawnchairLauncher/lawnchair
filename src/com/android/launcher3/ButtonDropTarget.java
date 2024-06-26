@@ -121,7 +121,7 @@ public abstract class ButtonDropTarget extends TextView
 
     private void setTextColor() {
         int normalColor = ColorTokens.WorkspaceAccentColor.resolveColor(getContext());
-        int selectedColor = Themes.getAttrColor(getContext(), R.attr.dropTargetHoverTextColor);
+        int selectedColor = ColorTokens.DropTargetHoverTextColor.resolveColor(getContext());
         setTextColor(new ColorStateList(
                 new int[][] { new int[] { -android.R.attr.state_selected },
                         new int[] { android.R.attr.state_selected } },

@@ -52,6 +52,8 @@ import com.android.launcher3.util.Themes;
 import java.util.Collections;
 import java.util.List;
 
+import app.lawnchair.theme.color.tokens.ColorTokens;
+
 /**
  * The track and scrollbar that shows when you scroll the list.
  */
@@ -145,7 +147,7 @@ public class RecyclerViewFastScroller extends View {
         super(context, attrs, defStyleAttr);
 
         mTrackPaint = new Paint();
-        mTrackPaint.setColor(Themes.getAttrColor(context, android.R.attr.textColorPrimary));
+        mTrackPaint.setColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
         mTrackPaint.setAlpha(MAX_TRACK_ALPHA);
 
         mThumbPaint = new Paint();
