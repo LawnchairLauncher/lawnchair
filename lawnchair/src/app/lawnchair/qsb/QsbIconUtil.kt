@@ -4,7 +4,7 @@ import android.graphics.drawable.LayerDrawable
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
-import app.lawnchair.theme.color.ColorTokens
+import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
 
 fun ImageView.setThemedIconResource(
