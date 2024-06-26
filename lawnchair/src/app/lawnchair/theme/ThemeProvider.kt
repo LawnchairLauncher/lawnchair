@@ -11,6 +11,7 @@ import android.util.SparseArray
 import androidx.core.graphics.ColorUtils
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.AndroidColor
+import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.MonetColorSchemeCompat
 import app.lawnchair.theme.color.SystemColorScheme
@@ -18,6 +19,7 @@ import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.systemui.monet.Style
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.colorkt.Color
@@ -31,7 +33,9 @@ class ThemeProvider(private val context: Context) {
     private val preferenceManager2 = PreferenceManager2.getInstance(context)
     private val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
+
     private var accentColor: ColorOption = preferenceManager2.accentColor.firstBlocking()
+    private var colorStyle: ColorStyle = preferenceManager2.colorStyle.firstBlocking()
 
     private val colorSchemeMap = SparseArray<ColorScheme>()
     private val listeners = mutableListOf<ColorSchemeChangeListener>()
@@ -50,6 +54,10 @@ class ThemeProvider(private val context: Context) {
         })
         preferenceManager2.accentColor.onEach(launchIn = coroutineScope) {
             accentColor = it
+            notifyColorSchemeChanged()
+        }
+        preferenceManager2.colorStyle.onEach(launchIn = coroutineScope) {
+            colorStyle = it
             notifyColorSchemeChanged()
         }
     }
@@ -79,7 +87,7 @@ class ThemeProvider(private val context: Context) {
             val wallpaperPrimary = wallpaperManager.wallpaperColors?.primaryColor
             getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color)
         }
-        is ColorOption.CustomColor -> getColorScheme(accentColor.color)
+        is ColorOption.CustomColor -> getColorScheme(accentColor.color, colorStyle.style)
         else -> getColorScheme(ColorOption.LawnchairBlue.color)
     }
 
@@ -88,10 +96,13 @@ class ThemeProvider(private val context: Context) {
         else -> getColorScheme(context.getSystemAccent(darkTheme = false))
     }
 
-    private fun getColorScheme(colorInt: Int): ColorScheme {
+    private fun getColorScheme(
+        colorInt: Int,
+        colorStyle: Style = Style.TONAL_SPOT,
+    ): ColorScheme {
         var colorScheme = colorSchemeMap[colorInt]
         if (colorScheme == null) {
-            colorScheme = MonetColorSchemeCompat(colorInt)
+            colorScheme = MonetColorSchemeCompat(colorInt, colorStyle)
             colorSchemeMap.append(colorInt, colorScheme)
         }
         return colorScheme

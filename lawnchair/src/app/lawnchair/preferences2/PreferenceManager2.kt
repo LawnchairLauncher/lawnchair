@@ -46,6 +46,7 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShape as L3IconShape
+import app.lawnchair.theme.color.ColorStyle
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
@@ -108,6 +109,14 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val alwaysReloadIcons = preference(
         key = booleanPreferencesKey(name = "always_reload_icons"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_always_reload_icons),
+    )
+
+    val colorStyle = preference(
+        key = stringPreferencesKey("color_style"),
+        defaultValue = ColorStyle.fromString("tonal_spot"),
+        parse = { ColorStyle.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.restart() },
     )
 
     val notificationDotColor = preference(

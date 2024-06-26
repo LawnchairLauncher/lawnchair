@@ -280,6 +280,17 @@
     <string name="theme_system_default">System</string>
     <string name="theme_follow_wallpaper">Match wallpaper</string>
 
+    <!-- Color style -->
+    <string name="color_style_label">Color style</string>
+    <string name="color_style_spritz">Spritz</string>
+    <string name="color_style_tonal_spot">Tonal Spot</string>
+    <string name="color_style_vibrant">Vibrant</string>
+    <string name="color_style_expressive">Expressive</string>
+    <string name="color_style_rainbow">Rainbow</string>
+    <string name="color_style_fruit_salad">Fruit Salad</string>
+    <string name="color_style_content">Content</string>
+    <string name="color_style_monochromatic">Monochromatic</string>
+
     <!-- Accent color and color picker -->
     <string name="colors">Colors</string>
     <string name="accent_color">Accent color</string>

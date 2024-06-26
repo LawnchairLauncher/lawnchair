@@ -2,13 +2,20 @@ package app.lawnchair.theme.color
 
 import androidx.annotation.ColorInt
 import com.android.systemui.monet.ColorScheme as MonetColorScheme
+import com.android.systemui.monet.Style
 import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.monet.theme.ColorScheme
 import dev.kdrag0n.monet.theme.ColorSwatch
 
-class MonetColorSchemeCompat(@ColorInt private val seedColor: Int) : ColorScheme() {
+class MonetColorSchemeCompat(
+    @ColorInt private val seedColor: Int,
+    val style: Style = Style.TONAL_SPOT
+) : ColorScheme() {
 
-    private val scheme = MonetColorScheme(seedColor, darkTheme = false)
+    private val scheme = MonetColorScheme(
+        seedColor,
+        style
+    )
 
     override val neutral1: ColorSwatch = mapColors(scheme.neutral1.allShades)
     override val neutral2: ColorSwatch = mapColors(scheme.neutral2.allShades)

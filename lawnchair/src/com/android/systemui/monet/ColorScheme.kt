@@ -376,7 +376,6 @@ internal constructor(
 
 class ColorScheme(
     @ColorInt val seed: Int,
-    val darkTheme: Boolean,
     val style: Style = Style.TONAL_SPOT,
 ) {
     val accent1: TonalPalette
@@ -385,7 +384,7 @@ class ColorScheme(
     val neutral1: TonalPalette
     val neutral2: TonalPalette
 
-    constructor(@ColorInt seed: Int, darkTheme: Boolean) : this(seed, darkTheme, Style.TONAL_SPOT)
+    constructor(@ColorInt seed: Int) : this(seed, Style.TONAL_SPOT)
 
     val allHues: List<TonalPalette>
         get() {
@@ -406,11 +405,6 @@ class ColorScheme(
             allColors.addAll(neutral2.allShades)
             return allColors
         }
-
-    val backgroundColor
-        get() = ColorUtils.setAlphaComponent(if (darkTheme) neutral1.s700 else neutral1.s10, 0xFF)
-    val accentColor
-        get() = ColorUtils.setAlphaComponent(if (darkTheme) accent1.s100 else accent1.s500, 0xFF)
 
     init {
         val proposedSeedCam = Cam.fromInt(seed)
