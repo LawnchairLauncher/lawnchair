@@ -75,11 +75,13 @@ object ColorTokens {
 
     @JvmField val TextColorSecondary = DayNightColorToken(StaticColorToken(0xde000000), Neutral2_200)
 
-    @JvmField val AllAppsHeaderProtectionColor = DayNightColorToken(Neutral1_100, Neutral1_700)
+    @JvmField val AllAppsHeaderProtectionColor = DayNightColorToken(Neutral1_100, Neutral2_600.setLStar(15.0))
 
     @JvmField val AllAppsScrimColor = ColorBackground
 
-    @JvmField val AllAppsTabBackgroundSelected = DayNightColorToken(Accent1_500, Accent2_500)
+    @JvmField val AllAppsTabBackground = DayNightColorToken(Neutral2_600.setLStar(90.0), Neutral2_600.setLStar(22.0))
+
+    @JvmField val AllAppsTabBackgroundSelected = DayNightColorToken(Accent1_600, Accent1_600.setLStar(80.0))
 
     @JvmField val FocusHighlight = DayNightColorToken(Neutral1_0, Neutral1_700)
 
@@ -94,7 +96,7 @@ object ColorTokens {
             if (translucent) setAlpha(translucentIntensity) else this
         }
 
-    @JvmField val SearchboxHighlight = DayNightColorToken(SurfaceVariantLight, Neutral1_800)
+    @JvmField val SearchboxHighlight = DayNightColorToken(Neutral2_600.setLStar(98.0), Neutral1_800)
 
     @JvmField val FolderDotColor = Accent3_100
 
