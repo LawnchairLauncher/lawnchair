@@ -3,7 +3,6 @@ package app.lawnchair.search.algorithms
 import android.content.Context
 import android.os.Handler
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.search.adapter.GenerateSearchTarget
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchTargetCompat
@@ -85,18 +84,18 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val searchTargets = mutableListOf<SearchTargetCompat>()
 
         if (appResults.isNotEmpty()) {
-            appResults.mapTo(searchTargets, ::createSearchTarget)
-        }
-
-        if (appResults.size == 1 && context.isDefaultLauncher()) {
-            val singleAppResult = appResults.firstOrNull()
-            val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
-            if (shortcuts != null) {
-                if (shortcuts.isNotEmpty()) {
-                    searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
-                    searchTargets.add(createSearchTarget(singleAppResult, true))
-                    searchTargets.addAll(shortcuts.map(::createSearchTarget))
+            if (appResults.size == 1 && context.isDefaultLauncher()) {
+                val singleAppResult = appResults.firstOrNull()
+                val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
+                if (shortcuts != null) {
+                    if (shortcuts.isNotEmpty()) {
+                        searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
+                        searchTargets.add(createSearchTarget(singleAppResult, true))
+                        searchTargets.addAll(shortcuts.map(::createSearchTarget))
+                    }
                 }
+            } else {
+                appResults.mapTo(searchTargets, ::createSearchTarget)
             }
         }
 
@@ -104,8 +103,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
         generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }
 
+        setFirstItemQuickLaunch(searchTargets)
         val adapterItems = transformSearchResults(searchTargets)
-        LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
         return ArrayList(adapterItems)
     }
 }

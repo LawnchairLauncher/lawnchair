@@ -86,23 +86,32 @@ sealed class LawnchairSearchAlgorithm(
 
             if (target.extras.getBoolean(EXTRA_QUICK_LAUNCH, false)) {
                 SearchAdapterItem.createAdapterItem(target, normalBackground)
+            } else {
+                val background = getBackground(
+                    target.layoutType,
+                    index,
+                    isFirst,
+                    isLast,
+                    smallIconIndices,
+                    iconRowIndices,
+                    peopleTileIndices,
+                    suggestionIndices,
+                    fileIndices,
+                    settingIndices,
+                    recentIndices,
+                    calculator,
+                )
+                SearchAdapterItem.createAdapterItem(target, background)
             }
+        }
+    }
 
-            val background = getBackground(
-                target.layoutType,
-                index,
-                isFirst,
-                isLast,
-                smallIconIndices,
-                iconRowIndices,
-                peopleTileIndices,
-                suggestionIndices,
-                fileIndices,
-                settingIndices,
-                recentIndices,
-                calculator,
-            )
-            SearchAdapterItem.createAdapterItem(target, background)
+    protected fun setFirstItemQuickLaunch(searchTargets: List<SearchTargetCompat>) {
+        val hasQuickLaunch = searchTargets.any {it.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }
+        if (!hasQuickLaunch) {
+            searchTargets.firstOrNull()?.extras?.apply {
+                putBoolean(EXTRA_QUICK_LAUNCH, true)
+            }
         }
     }
 

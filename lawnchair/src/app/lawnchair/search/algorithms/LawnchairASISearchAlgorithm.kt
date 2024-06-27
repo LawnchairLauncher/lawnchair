@@ -12,7 +12,6 @@ import androidx.core.os.bundleOf
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.preferences.PreferenceChangeListener
 import app.lawnchair.preferences.PreferenceManager
-import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.LauncherAppState
@@ -110,8 +109,8 @@ class LawnchairASISearchAlgorithm(context: Context) :
         override fun accept(platformTargets: List<SearchTarget>) {
             if (!canceled) {
                 val targets = platformTargets.map { SearchTargetCompat.wrap(it) }
+                setFirstItemQuickLaunch(targets)
                 val adapterItems = transformSearchResults(targets)
-                LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
                 callback.onSearchResult(
                     query,
                     ArrayList<BaseAllAppsAdapter.AdapterItem>(adapterItems),

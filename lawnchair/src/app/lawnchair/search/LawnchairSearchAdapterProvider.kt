@@ -124,14 +124,5 @@ class LawnchairSearchAdapterProvider(
             LayoutType.WIDGET_LIVE to SEARCH_RESULT_RECENT_TILE,
             LayoutType.CALCULATOR to SEARCH_RESULT_CALCULATOR,
         )
-
-        fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>) {
-            val hasQuickLaunch = items.any { it.searchTarget.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }
-            if (!hasQuickLaunch) {
-                items.firstOrNull()?.searchTarget?.extras?.apply {
-                    putBoolean(EXTRA_QUICK_LAUNCH, true)
-                }
-            }
-        }
     }
 }

@@ -148,19 +148,19 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
         val searchTargets = mutableListOf<SearchTargetCompat>()
 
-        if (appResults.isNotEmpty() && searchApps) {
-            appResults.mapTo(searchTargets, ::createSearchTarget)
-        }
-
-        if (appResults.size == 1 && searchApps && context.isDefaultLauncher()) {
-            val singleAppResult = appResults.firstOrNull()
-            val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
-            if (shortcuts != null) {
-                if (shortcuts.isNotEmpty()) {
-                    searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
-                    searchTargets.add(createSearchTarget(singleAppResult, true))
-                    searchTargets.addAll(shortcuts.map(::createSearchTarget))
+        if (appResults.isNotEmpty()) {
+            if (appResults.size == 1 && context.isDefaultLauncher()) {
+                val singleAppResult = appResults.firstOrNull()
+                val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
+                if (shortcuts != null) {
+                    if (shortcuts.isNotEmpty()) {
+                        searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
+                        searchTargets.add(createSearchTarget(singleAppResult, true))
+                        searchTargets.addAll(shortcuts.map(::createSearchTarget))
+                    }
                 }
+            } else {
+                appResults.mapTo(searchTargets, ::createSearchTarget)
             }
         }
 
@@ -217,8 +217,8 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         if (useWebSuggestions) searchTargets.add(generateSearchTarget.getStartPageSearchItem(query))
         generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }
 
+        setFirstItemQuickLaunch(searchTargets)
         val adapterItems = transformSearchResults(searchTargets)
-        LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
         return ArrayList(adapterItems)
     }
 
