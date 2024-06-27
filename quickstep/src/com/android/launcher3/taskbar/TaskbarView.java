@@ -147,7 +147,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mItemMarginLeftRight = actualMargin - (mIconTouchSize - visualIconSize) / 2;
         mItemPadding = (mIconTouchSize - actualIconSize) / 2;
 
-        mFolderLeaveBehindColor = ColorTokens.TextColorTertiary.resolveColor(getContext());
+        mFolderLeaveBehindColor = Themes.getAttrColor(context, android.R.attr.textColorTertiary);
 
         // Needed to draw folder leave-behind when opening one.
         setWillNotDraw(false);
