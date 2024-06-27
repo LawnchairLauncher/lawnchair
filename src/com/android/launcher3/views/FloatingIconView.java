@@ -18,6 +18,7 @@ package com.android.launcher3.views;
 import static android.view.Gravity.LEFT;
 
 import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.launcher3.Flags.enableAdditionalHomeAnimations;
 import static com.android.launcher3.Utilities.getFullDrawable;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -164,7 +165,12 @@ public class FloatingIconView extends FrameLayout implements
      */
     public void update(float alpha, RectF rect, float progress, float shapeProgressStart,
             float cornerRadius, boolean isOpening, int taskViewDrawAlpha) {
-        setAlpha(isLaidOut() ? alpha : 0f);
+        // The non-running task home animation has some very funky first few frames because this
+        // FIV hasn't fully laid out. During those frames, hide this FIV and continue drawing the
+        // TaskView directly while transforming it in the place of this FIV. However, if we fade
+        // the TaskView at all, we need to display this FIV regardless.
+        setAlpha(!enableAdditionalHomeAnimations() || isLaidOut() || taskViewDrawAlpha < 255
+                ? alpha : 0f);
         mClipIconView.update(rect, progress, shapeProgressStart, cornerRadius, isOpening, this,
                 mLauncher.getDeviceProfile(), taskViewDrawAlpha);
 

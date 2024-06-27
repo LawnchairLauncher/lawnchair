@@ -35,6 +35,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
+import static com.android.launcher3.Flags.enableAdditionalHomeAnimations;
 import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.Flags.enableRefactorTaskThumbnail;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
@@ -4523,6 +4524,9 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
      * than the running task, when updating page offsets.
      */
     public void setOffsetMidpointIndexOverride(int offsetMidpointIndexOverride) {
+        if (!enableAdditionalHomeAnimations()) {
+            return;
+        }
         mOffsetMidpointIndexOverride = offsetMidpointIndexOverride;
         updatePageOffsets();
     }

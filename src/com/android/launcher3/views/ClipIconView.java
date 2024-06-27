@@ -16,6 +16,7 @@
 package com.android.launcher3.views;
 
 import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.launcher3.Flags.enableAdditionalHomeAnimations;
 import static com.android.launcher3.Utilities.boundToRange;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
@@ -97,6 +98,9 @@ public class ClipIconView extends View implements ClipPathView {
      * within the clip bounds of this view.
      */
     public void setTaskViewArtist(TaskViewArtist taskViewArtist) {
+        if (!enableAdditionalHomeAnimations()) {
+            return;
+        }
         mTaskViewArtist = taskViewArtist;
         invalidate();
     }
