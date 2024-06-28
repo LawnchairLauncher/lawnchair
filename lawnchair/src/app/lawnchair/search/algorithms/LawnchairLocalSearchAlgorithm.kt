@@ -141,22 +141,36 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         apps: MutableList<AppInfo>,
         query: String,
         prefs: PreferenceManager,
-    ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = flow {
+    ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = channelFlow {
         val allResults = mutableListOf<BaseAllAppsAdapter.AdapterItem>()
+        var appIndex = 0
 
-        getAppSearchResults(apps, query).collect { appResults ->
-            allResults.addAll(appResults)
-            emit(allResults.toList())
+        launch {
+            getAppSearchResults(apps, query).collect { appResults ->
+                allResults.addAll(appResults)
+                appIndex = appResults.size
+                send(allResults.toList())
+            }
         }
 
-        getLocalSearchResults(query, prefs).collect { localResults ->
-            allResults.addAll(localResults)
-            emit(allResults.toList())
+        launch {
+            getLocalSearchResults(query, prefs).collect { localResults ->
+                // Insert local results at the appropriate position
+                val insertIndex = appIndex
+                if (insertIndex >= 0) {
+                    allResults.addAll(insertIndex, localResults)
+                } else {
+                    allResults.addAll(localResults)
+                }
+                send(allResults.toList())
+            }
         }
 
-        getSearchLinks(query).collect { otherResults ->
-            allResults.addAll(otherResults)
-            emit(allResults.toList())
+        launch {
+            getSearchLinks(query).collect { otherResults ->
+                allResults.addAll(otherResults)
+                send(allResults.toList())
+            }
         }
     }
 
