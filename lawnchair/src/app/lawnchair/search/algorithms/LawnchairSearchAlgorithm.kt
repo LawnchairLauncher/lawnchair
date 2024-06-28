@@ -107,7 +107,7 @@ sealed class LawnchairSearchAlgorithm(
     }
 
     protected fun setFirstItemQuickLaunch(searchTargets: List<SearchTargetCompat>) {
-        val hasQuickLaunch = searchTargets.any {it.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }
+        val hasQuickLaunch = searchTargets.any { it.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }
         if (!hasQuickLaunch) {
             searchTargets.firstOrNull()?.extras?.apply {
                 putBoolean(EXTRA_QUICK_LAUNCH, true)

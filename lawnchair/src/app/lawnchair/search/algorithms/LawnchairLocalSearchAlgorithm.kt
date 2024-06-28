@@ -140,7 +140,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     private fun getAllSearchResults(
         apps: MutableList<AppInfo>,
         query: String,
-        prefs: PreferenceManager
+        prefs: PreferenceManager,
     ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = flow {
         val allResults = mutableListOf<BaseAllAppsAdapter.AdapterItem>()
 
@@ -162,7 +162,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
     private fun getAppSearchResults(
         apps: MutableList<AppInfo>,
-        query: String
+        query: String,
     ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = flow {
         val searchTargets = mutableListOf<SearchTargetCompat>()
         val appResults = performAppSearch(apps, query)
@@ -175,7 +175,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
     private fun getLocalSearchResults(
         query: String,
-        prefs: PreferenceManager
+        prefs: PreferenceManager,
     ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = flow {
         val searchTargets = mutableListOf<SearchTargetCompat>()
         val localSearchResults = performDeviceLocalSearch(query, prefs)
@@ -184,7 +184,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     }
 
     private fun getSearchLinks(
-        query: String
+        query: String,
     ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = flow {
         val searchTargets = mutableListOf<SearchTargetCompat>()
 
@@ -281,10 +281,10 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         apps: MutableList<AppInfo>,
         query: String,
     ) = if (enableFuzzySearch) {
-            searchUtils.fuzzySearch(apps, query)
-        } else {
-            searchUtils.normalSearch(apps, query)
-        }
+        searchUtils.fuzzySearch(apps, query)
+    } else {
+        searchUtils.normalSearch(apps, query)
+    }
 
     private suspend fun performDeviceLocalSearch(query: String, prefs: PreferenceManager): MutableList<SearchResult> =
         withContext(Dispatchers.IO) {
@@ -384,5 +384,4 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     private fun filterByType(results: List<SearchResult>, type: String): List<SearchResult> {
         return results.filter { it.resultType == type }
     }
-
 }

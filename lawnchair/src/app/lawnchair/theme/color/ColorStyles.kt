@@ -38,7 +38,6 @@ sealed class ColorStyle(
 
 object Spritz : ColorStyle(Style.SPRITZ, R.string.color_style_spritz) {
     override fun toString() = "spritz"
-
 }
 object TonalSpot : ColorStyle(Style.TONAL_SPOT, R.string.color_style_tonal_spot) {
     override fun toString() = "tonal_spot"

@@ -214,7 +214,7 @@ class ComposeBottomSheet<T>(context: Context) :
         SystemUi(setStatusBar = false)
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Surface(
                 modifier = Modifier
@@ -223,7 +223,7 @@ class ComposeBottomSheet<T>(context: Context) :
                 shape = backgroundShape,
                 color = MaterialTheme.colorScheme.background,
 
-                ) {
+            ) {
                 Box(
                     modifier = Modifier
                         .padding(contentPaddings)
