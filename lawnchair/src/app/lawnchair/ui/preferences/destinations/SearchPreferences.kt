@@ -158,7 +158,7 @@ private fun LocalSearchSettings(
 
     SearchSuggestionPreference(
         adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
-        maxCountAdapter = prefs2.maxSuggestionResultCount.getAdapter(),
+        maxCountAdapter = prefs2.maxWebSuggestionResultCount.getAdapter(),
         maxCountRange = 3..10,
         label = stringResource(id = R.string.search_pref_result_web_title),
         maxCountLabel = stringResource(id = R.string.max_suggestion_result_count_title),

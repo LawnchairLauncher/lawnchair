@@ -402,7 +402,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = resourceProvider.getInt(R.dimen.config_default_search_max_result_count),
     )
 
-    val maxSuggestionResultCount = preference(
+    val maxWebSuggestionResultCount = preference(
         key = intPreferencesKey(name = "max_suggestion_result_count"),
         defaultValue = resourceProvider.getInt(R.dimen.config_default_suggestion_max_result_count),
     )

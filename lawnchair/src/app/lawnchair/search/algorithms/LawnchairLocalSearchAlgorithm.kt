@@ -23,11 +23,11 @@ import app.lawnchair.search.algorithms.data.ContactInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
 import app.lawnchair.search.algorithms.data.SettingInfo
+import app.lawnchair.search.algorithms.data.WebSearchProvider
 import app.lawnchair.search.algorithms.data.calculateEquationFromString
 import app.lawnchair.search.algorithms.data.findContactsByName
 import app.lawnchair.search.algorithms.data.findSettingsByNameAndAction
 import app.lawnchair.search.algorithms.data.getRecentKeyword
-import app.lawnchair.search.algorithms.data.getStartPageSuggestions
 import app.lawnchair.search.algorithms.data.queryFilesInMediaStore
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.isDefaultLauncher
@@ -48,6 +48,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -103,7 +104,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         pref2.maxPeopleResultCount.onEach(launchIn = coroutineScope) {
             maxPeopleCount = it
         }
-        pref2.maxSuggestionResultCount.onEach(launchIn = coroutineScope) {
+        pref2.maxWebSuggestionResultCount.onEach(launchIn = coroutineScope) {
             maxWebSuggestionsCount = it
         }
         pref2.maxSettingsEntryResultCount.onEach(launchIn = coroutineScope) {
@@ -350,7 +351,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                     val timeout = maxWebSuggestionDelay.toLong()
                     val result = withTimeoutOrNull(timeout) {
                         if (prefs.searchResultStartPageSuggestion.get()) {
-                            getStartPageSuggestions(query, maxWebSuggestionsCount).map {
+                            WebSearchProvider.fromString("startpage").getSuggestions(query, maxWebSuggestionsCount).map {
                                 SearchResult(
                                     WEB_SUGGESTION,
                                     it,
