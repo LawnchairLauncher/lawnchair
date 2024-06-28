@@ -149,7 +149,7 @@ interface GoogleService : GenericSearchService {
     suspend fun getSuggestions(
         @Query("client") client: String = "firefox",
         @Query("q") query: String,
-        @Query("callback") callback: String = "json"
+        @Query("callback") callback: String = "json",
     ): Response<ResponseBody>
 }
 
