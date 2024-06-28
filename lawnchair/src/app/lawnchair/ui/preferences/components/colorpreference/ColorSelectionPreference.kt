@@ -54,8 +54,8 @@ fun ColorSelection(
     }
     val defaultTabIndex = when {
         dynamicEntries.any { it.value == appliedColor } -> 0
-        staticEntries.any { it.value == appliedColor } -> 1
-        else -> 2
+        staticEntries.any { it.value == appliedColor } -> 0
+        else -> 1
     }
 
     val onPresetClick = { option: ColorOption ->
