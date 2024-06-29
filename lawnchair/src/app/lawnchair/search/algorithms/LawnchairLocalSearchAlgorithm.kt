@@ -249,9 +249,11 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             val suggestionsHeader =
                 generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
             searchTargets.add(suggestionsHeader)
-            searchTargets.addAll(suggestions.map {
-                generateSearchTarget.getSuggestionTarget(it.resultData as String, suggestionProvider)
-            })
+            searchTargets.addAll(
+                suggestions.map {
+                    generateSearchTarget.getSuggestionTarget(it.resultData as String, suggestionProvider)
+                },
+            )
         }
 
         val calculator = filterByType(localSearchResults, CALCULATOR).firstOrNull()

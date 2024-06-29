@@ -20,7 +20,6 @@ import com.android.launcher3.R
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 
-
 @Composable
 fun WebSearchProvider(
     adapter: PreferenceAdapter<WebSearchProvider>,
@@ -49,7 +48,7 @@ fun <T> ListPreferenceChips(
     entries: ImmutableList<ListPreferenceEntry<T>>,
     label: String,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     ListPreferenceChips(
         entries = entries,

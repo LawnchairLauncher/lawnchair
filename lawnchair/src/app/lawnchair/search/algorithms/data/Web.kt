@@ -216,8 +216,10 @@ data object DuckDuckGo : WebSearchProvider() {
                     val suggestionsArray =
                         jsonArray.optJSONArray(1) ?: return@withContext emptyList()
 
-                    return@withContext (0 until suggestionsArray.length()
-                        .coerceAtMost(maxSuggestions))
+                    return@withContext (
+                        0 until suggestionsArray.length()
+                            .coerceAtMost(maxSuggestions)
+                        )
                         .map { suggestionsArray.getString(it) }
                 } else {
                     Log.w(

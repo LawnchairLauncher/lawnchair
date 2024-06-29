@@ -21,6 +21,7 @@ import app.lawnchair.search.algorithms.data.FolderInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
 import app.lawnchair.search.algorithms.data.SettingInfo
+import app.lawnchair.search.algorithms.data.WebSearchProvider
 import app.lawnchair.theme.color.tokens.ColorTokens
 import app.lawnchair.util.createTextBitmap
 import app.lawnchair.util.file2Uri
@@ -33,7 +34,6 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.util.Locale
-import app.lawnchair.search.algorithms.data.WebSearchProvider
 
 class GenerateSearchTarget(private val context: Context) {
 
