@@ -62,6 +62,12 @@ sealed class WebSearchProvider {
      */
     abstract suspend fun getSuggestions(query: String, maxSuggestions: Int): List<String>
 
+    /**
+     * Function to get the search URL for the current provider
+     * @param query The input text
+     */
+    abstract fun getSearchUrl(query: String): String
+
     companion object {
         fun fromString(value: String): WebSearchProvider = when (value) {
             "google" -> Google
@@ -128,6 +134,8 @@ data object Google : WebSearchProvider() {
             }
         }
 
+    override fun getSearchUrl(query: String) = "https://google.com/search?q=$query"
+
     override fun toString() = "google"
 }
 
@@ -175,6 +183,8 @@ data object StartPage : WebSearchProvider() {
             }
         }
 
+    override fun getSearchUrl(query: String) = "https://www.startpage.com/do/search?segment=startpage.lawnchair&query=$query&cat=web"
+
     override fun toString() = "startpage"
 }
 
@@ -221,6 +231,8 @@ data object DuckDuckGo : WebSearchProvider() {
                 return@withContext emptyList()
             }
         }
+
+    override fun getSearchUrl(query: String) = "https://duckduckgo.com/$query&cat=web"
 
     override fun toString() = "duckduckgo"
 }

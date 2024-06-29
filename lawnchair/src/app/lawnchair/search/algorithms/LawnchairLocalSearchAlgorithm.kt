@@ -211,7 +211,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
         if (useWebSuggestions) {
             withContext(Dispatchers.IO) {
-                searchTargets.add(generateSearchTarget.getStartPageSearchItem(query))
+                searchTargets.add(generateSearchTarget.getWebSearchItem(query, webSuggestionsProvider))
             }
         }
         generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }
@@ -243,12 +243,15 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         localSearchResults: MutableList<SearchResult>,
         searchTargets: MutableList<SearchTargetCompat>,
     ) {
+        val suggestionProvider = webSuggestionsProvider
         val suggestions = filterByType(localSearchResults, WEB_SUGGESTION)
         if (suggestions.isNotEmpty()) {
             val suggestionsHeader =
                 generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
             searchTargets.add(suggestionsHeader)
-            searchTargets.addAll(suggestions.map { generateSearchTarget.getSuggestionTarget(it.resultData as String) })
+            searchTargets.addAll(suggestions.map {
+                generateSearchTarget.getSuggestionTarget(it.resultData as String, suggestionProvider)
+            })
         }
 
         val calculator = filterByType(localSearchResults, CALCULATOR).firstOrNull()
@@ -278,6 +281,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             searchTargets.addAll(settings.mapNotNull { generateSearchTarget.getSettingSearchItem(it.resultData as SettingInfo) })
         }
 
+        // todo refactor to only show when search is first clicked
         val recentKeyword = filterByType(localSearchResults, HISTORY)
         if (recentKeyword.isNotEmpty()) {
             val recentKeywordHeader = generateSearchTarget.getHeaderTarget(
@@ -285,7 +289,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                 HEADER_JUSTIFY,
             )
             searchTargets.add(recentKeywordHeader)
-            searchTargets.addAll(recentKeyword.map { generateSearchTarget.getRecentKeywordTarget(it.resultData as RecentKeyword) })
+            searchTargets.addAll(recentKeyword.map { generateSearchTarget.getRecentKeywordTarget(it.resultData as RecentKeyword, suggestionProvider) })
         }
 
         val files = filterByType(localSearchResults, FILES)

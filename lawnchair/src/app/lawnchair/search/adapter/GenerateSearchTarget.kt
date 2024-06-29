@@ -33,13 +33,14 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.util.Locale
+import app.lawnchair.search.algorithms.data.WebSearchProvider
 
 class GenerateSearchTarget(private val context: Context) {
 
     private val marketSearchComponent = resolveMarketSearchActivity()
 
-    internal fun getSuggestionTarget(suggestion: String): SearchTargetCompat {
-        val url = getStartPageUrl(suggestion)
+    internal fun getSuggestionTarget(suggestion: String, suggestionProvider: String): SearchTargetCompat {
+        val url = WebSearchProvider.fromString(suggestionProvider).getSearchUrl(suggestion)
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         val id = suggestion + url
         val action = SearchActionCompat.Builder(id, suggestion)
@@ -82,9 +83,9 @@ class GenerateSearchTarget(private val context: Context) {
         )
     }
 
-    internal fun getRecentKeywordTarget(recentKeyword: RecentKeyword): SearchTargetCompat {
+    internal fun getRecentKeywordTarget(recentKeyword: RecentKeyword, suggestionProvider: String): SearchTargetCompat {
         val value = recentKeyword.getValueByKey("display1") ?: ""
-        val url = getStartPageUrl(value)
+        val url = WebSearchProvider.fromString(suggestionProvider).getSearchUrl(value)
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         val id = recentKeyword.data.toString() + url
         val action = SearchActionCompat.Builder(id, value)
@@ -189,15 +190,17 @@ class GenerateSearchTarget(private val context: Context) {
         return createSearchTarget(id, action, MARKET_STORE, extras)
     }
 
-    internal fun getStartPageSearchItem(query: String): SearchTargetCompat {
-        val url = getStartPageUrl(query)
+    internal fun getWebSearchItem(query: String, suggestionProvider: String): SearchTargetCompat {
+        val webSearchProvider = WebSearchProvider.fromString(suggestionProvider)
+        val webSearchLabel = context.getString(webSearchProvider.label)
+        val url = webSearchProvider.getSearchUrl(query)
         val id = "browser:$query"
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         val action = SearchActionCompat.Builder(
             id,
-            context.getString(R.string.all_apps_search_startpage_message),
+            context.getString(R.string.all_apps_search_on_web_message, webSearchLabel),
         )
-            .setIcon(Icon.createWithResource(context, R.drawable.ic_startpage))
+            .setIcon(Icon.createWithResource(context, webSearchProvider.iconRes))
             .setIntent(browserIntent)
             .build()
         val extras = bundleOf(
@@ -283,10 +286,6 @@ class GenerateSearchTarget(private val context: Context) {
         val initial = if (name.isNotEmpty()) name[0].uppercaseChar().toString() else "U"
         val textBitmap = createTextBitmap(context, initial)
         return Icon.createWithBitmap(textBitmap)
-    }
-
-    private fun getStartPageUrl(query: String): String {
-        return "https://www.startpage.com/do/search?segment=startpage.lawnchair&query=$query&cat=web"
     }
 
     private fun resolveMarketSearchActivity(): ComponentKey? {

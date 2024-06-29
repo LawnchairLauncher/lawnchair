@@ -166,7 +166,7 @@ private fun LocalSearchSettings(
         maxCountRange = 3..10,
         label = stringResource(id = R.string.search_pref_result_web_title),
         maxCountLabel = stringResource(id = R.string.max_suggestion_result_count_title),
-        description = stringResource(id = R.string.search_pref_result_web_description, webSuggestionProvider),
+        description = stringResource(id = R.string.search_pref_result_web_provider_description, webSuggestionProvider),
     ) {
         SliderPreference(
             label = stringResource(id = R.string.max_web_suggestion_delay),
