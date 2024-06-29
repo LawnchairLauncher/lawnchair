@@ -24,7 +24,6 @@ import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
-import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
@@ -65,7 +64,6 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.folder.FolderNameProvider;
-import com.android.launcher3.graphics.LauncherPreviewRenderer;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon.ComponentWithIconCachingLogic;
 import com.android.launcher3.icons.IconCache;
@@ -97,6 +95,7 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,8 +106,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 
-import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.model.LawnLoaderTask;
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Runnable for the thread that loads the contents of the launcher:
@@ -173,8 +173,7 @@ public class LoaderTask implements Runnable {
         LooperIdleLock idleLock = mLauncherBinder.newIdleLock(this);
         // Just in case mFlushingWorkerThread changes but we aren't woken up,
         // wait no longer than 1sec at a time
-        while (!mStopped && idleLock.awaitLocked(1000))
-            ;
+        while (!mStopped && idleLock.awaitLocked(1000));
     }
 
     private synchronized void verifyNotStopped() throws CancellationException {
@@ -1026,6 +1025,9 @@ public class LoaderTask implements Runnable {
         FolderNameProvider provider = FolderNameProvider.newInstance(mApp.getContext(),
                 mBgAllAppsList.data, mBgDataModel.folders);
 
+        var pref2 = PreferenceManager2.getInstance(mApp.getContext());
+        var isHomeLayout = PreferenceExtensionsKt.firstBlocking(pref2.isHomeLayoutOnly());
+
         synchronized (mBgDataModel) {
             for (int i = 0; i < mBgDataModel.folders.size(); i++) {
                 FolderNameInfos suggestionInfos = new FolderNameInfos();
@@ -1035,6 +1037,10 @@ public class LoaderTask implements Runnable {
                             suggestionInfos);
                     info.suggestedFolderNames = suggestionInfos;
                 }
+            }
+
+            if (isHomeLayout) {
+                LawnLoaderTask.get(mApp.getLauncher()).loadWorkspace(mApp, mBgAllAppsList, mBgDataModel);
             }
         }
     }

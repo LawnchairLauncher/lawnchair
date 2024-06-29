@@ -183,6 +183,22 @@ public class ModelWriter {
                 .put(Favorites.SCREEN, item.screenId)));
     }
 
+    public void moveItemLocationsInDatabase(final ArrayList<ItemInfo> items) {
+        ArrayList<ContentValues> contentValues = new ArrayList<>();
+        int count = items.size();
+
+        for (int i = 0; i < count; i++) {
+            ItemInfo item = items.get(i);
+            final ContentValues values = new ContentValues();
+            values.put(Favorites.CELLX, item.cellX);
+            values.put(Favorites.CELLY, item.cellY);
+            values.put(Favorites.RANK, item.rank);
+
+            contentValues.add(values);
+        }
+        mUiExecutor.execute(new UpdateItemsRunnable(items, contentValues));
+    }
+
     /**
      * Move items in the DB to a new <container, screen, cellX, cellY>. We assume
      * that the

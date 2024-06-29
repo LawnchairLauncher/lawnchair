@@ -1,0 +1,4 @@
+# isGame manifest flag
+&isGame
+# appCategory set to CATEGORY_GAME
+&category|game

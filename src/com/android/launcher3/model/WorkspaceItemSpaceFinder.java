@@ -27,8 +27,11 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Utility class to help find space for new workspace items
@@ -44,6 +47,9 @@ public class WorkspaceItemSpaceFinder {
             IntArray workspaceScreens, IntArray addedWorkspaceScreensFinal, int spanX, int spanY) {
         LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
 
+        final boolean isHomeLayout;
+        final PreferenceManager2 pref2 = PreferenceManager2.getInstance(app.getContext());
+        isHomeLayout = PreferenceExtensionsKt.firstBlocking(pref2.isHomeLayoutOnly());
         // Use sBgItemsIdMap as all the items are already loaded.
         synchronized (dataModel) {
             for (ItemInfo info : dataModel.itemsIdMap) {
@@ -70,14 +76,18 @@ public class WorkspaceItemSpaceFinder {
             screensToExclude.add(FIRST_SCREEN_ID);
         }
 
-        for (int screen = 0; screen < screenCount; screen++) {
-            screenId = workspaceScreens.get(screen);
-            if (!screensToExclude.contains(screenId) && findNextAvailableIconSpaceInScreen(
-                    app, screenItems.get(screenId), coordinates, spanX, spanY)) {
-                // We found a space for it
-                found = true;
-                break;
+        if (!isHomeLayout) {
+            for (int screen = 0; screen < screenCount; screen++) {
+                screenId = workspaceScreens.get(screen);
+                if (!screensToExclude.contains(screenId) && findNextAvailableIconSpaceInScreen(
+                        app, screenItems.get(screenId), coordinates, spanX, spanY)) {
+                    found = true;
+                    break;
+                }
             }
+        } else {
+            found = screenCount > 0 && findNextAvailableIconSpaceInScreen(
+                    app, screenItems.get(screenId), coordinates, spanX, spanY);
         }
 
         if (!found) {

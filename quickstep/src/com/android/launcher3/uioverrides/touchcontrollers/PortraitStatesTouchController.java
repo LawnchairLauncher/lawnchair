@@ -39,6 +39,9 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Touch controller for handling various state transitions in portrait UI.
@@ -48,10 +51,13 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private static final String TAG = "PortraitStatesTouchCtrl";
 
     private final PortraitOverviewStateTouchHelper mOverviewPortraitStateTouchHelper;
+    private final boolean isHomeLayout;
 
     public PortraitStatesTouchController(Launcher l) {
         super(l, SingleAxisSwipeDetector.VERTICAL);
         mOverviewPortraitStateTouchHelper = new PortraitOverviewStateTouchHelper(l);
+        final PreferenceManager2 pref2 = PreferenceManager2.getInstance(l);
+        isHomeLayout = PreferenceExtensionsKt.firstBlocking(pref2.isHomeLayoutOnly());
     }
 
     @Override
@@ -69,6 +75,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             // Otherwise, don't intercept so they can scroll recents, dismiss a task, etc.
             return false;
         }
+
+        if (isHomeLayout) return false;
+
         if (mLauncher.isInState(ALL_APPS)) {
             // In all-apps only listen if the container cannot scroll itself
             if (!mLauncher.getAppsView().shouldContainerScroll(ev)) {

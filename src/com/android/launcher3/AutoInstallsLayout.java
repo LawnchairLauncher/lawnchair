@@ -32,6 +32,7 @@ import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
@@ -62,7 +63,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -176,7 +179,7 @@ public class AutoInstallsLayout {
     private final Map<String, LauncherActivityInfo> mActivityOverride;
     private final int[] mTemp = new int[2];
     @Thunk
-    final ContentValues mValues;
+    ContentValues mValues;
     protected final String mRootTag;
 
     protected SQLiteDatabase mDb;
@@ -308,6 +311,8 @@ public class AutoInstallsLayout {
         return 0;
     }
 
+    public HashSet<String> addedAppComponents = new HashSet<> ();
+
     protected int addShortcut(String title, Intent intent, int type) {
         int id = mCallback.generateNewItemId();
         mValues.put(Favorites.INTENT, intent.toUri(0));
@@ -319,6 +324,8 @@ public class AutoInstallsLayout {
 
         if (type == ITEM_TYPE_APPLICATION) {
             ComponentName cn = intent.getComponent();
+            addedAppComponents.add(intent.getComponent().toString());
+
             if (cn != null && mActivityOverride.containsKey(cn.getPackageName())) {
                 LauncherActivityInfo replacementInfo = mActivityOverride.get(cn.getPackageName());
                 mValues.put(Favorites.PROFILE_ID, UserCache.INSTANCE.get(mContext)
@@ -332,6 +339,160 @@ public class AutoInstallsLayout {
         } else {
             return id;
         }
+    }
+
+    private int mAddAppX = 0;
+    private int mAddAppY = 0;
+    private int mAddAppScreen = 0;
+
+    public int addNormalFolder(ArrayList<AppInfo> apps, IntArray screenIds, String folderName, SQLiteDatabase mDb) {
+
+       var mValues = new ContentValues();
+
+        if (!screenIds.contains(mAddAppScreen)) {
+            screenIds.add(mAddAppScreen);
+        }
+
+        if (mDb == null || mCallback == null) {
+            // Handle null database or callback
+            return -1;
+        }
+
+        mValues.clear();
+        mValues.put(Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP);
+        mValues.put(Favorites.SCREEN, mAddAppScreen);
+        mValues.put(Favorites.CELLX, mAddAppX);
+        mValues.put(Favorites.CELLY, mAddAppY);
+        mValues.put(Favorites.TITLE, folderName);
+
+        mValues.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_FOLDER);
+        mValues.put(Favorites.SPANX, 1);
+        mValues.put(Favorites.SPANY, 1);
+        var id = mCallback.generateNewItemId();
+        mValues.put(Favorites._ID, id);
+        if (id < 0) return -1;
+        int folderId = mCallback.insertAndCheck(mDb, mValues);
+        if (folderId < 0) {
+            // fail
+            if (LOGD) Log.e(TAG, "Unable to add folder");
+            return -1;
+        } else {
+            // success
+            mAddAppX++;
+            if (mAddAppX == mColumnCount) {
+                mAddAppX = 0;
+                mAddAppY++;
+            }
+            if (mAddAppY == mRowCount) {
+                mAddAppX = 0;
+                mAddAppY = 0;
+                mAddAppScreen++;
+            }
+        }
+
+        final ContentValues myValues = new ContentValues(mValues);
+        ArrayList<Integer> folderItems = new ArrayList<>();
+
+        int rank = 0;
+        for (AppInfo app : apps) {
+            mValues.clear();
+            mValues.put(Favorites.CONTAINER, folderId);
+            mValues.put(Favorites.RANK, rank);
+
+            ActivityInfo info;
+            try {
+                info = mPackageManager.getActivityInfo(app.getTargetComponent(), 0);
+                String title = info.loadLabel(mPackageManager).toString();
+
+                mValues.put(Favorites.INTENT, app.intent.toUri(0));
+                mValues.put(Favorites.TITLE, title);
+                mValues.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
+                mValues.put(Favorites.SPANX, 1);
+                mValues.put(Favorites.SPANY, 1);
+                mValues.put(Favorites.PROFILE_ID, UserCache.INSTANCE.get(mContext).getSerialNumberForUser(app.user));
+                mValues.put(Favorites._ID, mCallback.generateNewItemId());
+                if (mCallback.insertAndCheck(mDb, mValues) < 0) {
+                    // fail
+                } else {
+                    // success
+                    folderItems.add(id);
+                    rank++;
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        int addedId = folderId;
+
+        // We can only have folders with >= 2 items, so we need to remove the
+        // folder and clean up if less than 2 items were included, or some
+        // failed to add, and less than 2 were actually added
+        if (folderItems.size() < 2) {
+            // Delete the folder
+            Uri uri = Favorites.getContentUri(folderId);
+            LauncherProvider.SqlArguments args = new LauncherProvider.SqlArguments(uri, null, null);
+            mDb.delete(args.table, args.where, args.args);
+            addedId = -1;
+
+            // If we have a single item, promote it to where the folder
+            // would have been.
+            if (folderItems.size() == 1) {
+                final ContentValues childValues = new ContentValues();
+                copyInteger(myValues, childValues, Favorites.CONTAINER);
+                copyInteger(myValues, childValues, Favorites.SCREEN);
+                copyInteger(myValues, childValues, Favorites.CELLX);
+                copyInteger(myValues, childValues, Favorites.CELLY);
+                addedId = folderItems.get(0);
+                mDb.update(Favorites.TABLE_NAME, childValues,
+                        Favorites._ID + "=" + addedId, null);
+            }
+        }
+        return addedId;
+    }
+
+    public int addNormaApps(AppInfo app , IntArray screenIds, SQLiteDatabase mDb) {
+        var mValues = new ContentValues();
+
+        if (!screenIds.contains(mAddAppScreen)) {
+            screenIds.add(mAddAppScreen);
+        }
+        try {
+            ActivityInfo info = mPackageManager.getActivityInfo(app.getTargetComponent(), 0);
+            String title = info.loadLabel(mPackageManager).toString();
+            long id = mCallback.generateNewItemId();
+            mValues.clear();
+            mValues.put(Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP);
+            mValues.put(Favorites.SCREEN, mAddAppScreen);
+            mValues.put(Favorites.CELLX, mAddAppX);
+            mValues.put(Favorites.CELLY, mAddAppY);
+            mValues.put(Favorites.INTENT, app.intent.toUri(0));
+            mValues.put(Favorites.TITLE, title);
+            mValues.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_APPLICATION);
+            mValues.put(Favorites.PROFILE_ID, UserCache.INSTANCE.get(mContext).getSerialNumberForUser(app.user));
+            mValues.put(Favorites.SPANX, 1);
+            mValues.put(Favorites.SPANY, 1);
+            mValues.put(Favorites._ID, id);
+            if (mCallback.insertAndCheck(mDb, mValues) < 0) {
+                // fail
+                return -1;
+            } else {
+                // success
+                mAddAppX++;
+                if (mAddAppX == mColumnCount) {
+                    mAddAppX = 0;
+                    mAddAppY++;
+                }
+                if (mAddAppY == mRowCount) {
+                    mAddAppX = 0;
+                    mAddAppY = 0;
+                    mAddAppScreen++;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 1;
     }
 
     protected ArrayMap<String, TagParser> getFolderElementsMap() {

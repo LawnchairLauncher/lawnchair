@@ -86,6 +86,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -3008,5 +3009,133 @@ public class CellLayout extends ViewGroup {
     public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
         return mOccupied.isRegionVacant(x, y, spanX, spanY)
                 || PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getAllowWidgetOverlap());
+    }
+
+    public void organize() {
+        if (mContainerType == HOTSEAT) {
+            return;
+        }
+        ArrayList<View> itemsInReadingOrder = new ArrayList<>();
+        HashMap<View, CellAndSpan> csMap = new HashMap<>();
+
+        GridOccupancy occupiedByAny = new GridOccupancy(mCountX, mCountY);
+        GridOccupancy occupiedByNoneIcon = new GridOccupancy(mCountX, mCountY);
+        for (int j = 0; j < getCountY(); j++) {
+            for (int i = 0; i < getCountX(); i++) {
+                View v = getChildAt(i, j);
+                if (v != null) {
+                    itemsInReadingOrder.add(v);
+                    CellLayoutLayoutParams lp = (CellLayoutLayoutParams) v.getLayoutParams();
+                    CellAndSpan c = new CellAndSpan(lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan);
+                    csMap.put(v, c);
+                    occupiedByAny.markCells(c, true);
+                    if (c.spanX != 1 || c.spanY != 1) {
+                        occupiedByNoneIcon.markCells(c, true);
+                    } else {
+                        occupiedByNoneIcon.markCells(c, false);
+                    }
+                }
+            }
+        }
+        if (itemsInReadingOrder.size() == 0) {
+            return;
+        }
+        int emptyX = -1;
+        int emptyY = -1;
+        int nextX = -1;
+        int nextY = -1;
+        View startView = null;
+        View endView = null;
+        for (View v : itemsInReadingOrder) {
+            CellAndSpan cs = csMap.get(v);
+            if (cs.spanX != 1 || cs.spanY != 1) {
+                if (startView != null && endView != null) {
+                    break;
+                }
+                startView = null;
+                endView = null;
+                continue;
+            }
+
+            // Empty cells next to icons has higher priority
+            if (emptyX == -1 && emptyY == -1 && (nextX != cs.cellX || nextY != cs.cellY)) {
+                if (nextX != -1 && nextY != -1 && !occupiedByNoneIcon.cells[nextX][nextY]) {
+                    emptyX = nextX;
+                    emptyY = nextY;
+                }
+            }
+
+            // Empty cells on first column in a row is preferred
+            if (emptyX == -1 && emptyY == -1 && cs.cellX != 0 && !occupiedByAny.cells[0][cs.cellY]) {
+                emptyX = 0;
+                emptyY = cs.cellY;
+            }
+
+            endView = v;
+            if (startView == null && (emptyX != -1 || emptyY != -1)) {
+                startView = v;
+            } else {
+                nextX = cs.cellX + 1;
+                nextY = cs.cellY;
+                if (nextX == mCountX) {
+                    nextX = 0;
+                    nextY++;
+                    if (nextY == mCountY) {
+                        nextY = -1;
+                    }
+                }
+            }
+        }
+
+        boolean start = false;
+        boolean end = false;
+        if (startView != null && endView != null) {
+            setUseTempCoords(false);
+            int delay = 0;
+            float delayAmount = 30;
+            ArrayList<ItemInfo> items = new ArrayList<>();
+            for (View v : itemsInReadingOrder) {
+                if (startView == v) {
+                    start = true;
+                }
+                if (endView == v) {
+                    end = true;
+                }
+                if (start) {
+                    CellAndSpan cs = csMap.get(v);
+                    if (cs.cellX != emptyX || cs.cellY != emptyY) {
+                        if (animateChildToPosition(v, emptyX, emptyY,
+                                300, delay, true, true)) {
+                            items.add((ItemInfo) v.getTag());
+                            delay += delayAmount;
+                            delayAmount *= 0.9;
+                            boolean freeFound = false;
+                            while (!freeFound) {
+                                emptyX++;
+                                if (emptyX == mCountX) {
+                                    emptyX = 0;
+                                    emptyY++;
+                                }
+                                if (emptyY == mCountY) {
+                                    break;
+                                }
+                                if (!occupiedByNoneIcon.cells[emptyX][emptyY]) {
+                                    freeFound = true;
+                                }
+                            }
+                            if (!freeFound) {
+                                break;
+                            }
+                        }
+                    }
+                    if (end) {
+                        break;
+                    }
+                }
+            }
+            if (!items.isEmpty()) {
+                Launcher.cast(mActivity).getModelWriter().moveItemLocationsInDatabase(items);
+            }
+        }
     }
 }

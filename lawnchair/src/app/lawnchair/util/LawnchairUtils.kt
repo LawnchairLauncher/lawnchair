@@ -245,3 +245,12 @@ fun Context.getDefaultResolveInfo(): ResolveInfo? {
     val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
     return packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
 }
+
+inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>().apply {
+    while (true) {
+        add(generator() ?: break)
+    }
+}
+
+fun String.toTitleCase(): String = splitToSequence(" ").map { it.capitalize() }.joinToString(" ")
+const val IS_HOME_SET = true

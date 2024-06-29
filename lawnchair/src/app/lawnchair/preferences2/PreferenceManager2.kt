@@ -163,6 +163,19 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         },
     )
 
+    val isHomeLayoutOnly = preference(
+        key = booleanPreferencesKey(name = "pref_home_layout_only"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_home_layout_only),
+        onSet = {
+            reloadHelper.restart()
+        },
+    )
+
+    val isHomeLayoutSet = preference(
+        key = booleanPreferencesKey(name = "pref_home_layout_set"),
+        defaultValue = false,
+    )
+
     val hotseatQsbProvider = preference(
         key = stringPreferencesKey(name = "dock_search_bar_provider"),
         defaultValue = QsbSearchProvider.resolveDefault(context),

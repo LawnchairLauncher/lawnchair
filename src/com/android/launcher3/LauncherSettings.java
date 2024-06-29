@@ -16,7 +16,10 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
+
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 import com.android.launcher3.model.data.ItemInfo;
@@ -43,6 +46,30 @@ public class LauncherSettings {
          * icon.
          */
         public static final int DEFAULT_NO_ICON = 2;
+    }
+
+    /**
+     * Workspace Screens.
+     *
+     * Tracks the order of workspace screens.
+     */
+    public static final class WorkspaceScreens implements BaseColumns {
+
+        public static final String TABLE_NAME = "workspaceScreens";
+
+        /**
+         * The content:// style URL for this table
+         */
+        public static final Uri CONTENT_URI = Uri.parse("content://" +
+                LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
+
+        /**
+         * The rank of this screen -- ie. how it is ordered relative to the other screens.
+         * <P>Type: INTEGER</P>
+         */
+        public static final String SCREEN_RANK = "screenRank";
+
+        public static final String MODIFIED = "modified";
     }
 
     /**
@@ -196,6 +223,11 @@ public class LauncherSettings {
         public static final int EXTENDED_CONTAINERS = -200;
 
         public static final int CONTAINER_UNKNOWN = -1;
+
+        public static Uri getContentUri(long id) {
+            return Uri.parse("content://" + LauncherProvider.AUTHORITY +
+                    "/" + TABLE_NAME + "/" + id);
+        }
 
         public static final String containerToString(int container) {
             switch (container) {

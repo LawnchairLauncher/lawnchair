@@ -21,6 +21,7 @@ import static android.appwidget.AppWidgetManager.EXTRA_APPWIDGET_ID;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
 import static com.android.launcher3.model.data.AppInfo.makeLaunchIntent;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -44,6 +45,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -97,11 +99,15 @@ public class ItemInstallQueue {
     }
 
     @WorkerThread
-    private void ensureQueueLoaded() {
+    public void ensureQueueLoaded() {
         Preconditions.assertWorkerThread();
         if (mItems == null) {
             mItems = mStorage.read(mContext, this::decode);
         }
+    }
+
+    public List<PendingInstallShortcutInfo> getItems() {
+        return mItems;
     }
 
     @WorkerThread
@@ -174,6 +180,10 @@ public class ItemInstallQueue {
         queuePendingShortcutInfo(new PendingInstallShortcutInfo(packageName, userHandle));
     }
 
+    public void queueItem(FolderInfo folderInfo, UserHandle userHandle) {
+        queuePendingShortcutInfo(new PendingInstallShortcutInfo(folderInfo, userHandle));
+    }
+
     /**
      * Returns a stream of all pending shortcuts in the queue
      */
@@ -230,9 +240,10 @@ public class ItemInstallQueue {
         MODEL_EXECUTOR.post(this::flushQueueInBackground);
     }
 
-    private static class PendingInstallShortcutInfo extends ItemInfo {
+    public static class PendingInstallShortcutInfo extends ItemInfo {
 
-        final Intent intent;
+        Intent intent;
+        FolderInfo folderInfo;
 
         @Nullable ShortcutInfo shortcutInfo;
         @Nullable AppWidgetProviderInfo providerInfo;
@@ -243,6 +254,13 @@ public class ItemInstallQueue {
         public PendingInstallShortcutInfo(String packageName, UserHandle userHandle) {
             itemType = Favorites.ITEM_TYPE_APPLICATION;
             intent = new Intent().setPackage(packageName);
+            user = userHandle;
+        }
+
+        public PendingInstallShortcutInfo(FolderInfo folderInfo, UserHandle userHandle) {
+            itemType = Favorites.ITEM_TYPE_FOLDER;
+            intent = new Intent().setPackage(folderInfo.getTargetPackage());
+            this.folderInfo = folderInfo;
             user = userHandle;
         }
 
@@ -301,6 +319,9 @@ public class ItemInstallQueue {
                     LauncherAppState.getInstance(context).getIconCache()
                             .getTitleAndIcon(si, () -> lai, usePackageIcon, false);
                     return Pair.create(si, null);
+                }
+                case ITEM_TYPE_FOLDER: {
+                    return Pair.create(folderInfo, null);
                 }
                 case ITEM_TYPE_DEEP_SHORTCUT: {
                     WorkspaceItemInfo itemInfo = new WorkspaceItemInfo(shortcutInfo, context);

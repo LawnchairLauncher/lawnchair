@@ -33,6 +33,37 @@ public class GridOccupancy extends AbsGridOccupancy {
         return super.findVacantCell(vacantOut, cells, mCountX, mCountY, spanX, spanY);
     }
 
+    public boolean findLastVacantCell(int[] vacantOut, int spanX, int spanY) {
+        int lastX = -1, lastY = -1;
+        boolean available = false;
+        for (int y = mCountY - 1; y >= 0; y--) {
+            for (int x = mCountX - 1; x >= 0; x--) {
+                available = !cells[x][y];
+                if (available) {
+                    lastX = x;
+                    lastY = y;
+                } else {
+                    if (lastX == -1||lastY == -1) {
+                        // if this page is full
+                        return false;
+                    }
+                    vacantOut[0] = lastX;
+                    vacantOut[1] = lastY;
+                    return true;
+                }
+            }
+        }
+
+        if (available) {
+            // if this page is empty
+            vacantOut[0] = 0;
+            vacantOut[1] = 0;
+            return true;
+        }
+
+        return false;
+    }
+
     public void copyTo(GridOccupancy dest) {
         for (int i = 0; i < mCountX; i++) {
             for (int j = 0; j < mCountY; j++) {

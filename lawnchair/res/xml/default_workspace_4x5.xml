@@ -71,53 +71,6 @@
 
     <!-- Screen 0 -->
 
-    <!-- Google folder -->
-    <!-- Google, Gmail, Maps, YouTube, Drive, YouTube Music, Play Movies, Duo, Photos -->
-    <folder
-        launcher:title="@string/google_folder_title"
-        launcher:screen="0"
-        launcher:x="0"
-        launcher:y="-1">
-        <favorite
-            launcher:packageName="com.google.android.googlequicksearchbox"
-            launcher:className="com.google.android.googlequicksearchbox.SearchActivity"/>
-        <favorite
-            launcher:packageName="com.google.android.gm"
-            launcher:className="com.google.android.gm.ConversationListActivityGmail"/>
-        <favorite
-            launcher:packageName="com.google.android.apps.maps"
-            launcher:className="com.google.android.maps.MapsActivity"/>
-        <favorite
-            launcher:packageName="com.google.android.youtube"
-            launcher:className="com.google.android.youtube.app.honeycomb.Shell$HomeActivity"/>
-        <favorite
-            launcher:packageName="com.google.android.apps.docs"
-            launcher:className="com.google.android.apps.docs.app.NewMainProxyActivity"/>
-        <favorite
-            launcher:packageName="com.google.android.apps.youtube.music"
-            launcher:className="com.google.android.apps.youtube.music.activities.MusicActivity"/>
-        <favorite
-            launcher:packageName="com.google.android.videos"
-            launcher:className="com.google.android.youtube.videos.EntryPoint"/>
-        <favorite
-            launcher:packageName="com.google.android.apps.tachyon"
-            launcher:className="com.google.android.apps.tachyon.MainActivity"/>
-        <favorite
-            launcher:packageName="com.google.android.apps.photos"
-            launcher:className="com.google.android.apps.photos.home.HomeActivity"/>
-    </folder>
-
-    <resolve
-        launcher:screen="0"
-        launcher:x="3"
-        launcher:y="-1">
-        <favorite
-            launcher:className="com.android.vending.AssetBrowserActivity"
-            launcher:packageName="com.android.vending" />
-        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MARKET;end" />
-        <favorite launcher:uri="market://details?id=com.android.launcher" />
-    </resolve>
-
     <!-- Screen 1 -->
 
     <resolve
