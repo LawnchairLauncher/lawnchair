@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.not
@@ -20,9 +21,11 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
+import app.lawnchair.search.algorithms.data.WebSearchProvider
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearchPreference
 import app.lawnchair.ui.preferences.components.SearchSuggestionPreference
+import app.lawnchair.ui.preferences.components.WebSearchProvider
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
@@ -156,13 +159,14 @@ private fun LocalSearchSettings(
             android.Manifest.permission.READ_EXTERNAL_STORAGE,
         )
 
+    val webSuggestionProvider = stringResource(prefs2.webSuggestionProvider.getAdapter().state.value.label)
     SearchSuggestionPreference(
         adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
         maxCountAdapter = prefs2.maxWebSuggestionResultCount.getAdapter(),
         maxCountRange = 3..10,
         label = stringResource(id = R.string.search_pref_result_web_title),
         maxCountLabel = stringResource(id = R.string.max_suggestion_result_count_title),
-        description = stringResource(id = R.string.search_pref_result_web_description),
+        description = stringResource(id = R.string.search_pref_result_web_description, webSuggestionProvider),
     ) {
         SliderPreference(
             label = stringResource(id = R.string.max_web_suggestion_delay),
@@ -170,6 +174,13 @@ private fun LocalSearchSettings(
             step = 500,
             valueRange = 500..5000,
             showUnit = "ms",
+        )
+        WebSearchProvider(
+            adapter = prefs2.webSuggestionProvider.getAdapter(),
+        )
+        SwitchPreference(
+            label = stringResource(R.string.allapps_use_web_suggestion_icon_label),
+            adapter = prefs2.useDrawerSearchIcon.getAdapter(),
         )
     }
     SearchSuggestionPreference(

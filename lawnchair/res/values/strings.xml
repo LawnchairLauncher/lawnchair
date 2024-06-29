@@ -670,7 +670,7 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Media, files, and more</string>
     <string name="search_pref_result_contacts_description">Contacts and more</string>
-    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="search_pref_result_web_description">Via %1$s</string>
 
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
@@ -687,4 +687,6 @@
     <string name="grant_requested_permissions">Grant permissions</string>
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
 
+    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
+    <string name="allapps_use_web_suggestion_icon_label">Use web suggestion provider icon in search bar</string>
 </resources>

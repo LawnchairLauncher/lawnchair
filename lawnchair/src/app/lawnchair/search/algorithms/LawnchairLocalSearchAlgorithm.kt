@@ -67,6 +67,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     private var searchApps = true
     private var enableFuzzySearch = false
     private var useWebSuggestions = true
+    private var webSuggestionsProvider = ""
 
     private val prefs: PreferenceManager = PreferenceManager.getInstance(context)
     private val pref2 = PreferenceManager2.getInstance(context)
@@ -94,6 +95,10 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
         useWebSuggestions = prefs.searchResultStartPageSuggestion.get()
         searchApps = prefs.searchResultApps.get()
+
+        pref2.webSuggestionProvider.onEach(launchIn = coroutineScope) {
+            webSuggestionsProvider = it.toString()
+        }
 
         pref2.maxAppSearchResultCount.onEach(launchIn = coroutineScope) {
             maxAppResultsCount = it
@@ -351,7 +356,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                     val timeout = maxWebSuggestionDelay.toLong()
                     val result = withTimeoutOrNull(timeout) {
                         if (prefs.searchResultStartPageSuggestion.get()) {
-                            WebSearchProvider.fromString("startpage").getSuggestions(query, maxWebSuggestionsCount).map {
+                            WebSearchProvider.fromString(webSuggestionsProvider).getSuggestions(query, maxWebSuggestionsCount).map {
                                 SearchResult(
                                     WEB_SUGGESTION,
                                     it,

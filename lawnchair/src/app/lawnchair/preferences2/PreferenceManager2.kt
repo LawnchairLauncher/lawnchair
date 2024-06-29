@@ -47,6 +47,7 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShape as L3IconShape
+import app.lawnchair.search.algorithms.data.WebSearchProvider
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
@@ -114,8 +115,8 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val colorStyle = preference(
         key = stringPreferencesKey("color_style"),
         defaultValue = ColorStyle.fromString("tonal_spot"),
-        parse = { ColorStyle.fromString(it) },
-        save = { it.toString() },
+        parse = ColorStyle::fromString,
+        save = ColorStyle::toString,
         onSet = { reloadHelper.restart() },
     )
 
@@ -395,6 +396,19 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val enableFuzzySearch = preference(
         key = booleanPreferencesKey(name = "enable_fuzzy_search"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_fuzzy_search),
+    )
+
+    val useDrawerSearchIcon = preference(
+        key = booleanPreferencesKey(name = "use_drawer_search_icon"),
+        defaultValue = true
+    )
+
+    val webSuggestionProvider = preference(
+        key = stringPreferencesKey(name = "web_suggestion_provider"),
+        defaultValue = WebSearchProvider.fromString(context.resources.getString(R.string.config_default_web_suggestion_provider)),
+        parse = { WebSearchProvider.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.recreate() },
     )
 
     val maxAppSearchResultCount = preference(
