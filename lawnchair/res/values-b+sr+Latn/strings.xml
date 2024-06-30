@@ -221,6 +221,16 @@
     <string name="theme_dark">Tamna</string>
     <string name="theme_system_default">Sistemska</string>
     <string name="theme_follow_wallpaper">Na osnovu pozadine</string>
+    <!-- Color style -->
+    <string name="color_style_label">Šema boja</string>
+    <string name="color_style_spritz">Aperol</string>
+    <string name="color_style_tonal_spot">Nijansiranje</string>
+    <string name="color_style_vibrant">Živopisno</string>
+    <string name="color_style_expressive">Ekspresivno</string>
+    <string name="color_style_rainbow">Duga</string>
+    <string name="color_style_fruit_salad">Voćna salata</string>
+    <string name="color_style_content">Sadržaj</string>
+    <string name="color_style_monochromatic">Monohromatsko</string>
     <!-- Accent color and color picker -->
     <string name="colors">Boje</string>
     <string name="accent_color">Boja za naglašavanje</string>
@@ -465,7 +475,7 @@
     <string name="all_apps_search_result_files">Fajlovi sa uređaja</string>
     <string name="all_apps_search_result_settings_entry_from_device">Podešavanja sa uređaja</string>
     <string name="all_apps_search_market_message">Pretražite još aplikacija</string>
-    <string name="all_apps_search_startpage_message">Pretražuj pomoću usluge <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Nije instalirana prodavnica aplikacija ni pregledač</string>
     <string name="clear_history">Obriši istoriju pretrage</string>
     <string name="search_input_action_clear_results">Obriši polje za pretragu</string>
@@ -499,7 +509,7 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Mediji, fajlovi i drugo</string>
     <string name="search_pref_result_contacts_description">Kontakti i drugo</string>
-    <string name="search_pref_result_web_description">Pomoću usluge <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Maksimalan broj aplikacija u rezultatima pretrage</string>
     <string name="max_people_result_count_title">Maksimalan broj kontakata u rezultatima pretrage</string>
@@ -512,4 +522,7 @@
     <string name="warn_contact_permission_content">Da biste pretraživali kontakte, dodelite Lawnchairu dozvole Kontakti i Telefon</string>
     <string name="warn_files_permission_content">Da biste pretraživali fajlove, dodelite Lawnchairu pristup memoriji</string>
     <string name="grant_requested_permissions">Dodeli dozvole</string>
+    <string name="hotseat_mode_lawnchair_compose">Lawnchair (sastavljeno)</string>
+    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
+    <string name="allapps_use_web_suggestion_icon_label">Use web suggestion provider icon in search bar</string>
 </resources>

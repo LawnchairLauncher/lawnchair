@@ -23,27 +23,27 @@
     -->
     <string name="preview_label">Peržiūra</string>
     <string name="action_create">Sukurti</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_backup">Sukurti atsarginę kopiją</string>
     <string name="action_restore">Atkurti</string>
     <string name="action_delete">Ištrinti</string>
     <string name="action_reset">Atstatyti</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
+    <string name="action_unlock">Atrakinti</string>
+    <string name="action_lock">Užrakinti</string>
     <string name="action_apply">Taikyti</string>
     <string name="action_customize">Tinkinti</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
+    <string name="always_choice">Visada</string>
+    <string name="never_choice">Niekada</string>
     <string name="clipboard">Iškarpinė</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy_link">Kopijuoti nuorodą</string>
     <string name="action_copy">Kopijuoti</string>
     <string name="action_paste">Įklijuoti</string>
     <string name="loading">Kraunasi…</string>
     <string name="managed_by_lawnchair">Valdoma „Lawnchair“</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Parinktys</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">Pagr. ekrano nustatymai</string>
+    <string name="system_settings">Sistemos nustatymai</string>
+    <string name="title_change_settings">Pakeisti nustatymus</string>
     <!--
 
     General "words" used throughout Lawnchair
@@ -64,14 +64,14 @@
     <string name="layout">Išdėstimas</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Ekrano Fonas</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="background_opacity">Fono skaidrumas</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
-    <string name="item_removed">Item removed</string>
+    <string name="copied_toast">Nukopijuota į iškarpinę</string>
+    <string name="item_removed">Elementas pašalintas</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
+    <string name="what_to_show">Ką rodyti</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Norint užrakinti telefoną gestu, \"Lawnchair\" reikia suteikti leidimą prieinamumo nustatymams.\n\n\"Lawnchair\" nestebi jūsų veiksmų, tačiau toks leidimas reikalingas visoms prieinamumo paslaugoms. \"Lawnchair\" atmeta bet kokį sistemos siunčiamą įvykį.\n\nTelefono užrakinimui \"Lawnchair\" naudoja prieinamumo paslaugą \"performGlobalAction\".</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <!--
@@ -81,66 +81,66 @@
     -->
     <string name="settings">Nustatymai</string>
     <string name="general_label">Pagrindinis</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="general_description">Spalvos, piktogramų paketai, pranešimų taškeliai</string>
+    <string name="home_screen_label">Pagrindinis ekranas</string>
+    <string name="home_screen_description">Naujienos, tinklelis, piktrogramos</string>
     <string name="dock_label">Pažemynis</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="dock_description">Paieškos juosta, piktogramų skaičius</string>
+    <string name="app_drawer_label">Programėlių lentyna</string>
+    <string name="app_drawer_description">Paslėptos programėlės, stulpelių skaičius, piktogramos</string>
+    <string name="drawer_search_label">Progr. lentynos paieška</string>
+    <string name="drawer_search_description">Žiniatinklio pasiūlymai, globali paieška</string>
     <string name="folders_label">Aplankai</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">Eilučių ir stulpelių skaičius</string>
     <string name="gestures_label">Gestai</string>
-    <string name="gestures_description">Taps and swipes</string>
+    <string name="gestures_description">Paspaudimai ir perbraukimai</string>
     <string name="quickstep_label">Naujausi</string>
-    <string name="quickstep_description">Clear All button, corner radius</string>
+    <string name="quickstep_description">\"Išvalyti visus\" mygtukas, kampų spindulys</string>
     <string name="about_label">Apie</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">Programėles informacija</string>
     <string name="debug_restart_launcher">Iš Naujo Paleiskite \"Lawnchair\"</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="experimental_features_label">Eksperimentiniai nustatymai</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">Font customization</string>
+    <string name="font_picker_label">Šriftų tinkinimas</string>
     <string name="font_picker_description">Dalis teksto liko nepakeista</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
+    <string name="smartspace_calendar_label">\"At a Glance\" kalendoriaus tinkinimas</string>
     <string name="smartspace_calendar_description">Leisti rodyti datą ne Grigaliaus kalendoriaus sistemose</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="workspace_increase_max_grid_size_label">Padidinti tinklelio dydžio ribą</string>
+    <string name="workspace_increase_max_grid_size_description">Padidinti maksimalų leidžiamą pagrindinio ekrano dydį nuo 10 x 10 iki 20 x 20</string>
+    <string name="always_reload_icons_label">Visada perkrauti piktogramas</string>
     <string name="always_reload_icons_description">Vengti talpyklose esančias piktogramas iš piktogramų paketų</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <string name="recents_lock_unlock">Užrakinti/Atrakinti</string>
+    <string name="recents_lock_unlock_description">Neleisti pasirinktai programėlei užsidaryti paspaudžiant \"Išvalyti visus\"</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
-    <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
-    <string name="notification_dots_text_color">Notification counter color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="set_default_launcher_tip">Norėdami naudotis nuorodomis ir papildomomis funkcijomis, nustatykite \"Lawnchair\" kaip numatytąją paleidimo programėlę</string>
+    <string name="notification_dots">Pranešimų taškeliai</string>
+    <string name="show_notification_count">Rodyti pranešimų skaičių</string>
+    <string name="notification_dots_color">Pranešimo taškelio spalva</string>
+    <string name="notification_dots_text_color">Pranešimų skaičiaus spalva</string>
+    <string name="notification_dots_color_contrast_warning_always">Įspėjimas: Pranešimo taško ir skaičiaus spalvos nėra pakankamai skirtingos</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Įspėjimas: Pranešimo taško ir skaičiaus spalvos kartais gali būti nepakankamai skirtingos</string>
     <string name="missing_notification_access_label">Reikalinga pranešimų prieiga</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="missing_notification_access_desc">Norėdami rodyti pranešimų taškelius, įjunkite programėlių pranešimus <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">Icon style</string>
-    <string name="icon_shape_label">Icon shape</string>
-    <string name="icon_sizes">Icon size</string>
-    <string name="show_labels">Show labels</string>
-    <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="icon_style_label">Piktogramų stilius</string>
+    <string name="icon_shape_label">Piktogramų forma</string>
+    <string name="icon_sizes">Piktogramų dydis</string>
+    <string name="show_labels">Rodyti etiketes</string>
+    <string name="label_size">Etiketės dydis</string>
+    <string name="twoline_label">Naudoti kelias eilutes</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent themed icons</string>
+    <string name="transparent_background_icons_label">Permatomos teminės piktogramos</string>
     <string name="transparent_background_icons_description">Naudoti permatoma foną temintoms piktogramoms</string>
-    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
+    <string name="auto_adaptive_icons_label">Adaptyvios piktogramos</string>
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
     <string name="background_lightness_label">Background lightness</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
@@ -221,6 +221,16 @@
     <string name="theme_dark">Tamsi</string>
     <string name="theme_system_default">Sistemos</string>
     <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <!-- Color style -->
+    <string name="color_style_label">Color style</string>
+    <string name="color_style_spritz">Spritz</string>
+    <string name="color_style_tonal_spot">Tonal Spot</string>
+    <string name="color_style_vibrant">Vibrant</string>
+    <string name="color_style_expressive">Expressive</string>
+    <string name="color_style_rainbow">Rainbow</string>
+    <string name="color_style_fruit_salad">Fruit Salad</string>
+    <string name="color_style_content">Content</string>
+    <string name="color_style_monochromatic">Monochromatic</string>
     <!-- Accent color and color picker -->
     <string name="colors">Spalvos</string>
     <string name="accent_color">Accent color</string>
@@ -258,21 +268,21 @@
     <string name="smartspace_date">Data</string>
     <string name="smartspace_time">Laikas</string>
     <string name="smartspace_time_format">Time format</string>
-    <string name="smartspace_time_follow_system">Follow system</string>
-    <string name="smartspace_time_12_hour_format">12-hour format</string>
-    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <string name="smartspace_time_follow_system">Pagal sistemą</string>
+    <string name="smartspace_time_12_hour_format">12 valandų formatas</string>
+    <string name="smartspace_time_24_hour_format">24 valandų formatas</string>
     <!-- Available targets -->
     <string name="smartspace_weather">Orai</string>
-    <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_battery_status">Baterijos būsena</string>
     <string name="smartspace_now_playing">Dabar Groja</string>
     <!-- Setup settings -->
-    <string name="smartspace_requires_setup">Tap to set up</string>
+    <string name="smartspace_requires_setup">Paspauskite, kad nustatyti</string>
     <string name="event_provider_missing_notification_dots">Įjunkite Pranešimų Taškus, norint naudoti <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>.</string>
     <!-- Toggle button for enabling Smartspace -->
-    <string name="smartspace_widget_toggle_label">Show on home screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_label">Rodyti pagr. ekrane</string>
+    <string name="smartspace_widget_toggle_description">„At a Glance“ pranešimų valdiklį galima pridėti rankiniu būdu, pridėjus „Lawnchair“ valdiklį</string>
     <!-- List of available providers -->
-    <string name="smartspace_mode_label">At a Glance provider</string>
+    <string name="smartspace_mode_label">„At a Glance“ teikėjas</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Paieška</string>
     <!-- Miscellaneous Smartspace strings -->
@@ -287,7 +297,7 @@
     <string name="news">Naujienos</string>
     <string name="support">Paremti</string>
     <string name="product">Produktas</string>
-    <string name="design_and_development">Design &amp; development</string>
+    <string name="design_and_development">Dizainas &amp; kūrimas</string>
     <string name="development">Plėtra</string>
     <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
     <string name="devops">„DevOps“</string>
@@ -466,7 +476,7 @@
     <string name="all_apps_search_result_files">Files from device</string>
     <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
     <string name="all_apps_search_market_message">Search for more apps</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
     <string name="clear_history">Clear search history</string>
     <string name="search_input_action_clear_results">Clear search box</string>
@@ -500,7 +510,7 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Media, files, and more</string>
     <string name="search_pref_result_contacts_description">Contacts and more</string>
-    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
     <string name="max_people_result_count_title">Maximum number of people in search results</string>
@@ -513,4 +523,7 @@
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
     <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
     <string name="grant_requested_permissions">Grant permissions</string>
+    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
+    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
+    <string name="allapps_use_web_suggestion_icon_label">Use web suggestion provider icon in search bar</string>
 </resources>
