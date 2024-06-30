@@ -23,7 +23,7 @@
     -->
     <string name="preview_label">Vista previa</string>
     <string name="action_create">Crear</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_backup">Respaldo</string>
     <string name="action_restore">Restaurar</string>
     <string name="action_delete">Eliminar</string>
     <string name="action_reset">Restablecer</string>
@@ -34,16 +34,16 @@
     <string name="always_choice">Siempre</string>
     <string name="never_choice">Nunca</string>
     <string name="clipboard">Portapapeles</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy_link">Copiar vínculo</string>
     <string name="action_copy">Copiar</string>
     <string name="action_paste">Pegar</string>
     <string name="loading">Cargando…</string>
     <string name="managed_by_lawnchair">Gestionado por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferencias</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">Configuración inicial</string>
+    <string name="system_settings">Configuración del sistema</string>
+    <string name="title_change_settings">Cambiar ajustes</string>
     <!--
 
     General "words" used throughout Lawnchair
@@ -64,15 +64,15 @@
     <string name="layout">Diseño</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Fondo de Pantalla</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="background_opacity">Opacidad del fondo</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
+    <string name="copied_toast">Copiado al portapapeles</string>
     <string name="item_removed">Item eliminado</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
+    <string name="what_to_show">Que mostrar</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
-    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="accessibility_service_description">Para bloquear su teléfono al realizar un gesto, Lawnchair requiere acceso de accesibilidad.\n\nLawnchair no observará ninguna acción del usuario, aunque se requiere el privilegio de hacerlo para todos los servicios de accesibilidad. Lawnchair descarta cualquier evento enviado por el sistema.\n\nPara bloquear su teléfono, Lawnchair utiliza el servicio de accesibilidad performGlobalAction.</string>
+    <string name="x_by_y"></string>
     <string name="x_and_y">%s &amp; %s</string>
     <!--
 
@@ -81,31 +81,31 @@
     -->
     <string name="settings">Ajustes</string>
     <string name="general_label">General</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="general_description">Colores, paquetes de iconos, punto de notificaciones</string>
+    <string name="home_screen_label">Pantalla principal </string>
+    <string name="home_screen_description">Diario, cuadrículas, iconos</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="dock_description">Barra de búsqueda, número de iconos</string>
+    <string name="app_drawer_label">Cajón de aplicaciones</string>
+    <string name="app_drawer_description">Apps Ocultas, número de columnas, iconos</string>
+    <string name="drawer_search_label">Búsqueda del cajón de apps</string>
+    <string name="drawer_search_description">Sugerencias web, búsqueda global</string>
     <string name="folders_label">Carpetas</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">Número de filas y de columnas</string>
     <string name="gestures_label">Gestos</string>
-    <string name="gestures_description">Taps and swipes</string>
+    <string name="gestures_description">Toques y deslizamientos</string>
     <string name="quickstep_label">Recientes</string>
-    <string name="quickstep_description">Clear All button, corner radius</string>
+    <string name="quickstep_description">Botón \"borrar todo\", radio de la esquina</string>
     <string name="about_label">Acerca de</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">Info de la app</string>
     <string name="debug_restart_launcher">Reiniciar Lawnchair</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="experimental_features_label">Funciones experimentales</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">Font customization</string>
+    <string name="font_picker_label">Tipografía personalizada</string>
     <string name="font_picker_description">Algunos textos permanecen sin cambios</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
+    <string name="smartspace_calendar_label">Personalizar el calendario del \"un vistazo\"</string>
     <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
+    <string name="workspace_increase_max_grid_size_label">Incrementar el tamaño máximo de la cuadrícula</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
     <string name="always_reload_icons_label">Always reload icons</string>
     <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
@@ -118,7 +118,7 @@
     -->
     <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
     <string name="notification_dots">Notification dots</string>
-    <string name="show_notification_count">Show notification counter</string>
+    <string name="show_notification_count">Mostrar el contador de notificaciones</string>
     <string name="notification_dots_color">Notification dot color</string>
     <string name="notification_dots_text_color">Notification counter color</string>
     <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
@@ -144,7 +144,7 @@
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
     <string name="background_lightness_label">Background lightness</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
-    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="reset_custom_icons">Restablecer los iconos personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos los iconos personalizados se restablecerán. ¿Desea continuar?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Iconos</string>
@@ -220,7 +220,17 @@
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="theme_system_default">Sistema</string>
-    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <string name="theme_follow_wallpaper">Coincidir con el fondo de pantalla</string>
+    <!-- Color style -->
+    <string name="color_style_label">Color style</string>
+    <string name="color_style_spritz">Spritz</string>
+    <string name="color_style_tonal_spot">Tonal Spot</string>
+    <string name="color_style_vibrant">Vibrant</string>
+    <string name="color_style_expressive">Expressive</string>
+    <string name="color_style_rainbow">Rainbow</string>
+    <string name="color_style_fruit_salad">Fruit Salad</string>
+    <string name="color_style_content">Content</string>
+    <string name="color_style_monochromatic">Monochromatic</string>
     <!-- Accent color and color picker -->
     <string name="colors">Colores</string>
     <string name="accent_color">Accent color</string>
@@ -263,7 +273,7 @@
     <string name="smartspace_time_24_hour_format">24-hour format</string>
     <!-- Available targets -->
     <string name="smartspace_weather">Clima</string>
-    <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_battery_status">Estado de la batería</string>
     <string name="smartspace_now_playing">Reproduciendo</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tap to set up</string>
@@ -464,7 +474,7 @@
     <string name="all_apps_search_result_files">Files from device</string>
     <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
     <string name="all_apps_search_market_message">Search for more apps</string>
-    <string name="all_apps_search_startpage_message">Buscar en <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
     <string name="clear_history">Clear search history</string>
     <string name="search_input_action_clear_results">Clear search box</string>
@@ -498,7 +508,7 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Multimedia, archivos y más</string>
     <string name="search_pref_result_contacts_description">Contactos y más</string>
-    <string name="search_pref_result_web_description">Desde <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
     <string name="max_people_result_count_title">Maximum number of people in search results</string>
@@ -511,4 +521,7 @@
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
     <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
     <string name="grant_requested_permissions">Grant permissions</string>
+    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
+    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
+    <string name="allapps_use_web_suggestion_icon_label">Use web suggestion provider icon in search bar</string>
 </resources>
