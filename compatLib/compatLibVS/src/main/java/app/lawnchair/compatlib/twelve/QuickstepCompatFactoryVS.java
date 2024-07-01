@@ -45,7 +45,8 @@ public class QuickstepCompatFactoryVS extends QuickstepCompatFactoryVR {
             Constructor<?> constructor =
                     remoteTransitionClass.getConstructor(
                             IRemoteTransition.class, IApplicationThread.class, String.class);
-            return (RemoteTransition) constructor.newInstance(remoteTransition, appThread, debugName);
+            return (RemoteTransition)
+                    constructor.newInstance(remoteTransition, appThread, debugName);
         } catch (ClassNotFoundException
                 | IllegalAccessException
                 | InstantiationException
