@@ -688,5 +688,5 @@
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
 
     <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
-    <string name="allapps_use_web_suggestion_icon_label">Use web suggestion provider icon in search bar</string>
+    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
 </resources>
