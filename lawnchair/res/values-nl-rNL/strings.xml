@@ -523,5 +523,5 @@
     <string name="grant_requested_permissions">Machtigingen verlenen</string>
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (samenstelling)</string>
     <string name="allapps_web_suggestion_provider_label">Websuggestie-aanbieder</string>
-    <string name="allapps_use_web_suggestion_icon_label">Pictogram van Websuggestie-aanbieder in zoekblak gebruiken</string>
+    <string name="allapps_use_web_suggestion_icon_label">Pictogram van aanbieder van websuggesties in zoekbalk weergeven</string>
 </resources>
