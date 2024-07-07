@@ -202,8 +202,8 @@
     <string name="fontBodyMedium">Σώμα (μεσαίου πάχους)</string>
     <string name="font_variant_italic">Πλάγια γραμματοσειρά</string>
     <string name="font_weight_thin">Λεπτή γραμματοσειρά</string>
-    <string name="font_weight_extra_light">Εξαιρετικά ελαφριά γραμματοσειρά</string>
-    <string name="font_weight_light">Ελαφριά γραμματοσειρά</string>
+    <string name="font_weight_extra_light">Εξαιρετικά φωτεινό</string>
+    <string name="font_weight_light">Φωτεινό</string>
     <string name="font_weight_regular">Κανονική γραμματοσειρά</string>
     <string name="font_weight_medium">Μεσαία γραμματοσειρά</string>
     <string name="font_weight_semi_bold">Ημιέντονη γραμματοσειρά</string>
@@ -467,7 +467,7 @@
     -->
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">Αναζήτηση</string>
-    <string name="all_apps_search_bar_hint">Αναζήτηση Εφαρμογών</string>
+    <string name="all_apps_search_bar_hint">Αναζήτηση εφαρμογών</string>
     <string name="all_apps_no_search_results">Δεν βρέθηκαν εφαρμογές που να ταιριάζουν “<xliff:g example="Android" id="query">%1$s</xliff:g>”</string>
     <string name="all_apps_search_result_suggestions">Από το διαδίκτυο</string>
     <string name="all_apps_search_result_contacts_from_device">Επαφές από τη συσκευή</string>
@@ -492,8 +492,8 @@
     <string name="hidden_apps_show_name_typed">Εάν πληκτρολογηθεί το πλήρες όνομα</string>
     <string name="app_search_algorithm">Αλγόριθμος αναζήτησης</string>
     <string name="search_algorithm_app_search">Αναζήτηση Εφαρμογής</string>
-    <string name="search_algorithm_global_search_on_device">Γενική Αναζήτηση (Στην συσκευή)</string>
-    <string name="search_algorithm_global_search_via_asi">Γενική Αναζήτηση (μέσω ASI)</string>
+    <string name="search_algorithm_global_search_on_device">Γενική αναζήτηση (στην συσκευή)</string>
+    <string name="search_algorithm_global_search_via_asi">Γενική αναζήτηση (μέσω ASI)</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Εμφάνιση στα αποτελέσματα αναζήτησης</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Εφαρμογές &amp; Συντομεύσεις</string>
@@ -523,5 +523,5 @@
     <string name="grant_requested_permissions">Εκχώρηση δικαιωμάτων</string>
     <string name="hotseat_mode_lawnchair_compose">Εκκινητής Lawnchair (σύνθεση)</string>
     <string name="allapps_web_suggestion_provider_label">Πάροχος προτάσεων ιστού</string>
-    <string name="allapps_use_web_suggestion_icon_label">Χρήση εικονιδίου παρόχου προτάσεων ιστού στη μπάρα αναζήτησης</string>
+    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
 </resources>
