@@ -67,6 +67,10 @@ fun SearchPreferences() {
                 SearchProvider(
                     context = context,
                 )
+                SwitchPreference(
+                    label = stringResource(R.string.allapps_match_qsb_style_label),
+                    adapter = prefs2.matchHotseatQsbStyle.getAdapter(),
+                )
             }
 
             PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
@@ -117,6 +121,10 @@ private fun ASISearchSettings(prefs: PreferenceManager) {
     SwitchPreference(
         adapter = prefs.searchResultPixelTips.getAdapter(),
         label = stringResource(id = R.string.search_pref_result_tips_title),
+    )
+    SwitchPreference(
+        adapter = prefs.searchResultSettings.getAdapter(),
+        label = stringResource(id = R.string.search_pref_result_settings_title),
     )
 }
 
@@ -175,10 +183,6 @@ private fun LocalSearchSettings(
         )
         WebSearchProvider(
             adapter = prefs2.webSuggestionProvider.getAdapter(),
-        )
-        SwitchPreference(
-            label = stringResource(R.string.allapps_use_web_suggestion_icon_label),
-            adapter = prefs2.useDrawerSearchIcon.getAdapter(),
         )
     }
     SearchSuggestionPreference(

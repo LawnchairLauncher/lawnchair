@@ -689,4 +689,5 @@
 
     <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
     <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
 </resources>

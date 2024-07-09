@@ -16,6 +16,7 @@ import androidx.core.view.descendants
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.HeadlessWidgetsManager
+import app.lawnchair.animateToAllApps
 import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
 import app.lawnchair.preferences.PreferenceManager
@@ -94,7 +95,12 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         setOnClickListener {
             val launcher = context.launcher
             launcher.lifecycleScope.launch {
-                searchProvider.launch(launcher)
+                if (preferenceManager2.matchHotseatQsbStyle.firstBlocking()) {
+                    launcher.appsView.searchUiManager.editText?.showKeyboard(true)
+                    launcher.animateToAllApps()
+                } else {
+                    searchProvider.launch(launcher)
+                }
             }
         }
         if (searchProvider == Google) {
@@ -152,9 +158,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     private fun setUpLensIcon() {
-        val lensIntent = Intent.makeMainActivity(ComponentName(LENS_PACKAGE, LENS_ACTIVITY))
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-        if (context.packageManager.resolveActivity(lensIntent, 0) == null) return
+        val lensIntent = getLensIntent(context) ?: return
 
         with(lensIcon) {
             isVisible = true
@@ -188,6 +192,14 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     companion object {
         private const val LENS_PACKAGE = "com.google.ar.lens"
         private const val LENS_ACTIVITY = "com.google.vr.apps.ornament.app.lens.LensLauncherActivity"
+
+        fun getLensIntent(context: Context): Intent? {
+            val lensIntent = Intent.makeMainActivity(ComponentName(LENS_PACKAGE, LENS_ACTIVITY))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+            if (context.packageManager.resolveActivity(lensIntent, 0) == null) return null
+
+            return lensIntent
+        }
 
         fun getSearchProvider(
             context: Context,
