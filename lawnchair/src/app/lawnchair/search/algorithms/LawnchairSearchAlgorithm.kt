@@ -4,7 +4,6 @@ import android.content.Context
 import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.views.SearchItemBackground
 import app.lawnchair.allapps.views.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
-import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.search.adapter.SearchAdapterItem
@@ -169,12 +168,11 @@ sealed class LawnchairSearchAlgorithm(
             if (!Utilities.ATLEAST_S) return false
             if (!LawnchairApp.isRecentsEnabled) return false
 
-            val prefs = PreferenceManager.getInstance(context)
             if (!ranCompatibilityCheck) {
                 ranCompatibilityCheck = true
                 LawnchairASISearchAlgorithm.checkSearchCompatibility(context)
             }
-            return prefs.deviceSearch.get()
+            return true
         }
 
         fun create(context: Context): LawnchairSearchAlgorithm {

@@ -38,13 +38,13 @@ fun DebugMenuPreferences(
     val enableDebug = prefs.enableDebugMenu.getAdapter()
 
     PreferenceLayout(
-        label = "Debug Menu",
+        label = "Debug menu",
         modifier = modifier,
     ) {
-        MainSwitchPreference(adapter = enableDebug, label = "Show Debug Menu") {
+        MainSwitchPreference(adapter = enableDebug, label = "Show debug menu") {
             PreferenceGroup {
                 ClickablePreference(
-                    label = "Feature Flags",
+                    label = "Feature flags",
                     onClick = {
                         Intent(context, SettingsActivity::class.java)
                             .putExtra(
@@ -55,12 +55,12 @@ fun DebugMenuPreferences(
                     },
                 )
                 ClickablePreference(
-                    label = "Crash Launcher",
+                    label = "Crash launcher",
                     onClick = { throw RuntimeException("User triggered crash") },
                 )
             }
 
-            PreferenceGroup(heading = "Debug Flags") {
+            PreferenceGroup(heading = "Debug flags") {
                 flags2.forEach {
                     SwitchPreference(
                         adapter = it.getAdapter(),
@@ -91,11 +91,4 @@ private val PreferenceManager2.textFlags: List<Preference<String, String, Prefer
     get() = listOf(additionalFonts)
 
 private val PreferenceManager.debugFlags
-    get() = listOf(
-        deviceSearch,
-        searchResultShortcuts,
-        searchResultPeople,
-        searchResultPixelTips,
-        searchResultSettings,
-        ignoreFeedWhitelist,
-    )
+    get() = listOf(ignoreFeedWhitelist)
