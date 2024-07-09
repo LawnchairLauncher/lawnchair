@@ -11,6 +11,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
@@ -39,6 +40,7 @@ fun DebugMenuPreferences(
 
     PreferenceLayout(
         label = "Debug menu",
+        backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
         MainSwitchPreference(adapter = enableDebug, label = "Show debug menu") {
