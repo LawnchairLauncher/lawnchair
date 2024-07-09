@@ -96,8 +96,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
                 }
             } else {
                 appResults.mapTo(searchTargets, ::createSearchTarget)
+                searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
             }
-            searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
         }
 
         generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }
