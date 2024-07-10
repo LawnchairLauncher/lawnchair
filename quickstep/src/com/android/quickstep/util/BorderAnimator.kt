@@ -50,7 +50,7 @@ private constructor(
     private val disappearanceDurationMs: Long,
     private val interpolator: Interpolator,
 ) {
-    private val borderAnimationProgress = AnimatedFloat { updateOutline() }
+    private val borderAnimationProgress = AnimatedFloat { _ -> updateOutline() }
     private val borderPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = borderColor
@@ -224,6 +224,7 @@ private constructor(
 
         val borderWidth: Float
             get() = borderWidthPx * animationProgress
+
         val alignmentAdjustment: Float
             // Outset the border by half the width to create an outwards-growth animation
             get() = -borderWidth / 2f + alignmentAdjustmentInset
