@@ -38,7 +38,7 @@
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"برای استفاده از این جفت برنامه، دستگاه را باز کنید"</string>
     <string name="app_pair_not_available" msgid="3556767440808032031">"جفت برنامه دردسترس نیست"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"برای جابه‌جا کردن ابزارک، لمس کنید و نگه دارید."</string>
-    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"برای جابه‌جا کردن ابزارک یا استفاده از کنش‌های سفارشی، دوضربه بزنید و نگه دارید."</string>
+    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"برای جابه‌جا کردن ابزارک یا استفاده از کنش‌های سفارشی، دو تک‌ضرب بزنید و نگه دارید."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"‏%1$d عرض در %2$d طول"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"ابزارک <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
@@ -67,7 +67,7 @@
     <string name="widget_category_note_taking" msgid="3469689394504266039">"یادداشت‌برداری"</string>
     <string name="widget_add_button_label" msgid="2761267068711937179">"افزودن"</string>
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"افزودن ابزارک <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"برای تغییر تنظیمات ابزارک، ضربه بزنید"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"برای تغییر تنظیمات ابزارک، تک‌ضرب بزنید"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"تغییر تنظیمات ابزارک"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"جستجوی برنامه‌ها"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"درحال بارگیری برنامه‌‌ها…"</string>
@@ -76,7 +76,7 @@
     <string name="all_apps_label" msgid="5015784846527570951">"همه برنامه‌ها"</string>
     <string name="notifications_header" msgid="1404149926117359025">"اعلان‌ها"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"برای جابه‌جا کردن میان‌بر، لمس کنید و نگه دارید."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"برای جابه‌جا کردن میان‌بر یا استفاده از کنش‌های سفارشی، دوضربه بزنید و نگه دارید."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"برای جابه‌جا کردن میان‌بر یا استفاده از کنش‌های سفارشی، دو تک‌ضرب بزنید و نگه دارید."</string>
     <string name="out_of_space" msgid="6455557115204099579">"فضای خالی در این صفحه اصلی وجود ندارد"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"فضای بیشتری در سینی موارد دلخواه وجود ندارد"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"فهرست برنامه‌ها"</string>
@@ -99,7 +99,7 @@
     <string name="permdesc_write_settings" msgid="726859348127868466">"به برنامه اجازه می‌دهد تنظیمات و میان‌برهای صفحه اصلی را تغییر دهد."</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ابزارک را نمی‌توان بار کرد"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"تنظیمات ابزارک"</string>
-    <string name="gadget_complete_setup_text" msgid="309040266978007925">"برای تکمیل راه‌اندازی ضربه بزنید"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"برای تکمیل راه‌اندازی تک‌ضرب بزنید"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"این برنامه سیستمی است و حذف نصب نمی‌شود."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ویرایش نام"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> غیرفعال شد"</string>
@@ -108,8 +108,8 @@
     <string name="workspace_scroll_format" msgid="8458889198184077399">"‏صفحه اصلی %1$d از %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"صفحه اصلی جدید"</string>
     <string name="folder_opened" msgid="94695026776264709">"پوشه باز شده، <xliff:g id="WIDTH">%1$d</xliff:g> در <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="folder_tap_to_close" msgid="4625795376335528256">"برای بستن پوشه، ضربه بزنید"</string>
-    <string name="folder_tap_to_rename" msgid="4017685068016979677">"برای ذخیره تغییر نام، ضربه بزنید"</string>
+    <string name="folder_tap_to_close" msgid="4625795376335528256">"برای بستن پوشه، تک‌ضرب بزنید"</string>
+    <string name="folder_tap_to_rename" msgid="4017685068016979677">"برای ذخیره تغییر نام، تک‌ضرب بزنید"</string>
     <string name="folder_closed" msgid="4100806530910930934">"پوشه بسته شد"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"نام پوشه به <xliff:g id="NAME">%1$s</xliff:g> تغییر کرد"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"پوشه: <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="SIZE">%2$d</xliff:g> مورد"</string>
@@ -139,7 +139,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> درحال نصب است، <xliff:g id="PROGRESS">%2$s</xliff:g> تکمیل شده است"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"درحال بارگیری <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="PROGRESS">%2$s</xliff:g> کامل شد"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> درانتظار نصب"</string>
-    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> بایگانی شده است. برای بارگیری و بازیابی ضربه بزنید."</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> بایگانی شده است. برای بارگیری و بازیابی تک‌ضرب بزنید."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"برنامه باید به‌روز شود"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"برنامه برای این نماد به‌روز نشده است. می‌توانید آن را به‌صورت دستی به‌روز کنید تا میان‌بر دوباره فعال شود، یا نماد را بردارید."</string>
     <string name="dialog_update" msgid="2178028071796141234">"به‌روزرسانی"</string>
@@ -187,7 +187,7 @@
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"فیلتر"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ناموفق بود: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"فضای خصوصی"</string>
-    <string name="private_space_secondary_label" msgid="9203933341714508907">"برای راه‌اندازی یا باز کردن، ضربه بزنید"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"برای راه‌اندازی یا باز کردن، تک‌ضرب بزنید"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"خصوصی"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"تنظیمات «فضای خصوصی»"</string>
     <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"خصوصی، باز."</string>

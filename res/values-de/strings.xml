@@ -37,7 +37,7 @@
     <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Dieses App-Paar wird auf diesem Gerät nicht unterstützt"</string>
     <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Gerät aufklappen, um dieses App-Paar zu verwenden"</string>
     <string name="app_pair_not_available" msgid="3556767440808032031">"App-Paar nicht verfügbar"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Zum Verschieben des Widgets berühren und halten"</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Zum Verschieben des Widgets gedrückt halten"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Doppeltippen und halten, um ein Widget zu bewegen oder benutzerdefinierte Aktionen zu nutzen."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d breit und %2$d hoch"</string>
@@ -75,7 +75,7 @@
     <string name="label_application" msgid="8531721983832654978">"App"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Alle Apps"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Benachrichtigungen"</string>
-    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Zum Verschieben einer Verknüpfung berühren und halten"</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Zum Verschieben einer Verknüpfung gedrückt halten"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Doppeltippen und halten, um eine Verknüpfung zu bewegen oder benutzerdefinierte Aktionen zu nutzen."</string>
     <string name="out_of_space" msgid="6455557115204099579">"Auf diesem Startbildschirm ist kein Platz mehr vorhanden"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ablage \"Favoriten\" ist voll."</string>

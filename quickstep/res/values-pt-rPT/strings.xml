@@ -57,7 +57,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Deslize rapidamente com o dedo para retroceder"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para voltar ao último ecrã, deslize rapidamente do limite esquerdo ou direito até ao centro do ecrã."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para voltar ao último ecrã, deslize rapidamente com 2 dedos a partir da extremidade esquerda ou direita até ao centro do ecrã."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Voltar"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Retroceder"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Deslize rapidamente a partir da extremidade esquerda ou direita para o meio do ecrã"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Deslize rapidamente com o dedo a partir do limite inferior do ecrã"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Não faça uma pausa antes de soltar"</string>
@@ -113,7 +113,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Arraste uma app para o lado para usar 2 apps em simultâneo"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Deslize lentamente para cima para ver a Barra de tarefas"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Receba sugestões de apps baseadas na sua rotina"</string>
-    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Mantenha o divisor premido para fixar a Barra de tarefas"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Mantenha o divisor pressionado para fixar a Barra de tarefas"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Faça mais com a Barra de tarefas"</string>
     <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Mostre sempre a Barra de tarefas"</string>
     <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Para mostrar sempre a Barra de tarefas no fundo do ecrã, toque sem soltar no divisor"</string>

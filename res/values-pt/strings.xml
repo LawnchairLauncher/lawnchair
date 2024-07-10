@@ -192,7 +192,7 @@
     <string name="ps_container_settings" msgid="6059734123353320479">"Configurações do Espaço particular"</string>
     <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Privada, desbloqueado."</string>
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privada, bloqueado."</string>
-    <string name="ps_container_lock_title" msgid="2640257399982364682">"Bloquear"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"Bloqueio"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Espaço particular em transição"</string>
     <string name="ps_add_button_label" msgid="8127988716897128773">"Instalar"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"Instalar apps no espaço privado"</string>
