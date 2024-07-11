@@ -7,6 +7,7 @@ data object Yandex : QsbSearchProvider(
     id = "yandex",
     name = R.string.search_provider_yandex,
     icon = R.drawable.ic_yandex,
+    themedIcon = R.drawable.ic_yandex_tinted,
     packageName = "com.yandex.searchapp",
     className = "ru.yandex.searchplugin.MainActivity",
     supportVoiceIntent = true,
