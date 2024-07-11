@@ -22,13 +22,22 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.subscribeBlocking
+import app.lawnchair.qsb.AssistantIconView
+import app.lawnchair.qsb.LawnQsbLayout.Companion.getLensIntent
+import app.lawnchair.qsb.LawnQsbLayout.Companion.getSearchProvider
+import app.lawnchair.qsb.providers.Google
+import app.lawnchair.qsb.providers.GoogleGo
+import app.lawnchair.qsb.providers.PixelSearch
+import app.lawnchair.qsb.setThemedIconResource
 import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
-import app.lawnchair.search.algorithms.data.WebSearchProvider
 import app.lawnchair.theme.drawable.DrawableTokens
+import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
@@ -43,6 +52,7 @@ import com.android.launcher3.util.Themes
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
 import kotlin.math.max
+import kotlinx.coroutines.launch
 
 class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     FrameLayout(context, attrs),
@@ -56,6 +66,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     private lateinit var input: FallbackSearchInputView
     private lateinit var actionButton: ImageButton
     private lateinit var searchIcon: ImageButton
+
+    private lateinit var micIcon: AssistantIconView
+    private lateinit var lensIcon: ImageButton
 
     private val qsbMarginTopAdjusting = resources.getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting)
     private val allAppsSearchVerticalOffset = resources.getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset)
@@ -90,6 +103,22 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         hint = ViewCompat.requireViewById(this, R.id.hint)
 
         input = ViewCompat.requireViewById(this, R.id.input)
+
+        searchIcon = ViewCompat.requireViewById(this, R.id.search_icon)
+        micIcon = ViewCompat.requireViewById(this, R.id.mic_btn)
+        lensIcon = ViewCompat.requireViewById(this, R.id.lens_btn)
+
+        val shouldShowIcons = prefs2.matchHotseatQsbStyle.firstBlocking()
+
+        val searchProvider = getSearchProvider(context, prefs2)
+        val isGoogle = searchProvider == Google || searchProvider == GoogleGo || searchProvider == PixelSearch
+        val supportsLens = searchProvider == Google || searchProvider == PixelSearch
+
+        val lensIntent = getLensIntent(context)
+
+        micIcon.isVisible = shouldShowIcons
+        lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null
+
         with(input) {
             if (prefs2.searchAlgorithm.firstBlocking() != LawnchairSearchAlgorithm.APP_SEARCH) {
                 setHint(R.string.all_apps_device_search_hint)
@@ -98,6 +127,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             }
             addTextChangedListener {
                 actionButton.isVisible = !it.isNullOrEmpty()
+                micIcon.isVisible = shouldShowIcons && it.isNullOrEmpty()
+                lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null && it.isNullOrEmpty()
             }
         }
 
@@ -109,14 +140,37 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             }
         }
 
-        searchIcon = ViewCompat.requireViewById(this, R.id.search_icon)
-        with(searchIcon) {
-            isVisible = true
+        prefs2.themedHotseatQsb.subscribeBlocking(scope = viewAttachedScope) { themed ->
+            with(searchIcon) {
+                isVisible = true
 
-            if (prefs2.useDrawerSearchIcon.firstBlocking()) {
-                setImageResource(WebSearchProvider.fromString(prefs2.webSuggestionProvider.firstBlocking().toString()).iconRes)
+                val iconRes = if (themed) searchProvider.themedIcon else searchProvider.icon
+                if (shouldShowIcons) {
+                    setThemedIconResource(
+                        resId = iconRes,
+                        themed = themed || iconRes == R.drawable.ic_qsb_search,
+                        method = searchProvider.themingMethod,
+                    )
+                }
+
+                setOnClickListener {
+                    val launcher = context.launcher
+                    launcher.lifecycleScope.launch {
+                        searchProvider.launch(launcher)
+                    }
+                }
             }
-            // todo implement search feature
+            with(micIcon) {
+                setIcon(isGoogle, themed)
+            }
+            with(lensIcon) {
+                if (lensIntent != null) {
+                    setThemedIconResource(R.drawable.ic_lens_color, themed)
+                    setOnClickListener {
+                        runCatching { context.startActivity(lensIntent) }
+                    }
+                }
+            }
         }
 
         if (prefs.searchResulRecentSuggestion.get()) {

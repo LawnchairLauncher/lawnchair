@@ -398,7 +398,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_fuzzy_search),
     )
 
-    val useDrawerSearchIcon = preference(
+    val matchHotseatQsbStyle = preference(
         key = booleanPreferencesKey(name = "use_drawer_search_icon"),
         defaultValue = false,
     )

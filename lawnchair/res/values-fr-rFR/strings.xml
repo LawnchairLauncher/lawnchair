@@ -474,7 +474,7 @@
     <string name="all_apps_search_result_files">Fichiers de l\'appareil</string>
     <string name="all_apps_search_result_settings_entry_from_device">Paramètres de l\'appareil</string>
     <string name="all_apps_search_market_message">Rechercher plus d\'applications</string>
-    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Rechercher avec <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Aucun magasin d\'applications ni navigateur installé</string>
     <string name="clear_history">Effacer l\'historique des recherches</string>
     <string name="search_input_action_clear_results">Effacer la barre de recherche</string>
@@ -522,6 +522,6 @@
     <string name="warn_files_permission_content">Pour rechercher des fichiers, autorisez Lawnchair à accéder au stockage.</string>
     <string name="grant_requested_permissions">Accorder les autorisations</string>
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (composition)</string>
-    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
-    <string name="allapps_use_web_suggestion_icon_label">Use web suggestion provider icon in search bar</string>
+    <string name="allapps_web_suggestion_provider_label">Fournisseur de suggestions Web</string>
+    <string name="allapps_use_web_suggestion_icon_label">Afficher l\'icône du fournisseur de suggestions Web dans la barre de recherche</string>
 </resources>

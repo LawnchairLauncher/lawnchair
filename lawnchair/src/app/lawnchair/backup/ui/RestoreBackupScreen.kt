@@ -91,7 +91,7 @@ fun RestoreBackupScreen(
     PreferenceLayout(
         label = stringResource(id = R.string.restore_backup),
         modifier = modifier,
-        backArrowVisible = LocalIsExpandedScreen.current,
+        backArrowVisible = !LocalIsExpandedScreen.current,
         scrollState = if (isPortrait) null else scrollState,
     ) {
         when (uiState) {
