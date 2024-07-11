@@ -212,6 +212,9 @@ public final class LauncherActivityInterface extends
         if (launcher.isStarted() && (isInLiveTileMode() || launcher.hasBeenResumed())) {
             return launcher;
         }
+        if (isInMinusOne()) {
+            return launcher;
+        }
 
         return null;
     }
@@ -286,6 +289,15 @@ public final class LauncherActivityInterface extends
         return launcher != null
                 && launcher.getStateManager().getState() == OVERVIEW
                 && launcher.isStarted()
+                && TopTaskTracker.INSTANCE.get(launcher).getCachedTopTask(false).isHomeTask();
+    }
+
+    private boolean isInMinusOne() {
+        QuickstepLauncher launcher = getCreatedContainer();
+
+        return launcher != null
+                && launcher.getStateManager().getState() == NORMAL
+                && !launcher.isStarted()
                 && TopTaskTracker.INSTANCE.get(launcher).getCachedTopTask(false).isHomeTask();
     }
 
