@@ -21,9 +21,9 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Lanceur3"</string>
     <string name="work_folder_name" msgid="3753320833950115786">"Travail"</string>
-    <string name="activity_not_found" msgid="8071924732094499514">"L\'application n\'est pas installée."</string>
-    <string name="activity_not_available" msgid="7456344436509528827">"Application indisponible"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'application téléchargée est désactivée en mode sans échec."</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"L\'appli n\'est pas installée."</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"Appli indisponible"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'appli téléchargée est désactivée en mode sans échec."</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets désactivés en mode sans échec"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Le raccourci n\'est pas disponible"</string>
     <string name="home_screen" msgid="5629429142036709174">"Accueil"</string>
@@ -34,9 +34,9 @@
     <string name="split_app_usage_settings" msgid="7214375263347964093">"Paramètres d\'utilisation pour %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Enr. paire d\'applis"</string>
     <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
-    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Cette paire d\'applications n\'est pas prise en charge sur cet appareil"</string>
-    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Déplier l\'appareil pour utiliser cette paire d\'applications"</string>
-    <string name="app_pair_not_available" msgid="3556767440808032031">"La Paire d\'applications n\'est pas offerte"</string>
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Cette paire d\'applis n\'est pas prise en charge sur cet appareil"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Déplier l\'appareil pour utiliser cette paire d\'applis"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"La Paire d\'applis n\'est pas offerte"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Maintenez le doigt sur un widget pour le déplacer."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Touchez 2x un widget et maintenez le doigt dessus pour le déplacer ou utiliser des actions personnalisées."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -69,20 +69,20 @@
     <string name="widget_add_button_content_description" msgid="1810530016360039643">"Ajoutez le widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Touchez pour modifier les paramètres du widget"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Modifier les paramètres du widget"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Rechercher dans les applications"</string>
-    <string name="all_apps_loading_message" msgid="5813968043155271636">"Chargement des applications en cours…"</string>
-    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Aucune application trouvée correspondant à « <xliff:g id="QUERY">%1$s</xliff:g> »"</string>
-    <string name="label_application" msgid="8531721983832654978">"Application"</string>
-    <string name="all_apps_label" msgid="5015784846527570951">"Toutes les applications"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Rechercher dans les applis"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"Chargement des applis en cours…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"Aucune appli trouvée correspondant à « <xliff:g id="QUERY">%1$s</xliff:g> »"</string>
+    <string name="label_application" msgid="8531721983832654978">"Appli"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"Toutes les applis"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Maintenez le doigt sur un raccourci pour le déplacer."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Touchez deux fois un raccourci et maintenez le doigt dessus pour le déplacer ou utiliser des actions personnalisées."</string>
     <string name="out_of_space" msgid="6455557115204099579">"Pas d\'espace libre sur cet écran d\'accueil"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Il n\'y a plus d\'espace dans la zone des favoris"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"Liste des applications"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"Liste des applis"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Résultats de recherche"</string>
-    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Liste des applications personnelles"</string>
-    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Liste des applications professionnelles"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Liste des applis personnelles"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Liste des applis professionnelles"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Supprimer"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Désinstaller"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Détails de l\'appli"</string>
@@ -92,17 +92,17 @@
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ne pas suggérer d\'appli"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Épingler la prédiction"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installer des raccourcis"</string>
-    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permet à une application d\'ajouter des raccourcis sans l\'intervention de l\'utilisateur."</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permet à une appli d\'ajouter des raccourcis sans l\'intervention de l\'utilisateur."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"lire les paramètres et les raccourcis de la page d\'accueil"</string>
-    <string name="permdesc_read_settings" msgid="4208061150510996676">"Permet à l\'application de lire les paramètres et les raccourcis de l\'écran d\'accueil."</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Permet à l\'appli de lire les paramètres et les raccourcis de l\'écran d\'accueil."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"modifier les paramètres et les raccourcis de la page d\'accueil"</string>
-    <string name="permdesc_write_settings" msgid="726859348127868466">"Permet à l\'application de modifier les paramètres et les raccourcis de l\'écran d\'accueil."</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Permet à l\'appli de modifier les paramètres et les raccourcis de l\'écran d\'accueil."</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Impossible de charger le widget"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Paramètres du widget"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Touchez pour terminer la configuration"</string>
-    <string name="uninstall_system_app_text" msgid="4172046090762920660">"Impossible de désinstaller cette application, car il s\'agit d\'une application système."</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"Impossible de désinstaller cette appli, car il s\'agit d\'une appli système."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Modifier le nom"</string>
-    <string name="disabled_app_label" msgid="6673129024321402780">"L\'application <xliff:g id="APP_NAME">%1$s</xliff:g> est désactivée"</string>
+    <string name="disabled_app_label" msgid="6673129024321402780">"L\'appli <xliff:g id="APP_NAME">%1$s</xliff:g> est désactivée"</string>
     <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} a # notification}one{{app_name} a # notification}other{{app_name} a # notifications}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Page %1$d sur %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Écran d\'accueil %1$d sur %2$d"</string>
@@ -114,7 +114,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Nouveau nom du dossier : <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Dossier : <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> élément(s)"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Dossier : <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> éléments ou plus"</string>
-    <string name="app_pair_name_format" msgid="8134106404716224054">"Paire d\'applications : <xliff:g id="APP1">%1$s</xliff:g> et <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"Paire d\'applis : <xliff:g id="APP1">%1$s</xliff:g> et <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Fond d\'écran et style"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Modifier l\'écran d\'accueil"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Paramètres d\'accueil"</string>
@@ -125,23 +125,23 @@
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activé"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Désactivé"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"L\'accès aux notifications est requis"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"Pour afficher les points de notification, activez les notifications d\'application pour <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Pour afficher les points de notification, activez les notifications d\'appli pour <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modifier les paramètres"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Afficher les points de notification"</string>
     <string name="developer_options_title" msgid="700788437593726194">"Options pour les développeurs"</string>
-    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Ajouter les icônes des applications à l\'écran d\'accueil"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pour les nouvelles applications"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Ajouter les icônes des applis à l\'écran d\'accueil"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pour les nouvelles applis"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Inconnu"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Supprimer"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Rechercher"</string>
-    <string name="abandoned_promises_title" msgid="7096178467971716750">"Cette application n\'est pas installée"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'application liée à cette icône n\'est pas installée. Vous pouvez la supprimer ou rechercher l\'application et l\'installer manuellement."</string>
-    <string name="app_installing_title" msgid="5864044122733792085">"Installation de l\'application <xliff:g id="NAME">%1$s</xliff:g> en cours, <xliff:g id="PROGRESS">%2$s</xliff:g> terminée"</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"Cette appli n\'est pas installée"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"L\'appli liée à cette icône n\'est pas installée. Vous pouvez la supprimer ou rechercher l\'appli et l\'installer manuellement."</string>
+    <string name="app_installing_title" msgid="5864044122733792085">"Installation de l\'appli <xliff:g id="NAME">%1$s</xliff:g> en cours, <xliff:g id="PROGRESS">%2$s</xliff:g> terminée"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Téléchargement de <xliff:g id="NAME">%1$s</xliff:g> : <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> en attente d\'installation"</string>
     <string name="app_archived_title" msgid="7717956158562544081">"L\'appli <xliff:g id="NAME">%1$s</xliff:g> est archivée. Touchez le bouton pour télécharger et restaurer l\'appli."</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"Mise à jour de l\'application requise"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"L\'application pour cette icône n\'est pas à jour. Vous pouvez soit la mettre à jour manuellement pour réactiver ce raccourci, soit retirer l\'icône."</string>
+    <string name="dialog_update_title" msgid="114234265740994042">"Mise à jour de l\'appli requise"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"L\'appli pour cette icône n\'est pas à jour. Vous pouvez soit la mettre à jour manuellement pour réactiver ce raccourci, soit retirer l\'icône."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Mettre à jour"</string>
     <string name="dialog_remove" msgid="6510806469849709407">"Retirer"</string>
     <string name="widgets_list" msgid="796804551140113767">"Liste des widgets"</string>
@@ -174,15 +174,15 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personnel"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Travail"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil professionnel"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Les applications professionnelles sont indiquées par un badge et elles sont visibles pour votre administrateur informatique"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Les applis professionnelles sont indiquées par un badge et elles sont visibles pour votre administrateur informatique"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Les applications professionnelles sont interrompues"</string>
-    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Vous ne recevrez pas de notifications de vos applications professionnelles"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"Les applications professionnelles ne peuvent ni vous envoyer de notifications, ni utiliser la pile, ni accéder à votre position"</string>
-    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Vous ne recevrez pas d\'appels téléphoniques, de messages texte ni de notifications de vos applications professionnelles"</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Les applications professionnelles sont indiquées par un badge et sont visibles pour votre administrateur informatique"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Les applis professionnelles sont interrompues"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Vous ne recevrez pas de notifications de vos applis professionnelles"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Les applis professionnelles ne peuvent ni vous envoyer de notifications, ni utiliser la pile, ni accéder à votre position"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Vous ne recevrez pas d\'appels téléphoniques, de messages texte ni de notifications de vos applis professionnelles"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Les applis professionnelles sont indiquées par un badge et sont visibles pour votre administrateur informatique"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Mettre en pause les applications professionnelles"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Mettre en pause les applis professionnelles"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Réactiver"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrer"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Échec : <xliff:g id="WHAT">%1$s</xliff:g>"</string>
@@ -195,5 +195,5 @@
     <string name="ps_container_lock_title" msgid="2640257399982364682">"Verrouiller"</string>
     <string name="ps_container_transition" msgid="8667331812048014412">"Transition vers l\'Espace privé"</string>
     <string name="ps_add_button_label" msgid="8127988716897128773">"Installer"</string>
-    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Installer des applications dans l\'Espace privé"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Installer des applis dans l\'Espace privé"</string>
 </resources>

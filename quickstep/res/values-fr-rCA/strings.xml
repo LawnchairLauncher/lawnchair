@@ -23,34 +23,34 @@
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Forme libre"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"Ordinateur de bureau"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Aucun élément récent"</string>
-    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Paramètres d\'utilisation de l\'application"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Paramètres d\'utilisation de l\'appli"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Tout effacer"</string>
-    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Applications récentes"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Applis récentes"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"Tâche fermée"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g> : <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 min"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Il reste <xliff:g id="TIME">%1$s</xliff:g> aujourd\'hui"</string>
-    <string name="title_app_suggestions" msgid="4185902664111965088">"Suggestions d\'applications"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Vos prédictions d\'applications"</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Obtenir des suggestions d\'applications dans la rangée du bas de votre écran d\'accueil"</string>
-    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Retrouvez des suggestions d\'applications dans la rangée des favoris de votre écran d\'accueil"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Accédez facilement aux applications que vous utilisez le plus, directement à l\'écran d\'accueil. Les suggestions changeront en fonction de vos habitudes. Les applications dans la rangée du bas seront déplacées vers votre écran d\'accueil."</string>
-    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Accédez facilement aux applications que vous utilisez le plus, directement à l\'écran d\'accueil. Les suggestions changeront en fonction de vos habitudes. Les applications dans la rangée des favoris seront déplacées vers votre écran d\'accueil."</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Obtenir des suggestions d\'applications"</string>
+    <string name="title_app_suggestions" msgid="4185902664111965088">"Suggestions d\'applis"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Vos prédictions d\'applis"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Obtenir des suggestions d\'applis dans la rangée du bas de votre écran d\'accueil"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Retrouvez des suggestions d\'applis dans la rangée des favoris de votre écran d\'accueil"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Accédez facilement aux applis que vous utilisez le plus, directement à l\'écran d\'accueil. Les suggestions changeront en fonction de vos habitudes. Les applis dans la rangée du bas seront déplacées vers votre écran d\'accueil."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Accédez facilement aux applis que vous utilisez le plus, directement à l\'écran d\'accueil. Les suggestions changeront en fonction de vos habitudes. Les applis dans la rangée des favoris seront déplacées vers votre écran d\'accueil."</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Obtenir des suggestions d\'applis"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Non merci"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Paramètres"</string>
-    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Les applications les plus utilisées s\'affichent ici et changent en fonction des habitudes"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Faites glisser des applications hors de la rangée du bas pour obtenir des suggestions d\'applications"</string>
-    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Applications suggérées ajoutées à l\'espace vide"</string>
-    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Les suggestions d\'applications sont activées"</string>
-    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Les suggestions d\'applications sont désactivées"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Application prédite : <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Les applis les plus utilisées s\'affichent ici et changent en fonction des habitudes"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Faites glisser des applis hors de la rangée du bas pour obtenir des suggestions d\'applis"</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Applis suggérées ajoutées à l\'espace vide"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Les suggestions d\'applis sont activées"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Les suggestions d\'applis sont désactivées"</string>
+    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Appli prédite : <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Faites pivoter votre appareil"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Veuillez faire pivoter votre appareil pour terminer le tutoriel de navigation par gestes"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Assurez-vous de balayer l\'écran à partir de l\'extrémité droite ou gauche"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Assurez-vous de balayer l\'écran à partir de l\'extrémité droite ou gauche vers le centre, puis allons-y"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Vous avez appris à balayer de la droite pour revenir en arrière. Apprenez comment changer d\'appli."</string>
-    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Vous avez appris le geste de retour en arrière. Maintenant, apprenez comment changer d\'application."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Vous avez appris le geste de retour en arrière. Maintenant, apprenez comment changer d\'appli."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Vous avez appris le geste de retour en arrière"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Assurez-vous de ne pas balayer trop près du bas de l\'écran"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Modifiez la sensibilité du geste de retour dans Paramètres"</string>
@@ -74,11 +74,11 @@
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Essayez de tenir la fenêtre plus longtemps avant de relâcher"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Assurez-vous de balayer l\'écran vers le haut, puis de faire une pause"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Vous avez appris à utiliser les gestes. Pour les désactiver, accédez au menu Paramètres."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Vous avez appris le geste de changement d\'application"</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Balayez pour basculer entre les applications"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Pour changer d\'application, balayez l\'écran de bas en haut, maintenez le doigt dessus, puis relâchez-le."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Vous avez appris le geste de changement d\'appli"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Balayez pour basculer entre les applis"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Pour changer d\'appli, balayez l\'écran de bas en haut, maintenez le doigt dessus, puis relâchez-le."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Pour changer d\'appli, balayez l\'écran de bas en haut avec deux doigts, maintenez-les et relâchez-les."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Changer d\'application"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Changer d\'appli"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Balayez l\'écran de bas en haut, maintenez le doigt en place, puis relâchez-le"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Bien joué!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Terminé"</string>
@@ -98,14 +98,14 @@
     <string name="action_split" msgid="2098009717623550676">"Partager"</string>
     <string name="action_save_app_pair" msgid="5974823919237645229">"Enr. paire d\'applis"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Toucher une autre appli pour partager l\'écran"</string>
-    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Choisir une autre application pour utiliser l\'Écran divisé"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Choisir une autre appli pour utiliser l\'Écran divisé"</string>
     <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Annuler"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Quitter la sélection d\'écran divisé"</string>
-    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Choisir une autre application pour utiliser l\'écran partagé"</string>
-    <string name="blocked_by_policy" msgid="2071401072261365546">"L\'application ou votre organisation n\'autorise pas cette action"</string>
-    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Les widgets ne sont actuellement pas pris en charge. Veuillez sélectionner une autre application"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Choisir une autre appli pour utiliser l\'écran partagé"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"L\'appli ou votre organisation n\'autorise pas cette action"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Les widgets ne sont actuellement pas pris en charge. Veuillez sélectionner une autre appli"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Ignorer le tutoriel sur la navigation?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Vous trouverez le tutoriel dans l\'application <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Vous trouverez le tutoriel dans l\'appli <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Annuler"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Ignorer"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Faire pivoter l\'écran"</string>
@@ -137,7 +137,7 @@
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Séparateur de la barre des tâches"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Déplacer vers le coin supérieur gauche de l\'écran"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Déplacer vers le coin inférieur droit de l\'écran"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Afficher # autre application.}one{Afficher # autre application.}other{Afficher # autres applications.}}"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Afficher # autre appli.}one{Afficher # autre appli.}other{Afficher # autres applis.}}"</string>
     <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Afficher # appli de bureau.}one{Afficher # appli de bureau.}other{Afficher # applis de bureau.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> et <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Bulle"</string>

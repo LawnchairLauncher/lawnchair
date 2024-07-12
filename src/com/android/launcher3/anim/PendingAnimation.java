@@ -59,6 +59,13 @@ public class PendingAnimation extends AnimatedPropertySetter {
         add(anim, springProperty);
     }
 
+    /**
+     * Utility method to sent an interpolator on an animation and add it to the list
+     */
+    public void add(Animator anim, TimeInterpolator interpolator) {
+        add(anim, interpolator, SpringProperty.DEFAULT);
+    }
+
     @Override
     public void add(Animator anim) {
         add(anim, SpringProperty.DEFAULT);

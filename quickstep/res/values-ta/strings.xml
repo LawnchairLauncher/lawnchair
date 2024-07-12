@@ -122,7 +122,7 @@
     <string name="taskbar_edu_close" msgid="887022990168191073">"மூடுக"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"முடிந்தது"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"முகப்பு"</string>
-    <string name="taskbar_button_a11y" msgid="5241161324875094465">"அணுகல்தன்மை"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"மாற்றுத்திறன் வசதி"</string>
     <string name="taskbar_button_back" msgid="8558862226461164514">"பின்செல்லும்"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME சுவிட்ச்சர்"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"சமீபத்தியவை"</string>

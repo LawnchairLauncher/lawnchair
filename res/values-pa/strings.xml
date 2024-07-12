@@ -86,7 +86,7 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ਹਟਾਓ"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ਅਣਸਥਾਪਤ ਕਰੋ"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ਐਪ ਜਾਣਕਾਰੀ"</string>
-    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"ਨਿੱਜੀ ਵਜੋਂ ਸਥਾਪਤ ਕਰੋ"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"ਪ੍ਰਾਈਵੇਟ ਵਜੋਂ ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"ਐਪ ਅਣਸਥਾਪਤ ਕਰੋ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ਐਪ ਦਾ ਸੁਝਾਅ ਨਾ ਦਿਓ"</string>
@@ -186,14 +186,14 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ਰੋਕ ਹਟਾਓ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ਫਿਲਟਰ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ਇਹ ਕਾਰਵਾਈ ਅਸਫਲ ਹੋਈ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <string name="private_space_label" msgid="2359721649407947001">"ਨਿੱਜੀ ਸਪੇਸ"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"ਪ੍ਰਾਈਵੇਟ ਸਪੇਸ"</string>
     <string name="private_space_secondary_label" msgid="9203933341714508907">"ਸੈੱਟਅੱਪ ਕਰਨ ਜਾਂ ਖੋਲ੍ਹਣ ਲਈ ਟੈਪ ਕਰੋ"</string>
     <string name="ps_container_title" msgid="4391796149519594205">"ਨਿੱਜੀ"</string>
-    <string name="ps_container_settings" msgid="6059734123353320479">"ਨਿੱਜੀ ਸਪੇਸ ਸੰਬੰਧੀ ਸੈਟਿੰਗਾਂ"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"ਪ੍ਰਾਈਵੇਟ ਸਪੇਸ ਸੰਬੰਧੀ ਸੈਟਿੰਗਾਂ"</string>
     <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"ਨਿੱਜੀ, ਅਣਲਾਕ ਕੀਤਾ ਗਿਆ।"</string>
     <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ਨਿੱਜੀ, ਲਾਕ ਕੀਤਾ ਗਿਆ।"</string>
     <string name="ps_container_lock_title" msgid="2640257399982364682">"ਲਾਕ ਕਰੋ"</string>
-    <string name="ps_container_transition" msgid="8667331812048014412">"ਨਿੱਜੀ ਸਪੇਸ ਨੂੰ ਤਬਦੀਲ ਕਰਨਾ"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"ਪ੍ਰਾਈਵੇਟ ਸਪੇਸ ਨੂੰ ਤਬਦੀਲ ਕਰਨਾ"</string>
     <string name="ps_add_button_label" msgid="8127988716897128773">"ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="ps_add_button_content_description" msgid="3254274107740952556">"ਪ੍ਰਾਈਵੇਟ ਸਪੇਸ ਵਿੱਚ ਐਪਾਂ ਸਥਾਪਤ ਕਰੋ"</string>
 </resources>

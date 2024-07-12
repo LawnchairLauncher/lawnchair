@@ -87,7 +87,7 @@
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Try again"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Nice!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
-    <string name="allset_title" msgid="5021126669778966707">"Ready!"</string>
+    <string name="allset_title" msgid="5021126669778966707">"All set!"</string>
     <string name="allset_hint" msgid="459504134589971527">"Swipe up to go home"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Tap the home button to go to your home screen"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"You’re ready to start using your <xliff:g id="DEVICE">%1$s</xliff:g>"</string>

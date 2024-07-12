@@ -89,7 +89,7 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"آموزش گام‌به‌گام <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"همه چیز آماده است!"</string>
     <string name="allset_hint" msgid="459504134589971527">"برای رفتن به صفحه اصلی، تند به‌بالا بکشید"</string>
-    <string name="allset_button_hint" msgid="2395219947744706291">"برای رفتن به صفحه اصلی، روی دکمه صفحه اصلی ضربه بزنید"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"برای رفتن به صفحه اصلی، روی دکمه صفحه اصلی تک‌ضرب بزنید"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"آماده‌اید از <xliff:g id="DEVICE">%1$s</xliff:g> خود استفاده کنید"</string>
     <string name="default_device_name" msgid="6660656727127422487">"دستگاه"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"تنظیمات پیمایش سیستم"</annotation></string>

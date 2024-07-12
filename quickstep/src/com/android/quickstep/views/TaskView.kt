@@ -54,6 +54,7 @@ import com.android.launcher3.Flags.privateSpaceRestrictAccessibilityDrag
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.anim.AnimatedFloat
 import com.android.launcher3.config.FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent
 import com.android.launcher3.model.data.ItemInfo
@@ -438,17 +439,17 @@ constructor(
         focusTransitionPropertyFactory.get(FOCUS_TRANSITION_INDEX_FULLSCREEN)
     private val focusTransitionScaleAndDim =
         focusTransitionPropertyFactory.get(FOCUS_TRANSITION_INDEX_SCALE_AND_DIM)
+
     /**
-     * Variant of [focusTransitionScaleAndDim] that has a built-in interpolator, to be used with
-     * [com.android.launcher3.anim.PendingAnimation] via [SCALE_AND_DIM_OUT] only. PendingAnimation
-     * doesn't support interpolator per animation, so we'll have to interpolate inside the property.
+     * Returns an animator of [focusTransitionScaleAndDim] that transition out with a built-in
+     * interpolator.
      */
-    private var focusTransitionScaleAndDimOut = focusTransitionScaleAndDim.value
-        set(value) {
-            field = value
-            focusTransitionScaleAndDim.value =
-                FOCUS_TRANSITION_FAST_OUT_INTERPOLATOR.getInterpolation(field)
-        }
+    fun getFocusTransitionScaleAndDimOutAnimator(): ObjectAnimator =
+        AnimatedFloat { v ->
+                focusTransitionScaleAndDim.value =
+                    FOCUS_TRANSITION_FAST_OUT_INTERPOLATOR.getInterpolation(v)
+            }
+            .animateToValue(1f, 0f)
 
     private var iconAndDimAnimator: ObjectAnimator? = null
     // The current background requests to load the task thumbnail and icon
@@ -1698,16 +1699,6 @@ constructor(
                 }
 
                 override fun get(taskView: TaskView) = taskView.focusTransitionProgress
-            }
-
-        @JvmField
-        val SCALE_AND_DIM_OUT: FloatProperty<TaskView> =
-            object : FloatProperty<TaskView>("scaleAndDimFastOut") {
-                override fun setValue(taskView: TaskView, v: Float) {
-                    taskView.focusTransitionScaleAndDimOut = v
-                }
-
-                override fun get(taskView: TaskView) = taskView.focusTransitionScaleAndDimOut
             }
 
         private val SPLIT_SELECT_TRANSLATION_X: FloatProperty<TaskView> =
