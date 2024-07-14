@@ -523,5 +523,6 @@
     <string name="grant_requested_permissions">Εκχώρηση δικαιωμάτων</string>
     <string name="hotseat_mode_lawnchair_compose">Εκκινητής Lawnchair (σύνθεση)</string>
     <string name="allapps_web_suggestion_provider_label">Πάροχος προτάσεων ιστού</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_use_web_suggestion_icon_label">Χρήση εικονιδίου παρόχου προτάσεων ιστού στη μπάρα αναζήτησης</string>
+    <string name="allapps_match_qsb_style_label">Ταίριασμα μορφής της μπάρας αναζήτησης με το στυλ της μπάρας εφαρμογών</string>
 </resources>

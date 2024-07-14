@@ -524,4 +524,5 @@
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (samenstelling)</string>
     <string name="allapps_web_suggestion_provider_label">Websuggestie-aanbieder</string>
     <string name="allapps_use_web_suggestion_icon_label">Pictogram van aanbieder van websuggesties in zoekbalk weergeven</string>
+    <string name="allapps_match_qsb_style_label">Stijl van de zoekbalk in het dok</string>
 </resources>

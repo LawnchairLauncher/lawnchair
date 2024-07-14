@@ -524,4 +524,5 @@
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (composition)</string>
     <string name="allapps_web_suggestion_provider_label">Fournisseur de suggestions Web</string>
     <string name="allapps_use_web_suggestion_icon_label">Afficher l\'icône du fournisseur de suggestions Web dans la barre de recherche</string>
+    <string name="allapps_match_qsb_style_label">Utiliser le style de la barre de recherche du dock</string>
 </resources>
