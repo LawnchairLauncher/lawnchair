@@ -23,7 +23,7 @@
     -->
     <string name="preview_label">预览</string>
     <string name="action_create">创建</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_backup">返回</string>
     <string name="action_restore">恢复</string>
     <string name="action_delete">删除</string>
     <string name="action_reset">重置</string>
@@ -34,15 +34,15 @@
     <string name="always_choice">总是</string>
     <string name="never_choice">从不</string>
     <string name="clipboard">剪贴板</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy_link">复制链接</string>
     <string name="action_copy">复制</string>
     <string name="action_paste">粘贴</string>
     <string name="loading">正在加载…</string>
     <string name="managed_by_lawnchair">由 Lawnchair 管理</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">设置</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
+    <string name="settings_button_text">主屏幕设置</string>
+    <string name="system_settings">系统设置</string>
     <string name="title_change_settings">更改设置</string>
     <!--
 
@@ -64,9 +64,9 @@
     <string name="layout">布局</string>
     <!-- Generic styling options -->
     <string name="wallpaper">壁纸</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="background_opacity">背景透明度</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
+    <string name="copied_toast">复制到粘贴板</string>
     <string name="item_removed">已移除</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">选择要显示的项目</string>
@@ -523,4 +523,5 @@
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
     <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
     <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
 </resources>
