@@ -13,7 +13,6 @@ import app.lawnchair.search.adapter.HISTORY
 import app.lawnchair.search.adapter.LOADING
 import app.lawnchair.search.adapter.SETTINGS
 import app.lawnchair.search.adapter.SPACE
-import app.lawnchair.search.model.SearchResult
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetFactory
 import app.lawnchair.search.adapter.WEB_SUGGESTION
@@ -28,6 +27,7 @@ import app.lawnchair.search.algorithms.data.findContactsByName
 import app.lawnchair.search.algorithms.data.findSettingsByNameAndAction
 import app.lawnchair.search.algorithms.data.getRecentKeyword
 import app.lawnchair.search.algorithms.data.queryFilesInMediaStore
+import app.lawnchair.search.model.SearchResult
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.requestContactPermissionGranted
@@ -179,8 +179,6 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         }
     }
 
-
-
     private fun getAppSearchResults(
         apps: MutableList<AppInfo>,
         query: String,
@@ -218,8 +216,6 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         searchTargetFactory.createMarketSearchTarget(query)?.let { searchTargets.add(it) }
         emit(transformSearchResults(searchTargets))
     }
-
-
 
     private fun parseAppSearchResults(
         appResults: List<AppInfo>,

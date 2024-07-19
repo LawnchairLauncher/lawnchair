@@ -3,9 +3,9 @@ package app.lawnchair.search.algorithms
 import android.content.Context
 import android.os.Handler
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.search.adapter.SearchTargetFactory
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchTargetCompat
+import app.lawnchair.search.adapter.SearchTargetFactory
 import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.allapps.BaseAllAppsAdapter
@@ -24,6 +24,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
+
     // todo maybe use D.I.?
     private val searchTargetFactory = SearchTargetFactory(context)
 

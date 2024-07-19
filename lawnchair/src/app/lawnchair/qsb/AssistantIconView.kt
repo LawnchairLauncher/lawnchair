@@ -41,7 +41,7 @@ class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(co
 
         fun getVoiceIntent(
             provider: QsbSearchProvider,
-            context: Context
+            context: Context,
         ): Intent? {
             val intent = if (provider.supportVoiceIntent) provider.createVoiceIntent() else null
 

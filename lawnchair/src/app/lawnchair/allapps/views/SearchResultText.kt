@@ -13,8 +13,8 @@ import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.adapter.HEADER_JUSTIFY
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SPACE_MINI
-import app.lawnchair.search.model.SearchResultActionCallBack
 import app.lawnchair.search.adapter.SearchTargetCompat
+import app.lawnchair.search.model.SearchResultActionCallBack
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
 

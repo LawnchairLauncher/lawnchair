@@ -9,7 +9,6 @@ import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.search.adapter.SearchAdapterItem
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
-import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_REDIRECTION
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import com.android.app.search.LayoutType.CALCULATOR
 import com.android.app.search.LayoutType.EMPTY_DIVIDER
@@ -87,9 +86,9 @@ sealed class LawnchairSearchAlgorithm(
 
             // todo make quick launch work on non-app results
             if (
-                (target.isApp && target.layoutType == ICON_HORIZONTAL_TEXT && target.extras.getBoolean(EXTRA_QUICK_LAUNCH, false))
-                || target.isShortcut
-                ) {
+                (target.isApp && target.layoutType == ICON_HORIZONTAL_TEXT && target.extras.getBoolean(EXTRA_QUICK_LAUNCH, false)) ||
+                target.isShortcut
+            ) {
                 SearchAdapterItem.createAdapterItem(target, getAppBackground(index, appAndShortcutIndices))
             } else if (target.layoutType == ICON_SINGLE_VERTICAL_TEXT && target.extras.getBoolean(EXTRA_QUICK_LAUNCH, false)) {
                 SearchAdapterItem.createAdapterItem(target, normalBackground)
@@ -131,10 +130,11 @@ sealed class LawnchairSearchAlgorithm(
     private fun findAppAndShorcutIndices(filtered: List<SearchTargetCompat>): List<Int> {
         val appAndShortcutIndices =
             filtered.indices.filter {
-                (filtered[it].isApp || filtered[it].isShortcut)
-                    &&
-                    (filtered[it].layoutType == ICON_HORIZONTAL_TEXT
-                        || filtered[it].layoutType == SMALL_ICON_HORIZONTAL_TEXT)
+                (filtered[it].isApp || filtered[it].isShortcut) &&
+                    (
+                        filtered[it].layoutType == ICON_HORIZONTAL_TEXT ||
+                            filtered[it].layoutType == SMALL_ICON_HORIZONTAL_TEXT
+                        )
             }
 
         return appAndShortcutIndices

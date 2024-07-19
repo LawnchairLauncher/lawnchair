@@ -11,9 +11,9 @@ import app.lawnchair.allapps.views.SearchResultView.Companion.FLAG_HIDE_SUBTITLE
 import app.lawnchair.font.FontManager
 import app.lawnchair.search.adapter.HISTORY
 import app.lawnchair.search.adapter.SETTINGS
-import app.lawnchair.search.model.SearchResultActionCallBack
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.WEB_SUGGESTION
+import app.lawnchair.search.model.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.touch.ItemClickHandler

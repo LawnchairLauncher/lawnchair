@@ -40,7 +40,7 @@ import java.util.Locale
 import okio.ByteString
 
 class SearchTargetFactory(
-    private val context: Context
+    private val context: Context,
 ) {
     fun createAppSearchTarget(appInfo: AppInfo, asRow: Boolean = false): SearchTargetCompat {
         val componentName = appInfo.componentName
@@ -77,8 +77,8 @@ class SearchTargetFactory(
                 Icon.createWithResource(context, R.drawable.ic_allapps_search)
                     .setTint(ColorTokens.TextColorSecondary.resolveColor(context)),
             )
-                setIntent(browserIntent)
-            }.build()
+            setIntent(browserIntent)
+        }.build()
         return createSearchTarget(
             id,
             action,
@@ -225,7 +225,7 @@ class SearchTargetFactory(
             id,
             action,
             MARKET_STORE,
-            extras
+            extras,
         )
     }
 
@@ -335,13 +335,14 @@ class SearchTargetFactory(
                 setExtras(extras)
             }.build()
         }
-
     }
 }
 
 object FilesTarget {
     fun getPreviewIcon(
-        context: Context,info: IFileInfo): Icon {
+        context: Context,
+        info: IFileInfo,
+    ): Icon {
         val fileInfo = info as? FileInfo
         return if (fileInfo?.isImageType == true) {
             Icon.createWithFilePath(fileInfo.path)
