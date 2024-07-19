@@ -84,20 +84,21 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         val searchTargets = mutableListOf<SearchTargetCompat>()
 
         if (appResults.isNotEmpty()) {
-            if (appResults.size == 1 && context.isDefaultLauncher()) {
+            if (appResults.size == 1) {
                 val singleAppResult = appResults.firstOrNull()
-                val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
-                if (shortcuts != null) {
-                    if (shortcuts.isNotEmpty()) {
-                        searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
-                        searchTargets.add(createSearchTarget(singleAppResult, true))
-                        searchTargets.addAll(shortcuts.map(::createSearchTarget))
+                singleAppResult?.let { searchTargets.add(createSearchTarget(it, true)) }
+                if (context.isDefaultLauncher()) {
+                    val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
+                    if (shortcuts != null) {
+                        if (shortcuts.isNotEmpty()) {
+                            searchTargets.addAll(shortcuts.map(::createSearchTarget))
+                        }
                     }
                 }
             } else {
                 appResults.mapTo(searchTargets, ::createSearchTarget)
-                searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
             }
+            searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
         }
 
         generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }

@@ -21,7 +21,7 @@ fun createSearchTarget(appInfo: AppInfo, asRow: Boolean = false): SearchTargetCo
     val user = appInfo.user
     return SearchTargetCompat.Builder(
         SearchTargetCompat.RESULT_TYPE_APPLICATION,
-        if (asRow) LayoutType.SMALL_ICON_HORIZONTAL_TEXT else LayoutType.ICON_SINGLE_VERTICAL_TEXT,
+        if (asRow) LayoutType.ICON_HORIZONTAL_TEXT else LayoutType.ICON_SINGLE_VERTICAL_TEXT,
         generateHashKey(ComponentKey(componentName, user).toString()),
     )
         .setPackageName(componentName.packageName)
