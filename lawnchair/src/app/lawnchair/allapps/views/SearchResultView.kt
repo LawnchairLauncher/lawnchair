@@ -8,7 +8,7 @@ import app.lawnchair.search.adapter.CONTACT
 import app.lawnchair.search.adapter.FILES
 import app.lawnchair.search.adapter.MARKET_STORE
 import app.lawnchair.search.adapter.START_PAGE
-import app.lawnchair.search.adapter.SearchResultActionCallBack
+import app.lawnchair.search.model.SearchResultActionCallBack
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.WEB_SUGGESTION
 import com.android.app.search.LayoutType

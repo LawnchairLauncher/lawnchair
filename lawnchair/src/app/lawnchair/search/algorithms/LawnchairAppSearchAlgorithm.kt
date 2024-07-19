@@ -3,10 +3,9 @@ package app.lawnchair.search.algorithms
 import android.content.Context
 import android.os.Handler
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.search.adapter.GenerateSearchTarget
+import app.lawnchair.search.adapter.SearchTargetFactory
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchTargetCompat
-import app.lawnchair.search.adapter.createSearchTarget
 import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.allapps.BaseAllAppsAdapter
@@ -25,7 +24,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
-    private val generateSearchTarget = GenerateSearchTarget(context)
+    // todo maybe use D.I.?
+    private val searchTargetFactory = SearchTargetFactory(context)
 
     private var hiddenApps: Set<String> = setOf()
 
@@ -33,21 +33,21 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private var enableFuzzySearch = false
     private var maxResultsCount = 5
 
-    private val pref2 = PreferenceManager2.getInstance(context)
+    private val prefs2 = PreferenceManager2.getInstance(context)
 
     val coroutineScope = CoroutineScope(context = Dispatchers.IO)
 
     init {
-        pref2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
+        prefs2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
             enableFuzzySearch = it
         }
-        pref2.hiddenApps.onEach(launchIn = coroutineScope) {
+        prefs2.hiddenApps.onEach(launchIn = coroutineScope) {
             hiddenApps = it
         }
-        pref2.hiddenAppsInSearch.onEach(launchIn = coroutineScope) {
+        prefs2.hiddenAppsInSearch.onEach(launchIn = coroutineScope) {
             hiddenAppsInSearch = it
         }
-        pref2.maxAppSearchResultCount.onEach(launchIn = coroutineScope) {
+        prefs2.maxAppSearchResultCount.onEach(launchIn = coroutineScope) {
             maxResultsCount = it
         }
     }
@@ -86,22 +86,22 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         if (appResults.isNotEmpty()) {
             if (appResults.size == 1) {
                 val singleAppResult = appResults.firstOrNull()
-                singleAppResult?.let { searchTargets.add(createSearchTarget(it, true)) }
+                singleAppResult?.let { searchTargets.add(searchTargetFactory.createAppSearchTarget(it, true)) }
                 if (context.isDefaultLauncher()) {
                     val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
                     if (shortcuts != null) {
                         if (shortcuts.isNotEmpty()) {
-                            searchTargets.addAll(shortcuts.map(::createSearchTarget))
+                            searchTargets.addAll(shortcuts.map(searchTargetFactory::createShortcutTarget))
                         }
                     }
                 }
             } else {
-                appResults.mapTo(searchTargets, ::createSearchTarget)
+                appResults.mapTo(searchTargets, searchTargetFactory::createAppSearchTarget)
             }
-            searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
+            searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
         }
 
-        generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }
+        searchTargetFactory.createMarketSearchTarget(query)?.let { searchTargets.add(it) }
 
         setFirstItemQuickLaunch(searchTargets)
         val adapterItems = transformSearchResults(searchTargets)

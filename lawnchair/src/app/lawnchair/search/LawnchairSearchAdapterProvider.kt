@@ -8,7 +8,7 @@ import androidx.core.util.contains
 import app.lawnchair.allapps.views.SearchItemDecorator
 import app.lawnchair.allapps.views.SearchResultView
 import app.lawnchair.search.adapter.SearchAdapterItem
-import app.lawnchair.search.adapter.SearchResultActionCallBack
+import app.lawnchair.search.model.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
