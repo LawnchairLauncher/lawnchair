@@ -142,16 +142,16 @@
     <string name="transparent_background_icons_description">Usar fundo transparente nos ícones temáticos</string>
     <string name="auto_adaptive_icons_label">Ícones adaptativos automáticos</string>
     <string name="auto_adaptive_icons_description">Para todos os ícones não-adaptativos</string>
-    <string name="background_lightness_label">Background lightness</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
-    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="background_lightness_label">Luminosidade do fundo</string>
+    <string name="adaptive_icon_background_description">Use 100% de luz de fundo para fundo branco</string>
+    <string name="reset_custom_icons">Resetar ícones customizados</string>
     <string name="reset_custom_icons_confirmation">Todos os ícones personalizados serão redefinidos. Você quer continuar?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Ícones</string>
     <string name="icon_picker_reset_to_default">Restaurar ao padrão</string>
     <string name="icon_pack_external_picker">Abrir seletor externo</string>
-    <string name="pick_icon_from_label">Pick icon from</string>
-    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="pick_icon_from_label">Escolher ícone de</string>
+    <string name="icon_picker_load_failed">Não foi possível carregar mais ícones</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Círculo</string>
@@ -161,54 +161,54 @@
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octógono</string>
     <string name="icon_shape_sammy">Interface do Usuário</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="icon_shape_sharp_square">Sharp square</string>
+    <string name="icon_shape_rounded_square">Quadrado Arredondado</string>
+    <string name="icon_shape_sharp_square">Quadrado Afiado</string>
     <string name="icon_shape_square">Quadrado</string>
     <string name="icon_shape_squircle">Quadrado arredondado</string>
     <string name="icon_shape_teardrop">Lágrima</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Custom icon shape</string>
-    <string name="custom_icon_shape_create">Create custom icon shape</string>
+    <string name="custom_icon_shape">Formato de Ícone Personalizado</string>
+    <string name="custom_icon_shape_create">Formato de Ícone Personalizado</string>
     <string name="custom_icon_shape_edit">Edit custom icon shape</string>
-    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape_corner">Formato dos Cantos</string>
     <string name="custom_icon_shape_corner_round">Arredondado</string>
     <string name="custom_icon_shape_corner_squircle">Suave</string>
     <string name="custom_icon_shape_corner_cut">Recorte</string>
-    <string name="custom_icon_shape_top_left">Top left</string>
-    <string name="custom_icon_shape_top_right">Top right</string>
-    <string name="custom_icon_shape_bottom_left">Bottom left</string>
-    <string name="custom_icon_shape_bottom_right">Bottom right</string>
-    <string name="export_to_clipboard">Export to clipboard</string>
-    <string name="import_from_clipboard">Import from clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <string name="custom_icon_shape_top_left">Canto superior esquerdo</string>
+    <string name="custom_icon_shape_top_right">Canto superior direito</string>
+    <string name="custom_icon_shape_bottom_left">Canto inferior esquerdo</string>
+    <string name="custom_icon_shape_bottom_right">Canto inferior direito</string>
+    <string name="export_to_clipboard">Copiar para Área de transferência</string>
+    <string name="import_from_clipboard">Importar da área de transferência</string>
+    <string name="icon_shape_clipboard_import_error">Área de transferência não contém uma forma de ícone válida</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">Icon pack</string>
-    <string name="themed_icon_pack">Themed icon source</string>
-    <string name="system_icons">System icons</string>
-    <string name="themed_icon_title">Themed icons</string>
+    <string name="icon_pack">Pacotes de ícones</string>
+    <string name="themed_icon_pack">Fonte dos Ícones Temáticos</string>
+    <string name="system_icons">Ícones do Sistema</string>
+    <string name="themed_icon_title">Ícones Temáticos</string>
     <string name="themed_icons_off_label">Desligado</string>
-    <string name="themed_icons_home_label">Home screen</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen &amp; app drawer</string>
+    <string name="themed_icons_home_label">Tela de início</string>
+    <string name="themed_icons_home_and_drawer_label">Tela Inicial e Gaveta de Aplicativos</string>
     <string name="lawnicons_not_installed_description">Não há pacotes de ícones suportados</string>
     <!-- Fonts -->
-    <string name="pref_fonts_add_fonts">Add fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
+    <string name="pref_fonts_add_fonts">Adicionar Fontes</string>
+    <string name="pref_fonts_add_fonts_summary">Fontes OTF e TTF são suportadas</string>
     <string name="pref_fonts_missing_font">Fonte não encontrada</string>
-    <string name="font_label">Font (experimental)</string>
+    <string name="font_label">Fonte (Experimental)</string>
     <string name="fontWorkspace">Geral</string>
     <string name="fontHeading">Títulos</string>
-    <string name="fontHeadingMedium">Headings (medium)</string>
+    <string name="fontHeadingMedium">Títulos (Médio)</string>
     <string name="fontBody">Corpo</string>
-    <string name="fontBodyMedium">Body (medium)</string>
+    <string name="fontBodyMedium">Corpo (Médio)</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
-    <string name="font_weight_extra_light">Extra light</string>
+    <string name="font_weight_extra_light">Fonte extra fina</string>
     <string name="font_weight_light">Claro</string>
     <string name="font_weight_regular">Normal</string>
     <string name="font_weight_medium">Médio</string>
     <string name="font_weight_semi_bold">Semi Negrito</string>
     <string name="font_weight_bold">Negrito</string>
-    <string name="font_weight_extra_bold">Extra bold</string>
+    <string name="font_weight_extra_bold">Extra Negrito</string>
     <string name="font_weight_extra_black">Preto</string>
     <!--
 
@@ -220,20 +220,20 @@
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Escuro</string>
     <string name="theme_system_default">Sistema</string>
-    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <string name="theme_follow_wallpaper">Corresponder ao Papel de Parede</string>
     <!-- Color style -->
-    <string name="color_style_label">Color style</string>
+    <string name="color_style_label">Estilo de cor</string>
     <string name="color_style_spritz">Spritz</string>
     <string name="color_style_tonal_spot">Tonal Spot</string>
-    <string name="color_style_vibrant">Vibrant</string>
-    <string name="color_style_expressive">Expressive</string>
-    <string name="color_style_rainbow">Rainbow</string>
-    <string name="color_style_fruit_salad">Fruit Salad</string>
-    <string name="color_style_content">Content</string>
-    <string name="color_style_monochromatic">Monochromatic</string>
+    <string name="color_style_vibrant">Vibrante</string>
+    <string name="color_style_expressive">Expressivo</string>
+    <string name="color_style_rainbow">Arco-íris</string>
+    <string name="color_style_fruit_salad">Salada de frutas</string>
+    <string name="color_style_content">Conteúdo</string>
+    <string name="color_style_monochromatic">Monocromático</string>
     <!-- Accent color and color picker -->
     <string name="colors">Cores</string>
-    <string name="accent_color">Accent color</string>
+    <string name="accent_color">Cor de Destaque</string>
     <string name="swatches">Amostras</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Vermelho</string>
@@ -245,7 +245,7 @@
     <string name="hsb_brightness">Brilho</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Deslizantes</string>
-    <string name="invalid_color">Invalid color</string>
+    <string name="invalid_color">Cor Inválida</string>
     <!--
 
     Smartspace
@@ -258,19 +258,19 @@
     <!-- Battery labels -->
     <string name="smartspace_battery_charging">Carregando</string>
     <string name="smartspace_battery_full">Carregado</string>
-    <string name="smartspace_battery_low">Battery low</string>
+    <string name="smartspace_battery_low">Bateria Fraca</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Termina em %2$s"</string>
     <string name="smartspace_widget">Resumo</string>
     <string name="smartspace_widget_description">What to show</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Calendário</string>
-    <string name="smartspace_date_and_time">Date &amp; time</string>
+    <string name="smartspace_date_and_time">Data &amp; hora</string>
     <string name="smartspace_date">Data</string>
     <string name="smartspace_time">Horário</string>
-    <string name="smartspace_time_format">Time format</string>
-    <string name="smartspace_time_follow_system">Follow system</string>
-    <string name="smartspace_time_12_hour_format">12-hour format</string>
-    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <string name="smartspace_time_format">Formato da Hora</string>
+    <string name="smartspace_time_follow_system">Seguir o Sistema</string>
+    <string name="smartspace_time_12_hour_format">formato de 12 Horas</string>
+    <string name="smartspace_time_24_hour_format">formato de 24 Horas</string>
     <!-- Available targets -->
     <string name="smartspace_weather">Clima</string>
     <string name="smartspace_battery_status">Battery status</string>
@@ -372,8 +372,8 @@
     <string name="minus_one_unavailable">Nenhum aplicativo de feed instalado</string>
     <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed provider</string>
-    <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
+    <string name="wallpaper_scrolling_label">Papel de Parede Deslizante</string>
+    <string name="wallpaper_depth_effect_label">Efeito de Profundidade do Plano de Fundo</string>
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
     <string name="home_screen_grid">Home screen grid</string>

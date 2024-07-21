@@ -69,7 +69,7 @@
     <string name="copied_toast">Gekopieerd naar klembord</string>
     <string name="item_removed">Item verwijderd</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">Wat te tonen</string>
+    <string name="what_to_show">Weergeven</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Om je telefoon te vergrendelen bij het uitvoeren van een gebaar, heeft Lawnchair toegang tot toegankelijkheid nodig.\n\nLawnchair kijkt niet naar gebruikersacties, hoewel het voorrecht om dit te doen vereist is voor alle toegankelijkheidsdiensten. Lawnchair negeert elke gebeurtenis die door het systeem wordt gemeld.\n\nOm je telefoon te vergrendelen, gebruikt Lawnchair de performGlobalAction Accessibility service.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -81,13 +81,13 @@
     -->
     <string name="settings">Instellingen</string>
     <string name="general_label">Algemeen</string>
-    <string name="general_description">Kleuren, pictogrampakketten, meldingsstipjes</string>
+    <string name="general_description">Kleuren, pictogrampakketten, meldingsstippen</string>
     <string name="home_screen_label">Startscherm</string>
     <string name="home_screen_description">Feed, raster, pictogrammen</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Zoekbalk, aantal pictogrammen</string>
     <string name="app_drawer_label">App-lade</string>
-    <string name="app_drawer_description">Verborgen apps, aantal kolommen, pictogrammen</string>
+    <string name="app_drawer_description">Verborgen apps, kolommen, pictogrammen</string>
     <string name="drawer_search_label">App-lade doorzoeken</string>
     <string name="drawer_search_description">Websuggesties, Algemeen zoeken</string>
     <string name="folders_label">Mappen</string>
@@ -117,14 +117,14 @@
 
     -->
     <string name="set_default_launcher_tip">Stel Lawnchair in als standaard launcher voor toegang tot snelkoppelingen en extra functies</string>
-    <string name="notification_dots">Meldingenstippen</string>
+    <string name="notification_dots">Meldingsstippen</string>
     <string name="show_notification_count">Aantal meldingen weergeven</string>
-    <string name="notification_dots_color">Meldings-stip kleur</string>
+    <string name="notification_dots_color">Meldingsstip-kleur</string>
     <string name="notification_dots_text_color">Aantal meldingen kleur</string>
-    <string name="notification_dots_color_contrast_warning_always">Waarschuwing: Meldingenstip- en aantal-kleuren staan in onvoldoende onderling contrast</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Waarschuwing: Meldingenstip- en aantal-kleuren staan mogelijk in onvoldoende onderling contrast</string>
+    <string name="notification_dots_color_contrast_warning_always">Waarschuwing: Meldingsstip- en aantal-kleuren staan in onvoldoende onderling contrast</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Waarschuwing: Meldingsstip- en aantal-kleuren staan mogelijk in onvoldoende onderling contrast</string>
     <string name="missing_notification_access_label">Toegang tot meldingen vereist</string>
-    <string name="missing_notification_access_desc">Om meldingsstipjes te tonen, schakel app-meldingen in voor <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="missing_notification_access_desc">Om meldingsstippen te tonen, schakel app-meldingen in voor <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -261,7 +261,7 @@
     <string name="smartspace_battery_low">Laag batterijniveau</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Vol in %2$s"</string>
     <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">Wat te tonen</string>
+    <string name="smartspace_widget_description">Weergeven</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Agenda</string>
     <string name="smartspace_date_and_time">Datum &amp; tijd</string>
@@ -274,10 +274,10 @@
     <!-- Available targets -->
     <string name="smartspace_weather">Weer</string>
     <string name="smartspace_battery_status">Batterijstatus</string>
-    <string name="smartspace_now_playing">Nu aan het spelen</string>
+    <string name="smartspace_now_playing">Wordt nu afgespeeld</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tik om in te stellen</string>
-    <string name="event_provider_missing_notification_dots">Schakel meldingenstippen in om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>te gebruiken.</string>
+    <string name="event_provider_missing_notification_dots">Schakel meldingsstippen in om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Weergeven op startscherm</string>
     <string name="smartspace_widget_toggle_description">At a Glance kan handmatig aan het startscherm worden toegevoegd door de “Lawnchair ” widget te plaatsen</string>
@@ -309,14 +309,14 @@
     Backup and restore
 
     -->
-    <string name="create_backup">Back-up maken</string>
-    <string name="what_to_backup">Wat te back-uppen</string>
+    <string name="create_backup">Back-up aanmaken</string>
+    <string name="what_to_backup">Back-uppen</string>
     <string name="backup_content_layout_and_settings">Lay-out en instellingen</string>
     <string name="backup_content_wallpaper">Achtergrond</string>
     <string name="backup_create_success">Back-up gemaakt</string>
     <string name="backup_create_error">Back-up maken mislukt</string>
     <string name="restore_backup">Back-up terugzetten</string>
-    <string name="what_to_restore">Wat terug te zetten</string>
+    <string name="what_to_restore">Terugzetten</string>
     <string name="backup_restore_success">Back-up teruggezet</string>
     <string name="backup_restore_error">Back-up herstellen mislukt</string>
     <string name="invalid_backup_file">Ongeldige back-up bestand</string>
@@ -325,7 +325,7 @@
     Gesture settings
 
     -->
-    <string name="gesture_double_tap">Dubbel tikken</string>
+    <string name="gesture_double_tap">Dubbeltikken</string>
     <string name="gesture_swipe_up">Omhoog vegen</string>
     <string name="gesture_swipe_down">Omlaag vegen</string>
     <string name="gesture_home_tap">Startknop</string>
@@ -337,7 +337,7 @@
     <string name="gesture_handler_open_app_config">%1$s openen</string>
     <string name="gesture_handler_open_app_drawer">App-lade openen</string>
     <string name="gesture_handler_open_app_search">App zoeken openen</string>
-    <string name="gesture_handler_open_search">Zoeken openen</string>
+    <string name="gesture_handler_open_search">Zoekopdracht openen</string>
     <string name="pick_app_for_gesture">App kiezen</string>
     <string name="dt2s_admin_hint_title">Beheerdersrechten vereist</string>
     <string name="dt2s_admin_hint">Om Dubbeltikken voor Slaapstand te gebruiken, moet Lawnchair worden ingesteld als een apparaatbeheerder-app. Tik op \"Instellingen openen\" en tik vervolgens op \"Activeer deze apparaatbeheerder-app.\"</string>
@@ -372,7 +372,7 @@
     <string name="minus_one_unavailable">Geen feed apps geïnstalleerd</string>
     <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed-aaanbieder</string>
-    <string name="wallpaper_scrolling_label">Scrollende achtergrond</string>
+    <string name="wallpaper_scrolling_label">Achtergrond schuiven</string>
     <string name="wallpaper_depth_effect_label">Achtergrond diepte-effect</string>
     <string name="wallpaper_depth_effect_description">Achtergrond in- en uitzoomen bij de overgang tussen de verschillende schermen</string>
     <string name="show_sys_ui_scrim">Schaduw bovenzijde</string>
@@ -382,7 +382,7 @@
     <string name="home_screen_locked">Startscherm is vergrendeld</string>
     <string name="home_screen_lock_description">Wijzigingen aan de lay-out van het startscherm voorkomen</string>
     <string name="show_dot_pagination_label">Toon stip-paginering</string>
-    <string name="show_dot_pagination_description">Gebruik punten in plaats van lijnen om het paginanummer te tonen</string>
+    <string name="show_dot_pagination_description">Gebruik stippen in plaats van lijnen om het paginanummer te tonen</string>
     <string name="show_material_u_popup_label">Nieuwe pop-upstijl gebruiken</string>
     <string name="show_material_u_popup_description">Material You\'s stuiterende en enigszins geconsolideerde pop-upstijl gebruiken</string>
     <string name="popup_menu">Pop-upmenu</string>
@@ -396,11 +396,11 @@
     <string name="color_light">Licht</string>
     <string name="color_dark">Donker</string>
     <string name="force_rounded_widgets">Afgeronde hoeken</string>
-    <string name="allow_widget_overlap">Overlappingen toestaan</string>
-    <string name="force_widget_resize_label">Widget-formaat afdwingen</string>
+    <string name="allow_widget_overlap">Overlapping toestaan</string>
+    <string name="force_widget_resize_label">Widget-grootte afdwingen</string>
     <string name="force_widget_resize_description">Aanpassen van de grootte toestaan van widgets die beperkt zijn tot een specifieke grootte</string>
-    <string name="widget_unlimited_size_label">Beperkingen voor grootte verwijderen</string>
-    <string name="widget_unlimited_size_description">Verwijder de minimale en maximale groottebeperkingen van widgets</string>
+    <string name="widget_unlimited_size_label">Beperkingen van grootte verwijderen</string>
+    <string name="widget_unlimited_size_description">Beperkingen van min/max grootte van widgets verwijderen</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Dok weergeven</string>
     <string name="search_bar_label">Zoekbalk</string>
