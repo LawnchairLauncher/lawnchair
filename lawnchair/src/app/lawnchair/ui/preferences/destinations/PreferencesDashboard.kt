@@ -183,7 +183,7 @@ fun PreferencesOverflowMenu(
                 Modifier
                     .clip(highlightShape)
                     .background(highlightColor)
-            }
+            },
         )
     }
     val openRestoreBackup = restoreBackupOpener()
