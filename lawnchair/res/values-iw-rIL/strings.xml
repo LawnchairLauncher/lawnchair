@@ -221,6 +221,16 @@
     <string name="theme_dark">כהה</string>
     <string name="theme_system_default">מערכת</string>
     <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <!-- Color style -->
+    <string name="color_style_label">Color style</string>
+    <string name="color_style_spritz">Spritz</string>
+    <string name="color_style_tonal_spot">Tonal Spot</string>
+    <string name="color_style_vibrant">Vibrant</string>
+    <string name="color_style_expressive">Expressive</string>
+    <string name="color_style_rainbow">Rainbow</string>
+    <string name="color_style_fruit_salad">Fruit Salad</string>
+    <string name="color_style_content">Content</string>
+    <string name="color_style_monochromatic">Monochromatic</string>
     <!-- Accent color and color picker -->
     <string name="colors">צבעים</string>
     <string name="accent_color">Accent color</string>
@@ -466,7 +476,7 @@
     <string name="all_apps_search_result_files">Files from device</string>
     <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
     <string name="all_apps_search_market_message">Search for more apps</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
     <string name="clear_history">Clear search history</string>
     <string name="search_input_action_clear_results">Clear search box</string>
@@ -500,7 +510,7 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Media, files, and more</string>
     <string name="search_pref_result_contacts_description">אנשי קשר ועוד</string>
-    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
     <string name="max_people_result_count_title">Maximum number of people in search results</string>
@@ -513,4 +523,8 @@
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
     <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
     <string name="grant_requested_permissions">Grant permissions</string>
+    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
+    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
+    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
 </resources>

@@ -8,16 +8,14 @@ import app.lawnchair.search.adapter.CALCULATOR
 import app.lawnchair.search.adapter.CONTACT
 import app.lawnchair.search.adapter.ERROR
 import app.lawnchair.search.adapter.FILES
-import app.lawnchair.search.adapter.GenerateSearchTarget
 import app.lawnchair.search.adapter.HEADER_JUSTIFY
 import app.lawnchair.search.adapter.HISTORY
 import app.lawnchair.search.adapter.LOADING
 import app.lawnchair.search.adapter.SETTINGS
 import app.lawnchair.search.adapter.SPACE
-import app.lawnchair.search.adapter.SearchResult
 import app.lawnchair.search.adapter.SearchTargetCompat
+import app.lawnchair.search.adapter.SearchTargetFactory
 import app.lawnchair.search.adapter.WEB_SUGGESTION
-import app.lawnchair.search.adapter.createSearchTarget
 import app.lawnchair.search.algorithms.data.Calculation
 import app.lawnchair.search.algorithms.data.ContactInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
@@ -29,6 +27,7 @@ import app.lawnchair.search.algorithms.data.findContactsByName
 import app.lawnchair.search.algorithms.data.findSettingsByNameAndAction
 import app.lawnchair.search.algorithms.data.getRecentKeyword
 import app.lawnchair.search.algorithms.data.queryFilesInMediaStore
+import app.lawnchair.search.model.SearchResult
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.requestContactPermissionGranted
@@ -58,7 +57,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
-    private val generateSearchTarget = GenerateSearchTarget(context)
+    private val searchTargetFactory = SearchTargetFactory(context)
 
     private var hiddenApps: Set<String> = emptySet()
 
@@ -67,6 +66,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     private var searchApps = true
     private var enableFuzzySearch = false
     private var useWebSuggestions = true
+    private var webSuggestionsProvider = ""
 
     private val prefs: PreferenceManager = PreferenceManager.getInstance(context)
     private val pref2 = PreferenceManager2.getInstance(context)
@@ -94,6 +94,10 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
         useWebSuggestions = prefs.searchResultStartPageSuggestion.get()
         searchApps = prefs.searchResultApps.get()
+
+        pref2.webSuggestionProvider.onEach(launchIn = coroutineScope) {
+            webSuggestionsProvider = it.toString()
+        }
 
         pref2.maxAppSearchResultCount.onEach(launchIn = coroutineScope) {
             maxAppResultsCount = it
@@ -203,13 +207,13 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = flow {
         val searchTargets = mutableListOf<SearchTargetCompat>()
 
-        searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
+        searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
         if (useWebSuggestions) {
             withContext(Dispatchers.IO) {
-                searchTargets.add(generateSearchTarget.getStartPageSearchItem(query))
+                searchTargets.add(searchTargetFactory.createWebSearchTarget(query, webSuggestionsProvider))
             }
         }
-        generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }
+        searchTargetFactory.createMarketSearchTarget(query)?.let { searchTargets.add(it) }
         emit(transformSearchResults(searchTargets))
     }
 
@@ -218,19 +222,21 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         searchTargets: MutableList<SearchTargetCompat>,
     ) {
         if (appResults.isNotEmpty()) {
-            if (appResults.size == 1 && context.isDefaultLauncher()) {
+            if (appResults.size == 1) {
                 val singleAppResult = appResults.firstOrNull()
-                val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
-                if (shortcuts != null) {
-                    if (shortcuts.isNotEmpty()) {
-                        searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
-                        searchTargets.add(createSearchTarget(singleAppResult, true))
-                        searchTargets.addAll(shortcuts.map(::createSearchTarget))
+                singleAppResult?.let { searchTargets.add(searchTargetFactory.createAppSearchTarget(it, true)) }
+                if (context.isDefaultLauncher()) {
+                    val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
+                    if (shortcuts != null) {
+                        if (shortcuts.isNotEmpty()) {
+                            searchTargets.addAll(shortcuts.map(searchTargetFactory::createShortcutTarget))
+                        }
                     }
                 }
             } else {
-                appResults.mapTo(searchTargets, ::createSearchTarget)
+                appResults.mapTo(searchTargets, searchTargetFactory::createAppSearchTarget)
             }
+            searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
         }
     }
 
@@ -238,57 +244,63 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         localSearchResults: MutableList<SearchResult>,
         searchTargets: MutableList<SearchTargetCompat>,
     ) {
+        val suggestionProvider = webSuggestionsProvider
         val suggestions = filterByType(localSearchResults, WEB_SUGGESTION)
         if (suggestions.isNotEmpty()) {
             val suggestionsHeader =
-                generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
+                searchTargetFactory.createHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
             searchTargets.add(suggestionsHeader)
-            searchTargets.addAll(suggestions.map { generateSearchTarget.getSuggestionTarget(it.resultData as String) })
+            searchTargets.addAll(
+                suggestions.map {
+                    searchTargetFactory.createWebSuggestionsTarget(it.resultData as String, suggestionProvider)
+                },
+            )
         }
 
         val calculator = filterByType(localSearchResults, CALCULATOR).firstOrNull()
         val calcData = calculator?.resultData as? Calculation
         if (calcData != null && calcData.isValid) {
             val calculatorHeader =
-                generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_calculator))
+                searchTargetFactory.createHeaderTarget(context.getString(R.string.all_apps_search_result_calculator))
             searchTargets.add(calculatorHeader)
             searchTargets.add(
-                generateSearchTarget.getCalculationTarget(calcData),
+                searchTargetFactory.createCalculatorTarget(calcData),
             )
         }
 
         val contacts = filterByType(localSearchResults, CONTACT)
         if (contacts.isNotEmpty()) {
             val contactsHeader =
-                generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_contacts_from_device))
+                searchTargetFactory.createHeaderTarget(context.getString(R.string.all_apps_search_result_contacts_from_device))
             searchTargets.add(contactsHeader)
-            searchTargets.addAll(contacts.map { generateSearchTarget.getContactSearchItem(it.resultData as ContactInfo) })
+            searchTargets.addAll(contacts.map { searchTargetFactory.createContactsTarget(it.resultData as ContactInfo) })
         }
 
         val settings = filterByType(localSearchResults, SETTINGS)
         if (settings.isNotEmpty()) {
             val settingsHeader =
-                generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_settings_entry_from_device))
+                searchTargetFactory.createHeaderTarget(context.getString(R.string.all_apps_search_result_settings_entry_from_device))
             searchTargets.add(settingsHeader)
-            searchTargets.addAll(settings.mapNotNull { generateSearchTarget.getSettingSearchItem(it.resultData as SettingInfo) })
+            searchTargets.addAll(settings.mapNotNull { searchTargetFactory.createSettingsTarget(it.resultData as SettingInfo) })
         }
 
+        // todo refactor to only show when search is first clicked
         val recentKeyword = filterByType(localSearchResults, HISTORY)
         if (recentKeyword.isNotEmpty()) {
-            val recentKeywordHeader = generateSearchTarget.getHeaderTarget(
+            val recentKeywordHeader = searchTargetFactory.createHeaderTarget(
                 context.getString(R.string.search_pref_result_history_title),
                 HEADER_JUSTIFY,
             )
             searchTargets.add(recentKeywordHeader)
-            searchTargets.addAll(recentKeyword.map { generateSearchTarget.getRecentKeywordTarget(it.resultData as RecentKeyword) })
+            searchTargets.addAll(recentKeyword.map { searchTargetFactory.createSearchHistoryTarget(it.resultData as RecentKeyword, suggestionProvider) })
         }
 
         val files = filterByType(localSearchResults, FILES)
         if (files.isNotEmpty()) {
             val filesHeader =
-                generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_files))
+                searchTargetFactory.createHeaderTarget(context.getString(R.string.all_apps_search_result_files))
             searchTargets.add(filesHeader)
-            searchTargets.addAll(files.map { generateSearchTarget.getFileInfoSearchItem(it.resultData as IFileInfo) })
+            searchTargets.addAll(files.map { searchTargetFactory.createFilesTarget(it.resultData as IFileInfo) })
         }
     }
 
@@ -351,7 +363,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                     val timeout = maxWebSuggestionDelay.toLong()
                     val result = withTimeoutOrNull(timeout) {
                         if (prefs.searchResultStartPageSuggestion.get()) {
-                            WebSearchProvider.fromString("startpage").getSuggestions(query, maxWebSuggestionsCount).map {
+                            WebSearchProvider.fromString(webSuggestionsProvider).getSuggestions(query, maxWebSuggestionsCount).map {
                                 SearchResult(
                                     WEB_SUGGESTION,
                                     it,

@@ -3,15 +3,15 @@ import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.5.0"
-    id 'com.android.library' version "8.5.0" apply false
-    id 'com.android.test' version '8.5.0' apply false
+    id 'com.android.application' version "8.5.1"
+    id 'com.android.library' version "8.5.1" apply false
+    id 'com.android.test' version '8.5.1' apply false
     id 'androidx.baselineprofile' version '1.2.4'
     id 'org.jetbrains.kotlin.android' version "2.0.0"
     id 'org.jetbrains.kotlin.plugin.compose' version "2.0.0"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "2.0.0"
     id 'org.jetbrains.kotlin.plugin.serialization' version "2.0.0"
-    id "com.google.devtools.ksp" version "2.0.0-1.0.22"
+    id "com.google.devtools.ksp" version "2.0.0-1.0.23"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.11.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
@@ -164,7 +164,6 @@ android {
     buildFeatures {
         aidl true
         buildConfig true
-        compose true
         resValues true
     }
 
@@ -379,8 +378,8 @@ dependencies {
     implementation 'androidx.compose.material3:material3-window-size-class:1.3.0-beta04'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.9.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2"
-    implementation "androidx.navigation:navigation-compose:2.8.0-beta04"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3"
+    implementation "androidx.navigation:navigation-compose:2.8.0-beta05"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     def accompanistVersion = '0.34.0'
@@ -390,7 +389,7 @@ dependencies {
     implementation "com.google.android.material:material:1.12.0"
     implementation "io.github.fornewid:material-motion-compose-core:1.2.1"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
-    implementation 'io.coil-kt:coil-compose:2.6.0'
+    implementation 'io.coil-kt:coil-compose:2.7.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
     def optoVersion = "1.0.18"
     implementation "com.patrykmichalik.opto:domain:$optoVersion"
@@ -414,7 +413,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.4.1'
 
     // Smartspacer
-    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.10') {
+    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.11') {
         exclude group: "com.github.skydoves", module: "balloon"
     }
 }
@@ -434,7 +433,7 @@ spotless {
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.4.4",
+            "io.nlopez.compose.rules:ktlint:0.4.5",
         ]).editorConfigOverride([
             "ktlint_compose_compositionlocal-allowlist": "disabled",
         ])

@@ -81,6 +81,9 @@
     <!-- which hotseat mode to use by default -->
     <string name="config_default_hotseat_mode" translatable="false">lawnchair</string>
 
+    <!-- which web search provider to use by default -->
+    <string name="config_default_web_suggestion_provider" translatable="false">startpage</string>
+
     <bool name="config_default_show_hotseat">true</bool>
     <bool name="config_default_home_layout_only">false</bool>
     <bool name="config_default_always_reload_icons">true</bool>
@@ -131,7 +134,7 @@
     <item name="config_default_home_icon_label_folder_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_drawer_icon_label_size_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_drawer_cell_height_factor" type="dimen" format="float">1.0</item>
-    <item name="config_default_drawer_left_right_factor" type="dimen" format="float">0.0</item>
+    <item name="config_default_drawer_left_right_factor" type="dimen" format="float">0.4</item>
     <item name="config_default_search_max_result_count" type="dimen" format="integer">5</item>
     <item name="config_default_files_max_result_count" type="dimen" format="integer">3</item>
     <item name="config_default_people_max_result_count" type="dimen" format="integer">10</item>

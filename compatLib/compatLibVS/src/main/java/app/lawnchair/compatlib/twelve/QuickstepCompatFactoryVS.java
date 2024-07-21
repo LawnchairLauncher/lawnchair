@@ -30,11 +30,7 @@ public class QuickstepCompatFactoryVS extends QuickstepCompatFactoryVR {
     @NonNull
     @Override
     public RemoteTransitionCompat getRemoteTransitionCompat() {
-        try {
-            return this::createRemoteTransition;
-        } catch (Throwable t) {
-            return super.getRemoteTransitionCompat();
-        }
+        return this::createRemoteTransition;
     }
 
     // TODO remove this as it causing glitches on first launch opening/closing app
@@ -51,7 +47,8 @@ public class QuickstepCompatFactoryVS extends QuickstepCompatFactoryVR {
                 | InstantiationException
                 | InvocationTargetException
                 | NoSuchMethodException e) {
-            throw new RuntimeException("Error creating RemoteTransitionCompat" + debugName, e);
+            return super.getRemoteTransitionCompat()
+                    .getRemoteTransition(remoteTransition, appThread, debugName);
         }
     }
 }

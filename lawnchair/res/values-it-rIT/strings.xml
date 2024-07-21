@@ -34,16 +34,16 @@
     <string name="always_choice">Sempre</string>
     <string name="never_choice">Mai</string>
     <string name="clipboard">Appunti</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy_link">Copia link</string>
     <string name="action_copy">Copia</string>
     <string name="action_paste">Incolla</string>
     <string name="loading">Caricamento…</string>
     <string name="managed_by_lawnchair">Gestito da Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferenze</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">Impostazioni Schermata Home</string>
+    <string name="system_settings">Impostazioni di Sistema</string>
+    <string name="title_change_settings">Modifica impostazioni</string>
     <!--
 
     General "words" used throughout Lawnchair
@@ -64,14 +64,14 @@
     <string name="layout">Layout</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Sfondo</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="background_opacity">Opacità sfondo</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
+    <string name="copied_toast">Copiato negli appunti</string>
     <string name="item_removed">Elemento rimosso</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
+    <string name="what_to_show">Cosa mostrare</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Per bloccare il telefono quando si esegue un gesto, Lawnchair richiede l\'accesso all\'accessibilità.\n\nLawnchair non osserva alcuna azione dell\'utente, anche se il privilegio di farlo è richiesto per tutti i servizi di accessibilità. Lawnchair scarta qualsiasi evento inviato dal sistema.\n\nPer bloccare il telefono, Lawnchair utilizza il servizio di accessibilità performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <!--
@@ -81,14 +81,14 @@
     -->
     <string name="settings">Impostazioni</string>
     <string name="general_label">Generale</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="general_description">Colori, pacchetti di icone, punti di notifica</string>
+    <string name="home_screen_label">Schermata Home</string>
+    <string name="home_screen_description">Feed, griglia, icone</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
+    <string name="dock_description">Barra di ricerca, numero d\'icone</string>
+    <string name="app_drawer_label">Menù delle app</string>
+    <string name="app_drawer_description">Applicazioni nascoste, numero di colonne, icone</string>
+    <string name="drawer_search_label">Ricerca nel menù app</string>
     <string name="drawer_search_description">Web suggestions, global search</string>
     <string name="folders_label">Cartelle</string>
     <string name="folders_description">Row and column count</string>
@@ -221,6 +221,16 @@
     <string name="theme_dark">Scuro</string>
     <string name="theme_system_default">Sistema</string>
     <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <!-- Color style -->
+    <string name="color_style_label">Color style</string>
+    <string name="color_style_spritz">Spritz</string>
+    <string name="color_style_tonal_spot">Tonal Spot</string>
+    <string name="color_style_vibrant">Vibrant</string>
+    <string name="color_style_expressive">Expressive</string>
+    <string name="color_style_rainbow">Rainbow</string>
+    <string name="color_style_fruit_salad">Fruit Salad</string>
+    <string name="color_style_content">Content</string>
+    <string name="color_style_monochromatic">Monochromatic</string>
     <!-- Accent color and color picker -->
     <string name="colors">Colori</string>
     <string name="accent_color">Accent color</string>
@@ -464,7 +474,7 @@
     <string name="all_apps_search_result_files">Files from device</string>
     <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
     <string name="all_apps_search_market_message">Search for more apps</string>
-    <string name="all_apps_search_startpage_message">Cerca su <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Cerca su <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
     <string name="clear_history">Clear search history</string>
     <string name="search_input_action_clear_results">Clear search box</string>
@@ -498,7 +508,7 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Media, file e altro</string>
     <string name="search_pref_result_contacts_description">Contatti e altro</string>
-    <string name="search_pref_result_web_description">Tramite <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
     <string name="max_people_result_count_title">Maximum number of people in search results</string>
@@ -511,4 +521,8 @@
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
     <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
     <string name="grant_requested_permissions">Grant permissions</string>
+    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
+    <string name="allapps_web_suggestion_provider_label">Fornitore di suggerimenti web</string>
+    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
 </resources>

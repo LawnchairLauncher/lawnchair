@@ -545,6 +545,7 @@
     <string name="search_provider_github" translatable="false">GitHub</string>
     <string name="search_provider_youtube" translatable="false">YouTube</string>
     <string name="search_provider_pixel_search" translatable="false">Pixel Search</string>
+    <string name="search_provider_yandex" translatable="false">Yandex</string>
 
     <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
 
@@ -625,7 +626,7 @@
     <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
 
     <string name="all_apps_search_market_message">Search for more apps</string>
-    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
 
     <string name="clear_history">Clear search history</string>
@@ -670,7 +671,7 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Media, files, and more</string>
     <string name="search_pref_result_contacts_description">Contacts and more</string>
-    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
 
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
@@ -687,4 +688,7 @@
     <string name="grant_requested_permissions">Grant permissions</string>
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
 
+    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
+    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
 </resources>

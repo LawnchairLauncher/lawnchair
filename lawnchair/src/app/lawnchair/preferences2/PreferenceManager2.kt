@@ -35,6 +35,7 @@ import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
+import app.lawnchair.search.algorithms.data.WebSearchProvider
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
@@ -114,8 +115,8 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val colorStyle = preference(
         key = stringPreferencesKey("color_style"),
         defaultValue = ColorStyle.fromString("tonal_spot"),
-        parse = { ColorStyle.fromString(it) },
-        save = { it.toString() },
+        parse = ColorStyle::fromString,
+        save = ColorStyle::toString,
         onSet = { reloadHelper.restart() },
     )
 
@@ -294,7 +295,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
 
     val searchAlgorithm = preference(
         key = stringPreferencesKey(name = "search_algorithm"),
-        defaultValue = LawnchairSearchAlgorithm.APP_SEARCH,
+        defaultValue = LawnchairSearchAlgorithm.LOCAL_SEARCH,
         onSet = { reloadHelper.recreate() },
     )
 
@@ -408,6 +409,19 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val enableFuzzySearch = preference(
         key = booleanPreferencesKey(name = "enable_fuzzy_search"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_fuzzy_search),
+    )
+
+    val matchHotseatQsbStyle = preference(
+        key = booleanPreferencesKey(name = "use_drawer_search_icon"),
+        defaultValue = false,
+    )
+
+    val webSuggestionProvider = preference(
+        key = stringPreferencesKey(name = "web_suggestion_provider"),
+        defaultValue = WebSearchProvider.fromString(context.resources.getString(R.string.config_default_web_suggestion_provider)),
+        parse = { WebSearchProvider.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.recreate() },
     )
 
     val maxAppSearchResultCount = preference(
