@@ -86,10 +86,10 @@ sealed class LawnchairSearchAlgorithm(
 
             // todo make quick launch work on non-app results
             if (
-                (target.isApp && target.layoutType == ICON_HORIZONTAL_TEXT && target.extras.getBoolean(EXTRA_QUICK_LAUNCH, false)) ||
+                (target.isApp && target.layoutType == SMALL_ICON_HORIZONTAL_TEXT) ||
                 target.isShortcut
             ) {
-                SearchAdapterItem.createAdapterItem(target, getAppBackground(index, appAndShortcutIndices))
+                SearchAdapterItem.createAdapterItem(target, getGroupedBackground(index, appAndShortcutIndices))
             } else if (target.layoutType == ICON_SINGLE_VERTICAL_TEXT && target.extras.getBoolean(EXTRA_QUICK_LAUNCH, false)) {
                 SearchAdapterItem.createAdapterItem(target, normalBackground)
             } else {
@@ -166,13 +166,6 @@ sealed class LawnchairSearchAlgorithm(
         isFirst && isLast -> normalBackground
         isFirst -> topBackground
         isLast -> bottomBackground
-        else -> centerBackground
-    }
-
-    private fun getAppBackground(index: Int, indices: List<Int>): SearchItemBackground = when {
-        indices.size == 1 -> normalBackground
-        index == indices.first() -> topBackground
-        index == indices.last() -> bottomBackground
         else -> centerBackground
     }
 

@@ -222,19 +222,17 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         searchTargets: MutableList<SearchTargetCompat>,
     ) {
         if (appResults.isNotEmpty()) {
-            if (appResults.size == 1) {
+            appResults.mapTo(searchTargets, searchTargetFactory::createAppSearchTarget)
+
+            if (appResults.size == 1 && context.isDefaultLauncher()) {
                 val singleAppResult = appResults.firstOrNull()
-                singleAppResult?.let { searchTargets.add(searchTargetFactory.createAppSearchTarget(it, true)) }
-                if (context.isDefaultLauncher()) {
-                    val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
-                    if (shortcuts != null) {
-                        if (shortcuts.isNotEmpty()) {
-                            searchTargets.addAll(shortcuts.map(searchTargetFactory::createShortcutTarget))
-                        }
+                val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
+                if (shortcuts != null) {
+                    singleAppResult.let { searchTargets.add(searchTargetFactory.createAppSearchTarget(it, true)) }
+                    if (shortcuts.isNotEmpty()) {
+                        searchTargets.addAll(shortcuts.map(searchTargetFactory::createShortcutTarget))
                     }
                 }
-            } else {
-                appResults.mapTo(searchTargets, searchTargetFactory::createAppSearchTarget)
             }
             searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
         }
