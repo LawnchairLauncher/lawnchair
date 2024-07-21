@@ -23,7 +23,7 @@
     -->
     <string name="preview_label">Предпросмотр</string>
     <string name="action_create">Создать</string>
-    <string name="action_backup">Резервное копирование</string>
+    <string name="action_backup">Резерв. копирование</string>
     <string name="action_restore">Восстановить</string>
     <string name="action_delete">Удалить</string>
     <string name="action_reset">Сбросить</string>
@@ -41,7 +41,7 @@
     <string name="managed_by_lawnchair">Управляется Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Настройки</string>
-    <string name="settings_button_text">Настройки глав. экрана</string>
+    <string name="settings_button_text">Настр. глав. экрана</string>
     <string name="system_settings">Системные настройки</string>
     <string name="title_change_settings">Изменить настройки</string>
     <!--
@@ -58,7 +58,7 @@
     <!-- Relating to the Launcher ui -->
     <string name="columns">Столбцы</string>
     <string name="rows">Строки</string>
-    <string name="label">Название</string>
+    <string name="label">Подпись</string>
     <string name="icons">Иконки</string>
     <string name="grid">Сетка</string>
     <string name="layout">Макет</string>
@@ -81,7 +81,7 @@
     -->
     <string name="settings">Настройки</string>
     <string name="general_label">Общие</string>
-    <string name="general_description">Цвета, наборы иконок, уведомления-точки</string>
+    <string name="general_description">Цвета, Наборы иконок, Точки уведомлений</string>
     <string name="home_screen_label">Главный экран</string>
     <string name="home_screen_description">Лента, сетка, иконки</string>
     <string name="dock_label">Док-панель</string>
@@ -91,7 +91,7 @@
     <string name="drawer_search_label">Поиск в меню</string>
     <string name="drawer_search_description">Веб-подсказки, глобальный поиск</string>
     <string name="folders_label">Папки</string>
-    <string name="folders_description">Количество строк и столбцов</string>
+    <string name="folders_description">Кол-во строк и столбцов</string>
     <string name="gestures_label">Жесты</string>
     <string name="gestures_description">Касания и свайпы</string>
     <string name="quickstep_label">Недавние</string>
@@ -99,7 +99,7 @@
     <string name="about_label">О программе</string>
     <string name="app_info_drop_target_label">О приложении</string>
     <string name="debug_restart_launcher">Перезапустить Lawnchair</string>
-    <string name="experimental_features_label">Экспериментальные функции</string>
+    <string name="experimental_features_label">Эксперимент. функции</string>
     <!-- Experimental features -->
     <string name="font_picker_label">Настройка шрифта</string>
     <string name="font_picker_description">Некоторый текст останется без изменений</string>
@@ -117,14 +117,14 @@
 
     -->
     <string name="set_default_launcher_tip">Для доступа к ярлыкам и дополнительным функциям, установите Lawnchair в качестве лаунчера по умолчанию</string>
-    <string name="notification_dots">Уведомления-точки</string>
-    <string name="show_notification_count">Показывать счетчик уведомлений</string>
-    <string name="notification_dots_color">Цвет уведомлений-точек</string>
+    <string name="notification_dots">Точки уведомлений</string>
+    <string name="show_notification_count">Показать счетчик уведомлений</string>
+    <string name="notification_dots_color">Цвет Точек уведомлений</string>
     <string name="notification_dots_text_color">Цвет счетчика уведомлений</string>
-    <string name="notification_dots_color_contrast_warning_always">Внимание: цвета уведомлений-точек и счетчика уведомлений недостаточно контрастируют друг с другом</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Внимание: цвета точек уведомлений и счетчика не всегда могут быть достаточно контрастны друг с другом</string>
+    <string name="notification_dots_color_contrast_warning_always">Внимание: Цвета Точек уведомлений и счетчика уведомлений недостаточно контрастируют друг с другом</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Внимание: Цвета Точек уведомлений и счетчика не всегда могут быть достаточно контрастны друг с другом</string>
     <string name="missing_notification_access_label">Необходимо разрешение доступа к уведомлениям</string>
-    <string name="missing_notification_access_desc">Чтобы показать точки уведомлений, включите уведомления приложения для <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="missing_notification_access_desc">Чтобы показать Точки уведомлений, включите уведомления приложения для <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -134,16 +134,16 @@
     <string name="icon_style_label">Стиль иконки</string>
     <string name="icon_shape_label">Форма иконки</string>
     <string name="icon_sizes">Размер иконки</string>
-    <string name="show_labels">Показывать подпись</string>
+    <string name="show_labels">Показывать подписи</string>
     <string name="label_size">Размер подписи</string>
     <string name="twoline_label">Использовать несколько строк</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Прозрачные тематические иконки</string>
     <string name="transparent_background_icons_description">Использовать прозрачный фон на тематических значках</string>
     <string name="auto_adaptive_icons_label">Авто-адаптивные иконки</string>
-    <string name="auto_adaptive_icons_description">Для всех неадаптивных иконок</string>
-    <string name="background_lightness_label">Яркость фона</string>
-    <string name="adaptive_icon_background_description">Использовать 100% яркость фона для белого</string>
+    <string name="auto_adaptive_icons_description">Для всех не-адаптивных иконок</string>
+    <string name="background_lightness_label">Яркость подложки</string>
+    <string name="adaptive_icon_background_description">Использовать 100% яркость для белой подложки</string>
     <string name="reset_custom_icons">Сброс пользовательских иконок</string>
     <string name="reset_custom_icons_confirmation">Все пользовательские иконки будут сброшены. Вы хотите продолжить?</string>
     <!-- Icon picker -->
@@ -198,8 +198,8 @@
     <string name="fontWorkspace">Общие</string>
     <string name="fontHeading">Заголовки</string>
     <string name="fontHeadingMedium">Заголовки (средний размер)</string>
-    <string name="fontBody">Обычный</string>
-    <string name="fontBodyMedium">Тело (средний размер)</string>
+    <string name="fontBody">Обычный текст</string>
+    <string name="fontBodyMedium">Обычный текст (средний размер)</string>
     <string name="font_variant_italic">Курсив</string>
     <string name="font_weight_thin">Тонкий</string>
     <string name="font_weight_extra_light">Очень тонкий</string>
@@ -230,7 +230,7 @@
     <string name="color_style_rainbow">Радуга</string>
     <string name="color_style_fruit_salad">Фруктовый салат</string>
     <string name="color_style_content">Содержимое</string>
-    <string name="color_style_monochromatic">Монохроматический</string>
+    <string name="color_style_monochromatic">Монохром</string>
     <!-- Accent color and color picker -->
     <string name="colors">Цвета</string>
     <string name="accent_color">Цветовой акцент</string>
@@ -245,7 +245,7 @@
     <string name="hsb_brightness">Яркость</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Ползунки</string>
-    <string name="invalid_color">Недопустимый цвет</string>
+    <string name="invalid_color">Неверный цвет</string>
     <!--
 
     Smartspace
@@ -268,9 +268,9 @@
     <string name="smartspace_date">Дата</string>
     <string name="smartspace_time">Время</string>
     <string name="smartspace_time_format">Формат времени</string>
-    <string name="smartspace_time_follow_system">Следовать системным настройкам</string>
-    <string name="smartspace_time_12_hour_format">12-часовой формат</string>
-    <string name="smartspace_time_24_hour_format">24-часовой формат</string>
+    <string name="smartspace_time_follow_system">Следовать систем. настройкам</string>
+    <string name="smartspace_time_12_hour_format">12-час. формат</string>
+    <string name="smartspace_time_24_hour_format">24-час. формат</string>
     <!-- Available targets -->
     <string name="smartspace_weather">Погода</string>
     <string name="smartspace_battery_status">Состояние батареи</string>
@@ -296,7 +296,7 @@
     -->
     <string name="news">Новости</string>
     <string name="support">Поддержка</string>
-    <string name="product">Продукт</string>
+    <string name="product">Команда разработки</string>
     <string name="design_and_development">Дизайн и разработка</string>
     <string name="development">Разработка</string>
     <string name="quickswitch_maintenance">Поддержка QuickSwitch</string>
@@ -309,13 +309,13 @@
     Backup and restore
 
     -->
-    <string name="create_backup">Создать резервную копию</string>
+    <string name="create_backup">Создать резерв. копию</string>
     <string name="what_to_backup">Что нужно сохранить</string>
     <string name="backup_content_layout_and_settings">Макет и настройки</string>
     <string name="backup_content_wallpaper">Обои</string>
     <string name="backup_create_success">Резервная копия создана</string>
     <string name="backup_create_error">Не удалось создать резервную копию</string>
-    <string name="restore_backup">Восстановление резервной копии</string>
+    <string name="restore_backup">Восстановить резерв. копию</string>
     <string name="what_to_restore">Что восстанавливать</string>
     <string name="backup_restore_success">Резервная копия восстановлена</string>
     <string name="backup_restore_error">Не удалось восстановить резервную копию</string>
@@ -326,8 +326,8 @@
 
     -->
     <string name="gesture_double_tap">Двойное нажатие</string>
-    <string name="gesture_swipe_up">Свайп вверх</string>
-    <string name="gesture_swipe_down">Свайп вниз</string>
+    <string name="gesture_swipe_up">Свайп Вверх</string>
+    <string name="gesture_swipe_down">Свайп Вниз</string>
     <string name="gesture_home_tap">Кнопка \"Домой\"</string>
     <string name="gesture_back_tap">Кнопка \"Назад\"</string>
     <string name="gesture_handler_no_op">Ничего не делать</string>
@@ -354,9 +354,9 @@
     <string name="crash_report_notif_title">%1$s - произошел сбой</string>
     <string name="action_upload_crash_report">Отправить лог ошибки</string>
     <string name="action_upload_error">Отправка не удалась</string>
-    <string name="dogbin_uploading">Загрузка…</string>
+    <string name="dogbin_uploading">Отправка…</string>
     <string name="bugreport_channel_name">Отчёт об ошибках</string>
-    <string name="status_channel_name">Статус выгрузки</string>
+    <string name="status_channel_name">Статус отправки</string>
     <string name="bugreport_group_summary">%d новых отчетов</string>
     <string name="bugreport_group_summary_multiple">Несколько новых отчетов</string>
     <!--
@@ -366,9 +366,9 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Поворот главного экрана</string>
-    <string name="home_screen_rotation_description">Разрешить поворот главного экрана при повороте устройства</string>
-    <string name="auto_add_shortcuts_label">Добавлять новые приложения на главный экран</string>
-    <string name="minus_one_enable">Показать ленту новостей</string>
+    <string name="home_screen_rotation_description">Разрешить поворот глав. экрана при повороте устройства</string>
+    <string name="auto_add_shortcuts_label">Добавлять новые приложения на глав. экран</string>
+    <string name="minus_one_enable">Показывать ленту новостей</string>
     <string name="minus_one_unavailable">Приложения для ленты новостей не установлены</string>
     <string name="minus_one">Лента Google</string>
     <string name="feed_provider">Поставщик ленты новостей</string>
@@ -377,8 +377,8 @@
     <string name="wallpaper_depth_effect_description">Приближать и отдалять обои при переключении между приложениями</string>
     <string name="show_sys_ui_scrim">Тень сверху</string>
     <string name="home_screen_grid">Сетка главного экрана</string>
-    <string name="home_screen_lock">Заблок. главный экран</string>
-    <string name="home_screen_unlock">Разблок. главный экран</string>
+    <string name="home_screen_lock">Заблокировать гл. экран</string>
+    <string name="home_screen_unlock">Разблокировать. гл. экран</string>
     <string name="home_screen_locked">Главный экран заблокирован</string>
     <string name="home_screen_lock_description">Предотвращать изменения макета главного экрана</string>
     <string name="show_dot_pagination_label">Показывать точечную нумерацию страниц</string>
@@ -387,7 +387,7 @@
     <string name="show_material_u_popup_description">Использовать Material You стиль всплывающих окон</string>
     <string name="popup_menu">Всплывающее меню</string>
     <string name="home_screen_lock_toggle_from_home_popup">Показывать кнопку блокировки</string>
-    <string name="show_system_settings_entry">Показывать элемент системных настроек</string>
+    <string name="show_system_settings_entry">Показать пункт системных настроек</string>
     <string name="home_screen_edit_toggle_from_home_popup">Показывать кнопку редактирования</string>
     <string name="status_bar_label">Строка состояния</string>
     <string name="show_status_bar">Показывать строку состояния</string>
@@ -429,7 +429,7 @@
     <string name="pref_all_apps_remember_position_title">Запомнить позицию</string>
     <string name="pref_all_apps_remember_position_description">Запомнить позицию Меню приложений после его закрытия</string>
     <string name="pref_all_apps_show_scrollbar_title">Показать полосу прокрутки</string>
-    <string name="app_drawer_columns">Кол-во столбцов в Меню приложений</string>
+    <string name="app_drawer_columns">Кол-во столбцов в Меню прилож.</string>
     <string name="row_height_label">Высота строки</string>
     <string name="app_drawer_indent_label">Горизонт. отступ</string>
     <!-- HiddenAppsPreferences -->
@@ -453,13 +453,13 @@
     <string name="translucent_background">Полупрозрачный фон</string>
     <string name="translucent_background_alpha">Прозрачность фона</string>
     <string name="recents_actions_label">Быстрые действия</string>
-    <string name="action_share">Поделиться</string>
+    <string name="action_share">Кнопка \"Поделиться\"</string>
     <string name="action_lens">Lens</string>
-    <string name="recents_clear_all">Очистить все</string>
+    <string name="recents_clear_all">Кнопка \"Очистить всё\"</string>
     <string name="task_menu_force_stop">Принудительно закрыть</string>
     <string name="window_corner_radius_label">Радиус скругления краёв экрана</string>
     <string name="override_window_corner_radius_label">Пользовательский радиус углов экрана</string>
-    <string name="window_corner_radius_description">При жесте \"Свайп вверх\" для открытия Недавних приложений, текущее приложение следует за пальцем, уменьшаясь в карточку. Используйте этот ползунок для настройки радиуса угла карточки, когда она почти развернута, чтобы соответствовать углам экрана.</string>
+    <string name="window_corner_radius_description">При жесте \"Свайп Вверх\" для открытия Недавних приложений, текущее приложение следует за пальцем, уменьшаясь в карточку. Используйте этот ползунок для настройки радиуса угла карточки, когда она почти развернута, чтобы соответствовать углам экрана.</string>
     <string name="taskbar_label">Панель задач</string>
     <string name="enable_taskbar_experimental">Показать панель задач (экспериментально)</string>
     <!--
@@ -475,7 +475,7 @@
     <string name="all_apps_search_result_contacts_from_device">Контакты на устройстве</string>
     <string name="all_apps_search_result_files">Файлы на устройстве</string>
     <string name="all_apps_search_result_settings_entry_from_device">Настройки устройства</string>
-    <string name="all_apps_search_market_message">Поиск дополнительных приложений</string>
+    <string name="all_apps_search_market_message">Поиск доп. приложений</string>
     <string name="all_apps_search_on_web_message">Искать в <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Магазин приложений или браузер не установлены</string>
     <string name="clear_history">Очистить историю поиска</string>
@@ -487,7 +487,7 @@
     <string name="fuzzy_search_title">Поиск по совпадению</string>
     <string name="fuzzy_search_desc">Поиск приложений по схожему запросу</string>
     <string name="suggestion_pref_screen_title">Рекомендации</string>
-    <string name="show_suggested_apps_at_drawer_top">Показать рекоменд. приложения в верхней части Меню приложений</string>
+    <string name="show_suggested_apps_at_drawer_top">Показывать рекоменд. прилож. в верх. части Меню приложений</string>
     <string name="perform_wide_search_title">Поиск по устройству</string>
     <string name="perform_wide_search_description">Поиск контактов, файлов и настроек вашего телефона</string>
     <string name="show_hidden_apps_in_search_results">Показывать скрытые приложения в результатах поиска</string>
@@ -525,6 +525,6 @@
     <string name="grant_requested_permissions">Предоставить доступ</string>
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
     <string name="allapps_web_suggestion_provider_label">Провайдер веб-предложений</string>
-    <string name="allapps_use_web_suggestion_icon_label">Показывать иконку провайдера веб-предложений в панели поиска</string>
+    <string name="allapps_use_web_suggestion_icon_label">Показать иконку провайдера веб-предложений в панели поиска</string>
     <string name="allapps_match_qsb_style_label">Соответствовать стилю строки поиска в док-панели</string>
 </resources>

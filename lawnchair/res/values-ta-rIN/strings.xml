@@ -21,29 +21,29 @@
     Actions and Verbs
 
     -->
-    <string name="preview_label">Preview</string>
-    <string name="action_create">Create</string>
-    <string name="action_backup">Backup</string>
-    <string name="action_restore">Restore</string>
-    <string name="action_delete">Delete</string>
+    <string name="preview_label">முன்காட்சி</string>
+    <string name="action_create">உருவாக்கு</string>
+    <string name="action_backup">மறுபிரதி</string>
+    <string name="action_restore">மீட்டெடு</string>
+    <string name="action_delete">நீக்கு</string>
     <string name="action_reset">அகரமாக்கு</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
+    <string name="action_unlock">திற</string>
+    <string name="action_lock">பூட்டு</string>
     <string name="action_apply">செயற்படுத்து</string>
     <string name="action_customize">தனிப்பயனாக்கு</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="always_choice">எப்பொழுதும்</string>
+    <string name="never_choice">ஒருபோதும்</string>
+    <string name="clipboard">நகலகம்</string>
+    <string name="action_copy_link">இணைப்பை நகலெடு</string>
     <string name="action_copy">நகலெடு</string>
     <string name="action_paste">ஒட்டவும்</string>
     <string name="loading">ஏற்றுகிறது…</string>
-    <string name="managed_by_lawnchair">Managed by Lawnchair</string>
+    <string name="managed_by_lawnchair">லான்ச்சர் மூலம் நிர்வகிக்கப்படுகிறது</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">சுமார்ட் இடம் விருப்பங்கள்</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">முகப்பு அமைப்புகள்</string>
+    <string name="system_settings">இயங்குதள அமைப்புகள்</string>
+    <string name="title_change_settings">அமைப்புகளை மாற்று</string>
     <!--
 
     General "words" used throughout Lawnchair
@@ -64,14 +64,14 @@
     <string name="layout">தளவமைப்பு</string>
     <!-- Generic styling options -->
     <string name="wallpaper">சுவர்த்தாள்</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="background_opacity">பின்னணி ஒளிபுகாநிலை</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
-    <string name="item_removed">Item removed</string>
+    <string name="copied_toast">நகலகத்தில் நகலெடுக்கப்பட்டது</string>
+    <string name="item_removed">பொருள் நீக்கப்பட்டது</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
+    <string name="what_to_show">எதைக் காட்ட</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">சைகையைச் செய்யும்போது உங்கள் தொலைபேசியைப் பூட்ட, Lawnchair க்கு அணுகல்தன்மை அணுகல் தேவைப்படுகிறது.\n\nலான்ச்சர் எந்தவொரு பயனர் செயலையும் பார்ப்பதில்லை, இருப்பினும் அனைத்து அணுகல் சேவைகளுக்கும் அவ்வாறு செய்வதற்கான சிறப்புரிமை தேவைப்படுகிறது. கணினியால் அனுப்பப்பட்ட எந்த நிகழ்வையும் லான்ச்சர் நிராகரிக்கிறது.\n\nஉங்கள் தொலைபேசியைப் பூட்டுவதற்கு, லான்ச்சர் performGlobalAction அணுகல் சேவையைப் பயன்படுத்துகிறது.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <!--
@@ -81,77 +81,77 @@
     -->
     <string name="settings">அமைப்புகள்</string>
     <string name="general_label">பொது</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="general_description">நிறங்கள், சின்னச்சிப்பம், அறிவிப்புப் புள்ளிகள்</string>
+    <string name="home_screen_label">முகப்புத் திரை</string>
+    <string name="home_screen_description">ஊட்டம், கட்டம், சின்னங்கள்</string>
     <string name="dock_label">கூண்டு பெயர்கள்</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="dock_description">தேடல் பட்டி, சின்ன எண்ணிக்கை</string>
+    <string name="app_drawer_label">செயலி இழுப்பறை</string>
+    <string name="app_drawer_description">மறைபட்டச் செயலிகள், நெடுவரிசை எண்ணிக்கை, சின்னங்கள்</string>
+    <string name="drawer_search_label">டிராயர் தேடல்</string>
+    <string name="drawer_search_description">இணைய பரிந்துரைகள், உலகளாவிய தேடல்</string>
     <string name="folders_label">கோப்புறை பெயர்கள்</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">கோப்புறை விளக்கம்</string>
     <string name="gestures_label">சைகைகள்</string>
-    <string name="gestures_description">Taps and swipes</string>
+    <string name="gestures_description">தட்டுவது மற்றும் தேய்ப்பது</string>
     <string name="quickstep_label">அண்மையவை</string>
-    <string name="quickstep_description">Clear All button, corner radius</string>
+    <string name="quickstep_description">அனைத்தயுந்துடை பொத்தான், மூலை ஆரம்</string>
     <string name="about_label">விவர பெயர்கள்</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">செயலியின் தகவல்கள்</string>
     <string name="debug_restart_launcher">Lawnchairஐ மறுதுவக்கு</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="experimental_features_label">பரீட்சார்த்த அம்சங்கள்</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">Font customization</string>
+    <string name="font_picker_label">எழுத்துரு தனிப்பயனாக்கம்</string>
     <string name="font_picker_description">சில உரைகள் மாறாமல் இருக்கும்</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
+    <string name="smartspace_calendar_label">கிளான்ஸ் காலண்டரை தனிப்பயனாக்குதல்</string>
     <string name="smartspace_calendar_description">கிரிகோரியன் முறை அல்லாத காலண்டர் வகையில் தேதியைக் காண்பிக்க சம்மதி</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="workspace_increase_max_grid_size_label">அதிகபட்ச கட்ட அளவு வரம்பை அதிகரிக்க</string>
+    <string name="workspace_increase_max_grid_size_description">முகப்பு திரையின் அனுமதிக்கப்பட்ட கிரிட் அளவான 10x10-இல் இருந்து 20x20-ஆக உயர்த்து</string>
+    <string name="always_reload_icons_label">எப்போதும் சின்னங்களை மீண்டும் ஏற்று</string>
     <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <string name="recents_lock_unlock">பூட்டு/திறத்தல்</string>
+    <string name="recents_lock_unlock_description">\"அனைத்தையும் அழி\" என்பதை அழுத்தும்போது தேர்ந்தெடுக்கப்பட்ட பயன்பாட்டை மூடுவதைத் தடுக்கவும்</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
-    <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
-    <string name="notification_dots_text_color">Notification counter color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="set_default_launcher_tip">குறுக்குவழிகள் மற்றும் கூடுதல் அம்சங்களை அணுக, Lawnchair ஐ உங்கள் இயல்புநிலை துவக்கியாக அமைக்கவும்</string>
+    <string name="notification_dots">அறிவிப்புப் புள்ளிகள்</string>
+    <string name="show_notification_count">அறிவிப்புகளின் எண்ணிக்கையைக் காண்பி</string>
+    <string name="notification_dots_color">அறிவிப்பு புள்ளிகளின் வண்ணம்</string>
+    <string name="notification_dots_text_color">அறிவிப்பு எண்ணிக்கையின் நிறம்</string>
+    <string name="notification_dots_color_contrast_warning_always">எச்சரிக்கை: அறிவிப்புப் புள்ளி மற்றும் எதிர் நிறங்கள் ஒன்றுக்கொன்று போதுமான மாறுபாட்டைக் கொண்டிருக்கவில்லை</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">எச்சரிக்கை: அறிவிப்புப் புள்ளி மற்றும் எதிர் நிறங்கள் ஒன்றுக்கொன்று போதுமான மாறுபாட்டைக் கொண்டிருக்கவில்லை</string>
     <string name="missing_notification_access_label">அறிவிப்பணுகல் தேவை</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="missing_notification_access_desc">அறிவிப்பு புள்ளிகளைக் காட்ட, செயலிக்கான அறிவிப்புகளை இயக்கவும் <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">Icon style</string>
-    <string name="icon_shape_label">Icon shape</string>
-    <string name="icon_sizes">Icon size</string>
-    <string name="show_labels">Show labels</string>
-    <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="icon_style_label">சின்னங்களின் பாங்கு</string>
+    <string name="icon_shape_label">சின்னத்தின் வடிவம்</string>
+    <string name="icon_sizes">சின்னங்களின் அளவு</string>
+    <string name="show_labels">லேபல்களை காட்டு</string>
+    <string name="label_size">பெயர்கள் அளவு</string>
+    <string name="twoline_label">பல வரிகளைப் பயன்படுத்தவும்</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent themed icons</string>
+    <string name="transparent_background_icons_label">வெளிப்படையான கருப்பொருள் சின்னங்கள்</string>
     <string name="transparent_background_icons_description">கருப்பொருள் ஐகான்களில் வெளிப்படையான பின்னணியைப் பயன்படுத்தவும்</string>
-    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
-    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
-    <string name="background_lightness_label">Background lightness</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
-    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="auto_adaptive_icons_label">தகவமைப்பு சின்னங்கள்</string>
+    <string name="auto_adaptive_icons_description">எல்லா தகவமையா சின்னங்களுக்கும்</string>
+    <string name="background_lightness_label">பின்புல இலேசுத்தன்மை</string>
+    <string name="adaptive_icon_background_description">வெள்ளைக்கு 100% பின்புல இலேசுத்தன்மை பயன்படுத்து</string>
+    <string name="reset_custom_icons">தனிப்பயன் சின்னங்களை மீட்டமைக்கவும்</string>
     <string name="reset_custom_icons_confirmation">அனைத்து தனிப்பயன் சின்னங்களும் மீட்டமைக்கப்படும். தொடர வேண்டுமா?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">சின்னங்கள்</string>
     <string name="icon_picker_reset_to_default">இயல்பிருப்பிற்கு அகரமாக்கு</string>
     <string name="icon_pack_external_picker">வெளிப்புற தெரிவியைத் திற</string>
-    <string name="pick_icon_from_label">Pick icon from</string>
-    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="pick_icon_from_label">சின்னத்தை இதிலிருந்துப் பொறுக்கு</string>
+    <string name="icon_picker_load_failed">சின்னங்களை ஏற்ற முடியவில்லை</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">இயங்குதளம்</string>
     <string name="icon_shape_circle">வட்டம்</string>
@@ -161,54 +161,54 @@
     <string name="icon_shape_cupertino">ஐ ஓ எஸ்</string>
     <string name="icon_shape_octagon">எண்கோணம்</string>
     <string name="icon_shape_sammy">1 யுஐ</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="icon_shape_sharp_square">Sharp square</string>
+    <string name="icon_shape_rounded_square">வட்டமான சதுரம்</string>
+    <string name="icon_shape_sharp_square">கூர்மையான சதுரம்</string>
     <string name="icon_shape_square">சதுரம்</string>
     <string name="icon_shape_squircle">சதுரவட்டம்</string>
     <string name="icon_shape_teardrop">கண்ணீர் துளி</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Custom icon shape</string>
-    <string name="custom_icon_shape_create">Create custom icon shape</string>
-    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
-    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape">தனிப்பயன் ஐகான் வடிவம்</string>
+    <string name="custom_icon_shape_create">தனிப்பயன் ஐகான் வடிவத்தை உருவாக்கவும்</string>
+    <string name="custom_icon_shape_edit">தனிப்பயன் ஐகான் வடிவத்தைத் திருத்து</string>
+    <string name="custom_icon_shape_corner">மூலை வடிவம்</string>
     <string name="custom_icon_shape_corner_round">சுற்று</string>
     <string name="custom_icon_shape_corner_squircle">மென்மையான</string>
     <string name="custom_icon_shape_corner_cut">வெட்டு</string>
-    <string name="custom_icon_shape_top_left">Top left</string>
-    <string name="custom_icon_shape_top_right">Top right</string>
-    <string name="custom_icon_shape_bottom_left">Bottom left</string>
-    <string name="custom_icon_shape_bottom_right">Bottom right</string>
-    <string name="export_to_clipboard">Export to clipboard</string>
-    <string name="import_from_clipboard">Import from clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <string name="custom_icon_shape_top_left">மேல் இடது</string>
+    <string name="custom_icon_shape_top_right">மேல் வலது</string>
+    <string name="custom_icon_shape_bottom_left">கீழே இடது</string>
+    <string name="custom_icon_shape_bottom_right">கீழ் வலது</string>
+    <string name="export_to_clipboard">நகலகத்திற்கு அனுப்பு</string>
+    <string name="import_from_clipboard">நகளத்திலிருந்து கொண்டுவா</string>
+    <string name="icon_shape_clipboard_import_error">நகலகம் செல்லத் தக்க படவுரு வடிவத்தைக் கொண்டிருக்கவில்லை</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">Icon pack</string>
-    <string name="themed_icon_pack">Themed icon source</string>
-    <string name="system_icons">System icons</string>
-    <string name="themed_icon_title">Themed icons</string>
+    <string name="icon_pack">சின்ன பேக்</string>
+    <string name="themed_icon_pack">கருப்பொருள் ஐகான் மூல</string>
+    <string name="system_icons">இயங்குதளச் சின்னங்கள்</string>
+    <string name="themed_icon_title">தோற்றக்கருமிகுச் சின்னங்கள்</string>
     <string name="themed_icons_off_label">அணை</string>
-    <string name="themed_icons_home_label">Home screen</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen &amp; app drawer</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="themed_icons_home_label">முகப்புத் திரை</string>
+    <string name="themed_icons_home_and_drawer_label">முகப்பு திரை &amp; ஆப் ட்ராவெர்</string>
+    <string name="lawnicons_not_installed_description">ஆதரிக்கப்படும் ஐகான் பேக் இல்லை</string>
     <!-- Fonts -->
-    <string name="pref_fonts_add_fonts">Add fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
-    <string name="font_label">Font (experimental)</string>
+    <string name="pref_fonts_add_fonts">எழுத்துருக்களை சேர்க்கவும்</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF எழுத்துருக்கள் ஏற்றுக்கொள்ளப்படுகிறது</string>
+    <string name="pref_fonts_missing_font">எழுத்துரு எதுவுமில்லை</string>
+    <string name="font_label">எழுத்துரு (பரீட்சார்த்த)</string>
     <string name="fontWorkspace">பொது</string>
     <string name="fontHeading">தலைப்புகள்</string>
-    <string name="fontHeadingMedium">Headings (medium)</string>
+    <string name="fontHeadingMedium">தலைப்புகள் (நடுத்தர)</string>
     <string name="fontBody">உடல்</string>
-    <string name="fontBodyMedium">Body (medium)</string>
+    <string name="fontBodyMedium">உடல் (நடுத்தர)</string>
     <string name="font_variant_italic">வலச்சாய்வு</string>
     <string name="font_weight_thin">மெல்லிய</string>
-    <string name="font_weight_extra_light">Extra light</string>
+    <string name="font_weight_extra_light">மிக இலேசான</string>
     <string name="font_weight_light">இலேசான</string>
     <string name="font_weight_regular">வழக்கமான</string>
     <string name="font_weight_medium">நடுத்தரமான</string>
     <string name="font_weight_semi_bold">அரைத்தடிப்பு</string>
     <string name="font_weight_bold">தடிப்பு</string>
-    <string name="font_weight_extra_bold">Extra bold</string>
+    <string name="font_weight_extra_bold">மிகத் தடிப்பு</string>
     <string name="font_weight_extra_black">கருப்பு</string>
     <!--
 
@@ -220,21 +220,21 @@
     <string name="theme_light">வெளிர்ந்த</string>
     <string name="theme_dark">இருண்ட</string>
     <string name="theme_system_default">இயங்குதளம்</string>
-    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <string name="theme_follow_wallpaper">சுவர்த்தாளைப் பொருந்து</string>
     <!-- Color style -->
-    <string name="color_style_label">Color style</string>
-    <string name="color_style_spritz">Spritz</string>
-    <string name="color_style_tonal_spot">Tonal Spot</string>
-    <string name="color_style_vibrant">Vibrant</string>
-    <string name="color_style_expressive">Expressive</string>
-    <string name="color_style_rainbow">Rainbow</string>
-    <string name="color_style_fruit_salad">Fruit Salad</string>
-    <string name="color_style_content">Content</string>
-    <string name="color_style_monochromatic">Monochromatic</string>
+    <string name="color_style_label">வண்ண பாணி</string>
+    <string name="color_style_spritz">ஸ்பிரிட்ஸ்</string>
+    <string name="color_style_tonal_spot">டோனல் ஸ்பாட்</string>
+    <string name="color_style_vibrant">துடிப்பான</string>
+    <string name="color_style_expressive">வெளிப்படுத்தும்</string>
+    <string name="color_style_rainbow">வானவில்</string>
+    <string name="color_style_fruit_salad">பழச் சாலட்</string>
+    <string name="color_style_content">உள்ளடக்கம்</string>
+    <string name="color_style_monochromatic">ஒரே வண்ணமுடைய</string>
     <!-- Accent color and color picker -->
     <string name="colors">நிறங்கள்</string>
-    <string name="accent_color">Accent color</string>
-    <string name="swatches">Swatches</string>
+    <string name="accent_color">உரப்பு நிறம்</string>
+    <string name="swatches">மாதிரிகள்</string>
     <string name="rgb">ஆர்ஜிபி</string>
     <string name="rgb_red">சிவப்பு</string>
     <string name="rgb_green">பச்சை </string>
@@ -245,50 +245,50 @@
     <string name="hsb_brightness">பிரகாசம்</string>
     <string name="hex">ஹெக்ஸ்</string>
     <string name="color_sliders">ஸ்லைடர்கள்</string>
-    <string name="invalid_color">Invalid color</string>
+    <string name="invalid_color">தவறான வண்ணம்</string>
     <!--
 
     Smartspace
 
     -->
     <!-- Date formats -->
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
-    <string name="smartspace_calendar_persian">Persian</string>
+    <string name="smartspace_calendar_gregorian">கிரிகோரியன்</string>
+    <string name="smartspace_calendar_persian">பெர்சிய</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
-    <string name="smartspace_battery_low">Battery low</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
-    <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">What to show</string>
+    <string name="smartspace_battery_charging">மின் ஏறுகிறது</string>
+    <string name="smartspace_battery_full">மின் ஏறியது</string>
+    <string name="smartspace_battery_low">பேட்டரி குறைவு</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — இன்னும் %2$s முழுவதாகிடும்"</string>
+    <string name="smartspace_widget">ஒரே பார்வையில்</string>
+    <string name="smartspace_widget_description">எதைக் காட்ட</string>
     <!-- Data and time format settings -->
-    <string name="smartspace_calendar">Calendar</string>
-    <string name="smartspace_date_and_time">Date &amp; time</string>
-    <string name="smartspace_date">Date</string>
-    <string name="smartspace_time">Time</string>
-    <string name="smartspace_time_format">Time format</string>
-    <string name="smartspace_time_follow_system">Follow system</string>
-    <string name="smartspace_time_12_hour_format">12-hour format</string>
-    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <string name="smartspace_calendar">காலெண்டர்</string>
+    <string name="smartspace_date_and_time">தேதி &amp; நேரம்</string>
+    <string name="smartspace_date">தேதி</string>
+    <string name="smartspace_time">நேரம்</string>
+    <string name="smartspace_time_format">நேர அமைப்பு</string>
+    <string name="smartspace_time_follow_system">இயங்குதளத்தைப் பின்பற்று</string>
+    <string name="smartspace_time_12_hour_format">12-மணி நேர வடிவம்</string>
+    <string name="smartspace_time_24_hour_format">24-மணி நேர வடிவம்</string>
     <!-- Available targets -->
     <string name="smartspace_weather">வானிலை</string>
-    <string name="smartspace_battery_status">Battery status</string>
-    <string name="smartspace_now_playing">Now Playing</string>
+    <string name="smartspace_battery_status">பேட்டரி நிலை</string>
+    <string name="smartspace_now_playing">இப்போது இசைக்கிறது</string>
     <!-- Setup settings -->
-    <string name="smartspace_requires_setup">Tap to set up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="smartspace_requires_setup">அமைக்கத் தட்டவும்</string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> ஐப் பயன்படுத்த, அறிவிப்புப் புள்ளிகளை இயக்கவும்.</string>
     <!-- Toggle button for enabling Smartspace -->
-    <string name="smartspace_widget_toggle_label">Show on home screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_label">முகப்புத் திரையில் காட்டு</string>
+    <string name="smartspace_widget_toggle_description">Lawnchair விட்ஜெட்டை வைப்பதன் மூலம் முகப்புத் திரையில் At a Glance யைச் சேர்க்கலாம்</string>
     <!-- List of available providers -->
-    <string name="smartspace_mode_label">At a Glance provider</string>
-    <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Google Search</string>
+    <string name="smartspace_mode_label">At a Glance வழங்குநர்</string>
+    <string name="smartspace_mode_google">கூகிள்</string>
+    <string name="smartspace_mode_google_search">கூகிள் தேடல்</string>
     <!-- Miscellaneous Smartspace strings -->
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
+    <string name="accessibility_smartspace_page">பக்கம் %1$d / %2$d</string>
+    <string name="smartspace_widget_placeholder_date">வெள்ளி, மார்ச் 3</string>
     <!--
 
     About the app
@@ -297,9 +297,9 @@
     <string name="news">செய்தி</string>
     <string name="support">ஆதரவு</string>
     <string name="product">தயாரிப்பு</string>
-    <string name="design_and_development">Design &amp; development</string>
+    <string name="design_and_development">வடிவமைப்பு &amp; உருவாக்கம்</string>
     <string name="development">மேம்பாடு</string>
-    <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
+    <string name="quickswitch_maintenance">விரைமாற்று பராமரிப்பு</string>
     <string name="devops">டெவ்ஆப்ஸ்</string>
     <string name="support_and_pr">ஆதரவு &amp; மக்கள் தொடர்பு</string>
     <string name="acknowledgements">ஒப்புதல்</string>
@@ -309,157 +309,157 @@
     Backup and restore
 
     -->
-    <string name="create_backup">Create backup</string>
-    <string name="what_to_backup">What to back up</string>
-    <string name="backup_content_layout_and_settings">Layout and settings</string>
+    <string name="create_backup">காப்புப்பிரதியை உருவாக்கவும்</string>
+    <string name="what_to_backup">எதைக் காப்புப் பிரதி எடுக்க வேண்டும்</string>
+    <string name="backup_content_layout_and_settings">தளவமைப்பு மற்றும் அமைப்புகள்</string>
     <string name="backup_content_wallpaper">சுவர்த்தாள்</string>
-    <string name="backup_create_success">Backup created</string>
-    <string name="backup_create_error">Failed to create backup</string>
-    <string name="restore_backup">Restore backup</string>
-    <string name="what_to_restore">What to restore</string>
-    <string name="backup_restore_success">Backup restored</string>
-    <string name="backup_restore_error">Failed to restore backup</string>
-    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="backup_create_success">காப்புப்பிரதி உருவாக்கப்பட்டது</string>
+    <string name="backup_create_error">மறுபிரதியை உருவாக்குவதில் தோல்வி</string>
+    <string name="restore_backup">காப்புப்பிரதியை மீட்டமை</string>
+    <string name="what_to_restore">எதை மீட்டெடுப்பது</string>
+    <string name="backup_restore_success">காப்புப்பிரதி உருவாக்கப்பட்டது</string>
+    <string name="backup_restore_error">மறுபிரதியை உருவாக்குவதில் தோல்வி</string>
+    <string name="invalid_backup_file">தவறான காப்பு கோப்பு</string>
     <!--
 
     Gesture settings
 
     -->
-    <string name="gesture_double_tap">Double tap</string>
-    <string name="gesture_swipe_up">Swipe up</string>
-    <string name="gesture_swipe_down">Swipe down</string>
-    <string name="gesture_home_tap">Home button</string>
-    <string name="gesture_back_tap">Back button</string>
-    <string name="gesture_handler_no_op">Do nothing</string>
-    <string name="gesture_handler_sleep">Sleep</string>
-    <string name="gesture_handler_open_notifications">Open notification panel</string>
-    <string name="gesture_handler_open_app_option">Open app</string>
-    <string name="gesture_handler_open_app_config">Open %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Open app drawer</string>
-    <string name="gesture_handler_open_app_search">Open app search</string>
-    <string name="gesture_handler_open_search">Open search</string>
-    <string name="pick_app_for_gesture">Pick app</string>
-    <string name="dt2s_admin_hint_title">Admin permissions required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="gesture_double_tap">இருமுறை தட்டவும்</string>
+    <string name="gesture_swipe_up">மேலே ஸ்வைப் செய்யவும்</string>
+    <string name="gesture_swipe_down">கீழே ஸ்வைப் செய்யவும்</string>
+    <string name="gesture_home_tap">முகப்பு பொத்தான்</string>
+    <string name="gesture_back_tap">பின் பொத்தான்</string>
+    <string name="gesture_handler_no_op">எதுவும் செய்யாதே</string>
+    <string name="gesture_handler_sleep">தூங்கு</string>
+    <string name="gesture_handler_open_notifications">அறிவிப்பு பேனலைத் திறக்கவும்</string>
+    <string name="gesture_handler_open_app_option">செயலியைத் திற</string>
+    <string name="gesture_handler_open_app_config">%1$s திற</string>
+    <string name="gesture_handler_open_app_drawer">ஆப் ட்ரையர் திற</string>
+    <string name="gesture_handler_open_app_search">செயலி தேடலைத் திற</string>
+    <string name="gesture_handler_open_search">தேடலைத் திற</string>
+    <string name="pick_app_for_gesture">செயலியைத் தேர்ந்தெடு</string>
+    <string name="dt2s_admin_hint_title">நிர்வாக அனுமதி தேவை</string>
+    <string name="dt2s_admin_hint">அணைக்க இரட்டைத்தட்டலைப் பயன்படுத்த Lawnchairஐச் சாதன நிர்வாகிச் செயலியாக அமை. அமைப்பைத் திற என்பதைத் தட்டி, “இந்தச் சாதன நிர்வாகி ஆப்ஸைச் செயல்படுத்து” என்பதைத் தட்டுக</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Turn on accessibility service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="dt2s_warning_open_settings">Open settings</string>
+    <string name="dt2s_a11y_hint_title">அணுகல்தன்மை சேவையை இயக்கு</string>
+    <string name="dt2s_a11y_hint">அணைக்க இரட்டைத்தட்டலைப் பயன்படுத்த, Lawnchair அணுகல்தன்மை சேவையை இயக்கு. அமைப்பைத் திற என்பதைத் தட்டி Lawnchairஐத் தேர்ந்தெடுத்து Lawnchairஐப் பயன்படுத்து என்பதை இயக்கு</string>
+    <string name="dt2s_warning_open_settings">அமைப்புகளைத் திற</string>
     <!--
 
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Lawnchair bug report</string>
-    <string name="crash_report_notif_title">%1$s crashed</string>
-    <string name="action_upload_crash_report">Upload crash log</string>
+    <string name="lawnchair_bug_report">Lawnchair பிழை அறிக்கை</string>
+    <string name="crash_report_notif_title">%1$s சிதைந்தது</string>
+    <string name="action_upload_crash_report">செயலிழப்பு பதிவைப் பதிவேற்றவும்</string>
     <string name="action_upload_error">பதிவேற்றம் தோல்வி</string>
     <string name="dogbin_uploading">பதிவேற்றுகிறது…</string>
-    <string name="bugreport_channel_name">Bug reports</string>
-    <string name="status_channel_name">Upload status</string>
-    <string name="bugreport_group_summary">%d new reports</string>
-    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
+    <string name="bugreport_channel_name">பிழை அறிக்கைகள்</string>
+    <string name="status_channel_name">பதிவேற்ற நிலை</string>
+    <string name="bugreport_group_summary">%d புதிய அறிக்கைகள்</string>
+    <string name="bugreport_group_summary_multiple">பல புதிய அறிக்கைகள்</string>
     <!--
 
     Preferences (without special screens)
 
     -->
     <!-- General and home screen settings -->
-    <string name="home_screen_rotation_label">Home screen rotation</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
-    <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
-    <string name="minus_one_enable">Show feed</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
+    <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
+    <string name="home_screen_rotation_description">சாதனம் சுழலும்போது முகப்புத் திரை சுழல அனுமதி</string>
+    <string name="auto_add_shortcuts_label">முகப்புத் திரையில் புதிய செயலிகளைச் சேர்</string>
+    <string name="minus_one_enable">பீட் காட்டு</string>
+    <string name="minus_one_unavailable">பீட் செயலிகள் எதுவும் நிறுவப்படவில்லை</string>
     <string name="minus_one">செய்தியோடை</string>
-    <string name="feed_provider">Feed provider</string>
-    <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
-    <string name="show_sys_ui_scrim">Top shadow</string>
-    <string name="home_screen_grid">Home screen grid</string>
-    <string name="home_screen_lock">Lock home screen</string>
-    <string name="home_screen_unlock">Unlock home screen</string>
-    <string name="home_screen_locked">Home screen is locked</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use new pop-up style</string>
-    <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
-    <string name="popup_menu">Pop-up menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
-    <string name="show_system_settings_entry">Show system settings entry</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit button</string>
-    <string name="status_bar_label">Status bar</string>
-    <string name="show_status_bar">Show status bar</string>
-    <string name="dark_status_bar_label">Dark status bar</string>
-    <string name="home_screen_text_color">Text color</string>
+    <string name="feed_provider">பீட் வழங்குநர்</string>
+    <string name="wallpaper_scrolling_label">சுவர்த்தாளைத் திரையுருட்டு</string>
+    <string name="wallpaper_depth_effect_label">வால்பேப்பர் ஆழம் விளைவு</string>
+    <string name="wallpaper_depth_effect_description">துவக்கியின் பகுதிகளுக்கு இடையில் மாறும்போது வால்பேப்பரை பெரிதாக்கவும் மற்றும் சிறிதாக்கவும்</string>
+    <string name="show_sys_ui_scrim">மேற்புற நிழல்</string>
+    <string name="home_screen_grid">முகப்புத்திரை கட்டம்</string>
+    <string name="home_screen_lock">முகப்பு திரையை மூடவும்</string>
+    <string name="home_screen_unlock">முகப்பு திரையைத் திறக்கவும்</string>
+    <string name="home_screen_locked">முகப்புத் திரை பூட்டப்பட்டுள்ளது</string>
+    <string name="home_screen_lock_description">முகப்புத் திரை தளவமைப்பில் மாற்றங்களைத் தடுக்கவும்</string>
+    <string name="show_dot_pagination_label">புள்ளி பக்கங்களைக் காட்டு</string>
+    <string name="show_dot_pagination_description">பக்க எண்ணைக் காட்ட கோடுகளுக்குப் பதிலாகப் புள்ளிகளைப் பயன்படுத்தவும்</string>
+    <string name="show_material_u_popup_label">புதிய பாப்அப் பாணியைப் பயன்படுத்து</string>
+    <string name="show_material_u_popup_description">மெட்டீரியல் யூ துள்ளல் மற்றும் சற்று ஒருங்கிணைக்கப்பட்ட பாப்-அப் பாணியைப் பயன்படுத்தவும்</string>
+    <string name="popup_menu">பாப்அப் மெனு</string>
+    <string name="home_screen_lock_toggle_from_home_popup">பூட்டு பொத்தானைக் காட்டு</string>
+    <string name="show_system_settings_entry">இயங்குதள அமைப்புகள் உள்ளீட்டைக் காட்டு</string>
+    <string name="home_screen_edit_toggle_from_home_popup">திருத்து பொத்தானைக் காட்டு</string>
+    <string name="status_bar_label">நிலைப்பட்டி</string>
+    <string name="show_status_bar">நிலைப்பலகையை காட்டு</string>
+    <string name="dark_status_bar_label">இருண்ட நிலைப்பட்டி</string>
+    <string name="home_screen_text_color">எழுத்து நிறம்</string>
     <string name="color_light">இலேசான</string>
     <string name="color_dark">இருண்ட</string>
-    <string name="force_rounded_widgets">Rounded corners</string>
-    <string name="allow_widget_overlap">Allow overlap</string>
-    <string name="force_widget_resize_label">Enforce widget resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove size constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <string name="force_rounded_widgets">தளவமைப்பு மற்றும் அமைப்புகள்</string>
+    <string name="allow_widget_overlap">பகுதியொத்திருக்க அனுமதிக்கவும்</string>
+    <string name="force_widget_resize_label">விட்ஜெட்டை மறுஅளவிடலைச் செயல்படுத்தவும்</string>
+    <string name="force_widget_resize_description">ஒரு குறிப்பிட்ட அளவிற்கு கட்டுப்படுத்தப்பட்ட விட்ஜெட்களின் அளவை மாற்ற அனுமதிக்கவும்</string>
+    <string name="widget_unlimited_size_label">அளவுக் கட்டுப்பாடுகளை அகற்றவும்</string>
+    <string name="widget_unlimited_size_description">விட்ஜெட்களின் குறைந்தபட்ச மற்றும் அதிகபட்ச அளவுக் கட்டுப்பாடுகளை அகற்றவும்</string>
     <!-- Dock settings -->
-    <string name="show_hotseat_title">Show dock</string>
-    <string name="search_bar_label">Search bar</string>
-    <string name="hotseat_mode_label">Search bar widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
-    <string name="hotseat_mode_google_search">Google Search bar</string>
-    <string name="corner_radius_label">Corner radius</string>
-    <string name="apply_accent_color_label">Apply accent color</string>
-    <string name="search_provider">Search provider</string>
-    <string name="dock_icons">Dock icons</string>
-    <string name="hotseat_bottom_space_label">Bottom padding</string>
+    <string name="show_hotseat_title">டாக்கை காட்டு</string>
+    <string name="search_bar_label">தேடல் பட்டை</string>
+    <string name="hotseat_mode_label">தேடல் பட்டி விட்ஜெட்</string>
+    <string name="hotseat_mode_disabled">முடக்கப்பட்டுள்ளது</string>
+    <string name="hotseat_mode_google_search">கூகிள் தேடல்</string>
+    <string name="corner_radius_label">மூலை ஆரம்</string>
+    <string name="apply_accent_color_label">உரப்பு நிறத்தைச் செயற்படுத்து</string>
+    <string name="search_provider">தேடல் வழங்கி</string>
+    <string name="dock_icons">டாக் சின்னங்கள்</string>
+    <string name="hotseat_bottom_space_label">அடி திணிப்பு</string>
     <!-- Search providers -->
-    <string name="search_provider_app_search">App search</string>
-    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="search_provider_app_search">செயலி தேடல்</string>
+    <string name="search_provider_sponsored_description">%1$s மற்றும் Lawnchair வருவாய் பகிர்வு ஒப்பந்தத்தைக் கொண்டுள்ளன.\n\n%1$s உடன் தேடுவது Lawnchair ஐ ஆதரிக்க உதவுகிறது.</string>
+    <string name="app_label">செயலி</string>
+    <string name="website_label">இணையதளம்</string>
+    <string name="qsb_search_provider_app_required">செயலி தேவை</string>
     <!-- Dock search bar a11y -->
     <string name="label_search">தேடு</string>
     <string name="label_lens">கூகுள் வில்லை</string>
     <string name="label_voice_search">குரல் தேடல்</string>
     <!-- App drawer settings -->
-    <string name="hidden_apps_label">Hidden apps</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load apps in bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
-    <string name="pref_all_apps_remember_position_title">Remember position</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
-    <string name="app_drawer_columns">App drawer columns</string>
-    <string name="row_height_label">Row height</string>
-    <string name="app_drawer_indent_label">Horizontal padding</string>
+    <string name="hidden_apps_label">மறைக்கப்பட்ட செயலிகள்</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">செயலிகளை மொத்தமாக ஏற்றவும்</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">ஐகான்களை தனித்தனியாக ஏற்றுவதற்கு பதிலாக மொத்தமாக ஏற்றிக் காண்பிக்கவும்</string>
+    <string name="pref_all_apps_remember_position_title">நிலையை நினைவில் கொள்ளுங்கள்</string>
+    <string name="pref_all_apps_remember_position_description">டிராயரை விட்டு வெளியேறியபிறகு செயலி டிராயர் நிலையை நினைவில் கொள்ளுங்கள்</string>
+    <string name="pref_all_apps_show_scrollbar_title">சுருள்பட்டியைக் காட்டு</string>
+    <string name="app_drawer_columns">செயலி டிராயர் நெடுவரிசைகள்</string>
+    <string name="row_height_label">வரிசை உயரம்</string>
+    <string name="app_drawer_indent_label">கிடைமட்ட திணிப்பு</string>
     <!-- HiddenAppsPreferences -->
-    <string name="hide_from_drawer">Hide from app drawer</string>
-    <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
+    <string name="hide_from_drawer">செயலி இழுப்பறையிலிருந்து மறை</string>
+    <string name="hidden_apps_label_with_count">மறைக்கப்பட்ட செயலிகள்(%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d app</item>
-        <item quantity="other">%1$d apps</item>
+        <item quantity="one">%1$d செயலி</item>
+        <item quantity="other">%1$d செயலிகள்</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon background opacity</string>
-    <string name="folder_preview_bg_color_label">Icon background color</string>
-    <string name="max_folder_columns">Maximum folder columns</string>
-    <string name="max_folder_rows">Maximum folder rows</string>
+    <string name="folder_preview_bg_opacity_label">சின்னம் பின்புல ஒளிபுகாமை</string>
+    <string name="folder_preview_bg_color_label">ஐகானின் பின்புற நிறம்</string>
+    <string name="max_folder_columns">அதிகபட்ச கோப்புறை நெடுவரிசைகள்</string>
+    <string name="max_folder_rows">அதிகபட்ச கோப்புறை நெடுவரிசைகள்</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
-    <string name="quickstep_incompatible">Incompatible system integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
-    <string name="translucent_background">Translucent background</string>
-    <string name="translucent_background_alpha">Background opacity</string>
-    <string name="recents_actions_label">Quick actions</string>
+    <string name="quickswitch_ignored_warning">Lawnchair சமீபத்திய வழங்குநராக அமைக்கப்படாததால் இந்த அமைப்புகள் புறக்கணிக்கப்படும்</string>
+    <string name="quickstep_incompatible">பொருந்தாத கணினி ஒருங்கிணைப்பு</string>
+    <string name="quickstep_incompatible_description">%1$s -ஆல் வழங்கப்பட்ட முறைமை சைகைகளைக் (Quickstep என அறியப்படும்) கொண்டிருக்கும்படி உங்கள் சாதனம் உள்ளமைக்கப்பட்டுள்ளது, ஆனால் %1$s-இன் இந்தப் பதிப்பு உங்கள் Android பதிப்புடன் இணக்கமாக இல்லை. உங்கள் சாதனத்தைப் பயன்படுத்துவதைத் தொடர, முறைமை சைகை வழங்குநராக %1$s புதுப்பித்தல்களை நிறுவல்நீக்கவும் அல்லது %1$s -ஐ முடக்கவும்.</string>
+    <string name="translucent_background">ஒளிஊடுருவக்கூடிய பின்னணி</string>
+    <string name="translucent_background_alpha">பின்னணி ஒளிபுகாநிலை</string>
+    <string name="recents_actions_label">விரைவு செயல்கள்</string>
     <string name="action_share">பகிர்</string>
     <string name="action_lens">வில்லை</string>
-    <string name="recents_clear_all">Clear all</string>
-    <string name="task_menu_force_stop">Force close</string>
-    <string name="window_corner_radius_label">Screen corner radius</string>
-    <string name="override_window_corner_radius_label">Custom screen corner radius</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
-    <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <string name="recents_clear_all">அனைத்தயும் துடை</string>
+    <string name="task_menu_force_stop">விசை நெருக்கம்</string>
+    <string name="window_corner_radius_label">திரை மூலை ஆரம்</string>
+    <string name="override_window_corner_radius_label">தனிப்பயன் திரை மூலை ஆரம்</string>
+    <string name="window_corner_radius_description">அண்மையவையைத் திறக்க மேலே தேய்த்தால், தற்போதைய செயலி உம் விரலைப் பின்தொடர்ந்து அட்டையாகச் சுருக்கும். அட்டையின் மூலை ஆரம் உம் திரை மூலையை அது கிட்டத்தட்ட முழுதிரையிலிருக்கும்போது பொருந்துமாறு அனுசரிக்க இச்சறுக்கியைப் பயன்படுத்து.</string>
+    <string name="taskbar_label">பணிப்பட்டி</string>
+    <string name="enable_taskbar_experimental">பணிப்பட்டியைக் காட்டு (சோதனை)</string>
     <!--
 
     All Apps search
@@ -468,61 +468,61 @@
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">தேடு</string>
     <string name="all_apps_search_bar_hint">செயலிகளை தேட</string>
-    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
-    <string name="all_apps_search_result_files">Files from device</string>
-    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
-    <string name="all_apps_search_market_message">Search for more apps</string>
-    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
-    <string name="clear_history">Clear search history</string>
-    <string name="search_input_action_clear_results">Clear search box</string>
+    <string name="all_apps_no_search_results">\"<xliff:g example="Android" id="query">%1$s</xliff:g>\" உடன் பொருந்தக்கூடிய பயன்பாடுகள் எதுவும் இல்லை</string>
+    <string name="all_apps_search_result_suggestions">இணையத்திலிருந்து</string>
+    <string name="all_apps_search_result_contacts_from_device">சாதனத்திலிருந்து தொடர்புகள்</string>
+    <string name="all_apps_search_result_files">சாதனத்திலிருந்து கோப்புகள்</string>
+    <string name="all_apps_search_result_settings_entry_from_device">சாதனத்திலிருந்து அமைப்புகள்</string>
+    <string name="all_apps_search_market_message">மேலும் செயலிகளுக்காகத் தேடு</string>
+    <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g> யில் தேடு</string>
+    <string name="error_no_market_or_browser_installed">ஆப் ஸ்டோர் அல்லது உலாவி நிறுவப்படவில்லை</string>
+    <string name="clear_history">தேடல் வரலாற்றை அழி</string>
+    <string name="search_input_action_clear_results">தேடல் பெட்டியைத் அழி</string>
     <!-- Search settings -->
     <string name="pref_category_search">தேடல்</string>
-    <string name="show_app_search_bar">Show search bar</string>
-    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
-    <string name="fuzzy_search_title">Fuzzy search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
+    <string name="show_app_search_bar">தேடல் பட்டை காட்டு</string>
+    <string name="pref_search_auto_show_keyboard">தானாக விசைப்பலகையைக் காட்டு</string>
+    <string name="fuzzy_search_title">தெளிவறு தேடல்</string>
+    <string name="fuzzy_search_desc">செயலி தேடல்களுக்குத் தோராய பொருத்தம்</string>
     <string name="suggestion_pref_screen_title">பரிந்துரைகள்</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
-    <string name="perform_wide_search_title">Device search</string>
-    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
-    <string name="show_hidden_apps_in_search_results">Show hidden apps in search results</string>
-    <string name="hidden_apps_show_name_typed">If full name is typed</string>
-    <string name="app_search_algorithm">Search algorithm</string>
+    <string name="show_suggested_apps_at_drawer_top">பரிந்துரைக்கப்பட்ட செயலிகளை டிராயரின் மேற்புறத்தில் காண்பி</string>
+    <string name="perform_wide_search_title">சாதனத் தேடல்</string>
+    <string name="perform_wide_search_description">உங்கள் தொலைபேசி தொடர்புகள், கோப்புகள் மற்றும் அமைப்புகளைத் தேடுங்கள்</string>
+    <string name="show_hidden_apps_in_search_results">தேடல் முடிவுகளில் மறைக்கப்பட்ட செயலிகளைக் காண்பி</string>
+    <string name="hidden_apps_show_name_typed">முழுப்பெயர் தட்டச்சு செய்யப்பட்டால்</string>
+    <string name="app_search_algorithm">தேடல் அல்காரிதம்</string>
     <string name="search_algorithm_app_search">செயலி தேடல்</string>
-    <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global search (via ASI)</string>
+    <string name="search_algorithm_global_search_on_device">உலகளாவிய தேடல் (சாதனத்தில்)</string>
+    <string name="search_algorithm_global_search_via_asi">உலகளாவிய தேடல் (ASI வழியாக)</string>
     <!-- Labels of each search result types -->
-    <string name="show_search_result_types">Show in search results</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
-    <string name="search_pref_result_shortcuts_title">App shortcuts</string>
+    <string name="show_search_result_types">தேடல் முடிவுகளில் காட்டு</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">பயன்பாடுகள் &amp; குறுக்குவழிகள்</string>
+    <string name="search_pref_result_shortcuts_title">செயலி குறுக்குவழிகள்</string>
     <string name="search_pref_result_people_title">மக்கள்</string>
-    <string name="search_pref_result_tips_title">Pixel tips</string>
-    <string name="search_pref_result_settings_title">Android settings</string>
-    <string name="search_pref_result_files_title">Files</string>
-    <string name="search_pref_result_web_title">Web suggestions</string>
-    <string name="search_pref_result_history_title">Search history</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="search_pref_result_tips_title">பிக்சல் துணுக்குதவிகள்</string>
+    <string name="search_pref_result_settings_title">Android அமைப்புகள்</string>
+    <string name="search_pref_result_files_title">கோப்புகள்</string>
+    <string name="search_pref_result_web_title">வலை ஆலோசனைகள்</string>
+    <string name="search_pref_result_history_title">தேடல் வரலாறு</string>
+    <string name="all_apps_search_result_calculator">கணிப்பான்</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_result_files_description">Media, files, and more</string>
-    <string name="search_pref_result_contacts_description">Contacts and more</string>
-    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
+    <string name="search_pref_result_files_description">மீடியா, கோப்புகள் மற்றும் பல</string>
+    <string name="search_pref_result_contacts_description">தொடர்புகள் மற்றும் பல</string>
+    <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g> வழியாக</string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
-    <string name="max_people_result_count_title">Maximum number of people in search results</string>
-    <string name="max_file_result_count_title">Maximum number of files in search results</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings entries in search results</string>
-    <string name="max_recent_result_count_title">Maximum number of history entries in search results</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
-    <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
+    <string name="max_apps_result_count_title">தேடல் முடிவுகளில் செயலிகளின் அதிகபட்ச எண்ணிக்கை</string>
+    <string name="max_people_result_count_title">தேடல் முடிவுகளில் நபர்களின் அதிகபட்ச எண்ணிக்கை</string>
+    <string name="max_file_result_count_title">தேடல் முடிவுகளில் கோப்புகளின் அதிகபட்ச எண்ணிக்கை</string>
+    <string name="max_settings_entry_result_count_title">தேடல் முடிவுகளில் அமைப்புகள் உள்ளீடுகளின் அதிகபட்ச எண்ணிக்கை</string>
+    <string name="max_recent_result_count_title">தேடல் முடிவுகளில் வரலாறு உள்ளீடுகளின் அதிகபட்ச எண்ணிக்கை</string>
+    <string name="max_suggestion_result_count_title">தேடல் முடிவுகளில் பரிந்துரைகளின் அதிகபட்ச எண்ணிக்கை</string>
+    <string name="max_web_suggestion_delay">அதிகபட்ச இணைய பரிந்துரை தாமதம்</string>
     <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
-    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
-    <string name="grant_requested_permissions">Grant permissions</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
-    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
+    <string name="warn_contact_permission_content">தொடர்புகளைத் தேட, தொடர்புகள் மற்றும் தொலைபேசி அனுமதிகளை Lawnchair க்கு வழங்கவும்</string>
+    <string name="warn_files_permission_content">உங்கள் கோப்புகளைத் தேட, Lawnchair க்கு சேமிப்பக அனுமதிகளை வழங்கவும்</string>
+    <string name="grant_requested_permissions">அனுமதிகளை வழங்கவும்</string>
+    <string name="hotseat_mode_lawnchair_compose">லான்ச்சேர் (கம்போஸ்)</string>
+    <string name="allapps_web_suggestion_provider_label">வலை பரிந்துரைகள் வழங்குநர்</string>
+    <string name="allapps_use_web_suggestion_icon_label">தேடல் பட்டியில் வலை பரிந்துரை வழங்குநர் ஐகானைக் காட்டு</string>
+    <string name="allapps_match_qsb_style_label">டாக் பட்டி பாணியைப் பொருத்தவும்</string>
 </resources>

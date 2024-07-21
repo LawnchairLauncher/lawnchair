@@ -23,7 +23,7 @@
     -->
     <string name="preview_label">Vorschau</string>
     <string name="action_create">Erstellen</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_backup">Sichern</string>
     <string name="action_restore">Wiederherstellen</string>
     <string name="action_delete">Löschen</string>
     <string name="action_reset">Zurücksetzen</string>
@@ -414,7 +414,7 @@
     <string name="hotseat_bottom_space_label">Unterer Abstand</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">App-Suche</string>
-    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s und Lawnchair haben eine Umsatzbeteiligungsvereinbarung.\n\nSuchen mit %1$s unterstützt Lawnchair.</string>
     <string name="app_label">App</string>
     <string name="website_label">Webseite</string>
     <string name="qsb_search_provider_app_required">App erforderlich</string>
@@ -423,43 +423,43 @@
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Sprachsuche</string>
     <!-- App drawer settings -->
-    <string name="hidden_apps_label">Hidden apps</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load apps in bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
-    <string name="pref_all_apps_remember_position_title">Remember position</string>
+    <string name="hidden_apps_label">Versteckte Anwendungen</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Anwendungen auf einmal laden</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Lade und zeige Symbole auf einmal statt einzeln</string>
+    <string name="pref_all_apps_remember_position_title">Position merken</string>
     <string name="pref_all_apps_remember_position_description">App-Drawer-Position nach Verlassen der Übersicht merken</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
-    <string name="app_drawer_columns">App drawer columns</string>
-    <string name="row_height_label">Row height</string>
-    <string name="app_drawer_indent_label">Horizontal padding</string>
+    <string name="pref_all_apps_show_scrollbar_title">Zeige Scrollbar</string>
+    <string name="app_drawer_columns">Spalten in der Anwendungsübersicht</string>
+    <string name="row_height_label">Zeilenhöhe</string>
+    <string name="app_drawer_indent_label">Horizontaler Abstand</string>
     <!-- HiddenAppsPreferences -->
-    <string name="hide_from_drawer">Hide from app drawer</string>
-    <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
+    <string name="hide_from_drawer">Aus der Anwendungsübersicht ausblenden</string>
+    <string name="hidden_apps_label_with_count">Versteckte Apps (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d app</item>
-        <item quantity="other">%1$d apps</item>
+        <item quantity="one">%1$d Anwendung</item>
+        <item quantity="other">%1$d Anwendungen</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon background opacity</string>
-    <string name="folder_preview_bg_color_label">Icon background color</string>
-    <string name="max_folder_columns">Maximum folder columns</string>
-    <string name="max_folder_rows">Maximum folder rows</string>
+    <string name="folder_preview_bg_opacity_label">Symbol-Hintergrundtransparenz</string>
+    <string name="folder_preview_bg_color_label">Symbol-Hintergrundfarbe</string>
+    <string name="max_folder_columns">Maximale Anzahl an Ordner Spalten</string>
+    <string name="max_folder_rows">Maximale Anzahl an Ordner Reihen</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
-    <string name="quickstep_incompatible">Incompatible system integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
-    <string name="translucent_background">Translucent background</string>
-    <string name="translucent_background_alpha">Background opacity</string>
-    <string name="recents_actions_label">Quick actions</string>
+    <string name="quickswitch_ignored_warning">Diese Einstellungen werden ignoriert, da Lawnchair nicht als \"Recents-Provider\" eingestellt ist</string>
+    <string name="quickstep_incompatible">Inkompatible Systemintegration</string>
+    <string name="quickstep_incompatible_description">Dein Gerät ist so konfiguriert, dass Systemgesten (bekannt als Quickstep) von %1$s bereitgestellt werden, diese Version von %1$s ist jedoch nicht mit deiner Android Version kompatibel. Um dein Gerät weiter zu verwenden, deinstalliere bitte %1$s Aktualisierungen oder deaktiviere %1$s als Systemgesten-Provider.</string>
+    <string name="translucent_background">Transparenter Hintergrund</string>
+    <string name="translucent_background_alpha">Deckkraft des Hintergrund</string>
+    <string name="recents_actions_label">Schnelle Aktionen</string>
     <string name="action_share">Teilen</string>
     <string name="action_lens">Lens</string>
-    <string name="recents_clear_all">Clear all</string>
+    <string name="recents_clear_all">Alle löschen</string>
     <string name="task_menu_force_stop">Schließen erzwingen</string>
-    <string name="window_corner_radius_label">Screen corner radius</string>
-    <string name="override_window_corner_radius_label">Custom screen corner radius</string>
+    <string name="window_corner_radius_label">Radius der Bildschirmecken</string>
+    <string name="override_window_corner_radius_label">Benutzerdefinierter Radius der Bildschirmecken</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <string name="enable_taskbar_experimental">Taskbar anzeigen (experimentell)</string>
     <!--
 
     All Apps search
@@ -468,26 +468,26 @@
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">Suchen</string>
     <string name="all_apps_search_bar_hint">Apps durchsuchen</string>
-    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+    <string name="all_apps_no_search_results">Keine Apps gefunden, die mit „<xliff:g example="Android" id="query">%1$s</xliff:g>“ übereinstimmen</string>
     <string name="all_apps_search_result_suggestions">Aus dem Internet</string>
     <string name="all_apps_search_result_contacts_from_device">Kontakte auf dem Gerät</string>
     <string name="all_apps_search_result_files">Datei auf dem Gerät</string>
     <string name="all_apps_search_result_settings_entry_from_device">Geräteeinstellungen</string>
-    <string name="all_apps_search_market_message">Search for more apps</string>
+    <string name="all_apps_search_market_message">Nach mehr Anwendungen suchen</string>
     <string name="all_apps_search_on_web_message">Suche bei <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
-    <string name="clear_history">Clear search history</string>
-    <string name="search_input_action_clear_results">Clear search box</string>
+    <string name="error_no_market_or_browser_installed">Kein App-Store oder Browser installiert</string>
+    <string name="clear_history">Suchverlauf löschen</string>
+    <string name="search_input_action_clear_results">Suchfeld leeren</string>
     <!-- Search settings -->
     <string name="pref_category_search">Suchen</string>
-    <string name="show_app_search_bar">Show search bar</string>
+    <string name="show_app_search_bar">Suchleiste anzeigen</string>
     <string name="pref_search_auto_show_keyboard">Tastatur automatisch anzeigen</string>
-    <string name="fuzzy_search_title">Fuzzy search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
+    <string name="fuzzy_search_title">Unscharfe Suche</string>
+    <string name="fuzzy_search_desc">Ungefähre Übereinstimmung für Anwendungs-Suche</string>
     <string name="suggestion_pref_screen_title">Vorschläge</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
-    <string name="perform_wide_search_title">Device search</string>
-    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
+    <string name="show_suggested_apps_at_drawer_top">Zeige Anwendungsvorschläge oben in der Übersicht</string>
+    <string name="perform_wide_search_title">Gerätesuche</string>
+    <string name="perform_wide_search_description">Durchsuchen Kontakte, Dateien und Einstellungen ihres Telefons</string>
     <string name="show_hidden_apps_in_search_results">Versteckte Apps in Suchergebnissen anzeigen</string>
     <string name="hidden_apps_show_name_typed">Wenn vollständiger Name eingegeben wird</string>
     <string name="app_search_algorithm">Such-Algorithmus</string>
@@ -495,12 +495,12 @@
     <string name="search_algorithm_global_search_on_device">Globale Suche (auf dem Gerät)</string>
     <string name="search_algorithm_global_search_via_asi">Globale Suche (über ASI)</string>
     <!-- Labels of each search result types -->
-    <string name="show_search_result_types">Show in search results</string>
+    <string name="show_search_result_types">In Suchergebnissen anzeigen</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Verknüpfungen</string>
-    <string name="search_pref_result_shortcuts_title">App shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">Anwendungs Verknüpfungen</string>
     <string name="search_pref_result_people_title">Personen</string>
     <string name="search_pref_result_tips_title">Pixel tips</string>
-    <string name="search_pref_result_settings_title">Android settings</string>
+    <string name="search_pref_result_settings_title">Android Einstellungen</string>
     <string name="search_pref_result_files_title">Dateien</string>
     <string name="search_pref_result_web_title">Webvorschläge</string>
     <string name="search_pref_result_history_title">Suchverlauf</string>
@@ -510,17 +510,17 @@
     <string name="search_pref_result_contacts_description">Kontakte und mehr</string>
     <string name="search_pref_result_web_provider_description">Mit <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
-    <string name="max_people_result_count_title">Maximum number of people in search results</string>
-    <string name="max_file_result_count_title">Maximum number of files in search results</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings entries in search results</string>
-    <string name="max_recent_result_count_title">Maximum number of history entries in search results</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
-    <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
+    <string name="max_apps_result_count_title">Maximale Anzahl von Anwendungen in Suchergebnissen</string>
+    <string name="max_people_result_count_title">Maximale Anzahl von Personen in Suchergebnissen</string>
+    <string name="max_file_result_count_title">Maximale Anzahl von Dateien in Suchergebnissen</string>
+    <string name="max_settings_entry_result_count_title">Maximale Anzahl an Einstellungen in Suchergebnissen</string>
+    <string name="max_recent_result_count_title">Maximale Anzahl von Verlaufseinträgen in Suchergebnissen</string>
+    <string name="max_suggestion_result_count_title">Maximale Anzahl von Vorschlägen in Suchergebnissen</string>
+    <string name="max_web_suggestion_delay">Maximale Verzögerung für Webvorschläge</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Um nach Kontakten zu suchen, erteile Lawnchair Berechtigungen für Kontakte und Telefon</string>
     <string name="warn_files_permission_content">Um Deine Dateien zu durchsuchen, erteile Lawnchair Speicher-Berechtigungen</string>
-    <string name="grant_requested_permissions">Grant permissions</string>
+    <string name="grant_requested_permissions">Berechtigungen erteilen</string>
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (zusammengesetzt)</string>
     <string name="allapps_web_suggestion_provider_label">Web-Vorschlag-Anbieter</string>
     <string name="allapps_use_web_suggestion_icon_label">Anbieter-Symbol der Web-Vorschläge in Suchleiste anzeigen</string>
