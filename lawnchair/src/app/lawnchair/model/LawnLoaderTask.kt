@@ -19,9 +19,7 @@ import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.ItemInstallQueue
-import com.android.launcher3.model.ItemInstallQueue.PendingInstallShortcutInfo
 import com.android.launcher3.model.data.AppInfo
-import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.provider.LauncherDbUtils
 import com.android.launcher3.util.PackageManagerHelper
@@ -29,8 +27,6 @@ import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.util.stream.Collectors
-
 
 @Keep
 object LawnLoaderTask {
@@ -68,8 +64,6 @@ object LawnLoaderTask {
 
         queItem.ensureQueueLoaded()
         val appsList = mBgAllAppsList.data
-
-        val screenIds = mBgDataModel.collectWorkspaceScreens()
 
         var rank = 0
         var id = 100
@@ -130,8 +124,9 @@ object LawnLoaderTask {
         // Add the screens specified by the items above
         for (name in categorized.keys) {
             val appsByCategory = categorized[name] ?: continue
-            val folder = mBgDataModel.findOrMakeFolder(id+1)
-            if (appsByCategory.size == 1) { continue
+            val folder = mBgDataModel.findOrMakeFolder(id + 1)
+            if (appsByCategory.size == 1) {
+                continue
             } else if (appsByCategory.size > 1) {
                 for (app in appsList) {
                     if (appsByCategory.contains(app)) {
@@ -149,8 +144,6 @@ object LawnLoaderTask {
             }
         }
 
-        screenIds.sorted()
-
         // Folder
         val folders = mBgDataModel.folders
         for (folder in folders) {
@@ -163,17 +156,7 @@ object LawnLoaderTask {
         for (app in apps) {
             queItem.queueItem(app.targetPackage, app.user)
         }
-
-        val installQueue = queItem.items.stream()
-            .map { info: PendingInstallShortcutInfo ->
-                info.getItemInfo(
-                    mApp.context
-                )
-            }
-            .collect(Collectors.toList<android.util.Pair<ItemInfo, Any>>())
-        mApp.model.addAndBindAddedWorkspaceItems(installQueue)
     }
-
 
     fun dbInsertAndCheck(db: SQLiteDatabase, table: String, values: ContentValues?): Int {
         if (values == null) {
