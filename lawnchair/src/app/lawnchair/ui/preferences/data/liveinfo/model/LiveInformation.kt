@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LiveInformation(
+    private val version: Int,
     private val announcements: List<Announcement>,
 ) {
 
@@ -14,6 +15,7 @@ data class LiveInformation(
 
     companion object {
         val default = LiveInformation(
+            version = 1,
             announcements = emptyList(),
         )
     }
