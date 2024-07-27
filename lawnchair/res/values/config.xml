@@ -85,6 +85,7 @@
     <string name="config_default_web_suggestion_provider" translatable="false">startpage</string>
 
     <bool name="config_default_show_hotseat">true</bool>
+    <bool name="config_default_home_layout_only">false</bool>
     <bool name="config_default_always_reload_icons">true</bool>
     <bool name="config_default_dark_status_bar">false</bool>
     <bool name="config_default_show_notification_count">false</bool>

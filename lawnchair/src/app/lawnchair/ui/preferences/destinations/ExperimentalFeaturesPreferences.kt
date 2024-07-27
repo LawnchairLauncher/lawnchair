@@ -49,6 +49,11 @@ fun ExperimentalFeaturesPreferences(
                 label = stringResource(id = R.string.recents_lock_unlock),
                 description = stringResource(id = R.string.recents_lock_unlock_description),
             )
+            SwitchPreference(
+                adapter = prefs2.isHomeLayoutOnly.getAdapter(),
+                label = "Home Layout Only",
+                description = "Disable app drawer, move apps to home screen",
+            )
         }
     }
 }

@@ -1,6 +1,6 @@
 package app.lawnchair.util
 
-fun Int.hasFlag(flag: Int): Boolean {
+infix fun Int.hasFlag(flag: Int): Boolean {
     return (this and flag) == flag
 }
 

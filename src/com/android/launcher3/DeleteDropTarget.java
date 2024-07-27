@@ -31,12 +31,17 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
     private final StatsLogManager mStatsLogManager;
 
     private StatsLogManager.LauncherEvent mLauncherEvent;
+
+    private final boolean isHomeLayout;
 
     public DeleteDropTarget(Context context) {
         this(context, null, 0);
@@ -49,6 +54,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public DeleteDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.mStatsLogManager = StatsLogManager.newInstance(context);
+        final PreferenceManager2 pref2 = PreferenceManager2.getInstance(context);
+        isHomeLayout = PreferenceExtensionsKt.firstBlocking(pref2.isHomeLayoutOnly());
     }
 
     @Override
@@ -100,8 +107,18 @@ public class DeleteDropTarget extends ButtonDropTarget {
                     ? R.string.remove_drop_target_label
                     : android.R.string.cancel);
             setContentDescription(mText);
+            if (isHomeLayout) {
+                mText = getResources().getString(isCanDrop(item)
+                        ? R.string.remove_drop_target_label
+                        : android.R.string.cancel);
+            }
             requestLayout();
         }
+    }
+
+    private boolean isCanDrop(ItemInfo item){
+        return !(item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+                item.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER);
     }
 
     private boolean canRemove(ItemInfo item) {
@@ -144,6 +161,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // because we already remove the drag view from the folder (if the drag originated from
         // a folder) in Folder.beginDrag()
         CharSequence announcement = getContext().getString(R.string.item_removed);
-        mDropTargetHandler.onAccessibilityDelete(view, item, announcement);
+        if (!isHomeLayout || isCanDrop(item)) {
+            mDropTargetHandler.onAccessibilityDelete(view, item, announcement);
+        }
     }
 }

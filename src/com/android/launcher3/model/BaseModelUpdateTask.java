@@ -37,6 +37,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +48,8 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Extension of {@link ModelUpdateTask} with some utility methods
@@ -65,6 +68,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     private AllAppsList mAllAppsList;
     private Executor mUiExecutor;
 
+    private boolean isHomeLayout;
+
     public void init(@NonNull final LauncherAppState app, @NonNull final LauncherModel model,
             @NonNull final BgDataModel dataModel, @NonNull final AllAppsList allAppsList,
             @NonNull final Executor uiExecutor) {
@@ -73,6 +78,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         mDataModel = dataModel;
         mAllAppsList = allAppsList;
         mUiExecutor = uiExecutor;
+        var prefs2 = PreferenceManager2.getInstance(mApp.getContext());
+        isHomeLayout = PreferenceExtensionsKt.firstBlocking(prefs2.isHomeLayoutOnly());
     }
 
     @Override
@@ -83,7 +90,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
                 Log.d(TAG, "Ignoring model task since loader is pending=" + this);
             }
             // Loader has not yet run.
-            return;
+            if (!isHomeLayout) return;
         }
         execute(mApp, mDataModel, mAllAppsList);
     }

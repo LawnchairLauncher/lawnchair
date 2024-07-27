@@ -35,6 +35,7 @@ import android.os.UserManager;
 import android.text.TextUtils;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.LoaderCursor;
@@ -78,6 +79,15 @@ public class LauncherDbUtils {
                 null, null, null, null, null)) {
             return c.getCount() > 0;
         }
+    }
+
+    public static void addWorkspacesTable(SQLiteDatabase db, boolean optional) {
+        String ifNotExists = optional ? " IF NOT EXISTS " : "";
+        db.execSQL("CREATE TABLE " + ifNotExists + LauncherSettings.WorkspaceScreens.TABLE_NAME + " (" +
+                LauncherSettings.WorkspaceScreens._ID + " INTEGER PRIMARY KEY," +
+                LauncherSettings.WorkspaceScreens.SCREEN_RANK + " INTEGER," +
+                LauncherSettings.WorkspaceScreens.MODIFIED + " INTEGER NOT NULL DEFAULT 0" +
+                ");");
     }
 
     public static void dropTable(SQLiteDatabase db, String tableName) {

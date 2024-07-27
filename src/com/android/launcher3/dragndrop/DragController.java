@@ -29,17 +29,23 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.android.app.animation.Interpolators;
+import com.android.launcher3.DeleteDropTarget;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Predicate;
+
+import app.lawnchair.LawnchairApp;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -109,11 +115,15 @@ public abstract class DragController<T extends ActivityContext>
         void onDragEnd();
     }
 
+    private final boolean isHomeLayout;
+
     /**
      * Used to create a new DragLayer from XML.
      */
     public DragController(T activity) {
         mActivity = activity;
+        final PreferenceManager2 pref2 = PreferenceManager2.getInstance(LawnchairApp.getInstance().getApplicationContext());
+        isHomeLayout = PreferenceExtensionsKt.firstBlocking(pref2.isHomeLayoutOnly());
     }
 
     /**
@@ -536,10 +546,19 @@ public abstract class DragController<T extends ActivityContext>
                     dropTarget.onDrop(mDragObject, mOptions);
                 }
                 accepted = true;
+                if (isHomeLayout && dropTarget instanceof DeleteDropTarget &&
+                        isNeedCancelDrag(mDragObject.dragInfo)) {
+                    cancelDrag();
+                }
             }
         }
         final View dropTargetAsView = dropTarget instanceof View ? (View) dropTarget : null;
         dispatchDropComplete(dropTargetAsView, accepted);
+    }
+
+    private boolean isNeedCancelDrag(ItemInfo item){
+        return (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+                item.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER);
     }
 
     private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {

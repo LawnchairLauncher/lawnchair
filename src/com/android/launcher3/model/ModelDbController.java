@@ -61,6 +61,8 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.LauncherPreviewRenderer;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
@@ -75,6 +77,7 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
@@ -365,6 +368,30 @@ public class ModelDbController {
         }
     }
 
+    public boolean isExistFolders(String folderName, boolean delete) {
+        createDbIfNotExists();
+
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+            String selection = LauncherSettings.Favorites.ITEM_TYPE + " = "
+                    + LauncherSettings.Favorites.ITEM_TYPE_FOLDER + " AND "
+                    + LauncherSettings.Favorites.TITLE + " = ?";
+
+            IntArray folderIds = LauncherDbUtils.queryIntArray(false, db, Favorites.TABLE_NAME,
+                    Favorites._ID, selection, folderName, null);
+            boolean folderExists = !folderIds.isEmpty();
+            if (folderExists && delete) {
+                db.delete(Favorites.TABLE_NAME, Utilities.createDbSelectionQuery(
+                        LauncherSettings.Favorites._ID, folderIds), null);
+            }
+            t.commit();
+            return folderExists;
+        } catch (SQLException ex) {
+            Log.e(TAG, ex.getMessage(), ex);
+            return false;
+        }
+    }
+
     private static void addModifiedTime(ContentValues values) {
         values.put(LauncherSettings.Favorites.MODIFIED, System.currentTimeMillis());
     }
@@ -383,6 +410,10 @@ public class ModelDbController {
     @WorkerThread
     public synchronized void loadDefaultFavoritesIfNecessary() {
         createDbIfNotExists();
+
+        if (!(mContext instanceof LauncherPreviewRenderer.PreviewContext)) {
+            LawnchairAppKt.getLawnchairApp(mContext).cleanUpDatabases();
+        }
 
         if (LauncherPrefs.get(mContext).get(getEmptyDbCreatedKey())) {
             Log.d(TAG, "loading default workspace");

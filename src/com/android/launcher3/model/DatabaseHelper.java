@@ -16,11 +16,14 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
+import static com.android.launcher3.provider.LauncherDbUtils.addWorkspacesTable;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
@@ -38,12 +41,15 @@ import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.NoLocaleSQLiteHelper;
@@ -53,10 +59,18 @@ import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
+
+import app.lawnchair.flowerpot.Flowerpot;
 
 /**
  * SqLite database for launcher home-screen model

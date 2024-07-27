@@ -1,0 +1,5 @@
+&category|audio
+&category|video
+;android.intent.category.APP_MUSIC
+;android.intent.category.LEANBACK_LAUNCHER
+;android.intent.category.VR_HOME

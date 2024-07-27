@@ -302,6 +302,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     PreferenceManager2 mPreferenceManager2;
 
+    private final boolean isHomeLayout;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -339,6 +341,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         setMotionEventSplittingEnabled(true);
         setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
         mStatsLogManager = StatsLogManager.newInstance(context);
+
+        isHomeLayout = PreferenceExtensionsKt.firstBlocking (mPreferenceManager2.isHomeLayoutOnly());
     }
 
     @Override
@@ -1335,6 +1339,13 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // react to the
         // newly visible page if it wants to.
         mLauncher.onPageEndTransition();
+        int screenId = getScreenIdForPageIndex(mCurrentPage);
+        if (screenId == -1) return;
+
+        CellLayout cellLayout = mWorkspaceScreens.get(screenId);
+        if (cellLayout != null && isHomeLayout) {
+            cellLayout.organize();
+        }
     }
 
     public void setLauncherOverlay(LauncherOverlay overlay) {

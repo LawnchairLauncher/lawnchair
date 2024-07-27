@@ -56,6 +56,7 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.icons.R;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +68,9 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import app.lawnchair.model.LawnLoaderTask;
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)
@@ -112,6 +115,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             @NonNull final AllAppsList appsList) {
         final Context context = app.getContext();
         final IconCache iconCache = app.getIconCache();
+
+        final boolean isHomeLayout;
+        final PreferenceManager2 pref2 = PreferenceManager2.getInstance(context);
+        isHomeLayout = PreferenceExtensionsKt.firstBlocking(pref2.isHomeLayoutOnly());
 
         final String[] packages = mPackages;
         final int N = packages.length;
@@ -337,6 +344,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         getModelWriter().updateItemInDatabase(widgetInfo);
                     }
                 }
+            }
+
+            if (isHomeLayout) {
+                LawnLoaderTask.get(context).addItemWorkSpace(updatedWorkspaceItems, context);
             }
 
             bindUpdatedWorkspaceItems(updatedWorkspaceItems);

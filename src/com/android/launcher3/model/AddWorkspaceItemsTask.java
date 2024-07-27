@@ -40,10 +40,13 @@ import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Task to add auto-created workspace items.
@@ -82,6 +85,9 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
             return;
         }
 
+        final PreferenceManager2 pref2 = PreferenceManager2.getInstance(app.getContext());
+        var isHomeLayout = PreferenceExtensionsKt.firstBlocking(pref2.isHomeLayoutOnly());
+
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final IntArray addedWorkspaceScreensFinal = new IntArray();
 
@@ -99,7 +105,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
                     // b/139663018 Short-circuit this logic if the icon is a system app
                     if (PackageManagerHelper.isSystemApp(app.getContext(),
-                            Objects.requireNonNull(item.getIntent()))) {
+                            Objects.requireNonNull(item.getIntent())) && !isHomeLayout) {
                         continue;
                     }
                 }

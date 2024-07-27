@@ -17,6 +17,7 @@
 package app.lawnchair.util
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.graphics.Bitmap
@@ -58,6 +59,30 @@ fun appsState(
         onDispose { }
     }
     return appsState
+}
+
+fun categorizeApps(context: Context): Map<String, List<AppInfo>> {
+    val categories = mutableMapOf<String, List<AppInfo>>()
+    val launcherApps = context.getSystemService(LauncherApps::class.java)
+
+    val activityList = UserCache.INSTANCE.get(context).userProfiles.asSequence().flatMap {
+        launcherApps.getActivityList(null, it)
+    }
+
+    for (activityInfo in activityList) {
+        val packageName = activityInfo.componentName.packageName
+
+        val applicationInfo = context.packageManager.getApplicationInfo(packageName, 0)
+        val categoryTitle = ApplicationInfo.getCategoryTitle(context, applicationInfo.category) ?: "Other"
+
+        val appInfo = AppInfo(activityInfo, activityInfo.user, false)
+        LauncherAppState.getInstance(context).iconCache.getTitleAndIcon(appInfo, false)
+        val existingList = categories[categoryTitle.toString()]?.toMutableList() ?: mutableListOf()
+        existingList.add(appInfo)
+        categories[categoryTitle.toString()] = existingList
+    }
+
+    return categories
 }
 
 class App(context: Context, private val info: LauncherActivityInfo) {

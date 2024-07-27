@@ -1,0 +1,17 @@
+&category|productivity
+:android.intent.action.ASSIST
+;android.intent.category.APP_MARKET
+;android.intent.category.APP_BROWSER
+;android.intent.category.APP_CALCULATOR
+;android.intent.category.APP_FILES
+;android.intent.category.SECONDARY_HOME
+;android.intent.category.APP_CALENDAR
+;android.intent.category.APP_EMAIL
+:android.intent.action.WEB_SEARCH
+:android.intent.action.QUICK_CLOCK
+:android.intent.action.OPEN_DOCUMENT_TREE
+:android.intent.action.OPEN_DOCUMENT
+:android.intent.action.CREATE_DOCUMENT
+:android.intent.action.TRANSLATE
+:android.intent.action.SEARCH
+:android.intent.action.DEFINE

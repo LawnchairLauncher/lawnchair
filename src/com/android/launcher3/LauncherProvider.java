@@ -175,7 +175,7 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
-    static class SqlArguments {
+    public static class SqlArguments {
         public final String table;
         public final String where;
         public final String[] args;
