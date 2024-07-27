@@ -92,6 +92,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
                 val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
                 if (shortcuts != null) {
                     if (shortcuts.isNotEmpty()) {
+                        searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
                         singleAppResult.let { searchTargets.add(searchTargetFactory.createAppSearchTarget(it, true)) }
                         searchTargets.addAll(shortcuts.map(searchTargetFactory::createShortcutTarget))
                     }
