@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LiveInformation(
-    private val version: Int,
+    private val version: Int = 1,
     private val announcements: List<Announcement>,
 ) {
 
