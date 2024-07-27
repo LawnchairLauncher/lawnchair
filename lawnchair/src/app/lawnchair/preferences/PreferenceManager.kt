@@ -66,6 +66,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
         override fun unflattenValue(value: String) = value
     }
 
+    val recentActionOrder = StringPref("pref_recentActionOrder", "0,1,2,3,4", recreate)
+
     private val fontCache = FontCache.INSTANCE.get(context)
     val fontWorkspace = FontPref("pref_workspaceFont", fontCache.uiText, recreate)
     val fontHeading = FontPref("pref_fontHeading", fontCache.uiRegular, recreate)

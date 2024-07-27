@@ -80,30 +80,36 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
         prefs.recentsActionScreenshot.subscribeChanges(this, ::updateVisibilities)
         prefs.recentsActionShare.subscribeChanges(this, ::updateVisibilities)
         prefs.recentsActionLocked.subscribeChanges(this, ::updateVisibilities)
+        prefs.recentActionOrder.subscribeChanges(this, ::updateVisibilities)
 
         updateVisibilities()
     }
 
     private fun updateVisibilities() {
-        val buttons = mutableListOf<View>()
+        val order = prefs.recentActionOrder.get().split(",").map { it.toInt() }
+
+        val buttonMap = mutableMapOf<Int, View>()
         if (prefs.recentsActionScreenshot.get() && !isOnePlusStock) {
-            buttons.add(screenshotAction)
+            buttonMap[0] = screenshotAction
         }
         if (prefs.recentsActionShare.get()) {
-            buttons.add(shareAction)
+            buttonMap[1] = shareAction
         }
         if (prefs.recentsActionLens.get() && isLensAvailable()) {
-            buttons.add(lensAction)
+            buttonMap[2] = lensAction
         }
         if (prefs.recentsActionLocked.get()) {
-            buttons.add(lockedAction)
+            buttonMap[3] = lockedAction
         }
         if (prefs.recentsActionClearAll.get()) {
-            buttons.add(clearAllAction)
+            buttonMap[4] = clearAllAction
         }
+
+        val buttonsInOrder = order.mapNotNull { buttonMap[it] }
+
         container.removeAllViews()
         container.addView(createSpace())
-        buttons.forEach { view ->
+        buttonsInOrder.forEach { view ->
             view.isVisible = true
             container.addView(view)
             container.addView(createSpace())
