@@ -78,8 +78,8 @@ fun QuickstepPreferences(
 
     val items = listOf(
         screenshotPreference,
-        lockUnlockPreference,
         sharePreference,
+        lockUnlockPreference,
         lensPreference,
         clearAllPreference,
     )
