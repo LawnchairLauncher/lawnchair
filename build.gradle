@@ -416,6 +416,8 @@ dependencies {
     implementation('com.kieronquinn.smartspacer:sdk-client:1.0.11') {
         exclude group: "com.github.skydoves", module: "balloon"
     }
+
+    implementation("com.github.android:renderscript-intrinsics-replacement-toolkit:b6363490c3")
 }
 
 ksp {

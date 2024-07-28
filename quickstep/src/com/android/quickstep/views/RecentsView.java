@@ -6249,6 +6249,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public float getScrollScale(RemoteTargetHandle rth) {
+        if (mPageScrolls == null) return 1f;
         int childCount = Math.min(mPageScrolls.length, getChildCount());
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);

@@ -35,6 +35,8 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPERIGHT;
 
+import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
@@ -50,6 +52,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -69,6 +72,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.graphics.drawable.DrawableKt;
 
 import com.android.launcher3.Utilities;
 import com.android.app.animation.Interpolators;
@@ -128,6 +132,7 @@ import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 import com.android.launcher3.widget.util.WidgetSizes;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
+import com.google.android.renderscript.Toolkit;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks;
 
@@ -138,10 +143,12 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.smartspace.SmartspaceAppWidgetProvider;
 import app.lawnchair.smartspace.model.LawnchairSmartspace;
 import app.lawnchair.smartspace.model.SmartspaceMode;
+import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -301,6 +308,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private final StatsLogManager mStatsLogManager;
 
     PreferenceManager2 mPreferenceManager2;
+    PreferenceManager mPreferenceManger;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -329,6 +337,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mAllAppsIconSize = mLauncher.getDeviceProfile().allAppsIconSizePx;
         mWallpaperManager = WallpaperManager.getInstance(context);
         mPreferenceManager2 = PreferenceManager2.getInstance(context);
+        mPreferenceManger = PreferenceManager.getInstance(context);
 
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
 
@@ -339,6 +348,18 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         setMotionEventSplittingEnabled(true);
         setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
         mStatsLogManager = StatsLogManager.newInstance(context);
+
+        if (mPreferenceManger.getEnableWallpaperBlur().get() && mWallpaperManager.getDrawable() != null) {
+            var blurWallpaper = mPreferenceManger.getWallpaperBlur().get();
+            var blurThreshold = mPreferenceManger.getWallpaperBlurFactorThreshold().get();
+            var wallpaperBitmap = mWallpaperManager.getDrawable();
+            try {
+                mWallpaperManager.setBitmap(LawnchairUtilsKt.blurBitmap(toBitmap(wallpaperBitmap),blurWallpaper, blurThreshold), null, true, WallpaperManager.FLAG_SYSTEM);
+                mWallpaperManager.forgetLoadedWallpaper();
+            } catch (Exception ex) {
+                Log.e(TAG, "error failed bluring wallpaper");
+            }
+        }
     }
 
     @Override

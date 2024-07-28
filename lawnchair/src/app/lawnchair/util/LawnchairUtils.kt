@@ -29,9 +29,15 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Looper
 import android.provider.OpenableColumns
+import android.util.Log
 import android.util.Size
 import android.view.View
 import android.widget.TextView
@@ -45,6 +51,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
+import com.google.android.renderscript.Toolkit
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -244,4 +251,42 @@ fun Context.getDefaultLauncherPackageName(): String? =
 fun Context.getDefaultResolveInfo(): ResolveInfo? {
     val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
     return packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+}
+
+fun Drawable.toBitmap(): Bitmap {
+    if (this is BitmapDrawable) {
+        return bitmap
+    }
+
+    val bitmap = Bitmap.createBitmap(
+        intrinsicWidth.takeIf { it > 0 } ?: 1,
+        intrinsicHeight.takeIf { it > 0 } ?: 1,
+        Bitmap.Config.ARGB_8888,
+    )
+    val canvas = Canvas(bitmap)
+    setBounds(0, 0, canvas.width, canvas.height)
+    draw(canvas)
+
+    return bitmap
+}
+
+fun createRoundedBitmap(color: Int, cornerRadius: Float): Bitmap {
+    val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        this.color = color
+    }
+    val rect = RectF(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat())
+    canvas.drawRoundRect(rect, cornerRadius, cornerRadius, paint)
+    return bitmap
+}
+
+fun blurBitmap(source: Bitmap, percent: Int, factorThreshold: Int = 25): Bitmap {
+    try {
+        val factor = percent.toFloat().div(100f) * factorThreshold
+        return Toolkit.blur(source, factor.toInt())
+    } catch (e: Exception) {
+        Log.e("LawnchairUtil", "Error bluring bitmap: $e")
+        return source
+    }
 }
