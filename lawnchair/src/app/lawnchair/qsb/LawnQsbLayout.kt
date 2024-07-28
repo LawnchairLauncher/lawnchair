@@ -114,6 +114,8 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             }
             subscribeGoogleSearchWidget()
         }
+
+        preferenceManager.searchBackgroundHotseatTransparency.subscribeChanges(this::setUpBackground)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -179,8 +181,12 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     private fun setUpBackground(themed: Boolean = false) {
+        val transparency = preferenceManager.searchBackgroundHotseatTransparency.get()
         val cornerRadius = getCornerRadius(context, preferenceManager)
-        val color = if (themed) Themes.getColorBackgroundFloating(context) else Themes.getAttrColor(context, R.attr.qsbFillColor)
+        val baseColor = if (themed) Themes.getColorBackgroundFloating(context) else Themes.getAttrColor(context, R.attr.qsbFillColor)
+        val alphaValue = (transparency * 255) / 100
+        val color = Color.argb(alphaValue, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor))
+
         with(inner) {
             clipToOutline = cornerRadius > 0
             background = PaintDrawable(color).apply {

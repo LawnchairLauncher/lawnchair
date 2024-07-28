@@ -524,6 +524,7 @@
     <string name="hotseat_mode_lawnchair" translatable="false">Lawnchair</string>
     <string name="hotseat_mode_google_search">Google Search bar</string>
 
+    <string name="search_background_transparency">Tranparency</string>
     <string name="corner_radius_label">Corner radius</string>
     <string name="apply_accent_color_label">Apply accent color</string>
     <string name="search_provider">Search provider</string>
