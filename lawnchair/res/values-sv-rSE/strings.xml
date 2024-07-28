@@ -105,7 +105,7 @@
     <string name="font_picker_description">En del text förblir oförändrad</string>
     <string name="smartspace_calendar_label">Anpassning av snabböversiktskalender</string>
     <string name="smartspace_calendar_description">Tillåt visning av datum i icke-gregorianska kalendersystem</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
+    <string name="workspace_increase_max_grid_size_label">Utöka gränsen för maximal rutnätsstorlek</string>
     <string name="workspace_increase_max_grid_size_description">Utöka maximalt tillåten storlek på startskärmsrutnätet från 10 x 10 till 20 x 20</string>
     <string name="always_reload_icons_label">Ladda alltid om ikoner</string>
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
@@ -116,7 +116,7 @@
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
+    <string name="set_default_launcher_tip">För att komma åt genvägar och ytterligare funktioner, ange Lawnchair som din förvalda startskärmsapp</string>
     <string name="notification_dots">Aviseringsprickar</string>
     <string name="show_notification_count">Visa aviseringsräknare</string>
     <string name="notification_dots_color">Färg på aviseringsprick</string>
@@ -124,7 +124,7 @@
     <string name="notification_dots_color_contrast_warning_always">Varning: Färgerna på aviseringsprick och aviseringsräknare har inte tillräcklig kontrast mot varandra</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Varning: Färgerna på aviseringsprick och aviseringsräknare har kanske inte alltid tillräcklig kontrast mot varandra</string>
     <string name="missing_notification_access_label">Åtkomst till aviseringar krävs</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="missing_notification_access_desc">För att visa aviseringsprickar, aktivera appaviseringar för <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -143,7 +143,7 @@
     <string name="auto_adaptive_icons_label">Autoadaptiva ikoner</string>
     <string name="auto_adaptive_icons_description">För alla icke-adaptiva ikoner</string>
     <string name="background_lightness_label">Bakgrundens ljushet</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
+    <string name="adaptive_icon_background_description">Använd 100 % bakgrundsljushet för vitt</string>
     <string name="reset_custom_icons">Återställ anpassade ikoner</string>
     <string name="reset_custom_icons_confirmation">Alla anpassade ikoner kommer att återställas. Vill du fortsätta?</string>
     <!-- Icon picker -->
@@ -222,7 +222,7 @@
     <string name="theme_system_default">System</string>
     <string name="theme_follow_wallpaper">Matcha bakgrundsbild</string>
     <!-- Color style -->
-    <string name="color_style_label">Color style</string>
+    <string name="color_style_label">Färgstil</string>
     <string name="color_style_spritz">Spritz</string>
     <string name="color_style_tonal_spot">Tonal Spot</string>
     <string name="color_style_vibrant">Vibrant</string>
@@ -280,7 +280,7 @@
     <string name="event_provider_missing_notification_dots">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsprickar.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Visa på startskärmen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">Snabböversikt kan läggas till manuellt på startskärmen genom att placera ut Lawnchair-widgeten</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">Snabböversiktsleverantör</string>
     <string name="smartspace_mode_google">Google</string>
@@ -319,7 +319,7 @@
     <string name="what_to_restore">Vad ska återställas</string>
     <string name="backup_restore_success">Säkerhetskopia återställd</string>
     <string name="backup_restore_error">Misslyckades med att återställa säkerhetskopia</string>
-    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="invalid_backup_file">Ogiltig säkerhetskopiefil</string>
     <!--
 
     Gesture settings
@@ -328,8 +328,8 @@
     <string name="gesture_double_tap">Dubbeltryck</string>
     <string name="gesture_swipe_up">Svep uppåt</string>
     <string name="gesture_swipe_down">Svep nedåt</string>
-    <string name="gesture_home_tap">Home button</string>
-    <string name="gesture_back_tap">Back button</string>
+    <string name="gesture_home_tap">Hemknapp</string>
+    <string name="gesture_back_tap">Bakåtknapp</string>
     <string name="gesture_handler_no_op">Gör ingenting</string>
     <string name="gesture_handler_sleep">Vila</string>
     <string name="gesture_handler_open_notifications">Öppna aviseringspanel</string>
@@ -351,14 +351,14 @@
 
     -->
     <string name="lawnchair_bug_report">Buggrapport för Lawnchair</string>
-    <string name="crash_report_notif_title">%1$s crashed</string>
+    <string name="crash_report_notif_title">%1$s kraschade</string>
     <string name="action_upload_crash_report">Ladda upp kraschlogg</string>
     <string name="action_upload_error">Uppladdningen misslyckades</string>
     <string name="dogbin_uploading">Laddar upp …</string>
     <string name="bugreport_channel_name">Buggrapporter</string>
     <string name="status_channel_name">Uppladdningsstatus</string>
-    <string name="bugreport_group_summary">%d new reports</string>
-    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
+    <string name="bugreport_group_summary">%d nya rapporter</string>
+    <string name="bugreport_group_summary_multiple">Flera nya rapporter</string>
     <!--
 
     Preferences (without special screens)
@@ -366,7 +366,7 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotation av startskärmen</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
+    <string name="home_screen_rotation_description">Tillåt rotation av startskärmen när enheten roteras</string>
     <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
     <string name="minus_one_enable">Visa flöde</string>
     <string name="minus_one_unavailable">Inga flödesappar installerade</string>
@@ -425,7 +425,7 @@
     <!-- App drawer settings -->
     <string name="hidden_apps_label">Dolda appar</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Ladda appar i klump</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Ladda och visa ikoner i klump i stället för var för sig</string>
     <string name="pref_all_apps_remember_position_title">Kom ihåg position</string>
     <string name="pref_all_apps_remember_position_description">Kom ihåg applådeposition efter att ha lämnat applådan</string>
     <string name="pref_all_apps_show_scrollbar_title">Visa rullningslist</string>
@@ -468,14 +468,14 @@
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">Sök</string>
     <string name="all_apps_search_bar_hint">Sök efter appar</string>
-    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+    <string name="all_apps_no_search_results">Inga appar hittades som matchar \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Från webben</string>
-    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
-    <string name="all_apps_search_result_files">Files from device</string>
-    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
+    <string name="all_apps_search_result_contacts_from_device">Kontakter från enheten</string>
+    <string name="all_apps_search_result_files">Filer från enheten</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Inställningar från enheten</string>
     <string name="all_apps_search_market_message">Sök efter fler appar</string>
-    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
+    <string name="all_apps_search_on_web_message">Sök på <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="error_no_market_or_browser_installed">Ingen appbutik eller webbläsare installerad</string>
     <string name="clear_history">Rensa sökhistorik</string>
     <string name="search_input_action_clear_results">Rensa sökruta</string>
     <!-- Search settings -->
@@ -483,11 +483,11 @@
     <string name="show_app_search_bar">Visa sökfält</string>
     <string name="pref_search_auto_show_keyboard">Visa tangentbord automatiskt</string>
     <string name="fuzzy_search_title">Oskarp sökning</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
+    <string name="fuzzy_search_desc">Ungefärlig matchning för appsökningar</string>
     <string name="suggestion_pref_screen_title">Förslag</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
+    <string name="show_suggested_apps_at_drawer_top">Visa föreslagna appar högst upp i applådan</string>
     <string name="perform_wide_search_title">Enhetssökning</string>
-    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
+    <string name="perform_wide_search_description">Sök bland din telefons kontakter, filer och inställningar</string>
     <string name="show_hidden_apps_in_search_results">Visa dolda appar i sökresultat</string>
     <string name="hidden_apps_show_name_typed">Om hela namnet skrivs</string>
     <string name="app_search_algorithm">Sökalgoritm</string>
@@ -518,8 +518,8 @@
     <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
     <string name="max_web_suggestion_delay">Maximal fördröjning av webbförslag</string>
     <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
-    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
+    <string name="warn_contact_permission_content">För att söka efter kontakter, bevilja kontakter- och telefonbehörigheter till Lawnchair</string>
+    <string name="warn_files_permission_content">För att söka bland dina filer, bevilja lagringsbehörigheter till Lawnchair</string>
     <string name="grant_requested_permissions">Bevilja behörigheter</string>
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
     <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>

@@ -66,8 +66,8 @@
     <string name="wallpaper">배경화면</string>
     <string name="background_opacity">백그라운드 투명도</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">클립보드에 복사되었습니다</string>
-    <string name="item_removed">항목이 삭제되었습니다.</string>
+    <string name="copied_toast">클립보드에 복사했습니다.</string>
+    <string name="item_removed">항목을 삭제했습니다.</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">표시할 항목</string>
     <!-- A11y description -->
@@ -85,7 +85,7 @@
     <string name="home_screen_label">홈 화면</string>
     <string name="home_screen_description">피드, 그리드, 아이콘</string>
     <string name="dock_label">독</string>
-    <string name="dock_description">검색 창, 아이콘 개수</string>
+    <string name="dock_description">검색 표시줄, 아이콘 개수</string>
     <string name="app_drawer_label">앱 서랍</string>
     <string name="app_drawer_description">숨겨진 앱, 아이콘 가로 배치 수, 아이콘</string>
     <string name="drawer_search_label">서랍 검색</string>
@@ -124,7 +124,7 @@
     <string name="notification_dots_color_contrast_warning_always">경고: 알림 배지 및 알림 개수 색상의 대비가 충분하지 않습니다.</string>
     <string name="notification_dots_color_contrast_warning_sometimes">경고: 알림 배지와 알림 개수의 색상 대비가 충분하지 않습니다.</string>
     <string name="missing_notification_access_label">알림 액세스가 필요합니다.</string>
-    <string name="missing_notification_access_desc">Xliff:g id=\"name\" example=\"My App\"&gt;%1$s&lt;/xliff:g&gt;알림 점을 표시하려면 &lt;xliff:g id="name" example="My App"&gt;%1$s&lt;/xliff:g&gt;에 대한 앱 알림을 켜세요.</string>
+    <string name="missing_notification_access_desc">알림 점을 표시하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 대한 앱 알림을 켜세요.</string>
     <!--
 
     Icons
@@ -151,7 +151,7 @@
     <string name="icon_picker_reset_to_default">기본값으로 초기화하기</string>
     <string name="icon_pack_external_picker">외부에서 불러오기</string>
     <string name="pick_icon_from_label"> 가져올 아이콘 고르기</string>
-    <string name="icon_picker_load_failed">아이콘을 더 로드할수없습니다.</string>
+    <string name="icon_picker_load_failed">아이콘을 더 불러올 수 없습니다</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">시스템</string>
     <string name="icon_shape_circle">동그라미</string>
@@ -283,8 +283,8 @@
     <string name="smartspace_widget_toggle_description">한눈에 보기는 Lawnchair 위젯을 배치하여 수동으로 홈 화면에 추가할 수 있습니다</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">한 눈에 보기 제공자</string>
-    <string name="smartspace_mode_google">구글</string>
-    <string name="smartspace_mode_google_search">구글 검색</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Google 검색</string>
     <!-- Miscellaneous Smartspace strings -->
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="accessibility_smartspace_page">페이지 %1$d / %2$d</string>
@@ -392,7 +392,7 @@
     <string name="status_bar_label">상태 표시줄</string>
     <string name="show_status_bar">상태 표시줄 표시</string>
     <string name="dark_status_bar_label">어두운 상태 표시줄</string>
-    <string name="home_screen_text_color">텝스트 색상</string>
+    <string name="home_screen_text_color">텍스트 색상</string>
     <string name="color_light">라이트</string>
     <string name="color_dark">다크</string>
     <string name="force_rounded_widgets">둥근 모서리</string>
@@ -403,10 +403,10 @@
     <string name="widget_unlimited_size_description">위젯의 최소 및 최대 크기 제한 제거</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">독 표시</string>
-    <string name="search_bar_label">검색 상자</string>
-    <string name="hotseat_mode_label">검색창 위젯</string>
+    <string name="search_bar_label">검색 표시줄</string>
+    <string name="hotseat_mode_label">검색 표시줄 위젯</string>
     <string name="hotseat_mode_disabled">비활성화됨</string>
-    <string name="hotseat_mode_google_search">구글 검색창</string>
+    <string name="hotseat_mode_google_search">Google 검색 표시줄</string>
     <string name="corner_radius_label">가장자리 둥글기</string>
     <string name="apply_accent_color_label">강조 색상 적용하기</string>
     <string name="search_provider">검색 제공자</string>
@@ -420,12 +420,12 @@
     <string name="qsb_search_provider_app_required">앱 필요</string>
     <!-- Dock search bar a11y -->
     <string name="label_search">검색</string>
-    <string name="label_lens">구글 렌즈</string>
+    <string name="label_lens">Google 렌즈</string>
     <string name="label_voice_search">음성 검색</string>
     <!-- App drawer settings -->
     <string name="hidden_apps_label">숨겨진 앱</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">대량 앱 로드</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">개별으로 대신 대량으로 아이콘 로드하고 표시하기</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">앱 한꺼번에 불러오기</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">아이콘을 각각 불러오지 않고 한꺼번에 불러와 표시</string>
     <string name="pref_all_apps_remember_position_title">위치 기억</string>
     <string name="pref_all_apps_remember_position_description">앱 서랍 종료 시 앱 서랍 위치를 기억</string>
     <string name="pref_all_apps_show_scrollbar_title">스크롤바 표시</string>
@@ -444,7 +444,7 @@
     <string name="max_folder_columns">최대 폴더 열</string>
     <string name="max_folder_rows">최대 폴더 행</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Lawnchair가 최근 항목 제공자로 설정되지 않았으므로 이러한 설정은 무시됩니다</string>
+    <string name="quickswitch_ignored_warning">Lawnchair가 최근 앱 제공자로 설정되지 않았으므로 아래 설정은 무시됩니다</string>
     <string name="quickstep_incompatible">호환되지 않는 시스템 통합</string>
     <string name="quickstep_incompatible_description">기기가 %1$s에서 제공하는 시스템 제스처(Quickstep으로 알려져 있음)가 설정되어 있지만 %1$s의 이 버전은 Android 버전과 호환되지 않습니다. 장치를 계속 사용하려면 %1$s 업데이트를 제거하거나 시스템 제스처 공급자로 %1$s을(를) 비활성화하십시오.</string>
     <string name="translucent_background">반투명 배경</string>
@@ -456,7 +456,7 @@
     <string name="task_menu_force_stop">강제 종료</string>
     <string name="window_corner_radius_label">가장자리 둥글기</string>
     <string name="override_window_corner_radius_label">가장자리 둥글기 개인화</string>
-    <string name="window_corner_radius_description">최근앱보기에서 앱 미리보기 창에대한 가장자리 모서리 둥글기에 대한 설정입니다. 화면의 둥글기에 맞게 혹은 기호에 맞춰 가장자리 둥글기를 조정하세요</string>
+    <string name="window_corner_radius_description">위로 스와이프하여 최근 앱 화면을 열면, 현재 앱이 손가락을 따라가며 카드로 줄어듭니다. 이 슬라이더를 사용하여 카드가 거의 전체 화면일 때 화면 모서리와 일치하도록 카드의 모서리 반경을 조정할 수 있습니다.</string>
     <string name="taskbar_label">작업 표시줄</string>
     <string name="enable_taskbar_experimental">작업 표시줄 표시(실험적)</string>
     <!--
@@ -473,13 +473,13 @@
     <string name="all_apps_search_result_files">기기의 파일</string>
     <string name="all_apps_search_result_settings_entry_from_device">기기의 설정</string>
     <string name="all_apps_search_market_message">더 많은 앱 검색하기</string>
-    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>에서 검색</string>
     <string name="error_no_market_or_browser_installed">앱 스토어나 브라우저가 설치되어 있지 않습니다</string>
     <string name="clear_history">검색기록 삭제</string>
     <string name="search_input_action_clear_results">검색 상자 비우기</string>
     <!-- Search settings -->
     <string name="pref_category_search">검색</string>
-    <string name="show_app_search_bar">검색 창 활성화</string>
+    <string name="show_app_search_bar">검색 표시줄 사용</string>
     <string name="pref_search_auto_show_keyboard">자동으로 키보드 표시</string>
     <string name="fuzzy_search_title">유사 검색어 검색</string>
     <string name="fuzzy_search_desc">앱을 검색할 때 검색어와 유사한 앱을 찾아줍니다</string>
@@ -489,7 +489,7 @@
     <string name="perform_wide_search_description">휴대전화의 연락처, 파일, 설정 검색</string>
     <string name="show_hidden_apps_in_search_results">검색 결과에 숨겨진 앱 표시</string>
     <string name="hidden_apps_show_name_typed">전체 이름을 입력한 경우</string>
-    <string name="app_search_algorithm">검색 알고리듬</string>
+    <string name="app_search_algorithm">검색 알고리즘</string>
     <string name="search_algorithm_app_search">앱 검색</string>
     <string name="search_algorithm_global_search_on_device">글로벌 검색(기기 내)</string>
     <string name="search_algorithm_global_search_via_asi">글로벌 검색 (ASI를 통해)</string>
@@ -499,7 +499,7 @@
     <string name="search_pref_result_shortcuts_title">앱 바로가기</string>
     <string name="search_pref_result_people_title">사람들</string>
     <string name="search_pref_result_tips_title">Pixel 도움말</string>
-    <string name="search_pref_result_settings_title">안드로이드 설정</string>
+    <string name="search_pref_result_settings_title">Android 설정</string>
     <string name="search_pref_result_files_title">파일</string>
     <string name="search_pref_result_web_title">웹 제안</string>
     <string name="search_pref_result_history_title">검색 기록</string>
@@ -507,7 +507,7 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">미디어, 파일 등</string>
     <string name="search_pref_result_contacts_description">연락처 등</string>
-    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
+    <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g> 제공</string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">검색 결과에 최대 앱 개수</string>
     <string name="max_people_result_count_title">검색 결과에 최대 사람 개수</string>
@@ -521,7 +521,7 @@
     <string name="warn_files_permission_content">파일을 검색하려면 Lawnchair에 저장소 권한을 부여하세요</string>
     <string name="grant_requested_permissions">권한 부여</string>
     <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
-    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
+    <string name="allapps_web_suggestion_provider_label">웹 제안 제공자</string>
+    <string name="allapps_use_web_suggestion_icon_label">검색 표시줄에 웹 제안 제공자 아이콘 표시</string>
+    <string name="allapps_match_qsb_style_label">독 검색 표시줄 스타일에 따르기</string>
 </resources>
