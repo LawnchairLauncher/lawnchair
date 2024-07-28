@@ -23,7 +23,7 @@
     -->
     <string name="preview_label">Xem trước</string>
     <string name="action_create">Tạo</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_backup">Sao lưu</string>
     <string name="action_restore">Khôi phục</string>
     <string name="action_delete">Xoá</string>
     <string name="action_reset">Reset</string>
@@ -31,19 +31,19 @@
     <string name="action_lock">Khóa</string>
     <string name="action_apply">Áp dụng</string>
     <string name="action_customize">Tùy chỉnh</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
+    <string name="always_choice">Luôn luôn</string>
+    <string name="never_choice">Không bao giờ</string>
     <string name="clipboard">Bộ nhớ tạm thời</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy_link">Sao chép liên kết</string>
     <string name="action_copy">Sao chép</string>
     <string name="action_paste">Dán</string>
     <string name="loading">Đang tải…</string>
     <string name="managed_by_lawnchair">Quản lí bởi Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Tùy chỉnh</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">Cài đặt trang chủ</string>
+    <string name="system_settings">Cài đặt hệ thống</string>
+    <string name="title_change_settings">Thay đổi cài đặt</string>
     <!--
 
     General "words" used throughout Lawnchair
@@ -64,12 +64,12 @@
     <string name="layout">Bố cục</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Hình nền</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="background_opacity">Độ mờ nền</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
-    <string name="item_removed">Item removed</string>
+    <string name="copied_toast">Đã sao chép</string>
+    <string name="item_removed">Đã xoá mục</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
+    <string name="what_to_show">Những gì để hiển thị</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_by_y">%1$d x %2$d</string>

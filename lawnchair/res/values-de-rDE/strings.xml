@@ -457,7 +457,7 @@
     <string name="task_menu_force_stop">Schließen erzwingen</string>
     <string name="window_corner_radius_label">Radius der Bildschirmecken</string>
     <string name="override_window_corner_radius_label">Benutzerdefinierter Radius der Bildschirmecken</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Wenn du nach oben wischst, um die zuletzt verwendeten Apps zu öffnen, folgt die aktuelle App deinem Finger und verkleinert sich zu einer Karte. Verwende diesen Regler, um den Eckenradius der Karte anzupassen, wenn sie fast im Vollbildmodus ist, sodass er mit den Ecken deines Bildschirms übereinstimmt.</string>
     <string name="taskbar_label">Taskbar</string>
     <string name="enable_taskbar_experimental">Taskbar anzeigen (experimentell)</string>
     <!--
@@ -499,7 +499,7 @@
     <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Verknüpfungen</string>
     <string name="search_pref_result_shortcuts_title">Anwendungs Verknüpfungen</string>
     <string name="search_pref_result_people_title">Personen</string>
-    <string name="search_pref_result_tips_title">Pixel tips</string>
+    <string name="search_pref_result_tips_title">Pixel-Tipps</string>
     <string name="search_pref_result_settings_title">Android Einstellungen</string>
     <string name="search_pref_result_files_title">Dateien</string>
     <string name="search_pref_result_web_title">Webvorschläge</string>
