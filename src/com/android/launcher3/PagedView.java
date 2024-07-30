@@ -516,12 +516,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     @Override
-    public void scrollTo(int x, int y) {
-        x = Utilities.boundToRange(x,
+    public void scrollTo(int xCoordinate, int yCoordinate) {
+        xCoordinate = Utilities.boundToRange(xCoordinate,
                 mOrientationHandler.getPrimaryValue(mMinScroll, 0), mMaxScroll);
-        y = Utilities.boundToRange(y,
+        yCoordinate = Utilities.boundToRange(yCoordinate,
                 mOrientationHandler.getPrimaryValue(0, mMinScroll), mMaxScroll);
-        super.scrollTo(x, y);
+        super.scrollTo(xCoordinate, yCoordinate);
     }
 
     private void sendScrollAccessibilityEvent() {
@@ -938,8 +938,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     @Override
-    public boolean dispatchUnhandledMove(View focused, int direction) {
-        if (super.dispatchUnhandledMove(focused, direction)) {
+    public boolean dispatchUnhandledMove(View focusedView, int direction) {
+        if (super.dispatchUnhandledMove(focusedView, direction)) {
             return true;
         }
 
