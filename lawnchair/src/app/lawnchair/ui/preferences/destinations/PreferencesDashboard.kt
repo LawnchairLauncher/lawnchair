@@ -10,6 +10,7 @@ import android.provider.Settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -164,7 +165,7 @@ fun PreferencesDashboard(
 }
 
 @Composable
-fun PreferencesOverflowMenu(
+fun RowScope.PreferencesOverflowMenu(
     currentRoute: String,
     onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier,
