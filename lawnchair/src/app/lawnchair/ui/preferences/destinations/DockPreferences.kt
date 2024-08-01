@@ -30,6 +30,7 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
@@ -71,13 +72,6 @@ fun DockPreferences(
                             label = stringResource(id = R.string.apply_accent_color_label),
                         )
                         SliderPreference(
-                            label = stringResource(id = R.string.search_background_transparency),
-                            adapter = prefs.searchBackgroundHotseatTransparency.getAdapter(),
-                            step = 5,
-                            valueRange = 0..100,
-                            showUnit = "%",
-                        )
-                        SliderPreference(
                             label = stringResource(id = R.string.corner_radius_label),
                             adapter = prefs.hotseatQsbCornerRadius.getAdapter(),
                             step = 0.05F,
@@ -94,6 +88,21 @@ fun DockPreferences(
                                     .name,
                             ),
                         )
+                        SliderPreference(
+                            label = stringResource(id = R.string.search_background_transparency),
+                            adapter = prefs.searchBackgroundHotseatTransparency.getAdapter(),
+                            step = 5,
+                            valueRange = 0..100,
+                            showUnit = "%",
+                        )
+                        SliderPreference(
+                            label = stringResource(id = R.string.stroke_width),
+                            adapter = prefs.searchStrokeWidth.getAdapter(),
+                            step = 1f,
+                            valueRange = 0f..10f,
+                            showUnit = "vw",
+                        )
+                        ColorPreference(preference = prefs2.strokeColorStyle)
                     }
                 }
             }

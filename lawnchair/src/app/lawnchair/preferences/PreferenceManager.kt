@@ -95,7 +95,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val drawerThemedIcons = BoolPref("drawer_themed_icons", false, recreate)
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
     val searchBackgroundHotseatTransparency = IntPref("pref_searchHotseatTranparency", 0, recreate)
-
+    val searchStrokeWidth = FloatPref("pref_searchStrokeWidth", 1F, recreate)
     val enableWallpaperBlur = BoolPref("pref_enableWallpaperBlur", false, recreate)
     val wallpaperBlur = IntPref("pref_wallpaperBlur", 25, recreate)
     val wallpaperBlurFactorThreshold = IntPref("pref_wallpaperBlurFactor", 25, recreate)

@@ -120,6 +120,14 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.restart() },
     )
 
+    val strokeColorStyle = preference(
+        key = stringPreferencesKey(name = "stroke_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.restart() },
+        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_accent_color)),
+    )
+
     val notificationDotColor = preference(
         key = stringPreferencesKey(name = "notification_dot_color"),
         parse = ColorOption::fromString,

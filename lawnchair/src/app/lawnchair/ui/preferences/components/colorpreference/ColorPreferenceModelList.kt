@@ -19,6 +19,13 @@ class ColorPreferenceModelList(context: Context) {
         )
         registerModel(
             ColorPreferenceModel(
+                prefObject = prefs.strokeColorStyle,
+                labelRes = R.string.stroke_color,
+                dynamicEntries = dynamicColors,
+            ),
+        )
+        registerModel(
+            ColorPreferenceModel(
                 prefObject = prefs.notificationDotColor,
                 labelRes = R.string.notification_dots_color,
                 dynamicEntries = dynamicColorsWithDefault,
