@@ -27,8 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"ምግብሮች በደህንነቱ የተጠበቀ ሁኔታ ተሰናክለዋል"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"አቋራጭ አይገኝም"</string>
     <string name="home_screen" msgid="5629429142036709174">"መነሻ"</string>
-    <!-- no translation found for set_default_home_app (5808906607627586381) -->
-    <skip />
+    <string name="set_default_home_app" msgid="5808906607627586381">"በቅንብሮች ውስጥ <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g>ን እንደ ነባሪ የHome መተግበሪያ ያቀናብሩ"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"የተከፈለ ማያ ገፅ"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"የመተግበሪያ መረጃ ለ%1$s"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"የ%1$s የአጠቃቀም ቅንብሮች"</string>

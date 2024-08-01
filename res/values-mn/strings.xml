@@ -27,8 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Safe горимд виджетүүдийг идэвхгүйжүүлсэн"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Товчлол алга"</string>
     <string name="home_screen" msgid="5629429142036709174">"Нүүр"</string>
-    <!-- no translation found for set_default_home_app (5808906607627586381) -->
-    <skip />
+    <string name="set_default_home_app" msgid="5808906607627586381">"<xliff:g id="LAUNCHER_NAME">%1$s</xliff:g>-г Тохиргоонд өгөгдмөл үндсэн аппаар тохируулна уу"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Дэлгэцийг хуваах"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s-н аппын мэдээлэл"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s-н ашиглалтын тохиргоо"</string>

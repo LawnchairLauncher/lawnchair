@@ -27,8 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"ווידג\'טים מושבתים במצב בטוח"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"קיצור הדרך אינו זמין"</string>
     <string name="home_screen" msgid="5629429142036709174">"בית"</string>
-    <!-- no translation found for set_default_home_app (5808906607627586381) -->
-    <skip />
+    <string name="set_default_home_app" msgid="5808906607627586381">"הגדרה של <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g> כאפליקציית הבית ב\'הגדרות\'"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"מסך מפוצל"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"‏פרטים על האפליקציה %1$s"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"‏הגדרות שימוש ב-%1$s"</string>
