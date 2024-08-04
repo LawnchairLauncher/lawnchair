@@ -234,6 +234,7 @@
     <!-- Accent color and color picker -->
     <string name="colors">Farben</string>
     <string name="accent_color">Akzentfarbe</string>
+    <string name="stroke_color">Strichfarbe</string>
     <string name="swatches">Farbfelder</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Rot</string>
@@ -367,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Startbildschirm-Drehung</string>
     <string name="home_screen_rotation_description">Drehen des Startbildschirms bei Drehung des Geräts erlauben</string>
+    <string name="wallpaper_blur">Hintergrund-Unschärfe aktivieren</string>
+    <string name="wallpaper_background_blur">Unschärfe-Intensität</string>
+    <string name="wallpaper_background_blur_factor">Faktor-Schwellenwert</string>
     <string name="auto_add_shortcuts_label">Neue Apps zum Startbildschirm hinzufügen</string>
     <string name="minus_one_enable">Feed anzeigen</string>
     <string name="minus_one_unavailable">Keine Feed-Apps installiert</string>
@@ -407,6 +411,8 @@
     <string name="hotseat_mode_label">Suchleisten-Widget</string>
     <string name="hotseat_mode_disabled">Deaktiviert</string>
     <string name="hotseat_mode_google_search">Google-Suchleiste</string>
+    <string name="search_background_transparency">Deckkraft</string>
+    <string name="stroke_width">Strichstärke</string>
     <string name="corner_radius_label">Ecken radius</string>
     <string name="apply_accent_color_label">Akzentfarbe verwenden</string>
     <string name="search_provider">Suchanbieter</string>

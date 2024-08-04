@@ -234,6 +234,7 @@
     <!-- Accent color and color picker -->
     <string name="colors">Cores</string>
     <string name="accent_color">Cor de Destaque</string>
+    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Amostras</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Vermelho</string>
@@ -367,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotação da tela inicial</string>
     <string name="home_screen_rotation_description">Permitir a rotação da tela inicial quando o dispositivo for girado</string>
+    <string name="wallpaper_blur">Enable wallpaper blur</string>
+    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Adicionar novos aplicativos à tela inicial</string>
     <string name="minus_one_enable">Mostrar o feed</string>
     <string name="minus_one_unavailable">Nenhum aplicativo de feed instalado</string>
@@ -407,6 +411,8 @@
     <string name="hotseat_mode_label">Widget da barra de pesquisa</string>
     <string name="hotseat_mode_disabled">Desativado</string>
     <string name="hotseat_mode_google_search">Barra de Pesquisa do Google</string>
+    <string name="search_background_transparency">Opacity</string>
+    <string name="stroke_width">Stroke</string>
     <string name="corner_radius_label">Raio do canto</string>
     <string name="apply_accent_color_label">Aplicar cor de destaque</string>
     <string name="search_provider">Provedor de pesquisa</string>

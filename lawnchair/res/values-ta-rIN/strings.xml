@@ -234,6 +234,7 @@
     <!-- Accent color and color picker -->
     <string name="colors">நிறங்கள்</string>
     <string name="accent_color">உரப்பு நிறம்</string>
+    <string name="stroke_color">Stroke color</string>
     <string name="swatches">மாதிரிகள்</string>
     <string name="rgb">ஆர்ஜிபி</string>
     <string name="rgb_red">சிவப்பு</string>
@@ -367,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
     <string name="home_screen_rotation_description">சாதனம் சுழலும்போது முகப்புத் திரை சுழல அனுமதி</string>
+    <string name="wallpaper_blur">Enable wallpaper blur</string>
+    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">முகப்புத் திரையில் புதிய செயலிகளைச் சேர்</string>
     <string name="minus_one_enable">பீட் காட்டு</string>
     <string name="minus_one_unavailable">பீட் செயலிகள் எதுவும் நிறுவப்படவில்லை</string>
@@ -407,6 +411,8 @@
     <string name="hotseat_mode_label">தேடல் பட்டி விட்ஜெட்</string>
     <string name="hotseat_mode_disabled">முடக்கப்பட்டுள்ளது</string>
     <string name="hotseat_mode_google_search">கூகிள் தேடல்</string>
+    <string name="search_background_transparency">Opacity</string>
+    <string name="stroke_width">Stroke</string>
     <string name="corner_radius_label">மூலை ஆரம்</string>
     <string name="apply_accent_color_label">உரப்பு நிறத்தைச் செயற்படுத்து</string>
     <string name="search_provider">தேடல் வழங்கி</string>

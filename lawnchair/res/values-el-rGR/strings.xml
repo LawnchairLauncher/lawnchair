@@ -234,6 +234,7 @@
     <!-- Accent color and color picker -->
     <string name="colors">Χρώματα</string>
     <string name="accent_color">Χρώμα έμφασης</string>
+    <string name="stroke_color">Χρώμα περιγράμματος</string>
     <string name="swatches">Δείγματα</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Κόκκινο</string>
@@ -367,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Περιστροφή αρχικής οθόνης</string>
     <string name="home_screen_rotation_description">Να επιτρέπεται η περιστροφή της αρχικής οθόνης κατά την περιστροφή της συσκευής</string>
+    <string name="wallpaper_blur">Ενεργοποίηση θολώματος ταπετσαρίας</string>
+    <string name="wallpaper_background_blur">Ένταση θολώματος</string>
+    <string name="wallpaper_background_blur_factor">Όριο παράγοντα</string>
     <string name="auto_add_shortcuts_label">Προσθήκη νέων εφαρμογών στην αρχική οθόνη</string>
     <string name="minus_one_enable">Εμφάνιση ροής</string>
     <string name="minus_one_unavailable">Δεν υπάρχουν εγκατεστημένες εφαρμογές ροής</string>
@@ -407,6 +411,8 @@
     <string name="hotseat_mode_label">Γραφικό στοιχείο μπάρας αναζήτησης</string>
     <string name="hotseat_mode_disabled">Απενεργοποιημένο</string>
     <string name="hotseat_mode_google_search">Μπάρα αναζήτησης Google</string>
+    <string name="search_background_transparency">Αδιαφάνεια</string>
+    <string name="stroke_width">Πρόγραμμα</string>
     <string name="corner_radius_label">Ακτίνα γωνίας</string>
     <string name="apply_accent_color_label">Εφαρμογή χρώματος έμφασης</string>
     <string name="search_provider">Πάροχος αναζήτησης</string>

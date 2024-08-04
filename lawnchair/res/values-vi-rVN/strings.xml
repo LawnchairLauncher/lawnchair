@@ -234,6 +234,7 @@
     <!-- Accent color and color picker -->
     <string name="colors">Màu</string>
     <string name="accent_color">Accent color</string>
+    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Mẫu màu</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Đỏ</string>
@@ -367,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Home screen rotation</string>
     <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
+    <string name="wallpaper_blur">Enable wallpaper blur</string>
+    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
     <string name="minus_one_enable">Show feed</string>
     <string name="minus_one_unavailable">Chưa cài đặt bản tin</string>
@@ -407,6 +411,8 @@
     <string name="hotseat_mode_label">Search bar widget</string>
     <string name="hotseat_mode_disabled">Đã vô hiệu hoá</string>
     <string name="hotseat_mode_google_search">Google Search bar</string>
+    <string name="search_background_transparency">Opacity</string>
+    <string name="stroke_width">Stroke</string>
     <string name="corner_radius_label">Bán kính góc</string>
     <string name="apply_accent_color_label">Apply accent color</string>
     <string name="search_provider">Search provider</string>
