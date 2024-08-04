@@ -224,16 +224,17 @@
     <!-- Color style -->
     <string name="color_style_label">Färgstil</string>
     <string name="color_style_spritz">Spritz</string>
-    <string name="color_style_tonal_spot">Tonal Spot</string>
-    <string name="color_style_vibrant">Vibrant</string>
-    <string name="color_style_expressive">Expressive</string>
-    <string name="color_style_rainbow">Rainbow</string>
-    <string name="color_style_fruit_salad">Fruit Salad</string>
-    <string name="color_style_content">Content</string>
-    <string name="color_style_monochromatic">Monochromatic</string>
+    <string name="color_style_tonal_spot">Tonal punkt</string>
+    <string name="color_style_vibrant">Livfull</string>
+    <string name="color_style_expressive">Uttrycksfull</string>
+    <string name="color_style_rainbow">Regnbåge</string>
+    <string name="color_style_fruit_salad">Fruktsallad</string>
+    <string name="color_style_content">Innehåll</string>
+    <string name="color_style_monochromatic">Enfärgad</string>
     <!-- Accent color and color picker -->
     <string name="colors">Färger</string>
     <string name="accent_color">Accentfärg</string>
+    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Exempel</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Rött</string>
@@ -367,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotation av startskärmen</string>
     <string name="home_screen_rotation_description">Tillåt rotation av startskärmen när enheten roteras</string>
+    <string name="wallpaper_blur">Aktivera oskärpa på bakgrundsbild</string>
+    <string name="wallpaper_background_blur">Oskärpans intensitet</string>
+    <string name="wallpaper_background_blur_factor">Faktortröskel</string>
     <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
     <string name="minus_one_enable">Visa flöde</string>
     <string name="minus_one_unavailable">Inga flödesappar installerade</string>
@@ -407,6 +411,8 @@
     <string name="hotseat_mode_label">Sökfältswidget</string>
     <string name="hotseat_mode_disabled">Inaktiverad</string>
     <string name="hotseat_mode_google_search">Google Sök-fält</string>
+    <string name="search_background_transparency">Opacitet</string>
+    <string name="stroke_width">Stroke</string>
     <string name="corner_radius_label">Hörnradie</string>
     <string name="apply_accent_color_label">Använd accentfärg</string>
     <string name="search_provider">Sökleverantör</string>
@@ -414,7 +420,7 @@
     <string name="hotseat_bottom_space_label">Avstånd nederkant</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Appsökning</string>
-    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s och Lawnchair har ett avtal om intäktsdelning.\n\nSökning med %1$s hjälper till att stödja Lawnchair.</string>
     <string name="app_label">App</string>
     <string name="website_label">Webbplats</string>
     <string name="qsb_search_provider_app_required">App krävs</string>
@@ -457,7 +463,7 @@
     <string name="task_menu_force_stop">Tvångsavsluta</string>
     <string name="window_corner_radius_label">Skärmhörnsradie</string>
     <string name="override_window_corner_radius_label">Anpassad skärmhörnsradie</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">När du sveper uppåt för att öppna Senaste, följer den aktuella appen med ditt finger och krymper till ett kort. Använd detta reglage för att justera kortets hörnradie när det nästan fyller hela skärmen så att den matchar hörnen på din skärm.</string>
     <string name="taskbar_label">Aktivitetsfält</string>
     <string name="enable_taskbar_experimental">Visa aktivitetsfält (experimentellt)</string>
     <!--
@@ -510,19 +516,19 @@
     <string name="search_pref_result_contacts_description">Kontakter med mera</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
-    <string name="max_people_result_count_title">Maximum number of people in search results</string>
-    <string name="max_file_result_count_title">Maximum number of files in search results</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings entries in search results</string>
-    <string name="max_recent_result_count_title">Maximum number of history entries in search results</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
+    <string name="max_apps_result_count_title">Maximalt antal appar i sökresultat</string>
+    <string name="max_people_result_count_title">Maximalt antal personer i sökresultat</string>
+    <string name="max_file_result_count_title">Maximalt antal filer i sökresultat</string>
+    <string name="max_settings_entry_result_count_title">Maximalt antal inställningsposter i sökresultat</string>
+    <string name="max_recent_result_count_title">Maximalt antal historikposter i sökresultat</string>
+    <string name="max_suggestion_result_count_title">Maximalt antal förslag i sökresultat</string>
     <string name="max_web_suggestion_delay">Maximal fördröjning av webbförslag</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">För att söka efter kontakter, bevilja kontakter- och telefonbehörigheter till Lawnchair</string>
     <string name="warn_files_permission_content">För att söka bland dina filer, bevilja lagringsbehörigheter till Lawnchair</string>
     <string name="grant_requested_permissions">Bevilja behörigheter</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
-    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
+    <string name="hotseat_mode_lawnchair_compose">Lawnchair (sammansatt)</string>
+    <string name="allapps_web_suggestion_provider_label">Webbförslagsleverantör</string>
+    <string name="allapps_use_web_suggestion_icon_label">Visa webbförslagsleverantörens ikon i sökfältet</string>
+    <string name="allapps_match_qsb_style_label">Matcha stilen på favoritfältets sökfält</string>
 </resources>

@@ -234,6 +234,7 @@
     <!-- Accent color and color picker -->
     <string name="colors">Renkler</string>
     <string name="accent_color">Vurgu rengi</string>
+    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Paletleyici</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Kırmızı </string>
@@ -367,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Ana ekranı döndürme</string>
     <string name="home_screen_rotation_description">Cihaz döndürüldüğünde ana ekranın dönmesine izin ver</string>
+    <string name="wallpaper_blur">Enable wallpaper blur</string>
+    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Ana ekrana yeni uygulamalar ekleme</string>
     <string name="minus_one_enable">Yayını göster</string>
     <string name="minus_one_unavailable">Bir büyüme uygulaması yüklü değil</string>
@@ -407,6 +411,8 @@
     <string name="hotseat_mode_label">Arama çubuğu widget\'ı</string>
     <string name="hotseat_mode_disabled">Devre dışı</string>
     <string name="hotseat_mode_google_search">Google Arama çubuğu</string>
+    <string name="search_background_transparency">Opacity</string>
+    <string name="stroke_width">Stroke</string>
     <string name="corner_radius_label">Köşe yarıçapı</string>
     <string name="apply_accent_color_label">Vurgu rengini uygula</string>
     <string name="search_provider">Arama sağlayıcısı</string>

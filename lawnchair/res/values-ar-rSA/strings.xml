@@ -234,6 +234,7 @@
     <!-- Accent color and color picker -->
     <string name="colors">الألوان</string>
     <string name="accent_color">لون التمييز</string>
+    <string name="stroke_color">Stroke color</string>
     <string name="swatches">عينات</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">الأحمر</string>
@@ -367,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسية</string>
     <string name="home_screen_rotation_description">السماح بتدوير الشاشة الرئيسية عند تدوير الجهاز</string>
+    <string name="wallpaper_blur">Enable wallpaper blur</string>
+    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">إضافة التطبيقات الجديدة إلى الشاشة الرئيسية</string>
     <string name="minus_one_enable">إظهار الموجز</string>
     <string name="minus_one_unavailable">لا توجد تطبيقات عرض موجز مثبتة</string>
@@ -407,6 +411,8 @@
     <string name="hotseat_mode_label">أداة شريط البحث</string>
     <string name="hotseat_mode_disabled">معطلة</string>
     <string name="hotseat_mode_google_search">شريط بحث Google</string>
+    <string name="search_background_transparency">Opacity</string>
+    <string name="stroke_width">Stroke</string>
     <string name="corner_radius_label">نصف قطر الزاوية</string>
     <string name="apply_accent_color_label">تطبيق لون التمييز</string>
     <string name="search_provider">مزود البحث</string>

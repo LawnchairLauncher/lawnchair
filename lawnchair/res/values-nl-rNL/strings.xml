@@ -234,6 +234,7 @@
     <!-- Accent color and color picker -->
     <string name="colors">Kleuren</string>
     <string name="accent_color">Accentkleur</string>
+    <string name="stroke_color">Lijnkleur</string>
     <string name="swatches">Stalen</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Rood</string>
@@ -367,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Startscherm-rotatie</string>
     <string name="home_screen_rotation_description">Startscherm-rotatie toestaan wanneer het apparaat wordt gedraaid</string>
+    <string name="wallpaper_blur">Achtergrond-vervaging inschakelen</string>
+    <string name="wallpaper_background_blur">Intensiteit van vervaging</string>
+    <string name="wallpaper_background_blur_factor">Factor-drempelwaarde</string>
     <string name="auto_add_shortcuts_label">Nieuwe apps toevoegen aan startscherm</string>
     <string name="minus_one_enable">Feed weergeven</string>
     <string name="minus_one_unavailable">Geen feed apps geïnstalleerd</string>
@@ -407,6 +411,8 @@
     <string name="hotseat_mode_label">Zoekbalkwidget</string>
     <string name="hotseat_mode_disabled">Uitgeschakeld</string>
     <string name="hotseat_mode_google_search">Google Zoekbalk</string>
+    <string name="search_background_transparency">Ondoorzichtigheid</string>
+    <string name="stroke_width">Lijn</string>
     <string name="corner_radius_label">Hoek radius</string>
     <string name="apply_accent_color_label">Accentkleur toepassen</string>
     <string name="search_provider">Zoekmachine</string>

@@ -234,6 +234,7 @@
     <!-- Accent color and color picker -->
     <string name="colors">Warna</string>
     <string name="accent_color">Warna aksen</string>
+    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Swatch</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Merah</string>
@@ -367,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotasi layar beranda</string>
     <string name="home_screen_rotation_description">Izinkan rotasi layar beranda ketika perangkat diputar</string>
+    <string name="wallpaper_blur">Enable wallpaper blur</string>
+    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Tambahkan apli baru ke layar beranda</string>
     <string name="minus_one_enable">Tampilkan umpan</string>
     <string name="minus_one_unavailable">Tidak ada aplikasi feed yang terpasang</string>
@@ -407,6 +411,8 @@
     <string name="hotseat_mode_label">Widget bilah pencarian</string>
     <string name="hotseat_mode_disabled">Dimatikan</string>
     <string name="hotseat_mode_google_search">Bilah Penelusuran Google</string>
+    <string name="search_background_transparency">Opacity</string>
+    <string name="stroke_width">Stroke</string>
     <string name="corner_radius_label">Radius sudut</string>
     <string name="apply_accent_color_label">Terapkan warna aksen</string>
     <string name="search_provider">Penyedia pencarian</string>
