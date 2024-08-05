@@ -234,7 +234,7 @@ android {
     }
 
     // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
-    flavorDimensions += ["app", "recents", "channel"]
+    flavorDimensions += ["app", "recents", "channel", "accessibility"]
 
     productFlavors {
         lawn {
@@ -255,6 +255,15 @@ android {
             applicationId "ch.deletescape.lawnchair.plah"
             dimension "channel"
             isDefault true
+        }
+
+        withAccessibility {
+            dimension "accessibility"
+            isDefault true
+        }
+
+        withoutAccessibility {
+            dimension "accessibility"
         }
 
         configureEach {
@@ -285,11 +294,19 @@ android {
             }
         }
 
-        lawnWithQuickstepGithub {
+        lawnWithQuickstepGithubWithAccessibility {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
-        lawnWithQuickstepMarket {
+        lawnWithQuickstepGithubWithoutAccessibility {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
+        lawnWithQuickstepMarketWithAccessibility {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
+        lawnWithQuickstepMarketWithoutAccessibility {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
@@ -297,6 +314,18 @@ android {
             res.srcDirs = ['quickstep/res', 'quickstep/recents_ui_overrides/res']
             java.srcDirs = ['quickstep/src', 'quickstep/recents_ui_overrides/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
+
+        withAccessibility {
+            res.srcDirs = ['accessiblity/withAccessiblity/res']
+            java.srcDirs = ['accessiblity/withAccessiblity/src']
+            manifest.srcFile "accessiblity/withAccessiblity/AndroidManifest.xml"
+        }
+
+        withoutAccessibility {
+            res.srcDirs = ['accessiblity/withoutAccessiblity/res']
+            java.srcDirs = ['accessiblity/withoutAccessiblity/src']
+            manifest.srcFile "accessiblity/withoutAccessiblity/AndroidManifest.xml"
         }
     }
 }
