@@ -294,7 +294,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">Colors</string>
     <string name="accent_color">Accent color</string>
-    <string name="stroke_color">Stroke color</string>
 
     <string name="swatches">Swatches</string>
 
@@ -529,8 +528,9 @@
     <string name="hotseat_mode_lawnchair" translatable="false">Lawnchair</string>
     <string name="hotseat_mode_google_search">Google Search bar</string>
 
-    <string name="search_background_transparency">Opacity</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">Background opacity</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Corner radius</string>
     <string name="apply_accent_color_label">Apply accent color</string>
     <string name="search_provider">Search provider</string>

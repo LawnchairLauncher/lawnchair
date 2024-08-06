@@ -20,7 +20,7 @@ class ColorPreferenceModelList(context: Context) {
         registerModel(
             ColorPreferenceModel(
                 prefObject = prefs.strokeColorStyle,
-                labelRes = R.string.stroke_color,
+                labelRes = R.string.qsb_hotseat_stroke_color,
                 dynamicEntries = dynamicColors,
             ),
         )

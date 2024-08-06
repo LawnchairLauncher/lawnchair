@@ -67,6 +67,16 @@ fun DockPreferences(
                 )
                 ExpandAndShrink(visible = hotseatModeAdapter.state.value == LawnchairHotseat) {
                     DividerColumn {
+                        val hotseatQsbProviderAdapter by preferenceManager2().hotseatQsbProvider.getAdapter()
+                        NavigationActionPreference(
+                            label = stringResource(R.string.search_provider),
+                            destination = DockRoutes.SEARCH_PROVIDER,
+                            subtitle = stringResource(
+                                id = QsbSearchProvider.values()
+                                    .first { it == hotseatQsbProviderAdapter }
+                                    .name,
+                            ),
+                        )
                         SwitchPreference(
                             adapter = prefs2.themedHotseatQsb.getAdapter(),
                             label = stringResource(id = R.string.apply_accent_color_label),
@@ -78,31 +88,25 @@ fun DockPreferences(
                             valueRange = 0F..1F,
                             showAsPercentage = true,
                         )
-                        val hotseatQsbProviderAdapter by preferenceManager2().hotseatQsbProvider.getAdapter()
-                        NavigationActionPreference(
-                            label = stringResource(R.string.search_provider),
-                            destination = DockRoutes.SEARCH_PROVIDER,
-                            subtitle = stringResource(
-                                id = QsbSearchProvider.values()
-                                    .first { it == hotseatQsbProviderAdapter }
-                                    .name,
-                            ),
-                        )
                         SliderPreference(
-                            label = stringResource(id = R.string.search_background_transparency),
-                            adapter = prefs.searchBackgroundHotseatTransparency.getAdapter(),
+                            label = stringResource(id = R.string.qsb_hotseat_background_transparency),
+                            adapter = prefs.hotseatQsbAlpha.getAdapter(),
                             step = 5,
                             valueRange = 0..100,
                             showUnit = "%",
                         )
+                        val qsbHotseatStrokeWidth = prefs.hotseatQsbStrokeWidth.getAdapter()
+
                         SliderPreference(
-                            label = stringResource(id = R.string.stroke_width),
-                            adapter = prefs.searchStrokeWidth.getAdapter(),
+                            label = stringResource(id = R.string.qsb_hotseat_stroke_width),
+                            adapter = qsbHotseatStrokeWidth,
                             step = 1f,
                             valueRange = 0f..10f,
                             showUnit = "vw",
                         )
-                        ColorPreference(preference = prefs2.strokeColorStyle)
+                        ExpandAndShrink(visible = qsbHotseatStrokeWidth.state.value > 0f) {
+                            ColorPreference(preference = prefs2.strokeColorStyle)
+                        }
                     }
                 }
             }
