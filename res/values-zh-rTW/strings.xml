@@ -27,8 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"在安全模式下無法使用小工具"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"目前無法使用捷徑"</string>
     <string name="home_screen" msgid="5629429142036709174">"主畫面"</string>
-    <!-- no translation found for set_default_home_app (5808906607627586381) -->
-    <skip />
+    <string name="set_default_home_app" msgid="5808906607627586381">"前往「設定」將「<xliff:g id="LAUNCHER_NAME">%1$s</xliff:g>」設為預設主畫面應用程式"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"分割畫面"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"「%1$s」的應用程式資訊"</string>
     <string name="split_app_usage_settings" msgid="7214375263347964093">"「%1$s」的用量設定"</string>
