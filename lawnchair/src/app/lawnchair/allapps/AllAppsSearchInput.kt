@@ -128,7 +128,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             }
             addTextChangedListener {
                 actionButton.isVisible = !it.isNullOrEmpty()
-                micIcon.isVisible = shouldShowIcons && it.isNullOrEmpty()
+                micIcon.isVisible = shouldShowIcons && voiceIntent != null && it.isNullOrEmpty()
                 lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null && it.isNullOrEmpty()
             }
         }
