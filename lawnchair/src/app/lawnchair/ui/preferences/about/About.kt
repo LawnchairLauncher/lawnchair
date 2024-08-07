@@ -316,7 +316,7 @@ fun About(
                     if (intent.resolveActivity(context.packageManager) != null) {
                         context.startActivity(intent)
                     }
-                }
+                },
             )
         }
     }
