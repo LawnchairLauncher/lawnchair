@@ -301,16 +301,6 @@ fun About(
             ClickablePreference(
                 label = stringResource(id = R.string.donate),
                 onClick = {
-                    val webpage = Uri.parse(CROWDIN_URL)
-                    val intent = Intent(Intent.ACTION_VIEW, webpage)
-                    if (intent.resolveActivity(context.packageManager) != null) {
-                        context.startActivity(intent)
-                    }
-                },
-            )
-            ClickablePreference(
-                label = stringResource(id = R.string.donate),
-                onClick = {
                     val webpage = Uri.parse(OPENCOLLECTIVE_FUNDING_URL)
                     val intent = Intent(Intent.ACTION_VIEW, webpage)
                     if (intent.resolveActivity(context.packageManager) != null) {
