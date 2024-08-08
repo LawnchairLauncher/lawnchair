@@ -15,10 +15,11 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.components.QuickActionsPreferences
+import app.lawnchair.ui.preferences.components.RecentsQuickAction
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
-import app.lawnchair.ui.preferences.components.layout.DraggablePreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -38,50 +39,33 @@ fun QuickstepPreferences(
         context.packageManager.getLaunchIntentForPackage("com.google.ar.lens") != null
     }
 
-    val screenshotPreference: @Composable () -> Unit = {
-        if (!isOnePlusStock) {
-            SwitchPreference(
-                adapter = prefs.recentsActionScreenshot.getAdapter(),
-                label = stringResource(id = R.string.action_screenshot),
-            )
-        }
-    }
-
-    val lockUnlockPreference: @Composable () -> Unit = {
-        SwitchPreference(
+    val recentActionsPreferences: List<RecentsQuickAction> = listOfNotNull(
+        RecentsQuickAction(
+            id = 0,
+            adapter = prefs.recentsActionScreenshot.getAdapter(),
+            label = stringResource(id = R.string.action_screenshot),
+        ).takeIf { !isOnePlusStock },
+        RecentsQuickAction(
+            id = 1,
+            adapter = prefs.recentsActionShare.getAdapter(),
+            label = stringResource(id = R.string.action_share),
+        ),
+        RecentsQuickAction(
+            id = 2,
+            adapter = prefs.recentsActionLens.getAdapter(),
+            label = stringResource(id = R.string.action_lens),
+        ).takeIf { lensAvailable },
+        RecentsQuickAction(
+            id = 3,
             adapter = prefs.recentsActionLocked.getAdapter(),
             label = stringResource(id = R.string.recents_lock_unlock),
             description = stringResource(id = R.string.recents_lock_unlock_description),
-        )
-    }
-
-    val sharePreference: @Composable () -> Unit = {
-        SwitchPreference(
-            adapter = prefs.recentsActionShare.getAdapter(),
-            label = stringResource(id = R.string.action_share),
-        )
-    }
-    val lensPreference: @Composable () -> Unit = {
-        if (lensAvailable) {
-            SwitchPreference(
-                adapter = prefs.recentsActionLens.getAdapter(),
-                label = stringResource(id = R.string.action_lens),
-            )
-        }
-    }
-    val clearAllPreference: @Composable () -> Unit = {
-        SwitchPreference(
+        ),
+        RecentsQuickAction(
+            id = 4,
             adapter = prefs.recentsActionClearAll.getAdapter(),
             label = stringResource(id = R.string.recents_clear_all),
-        )
-    }
-
-    val items = listOf(
-        screenshotPreference,
-        sharePreference,
-        lockUnlockPreference,
-        lensPreference,
-        clearAllPreference,
+        ),
     )
 
     PreferenceLayout(
@@ -106,10 +90,9 @@ fun QuickstepPreferences(
             }
         }
 
-        DraggablePreferenceGroup(
-            heading = stringResource(id = R.string.recents_actions_label),
-            items = items,
-            pref = prefs.recentActionOrder,
+        QuickActionsPreferences(
+            items = recentActionsPreferences,
+            adapter = prefs.recentActionOrder.getAdapter(),
         )
 
         val overrideWindowCornerRadius by prefs.overrideWindowCornerRadius.observeAsState()
