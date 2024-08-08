@@ -128,12 +128,20 @@ fun QuickActionsPreferences(
                     val isLastIndex = remember { index != lastItemIdIndex.intValue }
 
                     Card(
-                        elevation = if (isDragging) CardDefaults.elevatedCardElevation() else CardDefaults.cardElevation(
-                            0.dp,
-                        ),
-                        colors = if (isDragging) CardDefaults.elevatedCardColors() else CardDefaults.cardColors(
-                            Color.Transparent,
-                        ),
+                        elevation = if (isDragging) {
+                            CardDefaults.elevatedCardElevation()
+                        } else {
+                            CardDefaults.cardElevation(
+                                0.dp,
+                            )
+                        },
+                        colors = if (isDragging) {
+                            CardDefaults.elevatedCardColors()
+                        } else {
+                            CardDefaults.cardColors(
+                                Color.Transparent,
+                            )
+                        },
                         modifier = Modifier
                             .semantics {
                                 customActions = listOf(
@@ -195,10 +203,9 @@ fun QuickActionsPreferences(
             }
         }
 
-
         ExpandAndShrink(visible = order != DEFAULT_ORDER) {
             PreferenceGroup {
-                ClickablePreference(label = "Reset") {
+                ClickablePreference(label = stringResource(id = R.string.action_reset)) {
                     orderedItems = sortListByIdOrder(items, DEFAULT_ORDER).toMutableList()
                     onOrderChange(DEFAULT_ORDER)
                 }
@@ -212,11 +219,11 @@ fun DraggableSwitchPreference(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     label: String,
-    modifier: Modifier = Modifier,
-    description: String? = null,
-    enabled: Boolean = true,
     interactionSource: MutableInteractionSource,
     dragIndicator: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    description: String? = null,
 ) {
     PreferenceTemplate(
         modifier = modifier.clickable(
@@ -278,7 +285,7 @@ private fun DragHandle(
     ) {
         Icon(
             imageVector = Icons.Rounded.DragHandle,
-            contentDescription = "Drag the item",
+            contentDescription = "Drag indicator",
             modifier = Modifier.width(24.dp),
         )
     }

@@ -60,4 +60,4 @@ fun Context.getSystemAccent(darkTheme: Boolean): Int {
 }
 
 @Composable
-fun dividerColor() = MaterialTheme.colorScheme.surfaceVariant
+fun dividerColor() = MaterialTheme.colorScheme.outlineVariant
