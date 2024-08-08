@@ -129,8 +129,8 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             subscribeGoogleSearchWidget()
         }
 
-        preferenceManager.searchBackgroundHotseatTransparency.subscribeChanges(this::setUpBackground)
-        preferenceManager.searchStrokeWidth.subscribeChanges(this::setUpBackground)
+        preferenceManager.hotseatQsbAlpha.subscribeChanges(this::setUpBackground)
+        preferenceManager.hotseatQsbStrokeWidth.subscribeChanges(this::setUpBackground)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -196,13 +196,13 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     private fun setUpBackground(themed: Boolean = false) {
-        val transparency = preferenceManager.searchBackgroundHotseatTransparency.get()
+        val transparency = preferenceManager.hotseatQsbAlpha.get()
         val cornerRadius = getCornerRadius(context, preferenceManager)
         val baseColor = if (themed) Themes.getColorBackgroundFloating(context) else Themes.getAttrColor(context, R.attr.qsbFillColor)
         val alphaValue = (transparency * 255) / 100
         val color = Color.argb(alphaValue, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor))
         val strokeColor = strokeColor
-        val strokeWidth = preferenceManager.searchStrokeWidth.get()
+        val strokeWidth = preferenceManager.hotseatQsbStrokeWidth.get()
 
         val backgroundDrawable = PaintDrawable(color).apply {
             setCornerRadius(cornerRadius)
@@ -217,9 +217,11 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
         val combinedDrawable = LayerDrawable(arrayOf(backgroundDrawable, strokeDrawable))
 
+        val qsbBackground = if (strokeWidth != 0f) combinedDrawable else backgroundDrawable
+
         with(inner) {
             clipToOutline = cornerRadius > 0
-            background = combinedDrawable
+            background = qsbBackground
         }
     }
 
