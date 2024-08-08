@@ -299,7 +299,7 @@ fun About(
                 },
             )
             ClickablePreference(
-                label = stringResource(id = R.string.translate),
+                label = stringResource(id = R.string.donate),
                 onClick = {
                     val webpage = Uri.parse(CROWDIN_URL)
                     val intent = Intent(Intent.ACTION_VIEW, webpage)
