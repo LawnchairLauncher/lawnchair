@@ -80,9 +80,7 @@ fun QuickActionsPreferences(
     items: List<RecentsQuickAction>,
     modifier: Modifier = Modifier,
 ) {
-    var orderedItems = remember {
-        sortListByIdOrder(items, order).toMutableList()
-    }
+    var orderedItems = sortListByIdOrder(items, order)
 
     val isAnyDragging = remember { mutableStateOf(false) }
     val lastItemIdIndex = remember { mutableIntStateOf(4) }
@@ -102,17 +100,15 @@ fun QuickActionsPreferences(
                 modifier = Modifier,
                 list = orderedItems,
                 onSettle = { fromIndex, toIndex ->
-                    orderedItems = orderedItems.apply {
+                    orderedItems = orderedItems.toMutableList().apply {
                         add(toIndex, removeAt(fromIndex))
+                    }.toList().also { items ->
+                        onOrderChange(
+                            items.map { it.id }.joinToString(separator = ","),
+                        )
+                        isAnyDragging.value = false
+                        lastItemIdIndex.intValue = items.last().id
                     }
-
-                    isAnyDragging.value = false
-
-                    onOrderChange(
-                        orderedItems.map { it.id }.joinToString(separator = ","),
-                    )
-
-                    lastItemIdIndex.intValue = orderedItems.last().id
                 },
                 onMove = {
                     isAnyDragging.value = true
@@ -121,11 +117,10 @@ fun QuickActionsPreferences(
                     }
                 },
             ) { index, item, isDragging ->
-                key(item) {
+                key(item.id) {
                     val scope = this
 
                     val interactionSource = remember { MutableInteractionSource() }
-                    val isLastIndex = remember { index != lastItemIdIndex.intValue }
 
                     Card(
                         elevation = if (isDragging) {
@@ -194,7 +189,7 @@ fun QuickActionsPreferences(
                             },
                         )
                         AnimatedVisibility(visible = !isAnyDragging.value) {
-                            if (isLastIndex) {
+                            if (index != lastItemIdIndex.intValue) {
                                 HorizontalDivider()
                             }
                         }
@@ -206,7 +201,6 @@ fun QuickActionsPreferences(
         ExpandAndShrink(visible = order != DEFAULT_ORDER) {
             PreferenceGroup {
                 ClickablePreference(label = stringResource(id = R.string.action_reset)) {
-                    orderedItems = sortListByIdOrder(items, DEFAULT_ORDER).toMutableList()
                     onOrderChange(DEFAULT_ORDER)
                 }
             }
