@@ -6,7 +6,7 @@ All assets created should use the color listed in [CSS](css/) and font [Inter](h
 
 When creating device mockups for Lawnchair, make sure that you're using the latest commits of Lawnchair or use Lawnchair Nightly as base.
 
-## Device (`device-frame.png`)
+## Device Mockup
 
 Use in: [README](/README.md)
 
@@ -14,10 +14,3 @@ Use in: [README](/README.md)
 * Wallpaper: https://unsplash.com/photos/photography-of-green-leaves-ZVKr8wADhpc
 * Color Extraction Technique: Tonal Spot from Lawnchair
 * License: https://unsplash.com/license
-
-## Version Explainers (`version-*.svg`)
-
-Use in: [Contributing Guideline](/CONTRIBUTING.md)
-
-* Color Extraction Technique: Material 3 Figma Plugin [(See CSS folder)](css/)
-* License: [Apache 2.0](/LICENSE.txt)
