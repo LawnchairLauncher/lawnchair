@@ -76,12 +76,12 @@ Lawnchair’s version code is composed by four parts separated by underscores:
     </picture>
 </p>
 
-1. Android major version
-2. Android minor version
-3. Lawnchair's development status
-4. Lawnchair's development version
+1. Android Major Version
+2. Android Minor Version
+3. Lawnchair Development Status
+4. Lawnchair Development Version
 
-##### Android's major & minor versions
+##### Android major & minor versions
 
 These represent the Android version the Lawnchair launcher is built from. 
 They make up the first two parts of the version code:
@@ -99,8 +99,6 @@ and the specific version within that stage:
 * Development Status: Shows the current phase of the Lawnchair build (e.g., Alpha, Beta).
 * Development Version: Specifies the incremental version within the same development stage.
 
-Example: Beta 3 will be `XX_XX_02_03`.
-
 The table below shows release phase used by Lawnchair:
 
 | Status            | Stage |
@@ -110,7 +108,10 @@ The table below shows release phase used by Lawnchair:
 | Release Candidate | 03    |
 | Release           | 04    |
 
+Example: Alpha 5 will be `XX_XX_01_05` and Beta 3 will be `XX_XX_02_03`.
+
 #### String naming
+
 Strings `names` in `strings.xml` should follow this format:
 
 | Type                                             | Format            | Example usage              | Actual string        | Other information                                                                                                   |
