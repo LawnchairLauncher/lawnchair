@@ -10,13 +10,17 @@ First and foremost, welcome to the **Lawnchair** Contributing Guidelines!
 
 ### 💫 Bug reports & feature requests
 
-For bug reports, please describe the bug in detail to the best of your ability
+> [!NOTE]
+> We recommend that Lawnchair [Nightly](https://github.com/LawnchairLauncher/lawnchair/releases/tag/nightly) 
+> build should be use in your report as they contain the latest changes from Lawnchair.
+
+For [bug reports](https://github.com/LawnchairLauncher/lawnchair/issues/new?assignees=&labels=bug&projects=&template=bug_report.yaml&title=%5BBUG%5D+), please describe the bug in detail to the best of your ability
 and steps on how to reproduce it. If applicable, attach log files.
 
-For feature requests, please describe the feature you'd like to see added to Lawnchair.
+For [feature requests](https://github.com/LawnchairLauncher/lawnchair/issues/new?assignees=&labels=feature%2Cenhancement&projects=&template=feature_request.yaml&title=%5BFEATURE%5D+), please describe the feature you'd like to see added to Lawnchair.
 If applicable, attach log files.
 
-Please make sure to be civil during discussion of your contribution (refer to the [Code of Conduct](CODE_OF_CONDUCT.md))
+Please make sure to be civil during discussion of your contribution as outlined by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ### 🌐 Translation
 
@@ -62,7 +66,7 @@ Here are some contribution tips to help you get started:
 #### Versioning scheme
 
 As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361),
-Lawnchair’s version code is separated by four parts:
+Lawnchair’s version code is composed by four parts separated by underscores:
 
 <p align="center">
     <picture>
@@ -72,23 +76,32 @@ Lawnchair’s version code is separated by four parts:
     </picture>
 </p>
 
-1. Android's major version
-2. Android's minor version
+1. Android major version
+2. Android minor version
 3. Lawnchair's development status
 4. Lawnchair's development version
 
 ##### Android's major & minor versions
 
-These make up the first two parts of the version code.
-For example: Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
+These represent the Android version the Lawnchair launcher is built from. 
+They make up the first two parts of the version code:
+
+* Major Version: Indicates the main Android version.
+* Minor Version: Reflects any point release or update within the major version.
+
+Example: Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
 
 ##### Development status & version
 
-The third part of the version code indicates Lawnchair's stability status, while the fourth part indicates the version number.
+The third and fourth parts of the version code refer to Lawnchair's development stage 
+and the specific version within that stage:
 
-For example, Alpha 4's version code will be `XX_XX_01_04`.
+* Development Status: Shows the current phase of the Lawnchair build (e.g., Alpha, Beta).
+* Development Version: Specifies the incremental version within the same development stage.
 
-See the table below detailing the release type:
+Example: Beta 3 will be `XX_XX_02_03`.
+
+The table below shows release phase used by Lawnchair:
 
 | Status            | Stage |
 | ----------------- | ----- |
