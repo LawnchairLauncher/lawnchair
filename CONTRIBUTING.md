@@ -10,7 +10,7 @@ First and foremost, welcome to the **Lawnchair** Contributing Guidelines!
 
 ### 💫 Bug reports & feature requests
 
-> [!NOTE]
+> [!TIP]
 > We recommend that Lawnchair [Nightly](https://github.com/LawnchairLauncher/lawnchair/releases/tag/nightly) 
 > build should be use in your report as they contain the latest changes from Lawnchair.
 
@@ -32,7 +32,7 @@ For translation, visit [Lawnchair on Crowdin](https://lawnchair.crowdin.com) and
 
 ### 🧑‍💻 Code
 
-> [!TIP]
+> [!NOTE]
 > For Lawnchair 9 to 13, see the branches with the `9-` to `13-` prefixes respectively.
 
 For code, it's highly recommended that you use [Android Studio](https://developer.android.com/studio),
