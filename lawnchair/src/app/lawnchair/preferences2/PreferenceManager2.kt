@@ -562,6 +562,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         save = { it.toString() },
     )
 
+    val smartspacerMaxCount = preference(
+        key = intPreferencesKey(name = "smartspace_max_count"),
+        defaultValue = 5,
+        onSet = { reloadHelper.recreate() },
+    )
+
     val wallpaperDepthEffect = preference(
         key = booleanPreferencesKey(name = "enable_wallpaper_depth_effect"),
         defaultValue = true,

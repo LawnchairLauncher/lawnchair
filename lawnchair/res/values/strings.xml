@@ -355,6 +355,11 @@
     <string name="smartspace_battery_status">Battery status</string>
     <string name="smartspace_now_playing">Now Playing</string>
 
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
+
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tap to set up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>

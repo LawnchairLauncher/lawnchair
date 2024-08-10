@@ -8,6 +8,8 @@ import android.util.AttributeSet
 import android.view.View
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
+import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.preferences2.subscribeBlocking
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.navigation.Routes
 import com.android.launcher3.R
@@ -17,10 +19,22 @@ import com.kieronquinn.app.smartspacer.sdk.client.R as SmartspacerR
 import com.kieronquinn.app.smartspacer.sdk.client.views.BcSmartspaceView
 import com.kieronquinn.app.smartspacer.sdk.client.views.popup.Popup
 import com.kieronquinn.app.smartspacer.sdk.client.views.popup.PopupFactory
+import com.kieronquinn.app.smartspacer.sdk.model.SmartspaceConfig
 import com.kieronquinn.app.smartspacer.sdk.model.SmartspaceTarget
+import com.kieronquinn.app.smartspacer.sdk.model.UiSurface
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView(context, attrs) {
+    private val prefs2 = PreferenceManager2.getInstance(context)
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
+    private var targetCount = 5
+
     init {
+        prefs2.smartspacerMaxCount.subscribeBlocking(coroutineScope) {
+            targetCount = it
+        }
+
         popupFactory = object : PopupFactory {
             override fun createPopup(
                 context: Context,
@@ -53,6 +67,12 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
             }
         }
     }
+
+    override val config = SmartspaceConfig(
+        targetCount,
+        UiSurface.HOMESCREEN,
+        context.packageName,
+    )
 
     private fun getDismissOption(
         target: SmartspaceTarget,

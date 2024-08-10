@@ -5,23 +5,15 @@ import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -36,9 +28,11 @@ import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.smartspace.model.Smartspacer
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
+import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
@@ -77,21 +71,21 @@ fun SmartspacePreferences(
                 PreferenceGroup {
                     SmartspaceProviderPreference(
                         adapter = smartspaceModeAdapter,
-                        endWidget = when (selectedMode) {
-                            Smartspacer -> {
-                                { SmartspacerSettings() }
-                            }
-                            else -> null
-                        },
                     )
                 }
 
                 Crossfade(
-                    targetState = modeIsLawnchair,
-                    label = "",
+                    targetState = selectedMode,
+                    label = "Smartspace setting transision",
                 ) { targetState ->
-                    if (targetState) {
-                        LawnchairSmartspaceSettings(smartspaceProvider)
+                    when (targetState) {
+                        LawnchairSmartspace -> {
+                            LawnchairSmartspaceSettings(smartspaceProvider)
+                        }
+                        Smartspacer -> {
+                            SmartspacerSettings()
+                        }
+                        else -> {}
                     }
                 }
             }
@@ -132,7 +126,6 @@ private fun LawnchairSmartspaceSettings(
 fun SmartspaceProviderPreference(
     adapter: PreferenceAdapter<SmartspaceMode>,
     modifier: Modifier = Modifier,
-    endWidget: (@Composable () -> Unit)? = null,
 ) {
     val context = LocalContext.current
 
@@ -151,7 +144,6 @@ fun SmartspaceProviderPreference(
         entries = entries,
         label = stringResource(id = R.string.smartspace_mode_label),
         modifier = modifier,
-        endWidget = endWidget,
     )
 }
 
@@ -283,24 +275,24 @@ fun SmartspacerSettings(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .clickable {
+    val prefs2 = preferenceManager2()
+
+    Column(modifier) {
+        PreferenceGroup(
+            heading = stringResource(id = R.string.smartspacer_settings),
+        ) {
+            SliderPreference(
+                label = stringResource(R.string.maximum_number_of_targets),
+                adapter = prefs2.smartspacerMaxCount.getAdapter(),
+                valueRange = 5..15,
+                step = 1,
+            )
+            ClickablePreference(label = stringResource(R.string.open_smartspacer_settings)) {
                 val intent = context.packageManager.getLaunchIntentForPackage(
                     SmartspacerConstants.SMARTSPACER_PACKAGE_NAME,
                 )
                 context.startActivity(intent)
             }
-            .fillMaxHeight()
-            .padding(horizontal = 16.dp)
-            .size(32.dp),
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_setting),
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.primary,
-        )
+        }
     }
 }
