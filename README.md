@@ -38,7 +38,7 @@ Please visit the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) for inform
 ## Quick links
 
 -   [News](https://t.me/lawnchairci)
--   [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
+-   [Lawnchair on X (formerly Twitter)](https://x.com/lawnchairapp)
 -   [Website](https://lawnchair.app)
 -   [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
 
