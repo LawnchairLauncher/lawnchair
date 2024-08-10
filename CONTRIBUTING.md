@@ -2,8 +2,8 @@
 
 <picture>
     <!-- Avoid image being clickable with slight workaround --->
-    <source media="(prefers-color-scheme: dark)" srcset="docs/lawnchair-round.webp" width="100">
-    <img alt="" src="docs/lawnchair-round.webp" width="100">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/lawnchair-round.webp" width="100">
+    <img alt="" src="docs/assets/lawnchair-round.webp" width="100">
 </picture>
 
 First and foremost, welcome to the **Lawnchair** Contributing Guidelines!
@@ -70,8 +70,8 @@ Lawnchair’s version code is composed by four parts separated by underscores:
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/version-dark.svg" width="98%">
-        <img alt="" src="docs/version-light.svg" width="98%">
+        <source media="(prefers-color-scheme: dark)" srcset="docs/assets/version-dark.svg" width="98%">
+        <img alt="" src="docs/assets/version-light.svg" width="98%">
         <!-- Direct the accessibility reader to read the point below --->
     </picture>
 </p>
