@@ -32,7 +32,7 @@ For translation, visit [Lawnchair on Crowdin](https://lawnchair.crowdin.com) and
 
 ### 🧑‍💻 Code
 
-> [!NOTE]
+> [!TIP]
 > For Lawnchair 9 to 13, see the branches with the `9-` to `13-` prefixes respectively.
 
 For code, it's highly recommended that you use [Android Studio](https://developer.android.com/studio),
