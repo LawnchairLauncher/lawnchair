@@ -28,7 +28,7 @@ For translation, visit [Lawnchair on Crowdin](https://lawnchair.crowdin.com) and
 
 -   When using quotation marks, insert the symbols specific to the target language, as listed in this [this summary table](https://en.wikipedia.org/wiki/Quotation_mark#Summary_table);
 -   Some English terminology may have not have commonly-used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of _bottom row_ for _dock_;
--   Some languages (e.g. French) have variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
+-   Some languages (e.g. French) have variations of words depending on if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
 
 ### 🧑‍💻 Code
 
