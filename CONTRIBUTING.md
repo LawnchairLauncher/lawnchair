@@ -57,6 +57,7 @@ Here are some contribution tips to help you get started:
 
 #### Additional documentation
 
+-   Lawnchair Visual Guidelines ([README.md](/docs/assets/README.md))
 -   Lawnchair Quickstep Compat Lib ([README.md](compatLib/README.md))
 -   Lawnchair Preferences Components ([README.md](lawnchair/src/app/lawnchair/ui/preferences/components/README.md))
 -   SystemUI ViewCapture ([README.md](systemUIViewCapture/README.md))

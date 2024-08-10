@@ -1,4 +1,4 @@
-# Lawnchair Visual Documentation
+# Lawnchair Visual Guidelines
 
 This directory lists all the decoration & visual explainers used in the Lawnchair Documentation.
 
