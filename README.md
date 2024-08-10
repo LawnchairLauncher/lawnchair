@@ -9,6 +9,9 @@
 <picture>
     <!-- Avoid image being clickable with slight workaround -->
     <!-- ❤️ Credit to Raine for the original mockup on the Lawnchair Discord -->
+    <!-- ❤️ Credit to Lawrence Kayku for the current mockup on Unsplash 
+            https://unsplash.com/photos/photography-of-green-leaves-ZVKr8wADhpc 
+    -->
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/device-frame.png" width="250px">
     <img alt="Google Pixel running Lawnchair Launcher with green wallpaper" src="docs/assets/device-frame.png" width="250px">
 </picture>
