@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">Colors</string>
     <string name="accent_color">Accent color</string>
-    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Swatches</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Red</string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">Weather</string>
     <string name="smartspace_battery_status">Battery status</string>
     <string name="smartspace_now_playing">Now Playing</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tap to set up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">Support &amp; PR</string>
     <string name="acknowledgements">Acknowledgements</string>
     <string name="translate">Translate</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">Search bar widget</string>
     <string name="hotseat_mode_disabled">Disabled</string>
     <string name="hotseat_mode_google_search">Google Search bar</string>
-    <string name="search_background_transparency">Opacity</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">ფონის გამჭვირვალობა</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Corner radius</string>
     <string name="apply_accent_color_label">Apply accent color</string>
     <string name="search_provider">Search provider</string>

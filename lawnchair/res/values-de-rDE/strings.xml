@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">Farben</string>
     <string name="accent_color">Akzentfarbe</string>
-    <string name="stroke_color">Strichfarbe</string>
     <string name="swatches">Farbfelder</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Rot</string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">Wetter</string>
     <string name="smartspace_battery_status">Ladestand</string>
     <string name="smartspace_now_playing">Musikwiedergabe</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximale Anzahl von Zielen</string>
+    <string name="open_smartspacer_settings">Smartspacer-Einstellungen öffnen</string>
+    <string name="smartspacer_settings">Smartspacer-Einstellungen</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Zum Einrichten tippen</string>
     <string name="event_provider_missing_notification_dots">Aktiviere Benachrichtigungspunkte, um <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> zu verwenden.</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">Support &amp; PR</string>
     <string name="acknowledgements">Danksagungen</string>
     <string name="translate">Übersetzen</string>
+    <string name="donate">Spenden</string>
     <!--
 
     Backup and restore
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">Suchleisten-Widget</string>
     <string name="hotseat_mode_disabled">Deaktiviert</string>
     <string name="hotseat_mode_google_search">Google-Suchleiste</string>
-    <string name="search_background_transparency">Deckkraft</string>
-    <string name="stroke_width">Strichstärke</string>
+    <string name="qsb_hotseat_background_transparency">Deckkraft des Hintergrund</string>
+    <string name="qsb_hotseat_stroke_width">Konturstärke</string>
+    <string name="qsb_hotseat_stroke_color">Konturfarbe</string>
     <string name="corner_radius_label">Ecken radius</string>
     <string name="apply_accent_color_label">Akzentfarbe verwenden</string>
     <string name="search_provider">Suchanbieter</string>
@@ -434,7 +439,7 @@
     <string name="pref_all_apps_bulk_icon_loading_description">Lade und zeige Symbole auf einmal statt einzeln</string>
     <string name="pref_all_apps_remember_position_title">Position merken</string>
     <string name="pref_all_apps_remember_position_description">App-Drawer-Position nach Verlassen der Übersicht merken</string>
-    <string name="pref_all_apps_show_scrollbar_title">Zeige Scrollbar</string>
+    <string name="pref_all_apps_show_scrollbar_title">Scroll-Leiste anzeigen</string>
     <string name="app_drawer_columns">Spalten in der Anwendungsübersicht</string>
     <string name="row_height_label">Zeilenhöhe</string>
     <string name="app_drawer_indent_label">Horizontaler Abstand</string>
@@ -442,24 +447,24 @@
     <string name="hide_from_drawer">Aus der Anwendungsübersicht ausblenden</string>
     <string name="hidden_apps_label_with_count">Versteckte Apps (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d Anwendung</item>
-        <item quantity="other">%1$d Anwendungen</item>
+        <item quantity="one">%1$d App</item>
+        <item quantity="other">%1$d Apps</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Symbol-Hintergrundtransparenz</string>
-    <string name="folder_preview_bg_color_label">Symbol-Hintergrundfarbe</string>
-    <string name="max_folder_columns">Maximale Anzahl an Ordner Spalten</string>
-    <string name="max_folder_rows">Maximale Anzahl an Ordner Reihen</string>
+    <string name="folder_preview_bg_opacity_label">Symbolhintergrund-Transparenz</string>
+    <string name="folder_preview_bg_color_label">Symbolhintergrund-Farbe</string>
+    <string name="max_folder_columns">Maximalzahl Ordnerspalten</string>
+    <string name="max_folder_rows">Maximalzahl Ordnerzeilen</string>
     <!-- Quickstep settings -->
     <string name="quickswitch_ignored_warning">Diese Einstellungen werden ignoriert, da Lawnchair nicht als \"Recents-Provider\" eingestellt ist</string>
     <string name="quickstep_incompatible">Inkompatible Systemintegration</string>
-    <string name="quickstep_incompatible_description">Dein Gerät ist so konfiguriert, dass Systemgesten (bekannt als Quickstep) von %1$s bereitgestellt werden, diese Version von %1$s ist jedoch nicht mit deiner Android Version kompatibel. Um dein Gerät weiter zu verwenden, deinstalliere bitte %1$s Aktualisierungen oder deaktiviere %1$s als Systemgesten-Provider.</string>
-    <string name="translucent_background">Transparenter Hintergrund</string>
-    <string name="translucent_background_alpha">Deckkraft des Hintergrund</string>
-    <string name="recents_actions_label">Schnelle Aktionen</string>
+    <string name="quickstep_incompatible_description">Dein Gerät ist so konfiguriert, dass Systemgesten (bekannt als Quickstep) von %1$s bereitgestellt werden, diese Version von %1$s ist jedoch nicht mit deiner Android-Version kompatibel. Um dein Gerät weiterzuverwenden, deinstalliere bitte %1$s-Updates oder deaktiviere %1$s als Systemgesten-Provider.</string>
+    <string name="translucent_background">Transluzenter Hintergrund</string>
+    <string name="translucent_background_alpha">Hintergrunddeckkraft</string>
+    <string name="recents_actions_label">Schnellaktionen</string>
     <string name="action_share">Teilen</string>
     <string name="action_lens">Lens</string>
-    <string name="recents_clear_all">Alle löschen</string>
+    <string name="recents_clear_all">Alle Apps schließen</string>
     <string name="task_menu_force_stop">Schließen erzwingen</string>
     <string name="window_corner_radius_label">Radius der Bildschirmecken</string>
     <string name="override_window_corner_radius_label">Benutzerdefinierter Radius der Bildschirmecken</string>
@@ -477,10 +482,10 @@
     <string name="all_apps_no_search_results">Keine Apps gefunden, die mit „<xliff:g example="Android" id="query">%1$s</xliff:g>“ übereinstimmen</string>
     <string name="all_apps_search_result_suggestions">Aus dem Internet</string>
     <string name="all_apps_search_result_contacts_from_device">Kontakte auf dem Gerät</string>
-    <string name="all_apps_search_result_files">Datei auf dem Gerät</string>
+    <string name="all_apps_search_result_files">Dateien auf dem Gerät</string>
     <string name="all_apps_search_result_settings_entry_from_device">Geräteeinstellungen</string>
-    <string name="all_apps_search_market_message">Nach mehr Anwendungen suchen</string>
-    <string name="all_apps_search_on_web_message">Suche bei <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="all_apps_search_market_message">Weitere Apps suchen</string>
+    <string name="all_apps_search_on_web_message">Suche mit <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Kein App-Store oder Browser installiert</string>
     <string name="clear_history">Suchverlauf löschen</string>
     <string name="search_input_action_clear_results">Suchfeld leeren</string>
@@ -491,9 +496,9 @@
     <string name="fuzzy_search_title">Unscharfe Suche</string>
     <string name="fuzzy_search_desc">Ungefähre Übereinstimmung für Anwendungs-Suche</string>
     <string name="suggestion_pref_screen_title">Vorschläge</string>
-    <string name="show_suggested_apps_at_drawer_top">Zeige Anwendungsvorschläge oben in der Übersicht</string>
+    <string name="show_suggested_apps_at_drawer_top">App-Vorschläge oben in der App-Übersicht anzeigen</string>
     <string name="perform_wide_search_title">Gerätesuche</string>
-    <string name="perform_wide_search_description">Durchsuchen Kontakte, Dateien und Einstellungen ihres Telefons</string>
+    <string name="perform_wide_search_description">Kontakte, Dateien und Einstellungen Deines Gerätes durchsuchen</string>
     <string name="show_hidden_apps_in_search_results">Versteckte Apps in Suchergebnissen anzeigen</string>
     <string name="hidden_apps_show_name_typed">Wenn vollständiger Name eingegeben wird</string>
     <string name="app_search_algorithm">Such-Algorithmus</string>
@@ -503,25 +508,25 @@
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">In Suchergebnissen anzeigen</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Verknüpfungen</string>
-    <string name="search_pref_result_shortcuts_title">Anwendungs Verknüpfungen</string>
+    <string name="search_pref_result_shortcuts_title">App-Verknüpfungen</string>
     <string name="search_pref_result_people_title">Personen</string>
     <string name="search_pref_result_tips_title">Pixel-Tipps</string>
-    <string name="search_pref_result_settings_title">Android Einstellungen</string>
+    <string name="search_pref_result_settings_title">Android-Einstellungen</string>
     <string name="search_pref_result_files_title">Dateien</string>
     <string name="search_pref_result_web_title">Webvorschläge</string>
     <string name="search_pref_result_history_title">Suchverlauf</string>
-    <string name="all_apps_search_result_calculator">Rechner</string>
+    <string name="all_apps_search_result_calculator">Taschenrechner</string>
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Medien, Dateien und mehr</string>
     <string name="search_pref_result_contacts_description">Kontakte und mehr</string>
     <string name="search_pref_result_web_provider_description">Mit <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximale Anzahl von Anwendungen in Suchergebnissen</string>
-    <string name="max_people_result_count_title">Maximale Anzahl von Personen in Suchergebnissen</string>
-    <string name="max_file_result_count_title">Maximale Anzahl von Dateien in Suchergebnissen</string>
-    <string name="max_settings_entry_result_count_title">Maximale Anzahl an Einstellungen in Suchergebnissen</string>
-    <string name="max_recent_result_count_title">Maximale Anzahl von Verlaufseinträgen in Suchergebnissen</string>
-    <string name="max_suggestion_result_count_title">Maximale Anzahl von Vorschlägen in Suchergebnissen</string>
+    <string name="max_apps_result_count_title">Maximale App-Anzahl in Suchergebnissen</string>
+    <string name="max_people_result_count_title">Maximale Kontakt-Anzahl in Suchergebnissen</string>
+    <string name="max_file_result_count_title">Maximale Datei-Anzahl in Suchergebnissen</string>
+    <string name="max_settings_entry_result_count_title">Maximale Einstellungs-Anzahl in Suchergebnissen</string>
+    <string name="max_recent_result_count_title">Maximale Verlaufs-Anzahl in Suchergebnissen</string>
+    <string name="max_suggestion_result_count_title">Maximale Vorschlags-Anzahl in Suchergebnissen</string>
     <string name="max_web_suggestion_delay">Maximale Verzögerung für Webvorschläge</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Um nach Kontakten zu suchen, erteile Lawnchair Berechtigungen für Kontakte und Telefon</string>

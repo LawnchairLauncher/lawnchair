@@ -235,7 +235,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">Colores</string>
     <string name="accent_color">Color de acento</string>
-    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Muestras</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Rojo</string>
@@ -277,6 +276,10 @@
     <string name="smartspace_weather">Clima</string>
     <string name="smartspace_battery_status">Estado de la batería</string>
     <string name="smartspace_now_playing">Reproduciendo</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Toca para configurar</string>
     <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activa los puntos de notificación.</string>
@@ -306,6 +309,7 @@
     <string name="support_and_pr">Soporte &amp; Relaciones Públicas</string>
     <string name="acknowledgements">Reconocimientos</string>
     <string name="translate">Traducir</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -412,8 +416,9 @@
     <string name="hotseat_mode_label">Widget de barra de búsqueda</string>
     <string name="hotseat_mode_disabled">Deshabilitado</string>
     <string name="hotseat_mode_google_search">Barra de búsqueda de Google</string>
-    <string name="search_background_transparency">Opacidad</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">Opacidad del fondo</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Radio de esquina</string>
     <string name="apply_accent_color_label">Aplicar acento de color</string>
     <string name="search_provider">Proveedor de Búsqueda</string>

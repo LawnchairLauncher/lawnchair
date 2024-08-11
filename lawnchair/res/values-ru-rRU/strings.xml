@@ -81,7 +81,7 @@
     -->
     <string name="settings">Настройки</string>
     <string name="general_label">Общие</string>
-    <string name="general_description">Цвета, Наборы иконок, Точки уведомлений</string>
+    <string name="general_description">Цвета, наборы иконок, точки уведомления</string>
     <string name="home_screen_label">Главный экран</string>
     <string name="home_screen_description">Лента, сетка, иконки</string>
     <string name="dock_label">Док-панель</string>
@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">Цвета</string>
     <string name="accent_color">Цветовой акцент</string>
-    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Шаблоны</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Красный</string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">Погода</string>
     <string name="smartspace_battery_status">Состояние батареи</string>
     <string name="smartspace_now_playing">Сейчас играет</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Нажмите для настройки</string>
     <string name="event_provider_missing_notification_dots">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите Точки уведомлений.</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">Поддержка и PR</string>
     <string name="acknowledgements">Выражаем благодарность</string>
     <string name="translate">Перевод</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -381,7 +385,7 @@
     <string name="wallpaper_depth_effect_description">Приближать и отдалять обои при переключении между приложениями</string>
     <string name="show_sys_ui_scrim">Тень сверху</string>
     <string name="home_screen_grid">Сетка главного экрана</string>
-    <string name="home_screen_lock">Заблокировать глав. экран</string>
+    <string name="home_screen_lock">Блок. глав. экран</string>
     <string name="home_screen_unlock">Разбл. глав. экран</string>
     <string name="home_screen_locked">Главный экран заблокирован</string>
     <string name="home_screen_lock_description">Предотвращать изменения макета главного экрана</string>
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">Виджет панели поиска</string>
     <string name="hotseat_mode_disabled">Отключено</string>
     <string name="hotseat_mode_google_search">Панель поиска Google</string>
-    <string name="search_background_transparency">Прозрачность</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">Прозрачность фона</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Скругление углов</string>
     <string name="apply_accent_color_label">Применить цвет акцента</string>
     <string name="search_provider">Провайдер поиска</string>

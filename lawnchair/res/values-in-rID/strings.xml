@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">Warna</string>
     <string name="accent_color">Warna aksen</string>
-    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Swatch</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Merah</string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">Cuaca</string>
     <string name="smartspace_battery_status">Status baterai</string>
     <string name="smartspace_now_playing">Sedang Memutar</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Ketuk untuk menyiapkan</string>
     <string name="event_provider_missing_notification_dots">Untuk menggunakan <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktifkan Titik Notifikasi.</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">Bantuan &amp; Relasi Publik</string>
     <string name="acknowledgements">Ucapan Terima Kasih</string>
     <string name="translate">Terjemahkan</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">Widget bilah pencarian</string>
     <string name="hotseat_mode_disabled">Dimatikan</string>
     <string name="hotseat_mode_google_search">Bilah Penelusuran Google</string>
-    <string name="search_background_transparency">Opacity</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">Transparansi latar belakang</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Radius sudut</string>
     <string name="apply_accent_color_label">Terapkan warna aksen</string>
     <string name="search_provider">Penyedia pencarian</string>

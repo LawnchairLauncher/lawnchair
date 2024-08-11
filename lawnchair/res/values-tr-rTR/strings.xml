@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">Renkler</string>
     <string name="accent_color">Vurgu rengi</string>
-    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Paletleyici</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Kırmızı </string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">Hava durumu</string>
     <string name="smartspace_battery_status">Pil durumu</string>
     <string name="smartspace_now_playing">Şimdi Oynatılıyor</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Kurulum için dokunun</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">Destek &amp; Halkla İlişkiler</string>
     <string name="acknowledgements">Teşekkürler</string>
     <string name="translate">Çeviri</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">Arama çubuğu widget\'ı</string>
     <string name="hotseat_mode_disabled">Devre dışı</string>
     <string name="hotseat_mode_google_search">Google Arama çubuğu</string>
-    <string name="search_background_transparency">Opacity</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">Arka plan opaklığı</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Köşe yarıçapı</string>
     <string name="apply_accent_color_label">Vurgu rengini uygula</string>
     <string name="search_provider">Arama sağlayıcısı</string>

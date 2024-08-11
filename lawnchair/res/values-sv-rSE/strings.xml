@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">Färger</string>
     <string name="accent_color">Accentfärg</string>
-    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Exempel</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Rött</string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">Väder</string>
     <string name="smartspace_battery_status">Batteristatus</string>
     <string name="smartspace_now_playing">Nu spelas</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tryck för att konfigurera</string>
     <string name="event_provider_missing_notification_dots">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsprickar.</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">Support &amp; pr</string>
     <string name="acknowledgements">Erkännanden</string>
     <string name="translate">Översätt</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">Sökfältswidget</string>
     <string name="hotseat_mode_disabled">Inaktiverad</string>
     <string name="hotseat_mode_google_search">Google Sök-fält</string>
-    <string name="search_background_transparency">Opacitet</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">Bakgrundsopacitet</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Hörnradie</string>
     <string name="apply_accent_color_label">Använd accentfärg</string>
     <string name="search_provider">Sökleverantör</string>
