@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">颜色</string>
     <string name="accent_color">强调色</string>
-    <string name="stroke_color">描边颜色</string>
     <string name="swatches">色板</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">红</string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">天气</string>
     <string name="smartspace_battery_status">电池状态</string>
     <string name="smartspace_now_playing">正在播放</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">点击以设置</string>
     <string name="event_provider_missing_notification_dots">要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，请启用通知圆点。</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">支持和公关</string>
     <string name="acknowledgements">鸣谢</string>
     <string name="translate">翻译</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">搜索栏小部件</string>
     <string name="hotseat_mode_disabled">已禁用</string>
     <string name="hotseat_mode_google_search">Google 搜索栏</string>
-    <string name="search_background_transparency">不透明度</string>
-    <string name="stroke_width">描边</string>
+    <string name="qsb_hotseat_background_transparency">背景不透明度</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">圆角半径</string>
     <string name="apply_accent_color_label">应用强调色</string>
     <string name="search_provider">搜索提供程序</string>

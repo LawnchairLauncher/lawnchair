@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">Couleurs</string>
     <string name="accent_color">Couleur d\'accentuation</string>
-    <string name="stroke_color">Couleur du contour</string>
     <string name="swatches">Échantillons</string>
     <string name="rgb">RVB</string>
     <string name="rgb_red">Rouge</string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">Météo</string>
     <string name="smartspace_battery_status">État de la batterie</string>
     <string name="smartspace_now_playing">En écoute</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Appuyez pour configurer</string>
     <string name="event_provider_missing_notification_dots">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les pastilles de notifications.</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">Assistance et relations publiques</string>
     <string name="acknowledgements">Remerciements</string>
     <string name="translate">Traduire</string>
+    <string name="donate">Faire un don</string>
     <!--
 
     Backup and restore
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">Widget Barre de recherche</string>
     <string name="hotseat_mode_disabled">Désactivé</string>
     <string name="hotseat_mode_google_search">Barre de recherche Google</string>
-    <string name="search_background_transparency">Opacité</string>
-    <string name="stroke_width">Contour</string>
+    <string name="qsb_hotseat_background_transparency">Opacité de l\'arrière-plan</string>
+    <string name="qsb_hotseat_stroke_width">Épaisseur du contour</string>
+    <string name="qsb_hotseat_stroke_color">Couleur du contour</string>
     <string name="corner_radius_label">Rayon d\'angle</string>
     <string name="apply_accent_color_label">Appliquer la couleur d\'accentuation</string>
     <string name="search_provider">Fournisseur des résultats de recherche</string>

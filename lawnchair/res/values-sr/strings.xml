@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">Боје</string>
     <string name="accent_color">Боја за наглашавање</string>
-    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Обрасци</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Црвена</string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">Временска прогноза</string>
     <string name="smartspace_battery_status">Статус батерије</string>
     <string name="smartspace_now_playing">Репродукује се</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Додирните за подешавање</string>
     <string name="event_provider_missing_notification_dots">Да бисте користили <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, омогућите тачке за обавештења.</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">Подршка и односи са јавношћу</string>
     <string name="acknowledgements">Признања</string>
     <string name="translate">Превод</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">Виџет траке за претрагу</string>
     <string name="hotseat_mode_disabled">Онемогућено</string>
     <string name="hotseat_mode_google_search">Google трака за претрагу</string>
-    <string name="search_background_transparency">Opacity</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">Непрозирност позадине</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Заобљеност углова</string>
     <string name="apply_accent_color_label">Примени боју за наглашавање</string>
     <string name="search_provider">Претраживач</string>

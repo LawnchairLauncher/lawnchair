@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">색상</string>
     <string name="accent_color">강조 색상</string>
-    <string name="stroke_color">Stroke color</string>
     <string name="swatches">견본</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">빨강</string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">날씨</string>
     <string name="smartspace_battery_status">배터리 상태</string>
     <string name="smartspace_now_playing">현재 재생 중</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">탭하여 설정하기</string>
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>을(를) 사용하려면, 알림 배지를 활성화해야합니다.</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">지원 &amp; 문의</string>
     <string name="acknowledgements">감사의 말</string>
     <string name="translate">번역</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -368,9 +372,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">홈 화면 회전</string>
     <string name="home_screen_rotation_description">기기 회전 때 홈 화면 회전 허용</string>
-    <string name="wallpaper_blur">Enable wallpaper blur</string>
-    <string name="wallpaper_background_blur">Blur intensity</string>
-    <string name="wallpaper_background_blur_factor">Factor threshold</string>
+    <string name="wallpaper_blur">배경 화면 흐림 사용</string>
+    <string name="wallpaper_background_blur">흐림 강도</string>
+    <string name="wallpaper_background_blur_factor">인자 임계값</string>
     <string name="auto_add_shortcuts_label">홈 화면에 새로운 앱 바로가기 추가</string>
     <string name="minus_one_enable">피드 활성화</string>
     <string name="minus_one_unavailable">설치된 피드 앱이 없습니다.</string>
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">검색 표시줄 위젯</string>
     <string name="hotseat_mode_disabled">비활성화됨</string>
     <string name="hotseat_mode_google_search">Google 검색 표시줄</string>
-    <string name="search_background_transparency">Opacity</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">백그라운드 투명도</string>
+    <string name="qsb_hotseat_stroke_width">외곽선 너비</string>
+    <string name="qsb_hotseat_stroke_color">외곽선 색</string>
     <string name="corner_radius_label">가장자리 둥글기</string>
     <string name="apply_accent_color_label">강조 색상 적용하기</string>
     <string name="search_provider">검색 제공자</string>

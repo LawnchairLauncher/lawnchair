@@ -234,7 +234,6 @@
     <!-- Accent color and color picker -->
     <string name="colors">நிறங்கள்</string>
     <string name="accent_color">உரப்பு நிறம்</string>
-    <string name="stroke_color">Stroke color</string>
     <string name="swatches">மாதிரிகள்</string>
     <string name="rgb">ஆர்ஜிபி</string>
     <string name="rgb_red">சிவப்பு</string>
@@ -276,6 +275,10 @@
     <string name="smartspace_weather">வானிலை</string>
     <string name="smartspace_battery_status">பேட்டரி நிலை</string>
     <string name="smartspace_now_playing">இப்போது இசைக்கிறது</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">அமைக்கத் தட்டவும்</string>
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> ஐப் பயன்படுத்த, அறிவிப்புப் புள்ளிகளை இயக்கவும்.</string>
@@ -305,6 +308,7 @@
     <string name="support_and_pr">ஆதரவு &amp; மக்கள் தொடர்பு</string>
     <string name="acknowledgements">ஒப்புதல்</string>
     <string name="translate">மொழிபெயர்</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -411,8 +415,9 @@
     <string name="hotseat_mode_label">தேடல் பட்டி விட்ஜெட்</string>
     <string name="hotseat_mode_disabled">முடக்கப்பட்டுள்ளது</string>
     <string name="hotseat_mode_google_search">கூகிள் தேடல்</string>
-    <string name="search_background_transparency">Opacity</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">பின்னணி ஒளிபுகாநிலை</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">மூலை ஆரம்</string>
     <string name="apply_accent_color_label">உரப்பு நிறத்தைச் செயற்படுத்து</string>
     <string name="search_provider">தேடல் வழங்கி</string>

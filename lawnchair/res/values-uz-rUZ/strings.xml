@@ -235,7 +235,6 @@ Lawnchair tizim tomonidan yuborilgan har qanday hodisani bekor qiladi.\n\nTelefo
     <!-- Accent color and color picker -->
     <string name="colors">Colors</string>
     <string name="accent_color">Accent color</string>
-    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Swatches</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Red</string>
@@ -277,6 +276,10 @@ Lawnchair tizim tomonidan yuborilgan har qanday hodisani bekor qiladi.\n\nTelefo
     <string name="smartspace_weather">Weather</string>
     <string name="smartspace_battery_status">Battery status</string>
     <string name="smartspace_now_playing">Now Playing</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tap to set up</string>
     <string name="event_provider_missing_notification_dots">Foydalanish uchun <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, Bildirishnoma nuqtalarini yoqing.</string>
@@ -306,6 +309,7 @@ Lawnchair tizim tomonidan yuborilgan har qanday hodisani bekor qiladi.\n\nTelefo
     <string name="support_and_pr">Qo‘llab-quvvatlash &amp; PR</string>
     <string name="acknowledgements">Tashakkur</string>
     <string name="translate">Tarjima</string>
+    <string name="donate">Donate</string>
     <!--
 
     Backup and restore
@@ -412,8 +416,9 @@ Lawnchair tizim tomonidan yuborilgan har qanday hodisani bekor qiladi.\n\nTelefo
     <string name="hotseat_mode_label">Search bar widget</string>
     <string name="hotseat_mode_disabled">Disabled</string>
     <string name="hotseat_mode_google_search">Google Search bar</string>
-    <string name="search_background_transparency">Opacity</string>
-    <string name="stroke_width">Stroke</string>
+    <string name="qsb_hotseat_background_transparency">Background opacity</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Burchak radiusi</string>
     <string name="apply_accent_color_label">Apply accent color</string>
     <string name="search_provider">Search provider</string>
