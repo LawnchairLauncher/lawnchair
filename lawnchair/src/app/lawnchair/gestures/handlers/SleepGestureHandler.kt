@@ -54,7 +54,7 @@ class SleepGestureHandler(context: Context) : GestureHandler(context) {
 
     private val methods = buildList {
         add(SleepMethodRoot(context))
-        if (BuildConfig.FLAVOR_accessibility == "withAccessibility") {
+        if (BuildConfig.FLAVOR_channel == "github") {
             add(SleepMethodPieAccessibility(context))
         }
         add(SleepMethodDeviceAdmin(context))
