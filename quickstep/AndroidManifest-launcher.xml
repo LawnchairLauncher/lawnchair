@@ -25,7 +25,7 @@
 
     <uses-sdk android:targetSdkVersion="33" android:minSdkVersion="26"
         tools:overrideLibrary="com.kieronquinn.app.smartspacer.sdk.client"/>
-    
+
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
     Refer comments around specific entries on how to extend individual components.
@@ -74,19 +74,6 @@
                 android:name="com.android.launcher3.grid.control"
                 android:value="${packageName}.grid_control" />
         </activity>
-
-        <service
-            android:name="app.lawnchair.LawnchairAccessibilityService"
-            android:exported="false"
-            android:label="@string/derived_app_name"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config" />
-        </service>
 
     </application>
 </manifest>
