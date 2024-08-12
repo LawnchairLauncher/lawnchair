@@ -7,17 +7,18 @@ import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
 import android.os.PatternMatcher
-import android.util.SparseArray
 import androidx.core.graphics.ColorUtils
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.AndroidColor
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.theme.color.MonetColorSchemeCompat
 import app.lawnchair.theme.color.SystemColorScheme
 import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.systemui.monet.Style
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.colorkt.Color
@@ -31,14 +32,16 @@ class ThemeProvider(private val context: Context) {
     private val preferenceManager2 = PreferenceManager2.getInstance(context)
     private val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
-    private var accentColor: ColorOption = preferenceManager2.accentColor.firstBlocking()
 
-    private val colorSchemeMap = SparseArray<ColorScheme>()
+    private var accentColor: ColorOption = preferenceManager2.accentColor.firstBlocking()
+    private var colorStyle: ColorStyle = preferenceManager2.colorStyle.firstBlocking()
+
+    private val colorSchemeMap = HashMap<Pair<Int, Style>, ColorScheme>()
     private val listeners = mutableListOf<ColorSchemeChangeListener>()
 
     init {
         if (Utilities.ATLEAST_S) {
-            colorSchemeMap.append(0, SystemColorScheme(context))
+            colorSchemeMap[Pair(0, Style.TONAL_SPOT)] = SystemColorScheme(context)
             registerOverlayChangedListener()
         }
         wallpaperManager.addOnChangeListener(object : WallpaperManagerCompat.OnColorsChangedListener {
@@ -52,6 +55,10 @@ class ThemeProvider(private val context: Context) {
             accentColor = it
             notifyColorSchemeChanged()
         }
+        preferenceManager2.colorStyle.onEach(launchIn = coroutineScope) {
+            colorStyle = it
+            notifyColorSchemeChanged()
+        }
     }
 
     private fun registerOverlayChangedListener() {
@@ -61,7 +68,7 @@ class ThemeProvider(private val context: Context) {
         context.registerReceiver(
             object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
-                    colorSchemeMap.append(0, SystemColorScheme(context))
+                    colorSchemeMap[Pair(0, Style.TONAL_SPOT)] = SystemColorScheme(context)
                     if (accentColor is ColorOption.SystemAccent) {
                         notifyColorSchemeChanged()
                     }
@@ -77,22 +84,26 @@ class ThemeProvider(private val context: Context) {
         is ColorOption.SystemAccent -> systemColorScheme
         is ColorOption.WallpaperPrimary -> {
             val wallpaperPrimary = wallpaperManager.wallpaperColors?.primaryColor
-            getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color)
+            getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color, colorStyle.style)
         }
-        is ColorOption.CustomColor -> getColorScheme(accentColor.color)
-        else -> getColorScheme(ColorOption.LawnchairBlue.color)
+        is ColorOption.CustomColor -> getColorScheme(accentColor.color, colorStyle.style)
+        else -> getColorScheme(ColorOption.LawnchairBlue.color, colorStyle.style)
     }
 
     private val systemColorScheme get() = when {
-        Utilities.ATLEAST_S -> getColorScheme(0)
-        else -> getColorScheme(context.getSystemAccent(darkTheme = false))
+        Utilities.ATLEAST_S -> getColorScheme(0, colorStyle.style)
+        else -> getColorScheme(context.getSystemAccent(darkTheme = false), colorStyle.style)
     }
 
-    private fun getColorScheme(colorInt: Int): ColorScheme {
-        var colorScheme = colorSchemeMap[colorInt]
+    private fun getColorScheme(
+        colorInt: Int,
+        colorStyle: Style,
+    ): ColorScheme {
+        val key = Pair(colorInt, colorStyle)
+        var colorScheme = colorSchemeMap[key]
         if (colorScheme == null) {
-            colorScheme = MonetColorSchemeCompat(colorInt)
-            colorSchemeMap.append(colorInt, colorScheme)
+            colorScheme = MonetColorSchemeCompat(colorInt, colorStyle)
+            colorSchemeMap[key] = colorScheme
         }
         return colorScheme
     }

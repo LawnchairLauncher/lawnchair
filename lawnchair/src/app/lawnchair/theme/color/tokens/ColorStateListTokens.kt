@@ -1,12 +1,13 @@
-package app.lawnchair.theme.color
+package app.lawnchair.theme.color.tokens
 
+import android.R
 import android.content.res.ColorStateList
 
 object ColorStateListTokens {
 
     val AllAppsTabTextLight = NewColorStateList { context, scheme, uiColorMode ->
         val states = arrayOf(
-            intArrayOf(android.R.attr.state_selected),
+            intArrayOf(R.attr.state_selected),
             intArrayOf(),
         )
         val colors = intArrayOf(
@@ -18,7 +19,7 @@ object ColorStateListTokens {
 
     val AllAppsTabTextDark = NewColorStateList { context, scheme, uiColorMode ->
         val states = arrayOf(
-            intArrayOf(android.R.attr.state_selected),
+            intArrayOf(R.attr.state_selected),
             intArrayOf(),
         )
         val colors = intArrayOf(

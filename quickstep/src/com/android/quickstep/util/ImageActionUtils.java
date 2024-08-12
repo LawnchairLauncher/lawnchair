@@ -97,7 +97,7 @@ public class ImageActionUtils {
                 systemUiProxy.handleImageBundleAsScreenshot(BitmapUtil.hardwareBitmapToBundle(screenshot),
                         screenshotBounds, visibleInsets, task);
             } catch (Throwable ee) {
-                Shell.su("input keyevent 120").exec();
+                Shell.cmd("input keyevent 120").exec();
             }
         }
     }

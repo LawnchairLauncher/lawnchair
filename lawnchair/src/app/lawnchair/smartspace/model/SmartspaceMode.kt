@@ -21,7 +21,7 @@ sealed class SmartspaceMode(
         }
 
         /**
-         * @return The list of all time format options.
+         * @return The list of all smartspace options
          */
         fun values() = persistentListOf(
             LawnchairSmartspace,

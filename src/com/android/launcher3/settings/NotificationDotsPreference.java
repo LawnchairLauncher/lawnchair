@@ -155,7 +155,7 @@ public class NotificationDotsPreference extends Preference
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Context context = getActivity();
-            String msg = context.getString(R.string.msg_missing_notification_access,
+            String msg = context.getString(R.string.missing_notification_access_desc,
                     context.getString(R.string.derived_app_name));
             return new AlertDialog.Builder(context)
                     .setTitle(R.string.title_missing_notification_access)

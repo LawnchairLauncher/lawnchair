@@ -16,9 +16,7 @@
 
 package app.lawnchair.ui.preferences
 
-import android.app.Activity
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -71,12 +69,6 @@ class PreferenceActivity : AppCompatActivity() {
             return Intent(Intent.ACTION_VIEW, uri, context, PreferenceActivity::class.java)
         }
     }
-}
-
-fun Context.findActivity(): Activity? = when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
 }
 
 /**

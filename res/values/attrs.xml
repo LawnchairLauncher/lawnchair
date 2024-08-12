@@ -164,7 +164,19 @@
 
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
+        <!-- defaults to numFolderRows, if not specified -->
+        <attr name="numFolderRowsLandscape" format="integer" />
+        <!-- defaults to numFolderRows, if not specified -->
+        <attr name="numFolderRowsTwoPanelLandscape" format="integer" />
+        <!-- defaults to numFolderRows, if not specified -->
+        <attr name="numFolderRowsTwoPanelPortrait" format="integer" />
         <attr name="numFolderColumns" format="integer" />
+        <!-- defaults to numFolderColumns, if not specified -->
+        <attr name="numFolderColumnsLandscape" format="integer" />
+        <!-- defaults to numFolderColumns, if not specified -->
+        <attr name="numFolderColumnsTwoPanelLandscape" format="integer" />
+        <!-- defaults to numFolderColumns, if not specified -->
+        <attr name="numFolderColumnsTwoPanelPortrait" format="integer" />
         <!-- Support attributes in FolderStyle -->
         <attr name="folderStyle" format="reference" />
 
@@ -220,6 +232,14 @@
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="hotseatSpecsId" format="reference" />
         <attr name="hotseatSpecsTwoPanelId" format="reference" />
+        <!-- File that contains the specs for workspace icon and text size.
+        Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
+        <attr name="workspaceCellSpecsId" format="reference" />
+        <attr name="workspaceCellSpecsTwoPanelId" format="reference" />
+        <!-- File that contains the specs for all apps icon and text size.
+        Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
+        <attr name="allAppsCellSpecsId" format="reference" />
+        <attr name="allAppsCellSpecsTwoPanelId" format="reference" />
 
         <!-- By default all categories are enabled -->
         <attr name="deviceCategory" format="integer">
@@ -261,30 +281,39 @@
 
     <!--  Responsive grids attributes  -->
     <declare-styleable name="ResponsiveSpec">
-        <attr name="specType" format="integer">
+        <attr name="dimensionType" format="integer">
             <enum name="height" value="0" />
             <enum name="width" value="1" />
         </attr>
         <attr name="maxAvailableSize" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="ResponsiveSpecGroup">
+        <attr name="maxAspectRatio" format="float" />
+    </declare-styleable>
+
     <declare-styleable name="WorkspaceSpec">
-        <attr name="specType" />
+        <attr name="dimensionType" />
         <attr name="maxAvailableSize" />
     </declare-styleable>
 
     <declare-styleable name="FolderSpec">
-        <attr name="specType" />
+        <attr name="dimensionType" />
         <attr name="maxAvailableSize" />
     </declare-styleable>
 
     <declare-styleable name="AllAppsSpec">
-        <attr name="specType" />
+        <attr name="dimensionType" />
         <attr name="maxAvailableSize" />
     </declare-styleable>
 
     <declare-styleable name="HotseatSpec">
-        <attr name="specType" />
+        <attr name="dimensionType" />
+        <attr name="maxAvailableSize" />
+    </declare-styleable>
+
+    <declare-styleable name="CellSpec">
+        <attr name="dimensionType" />
         <attr name="maxAvailableSize" />
     </declare-styleable>
 

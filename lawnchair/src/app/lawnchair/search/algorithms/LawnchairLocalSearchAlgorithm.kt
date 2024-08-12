@@ -1,38 +1,33 @@
 package app.lawnchair.search.algorithms
 
 import android.content.Context
-import android.content.pm.ShortcutInfo
 import android.os.Handler
-import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.search.adapter.CALCULATOR
 import app.lawnchair.search.adapter.CONTACT
 import app.lawnchair.search.adapter.ERROR
 import app.lawnchair.search.adapter.FILES
-import app.lawnchair.search.adapter.GenerateSearchTarget
 import app.lawnchair.search.adapter.HEADER_JUSTIFY
 import app.lawnchair.search.adapter.HISTORY
 import app.lawnchair.search.adapter.LOADING
 import app.lawnchair.search.adapter.SETTINGS
 import app.lawnchair.search.adapter.SPACE
-import app.lawnchair.search.adapter.SearchResult
 import app.lawnchair.search.adapter.SearchTargetCompat
+import app.lawnchair.search.adapter.SearchTargetFactory
 import app.lawnchair.search.adapter.WEB_SUGGESTION
-import app.lawnchair.search.adapter.createSearchTarget
 import app.lawnchair.search.algorithms.data.Calculation
 import app.lawnchair.search.algorithms.data.ContactInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
 import app.lawnchair.search.algorithms.data.SettingInfo
+import app.lawnchair.search.algorithms.data.WebSearchProvider
 import app.lawnchair.search.algorithms.data.calculateEquationFromString
 import app.lawnchair.search.algorithms.data.findContactsByName
 import app.lawnchair.search.algorithms.data.findSettingsByNameAndAction
 import app.lawnchair.search.algorithms.data.getRecentKeyword
-import app.lawnchair.search.algorithms.data.getStartPageSuggestions
 import app.lawnchair.search.algorithms.data.queryFilesInMediaStore
-import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
+import app.lawnchair.search.model.SearchResult
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.requestContactPermissionGranted
@@ -43,36 +38,35 @@ import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.BaseModelUpdateTask
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.data.AppInfo
-import com.android.launcher3.popup.PopupPopulator
 import com.android.launcher3.search.SearchCallback
-import com.android.launcher3.search.StringMatcherUtility
-import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.Executors
 import com.patrykmichalik.opto.core.onEach
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import me.xdrop.fuzzywuzzy.FuzzySearch
-import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 
 class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
-    private val generateSearchTarget = GenerateSearchTarget(context)
+    private val searchTargetFactory = SearchTargetFactory(context)
 
-    private lateinit var hiddenApps: Set<String>
+    private var hiddenApps: Set<String> = emptySet()
 
     private var hiddenAppsInSearch = ""
 
     private var searchApps = true
     private var enableFuzzySearch = false
     private var useWebSuggestions = true
+    private var webSuggestionsProvider = ""
 
     private val prefs: PreferenceManager = PreferenceManager.getInstance(context)
     private val pref2 = PreferenceManager2.getInstance(context)
@@ -85,7 +79,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     private var maxRecentResultCount = 2
     private var maxWebSuggestionDelay = 200
 
-    val coroutineScope = CoroutineScope(context = Dispatchers.IO)
+    val coroutineScope = CoroutineScope(context = Dispatchers.IO + SupervisorJob())
 
     init {
         pref2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
@@ -101,6 +95,10 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         useWebSuggestions = prefs.searchResultStartPageSuggestion.get()
         searchApps = prefs.searchResultApps.get()
 
+        pref2.webSuggestionProvider.onEach(launchIn = coroutineScope) {
+            webSuggestionsProvider = it.toString()
+        }
+
         pref2.maxAppSearchResultCount.onEach(launchIn = coroutineScope) {
             maxAppResultsCount = it
         }
@@ -110,7 +108,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         pref2.maxPeopleResultCount.onEach(launchIn = coroutineScope) {
             maxPeopleCount = it
         }
-        pref2.maxSuggestionResultCount.onEach(launchIn = coroutineScope) {
+        pref2.maxWebSuggestionResultCount.onEach(launchIn = coroutineScope) {
             maxWebSuggestionsCount = it
         }
         pref2.maxSettingsEntryResultCount.onEach(launchIn = coroutineScope) {
@@ -124,12 +122,15 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         }
     }
 
+    private val searchUtils = SearchUtils(maxAppResultsCount, hiddenApps, hiddenAppsInSearch)
+
     override fun doSearch(query: String, callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
         appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
             override fun execute(app: LauncherAppState, dataModel: BgDataModel, apps: AllAppsList) {
                 coroutineScope.launch(Dispatchers.Main) {
-                    val results = getResult(apps.data, query)
-                    callback.onSearchResult(query, results)
+                    getAllSearchResults(apps.data, query, prefs).collect { allResults ->
+                        callback.onSearchResult(query, ArrayList(allResults))
+                    }
                 }
             }
         })
@@ -141,152 +142,177 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         }
     }
 
-    private suspend fun getResult(
+    private fun getAllSearchResults(
         apps: MutableList<AppInfo>,
         query: String,
-    ): ArrayList<BaseAllAppsAdapter.AdapterItem> {
-        val appResults = if (enableFuzzySearch) {
-            fuzzySearch(apps, query)
-        } else {
-            normalSearch(apps, query)
-        }
+        prefs: PreferenceManager,
+    ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = channelFlow {
+        val allResults = mutableListOf<BaseAllAppsAdapter.AdapterItem>()
+        var appIndex = 0
 
-        val localSearchResults = performDeviceLocalSearch(query, prefs)
-
-        val searchTargets = mutableListOf<SearchTargetCompat>()
-
-        if (appResults.isNotEmpty() && searchApps) {
-            appResults.mapTo(searchTargets, ::createSearchTarget)
-        }
-
-        if (appResults.size == 1 && searchApps && context.isDefaultLauncher()) {
-            val singleAppResult = appResults.firstOrNull()
-            val shortcuts = singleAppResult?.let { getShortcuts(it) }
-            if (shortcuts != null) {
-                if (shortcuts.isNotEmpty()) {
-                    searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
-                    searchTargets.add(createSearchTarget(singleAppResult, true))
-                    searchTargets.addAll(shortcuts.map(::createSearchTarget))
-                }
+        launch {
+            getAppSearchResults(apps, query).collect { appResults ->
+                allResults.addAll(appResults)
+                appIndex = appResults.size
+                send(allResults.toList())
             }
         }
 
+        launch {
+            getLocalSearchResults(query, prefs).collect { localResults ->
+                // Insert local results at the appropriate position
+                val insertIndex = appIndex
+                if (insertIndex >= 0) {
+                    allResults.addAll(insertIndex, localResults)
+                } else {
+                    allResults.addAll(localResults)
+                }
+                send(allResults.toList())
+            }
+        }
+
+        launch {
+            getSearchLinks(query).collect { otherResults ->
+                allResults.addAll(otherResults)
+                send(allResults.toList())
+            }
+        }
+    }
+
+    private fun getAppSearchResults(
+        apps: MutableList<AppInfo>,
+        query: String,
+    ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = flow {
+        val searchTargets = mutableListOf<SearchTargetCompat>()
+        val appResults = performAppSearch(apps, query)
+
+        parseAppSearchResults(appResults, searchTargets)
+
+        setFirstItemQuickLaunch(searchTargets)
+        emit(transformSearchResults(searchTargets))
+    }
+
+    private fun getLocalSearchResults(
+        query: String,
+        prefs: PreferenceManager,
+    ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = flow {
+        val searchTargets = mutableListOf<SearchTargetCompat>()
+        val localSearchResults = performDeviceLocalSearch(query, prefs)
+        parseLocalSearchResults(localSearchResults, searchTargets)
+        emit(transformSearchResults(searchTargets))
+    }
+
+    private fun getSearchLinks(
+        query: String,
+    ): Flow<List<BaseAllAppsAdapter.AdapterItem>> = flow {
+        val searchTargets = mutableListOf<SearchTargetCompat>()
+
+        searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
+        if (useWebSuggestions) {
+            withContext(Dispatchers.IO) {
+                searchTargets.add(searchTargetFactory.createWebSearchTarget(query, webSuggestionsProvider))
+            }
+        }
+        searchTargetFactory.createMarketSearchTarget(query)?.let { searchTargets.add(it) }
+        emit(transformSearchResults(searchTargets))
+    }
+
+    private fun parseAppSearchResults(
+        appResults: List<AppInfo>,
+        searchTargets: MutableList<SearchTargetCompat>,
+    ) {
+        if (appResults.isNotEmpty()) {
+            appResults.mapTo(searchTargets, searchTargetFactory::createAppSearchTarget)
+
+            if (appResults.size == 1 && context.isDefaultLauncher()) {
+                val singleAppResult = appResults.firstOrNull()
+                val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
+                if (shortcuts != null) {
+                    if (shortcuts.isNotEmpty()) {
+                        searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
+                        singleAppResult.let { searchTargets.add(searchTargetFactory.createAppSearchTarget(it, true)) }
+                        searchTargets.addAll(shortcuts.map(searchTargetFactory::createShortcutTarget))
+                    }
+                }
+            }
+            searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
+        }
+    }
+
+    private fun parseLocalSearchResults(
+        localSearchResults: MutableList<SearchResult>,
+        searchTargets: MutableList<SearchTargetCompat>,
+    ) {
+        val suggestionProvider = webSuggestionsProvider
         val suggestions = filterByType(localSearchResults, WEB_SUGGESTION)
         if (suggestions.isNotEmpty()) {
-            val suggestionsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
+            val suggestionsHeader =
+                searchTargetFactory.createHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
             searchTargets.add(suggestionsHeader)
-            searchTargets.addAll(suggestions.map { generateSearchTarget.getSuggestionTarget(it.resultData as String) })
+            searchTargets.addAll(
+                suggestions.map {
+                    searchTargetFactory.createWebSuggestionsTarget(it.resultData as String, suggestionProvider)
+                },
+            )
         }
 
         val calculator = filterByType(localSearchResults, CALCULATOR).firstOrNull()
         val calcData = calculator?.resultData as? Calculation
         if (calcData != null && calcData.isValid) {
-            val calculatorHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_calculator))
+            val calculatorHeader =
+                searchTargetFactory.createHeaderTarget(context.getString(R.string.all_apps_search_result_calculator))
             searchTargets.add(calculatorHeader)
             searchTargets.add(
-                generateSearchTarget.getCalculationTarget(calcData),
+                searchTargetFactory.createCalculatorTarget(calcData),
             )
         }
 
         val contacts = filterByType(localSearchResults, CONTACT)
         if (contacts.isNotEmpty()) {
-            val contactsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_contacts_from_device))
+            val contactsHeader =
+                searchTargetFactory.createHeaderTarget(context.getString(R.string.all_apps_search_result_contacts_from_device))
             searchTargets.add(contactsHeader)
-            searchTargets.addAll(contacts.map { generateSearchTarget.getContactSearchItem(it.resultData as ContactInfo) })
+            searchTargets.addAll(contacts.map { searchTargetFactory.createContactsTarget(it.resultData as ContactInfo) })
         }
 
         val settings = filterByType(localSearchResults, SETTINGS)
         if (settings.isNotEmpty()) {
-            val settingsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_settings_entry_from_device))
+            val settingsHeader =
+                searchTargetFactory.createHeaderTarget(context.getString(R.string.all_apps_search_result_settings_entry_from_device))
             searchTargets.add(settingsHeader)
-            searchTargets.addAll(settings.mapNotNull { generateSearchTarget.getSettingSearchItem(it.resultData as SettingInfo) })
+            searchTargets.addAll(settings.mapNotNull { searchTargetFactory.createSettingsTarget(it.resultData as SettingInfo) })
         }
 
+        // todo refactor to only show when search is first clicked
         val recentKeyword = filterByType(localSearchResults, HISTORY)
         if (recentKeyword.isNotEmpty()) {
-            val recentKeywordHeader = generateSearchTarget.getHeaderTarget(
+            val recentKeywordHeader = searchTargetFactory.createHeaderTarget(
                 context.getString(R.string.search_pref_result_history_title),
                 HEADER_JUSTIFY,
             )
             searchTargets.add(recentKeywordHeader)
-            searchTargets.addAll(recentKeyword.map { generateSearchTarget.getRecentKeywordTarget(it.resultData as RecentKeyword) })
+            searchTargets.addAll(recentKeyword.map { searchTargetFactory.createSearchHistoryTarget(it.resultData as RecentKeyword, suggestionProvider) })
         }
 
         val files = filterByType(localSearchResults, FILES)
         if (files.isNotEmpty()) {
-            val filesHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_files))
+            val filesHeader =
+                searchTargetFactory.createHeaderTarget(context.getString(R.string.all_apps_search_result_files))
             searchTargets.add(filesHeader)
-            searchTargets.addAll(files.map { generateSearchTarget.getFileInfoSearchItem(it.resultData as IFileInfo) })
-        }
-
-        searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
-
-        if (useWebSuggestions) searchTargets.add(generateSearchTarget.getStartPageSearchItem(query))
-        generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }
-
-        val adapterItems = transformSearchResults(searchTargets)
-        LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
-        return ArrayList(adapterItems)
-    }
-
-    private fun filterByType(results: List<SearchResult>, type: String): List<SearchResult> {
-        return results.filter { it.resultType == type }
-    }
-
-    private fun getShortcuts(app: AppInfo): List<ShortcutInfo> {
-        val shortcuts = ShortcutRequest(context.launcher, app.user)
-            .withContainer(app.targetComponent)
-            .query(ShortcutRequest.PUBLISHED)
-        return PopupPopulator.sortAndFilterShortcuts(shortcuts, null)
-    }
-
-    private fun normalSearch(apps: List<AppInfo>, query: String): List<AppInfo> {
-        // Do an intersection of the words in the query and each title, and filter out all the
-        // apps that don't match all of the words in the query.
-        val queryTextLower = query.lowercase(Locale.getDefault())
-        val matcher = StringMatcherUtility.StringMatcher.getInstance()
-        return apps.asSequence()
-            .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
-            .filterHiddenApps(queryTextLower)
-            .take(maxAppResultsCount)
-            .toList()
-    }
-
-    private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
-        val queryTextLower = query.lowercase(Locale.getDefault())
-        val filteredApps = apps.asSequence()
-            .filterHiddenApps(queryTextLower)
-            .toList()
-        val matches = FuzzySearch.extractSorted(
-            queryTextLower,
-            filteredApps,
-            { it.sectionName + it.title },
-            WeightedRatio(),
-            65,
-        )
-
-        return matches.take(maxAppResultsCount)
-            .map { it.referent }
-    }
-
-    private fun Sequence<AppInfo>.filterHiddenApps(query: String): Sequence<AppInfo> {
-        return when (hiddenAppsInSearch) {
-            HiddenAppsInSearch.ALWAYS -> {
-                this
-            }
-            HiddenAppsInSearch.IF_NAME_TYPED -> {
-                filter {
-                    it.toComponentKey().toString() !in hiddenApps ||
-                        it.title.toString().lowercase(Locale.getDefault()) == query
-                }
-            }
-            else -> {
-                filter { it.toComponentKey().toString() !in hiddenApps }
-            }
+            searchTargets.addAll(files.map { searchTargetFactory.createFilesTarget(it.resultData as IFileInfo) })
         }
     }
 
-    protected suspend fun performDeviceLocalSearch(query: String, prefs: PreferenceManager): MutableList<SearchResult> =
+    private fun performAppSearch(
+        apps: MutableList<AppInfo>,
+        query: String,
+    ) = if (enableFuzzySearch) {
+        searchUtils.fuzzySearch(apps, query)
+    } else {
+        searchUtils.normalSearch(apps, query)
+    }
+
+    private suspend fun performDeviceLocalSearch(query: String, prefs: PreferenceManager): MutableList<SearchResult> =
         withContext(Dispatchers.IO) {
             val results = ArrayList<SearchResult>()
 
@@ -336,7 +362,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                     val timeout = maxWebSuggestionDelay.toLong()
                     val result = withTimeoutOrNull(timeout) {
                         if (prefs.searchResultStartPageSuggestion.get()) {
-                            getStartPageSuggestions(query, maxWebSuggestionsCount).map {
+                            WebSearchProvider.fromString(webSuggestionsProvider).getSuggestions(query, maxWebSuggestionsCount).map {
                                 SearchResult(
                                     WEB_SUGGESTION,
                                     it,
@@ -380,4 +406,8 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
             results
         }
+
+    private fun filterByType(results: List<SearchResult>, type: String): List<SearchResult> {
+        return results.filter { it.resultType == type }
+    }
 }

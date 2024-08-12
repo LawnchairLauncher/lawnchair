@@ -115,7 +115,7 @@ fun IconPackPreferences(
     val drawerThemedIconsEnabled = drawerThemedIconsAdapter.state.value
 
     PreferenceLayout(
-        label = stringResource(id = R.string.icon_style),
+        label = stringResource(id = R.string.icon_style_label),
         modifier = modifier,
         isExpandedScreen = true,
         scrollState = if (isPortrait) null else scrollState,

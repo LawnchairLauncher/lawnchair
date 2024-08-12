@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.core.view.ViewCompat
 import app.lawnchair.font.FontManager
 import app.lawnchair.launcher
-import app.lawnchair.search.adapter.SearchResultActionCallBack
 import app.lawnchair.search.adapter.SearchTargetCompat
+import app.lawnchair.search.model.SearchResultActionCallBack
 import app.lawnchair.util.AppInfo
 import app.lawnchair.util.AppInfoHelper
 import app.lawnchair.util.ImageViewWrapper
@@ -74,9 +74,8 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
             LayoutParams.MATCH_PARENT,
             heightRes,
         )
-        val horizontalMargin = grid.allAppsLeftRightPadding
-        layoutParams.leftMargin = horizontalMargin
-        layoutParams.rightMargin = horizontalMargin
+        layoutParams.leftMargin = grid.allAppsPadding.left
+        layoutParams.rightMargin = grid.allAppsPadding.right
         this.layoutParams = layoutParams
     }
 

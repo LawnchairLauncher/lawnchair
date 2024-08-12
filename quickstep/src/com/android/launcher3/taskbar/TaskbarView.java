@@ -60,6 +60,7 @@ import java.util.function.Predicate;
 
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.theme.color.tokens.ColorTokens;
 
 /**
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of
@@ -146,8 +147,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mItemMarginLeftRight = actualMargin - (mIconTouchSize - visualIconSize) / 2;
         mItemPadding = (mIconTouchSize - actualIconSize) / 2;
 
-        mFolderLeaveBehindColor = Themes.getAttrColor(mActivityContext,
-                android.R.attr.textColorTertiary);
+        mFolderLeaveBehindColor = Themes.getAttrColor(context, android.R.attr.textColorTertiary);
 
         // Needed to draw folder leave-behind when opening one.
         setWillNotDraw(false);

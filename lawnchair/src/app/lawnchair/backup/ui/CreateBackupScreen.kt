@@ -118,7 +118,7 @@ fun CreateBackupScreen(
     PreferenceLayout(
         label = stringResource(id = R.string.create_backup),
         modifier = modifier,
-        backArrowVisible = LocalIsExpandedScreen.current,
+        backArrowVisible = !LocalIsExpandedScreen.current,
         scrollState = if (isPortrait) null else scrollState,
     ) {
         DisposableEffect(contents, hasLiveWallpaper, hasStoragePermission) {
@@ -185,7 +185,7 @@ fun CreateBackupScreen(
                     .fillMaxWidth(),
                 enabled = contents != 0 && screenshotDone && !creatingBackup,
             ) {
-                Text(text = stringResource(id = R.string.create_backup_action))
+                Text(text = stringResource(id = R.string.action_create))
             }
         }
     }

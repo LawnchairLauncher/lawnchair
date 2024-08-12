@@ -54,8 +54,8 @@ fun ColorSelection(
     }
     val defaultTabIndex = when {
         dynamicEntries.any { it.value == appliedColor } -> 0
-        staticEntries.any { it.value == appliedColor } -> 1
-        else -> 2
+        staticEntries.any { it.value == appliedColor } -> 0
+        else -> 1
     }
 
     val onPresetClick = { option: ColorOption ->
@@ -86,7 +86,7 @@ fun ColorSelection(
                         .fillMaxWidth()
                         .padding(all = 16.dp),
                 ) {
-                    Text(text = stringResource(id = R.string.apply_grid))
+                    Text(text = stringResource(id = R.string.action_apply))
                 }
                 BottomSpacer()
             }

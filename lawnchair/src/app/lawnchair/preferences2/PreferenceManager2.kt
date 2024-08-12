@@ -35,11 +35,13 @@ import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
+import app.lawnchair.search.algorithms.data.WebSearchProvider
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.InvariantDeviceProfile
@@ -108,6 +110,22 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val alwaysReloadIcons = preference(
         key = booleanPreferencesKey(name = "always_reload_icons"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_always_reload_icons),
+    )
+
+    val colorStyle = preference(
+        key = stringPreferencesKey("color_style"),
+        defaultValue = ColorStyle.fromString("tonal_spot"),
+        parse = ColorStyle::fromString,
+        save = ColorStyle::toString,
+        onSet = { reloadHelper.restart() },
+    )
+
+    val strokeColorStyle = preference(
+        key = stringPreferencesKey(name = "stroke_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.restart() },
+        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_accent_color)),
     )
 
     val notificationDotColor = preference(
@@ -272,7 +290,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
 
     val searchAlgorithm = preference(
         key = stringPreferencesKey(name = "search_algorithm"),
-        defaultValue = LawnchairSearchAlgorithm.APP_SEARCH,
+        defaultValue = LawnchairSearchAlgorithm.LOCAL_SEARCH,
         onSet = { reloadHelper.recreate() },
     )
 
@@ -388,12 +406,25 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_fuzzy_search),
     )
 
+    val matchHotseatQsbStyle = preference(
+        key = booleanPreferencesKey(name = "use_drawer_search_icon"),
+        defaultValue = false,
+    )
+
+    val webSuggestionProvider = preference(
+        key = stringPreferencesKey(name = "web_suggestion_provider"),
+        defaultValue = WebSearchProvider.fromString(context.resources.getString(R.string.config_default_web_suggestion_provider)),
+        parse = { WebSearchProvider.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.recreate() },
+    )
+
     val maxAppSearchResultCount = preference(
         key = intPreferencesKey(name = "max_search_result_count"),
         defaultValue = resourceProvider.getInt(R.dimen.config_default_search_max_result_count),
     )
 
-    val maxSuggestionResultCount = preference(
+    val maxWebSuggestionResultCount = preference(
         key = intPreferencesKey(name = "max_suggestion_result_count"),
         defaultValue = resourceProvider.getInt(R.dimen.config_default_suggestion_max_result_count),
     )
@@ -529,6 +560,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = SmartspaceCalendar.fromString(context.getString(R.string.config_default_smart_space_calendar)),
         parse = { SmartspaceCalendar.fromString(it) },
         save = { it.toString() },
+    )
+
+    val smartspacerMaxCount = preference(
+        key = intPreferencesKey(name = "smartspace_max_count"),
+        defaultValue = 5,
+        onSet = { reloadHelper.recreate() },
     )
 
     val wallpaperDepthEffect = preference(

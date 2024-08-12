@@ -23,7 +23,6 @@ import static com.android.app.animation.Interpolators.DECELERATED_EASE;
 import static com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE;
 import static com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE;
 import static com.android.app.animation.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -60,9 +59,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
-import java.util.Arrays;
-
-import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**

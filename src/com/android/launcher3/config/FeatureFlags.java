@@ -429,7 +429,7 @@ public final class FeatureFlags {
     // TODO(Block 32): Empty block
 
     public static final BooleanFlag ENABLE_RESPONSIVE_WORKSPACE = getDebugFlag(241386436,
-            "ENABLE_RESPONSIVE_WORKSPACE", DISABLED,
+            "ENABLE_RESPONSIVE_WORKSPACE", ENABLED,
             "Enables new workspace grid calculations method.");
     // TODO(Block 33): Clean up flags
     public static final BooleanFlag ENABLE_ALL_APPS_RV_PREINFLATION = getDebugFlag(288161355,

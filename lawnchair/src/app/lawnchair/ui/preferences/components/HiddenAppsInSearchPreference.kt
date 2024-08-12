@@ -16,9 +16,9 @@ object HiddenAppsInSearch {
 }
 
 val hiddenAppsInSearchEntries = sequenceOf(
-    ListPreferenceEntry(HiddenAppsInSearch.NEVER) { stringResource(R.string.hidden_apps_show_never) },
+    ListPreferenceEntry(HiddenAppsInSearch.NEVER) { stringResource(R.string.never_choice) },
     ListPreferenceEntry(HiddenAppsInSearch.IF_NAME_TYPED) { stringResource(R.string.hidden_apps_show_name_typed) },
-    ListPreferenceEntry(HiddenAppsInSearch.ALWAYS) { stringResource(R.string.hidden_apps_show_always) },
+    ListPreferenceEntry(HiddenAppsInSearch.ALWAYS) { stringResource(R.string.always_choice) },
 )
     .toPersistentList()
 

@@ -32,18 +32,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
-import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
-import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
@@ -131,7 +129,8 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         View parent = (View) getParent();
-        int allAppsLeftRightPadding = mActivityContext.getDeviceProfile().allAppsLeftRightPadding;
+        var dp = mActivityContext.getDeviceProfile();
+        int allAppsLeftRightPadding = dp.allAppsPadding.left + dp.allAppsPadding.right;
         int size = parent.getWidth() - parent.getPaddingLeft() - parent.getPaddingRight()
                 - 2 * allAppsLeftRightPadding;
         int tabWidth = getTabWidth(getContext(), size);

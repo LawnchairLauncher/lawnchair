@@ -52,30 +52,35 @@ class IconPackProvider(private val context: Context) {
             context.isThemedIconsEnabled() && (iconEntry.packPackageName in themedIconPacks)
         val clockMetadata =
             if (user == Process.myUserHandle()) iconPack.getClock(iconEntry) else null
-        if (clockMetadata != null) {
-            val clockDrawable: ClockDrawableWrapper =
-                ClockDrawableWrapper.forMeta(Build.VERSION.SDK_INT, clockMetadata) {
-                    if (isThemedIconsEnabled) {
-                        wrapThemedData(
-                            packageManager,
-                            iconEntry,
-                            drawable,
-                        )
+        try {
+            if (clockMetadata != null) {
+                val clockDrawable: ClockDrawableWrapper =
+                    ClockDrawableWrapper.forMeta(Build.VERSION.SDK_INT, clockMetadata) {
+                        if (isThemedIconsEnabled) {
+                            wrapThemedData(
+                                packageManager,
+                                iconEntry,
+                                drawable,
+                            )
+                        } else {
+                            drawable
+                        }
+                    }
+                if (clockDrawable != null) {
+                    return if (isThemedIconsEnabled && context.shouldTransparentBGIcons()) {
+                        clockDrawable.foreground
                     } else {
-                        drawable
+                        CustomAdaptiveIconDrawable(
+                            clockDrawable.background,
+                            clockDrawable.foreground,
+                        )
                     }
                 }
-            if (clockDrawable != null) {
-                return if (isThemedIconsEnabled && context.shouldTransparentBGIcons()) {
-                    clockDrawable.foreground
-                } else {
-                    CustomAdaptiveIconDrawable(
-                        clockDrawable.background,
-                        clockDrawable.foreground,
-                    )
-                }
             }
+        } catch (t: Throwable) {
+            // Ignore
         }
+
         if (isThemedIconsEnabled) {
             return wrapThemedData(packageManager, iconEntry, drawable)
         }

@@ -108,7 +108,7 @@ fun AppDrawerPreferences(
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(
-                label = stringResource(id = R.string.icon_size),
+                label = stringResource(id = R.string.icon_sizes),
                 adapter = prefs2.drawerIconSizeFactor.getAdapter(),
                 step = 0.1f,
                 valueRange = 0.5F..1.5F,
@@ -117,7 +117,7 @@ fun AppDrawerPreferences(
             val showDrawerLabels = prefs2.showIconLabelsInDrawer.getAdapter()
             SwitchPreference(
                 adapter = showDrawerLabels,
-                label = stringResource(id = R.string.show_home_labels),
+                label = stringResource(id = R.string.show_labels),
             )
             ExpandAndShrink(visible = showDrawerLabels.state.value) {
                 DividerColumn {
@@ -130,7 +130,7 @@ fun AppDrawerPreferences(
                     )
                     SwitchPreference(
                         adapter = prefs2.twoLineAllApps.getAdapter(),
-                        label = stringResource(R.string.allapps_twoline_label),
+                        label = stringResource(R.string.twoline_label),
                     )
                 }
             }

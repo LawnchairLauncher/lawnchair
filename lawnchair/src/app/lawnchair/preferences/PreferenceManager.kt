@@ -66,6 +66,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
         override fun unflattenValue(value: String) = value
     }
 
+    val recentActionOrder = StringPref("pref_recentActionOrder", "0,1,2,3,4", recreate)
+
     private val fontCache = FontCache.INSTANCE.get(context)
     val fontWorkspace = FontPref("pref_workspaceFont", fontCache.uiText, recreate)
     val fontHeading = FontPref("pref_fontHeading", fontCache.uiRegular, recreate)
@@ -92,6 +94,11 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val themedIcons = BoolPref("themed_icons", true, recreate)
     val drawerThemedIcons = BoolPref("drawer_themed_icons", false, recreate)
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
+    val hotseatQsbAlpha = IntPref("pref_searchHotseatTranparency", 100, recreate)
+    val hotseatQsbStrokeWidth = FloatPref("pref_searchStrokeWidth", 0F, recreate)
+    val enableWallpaperBlur = BoolPref("pref_enableWallpaperBlur", false, recreate)
+    val wallpaperBlur = IntPref("pref_wallpaperBlur", 25, recreate)
+    val wallpaperBlurFactorThreshold = IntPref("pref_wallpaperBlurFactor", 25, recreate)
 
     val recentsActionScreenshot = BoolPref("pref_recentsActionScreenshot", !isOnePlusStock)
     val recentsActionShare = BoolPref("pref_recentsActionShare", isOnePlusStock)

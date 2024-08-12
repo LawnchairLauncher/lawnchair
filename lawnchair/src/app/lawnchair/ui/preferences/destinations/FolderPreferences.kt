@@ -71,7 +71,7 @@ fun FolderPreferences(
             val homeScreenLabelsAdapter = prefs2.showIconLabelsOnHomeScreenFolder.getAdapter()
             SwitchPreference(
                 adapter = homeScreenLabelsAdapter,
-                label = stringResource(id = R.string.show_home_labels),
+                label = stringResource(id = R.string.show_labels),
             )
             ExpandAndShrink(visible = homeScreenLabelsAdapter.state.value) {
                 SliderPreference(

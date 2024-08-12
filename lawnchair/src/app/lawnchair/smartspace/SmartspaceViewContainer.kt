@@ -48,7 +48,7 @@ class SmartspaceViewContainer @JvmOverloads constructor(
 
     private fun getCustomizeOption() = OptionsPopupView.OptionItem(
         context,
-        R.string.customize_button_text,
+        R.string.action_customize,
         R.drawable.ic_setting,
         StatsLogManager.LauncherEvent.IGNORE,
     ) {

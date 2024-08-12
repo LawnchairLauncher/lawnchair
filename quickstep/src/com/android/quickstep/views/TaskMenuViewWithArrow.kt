@@ -29,6 +29,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.BaseDraggingActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.InsettableFrameLayout
@@ -149,7 +150,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT
                     )
-                setBackgroundColor(Themes.getAttrColor(context, R.attr.overviewScrimColor))
+                setBackgroundColor(ColorTokens.OverviewScrimColor.resolveColor(context))
                 alpha = 0f
             }
         popupContainer.addView(scrim)
@@ -205,7 +206,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     override fun assignMarginsAndBackgrounds(viewGroup: ViewGroup) {
         assignMarginsAndBackgrounds(
             this,
-            Themes.getAttrColor(context, com.android.internal.R.attr.colorSurface)
+            ColorTokens.Surface.resolveColor(context)
         )
     }
 

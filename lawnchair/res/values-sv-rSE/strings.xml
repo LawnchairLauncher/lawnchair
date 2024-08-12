@@ -15,15 +15,75 @@
   ~ limitations under the License.
   -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Todo: find common strings and centralize them here. Should we make all strings specific though?  -->
-    <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Ange Lawnchair som din förvalda startskärmsapp för att komma åt genvägar med mera.</string>
+    <!-- TODO: Rename all strings to follow CONTRIBUTING.md guidelines -->
+    <!--
+
+    Actions and Verbs
+
+    -->
+    <string name="preview_label">Förhandsgranskning</string>
+    <string name="action_create">Skapa</string>
+    <string name="action_backup">Säkerhetskopiera</string>
+    <string name="action_restore">Återställ</string>
+    <string name="action_delete">Radera</string>
+    <string name="action_reset">Återställ</string>
+    <string name="action_unlock">Lås upp</string>
+    <string name="action_lock">Lås</string>
+    <string name="action_apply">Verkställ</string>
+    <string name="action_customize">Anpassa</string>
+    <string name="always_choice">Alltid</string>
+    <string name="never_choice">Aldrig</string>
+    <string name="clipboard">Urklipp</string>
+    <string name="action_copy_link">Kopiera länk</string>
+    <string name="action_copy">Kopiera</string>
+    <string name="action_paste">Klistra in</string>
+    <string name="loading">Laddar …</string>
+    <string name="managed_by_lawnchair">Hanteras av Lawnchair</string>
+    <!-- When mentioning settings UI -->
+    <string name="smartspace_preferences">Alternativ</string>
+    <string name="settings_button_text">Startinställningar</string>
+    <string name="system_settings">Systeminställningar</string>
+    <string name="title_change_settings">Ändra inställningar</string>
+    <!--
+
+    General "words" used throughout Lawnchair
+
+    -->
+    <!-- Selection options -->
+    <string name="dynamic">Dynamisk</string>
+    <string name="presets">Förval</string>
+    <string name="custom">Anpassad</string>
+    <string name="feed_default">Förvald</string>
+    <string name="system">System</string>
+    <!-- Relating to the Launcher ui -->
+    <string name="columns">Kolumner</string>
+    <string name="rows">Rader</string>
+    <string name="label">Etikett</string>
+    <string name="icons">Ikoner</string>
+    <string name="grid">Rutnät</string>
+    <string name="layout">Layout</string>
+    <!-- Generic styling options -->
+    <string name="wallpaper">Bakgrundsbild</string>
+    <string name="background_opacity">Bakgrundsopacitet</string>
+    <!-- Toast text and tips -->
+    <string name="copied_toast">Kopierad till urklipp</string>
+    <string name="item_removed">Objekt borttaget</string>
+    <!-- Miscellaneous -->
+    <string name="what_to_show">Vad ska visas</string>
+    <!-- A11y description -->
+    <string name="accessibility_service_description">För att kunna låsa din telefon när en gest görs kräver Lawnchair tillgänglighetsåtkomst.\n\nLawnchair övervakar inte några användaraktiviteter, men behörigheten att göra detta krävs för alla tillgänglighetstjänster. Lawnchair förkastar alla händelser som skickas av systemet.\n\nFör att kunna låsa din telefon använder Lawnchair tillgänglighetstjänsten performGlobalAction.</string>
+    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="x_and_y">%s &amp; %s</string>
+    <!--
+
+    Preference Dashboard
+
+    -->
     <string name="settings">Inställningar</string>
     <string name="general_label">Allmänt</string>
     <string name="general_description">Färger, ikonpaket, aviseringsprickar</string>
     <string name="home_screen_label">Startskärm</string>
     <string name="home_screen_description">Flöde, rutnät, ikoner</string>
-    <string name="what_to_show">Vad ska visas</string>
     <string name="dock_label">Favoritfält</string>
     <string name="dock_description">Sökfält, ikonantal</string>
     <string name="app_drawer_label">Applåda</string>
@@ -40,87 +100,59 @@
     <string name="app_info_drop_target_label">Appinfo</string>
     <string name="debug_restart_launcher">Starta om Lawnchair</string>
     <string name="experimental_features_label">Experimentella funktioner</string>
-    <!-- ExperimentalFeaturesPreferences -->
-    <!-- <string name="experimental_features_label" />-->
+    <!-- Experimental features -->
     <string name="font_picker_label">Anpassning av typsnitt</string>
     <string name="font_picker_description">En del text förblir oförändrad</string>
     <string name="smartspace_calendar_label">Anpassning av snabböversiktskalender</string>
     <string name="smartspace_calendar_description">Tillåt visning av datum i icke-gregorianska kalendersystem</string>
-    <string name="workspace_increase_max_grid_size_label">Utökad maximal storlek på startskärmsrutnät</string>
-    <string name="workspace_increase_max_grid_size_description">Utöka den maximalt tillåtna storleken på startskärmsrutnätet från 10 x 10 till 20 x 20</string>
+    <string name="workspace_increase_max_grid_size_label">Utöka gränsen för maximal rutnätsstorlek</string>
+    <string name="workspace_increase_max_grid_size_description">Utöka maximalt tillåten storlek på startskärmsrutnätet från 10 x 10 till 20 x 20</string>
     <string name="always_reload_icons_label">Ladda alltid om ikoner</string>
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
     <string name="recents_lock_unlock">Lås/lås upp</string>
-    <string name="recents_lock_unlock_description">Förhindra att vald app stängs när ”Rensa alla” används</string>
-    <!-- Relating to label/icon size -->
-    <string name="icons">Ikoner</string>
-    <string name="icon_size">Ikonstorlek</string>
-    <string name="show_home_labels">Visa etiketter</string>
-    <string name="label_size">Etikettstorlek</string>
-    <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">Rotation av startskärmen</string>
-    <string name="home_screen_rotation_description">När enheten roteras</string>
-    <string name="font_label">Typsnitt (experimentellt)</string>
-    <string name="fontWorkspace">Allmänt</string>
-    <string name="fontHeading">Rubriker</string>
-    <string name="fontHeadingMedium">Rubriker (medium)</string>
-    <string name="fontBody">Brödtext</string>
-    <string name="fontBodyMedium">Brödtext (medium)</string>
-    <string name="icon_style">Ikonstil</string>
-    <string name="transparent_background_icons">Transparenta tematiserade ikoner</string>
-    <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
+    <string name="recents_lock_unlock_description">Förhindra att vald app stängs när \"Rensa alla\" används</string>
+    <!--
+
+    Notifications
+
+    -->
+    <string name="set_default_launcher_tip">För att komma åt genvägar och ytterligare funktioner, ange Lawnchair som din förvalda startskärmsapp</string>
+    <string name="notification_dots">Aviseringsprickar</string>
+    <string name="show_notification_count">Visa aviseringsräknare</string>
+    <string name="notification_dots_color">Färg på aviseringsprick</string>
+    <string name="notification_dots_text_color">Färg på aviseringsräknare</string>
+    <string name="notification_dots_color_contrast_warning_always">Varning: Färgerna på aviseringsprick och aviseringsräknare har inte tillräcklig kontrast mot varandra</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Varning: Färgerna på aviseringsprick och aviseringsräknare har kanske inte alltid tillräcklig kontrast mot varandra</string>
+    <string name="missing_notification_access_label">Åtkomst till aviseringar krävs</string>
+    <string name="missing_notification_access_desc">För att visa aviseringsprickar, aktivera appaviseringar för <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <!--
+
+    Icons
+
+    -->
+    <!-- General strings -->
+    <string name="icon_style_label">Ikonstil</string>
     <string name="icon_shape_label">Ikonform</string>
-    <string name="auto_adaptive_icons_label">Automatiska adaptiva ikoner</string>
-    <string name="auto_adaptive_icons_description">För alla icke-adaptiva ikoner.</string>
+    <string name="icon_sizes">Ikonstorlek</string>
+    <string name="show_labels">Visa etiketter</string>
+    <string name="label_size">Etikettstorlek</string>
+    <string name="twoline_label">Använd flera rader</string>
+    <!-- Icon-related settings -->
+    <string name="transparent_background_icons_label">Transparenta tematiserade ikoner</string>
+    <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
+    <string name="auto_adaptive_icons_label">Autoadaptiva ikoner</string>
+    <string name="auto_adaptive_icons_description">För alla icke-adaptiva ikoner</string>
     <string name="background_lightness_label">Bakgrundens ljushet</string>
-    <string name="adaptive_icon_background_description">Använd 100 % bakgrundsljushet för vitt.</string>
+    <string name="adaptive_icon_background_description">Använd 100 % bakgrundsljushet för vitt</string>
     <string name="reset_custom_icons">Återställ anpassade ikoner</string>
     <string name="reset_custom_icons_confirmation">Alla anpassade ikoner kommer att återställas. Vill du fortsätta?</string>
-    <string name="notification_dots">Aviseringsprickar</string>
-    <string name="show_notification_count">Visa aviseringsantal</string>
-    <string name="notification_dots_color">Färg på aviseringsprick</string>
-    <string name="notification_dots_text_color">Färg på aviseringsantal</string>
-    <string name="notification_dots_color_contrast_warning_always">Varning: Färgerna på aviseringsprick &amp; aviseringsantal har inte tillräcklig kontrast mot varandra</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Varning: Färgerna på aviseringsprick &amp; aviseringsantal har kanske inte alltid tillräcklig kontrast mot varandra</string>
-    <!-- Notification popup -->
-    <string name="missing_notification_access_label">Aviseringsåtkomst krävs</string>
-    <string name="missing_notification_access_description">Åtkomst till aviseringar krävs</string>
-    <string name="msg_missing_notification_access">För att använda aviseringsprickar, ge <xliff:g id="name" example="My App">%1$s</xliff:g> åtkomst till aviseringar.</string>
-    <string name="title_change_settings">Ändra inställningar</string>
-    <string name="colors">Färger</string>
-    <string name="theme_label">Tema</string>
-    <string name="theme_light">Ljust</string>
-    <string name="theme_dark">Mörkt</string>
-    <string name="theme_system_default">System</string>
-    <string name="theme_follow_wallpaper">Matcha bakgrundsbild</string>
-    <string name="accent_color">Accentfärg</string>
-    <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Anpassad ikonform</string>
-    <string name="custom_icon_shape_create">Skapa anpassad ikonform</string>
-    <string name="custom_icon_shape_edit">Redigera anpassad ikonform</string>
-    <string name="icon_shape_corner">Hörnform</string>
-    <string name="icon_shape_corner_round">Rund</string>
-    <string name="icon_shape_corner_squircle">Slät</string>
-    <string name="icon_shape_corner_cut">Klippt</string>
-    <string name="icon_shape_top_left">Vänster överkant</string>
-    <string name="icon_shape_top_right">Höger överkant</string>
-    <string name="icon_shape_bottom_left">Vänster nederkant</string>
-    <string name="icon_shape_bottom_right">Höger nederkant</string>
-    <string name="create">Skapa</string>
-    <string name="clipboard">Urklipp</string>
-    <string name="export_to_clipboard">Exportera till urklipp</string>
-    <string name="import_from_clipboard">Importera från urklipp</string>
-    <string name="icon_shape_clipboard_import_error">Urklipp innehåller inte en giltig ikonform</string>
-    <!-- IconPackPreferences -->
-    <string name="icon_pack">Ikonpaket</string>
-    <string name="themed_icon_pack">Källa till tematiserade ikoner</string>
-    <string name="system_icons">Systemikoner</string>
-    <string name="themed_icon_title">Tematiserade ikoner</string>
-    <string name="themed_icons_off_label">Av</string>
-    <string name="themed_icons_home_label">Startskärm</string>
-    <string name="themed_icons_home_and_drawer_label">Startskärm &amp; applåda</string>
-    <string name="lawnicons_not_installed_description">Inga ikonpaket som stöds</string>
-    <!-- IconPickerPreference -->
+    <!-- Icon picker -->
+    <string name="icon_picker_default_category">Ikoner</string>
+    <string name="icon_picker_reset_to_default">Återställ till standard</string>
+    <string name="icon_pack_external_picker">Öppna extern väljare</string>
+    <string name="pick_icon_from_label">Välj ikon från</string>
+    <string name="icon_picker_load_failed">Kunde inte ladda fler ikoner</string>
+    <!-- Icon shapes  -->
     <string name="icon_shape_system">System</string>
     <string name="icon_shape_circle">Cirkel</string>
     <string name="icon_shape_cylinder">Cylinder</string>
@@ -134,10 +166,40 @@
     <string name="icon_shape_square">Kvadrat</string>
     <string name="icon_shape_squircle">Kvirkel</string>
     <string name="icon_shape_teardrop">Droppe</string>
-    <!-- FontSelectionPreferences -->
+    <!-- Custom icon shapes -->
+    <string name="custom_icon_shape">Anpassad ikonform</string>
+    <string name="custom_icon_shape_create">Skapa anpassad ikonform</string>
+    <string name="custom_icon_shape_edit">Redigera anpassad ikonform</string>
+    <string name="custom_icon_shape_corner">Hörnform</string>
+    <string name="custom_icon_shape_corner_round">Rund</string>
+    <string name="custom_icon_shape_corner_squircle">Slät</string>
+    <string name="custom_icon_shape_corner_cut">Klippt</string>
+    <string name="custom_icon_shape_top_left">Vänster överkant</string>
+    <string name="custom_icon_shape_top_right">Höger överkant</string>
+    <string name="custom_icon_shape_bottom_left">Vänster nederkant</string>
+    <string name="custom_icon_shape_bottom_right">Höger nederkant</string>
+    <string name="export_to_clipboard">Exportera till urklipp</string>
+    <string name="import_from_clipboard">Importera från urklipp</string>
+    <string name="icon_shape_clipboard_import_error">Urklipp innehåller inte en giltig ikonform</string>
+    <!-- Icon pack settings -->
+    <string name="icon_pack">Ikonpaket</string>
+    <string name="themed_icon_pack">Källa till tematiserade ikoner</string>
+    <string name="system_icons">Systemikoner</string>
+    <string name="themed_icon_title">Tematiserade ikoner</string>
+    <string name="themed_icons_off_label">Av</string>
+    <string name="themed_icons_home_label">Startskärm</string>
+    <string name="themed_icons_home_and_drawer_label">Startskärm &amp; applåda</string>
+    <string name="lawnicons_not_installed_description">Inga ikonpaket som stöds</string>
+    <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Lägg till typsnitt</string>
-    <string name="pref_fonts_add_fonts_summary">OTF- &amp; TTF-typsnitt stöds</string>
+    <string name="pref_fonts_add_fonts_summary">OTF- och TTF-typsnitt stöds</string>
     <string name="pref_fonts_missing_font">Typsnittet hittades inte</string>
+    <string name="font_label">Typsnitt (experimentellt)</string>
+    <string name="fontWorkspace">Allmänt</string>
+    <string name="fontHeading">Rubriker</string>
+    <string name="fontHeadingMedium">Rubriker (medium)</string>
+    <string name="fontBody">Brödtext</string>
+    <string name="fontBodyMedium">Brödtext (medium)</string>
     <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Tunn</string>
     <string name="font_weight_extra_light">Extra mager</string>
@@ -148,12 +210,31 @@
     <string name="font_weight_bold">Fet</string>
     <string name="font_weight_extra_bold">Extra fet</string>
     <string name="font_weight_extra_black">Svart</string>
-    <string name="reset_font">Återställ</string>
-    <!-- colorpreference/* -->
-    <string name="dynamic">Dynamisk</string>
+    <!--
+
+    Colors and theme
+
+    -->
+    <!-- Theme -->
+    <string name="theme_label">Tema</string>
+    <string name="theme_light">Ljust</string>
+    <string name="theme_dark">Mörkt</string>
+    <string name="theme_system_default">System</string>
+    <string name="theme_follow_wallpaper">Matcha bakgrundsbild</string>
+    <!-- Color style -->
+    <string name="color_style_label">Färgstil</string>
+    <string name="color_style_spritz">Spritz</string>
+    <string name="color_style_tonal_spot">Tonal punkt</string>
+    <string name="color_style_vibrant">Livfull</string>
+    <string name="color_style_expressive">Uttrycksfull</string>
+    <string name="color_style_rainbow">Regnbåge</string>
+    <string name="color_style_fruit_salad">Fruktsallad</string>
+    <string name="color_style_content">Innehåll</string>
+    <string name="color_style_monochromatic">Enfärgad</string>
+    <!-- Accent color and color picker -->
+    <string name="colors">Färger</string>
+    <string name="accent_color">Accentfärg</string>
     <string name="swatches">Exempel</string>
-    <string name="presets">Förval</string>
-    <string name="custom">Anpassad</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Rött</string>
     <string name="rgb_green">Grönt</string>
@@ -164,36 +245,157 @@
     <string name="hsb_brightness">Ljushet</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Reglage</string>
-    <string name="action_copy">Kopiera</string>
-    <string name="action_paste">Klistra in</string>
-    <string name="copied_toast">Kopierad till urklipp.</string>
     <string name="invalid_color">Ogiltig färg</string>
-    <string name="launcher_default_color">Hanteras av Lawnchair</string>
-    <!-- HomeScreenPreferences -->
+    <!--
+
+    Smartspace
+
+    -->
+    <!-- Date formats -->
+    <string name="smartspace_calendar_gregorian">Gregoriansk</string>
+    <string name="smartspace_calendar_persian">Persisk</string>
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <!-- Battery labels -->
+    <string name="smartspace_battery_charging">Laddar</string>
+    <string name="smartspace_battery_full">Laddat</string>
+    <string name="smartspace_battery_low">Lågt batteri</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — fullt om %2$s"</string>
+    <string name="smartspace_widget">Snabböversikt</string>
+    <string name="smartspace_widget_description">Vad ska visas</string>
+    <!-- Data and time format settings -->
+    <string name="smartspace_calendar">Kalender</string>
+    <string name="smartspace_date_and_time">Datum &amp; tid</string>
+    <string name="smartspace_date">Datum</string>
+    <string name="smartspace_time">Tid</string>
+    <string name="smartspace_time_format">Tidsformat</string>
+    <string name="smartspace_time_follow_system">Följ systemet</string>
+    <string name="smartspace_time_12_hour_format">12-timmarsformat</string>
+    <string name="smartspace_time_24_hour_format">24-timmarsformat</string>
+    <!-- Available targets -->
+    <string name="smartspace_weather">Väder</string>
+    <string name="smartspace_battery_status">Batteristatus</string>
+    <string name="smartspace_now_playing">Nu spelas</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
+    <!-- Setup settings -->
+    <string name="smartspace_requires_setup">Tryck för att konfigurera</string>
+    <string name="event_provider_missing_notification_dots">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsprickar.</string>
+    <!-- Toggle button for enabling Smartspace -->
+    <string name="smartspace_widget_toggle_label">Visa på startskärmen</string>
+    <string name="smartspace_widget_toggle_description">Snabböversikt kan läggas till manuellt på startskärmen genom att placera ut Lawnchair-widgeten</string>
+    <!-- List of available providers -->
+    <string name="smartspace_mode_label">Snabböversiktsleverantör</string>
+    <string name="smartspace_mode_google">Google</string>
+    <string name="smartspace_mode_google_search">Google Sök</string>
+    <!-- Miscellaneous Smartspace strings -->
+    <string name="smartspace_media_info_separator">" — "</string>
+    <string name="accessibility_smartspace_page">Sida %1$d av %2$d</string>
+    <string name="smartspace_widget_placeholder_date">fre 3 mar.</string>
+    <!--
+
+    About the app
+
+    -->
+    <string name="news">Nyheter</string>
+    <string name="support">Support</string>
+    <string name="product">Produkt</string>
+    <string name="design_and_development">Design &amp; utveckling</string>
+    <string name="development">Utveckling</string>
+    <string name="quickswitch_maintenance">QuickSwitch-underhåll</string>
+    <string name="devops">DevOps</string>
+    <string name="support_and_pr">Support &amp; pr</string>
+    <string name="acknowledgements">Erkännanden</string>
+    <string name="translate">Översätt</string>
+    <string name="donate">Donate</string>
+    <!--
+
+    Backup and restore
+
+    -->
+    <string name="create_backup">Skapa säkerhetskopia</string>
+    <string name="what_to_backup">Vad ska säkerhetskopieras</string>
+    <string name="backup_content_layout_and_settings">Layout och inställningar</string>
+    <string name="backup_content_wallpaper">Bakgrundsbild</string>
+    <string name="backup_create_success">Säkerhetskopia skapad</string>
+    <string name="backup_create_error">Misslyckades med att skapa säkerhetskopia</string>
+    <string name="restore_backup">Återställ säkerhetskopia</string>
+    <string name="what_to_restore">Vad ska återställas</string>
+    <string name="backup_restore_success">Säkerhetskopia återställd</string>
+    <string name="backup_restore_error">Misslyckades med att återställa säkerhetskopia</string>
+    <string name="invalid_backup_file">Ogiltig säkerhetskopiefil</string>
+    <!--
+
+    Gesture settings
+
+    -->
+    <string name="gesture_double_tap">Dubbeltryck</string>
+    <string name="gesture_swipe_up">Svep uppåt</string>
+    <string name="gesture_swipe_down">Svep nedåt</string>
+    <string name="gesture_home_tap">Hemknapp</string>
+    <string name="gesture_back_tap">Bakåtknapp</string>
+    <string name="gesture_handler_no_op">Gör ingenting</string>
+    <string name="gesture_handler_sleep">Vila</string>
+    <string name="gesture_handler_open_notifications">Öppna aviseringspanel</string>
+    <string name="gesture_handler_open_app_option">Öppna app</string>
+    <string name="gesture_handler_open_app_config">Öppna %1$s</string>
+    <string name="gesture_handler_open_app_drawer">Öppna applåda</string>
+    <string name="gesture_handler_open_app_search">Öppna appsökning</string>
+    <string name="gesture_handler_open_search">Öppna sökning</string>
+    <string name="pick_app_for_gesture">Välj app</string>
+    <string name="dt2s_admin_hint_title">Adminbehörigheter krävs</string>
+    <string name="dt2s_admin_hint">För att använda dubbeltryck för att vila, ange Lawnchair som en enhetsadminapp. Tryck på \"Öppna inställningar\", tryck sedan på \"Aktivera denna enhetsadminapp\".</string>
+    <string name="dt2s_admin_warning">Dubbeltryck för att vila kommer att inaktiveras.</string>
+    <string name="dt2s_a11y_hint_title">Aktivera tillgänglighetstjänst</string>
+    <string name="dt2s_a11y_hint">För att använda dubbeltryck för att vila, aktivera Lawnchairs tillgänglighetstjänst. Tryck på \"Öppna inställningar\", välj \"Lawnchair\" och aktivera \"Använd Lawnchair\".</string>
+    <string name="dt2s_warning_open_settings">Öppna inställningar</string>
+    <!--
+
+    Bug reporting
+
+    -->
+    <string name="lawnchair_bug_report">Buggrapport för Lawnchair</string>
+    <string name="crash_report_notif_title">%1$s kraschade</string>
+    <string name="action_upload_crash_report">Ladda upp kraschlogg</string>
+    <string name="action_upload_error">Uppladdningen misslyckades</string>
+    <string name="dogbin_uploading">Laddar upp …</string>
+    <string name="bugreport_channel_name">Buggrapporter</string>
+    <string name="status_channel_name">Uppladdningsstatus</string>
+    <string name="bugreport_group_summary">%d nya rapporter</string>
+    <string name="bugreport_group_summary_multiple">Flera nya rapporter</string>
+    <!--
+
+    Preferences (without special screens)
+
+    -->
+    <!-- General and home screen settings -->
+    <string name="home_screen_rotation_label">Rotation av startskärmen</string>
+    <string name="home_screen_rotation_description">Tillåt rotation av startskärmen när enheten roteras</string>
+    <string name="wallpaper_blur">Aktivera oskärpa på bakgrundsbild</string>
+    <string name="wallpaper_background_blur">Oskärpans intensitet</string>
+    <string name="wallpaper_background_blur_factor">Faktortröskel</string>
     <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
-    <string name="minus_one_enable">Visa Flöde</string>
+    <string name="minus_one_enable">Visa flöde</string>
     <string name="minus_one_unavailable">Inga flödesappar installerade</string>
     <string name="minus_one">Flöde</string>
     <string name="feed_provider">Flödesleverantör</string>
-    <string name="feed_default">Förvald</string>
-    <string name="wallpaper">Bakgrundsbild</string>
     <string name="wallpaper_scrolling_label">Rulla bakgrundsbild</string>
     <string name="wallpaper_depth_effect_label">Djupeffekt på bakgrundsbild</string>
     <string name="wallpaper_depth_effect_description">Zooma in och ut på bakgrundsbilden vid övergång mellan startskärmsappens lägen</string>
     <string name="show_sys_ui_scrim">Toppskugga</string>
-    <string name="layout">Utseende</string>
     <string name="home_screen_grid">Rutnät på startskärmen</string>
     <string name="home_screen_lock">Lås startskärm</string>
-    <string name="home_screen_lock_description">Förhindra ändringar av startskärmens utseende</string>
     <string name="home_screen_unlock">Lås upp startskärm</string>
     <string name="home_screen_locked">Startskärmen är låst</string>
-    <string name="show_dot_pagination_label">Använd prickpaginering</string>
+    <string name="home_screen_lock_description">Förhindra ändringar av startskärmens layout</string>
+    <string name="show_dot_pagination_label">Visa prickpaginering</string>
     <string name="show_dot_pagination_description">Använd prickar i stället för linjer för att visa sidnummer</string>
     <string name="show_material_u_popup_label">Använd ny popup-stil</string>
     <string name="show_material_u_popup_description">Använd Material Yous studsiga och något tätare popup-stil</string>
     <string name="popup_menu">Snabbmeny</string>
     <string name="home_screen_lock_toggle_from_home_popup">Visa låsknapp</string>
-    <string name="show_system_settings_entry">Visa systeminställningar</string>
+    <string name="show_system_settings_entry">Visa systeminställningspost</string>
     <string name="home_screen_edit_toggle_from_home_popup">Visa redigeringsknapp</string>
     <string name="status_bar_label">Statusfält</string>
     <string name="show_status_bar">Visa statusfält</string>
@@ -207,111 +409,58 @@
     <string name="force_widget_resize_description">Tillåt storleksändring av widgetar som är begränsade till en viss storlek</string>
     <string name="widget_unlimited_size_label">Ta bort storleksbegränsningar</string>
     <string name="widget_unlimited_size_description">Ta bort begränsningarna av minimi- och maximistorlek på widgetar</string>
-    <!-- HomeScreenGridPreferences -->
-    <string name="columns">Kolumner</string>
-    <string name="rows">Rader</string>
-    <string name="apply_grid">Verkställ</string>
-    <!-- Smartspace -->
-    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Laddar</string>
-    <string name="smartspace_battery_full">Laddat</string>
-    <string name="smartspace_battery_low">Lågt batteri</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — fullt om %2$s"</string>
-    <string name="accessibility_smartspace_page">Sida %1$d av %2$d</string>
-    <string name="smartspace_widget">Snabböversikt</string>
-    <string name="smartspace_widget_description">Vad ska visas</string>
-    <string name="smartspace_widget_placeholder_date">fre 3 mar.</string>
-    <string name="preview_label">Förhandsgranskning</string>
-    <string name="smartspace_calendar">Kalender</string>
-    <string name="smartspace_date_and_time">Datum &amp; tid</string>
-    <string name="smartspace_date">Datum</string>
-    <string name="smartspace_time">Tid</string>
-    <string name="smartspace_time_format">Tidsformat</string>
-    <string name="smartspace_time_follow_system">Följ systemet</string>
-    <string name="smartspace_time_12_hour_format">12-timmarsformat</string>
-    <string name="smartspace_time_24_hour_format">24-timmarsformat</string>
-    <string name="smartspace_weather">Väder</string>
-    <string name="smartspace_battery_status">Batteristatus</string>
-    <string name="smartspace_now_playing">Nu spelas</string>
-    <string name="smartspace_requires_setup">Tryck för att konfigurera</string>
-    <string name="event_provider_missing_notification_dots">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsprickar.</string>
-    <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregoriansk</string>
-    <string name="smartspace_calendar_persian">Persisk</string>
-    <string name="smartspace_preferences">Alternativ</string>
-    <string name="smartspace_widget_toggle_label">Visa på startskärmen</string>
-    <string name="smartspace_widget_toggle_description">Snabböversikt kan läggas till manuellt på startskärmen genom att placera ut ”Lawnchair”-widgeten</string>
-    <string name="smartspace_mode_label">Snabböversiktsleverantör</string>
-    <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Google Sök</string>
-    <!-- DockPreferences -->
-    <!-- <string name="dock_label" /> -->
+    <!-- Dock settings -->
     <string name="show_hotseat_title">Visa favoritfält</string>
     <string name="search_bar_label">Sökfält</string>
     <string name="hotseat_mode_label">Sökfältswidget</string>
     <string name="hotseat_mode_disabled">Inaktiverad</string>
-    <string name="hotseat_mode_google_search">Google-sökfält</string>
+    <string name="hotseat_mode_google_search">Google Sök-fält</string>
+    <string name="qsb_hotseat_background_transparency">Bakgrundsopacitet</string>
+    <string name="qsb_hotseat_stroke_width">Outline width</string>
+    <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">Hörnradie</string>
     <string name="apply_accent_color_label">Använd accentfärg</string>
     <string name="search_provider">Sökleverantör</string>
-    <string name="grid">Rutnät</string>
     <string name="dock_icons">Favoritfältsikoner</string>
     <string name="hotseat_bottom_space_label">Avstånd nederkant</string>
-    <!-- SearchProviderPreferences -->
+    <!-- Search providers -->
     <string name="search_provider_app_search">Appsökning</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair har ett avtal om intäktsdelning.\n\nSökning med %1$s hjälper till att stödja Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s och Lawnchair har ett avtal om intäktsdelning.\n\nSökning med %1$s hjälper till att stödja Lawnchair.</string>
     <string name="app_label">App</string>
     <string name="website_label">Webbplats</string>
     <string name="qsb_search_provider_app_required">App krävs</string>
-    <!-- AppDrawerPrefences -->
-    <string name="background_opacity">Bakgrundens ogenomskinlighet</string>
+    <!-- Dock search bar a11y -->
+    <string name="label_search">Sök</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Röstsökning</string>
+    <!-- App drawer settings -->
     <string name="hidden_apps_label">Dolda appar</string>
-    <string name="show_enable_smart_hide">Visa när fullständigt namn skrivs</string>
-    <string name="hide_hidden_apps_search">Dölj i sökresultat</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Ladda appar i klump</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Ladda och visa alla ikoner på en gång i stället för att ladda och visa ikoner var för sig. Kan åtgärda problem med sökning men kommer att öka laddningstiden.</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Ladda och visa ikoner i klump i stället för var för sig</string>
     <string name="pref_all_apps_remember_position_title">Kom ihåg position</string>
     <string name="pref_all_apps_remember_position_description">Kom ihåg applådeposition efter att ha lämnat applådan</string>
     <string name="pref_all_apps_show_scrollbar_title">Visa rullningslist</string>
-    <string name="pref_category_search">Sök</string>
-    <string name="show_app_search_bar">Visa sökfält</string>
-    <string name="pref_search_auto_show_keyboard">Visa tangentbord automatiskt</string>
-    <string name="fuzzy_search_title">Oskarp sökning</string>
-    <string name="fuzzy_search_desc">Ungefärlig matchning för appsökningar.</string>
-    <string name="clear_history">Rensa sökhistorik</string>
     <string name="app_drawer_columns">Kolumner i applådan</string>
     <string name="row_height_label">Radhöjd</string>
     <string name="app_drawer_indent_label">Vågrätt avstånd</string>
     <!-- HiddenAppsPreferences -->
+    <string name="hide_from_drawer">Dölj från applådan</string>
     <string name="hidden_apps_label_with_count">Dolda appar (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d app</item>
         <item quantity="other">%1$d appar</item>
     </plurals>
-    <!-- FolderPreferences -->
-    <string name="folder_preview_bg_opacity_label">Ikonbakgrundens ogenomskinlighet</string>
-    <string name="folder_preview_bg_color_label">Ikonbakgrundens färg</string>
+    <!-- Folder settings -->
+    <string name="folder_preview_bg_opacity_label">Ikonbakgrundsopacitet</string>
+    <string name="folder_preview_bg_color_label">Ikonbakgrundsfärg</string>
     <string name="max_folder_columns">Maximalt antal mappkolumner</string>
     <string name="max_folder_rows">Maximalt antal mapprader</string>
-    <!-- GesturePreference -->
-    <string name="gesture_double_tap">Dubbeltryck</string>
-    <string name="gesture_swipe_up">Svep uppåt</string>
-    <string name="gesture_swipe_down">Svep nedåt</string>
-    <string name="gesture_home_tap">Tryck på hemknappen</string>
-    <string name="gesture_back_tap">Tryck på bakåtknappen</string>
-    <string name="gesture_handler_no_op">Gör ingenting</string>
-    <string name="gesture_handler_sleep">Vila</string>
-    <string name="gesture_handler_open_notifications">Öppna aviseringspanelen</string>
-    <string name="gesture_handler_open_app_option">Öppna app</string>
-    <string name="gesture_handler_open_app_config">Öppna %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Öppna applådan</string>
-    <string name="gesture_handler_open_app_search">Öppna appsökning</string>
-    <string name="gesture_handler_open_search">Öppna sökning</string>
-    <string name="pick_app_for_gesture">Välj app</string>
-    <!-- QuickstepPreferences -->
-    <string name="quickswitch_ignored_warning">Dessa inställningar kommer att ignoreras eftersom Lawnchair inte är inställd som Senaste-leverantör.</string>
+    <!-- Quickstep settings -->
+    <string name="quickswitch_ignored_warning">Dessa inställningar kommer att ignoreras eftersom Lawnchair inte är inställd som Senaste-leverantör</string>
+    <string name="quickstep_incompatible">Inkompatibel systemintegration</string>
+    <string name="quickstep_incompatible_description">Din enhet är konfigurerad för att ha systemgester (kända som Quickstep) tillhandahållna av %1$s, men denna version av %1$s är inte kompatibel med din Android-version. För att fortsätta att använda din enhet, vänligen avinstallera uppdateringar till %1$s eller inaktivera %1$s som systemgestsleverantör.</string>
     <string name="translucent_background">Genomlysande bakgrund</string>
-    <string name="translucent_background_alpha">Bakgrundens ogenomskinlighet</string>
+    <string name="translucent_background_alpha">Bakgrundsopacitet</string>
     <string name="recents_actions_label">Snabbåtgärder</string>
     <string name="action_share">Dela</string>
     <string name="action_lens">Lins</string>
@@ -319,57 +468,44 @@
     <string name="task_menu_force_stop">Tvångsavsluta</string>
     <string name="window_corner_radius_label">Skärmhörnsradie</string>
     <string name="override_window_corner_radius_label">Anpassad skärmhörnsradie</string>
-    <string name="window_corner_radius_description">När du sveper uppåt för att öppna Senaste, följer den aktuella appen med ditt finger och krymper till ett kort. Använd detta reglage för att justera kortets hörnradie när det nästan fyller hela skärmen så att den motsvarar hörnen på din skärm.</string>
+    <string name="window_corner_radius_description">När du sveper uppåt för att öppna Senaste, följer den aktuella appen med ditt finger och krymper till ett kort. Använd detta reglage för att justera kortets hörnradie när det nästan fyller hela skärmen så att den matchar hörnen på din skärm.</string>
     <string name="taskbar_label">Aktivitetsfält</string>
     <string name="enable_taskbar_experimental">Visa aktivitetsfält (experimentellt)</string>
-    <!-- about/About.kt -->
-    <string name="news">Nyheter</string>
-    <string name="support">Support</string>
-    <string name="product">Produkt</string>
-    <string name="design_and_development">Design &amp; utveckling</string>
-    <string name="development">Utveckling</string>
-    <string name="quickswitch_maintenance">QuickSwitch-underhåll</string>
-    <string name="devops">DevOps</string>
-    <string name="support_and_pr">Support &amp; pr</string>
-    <string name="acknowledgements">Erkännanden</string>
-    <string name="translate">Översätt</string>
-    <!-- IconPickerPreference -->
-    <string name="icon_picker_default_category">Ikoner</string>
-    <string name="icon_picker_reset_to_default">Återställ till standard</string>
-    <string name="icon_pack_external_picker">Öppna extern väljare</string>
-    <string name="pick_icon_from_label">Välj ikon från</string>
-    <string name="icon_picker_load_failed">Kunde inte ladda fler ikoner.</string>
-    <!-- Misc -->
+    <!--
+
+    All Apps search
+
+    -->
+    <!-- Launcher strings used -->
+    <string name="all_apps_device_search_hint">Sök</string>
     <string name="all_apps_search_bar_hint">Sök efter appar</string>
-    <string name="settings_button_text">Hem-inställningar</string>
-    <string name="item_removed">Objekt borttaget</string>
-    <string name="all_apps_no_search_results">Inga appar hittades som matchar ”<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="dt2s_admin_hint_title">Administratörsbehörigheter krävs</string>
-    <string name="dt2s_admin_hint">För att använda dubbeltryck för att vila, ange Lawnchair som en enhetsadministratörsapp. Tryck på Öppna inställningar, tryck sedan på ”Aktivera denna enhetsadministratörsapp”.</string>
-    <string name="dt2s_admin_warning">Dubbeltryck för att vila kommer att inaktiveras.</string>
-    <string name="dt2s_a11y_hint_title">Aktivera tillgänglighetstjänsten</string>
-    <string name="dt2s_a11y_hint">För att använda dubbeltryck för att vila, aktivera Lawnchairs tillgänglighetstjänst. Tryck på Öppna inställningar, välj sedan Lawnchair och aktivera Använd Lawnchair.</string>
-    <string name="dt2s_warning_open_settings">Öppna inställningar</string>
-    <string name="loading">Laddar …</string>
-    <string name="system">System</string>
-    <string name="customize_button_text">Anpassa</string>
-    <string name="label">Etikett</string>
-    <string name="hide_from_drawer">Dölj från applådan</string>
+    <string name="all_apps_no_search_results">Inga appar hittades som matchar \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+    <string name="all_apps_search_result_suggestions">Från webben</string>
+    <string name="all_apps_search_result_contacts_from_device">Kontakter från enheten</string>
+    <string name="all_apps_search_result_files">Filer från enheten</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Inställningar från enheten</string>
+    <string name="all_apps_search_market_message">Sök efter fler appar</string>
+    <string name="all_apps_search_on_web_message">Sök på <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="error_no_market_or_browser_installed">Ingen appbutik eller webbläsare installerad</string>
+    <string name="clear_history">Rensa sökhistorik</string>
+    <string name="search_input_action_clear_results">Rensa sökruta</string>
+    <!-- Search settings -->
+    <string name="pref_category_search">Sök</string>
+    <string name="show_app_search_bar">Visa sökfält</string>
+    <string name="pref_search_auto_show_keyboard">Visa tangentbord automatiskt</string>
+    <string name="fuzzy_search_title">Oskarp sökning</string>
+    <string name="fuzzy_search_desc">Ungefärlig matchning för appsökningar</string>
     <string name="suggestion_pref_screen_title">Förslag</string>
     <string name="show_suggested_apps_at_drawer_top">Visa föreslagna appar högst upp i applådan</string>
-    <!-- Bug reporting -->
-    <string name="lawnchair_bug_report">Buggrapport för Lawnchair</string>
-    <string name="crash_report_notif_title">%1$s kraschade</string>
-    <string name="action_upload_crash_report">Ladda upp kraschlogg</string>
-    <string name="action_copy_link">Kopiera länk</string>
-    <string name="action_upload_error">Uppladdningen misslyckades</string>
-    <string name="dogbin_uploading">Laddar upp …</string>
-    <string name="bugreport_channel_name">Buggrapporter</string>
-    <string name="status_channel_name">Uppladdningsstatus</string>
-    <string name="bugreport_group_summary">%d nya rapporter.</string>
-    <string name="bugreport_group_summary_multiple">Flera nya rapporter.</string>
-    <!-- Search ig -->
-    <string name="action_apply">Verkställ</string>
+    <string name="perform_wide_search_title">Enhetssökning</string>
+    <string name="perform_wide_search_description">Sök bland din telefons kontakter, filer och inställningar</string>
+    <string name="show_hidden_apps_in_search_results">Visa dolda appar i sökresultat</string>
+    <string name="hidden_apps_show_name_typed">Om hela namnet skrivs</string>
+    <string name="app_search_algorithm">Sökalgoritm</string>
+    <string name="search_algorithm_app_search">Appsökning</string>
+    <string name="search_algorithm_global_search_on_device">Global sökning (på enheten)</string>
+    <string name="search_algorithm_global_search_via_asi">Global sökning (via ASI)</string>
+    <!-- Labels of each search result types -->
     <string name="show_search_result_types">Visa i sökresultat</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Appar &amp; genvägar</string>
     <string name="search_pref_result_shortcuts_title">Appgenvägar</string>
@@ -379,67 +515,25 @@
     <string name="search_pref_result_files_title">Filer</string>
     <string name="search_pref_result_web_title">Webbförslag</string>
     <string name="search_pref_result_history_title">Sökhistorik</string>
+    <string name="all_apps_search_result_calculator">Kalkylator</string>
+    <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Medier, filer med mera</string>
     <string name="search_pref_result_contacts_description">Kontakter med mera</string>
-    <string name="search_pref_result_web_description">Via <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="warn_contact_permission_content">För att söka efter kontakter, bevilja kontakter- och telefonbehörigheter till Lawnchair.</string>
-    <string name="warn_files_permission_content">För att söka bland dina filer, bevilja lagringsbehörigheter till Lawnchair.</string>
-    <string name="grant_requested_permissions">Bevilja behörigheter</string>
-    <string name="pref_suggestion_label">Förslag</string>
-    <string name="all_apps_device_search_hint">Sök</string>
-    <string name="search_input_action_clear_results">Rensa sökfält</string>
-    <string name="all_apps_search_result_suggestions">Från webben</string>
-    <string name="all_apps_search_result_contacts_from_device">Från dina kontakter</string>
-    <string name="all_apps_search_result_files">Från dina filer</string>
-    <string name="all_apps_search_result_settings_entry_from_device">Från din telefons inställningar</string>
-    <string name="label_search">Sök</string>
-    <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Röstsökning</string>
-    <string name="pref_advance_search_category">Avancerad sökning</string>
-    <string name="perform_wide_search_title">Enhetssökning</string>
-    <string name="perform_wide_search_description">Sök bland din telefons kontakter, filer och inställningar</string>
-    <string name="max_apps_result_count_title">Maximalt antal appresultat</string>
-    <string name="max_people_result_count_title">Maximalt antal personresultat</string>
-    <string name="max_file_result_count_title">Maximalt antal filresultat</string>
-    <string name="max_settings_entry_result_count_title">Maximalt antal inställningsresultat</string>
-    <string name="max_recent_result_count_title">Maximalt antal sökhistoriksresultat</string>
-    <string name="max_suggestion_result_count_title">Maximalt antal webbförslagsresultat</string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
+    <!-- Maximum xyz for each search result type -->
+    <string name="max_apps_result_count_title">Maximalt antal appar i sökresultat</string>
+    <string name="max_people_result_count_title">Maximalt antal personer i sökresultat</string>
+    <string name="max_file_result_count_title">Maximalt antal filer i sökresultat</string>
+    <string name="max_settings_entry_result_count_title">Maximalt antal inställningsposter i sökresultat</string>
+    <string name="max_recent_result_count_title">Maximalt antal historikposter i sökresultat</string>
+    <string name="max_suggestion_result_count_title">Maximalt antal förslag i sökresultat</string>
     <string name="max_web_suggestion_delay">Maximal fördröjning av webbförslag</string>
-    <string name="all_apps_search_market_message">Sök efter fler appar</string>
-    <string name="all_apps_search_startpage_message">Sök på <xliff:g id="startpage">Startpage</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">Ingen appbutik eller webbläsare installerad.</string>
-    <string name="quickstep_incompatible">Inkompatibel systemintegration</string>
-    <string name="quickstep_incompatible_description">Din enhet är konfigurerad för att ha systemgester (kända som Quickstep) tillhandahållna av %1$s, men denna version av %1$s är inte kompatibel med din Android-version. För att fortsätta att använda din enhet, vänligen avinstallera uppdateringar till %1$s eller inaktivera %1$s som systemgestsleverantör.</string>
-    <string name="delete">Radera</string>
-    <!-- Backup -->
-    <string name="create_backup">Skapa säkerhetskopia</string>
-    <string name="create_backup_action">Skapa</string>
-    <string name="what_to_backup">Vad ska säkerhetskopieras</string>
-    <string name="backup_content_layout_and_settings">Utseende och inställningar</string>
-    <string name="backup_content_wallpaper">Bakgrundsbild</string>
-    <string name="backup_create_success">Säkerhetskopia skapad.</string>
-    <string name="backup_create_error">Kunde inte skapa säkerhetskopia.</string>
-    <string name="restore_backup">Återställ säkerhetskopia</string>
-    <string name="restore_backup_action">Återställ</string>
-    <string name="what_to_restore">Vad ska återställas</string>
-    <string name="backup_restore_success">Säkerhetskopia återställd.</string>
-    <string name="backup_restore_error">Kunde inte återställa säkerhetskopian.</string>
-    <string name="invalid_backup_file">Ogiltig säkerhetskopia.</string>
-    <!-- Miscellaneous -->
-    <string name="x_by_y">%1$d × %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">Systeminställningar</string>
-    <string name="action_unlock">Lås upp</string>
-    <string name="action_lock">Lås</string>
-    <string name="allapps_twoline_label">Använd flera rader</string>
-    <string name="hidden_apps_show_always">Alltid</string>
-    <string name="hidden_apps_show_name_typed">Om hela namnet skrivs</string>
-    <string name="hidden_apps_show_never">Aldrig</string>
-    <string name="show_hidden_apps_in_search_results">Visa dolda appar i sökresultat</string>
-    <string name="search_algorithm_app_search">Appsökning</string>
-    <string name="search_algorithm_global_search_on_device">Global sökning (på enheten)</string>
-    <string name="search_algorithm_global_search_via_asi">Global sökning (via ASI)</string>
-    <string name="app_search_algorithm">Sökalgoritm</string>
-    <string name="all_apps_search_result_calculator">Kalkylator</string>
-    <string name="accessibility_service_description">För att kunna låsa din telefon när en gest görs kräver Lawnchair tillgänglighetsåtkomst.\n\nLawnchair övervakar inte några användaraktiviteter, men behörigheten att göra detta krävs för alla tillgänglighetstjänster. Lawnchair förkastar alla händelser som skickas av systemet.\n\nFör att kunna låsa din telefon använder Lawnchair tillgänglighetstjänsten performGlobalAction.</string>
+    <!-- Permission warnings -->
+    <string name="warn_contact_permission_content">För att söka efter kontakter, bevilja kontakter- och telefonbehörigheter till Lawnchair</string>
+    <string name="warn_files_permission_content">För att söka bland dina filer, bevilja lagringsbehörigheter till Lawnchair</string>
+    <string name="grant_requested_permissions">Bevilja behörigheter</string>
+    <string name="hotseat_mode_lawnchair_compose">Lawnchair (sammansatt)</string>
+    <string name="allapps_web_suggestion_provider_label">Webbförslagsleverantör</string>
+    <string name="allapps_use_web_suggestion_icon_label">Visa webbförslagsleverantörens ikon i sökfältet</string>
+    <string name="allapps_match_qsb_style_label">Matcha stilen på favoritfältets sökfält</string>
 </resources>

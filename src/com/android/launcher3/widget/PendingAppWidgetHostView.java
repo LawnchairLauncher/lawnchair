@@ -51,6 +51,8 @@ import com.android.launcher3.util.Themes;
 
 import java.util.List;
 
+import app.lawnchair.theme.color.tokens.ColorTokens;
+
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         implements OnClickListener, ItemInfoUpdateReceiver {
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
@@ -79,7 +81,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         mDisabledForSafeMode = disabledForSafeMode;
 
         mPaint = new TextPaint();
-        mPaint.setColor(Themes.getAttrColor(getContext(), android.R.attr.textColorPrimary));
+        mPaint.setColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
         mPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
                 mLauncher.getDeviceProfile().iconTextSizePx, getResources().getDisplayMetrics()));
         setBackgroundResource(R.drawable.pending_widget_bg);

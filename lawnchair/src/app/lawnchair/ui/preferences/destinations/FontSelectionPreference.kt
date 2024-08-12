@@ -128,7 +128,7 @@ fun FontSelection(
                         hideMenu()
                     },
                     text = {
-                        Text(text = stringResource(id = R.string.reset_font))
+                        Text(text = stringResource(id = R.string.action_reset))
                     },
                 )
             }
@@ -240,7 +240,7 @@ private fun FontSelectionItem(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Delete,
-                            contentDescription = stringResource(id = R.string.delete),
+                            contentDescription = stringResource(id = R.string.action_delete),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
