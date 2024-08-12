@@ -7,7 +7,7 @@ changelog:
       - lawnchair-bot
       - crowdin-bot
   categories:
-    - title: 🪄 Features
+    - title: 🪄 Features & 🐛 Bugfixes
       labels:
         - '*'
       exclude:
