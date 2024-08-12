@@ -1,0 +1,23 @@
+changelog:
+  exclude:
+    labels:
+      - bot
+    authors:
+      - renovate
+      - lawnchair-bot
+      - crowdin-bot
+  categories:
+    - title: 🪄 Features & 🐛 Bugfixes
+      labels:
+        - '*'
+      exclude:
+        labels:
+          - dependencies
+          - github_actions
+          - housekeeping
+    - title: 🧹 Housekeeping
+      labels:
+        - housekeeping
+    - title: 🧑‍💻 Dependencies
+      labels:
+        - dependencies
