@@ -41,7 +41,6 @@ import app.lawnchair.lawnchairApp
 import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
-import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.topjohnwu.superuser.Shell
@@ -52,13 +51,11 @@ class SleepGestureHandler(context: Context) : GestureHandler(context) {
         methods.first { it.isSupported() }.sleep(launcher)
     }
 
-    private val methods = buildList {
-        add(SleepMethodRoot(context))
-        if (BuildConfig.FLAVOR_channel == "github") {
-            add(SleepMethodPieAccessibility(context))
-        }
-        add(SleepMethodDeviceAdmin(context))
-    }
+    private val methods = listOf(
+        SleepMethodRoot(context),
+        SleepMethodPieAccessibility(context),
+        SleepMethodDeviceAdmin(context),
+    )
 
     sealed class SleepMethod(protected val context: Context) {
         abstract suspend fun isSupported(): Boolean
