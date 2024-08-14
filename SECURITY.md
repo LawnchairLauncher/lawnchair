@@ -3,7 +3,7 @@
 ## Supported Versions
 
 > [!WARNING]
-> Lawnchair v2 (Play Store version) is **unsupported**. Use the newer version instead.
+> Lawnchair v2 (Play Store version) is **unsupported**. Use the newer versions instead.
 > See [this FAQ page](https://lawnchair.app/faq#do-you-still-support-the-play-store-version) for additional information.
 
 The latest version of Lawnchair is the only supported version.

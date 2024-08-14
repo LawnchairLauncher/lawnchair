@@ -31,7 +31,7 @@ This branch houses the codebase of Lawnchair 14, which is currently in beta and 
 
 ## Download
 
-See the [Releases](https://github.com/LawnchairLauncher/lawnchair/releases) section for the latest
+See the [releases](https://github.com/LawnchairLauncher/lawnchair/releases) section for the latest
 beta build. For development builds with upcoming features & bug fixes, use the nightly builds.
 
 ## Contributing
