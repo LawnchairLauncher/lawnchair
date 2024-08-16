@@ -87,8 +87,8 @@ Lawnchair’s version code is composed of four parts, separated by underscores:
 These represent the Android version the Lawnchair Launcher was built from.
 They make up the first two parts of the version code:
 
--   Major Version: Indicates the main Android version.
--   Minor Version: Reflects any point release or update within the major version.
+-   Major version: Indicates the main Android version.
+-   Minor version: Reflects any point release or update within the major version.
 
 Example: Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
 
