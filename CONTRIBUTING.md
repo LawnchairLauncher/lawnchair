@@ -84,7 +84,7 @@ Lawnchair’s version code is composed of four parts, separated by underscores:
 
 ##### Android major & minor versions
 
-These represent the Android version the Lawnchair Launcher was built from.
+These represent the Android version in which Lawnchair is based on.
 They make up the first two parts of the version code:
 
 -   Major version: Indicates the main Android version.
