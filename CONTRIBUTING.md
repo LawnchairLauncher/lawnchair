@@ -97,8 +97,8 @@ Example: Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_X
 The third and fourth parts of the version code refer to Lawnchair's development stage
 and the specific version within that stage:
 
--   Development Status: Shows the current phase of the Lawnchair build (e.g., Alpha, Beta).
--   Development Version: Specifies the incremental version within the same development stage.
+-   Development status: Shows the current development stage of the Lawnchair build (e.g., Alpha, Beta).
+-   Development version: Specifies the incremental version within the same development stage.
 
 The table below shows release phase used by Lawnchair:
 
