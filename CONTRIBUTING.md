@@ -109,7 +109,7 @@ The table below shows release phase used by Lawnchair:
 | Release Candidate | 03    |
 | Release           | 04    |
 
-Example: alpha 5 will be `XX_XX_01_05` and beta 3 will be `XX_XX_02_03`.
+Example: Alpha 5 will be `XX_XX_01_05` and Beta 3 will be `XX_XX_02_03`.
 
 #### String naming
 
