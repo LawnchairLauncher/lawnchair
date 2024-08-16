@@ -16,11 +16,17 @@
 
 package app.lawnchair.ui.theme
 
+import android.graphics.Color
+import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +54,26 @@ fun LawnchairTheme(
         content = content,
         shapes = Shapes,
     )
+}
+
+@Composable
+fun ComponentActivity.EdgeToEdge() {
+    val darkTheme = isSelectedThemeDark
+    LaunchedEffect(darkTheme) {
+        val barStyle = SystemBarStyle.auto(
+            Color.TRANSPARENT,
+            Color.TRANSPARENT,
+            detectDarkMode = { darkTheme },
+        )
+        enableEdgeToEdge(
+            statusBarStyle = barStyle,
+            navigationBarStyle = barStyle,
+        )
+
+        // Fix for three-button nav not properly going edge-to-edge.
+        // TODO: https://issuetracker.google.com/issues/298296168
+        window.setFlags(FLAG_LAYOUT_NO_LIMITS, FLAG_LAYOUT_NO_LIMITS)
+    }
 }
 
 @Composable
