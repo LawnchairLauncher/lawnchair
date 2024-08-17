@@ -49,6 +49,8 @@ fun wallpaperDrawable(): Drawable? {
     val wallpaperInfo = wallpaperManager.wallpaperInfo
     val permissionState = rememberPermissionState(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            android.Manifest.permission.READ_MEDIA_IMAGES
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
         } else {
             android.Manifest.permission.READ_EXTERNAL_STORAGE
