@@ -108,7 +108,7 @@ private fun requestReadExternalStoragePermission(context: Context) {
 private fun hasReadMediaImagesPermission(context: Context): Boolean {
     return ContextCompat.checkSelfPermission(
         context,
-        Manifest.permission.READ_MEDIA_IMAGES
+        Manifest.permission.READ_MEDIA_IMAGES,
     ) == PackageManager.PERMISSION_GRANTED
 }
 
@@ -117,6 +117,6 @@ private fun requestReadMediaImagesPermission(context: Context) {
     ActivityCompat.requestPermissions(
         context as Activity,
         arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
-        124
+        124,
     )
 }
