@@ -1270,6 +1270,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     private boolean isEventOverQsb(float x, float y) {
         CellLayout target = (CellLayout) getChildAt(mCurrentPage);
+        if (target.getShortcutsAndWidgets() == null) return false;
         ShortcutAndWidgetContainer container = target.getShortcutsAndWidgets();
         mTempFXY[0] = x;
         mTempFXY[1] = y;
