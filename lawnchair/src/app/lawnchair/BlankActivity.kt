@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -37,14 +38,14 @@ class BlankActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         if (!intent.hasExtra("dialogTitle")) {
             startTargetActivity()
             return
         }
         setContent {
-            EdgeToEdge()
-
             LawnchairTheme {
+                EdgeToEdge()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = BottomSheetDefaults.ScrimColor,

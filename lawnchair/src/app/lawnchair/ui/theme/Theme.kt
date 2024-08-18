@@ -17,7 +17,6 @@
 package app.lawnchair.ui.theme
 
 import android.graphics.Color
-import android.view.WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
@@ -31,13 +30,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.ThemeProvider
-import app.lawnchair.theme.toM3ColorScheme
+import app.lawnchair.theme.toComposeColorScheme
 import app.lawnchair.ui.preferences.components.ThemeChoice
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
@@ -59,20 +59,26 @@ fun LawnchairTheme(
 @Composable
 fun ComponentActivity.EdgeToEdge() {
     val darkTheme = isSelectedThemeDark
+    val scrimColor = MaterialTheme.colorScheme.background.copy(alpha = 0.95f).toArgb()
+    val contentColor = MaterialTheme.colorScheme.onBackground.toArgb()
+
     LaunchedEffect(darkTheme) {
-        val barStyle = SystemBarStyle.auto(
+        val statusBarStyle = SystemBarStyle.auto(
             Color.TRANSPARENT,
             Color.TRANSPARENT,
             detectDarkMode = { darkTheme },
         )
-        enableEdgeToEdge(
-            statusBarStyle = barStyle,
-            navigationBarStyle = barStyle,
-        )
 
-        // Fix for three-button nav not properly going edge-to-edge.
-        // TODO: https://issuetracker.google.com/issues/298296168
-        window.setFlags(FLAG_LAYOUT_NO_LIMITS, FLAG_LAYOUT_NO_LIMITS)
+        val navigationBarStyle = if (!darkTheme) {
+            SystemBarStyle.light(scrimColor, contentColor)
+        } else {
+            SystemBarStyle.dark(scrimColor)
+        }
+
+        enableEdgeToEdge(
+            statusBarStyle = statusBarStyle,
+            navigationBarStyle = navigationBarStyle,
+        )
     }
 }
 
@@ -87,7 +93,7 @@ fun getColorScheme(darkTheme: Boolean): ColorScheme {
         ThemeProvider.INSTANCE.get(context).colorScheme
     }
 
-    return colorScheme.toM3ColorScheme(isDark = darkTheme)
+    return colorScheme.toComposeColorScheme(isDark = darkTheme)
 }
 
 val isSelectedThemeDark: Boolean
