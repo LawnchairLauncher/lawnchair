@@ -69,6 +69,7 @@ fun SearchPreferences() {
                 )
                 SwitchPreference(
                     label = stringResource(R.string.allapps_match_qsb_style_label),
+                    description = stringResource(R.string.allapps_match_qsb_style_description),
                     adapter = prefs2.matchHotseatQsbStyle.getAdapter(),
                 )
             }

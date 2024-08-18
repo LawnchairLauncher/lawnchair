@@ -3,6 +3,7 @@ package app.lawnchair.ui.preferences.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -84,14 +85,14 @@ fun SearchSuggestionPreference(
     content: @Composable (() -> Unit)? = null,
 ) {
     val bottomSheetHandler = bottomSheetHandler
-    val preventSwitchChange = false
 
     SearchSuggestionsSwitchPreference(
         label = label,
         description = description,
         checked = adapter.state.value,
+        onCheckedChange = adapter::onChange,
         enabled = isGranted,
-        preventSwitchChange = preventSwitchChange,
+        preventSwitchChange = !isGranted,
         onClick = {
             bottomSheetHandler.show {
                 BottomSheetContent(
@@ -100,14 +101,13 @@ fun SearchSuggestionPreference(
                     adapterValue = adapter.state.value,
                     adapterOnChange = adapter::onChange,
                     label = label,
-                    description = description,
                     maxCountLabel = maxCountLabel,
                     maxCountAdapter = maxCountAdapter,
                     maxCountRange = maxCountRange,
                     content = content,
                     onRequestPermission = onRequestPermission,
                     permissionRationale = permissionRationale,
-                    preventSwitchChange = preventSwitchChange,
+                    preventSwitchChange = !isGranted,
                 )
             }
         },
@@ -119,16 +119,14 @@ private fun BottomSheetContent(
     adapterValue: Boolean,
     adapterOnChange: (Boolean) -> Unit,
     label: String,
-    description: String?,
     maxCountLabel: String,
     maxCountAdapter: PreferenceAdapter<Int>,
     maxCountRange: ClosedRange<Int>,
     isPermissionGranted: Boolean,
     onHide: () -> Unit,
     onRequestPermission: (() -> Unit)?,
-    // TODO optimize permission requesting code
     permissionRationale: String?,
-    preventSwitchChange: Boolean = false,
+    preventSwitchChange: Boolean,
     content: @Composable (() -> Unit)?,
 ) {
     ModalBottomSheetContent(
@@ -147,7 +145,6 @@ private fun BottomSheetContent(
                     }
                 },
                 label = label,
-                description = description,
                 enabled = if (preventSwitchChange) false else isPermissionGranted,
             ) {
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -174,13 +171,17 @@ private fun BottomSheetContent(
                             Text(
                                 text = permissionRationale,
                             )
-                            Button(
-                                onClick = {
-                                    onHide()
-                                    onRequestPermission()
-                                },
-                            ) {
-                                Text(text = stringResource(id = R.string.grant_requested_permissions))
+                            Spacer(Modifier.height(8.dp))
+                            Row {
+                                Spacer(Modifier.weight(1f))
+                                Button(
+                                    onClick = {
+                                        onHide()
+                                        onRequestPermission()
+                                    },
+                                ) {
+                                    Text(text = stringResource(id = R.string.grant_requested_permissions))
+                                }
                             }
                         }
                     }
@@ -194,6 +195,7 @@ private fun BottomSheetContent(
 private fun SearchSuggestionsSwitchPreference(
     label: String,
     checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
     preventSwitchChange: Boolean,
     onClick: () -> Unit,
     enabled: Boolean,
@@ -222,7 +224,7 @@ private fun SearchSuggestionsSwitchPreference(
                     .padding(all = 16.dp)
                     .height(24.dp),
                 checked = checked,
-                onCheckedChange = { onClick() },
+                onCheckedChange = { onCheckedChange(it) },
                 enabled = if (preventSwitchChange) false else enabled,
             )
         },
@@ -238,6 +240,7 @@ private fun SearchSuggestionsSwitchPreferencePreview() {
             label = "example",
             checked = true,
             onClick = { /*TODO*/ },
+            onCheckedChange = {},
             preventSwitchChange = false,
             enabled = true,
         )

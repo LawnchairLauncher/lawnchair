@@ -72,7 +72,7 @@ fun AnnouncementPreference(
         announcements.forEachIndexed { index, announcement ->
             var show by rememberSaveable { mutableStateOf(true) }
             AnnouncementItem(show, announcement) { show = false }
-            if (index != announcements.lastIndex && show && (!announcement.test || BuildConfig.DEBUG)) {
+            if (index != announcements.lastIndex && show && announcement.active && (!announcement.test || BuildConfig.DEBUG)) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
