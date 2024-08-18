@@ -74,7 +74,7 @@
     <dimen name="enhanced_smartspace_height">104dp</dimen>
     <dimen name="enhanced_smartspace_icon_margin">6dp</dimen>
     <dimen name="enhanced_smartspace_icon_size">20dp</dimen>
-    <dimen name="enhanced_smartspace_margin_start_launcher">16dp</dimen>
+    <dimen name="enhanced_smartspace_margin_start_launcher">0dp</dimen>
     <dimen name="enhanced_smartspace_padding_top">16dp</dimen>
     <dimen name="enhanced_smartspace_secondary_card_corner_radius">28dp</dimen>
     <dimen name="enhanced_smartspace_secondary_card_end_margin">1dp</dimen>
