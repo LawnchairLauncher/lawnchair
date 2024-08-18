@@ -122,8 +122,6 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         }
     }
 
-    private val searchUtils = SearchUtils(maxAppResultsCount, hiddenApps, hiddenAppsInSearch)
-
     override fun doSearch(query: String, callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
         appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
             override fun execute(app: LauncherAppState, dataModel: BgDataModel, apps: AllAppsList) {
@@ -151,10 +149,12 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         var appIndex = 0
 
         launch {
-            getAppSearchResults(apps, query).collect { appResults ->
-                allResults.addAll(appResults)
-                appIndex = appResults.size
-                send(allResults.toList())
+            if (searchApps) {
+                getAppSearchResults(apps, query).collect { appResults ->
+                    allResults.addAll(appResults)
+                    appIndex = appResults.size
+                    send(allResults.toList())
+                }
             }
         }
 
@@ -226,7 +226,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
             if (appResults.size == 1 && context.isDefaultLauncher()) {
                 val singleAppResult = appResults.firstOrNull()
-                val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
+                val shortcuts = singleAppResult?.let { SearchUtils.getShortcuts(it, context) }
                 if (shortcuts != null) {
                     if (shortcuts.isNotEmpty()) {
                         searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))
@@ -307,9 +307,9 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         apps: MutableList<AppInfo>,
         query: String,
     ) = if (enableFuzzySearch) {
-        searchUtils.fuzzySearch(apps, query)
+        SearchUtils.fuzzySearch(apps, query, maxAppResultsCount, hiddenApps, hiddenAppsInSearch)
     } else {
-        searchUtils.normalSearch(apps, query)
+        SearchUtils.normalSearch(apps, query, maxAppResultsCount, hiddenApps, hiddenAppsInSearch)
     }
 
     private suspend fun performDeviceLocalSearch(query: String, prefs: PreferenceManager): MutableList<SearchResult> =

@@ -84,22 +84,53 @@ fun SearchSuggestionPreference(
     permissionRationale: String? = null,
     content: @Composable (() -> Unit)? = null,
 ) {
+    SearchSuggestionPreference(
+        checked = adapter.state.value,
+        onCheckedChange = adapter::onChange,
+        enabled = isGranted,
+        maxCountAdapter = maxCountAdapter,
+        maxCountRange = maxCountRange,
+        label = label,
+        maxCountLabel = maxCountLabel,
+        onRequestPermission = onRequestPermission,
+        isGranted = isGranted,
+        description = description,
+        permissionRationale = permissionRationale,
+        content = content,
+    )
+}
+
+@Composable
+fun SearchSuggestionPreference(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    enabled: Boolean,
+    maxCountAdapter: PreferenceAdapter<Int>,
+    maxCountRange: ClosedRange<Int>,
+    label: String,
+    maxCountLabel: String,
+    onRequestPermission: (() -> Unit)?,
+    isGranted: Boolean = true,
+    description: String? = null,
+    permissionRationale: String? = null,
+    content: @Composable (() -> Unit)? = null,
+) {
     val bottomSheetHandler = bottomSheetHandler
 
     SearchSuggestionsSwitchPreference(
         label = label,
         description = description,
-        checked = adapter.state.value,
-        onCheckedChange = adapter::onChange,
-        enabled = isGranted,
-        preventSwitchChange = !isGranted,
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        enabled = enabled,
         onClick = {
             bottomSheetHandler.show {
                 BottomSheetContent(
                     onHide = { bottomSheetHandler.hide() },
                     isPermissionGranted = isGranted,
-                    adapterValue = adapter.state.value,
-                    adapterOnChange = adapter::onChange,
+                    adapterValue = checked,
+                    adapterEnabled = enabled,
+                    adapterOnChange = onCheckedChange,
                     label = label,
                     maxCountLabel = maxCountLabel,
                     maxCountAdapter = maxCountAdapter,
@@ -107,7 +138,6 @@ fun SearchSuggestionPreference(
                     content = content,
                     onRequestPermission = onRequestPermission,
                     permissionRationale = permissionRationale,
-                    preventSwitchChange = !isGranted,
                 )
             }
         },
@@ -118,6 +148,7 @@ fun SearchSuggestionPreference(
 private fun BottomSheetContent(
     adapterValue: Boolean,
     adapterOnChange: (Boolean) -> Unit,
+    adapterEnabled: Boolean,
     label: String,
     maxCountLabel: String,
     maxCountAdapter: PreferenceAdapter<Int>,
@@ -126,7 +157,6 @@ private fun BottomSheetContent(
     onHide: () -> Unit,
     onRequestPermission: (() -> Unit)?,
     permissionRationale: String?,
-    preventSwitchChange: Boolean,
     content: @Composable (() -> Unit)?,
 ) {
     ModalBottomSheetContent(
@@ -140,12 +170,10 @@ private fun BottomSheetContent(
             MainSwitchPreference(
                 checked = adapterValue,
                 onCheckedChange = {
-                    if (!preventSwitchChange) {
-                        adapterOnChange(it)
-                    }
+                    adapterOnChange(it)
                 },
                 label = label,
-                enabled = if (preventSwitchChange) false else isPermissionGranted,
+                enabled = adapterEnabled,
             ) {
                 Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                     SliderPreference(
@@ -196,7 +224,6 @@ private fun SearchSuggestionsSwitchPreference(
     label: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    preventSwitchChange: Boolean,
     onClick: () -> Unit,
     enabled: Boolean,
     description: String? = null,
@@ -225,7 +252,7 @@ private fun SearchSuggestionsSwitchPreference(
                     .height(24.dp),
                 checked = checked,
                 onCheckedChange = { onCheckedChange(it) },
-                enabled = if (preventSwitchChange) false else enabled,
+                enabled = enabled,
             )
         },
         applyPaddings = false,
@@ -241,7 +268,6 @@ private fun SearchSuggestionsSwitchPreferencePreview() {
             checked = true,
             onClick = { /*TODO*/ },
             onCheckedChange = {},
-            preventSwitchChange = false,
             enabled = true,
         )
     }

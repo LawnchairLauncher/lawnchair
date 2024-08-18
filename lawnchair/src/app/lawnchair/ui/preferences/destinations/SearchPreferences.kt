@@ -77,9 +77,14 @@ fun SearchPreferences() {
             PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
                 val searchAlgorithm = preferenceManager2().searchAlgorithm.getAdapter().state.value
                 if (searchAlgorithm != LawnchairSearchAlgorithm.ASI_SEARCH) {
-                    @OptIn(ExperimentalPermissionsApi::class)
+                    val canDisable = searchAlgorithm != LawnchairSearchAlgorithm.APP_SEARCH
+                    val adapter = prefs.searchResultApps.getAdapter()
+
                     SearchSuggestionPreference(
-                        adapter = prefs.searchResultApps.getAdapter(),
+                        checked = if (canDisable) adapter.state.value else true,
+                        onCheckedChange = if (canDisable) adapter::onChange else ({}),
+                        enabled = true,
+                        onRequestPermission = {},
                         maxCountAdapter = prefs2.maxAppSearchResultCount.getAdapter(),
                         maxCountRange = 3..15,
                         label = stringResource(R.string.search_pref_result_apps_and_shortcuts_title),

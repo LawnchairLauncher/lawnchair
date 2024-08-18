@@ -415,6 +415,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val matchHotseatQsbStyle = preference(
         key = booleanPreferencesKey(name = "use_drawer_search_icon"),
         defaultValue = false,
+        onSet = { reloadHelper.recreate() },
     )
 
     val webSuggestionProvider = preference(
