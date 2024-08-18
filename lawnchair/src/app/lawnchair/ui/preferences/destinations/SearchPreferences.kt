@@ -83,7 +83,7 @@ fun SearchPreferences() {
                     SearchSuggestionPreference(
                         checked = if (canDisable) adapter.state.value else true,
                         onCheckedChange = if (canDisable) adapter::onChange else ({}),
-                        enabled = true,
+                        enabled = if (canDisable) true else false,
                         onRequestPermission = {},
                         maxCountAdapter = prefs2.maxAppSearchResultCount.getAdapter(),
                         maxCountRange = 3..15,
