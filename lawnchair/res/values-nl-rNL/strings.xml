@@ -276,9 +276,9 @@
     <string name="smartspace_battery_status">Batterijstatus</string>
     <string name="smartspace_now_playing">Wordt nu afgespeeld</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="maximum_number_of_targets">Maximum aantal doelen</string>
+    <string name="open_smartspacer_settings">Smartspacer-instellingen openen</string>
+    <string name="smartspacer_settings">Smartspacer-instellingen</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tik om in te stellen</string>
     <string name="event_provider_missing_notification_dots">Schakel meldingsstippen in om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken.</string>
@@ -308,7 +308,7 @@
     <string name="support_and_pr">Ondersteuning &amp; PR</string>
     <string name="acknowledgements">Dankwoord</string>
     <string name="translate">Vertalen</string>
-    <string name="donate">Donate</string>
+    <string name="donate">Doneren</string>
     <!--
 
     Backup and restore
