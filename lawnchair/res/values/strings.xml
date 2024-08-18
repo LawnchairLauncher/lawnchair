@@ -597,7 +597,8 @@
     </plurals>
 
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon background opacity</string>
+    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
+    <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Icon background color</string>
 
     <string name="max_folder_columns">Maximum folder columns</string>

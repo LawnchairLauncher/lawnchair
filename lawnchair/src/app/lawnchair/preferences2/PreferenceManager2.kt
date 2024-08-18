@@ -341,6 +341,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.reloadIcons() },
     )
 
+    val folderBackgroundOpacity = preference(
+        key = floatPreferencesKey(name = "folder_background_opacity"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_folder_background_opacity),
+        onSet = { reloadHelper.reloadIcons() },
+    )
+
     val showIconLabelsOnHomeScreen = preference(
         key = booleanPreferencesKey(name = "show_icon_labels_on_home_screen"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),
