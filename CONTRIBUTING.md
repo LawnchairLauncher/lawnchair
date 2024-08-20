@@ -2,21 +2,25 @@
 
 <picture>
     <!-- Avoid image being clickable with slight workaround --->
-    <source media="(prefers-color-scheme: dark)" srcset="docs/lawnchair-round.webp" width="100">
-    <img alt="" src="docs/lawnchair-round.webp" width="100">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/lawnchair-round.webp" width="100">
+    <img alt="" src="docs/assets/lawnchair-round.webp" width="100">
 </picture>
 
 First and foremost, welcome to the **Lawnchair** Contributing Guidelines!
 
 ### 💫 Bug reports & feature requests
 
-For bug reports, please describe the bug in detail to the best of your ability
-and steps on how to reproduce it. If applicable, attach log files.
+> [!TIP]
+> We recommend that the Lawnchair [Nightly](https://github.com/LawnchairLauncher/lawnchair/releases/tag/nightly)
+> build be used in your report as they contain the latest changes from Lawnchair.
 
-For feature requests, please describe the feature you'd like to see added to Lawnchair.
+For [bug reports](https://github.com/LawnchairLauncher/lawnchair/issues/new?assignees=&labels=bug&projects=&template=bug_report.yaml&title=%5BBUG%5D+), please describe the bug in detail to the best of your ability
+with steps on how to reproduce it. If applicable, attach log files.
+
+For [feature requests](https://github.com/LawnchairLauncher/lawnchair/issues/new?assignees=&labels=feature%2Cenhancement&projects=&template=feature_request.yaml&title=%5BFEATURE%5D+), please describe the feature you'd like to see added to Lawnchair.
 If applicable, attach log files.
 
-Please make sure to be civil during discussion of your contribution (refer to the [Code of Conduct](CODE_OF_CONDUCT.md))
+Please make sure to be civil during the discussion of your contribution as outlined by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ### 🌐 Translation
 
@@ -24,7 +28,7 @@ For translation, visit [Lawnchair on Crowdin](https://lawnchair.crowdin.com) and
 
 -   When using quotation marks, insert the symbols specific to the target language, as listed in this [this summary table](https://en.wikipedia.org/wiki/Quotation_mark#Summary_table);
 -   Some English terminology may have not have commonly-used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of _bottom row_ for _dock_;
--   Some languages (e.g. French) have variations of words depending if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
+-   Some languages (e.g. French) have variations of words depending on if it's masculine or feminine (gender-specific); we recommend opting for gender-neutral words instead.
 
 ### 🧑‍💻 Code
 
@@ -53,6 +57,7 @@ Here are some contribution tips to help you get started:
 
 #### Additional documentation
 
+-   Lawnchair Visual Guidelines ([README.md](/docs/assets/README.md))
 -   Lawnchair Quickstep Compat Lib ([README.md](compatLib/README.md))
 -   Lawnchair Preferences Components ([README.md](lawnchair/src/app/lawnchair/ui/preferences/components/README.md))
 -   SystemUI ViewCapture ([README.md](systemUIViewCapture/README.md))
@@ -62,33 +67,40 @@ Here are some contribution tips to help you get started:
 #### Versioning scheme
 
 As of [#4361](https://github.com/LawnchairLauncher/lawnchair/pull/4361),
-Lawnchair’s version code is separated by four parts:
+Lawnchair’s version code is composed of four parts, separated by underscores:
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="docs/version-dark.svg" width="98%">
-        <img alt="" src="docs/version-light.svg" width="98%">
+        <source media="(prefers-color-scheme: dark)" srcset="docs/assets/version-dark.svg" width="98%">
+        <img alt="" src="docs/assets/version-light.svg" width="98%">
         <!-- Direct the accessibility reader to read the point below --->
     </picture>
 </p>
 
-1. Android's major version
-2. Android's minor version
-3. Lawnchair's development status
-4. Lawnchair's development version
+1. Android major version
+2. Android minor version
+3. Lawnchair development status
+4. Lawnchair development version
 
-##### Android's major & minor versions
+##### Android major & minor versions
 
-These make up the first two parts of the version code.
-For example: Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
+These represent the Android version in which Lawnchair is based on.
+They make up the first two parts of the version code:
+
+-   Major version: Indicates the main Android version.
+-   Minor version: Reflects any point release or update within the major version.
+
+Example: Android 11 will be `11_00_XX_XX` while Android 12.1 will be `12_01_XX_XX`.
 
 ##### Development status & version
 
-The third part of the version code indicates Lawnchair's stability status, while the fourth part indicates the version number.
+The third and fourth parts of the version code refer to Lawnchair's development stage
+and the specific version within that stage:
 
-For example, Alpha 4's version code will be `XX_XX_01_04`.
+-   Development status: Shows the current development stage of the Lawnchair build (e.g., Alpha, Beta).
+-   Development version: Specifies the incremental version within the same development stage.
 
-See the table below detailing the release type:
+The table below shows release phase used by Lawnchair:
 
 | Status            | Stage |
 | ----------------- | ----- |
@@ -97,11 +109,14 @@ See the table below detailing the release type:
 | Release Candidate | 03    |
 | Release           | 04    |
 
+Example: Alpha 5 will be `XX_XX_01_05` and Beta 3 will be `XX_XX_02_03`.
+
 #### String naming
+
 Strings `names` in `strings.xml` should follow this format:
 
 | Type                                             | Format            | Example usage              | Actual string        | Other information                                                                                                   |
-|--------------------------------------------------|-------------------|----------------------------|----------------------|---------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------ | ----------------- | -------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Generic word                                     | $1                | `disagree_or_agree`        | Disagree or agree    | Should only be used if it doesn't fit the below categories                                                          |
 | Action                                           | $1_action         | `apply_action`             | Apply                | Any generic action verb can fit here                                                                                |
 | Preference or popup label<br/>Preference headers | $1_label          | `folders_label`            | Folders              |                                                                                                                     |

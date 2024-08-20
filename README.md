@@ -7,10 +7,13 @@
 [![Discord](https://img.shields.io/discord/803299970169700402?label=server&logo=discord)](https://discord.gg/3x8qNWxgGZ)
 
 <picture>
-    <!-- Avoid image being clickable with slight workaround --->
-    <!-- ❤️ Credit to Raine on the Lawnchair Discord --->
-    <source media="(prefers-color-scheme: dark)" srcset="docs/device-frame.png" width="250px">
-    <img alt="Google Pixel running Lawnchair Launcher with green wallpaper" src="docs/device-frame.png" width="250px">
+    <!-- Avoid image being clickable with slight workaround -->
+    <!-- ❤️ Credit to Raine for the original mockup on the Lawnchair Discord -->
+    <!-- ❤️ Credit to Lawrence Kayku for the current mockup on Unsplash 
+            https://unsplash.com/photos/photography-of-green-leaves-ZVKr8wADhpc 
+    -->
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/device-frame.png" width="250px">
+    <img alt="Google Pixel running Lawnchair Launcher with green wallpaper" src="docs/assets/device-frame.png" width="250px">
 </picture>
 
 Lawnchair is a free, open-source home app for Android. Taking Launcher3 — Android’s default home app — as a starting point, it ports Pixel Launcher features and introduces rich options for customization.
@@ -28,8 +31,8 @@ This branch houses the codebase of Lawnchair 14, which is currently in beta and 
 
 ## Download
 
-See the [Releases](https://github.com/LawnchairLauncher/lawnchair/releases) section for the latest
-beta build. For development builds with new icons, use the nightly builds.
+See the [releases](https://github.com/LawnchairLauncher/lawnchair/releases) section for the latest
+beta build. For development builds with upcoming features & bug fixes, use the nightly builds.
 
 ## Contributing
 
@@ -38,7 +41,7 @@ Please visit the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) for inform
 ## Quick links
 
 -   [News](https://t.me/lawnchairci)
--   [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
+-   [Lawnchair on X (formerly Twitter)](https://x.com/lawnchairapp)
 -   [Website](https://lawnchair.app)
 -   [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
 

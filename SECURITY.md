@@ -3,13 +3,14 @@
 ## Supported Versions
 
 > [!WARNING]
-> Lawnchair v2 (Play Store version) is **unsupported**. Use the newer alphas instead.
+> Lawnchair v2 (Play Store version) is **unsupported**. Use the newer versions instead.
 > See [this FAQ page](https://lawnchair.app/faq#do-you-still-support-the-play-store-version) for additional information.
 
 The latest version of Lawnchair is the only supported version.
 
 | Version        | Supported          |
 | -------------- | ------------------ |
+| Nightly build  | :white_check_mark: |
 | 14             | :white_check_mark: |
 | 13             | :x:                |
 | 12.1           | :x:                |
