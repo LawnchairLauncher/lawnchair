@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.components
 
 import android.view.HapticFeedbackConstants
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -22,10 +23,11 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
@@ -82,8 +84,12 @@ fun QuickActionsPreferences(
 ) {
     var orderedItems = sortListByIdOrder(items, order)
 
-    val isAnyDragging = remember { mutableStateOf(false) }
-    val lastItemIdIndex = remember { mutableIntStateOf(4) }
+    var isAnyDragging by remember { mutableStateOf(false) }
+
+    val elevation by animateDpAsState(
+        targetValue = if (!isAnyDragging) 1.dp else 0.dp,
+        label = "card background animation",
+    )
 
     val view = LocalView.current
 
@@ -94,7 +100,7 @@ fun QuickActionsPreferences(
         Surface(
             modifier = Modifier.padding(horizontal = 16.dp),
             shape = MaterialTheme.shapes.large,
-            tonalElevation = if (!isAnyDragging.value) 1.dp else 0.dp,
+            tonalElevation = elevation,
         ) {
             ReorderableColumn(
                 modifier = Modifier,
@@ -102,16 +108,15 @@ fun QuickActionsPreferences(
                 onSettle = { fromIndex, toIndex ->
                     orderedItems = orderedItems.toMutableList().apply {
                         add(toIndex, removeAt(fromIndex))
-                    }.toList().also { items ->
+                    }.toList().also { newItems ->
                         onOrderChange(
-                            items.map { it.id }.joinToString(separator = ","),
+                            newItems.map { it.id }.joinToString(separator = ","),
                         )
-                        isAnyDragging.value = false
-                        lastItemIdIndex.intValue = items.last().id
+                        isAnyDragging = false
                     }
                 },
                 onMove = {
-                    isAnyDragging.value = true
+                    isAnyDragging = true
                     if (Utilities.ATLEAST_U) {
                         view.performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
                     }
@@ -185,13 +190,14 @@ fun QuickActionsPreferences(
                                 DragHandle(
                                     interactionSource = interactionSource,
                                     scope = scope,
+                                    onDragStop = {
+                                        isAnyDragging = false
+                                    },
                                 )
                             },
                         )
-                        AnimatedVisibility(visible = !isAnyDragging.value) {
-                            if (index != lastItemIdIndex.intValue) {
-                                HorizontalDivider()
-                            }
+                        AnimatedVisibility(!isAnyDragging && index != orderedItems.lastIndex) {
+                            HorizontalDivider()
                         }
                     }
                 }
@@ -256,6 +262,7 @@ fun DraggableSwitchPreference(
 private fun DragHandle(
     scope: ReorderableScope,
     interactionSource: MutableInteractionSource,
+    onDragStop: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val view = LocalView.current
@@ -271,6 +278,7 @@ private fun DragHandle(
                     if (Utilities.ATLEAST_R) {
                         view.performHapticFeedback(HapticFeedbackConstants.GESTURE_END)
                     }
+                    onDragStop()
                 },
             )
         },

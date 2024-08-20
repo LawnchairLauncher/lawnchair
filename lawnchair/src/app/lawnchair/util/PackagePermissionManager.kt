@@ -43,23 +43,43 @@ fun contactPermissionGranted(context: Context): Boolean {
 }
 
 fun checkAndRequestFilesPermission(context: Context, prefs: PreferenceManager): Boolean {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        if (!Environment.isExternalStorageManager()) {
-            requestManageAllFilesAccessPermission(context)
-            prefs.searchResultFiles.set(false)
-            return false
+    when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+            if (!Environment.isExternalStorageManager() || !hasReadMediaImagesPermission(context)) {
+                if (!Environment.isExternalStorageManager()) {
+                    requestManageAllFilesAccessPermission(context)
+                }
+                if (!hasReadMediaImagesPermission(context)) {
+                    requestReadMediaImagesPermission(context)
+                }
+                prefs.searchResultFiles.set(false)
+                return false
+            }
         }
-    } else {
-        if (!hasReadExternalStoragePermission(context)) {
-            requestReadExternalStoragePermission(context)
-            return false
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+            if (!Environment.isExternalStorageManager()) {
+                requestManageAllFilesAccessPermission(context)
+                prefs.searchResultFiles.set(false)
+                return false
+            }
+        }
+        else -> {
+            if (!hasReadExternalStoragePermission(context)) {
+                requestReadExternalStoragePermission(context)
+                return false
+            }
         }
     }
     return true
 }
 
 fun filesAndStorageGranted(context: Context): Boolean {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) Environment.isExternalStorageManager() else hasReadExternalStoragePermission(context)
+    return when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
+            Environment.isExternalStorageManager() && hasReadMediaImagesPermission(context)
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Environment.isExternalStorageManager()
+        else -> hasReadExternalStoragePermission(context)
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.R)
@@ -81,5 +101,22 @@ private fun requestReadExternalStoragePermission(context: Context) {
         context as Activity,
         arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
         123,
+    )
+}
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+private fun hasReadMediaImagesPermission(context: Context): Boolean {
+    return ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.READ_MEDIA_IMAGES,
+    ) == PackageManager.PERMISSION_GRANTED
+}
+
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+private fun requestReadMediaImagesPermission(context: Context) {
+    ActivityCompat.requestPermissions(
+        context as Activity,
+        arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+        124,
     )
 }

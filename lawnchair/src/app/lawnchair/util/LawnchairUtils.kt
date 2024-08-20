@@ -169,6 +169,11 @@ fun getFolderPreviewAlpha(context: Context): Int {
     return (prefs2.folderPreviewBackgroundOpacity.firstBlocking() * 255).toInt()
 }
 
+fun getFolderBackgroundAlpha(context: Context): Int {
+    val prefs2 = PreferenceManager2.getInstance(context)
+    return (prefs2.folderBackgroundOpacity.firstBlocking() * 255).toInt()
+}
+
 fun getAllAppsScrimColor(context: Context): Int {
     val opacity = PreferenceManager.getInstance(context).drawerOpacity.get()
     val scrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context)

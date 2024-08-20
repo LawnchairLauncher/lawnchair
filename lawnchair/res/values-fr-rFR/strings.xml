@@ -276,9 +276,9 @@
     <string name="smartspace_battery_status">État de la batterie</string>
     <string name="smartspace_now_playing">En écoute</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="maximum_number_of_targets">Nombre maximal de cibles</string>
+    <string name="open_smartspacer_settings">Ouvrir les paramètres Smartspacer</string>
+    <string name="smartspacer_settings">Paramètres Smartspacer</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Appuyez pour configurer</string>
     <string name="event_provider_missing_notification_dots">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les pastilles de notifications.</string>

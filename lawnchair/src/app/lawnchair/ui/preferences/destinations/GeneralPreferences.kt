@@ -156,6 +156,10 @@ fun GeneralPreferences() {
                 label = stringResource(id = R.string.auto_adaptive_icons_label),
                 description = stringResource(id = R.string.auto_adaptive_icons_description),
             )
+            SwitchPreference(
+                adapter = prefs.shadowBGIcons.getAdapter(),
+                label = stringResource(id = R.string.shadow_bg_icons_label),
+            )
 
             ExpandAndShrink(visible = wrapAdaptiveIcons.state.value) {
                 SliderPreference(

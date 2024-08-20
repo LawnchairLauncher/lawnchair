@@ -595,13 +595,17 @@ public class TouchInteractionService extends Service {
             return;
         }
 
-        // Reset home bounce seen on quick step enabled for first time
-        SharedPreferences sharedPrefs = LauncherPrefs.getPrefs(this);
-        if (!sharedPrefs.getBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)) {
-            sharedPrefs.edit()
-                    .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
-                    .putBoolean(OnboardingPrefs.HOME_BOUNCE_SEEN, false)
-                    .apply();
+        try {
+            // Reset home bounce seen on quick step enabled for first time
+            SharedPreferences sharedPrefs = LauncherPrefs.getPrefs(this);
+            if (!sharedPrefs.getBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)) {
+                sharedPrefs.edit()
+                        .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
+                        .putBoolean(OnboardingPrefs.HOME_BOUNCE_SEEN, false)
+                        .apply();
+            }
+        } catch (Throwable t) {
+            // Ignore
         }
     }
 

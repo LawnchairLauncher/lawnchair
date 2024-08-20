@@ -16,22 +16,28 @@
 
 package app.lawnchair.ui.theme
 
+import android.graphics.Color
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.ThemeProvider
-import app.lawnchair.theme.toM3ColorScheme
+import app.lawnchair.theme.toComposeColorScheme
 import app.lawnchair.ui.preferences.components.ThemeChoice
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
@@ -51,6 +57,32 @@ fun LawnchairTheme(
 }
 
 @Composable
+fun ComponentActivity.EdgeToEdge() {
+    val darkTheme = isSelectedThemeDark
+    val scrimColor = MaterialTheme.colorScheme.background.copy(alpha = 0.95f).toArgb()
+    val contentColor = MaterialTheme.colorScheme.onBackground.toArgb()
+
+    LaunchedEffect(darkTheme) {
+        val statusBarStyle = SystemBarStyle.auto(
+            Color.TRANSPARENT,
+            Color.TRANSPARENT,
+            detectDarkMode = { darkTheme },
+        )
+
+        val navigationBarStyle = if (!darkTheme) {
+            SystemBarStyle.light(scrimColor, contentColor)
+        } else {
+            SystemBarStyle.dark(scrimColor)
+        }
+
+        enableEdgeToEdge(
+            statusBarStyle = statusBarStyle,
+            navigationBarStyle = navigationBarStyle,
+        )
+    }
+}
+
+@Composable
 fun getColorScheme(darkTheme: Boolean): ColorScheme {
     val context = LocalContext.current
     val preferenceManager2 = preferenceManager2()
@@ -61,7 +93,7 @@ fun getColorScheme(darkTheme: Boolean): ColorScheme {
         ThemeProvider.INSTANCE.get(context).colorScheme
     }
 
-    return colorScheme.toM3ColorScheme(isDark = darkTheme)
+    return colorScheme.toComposeColorScheme(isDark = darkTheme)
 }
 
 val isSelectedThemeDark: Boolean

@@ -78,7 +78,7 @@ private fun delinearized(rgbComponent: Float): Int {
 }
 
 @Composable
-fun dev.kdrag0n.monet.theme.ColorScheme.toM3ColorScheme(isDark: Boolean): ColorScheme = remember(this, isDark) {
+fun dev.kdrag0n.monet.theme.ColorScheme.toComposeColorScheme(isDark: Boolean): ColorScheme = remember(this, isDark) {
     val neutralVariant4 = neutralVariant(40).setLuminance(4f)
     val neutralVariant6 = neutralVariant(40).setLuminance(6f)
     val neutralVariant12 = neutralVariant(40).setLuminance(12f)

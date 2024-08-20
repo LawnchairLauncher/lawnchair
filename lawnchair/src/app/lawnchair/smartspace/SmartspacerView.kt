@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
+import app.lawnchair.launcherNullable
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.subscribeBlocking
 import app.lawnchair.ui.preferences.PreferenceActivity
@@ -66,6 +67,14 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
                 }
             }
         }
+    }
+
+    override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
+        val ctx = LawnchairLauncher.instance?.launcherNullable
+        val dp = ctx?.deviceProfile
+        val leftPadding = dp?.widgetPadding?.left
+        val leftTopPadding = leftPadding ?: (left + 16)
+        super.setPadding(leftTopPadding, leftTopPadding, right, bottom)
     }
 
     override val config = SmartspaceConfig(

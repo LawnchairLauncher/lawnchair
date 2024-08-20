@@ -1317,6 +1317,7 @@ public class DeviceProfile {
         } else {
             widgetPadding.setEmpty();
         }
+        widgetPadding.left = widgetPadding.right += widgetPadding.right + widgetPadding.left - Math.round(Math.max(0, minSpacing - cellLayoutBorderSpacePx.x));
     }
 
     /**

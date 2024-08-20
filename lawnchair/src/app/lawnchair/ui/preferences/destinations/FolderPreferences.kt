@@ -51,6 +51,13 @@ fun FolderPreferences(
                 valueRange = 0F..1F,
                 showAsPercentage = true,
             )
+            SliderPreference(
+                label = stringResource(id = R.string.folder_bg_opacity_label),
+                adapter = prefs2.folderBackgroundOpacity.getAdapter(),
+                step = 0.1F,
+                valueRange = 0F..1F,
+                showAsPercentage = true,
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(

@@ -1,6 +1,5 @@
 package app.lawnchair.backup.ui
 
-import android.Manifest
 import android.app.Activity
 import android.app.WallpaperManager
 import android.content.Intent
@@ -74,9 +73,11 @@ fun CreateBackupScreen(
     val hasLiveWallpaper = remember { WallpaperManager.getInstance(context).wallpaperInfo != null }
     val permissionState = rememberPermissionState(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Manifest.permission.MANAGE_EXTERNAL_STORAGE
+            android.Manifest.permission.READ_MEDIA_IMAGES
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
         } else {
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
         },
     )
     val hasStoragePermission = permissionState.status.isGranted || filesAndStorageGranted(context)

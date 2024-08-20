@@ -12,12 +12,8 @@ import java.util.Locale
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 
-class SearchUtils(
-    private val maxResultsCount: Int,
-    private val hiddenApps: Set<String>,
-    private val hiddenAppsInSearch: String,
-) {
-    fun normalSearch(apps: List<AppInfo>, query: String): List<AppInfo> {
+object SearchUtils {
+    fun normalSearch(apps: List<AppInfo>, query: String, maxResultsCount: Int, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<AppInfo> {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
         val queryTextLower = query.lowercase(Locale.getDefault())
@@ -29,7 +25,7 @@ class SearchUtils(
             .toList()
     }
 
-    fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
+    fun fuzzySearch(apps: List<AppInfo>, query: String, maxResultsCount: Int, hiddenApps: Set<String>, hiddenAppsInSearch: String): List<AppInfo> {
         val queryTextLower = query.lowercase(Locale.getDefault())
         val filteredApps = apps.asSequence()
             .filterHiddenApps(queryTextLower, hiddenApps, hiddenAppsInSearch)

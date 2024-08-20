@@ -53,8 +53,6 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         }
     }
 
-    private val searchUtils = SearchUtils(maxResultsCount, hiddenApps, hiddenAppsInSearch)
-
     override fun doSearch(query: String, callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
         appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
             override fun execute(app: LauncherAppState, dataModel: BgDataModel, apps: AllAppsList) {
@@ -77,9 +75,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         query: String,
     ): ArrayList<BaseAllAppsAdapter.AdapterItem> {
         val appResults = if (enableFuzzySearch) {
-            searchUtils.fuzzySearch(apps, query)
+            SearchUtils.fuzzySearch(apps, query, maxResultsCount, hiddenApps, hiddenAppsInSearch)
         } else {
-            searchUtils.normalSearch(apps, query)
+            SearchUtils.normalSearch(apps, query, maxResultsCount, hiddenApps, hiddenAppsInSearch)
         }
 
         val searchTargets = mutableListOf<SearchTargetCompat>()
@@ -89,7 +87,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
             if (appResults.size == 1 && context.isDefaultLauncher()) {
                 val singleAppResult = appResults.firstOrNull()
-                val shortcuts = singleAppResult?.let { searchUtils.getShortcuts(it, context) }
+                val shortcuts = singleAppResult?.let { SearchUtils.getShortcuts(it, context) }
                 if (shortcuts != null) {
                     if (shortcuts.isNotEmpty()) {
                         searchTargets.add(searchTargetFactory.createHeaderTarget(SPACE))

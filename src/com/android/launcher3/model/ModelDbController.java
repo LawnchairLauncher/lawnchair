@@ -61,6 +61,7 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.LauncherPreviewRenderer;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
@@ -383,6 +384,10 @@ public class ModelDbController {
     @WorkerThread
     public synchronized void loadDefaultFavoritesIfNecessary() {
         createDbIfNotExists();
+
+        if (!(mContext instanceof LauncherPreviewRenderer.PreviewContext)) {
+            LawnchairAppKt.getLawnchairApp(mContext).cleanUpDatabases();
+        }
 
         if (LauncherPrefs.get(mContext).get(getEmptyDbCreatedKey())) {
             Log.d(TAG, "loading default workspace");
