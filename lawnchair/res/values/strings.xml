@@ -210,6 +210,7 @@
     <string name="icon_shape_egg">Egg</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_hexagon">Hexagon</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
     <string name="icon_shape_sharp_square">Sharp square</string>
