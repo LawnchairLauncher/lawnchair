@@ -99,14 +99,14 @@ sealed class IconCornerShape {
     }
 
     object CutHex : BaseBezierPath() {
-        
+
         override fun addCorner(
             path: Path,
             position: Position,
             size: PointF,
             progress: Float,
             offsetX: Float,
-            offsetY: Float
+            offsetY: Float,
         ) {
             if (progress == 0f) {
                 val paddingX = size.x - (size.x * sqrt(3.0) / 2).toFloat()
@@ -121,7 +121,7 @@ sealed class IconCornerShape {
 
                 path.lineTo(
                     position.endX * size.x + newOffsetX,
-                    position.endY * size.y + offsetY
+                    position.endY * size.y + offsetY,
                 )
             } else {
                 super.addCorner(path, position, size, progress, offsetX, offsetY)

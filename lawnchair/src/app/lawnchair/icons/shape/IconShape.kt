@@ -420,7 +420,7 @@ open class IconShape(
         PointF(1f, .5f),
         PointF(1f, .5f),
         PointF(1f, .5f),
-        PointF(1f, .5f)
+        PointF(1f, .5f),
     ) {
 
         override fun toString(): String {
