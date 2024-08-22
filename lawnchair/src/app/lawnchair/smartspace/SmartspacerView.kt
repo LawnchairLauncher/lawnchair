@@ -16,7 +16,6 @@ import app.lawnchair.ui.preferences.navigation.Routes
 import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.views.OptionsPopupView
-import com.kieronquinn.app.smartspacer.sdk.client.R as SmartspacerR
 import com.kieronquinn.app.smartspacer.sdk.client.views.BcSmartspaceView
 import com.kieronquinn.app.smartspacer.sdk.client.views.popup.Popup
 import com.kieronquinn.app.smartspacer.sdk.client.views.popup.PopupFactory
@@ -25,6 +24,7 @@ import com.kieronquinn.app.smartspacer.sdk.model.SmartspaceTarget
 import com.kieronquinn.app.smartspacer.sdk.model.UiSurface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import com.kieronquinn.app.smartspacer.sdk.client.R as SmartspacerR
 
 class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView(context, attrs) {
     private val prefs2 = PreferenceManager2.getInstance(context)
@@ -72,9 +72,8 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
     override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
         val ctx = LawnchairLauncher.instance?.launcherNullable
         val dp = ctx?.deviceProfile
-        val leftPadding = dp?.widgetPadding?.left
-        val leftTopPadding = leftPadding ?: (left + 16)
-        super.setPadding(leftTopPadding, leftTopPadding, right, bottom)
+        val leftPadding = dp?.widgetPadding?.left ?: (left + 16)
+        super.setPadding(leftPadding, top, right, bottom)
     }
 
     override val config = SmartspaceConfig(
