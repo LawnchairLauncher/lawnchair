@@ -16,6 +16,7 @@ import app.lawnchair.ui.preferences.navigation.Routes
 import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.views.OptionsPopupView
+import com.kieronquinn.app.smartspacer.sdk.client.R as SmartspacerR
 import com.kieronquinn.app.smartspacer.sdk.client.views.BcSmartspaceView
 import com.kieronquinn.app.smartspacer.sdk.client.views.popup.Popup
 import com.kieronquinn.app.smartspacer.sdk.client.views.popup.PopupFactory
@@ -24,7 +25,6 @@ import com.kieronquinn.app.smartspacer.sdk.model.SmartspaceTarget
 import com.kieronquinn.app.smartspacer.sdk.model.UiSurface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import com.kieronquinn.app.smartspacer.sdk.client.R as SmartspacerR
 
 class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView(context, attrs) {
     private val prefs2 = PreferenceManager2.getInstance(context)
