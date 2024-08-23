@@ -7,7 +7,9 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import com.android.launcher3.R
@@ -44,6 +46,31 @@ fun ExperimentalFeaturesPreferences(
                 label = stringResource(id = R.string.always_reload_icons_label),
                 description = stringResource(id = R.string.always_reload_icons_description),
             )
+
+            val enableWallpaperBlur = prefs.enableWallpaperBlur.getAdapter()
+
+            SwitchPreference(
+                adapter = enableWallpaperBlur,
+                label = stringResource(id = R.string.wallpaper_blur),
+            )
+            ExpandAndShrink(visible = enableWallpaperBlur.state.value) {
+                SliderPreference(
+                    label = stringResource(id = R.string.wallpaper_background_blur),
+                    adapter = prefs.wallpaperBlur.getAdapter(),
+                    step = 5,
+                    valueRange = 0..100,
+                    showUnit = "%",
+                )
+            }
+            ExpandAndShrink(visible = enableWallpaperBlur.state.value) {
+                SliderPreference(
+                    label = stringResource(id = R.string.wallpaper_background_blur_factor),
+                    adapter = prefs.wallpaperBlurFactorThreshold.getAdapter(),
+                    step = 5,
+                    valueRange = 0..100,
+                    showUnit = "%",
+                )
+            }
         }
     }
 }

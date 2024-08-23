@@ -72,9 +72,8 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
     override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
         val ctx = LawnchairLauncher.instance?.launcherNullable
         val dp = ctx?.deviceProfile
-        val leftPadding = dp?.widgetPadding?.left
-        val leftTopPadding = leftPadding ?: (left + 16)
-        super.setPadding(leftTopPadding, leftTopPadding, right, bottom)
+        val leftPadding = dp?.widgetPadding?.left ?: (left + 16)
+        super.setPadding(leftPadding, top, right, bottom)
     }
 
     override val config = SmartspaceConfig(
