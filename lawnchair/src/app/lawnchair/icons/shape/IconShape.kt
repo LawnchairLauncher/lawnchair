@@ -412,6 +412,22 @@ open class IconShape(
         }
     }
 
+    object Hexagon : IconShape(
+        IconCornerShape.CutHex,
+        IconCornerShape.CutHex,
+        IconCornerShape.CutHex,
+        IconCornerShape.CutHex,
+        PointF(1f, .5f),
+        PointF(1f, .5f),
+        PointF(1f, .5f),
+        PointF(1f, .5f),
+    ) {
+
+        override fun toString(): String {
+            return "hexagon"
+        }
+    }
+
     object Diamond : IconShape(
         IconCornerShape.Cut,
         IconCornerShape.Cut,
@@ -470,6 +486,7 @@ open class IconShape(
             "cylinder" -> Cylinder
             "cupertino" -> Cupertino
             "octagon" -> Octagon
+            "hexagon" -> Hexagon
             "diamond" -> Diamond
             "egg" -> Egg
             "" -> null

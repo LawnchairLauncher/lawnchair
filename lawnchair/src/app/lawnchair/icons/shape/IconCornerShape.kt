@@ -23,6 +23,7 @@ import android.graphics.Path
 import android.graphics.PointF
 import com.android.app.animation.Interpolators.LINEAR
 import com.android.launcher3.Utilities
+import kotlin.math.sqrt
 
 sealed class IconCornerShape {
 
@@ -95,6 +96,41 @@ sealed class IconCornerShape {
         }
 
         override fun toString(): String = "cut"
+    }
+
+    object CutHex : BaseBezierPath() {
+
+        override fun addCorner(
+            path: Path,
+            position: Position,
+            size: PointF,
+            progress: Float,
+            offsetX: Float,
+            offsetY: Float,
+        ) {
+            if (progress == 0f) {
+                val paddingX = size.x - (size.x * sqrt(3.0) / 2).toFloat()
+                var newOffsetX = offsetX
+
+                when (position) {
+                    Position.BottomLeft -> newOffsetX += paddingX
+                    Position.BottomRight -> path.rMoveTo(-paddingX, 0f)
+                    Position.TopLeft -> path.setLastPoint(paddingX + offsetX, size.y + offsetY)
+                    Position.TopRight -> newOffsetX -= paddingX
+                }
+
+                path.lineTo(
+                    position.endX * size.x + newOffsetX,
+                    position.endY * size.y + offsetY,
+                )
+            } else {
+                super.addCorner(path, position, size, progress, offsetX, offsetY)
+            }
+        }
+
+        override fun toString(): String {
+            return "cuthex"
+        }
     }
 
     object LightSquircle : BaseBezierPath() {
@@ -276,6 +312,7 @@ sealed class IconCornerShape {
         fun fromString(value: String): IconCornerShape {
             return when (value) {
                 "cut" -> Cut
+                "cuthex" -> CutHex
                 "lightsquircle" -> LightSquircle
                 "cubic", "squircle" -> Squircle
                 "strongsquircle" -> StrongSquircle
