@@ -41,7 +41,10 @@ class LiveInformationManager private constructor(context: Context) : PreferenceM
     val liveInformation = preference(
         key = stringPreferencesKey(name = "live_information"),
         defaultValue = LiveInformation.default,
-        parse = { Json.decodeFromString<LiveInformation>(it) },
+        parse = {
+            val withUnknownKeys = Json { ignoreUnknownKeys = true }
+            withUnknownKeys.decodeFromString<LiveInformation>(it)
+        },
         save = { Json.encodeToString(LiveInformation.serializer(), it) },
     )
 }
