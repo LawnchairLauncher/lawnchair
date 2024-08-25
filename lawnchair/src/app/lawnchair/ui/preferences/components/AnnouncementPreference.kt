@@ -26,6 +26,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -45,14 +46,19 @@ import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
 import app.lawnchair.ui.util.addIf
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
+import kotlin.coroutines.CoroutineContext
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @Composable
 fun AnnouncementPreference() {
     val liveInformationManager = liveInformationManager()
 
+    val coroutineScope = rememberCoroutineScope()
     val enabled by liveInformationManager.enabled.asState()
     val showAnnouncements by liveInformationManager.showAnnouncements.asState()
     val dismissedAnnouncementIds by liveInformationManager.dismissedAnnouncementIds.asState()
@@ -63,7 +69,7 @@ fun AnnouncementPreference() {
             announcements = liveInformation.announcements.filter { it.id !in dismissedAnnouncementIds }.toImmutableList(),
             onDismiss = { announcement ->
                 val dismissed = dismissedAnnouncementIds.toMutableSet().apply { add(announcement.id) }
-                runBlocking { liveInformationManager.dismissedAnnouncementIds.set(dismissed) }
+                coroutineScope.launch { liveInformationManager.dismissedAnnouncementIds.set(dismissed) }
             },
         )
     }
