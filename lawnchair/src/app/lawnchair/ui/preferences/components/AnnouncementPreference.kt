@@ -45,6 +45,9 @@ import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
 import app.lawnchair.ui.util.addIf
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun AnnouncementPreference() {
@@ -52,18 +55,24 @@ fun AnnouncementPreference() {
 
     val enabled by liveInformationManager.enabled.asState()
     val showAnnouncements by liveInformationManager.showAnnouncements.asState()
+    val dismissedAnnouncementIds by liveInformationManager.dismissedAnnouncementIds.asState()
     val liveInformation by liveInformationManager.liveInformation.asState()
 
     if (enabled && showAnnouncements) {
         AnnouncementPreference(
-            announcements = liveInformation.announcements,
+            announcements = liveInformation.announcements.filter { it.id !in dismissedAnnouncementIds }.toImmutableList(),
+            onDismiss = { announcement ->
+                val dismissed = dismissedAnnouncementIds.toMutableSet().apply { add(announcement.id) }
+                runBlocking { liveInformationManager.dismissedAnnouncementIds.set(dismissed) }
+            },
         )
     }
 }
 
 @Composable
 fun AnnouncementPreference(
-    announcements: List<Announcement>,
+    announcements: ImmutableList<Announcement>,
+    onDismiss: (Announcement) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -71,8 +80,11 @@ fun AnnouncementPreference(
     ) {
         announcements.forEachIndexed { index, announcement ->
             var show by rememberSaveable { mutableStateOf(true) }
-            AnnouncementItem(show, announcement) { show = false }
-            if (index != announcements.lastIndex && show && announcement.active && (!announcement.test || BuildConfig.DEBUG)) {
+            AnnouncementItem(show, announcement) {
+                onDismiss(announcement)
+                show = false
+            }
+            if (index != announcements.lastIndex && show) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -113,6 +125,7 @@ private fun AnnouncementItemContent(
                 SwipeToDismissBoxValue.StartToEnd -> {
                     onClose()
                 }
+
                 SwipeToDismissBoxValue.EndToStart -> return@rememberSwipeToDismissBoxState false
                 SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState false
             }

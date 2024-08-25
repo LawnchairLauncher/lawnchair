@@ -17,7 +17,6 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.Support
 import androidx.compose.material.icons.rounded.Warning
 import com.android.launcher3.BuildConfig
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -27,33 +26,36 @@ data class Announcement(
     val active: Boolean = true,
     val test: Boolean = false,
     val icon: String? = null,
-    @SerialName("flavor-channel") val flavorChannel: String? = null,
+    val channel: String? = null,
 ) {
 
-    val iconImageVector get() = when (icon) {
-        "bug-report" -> Icons.Rounded.BugReport
-        "check-circle" -> Icons.Rounded.CheckCircle
-        "error" -> Icons.Rounded.Error
-        "favorite" -> Icons.Rounded.Favorite
-        "feedback" -> Icons.Rounded.Feedback
-        "forum" -> Icons.Rounded.Forum
-        "hub" -> Icons.Rounded.Hub
-        "loyalty" -> Icons.Rounded.Loyalty
-        "priority-high" -> Icons.Rounded.PriorityHigh
-        "privacy-tip" -> Icons.Rounded.PrivacyTip
-        "sos" -> Icons.Rounded.Sos
-        "star" -> Icons.Rounded.Star
-        "support" -> Icons.Rounded.Support
-        "warning" -> Icons.Rounded.Warning
-        else -> Icons.Rounded.NewReleases
-    }
+    val id get() = text to url
+
+    val iconImageVector
+        get() = when (icon) {
+            "bug-report" -> Icons.Rounded.BugReport
+            "check-circle" -> Icons.Rounded.CheckCircle
+            "error" -> Icons.Rounded.Error
+            "favorite" -> Icons.Rounded.Favorite
+            "feedback" -> Icons.Rounded.Feedback
+            "forum" -> Icons.Rounded.Forum
+            "hub" -> Icons.Rounded.Hub
+            "loyalty" -> Icons.Rounded.Loyalty
+            "priority-high" -> Icons.Rounded.PriorityHigh
+            "privacy-tip" -> Icons.Rounded.PrivacyTip
+            "sos" -> Icons.Rounded.Sos
+            "star" -> Icons.Rounded.Star
+            "support" -> Icons.Rounded.Support
+            "warning" -> Icons.Rounded.Warning
+            else -> Icons.Rounded.NewReleases
+        }
 
     val shouldBeVisible
         get(): Boolean {
             if (active.not()) return false
             if (text.isBlank()) return false
             if (test && BuildConfig.DEBUG.not()) return false
-            if (flavorChannel != null && flavorChannel != BuildConfig.FLAVOR_channel) return false
+            if (channel != null && channel != BuildConfig.FLAVOR_channel) return false
             return true
         }
 }
