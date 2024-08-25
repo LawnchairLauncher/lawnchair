@@ -142,6 +142,7 @@
     <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
     <string name="auto_adaptive_icons_label">Autoadaptiva ikoner</string>
     <string name="auto_adaptive_icons_description">För alla icke-adaptiva ikoner</string>
+    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
     <string name="background_lightness_label">Bakgrundens ljushet</string>
     <string name="adaptive_icon_background_description">Använd 100 % bakgrundsljushet för vitt</string>
     <string name="reset_custom_icons">Återställ anpassade ikoner</string>
@@ -160,6 +161,7 @@
     <string name="icon_shape_egg">Ägg</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Oktagon</string>
+    <string name="icon_shape_hexagon">Hexagon</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Rundad kvadrat</string>
     <string name="icon_shape_sharp_square">Skarp kvadrat</string>
@@ -281,7 +283,7 @@
     <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tryck för att konfigurera</string>
-    <string name="event_provider_missing_notification_dots">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsprickar.</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Visa på startskärmen</string>
     <string name="smartspace_widget_toggle_description">Snabböversikt kan läggas till manuellt på startskärmen genom att placera ut Lawnchair-widgeten</string>
@@ -372,7 +374,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotation av startskärmen</string>
     <string name="home_screen_rotation_description">Tillåt rotation av startskärmen när enheten roteras</string>
-    <string name="wallpaper_blur">Aktivera oskärpa på bakgrundsbild</string>
+    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
     <string name="wallpaper_background_blur">Oskärpans intensitet</string>
     <string name="wallpaper_background_blur_factor">Faktortröskel</string>
     <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
@@ -395,8 +397,8 @@
     <string name="show_material_u_popup_description">Använd Material Yous studsiga och något tätare popup-stil</string>
     <string name="popup_menu">Snabbmeny</string>
     <string name="home_screen_lock_toggle_from_home_popup">Visa låsknapp</string>
-    <string name="show_system_settings_entry">Visa systeminställningspost</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Visa redigeringsknapp</string>
+    <string name="show_system_settings_entry">Show system settings button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
     <string name="status_bar_label">Statusfält</string>
     <string name="show_status_bar">Visa statusfält</string>
     <string name="dark_status_bar_label">Mörkt statusfält</string>
@@ -451,7 +453,8 @@
         <item quantity="other">%1$d appar</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Ikonbakgrundsopacitet</string>
+    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
+    <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Ikonbakgrundsfärg</string>
     <string name="max_folder_columns">Maximalt antal mappkolumner</string>
     <string name="max_folder_rows">Maximalt antal mapprader</string>
@@ -521,19 +524,19 @@
     <string name="search_pref_result_contacts_description">Kontakter med mera</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximalt antal appar i sökresultat</string>
-    <string name="max_people_result_count_title">Maximalt antal personer i sökresultat</string>
-    <string name="max_file_result_count_title">Maximalt antal filer i sökresultat</string>
-    <string name="max_settings_entry_result_count_title">Maximalt antal inställningsposter i sökresultat</string>
-    <string name="max_recent_result_count_title">Maximalt antal historikposter i sökresultat</string>
-    <string name="max_suggestion_result_count_title">Maximalt antal förslag i sökresultat</string>
+    <string name="max_apps_result_count_title">Maximum number of apps</string>
+    <string name="max_people_result_count_title">Maximum number of people</string>
+    <string name="max_file_result_count_title">Maximum number of files</string>
+    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
+    <string name="max_recent_result_count_title">Maximum items for search history</string>
+    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">Maximal fördröjning av webbförslag</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">För att söka efter kontakter, bevilja kontakter- och telefonbehörigheter till Lawnchair</string>
     <string name="warn_files_permission_content">För att söka bland dina filer, bevilja lagringsbehörigheter till Lawnchair</string>
     <string name="grant_requested_permissions">Bevilja behörigheter</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (sammansatt)</string>
     <string name="allapps_web_suggestion_provider_label">Webbförslagsleverantör</string>
     <string name="allapps_use_web_suggestion_icon_label">Visa webbförslagsleverantörens ikon i sökfältet</string>
-    <string name="allapps_match_qsb_style_label">Matcha stilen på favoritfältets sökfält</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
+    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
 </resources>

@@ -142,6 +142,7 @@
     <string name="transparent_background_icons_description">கருப்பொருள் ஐகான்களில் வெளிப்படையான பின்னணியைப் பயன்படுத்தவும்</string>
     <string name="auto_adaptive_icons_label">தகவமைப்பு சின்னங்கள்</string>
     <string name="auto_adaptive_icons_description">எல்லா தகவமையா சின்னங்களுக்கும்</string>
+    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
     <string name="background_lightness_label">பின்புல இலேசுத்தன்மை</string>
     <string name="adaptive_icon_background_description">வெள்ளைக்கு 100% பின்புல இலேசுத்தன்மை பயன்படுத்து</string>
     <string name="reset_custom_icons">தனிப்பயன் சின்னங்களை மீட்டமைக்கவும்</string>
@@ -160,6 +161,7 @@
     <string name="icon_shape_egg">முட்டை</string>
     <string name="icon_shape_cupertino">ஐ ஓ எஸ்</string>
     <string name="icon_shape_octagon">எண்கோணம்</string>
+    <string name="icon_shape_hexagon">Hexagon</string>
     <string name="icon_shape_sammy">1 யுஐ</string>
     <string name="icon_shape_rounded_square">வட்டமான சதுரம்</string>
     <string name="icon_shape_sharp_square">கூர்மையான சதுரம்</string>
@@ -281,7 +283,7 @@
     <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">அமைக்கத் தட்டவும்</string>
-    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> ஐப் பயன்படுத்த, அறிவிப்புப் புள்ளிகளை இயக்கவும்.</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">முகப்புத் திரையில் காட்டு</string>
     <string name="smartspace_widget_toggle_description">Lawnchair விட்ஜெட்டை வைப்பதன் மூலம் முகப்புத் திரையில் At a Glance யைச் சேர்க்கலாம்</string>
@@ -372,7 +374,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
     <string name="home_screen_rotation_description">சாதனம் சுழலும்போது முகப்புத் திரை சுழல அனுமதி</string>
-    <string name="wallpaper_blur">Enable wallpaper blur</string>
+    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">முகப்புத் திரையில் புதிய செயலிகளைச் சேர்</string>
@@ -395,8 +397,8 @@
     <string name="show_material_u_popup_description">மெட்டீரியல் யூ துள்ளல் மற்றும் சற்று ஒருங்கிணைக்கப்பட்ட பாப்-அப் பாணியைப் பயன்படுத்தவும்</string>
     <string name="popup_menu">பாப்அப் மெனு</string>
     <string name="home_screen_lock_toggle_from_home_popup">பூட்டு பொத்தானைக் காட்டு</string>
-    <string name="show_system_settings_entry">இயங்குதள அமைப்புகள் உள்ளீட்டைக் காட்டு</string>
-    <string name="home_screen_edit_toggle_from_home_popup">திருத்து பொத்தானைக் காட்டு</string>
+    <string name="show_system_settings_entry">Show system settings button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
     <string name="status_bar_label">நிலைப்பட்டி</string>
     <string name="show_status_bar">நிலைப்பலகையை காட்டு</string>
     <string name="dark_status_bar_label">இருண்ட நிலைப்பட்டி</string>
@@ -451,7 +453,8 @@
         <item quantity="other">%1$d செயலிகள்</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">சின்னம் பின்புல ஒளிபுகாமை</string>
+    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
+    <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">ஐகானின் பின்புற நிறம்</string>
     <string name="max_folder_columns">அதிகபட்ச கோப்புறை நெடுவரிசைகள்</string>
     <string name="max_folder_rows">அதிகபட்ச கோப்புறை நெடுவரிசைகள்</string>
@@ -521,19 +524,19 @@
     <string name="search_pref_result_contacts_description">தொடர்புகள் மற்றும் பல</string>
     <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g> வழியாக</string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">தேடல் முடிவுகளில் செயலிகளின் அதிகபட்ச எண்ணிக்கை</string>
-    <string name="max_people_result_count_title">தேடல் முடிவுகளில் நபர்களின் அதிகபட்ச எண்ணிக்கை</string>
-    <string name="max_file_result_count_title">தேடல் முடிவுகளில் கோப்புகளின் அதிகபட்ச எண்ணிக்கை</string>
-    <string name="max_settings_entry_result_count_title">தேடல் முடிவுகளில் அமைப்புகள் உள்ளீடுகளின் அதிகபட்ச எண்ணிக்கை</string>
-    <string name="max_recent_result_count_title">தேடல் முடிவுகளில் வரலாறு உள்ளீடுகளின் அதிகபட்ச எண்ணிக்கை</string>
-    <string name="max_suggestion_result_count_title">தேடல் முடிவுகளில் பரிந்துரைகளின் அதிகபட்ச எண்ணிக்கை</string>
+    <string name="max_apps_result_count_title">Maximum number of apps</string>
+    <string name="max_people_result_count_title">Maximum number of people</string>
+    <string name="max_file_result_count_title">Maximum number of files</string>
+    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
+    <string name="max_recent_result_count_title">Maximum items for search history</string>
+    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">அதிகபட்ச இணைய பரிந்துரை தாமதம்</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">தொடர்புகளைத் தேட, தொடர்புகள் மற்றும் தொலைபேசி அனுமதிகளை Lawnchair க்கு வழங்கவும்</string>
     <string name="warn_files_permission_content">உங்கள் கோப்புகளைத் தேட, Lawnchair க்கு சேமிப்பக அனுமதிகளை வழங்கவும்</string>
     <string name="grant_requested_permissions">அனுமதிகளை வழங்கவும்</string>
-    <string name="hotseat_mode_lawnchair_compose">லான்ச்சேர் (கம்போஸ்)</string>
     <string name="allapps_web_suggestion_provider_label">வலை பரிந்துரைகள் வழங்குநர்</string>
     <string name="allapps_use_web_suggestion_icon_label">தேடல் பட்டியில் வலை பரிந்துரை வழங்குநர் ஐகானைக் காட்டு</string>
-    <string name="allapps_match_qsb_style_label">டாக் பட்டி பாணியைப் பொருத்தவும்</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
+    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
 </resources>

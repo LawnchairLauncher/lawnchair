@@ -64,14 +64,14 @@
     <string name="layout">Düzen</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Duvar Kağıdı</string>
-    <string name="background_opacity">Arkaplan opaklığı</string>
+    <string name="background_opacity">Arka plan opaklığı</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Panoya kaydedildi</string>
     <string name="item_removed">Öğe kaldırıldı</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Ne gösterilsin</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Telefonunuzu kilitlemek için gesture kullanılırken, Lawnchair erişilebilirlik ayarlarınıza ihtiyaç duyar.\n\nLawnchair, erişilebilirlik servisleri izin verse bile kullanıcı hareketlerini izlemez. Lawnchair sistem tarafından gönderilen herhangi bir event\'i izlemez.\n\nLawnchair, telefonunuzu kilitlemek için performGlobalAction Accessibility servisini kullanır.</string>
     <string name="x_by_y">%1$dx%2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <!--
@@ -119,12 +119,12 @@
     <string name="set_default_launcher_tip">Kısayollar ve ek özellikler için Lawnchair\'ı varsayılan olarak başlatmayı yapın</string>
     <string name="notification_dots">Bildirim rozetleri</string>
     <string name="show_notification_count">Bildirim sayımı göster</string>
-    <string name="notification_dots_color">Bildirim rozeti vurgu rengi</string>
+    <string name="notification_dots_color">Bildirim noktası rengi</string>
     <string name="notification_dots_text_color">Bildirim sayacı rengi</string>
     <string name="notification_dots_color_contrast_warning_always">Uyarı: Bildirim noktası ve sayaç renkleri birbiriyle yeterli kontrasta sahip değil</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Uyarı: Bildirim noktası ve sayaç renkleri her zaman birbiriyle yeterli kontrasta sahip olmayabilir</string>
     <string name="missing_notification_access_label">Bildirim Erişimi Gerekli</string>
-    <string name="missing_notification_access_desc">Bildirim Noktalarını göstermek için <xliff:g id="name" example="Uygulamam">%1$s</xliff:g> için uygulama bildirimlerini açın</string>
+    <string name="missing_notification_access_desc">Bildirim Noktalarını göstermek için <xliff:g id="name" example="Uygulamam">%1$s</xliff:g> uygulama bildirimlerini açın</string>
     <!--
 
     Icons
@@ -142,12 +142,13 @@
     <string name="transparent_background_icons_description">Temalı ikonlarda saydam arkaplan kullan</string>
     <string name="auto_adaptive_icons_label">Otomatik uyarlanabilir simgeler</string>
     <string name="auto_adaptive_icons_description">Uyarlanabilir olmayan tüm simgeler için</string>
+    <string name="shadow_bg_icons_label">Simgelerin arkasında gölge göster</string>
     <string name="background_lightness_label">Arka plan açıklığı</string>
     <string name="adaptive_icon_background_description">Beyaz için %100 arka plan açıklığı kullan</string>
     <string name="reset_custom_icons">Özel simgeleri sıfırla</string>
     <string name="reset_custom_icons_confirmation">Tüm özel simgeler sıfırlanacak. Devam etmek istiyor musun?</string>
     <!-- Icon picker -->
-    <string name="icon_picker_default_category">Resimleyici</string>
+    <string name="icon_picker_default_category">Simgeler</string>
     <string name="icon_picker_reset_to_default">Varsayılanlara sıfırla</string>
     <string name="icon_pack_external_picker">Harici seçiciyi aç</string>
     <string name="pick_icon_from_label">Şuradan simge seç</string>
@@ -156,10 +157,11 @@
     <string name="icon_shape_system">Sistem</string>
     <string name="icon_shape_circle">Yuvarlak</string>
     <string name="icon_shape_cylinder">Silindir</string>
-    <string name="icon_shape_diamond">Elmalar</string>
+    <string name="icon_shape_diamond">Elmas</string>
     <string name="icon_shape_egg">Yumurta</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Sekizgen</string>
+    <string name="icon_shape_hexagon">Hexagon</string>
     <string name="icon_shape_sammy">Tek kullanıcı arayüzü</string>
     <string name="icon_shape_rounded_square">Yuvarlak kare</string>
     <string name="icon_shape_sharp_square">Keskin kare</string>
@@ -188,12 +190,12 @@
     <string name="themed_icon_title">Temalı simgeler</string>
     <string name="themed_icons_off_label">Kapat</string>
     <string name="themed_icons_home_label">Ana ekran</string>
-    <string name="themed_icons_home_and_drawer_label">Ana ekran veamp; uygulama çekmecesi</string>
-    <string name="lawnicons_not_installed_description">Desteklenen bir simge paketi başarısız oldu</string>
+    <string name="themed_icons_home_and_drawer_label">Ana ekran &amp; uygulama çekmecesi</string>
+    <string name="lawnicons_not_installed_description">Desteklenen bir simge paketi bulunamadı</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Yazı tipleri ekle</string>
     <string name="pref_fonts_add_fonts_summary">OTF ve TTF yazı tipleri desteklenir</string>
-    <string name="pref_fonts_missing_font">Yazı tipi hatası</string>
+    <string name="pref_fonts_missing_font">Yazı tipi bulunamadı</string>
     <string name="font_label">Yazı tipi (deneysel)</string>
     <string name="fontWorkspace">Genel</string>
     <string name="fontHeading">Başlıklar</string>
@@ -234,7 +236,7 @@
     <!-- Accent color and color picker -->
     <string name="colors">Renkler</string>
     <string name="accent_color">Vurgu rengi</string>
-    <string name="swatches">Paletleyici</string>
+    <string name="swatches">Paletler</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Kırmızı </string>
     <string name="rgb_green">Yeşil</string>
@@ -257,14 +259,14 @@
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
     <string name="smartspace_battery_charging">Şarj ediliyor</string>
-    <string name="smartspace_battery_full">Şarj dolu</string>
+    <string name="smartspace_battery_full">Şarj oldu</string>
     <string name="smartspace_battery_low">Pil zayıf</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s içinde tamamen dolacak"</string>
     <string name="smartspace_widget">Bir Bakışta</string>
-    <string name="smartspace_widget_description">Ne gösterilecek</string>
+    <string name="smartspace_widget_description">Ne gösterilsin</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Takvim</string>
-    <string name="smartspace_date_and_time">Tarih veamp; zaman</string>
+    <string name="smartspace_date_and_time">Tarih &amp; zaman</string>
     <string name="smartspace_date">Tarih</string>
     <string name="smartspace_time">Zaman</string>
     <string name="smartspace_time_format">Saat biçimi</string>
@@ -276,15 +278,15 @@
     <string name="smartspace_battery_status">Pil durumu</string>
     <string name="smartspace_now_playing">Şimdi Oynatılıyor</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="maximum_number_of_targets">Maksimum hedef sayısı</string>
+    <string name="open_smartspacer_settings">Smartspacer ayarlarını aç</string>
+    <string name="smartspacer_settings">Smartspacer ayarları</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Kurulum için dokunun</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kullanmak için, bildirim noktalarını aç.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Ana ekranda göster</string>
-    <string name="smartspace_widget_toggle_description">Bir Bakışta Çim Sandalyesi widget\'ı yerleştirilerek ana ekrana manuel olarak eklenebilir</string>
+    <string name="smartspace_widget_toggle_description">Bir Bakışta widget\'i ana ekrana manuel olarak Lawnchair widget\'i kullanılarak eklenebilir</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">Bir Bakışta sağlayıcı</string>
     <string name="smartspace_mode_google">Google</string>
@@ -301,14 +303,14 @@
     <string name="news">Haberler</string>
     <string name="support">Destek</string>
     <string name="product">Ürün</string>
-    <string name="design_and_development">Tasarım ve amp; geliştirme</string>
+    <string name="design_and_development">Tasarım &amp; geliştirme</string>
     <string name="development">Geliştirme</string>
     <string name="quickswitch_maintenance">QuickSwitch bakımı</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Destek &amp; Halkla İlişkiler</string>
     <string name="acknowledgements">Teşekkürler</string>
     <string name="translate">Çeviri</string>
-    <string name="donate">Donate</string>
+    <string name="donate">Bağış</string>
     <!--
 
     Backup and restore
@@ -330,7 +332,7 @@
     Gesture settings
 
     -->
-    <string name="gesture_double_tap">İki kez hafifçe vurun</string>
+    <string name="gesture_double_tap">İki kez tıklayın</string>
     <string name="gesture_swipe_up">Yukarı kaydırın</string>
     <string name="gesture_swipe_down">Aşağı doğru kaydırın</string>
     <string name="gesture_home_tap">Ana sayfa düğmesi</string>
@@ -345,19 +347,19 @@
     <string name="gesture_handler_open_search">Aramayı aç</string>
     <string name="pick_app_for_gesture">Uygulama seç</string>
     <string name="dt2s_admin_hint_title">Yönetici izinleri gerekli</string>
-    <string name="dt2s_admin_hint">Uyku için Çift Dokun özelliğini kullanmak için Lawnchair\'i cihaz yöneticisi uygulaması olarak ayarlayın. \"Ayarları aç\"a ve ardından \"Bu cihaz yöneticisi uygulamasını etkinleştir\"e dokunun.</string>
+    <string name="dt2s_admin_hint">Ekranı Kapatmak İçin Çift Dokunun\'u kullanmak için Lawnchair\'i bir cihaz yöneticisi uygulaması olarak ayarlayın. Ayarları Aç\'a tıklayın, ardından \"Bu cihaz yöneticisi uygulamasını aktif et\" seçeneğine tıklayın</string>
     <string name="dt2s_admin_warning">Ekranı Kapatmak İçin Çift Dokunun kapatılacaktır.</string>
     <string name="dt2s_a11y_hint_title">Erişilebilirlik hizmetini açın</string>
-    <string name="dt2s_a11y_hint">Uyku için Çift Dokun özelliğini kullanmak için Çim Sandalyesi erişilebilirlik hizmetini açın. \"Ayarları aç\"a dokunun, \"Çim Sandalyesi\"ni seçin ve \"Çim Sandalyesi Kullan\"ı açın.</string>
+    <string name="dt2s_a11y_hint">Ekranı Kapatmak İçin Çift Dokunun\'u kullanabilmek için erişilebilirlik servisini açın. Ayarları Aç\'a tıklayın, ardından Lawnchair\'i seçin ve Lawnchair\'i kullan\'ı aktifleştirin.\"</string>
     <string name="dt2s_warning_open_settings">Ayarları aç</string>
     <!--
 
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Çim sandalyesi hata raporu</string>
-    <string name="crash_report_notif_title">%1$s çöktü</string>
-    <string name="action_upload_crash_report">Kilitlenme günlüğünü yükle</string>
+    <string name="lawnchair_bug_report">Lawnchair Hata Bildirme</string>
+    <string name="crash_report_notif_title">%1$s çalışmayı Durdurdu</string>
+    <string name="action_upload_crash_report">Çökme günlüğünü yükle</string>
     <string name="action_upload_error">Yükleme Başarısız</string>
     <string name="dogbin_uploading">Yükleniyor…</string>
     <string name="bugreport_channel_name">Hata raporları</string>
@@ -372,14 +374,14 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Ana ekranı döndürme</string>
     <string name="home_screen_rotation_description">Cihaz döndürüldüğünde ana ekranın dönmesine izin ver</string>
-    <string name="wallpaper_blur">Enable wallpaper blur</string>
-    <string name="wallpaper_background_blur">Blur intensity</string>
-    <string name="wallpaper_background_blur_factor">Factor threshold</string>
-    <string name="auto_add_shortcuts_label">Ana ekrana yeni uygulamalar ekleme</string>
-    <string name="minus_one_enable">Yayını göster</string>
-    <string name="minus_one_unavailable">Bir büyüme uygulaması yüklü değil</string>
+    <string name="wallpaper_blur">Duvar kağıdı bulanıklaştırma (deneysel)</string>
+    <string name="wallpaper_background_blur">Bulanıklaştırma yoğunluğu</string>
+    <string name="wallpaper_background_blur_factor">Bulanıklık faktörü eşiği</string>
+    <string name="auto_add_shortcuts_label">Ana ekrana yeni uylulamaları ekle</string>
+    <string name="minus_one_enable">Akışı göster</string>
+    <string name="minus_one_unavailable">Bir akış uygulaması yüklü değil</string>
     <string name="minus_one">Akış</string>
-    <string name="feed_provider">Yayın sağlayıcı</string>
+    <string name="feed_provider">Akış sağlayıcı</string>
     <string name="wallpaper_scrolling_label">Duvar kağıdını kaydır</string>
     <string name="wallpaper_depth_effect_label">Duvar kağıdı derinlik efekti</string>
     <string name="wallpaper_depth_effect_description">Başlatıcının alanları arasında geçiş yaparken duvar kağıdını yakınlaştırın ve uzaklaştırın</string>
@@ -390,13 +392,13 @@
     <string name="home_screen_locked">Ana ekran kilitli</string>
     <string name="home_screen_lock_description">Ana Ekran düzeninde değişiklik yapılmasının önle</string>
     <string name="show_dot_pagination_label">Nokta sayfalandırmasını göster</string>
-    <string name="show_dot_pagination_description">Sayfa numarasının gösterirken çizgi yerine nokta kullanımı</string>
+    <string name="show_dot_pagination_description">Sayfa numarasının gösterirken çizgi yerine nokta kullanın</string>
     <string name="show_material_u_popup_label">Yeni açılır pencere stilini kullan</string>
     <string name="show_material_u_popup_description">Material You\'nun hareketli ve biraz birleştirilmiş pop-up stilini kullanın</string>
     <string name="popup_menu">Açılır menü</string>
     <string name="home_screen_lock_toggle_from_home_popup">Kilit düğmesini göster</string>
-    <string name="show_system_settings_entry">Sistem ayarları girişini göster</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Düzenleme düğmesini göster</string>
+    <string name="show_system_settings_entry">Sistem ayarları butonunu göster</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Ana ekranı düzenle butonunu göster</string>
     <string name="status_bar_label">Durum çubuğu</string>
     <string name="show_status_bar">Durum çubuğunu göster</string>
     <string name="dark_status_bar_label">Karanlık durum çubuğu</string>
@@ -405,8 +407,8 @@
     <string name="color_dark">Karanlık</string>
     <string name="force_rounded_widgets">Yuvarlatılmış köşeler</string>
     <string name="allow_widget_overlap">Çakışmaya izin ver</string>
-    <string name="force_widget_resize_label">Widget\'ın yeniden boyutlandırılmasını zorunlu kıl</string>
-    <string name="force_widget_resize_description">Belirli bir boyutla daraltılmış widget\'ların yeniden boyutlandırılmasına izin ver</string>
+    <string name="force_widget_resize_label">Widget\'ı yeniden boyutlandırmaya zorla</string>
+    <string name="force_widget_resize_description">Belirli bir boyutla kısıtlanmış widget\'ların yeniden boyutlandırılmasına izin ver</string>
     <string name="widget_unlimited_size_label">Boyut kısıtlamalarını kaldırın</string>
     <string name="widget_unlimited_size_description">Widget\'ların maksimum ve minimum boyut sınırlamalarını kaldırır</string>
     <!-- Dock settings -->
@@ -416,16 +418,16 @@
     <string name="hotseat_mode_disabled">Devre dışı</string>
     <string name="hotseat_mode_google_search">Google Arama çubuğu</string>
     <string name="qsb_hotseat_background_transparency">Arka plan opaklığı</string>
-    <string name="qsb_hotseat_stroke_width">Outline width</string>
-    <string name="qsb_hotseat_stroke_color">Outline color</string>
+    <string name="qsb_hotseat_stroke_width">Dış çizgi genişliği</string>
+    <string name="qsb_hotseat_stroke_color">Dış çizgi rengi</string>
     <string name="corner_radius_label">Köşe yarıçapı</string>
     <string name="apply_accent_color_label">Vurgu rengini uygula</string>
     <string name="search_provider">Arama sağlayıcısı</string>
-    <string name="dock_icons">Yuva simgeleri</string>
+    <string name="dock_icons">Alt sıra simgeleri</string>
     <string name="hotseat_bottom_space_label">Alt dolgu</string>
     <!-- Search providers -->
-    <string name="search_provider_app_search">Uygulama arama</string>
-    <string name="search_provider_sponsored_description">%1$s ve Lawnchair\'in bir gelir paylaşımı sözleşmesi var.\n\n%1$s ile arama yapmak Lawnchair\'i desteklemeye yardımcı olur.</string>
+    <string name="search_provider_app_search">Uygulama araması</string>
+    <string name="search_provider_sponsored_description">Lawnchar\'ın %1$s ile sponsorluk anlaşması vardır\n\n %1$s ile arama yaparak Lawnchair\'a katkı sağlayabilirsiniz.</string>
     <string name="app_label">Uygulama</string>
     <string name="website_label">Web sitesi</string>
     <string name="qsb_search_provider_app_required">Uygulama gerekli</string>
@@ -438,7 +440,7 @@
     <string name="pref_all_apps_bulk_icon_loading_title">Uygulamaları toplu olarak yükle</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Simgeleri tek tek yüklemek yerine toplu olarak yükleyin ve görüntüleyin</string>
     <string name="pref_all_apps_remember_position_title">Konumu hatırla</string>
-    <string name="pref_all_apps_remember_position_description">Uygulama çekmecesini kapattıktan sonra bile öğrendiğini hatırla</string>
+    <string name="pref_all_apps_remember_position_description">Uygulama çekmecesini kapadıktan sonra bile pozisyonunu hatırla</string>
     <string name="pref_all_apps_show_scrollbar_title">Kaydırma çubuğunu göster</string>
     <string name="app_drawer_columns">Uygulama çekmecesi sütunları</string>
     <string name="row_height_label">Satır yüksekliği</string>
@@ -451,7 +453,8 @@
         <item quantity="other">%1$d apps</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Simge arka plan opaklığı</string>
+    <string name="folder_preview_bg_opacity_label">Simge önizlemesi arkaplan opaklığı</string>
+    <string name="folder_bg_opacity_label">Klasör arkaplanı opaklığı</string>
     <string name="folder_preview_bg_color_label">Simge arka plan rengi</string>
     <string name="max_folder_columns">Maksimum klasör sütunları</string>
     <string name="max_folder_rows">Maksimum klasör satırı</string>
@@ -469,7 +472,7 @@
     <string name="window_corner_radius_label">Ekran köşe yarıçapı</string>
     <string name="override_window_corner_radius_label">Özel ekran köşe yarıçapı</string>
     <string name="window_corner_radius_description">Son Kullanılanlar\'ı açmak için yukarı kaydırdığınızda geçerli uygulama parmağınızı takip ederek bir karta küçülür. Kart neredeyse tam ekran olduğunda, ekranınızın köşeleriyle eşleşecek şekilde kartın köşe yarıçapını ayarlamak için bu kaydırıcıyı kullanın.</string>
-    <string name="taskbar_label">Görev çekmek</string>
+    <string name="taskbar_label">Görev çubuğu</string>
     <string name="enable_taskbar_experimental">Görev çubuğunu göster (deneysel)</string>
     <!--
 
@@ -479,13 +482,13 @@
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">Ara</string>
     <string name="all_apps_search_bar_hint">Uygulamaları Ara</string>
-    <string name="all_apps_no_search_results">\"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+    <string name="all_apps_no_search_results">\"<xliff:g example="Android" id="query">%1$s</xliff:g>\" ile eşleşen bir uygulama bulunamadı</string>
     <string name="all_apps_search_result_suggestions">Web\'den</string>
     <string name="all_apps_search_result_contacts_from_device">Cihazdaki kişiler</string>
     <string name="all_apps_search_result_files">Cihazdaki dosyalar</string>
     <string name="all_apps_search_result_settings_entry_from_device">Cihazdaki ayarlar</string>
     <string name="all_apps_search_market_message">Daha fazla uygulama arayın</string>
-    <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g> üzerinde ara</string>
     <string name="error_no_market_or_browser_installed">Yüklü uygulama mağazası veya tarayıcı yok</string>
     <string name="clear_history">Arama geçmişini temizle</string>
     <string name="search_input_action_clear_results">Arama kutusunu temizle</string>
@@ -493,7 +496,7 @@
     <string name="pref_category_search">Ara</string>
     <string name="show_app_search_bar">Arama çubuğunu göster</string>
     <string name="pref_search_auto_show_keyboard">Klavyeyi otomatik göster</string>
-    <string name="fuzzy_search_title">Bulanık arama</string>
+    <string name="fuzzy_search_title">Yaklaşık Arama</string>
     <string name="fuzzy_search_desc">Uygulama aramaları için yaklaşık eşleşme</string>
     <string name="suggestion_pref_screen_title">Öneriler</string>
     <string name="show_suggested_apps_at_drawer_top">Önerilen uygulamaları çekmecenin üst kısmında göster</string>
@@ -507,7 +510,7 @@
     <string name="search_algorithm_global_search_via_asi">Genel arama (ASI aracılığıyla)</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Arama sonuçlarında göster</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Uygulamalar ve Kısayollar</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Uygulamalar &amp; Kısayollar</string>
     <string name="search_pref_result_shortcuts_title">Uygulama kısayolları</string>
     <string name="search_pref_result_people_title">İnsanlar</string>
     <string name="search_pref_result_tips_title">Piksel ipuçları</string>
@@ -517,23 +520,23 @@
     <string name="search_pref_result_history_title">Arama geçmişi</string>
     <string name="all_apps_search_result_calculator">Hesap makinesi</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_result_files_description">Medya, dosyalar vb.</string>
+    <string name="search_pref_result_files_description">Medya, dosyalar ve fazlası</string>
     <string name="search_pref_result_contacts_description">Kişiler ve fazlası</string>
     <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Arama sonuçlarındaki maksimum uygulama sayısı</string>
-    <string name="max_people_result_count_title">Arama sonuçlarındaki maksimum kişi sayısı</string>
-    <string name="max_file_result_count_title">Arama sonuçlarındaki maksimum dosya sayısı</string>
-    <string name="max_settings_entry_result_count_title">Arama sonuçlarındaki maksimum ayar girişi sayısı</string>
-    <string name="max_recent_result_count_title">Arama sonuçlarındaki maksimum geçmiş girişi sayısı</string>
-    <string name="max_suggestion_result_count_title">Arama sonuçlarındaki maksimum öneri sayısı</string>
+    <string name="max_apps_result_count_title">Maksimum uygulama sayısı</string>
+    <string name="max_people_result_count_title">Maksimum kişi sayısı</string>
+    <string name="max_file_result_count_title">Maksimum dosya sayısı</string>
+    <string name="max_settings_entry_result_count_title">Maksimum ayarlar girdisi sayısı</string>
+    <string name="max_recent_result_count_title">Maksimum arama geçmişi sayısı</string>
+    <string name="max_suggestion_result_count_title">Maksimum öneri sayısı</string>
     <string name="max_web_suggestion_delay">Maksimum web önerisi gecikmesi</string>
     <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">Kişi aramak için Lawnchair\'e kişi ve telefon izinleri verin</string>
-    <string name="warn_files_permission_content">Dosyalarınızı aramak için Çim Sandalyesine depolama izinleri verin</string>
+    <string name="warn_contact_permission_content">Kişiler içinde arama yapmak için Lawnchair\'a kişiler ve telefon izinlerini verin</string>
+    <string name="warn_files_permission_content">Dosyalarınızda arama yapmak için Lawnchair\'a Depolama izinlerini verin</string>
     <string name="grant_requested_permissions">İzinleri ver</string>
-    <string name="hotseat_mode_lawnchair_compose">Çim Sandalyesi (oluşturma)</string>
     <string name="allapps_web_suggestion_provider_label">Web önerisi sağlayıcısı</string>
     <string name="allapps_use_web_suggestion_icon_label">Arama çubuğunda web önerisi sağlayıcı simgesini göster</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
+    <string name="allapps_match_qsb_style_description">Alt sıra arama çubuğuna tıklamak artık uygulama çekmecesi arama arayüzünü açar</string>
 </resources>

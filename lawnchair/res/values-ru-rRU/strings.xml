@@ -23,11 +23,11 @@
     -->
     <string name="preview_label">Предпросмотр</string>
     <string name="action_create">Создать</string>
-    <string name="action_backup">Резерв. копирование</string>
+    <string name="action_backup">Резервное копирование</string>
     <string name="action_restore">Восстановить</string>
     <string name="action_delete">Удалить</string>
     <string name="action_reset">Сбросить</string>
-    <string name="action_unlock">Разблок.</string>
+    <string name="action_unlock">Разблокировать</string>
     <string name="action_lock">Заблокировать</string>
     <string name="action_apply">Применить</string>
     <string name="action_customize">Настроить</string>
@@ -42,7 +42,7 @@
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Настройки</string>
     <string name="settings_button_text">Настр. гл. экрана</string>
-    <string name="system_settings">Сист. настройки</string>
+    <string name="system_settings">Системные настройки</string>
     <string name="title_change_settings">Изменить настройки</string>
     <!--
 
@@ -52,7 +52,7 @@
     <!-- Selection options -->
     <string name="dynamic">Изменять динамически</string>
     <string name="presets">Предустановки</string>
-    <string name="custom">Польз. настройки</string>
+    <string name="custom">Пользовательские настройки</string>
     <string name="feed_default">По умолчанию</string>
     <string name="system">На основе системы</string>
     <!-- Relating to the Launcher ui -->
@@ -89,7 +89,7 @@
     <string name="app_drawer_label">Меню приложений</string>
     <string name="app_drawer_description">Скрытые приложения, число столбцов, иконки</string>
     <string name="drawer_search_label">Поиск в меню</string>
-    <string name="drawer_search_description">Веб-подсказки, глобал. поиск</string>
+    <string name="drawer_search_description">Веб-подсказки, глобальный поиск</string>
     <string name="folders_label">Папки</string>
     <string name="folders_description">Кол-во строк и столбцов</string>
     <string name="gestures_label">Жесты</string>
@@ -104,13 +104,13 @@
     <string name="font_picker_label">Настройка шрифта</string>
     <string name="font_picker_description">Некоторый текст останется без изменений</string>
     <string name="smartspace_calendar_label">Настройки календаря секции \"Самое главное\"</string>
-    <string name="smartspace_calendar_description">Разрешить отображение даты календаря не-грегорианского типа</string>
+    <string name="smartspace_calendar_description">Разрешить отображение даты календаря негригорианского типа</string>
     <string name="workspace_increase_max_grid_size_label">Увеличить макс. размер сетки</string>
-    <string name="workspace_increase_max_grid_size_description">Увеличить макс. допустимый размер сетки глав. экрана с 10х10 на 20x20</string>
+    <string name="workspace_increase_max_grid_size_description">Увеличить максимально допустимый размер сетки главного экрана с 10 х 10 на 20 x 20</string>
     <string name="always_reload_icons_label">Всегда перезагружать иконки</string>
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
-    <string name="recents_lock_unlock">Блок. / Разблок.</string>
-    <string name="recents_lock_unlock_description">Запретить закрытие выбран. приложения при нажатии кнопки \"Очистить всё\"</string>
+    <string name="recents_lock_unlock">Блокировка/Разблокировка</string>
+    <string name="recents_lock_unlock_description">Запретить очистку выбранного приложения при использовании “Очистить все\"</string>
     <!--
 
     Notifications
@@ -140,12 +140,13 @@
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Прозрачные тематические иконки</string>
     <string name="transparent_background_icons_description">Использовать прозрачный фон на тематических значках</string>
-    <string name="auto_adaptive_icons_label">Авто-адаптивные иконки</string>
-    <string name="auto_adaptive_icons_description">Для всех не-адаптивных иконок</string>
+    <string name="auto_adaptive_icons_label">Автоматические адаптивные иконки</string>
+    <string name="auto_adaptive_icons_description">Для всех неадаптивных иконок</string>
+    <string name="shadow_bg_icons_label">Показывать тень позади иконок</string>
     <string name="background_lightness_label">Яркость подложки</string>
     <string name="adaptive_icon_background_description">Для белой подложки установите 100% значение яркости</string>
-    <string name="reset_custom_icons">Сброс польз. иконок</string>
-    <string name="reset_custom_icons_confirmation">Все польз. иконки будут сброшены. Вы хотите продолжить?</string>
+    <string name="reset_custom_icons">Сброс пользовательских иконок</string>
+    <string name="reset_custom_icons_confirmation">Все пользовательские иконки будут сброшены. Вы хотите продолжить?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Иконки</string>
     <string name="icon_picker_reset_to_default">Сбросить настройки</string>
@@ -160,6 +161,7 @@
     <string name="icon_shape_egg">Яйцо</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Восьмиугольник</string>
+    <string name="icon_shape_hexagon">Hexagon</string>
     <string name="icon_shape_sammy">Из OneUI</string>
     <string name="icon_shape_rounded_square">Скруглённый квадрат</string>
     <string name="icon_shape_sharp_square">Острый квадрат</string>
@@ -167,9 +169,9 @@
     <string name="icon_shape_squircle">Квадратный круг</string>
     <string name="icon_shape_teardrop">Капля</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Польз. форма иконок</string>
+    <string name="custom_icon_shape">Пользовательская форма иконок</string>
     <string name="custom_icon_shape_create">Создать свою форму иконок</string>
-    <string name="custom_icon_shape_edit">Редактировать польз. форму иконок</string>
+    <string name="custom_icon_shape_edit">Редактировать пользовательскую форму иконок</string>
     <string name="custom_icon_shape_corner">Форма углов</string>
     <string name="custom_icon_shape_corner_round">Круглая</string>
     <string name="custom_icon_shape_corner_squircle">Сглаженная</string>
@@ -184,11 +186,11 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Набор иконок</string>
     <string name="themed_icon_pack">Источник тематич. иконок</string>
-    <string name="system_icons">Систем. иконки</string>
+    <string name="system_icons">Системные иконки</string>
     <string name="themed_icon_title">Тематич. иконки</string>
     <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Главный экран</string>
-    <string name="themed_icons_home_and_drawer_label">Глав. экран и Меню прилож-й</string>
+    <string name="themed_icons_home_and_drawer_label">Главный экран и меню приложений</string>
     <string name="lawnicons_not_installed_description">Нет поддерж. наборов значков</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
@@ -268,7 +270,7 @@
     <string name="smartspace_date">Отображать дату</string>
     <string name="smartspace_time">Отображать время</string>
     <string name="smartspace_time_format">Формат времени</string>
-    <string name="smartspace_time_follow_system">Следовать сист. настройкам</string>
+    <string name="smartspace_time_follow_system">Следовать системным настройкам</string>
     <string name="smartspace_time_12_hour_format">12-час. формат</string>
     <string name="smartspace_time_24_hour_format">24-час. формат</string>
     <!-- Available targets -->
@@ -281,7 +283,7 @@
     <string name="smartspacer_settings">Настройки Smartspacer</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Нажмите для настройки</string>
-    <string name="event_provider_missing_notification_dots">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите Точки уведомлений.</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Показывать на глав. экране</string>
     <string name="smartspace_widget_toggle_description">Секцию \"Самое главное\" можно добавить на глав. экран вручную с помощью виджета \"Lawnchair\"</string>
@@ -372,7 +374,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Поворот главного экрана</string>
     <string name="home_screen_rotation_description">Разрешить поворот глав. экрана при повороте устройства</string>
-    <string name="wallpaper_blur">Включить размытие обоев</string>
+    <string name="wallpaper_blur">Размытие обоев (экспериментально)</string>
     <string name="wallpaper_background_blur">Степень размытия</string>
     <string name="wallpaper_background_blur_factor">Предел фактора размытия</string>
     <string name="auto_add_shortcuts_label">Добавлять новые приложения на глав. экран</string>
@@ -385,18 +387,18 @@
     <string name="wallpaper_depth_effect_description">Приближать и отдалять обои при переключении между приложениями</string>
     <string name="show_sys_ui_scrim">Тень сверху</string>
     <string name="home_screen_grid">Сетка главного экрана</string>
-    <string name="home_screen_lock">Блокировать глав. экран</string>
-    <string name="home_screen_unlock">Разблокировать гл. экран</string>
-    <string name="home_screen_locked">Глав. экран заблокирован</string>
+    <string name="home_screen_lock">Блокировать главный экран</string>
+    <string name="home_screen_unlock">Разблокировать главный экран</string>
+    <string name="home_screen_locked">Главный экран заблокирован</string>
     <string name="home_screen_lock_description">Предотвращать изменения макета главного экрана</string>
     <string name="show_dot_pagination_label">Показывать точечную нумерацию страниц</string>
     <string name="show_dot_pagination_description">Использовать точки вместо линий для индикации страниц</string>
     <string name="show_material_u_popup_label">Использовать новый стиль всплывающего окна</string>
-    <string name="show_material_u_popup_description">Использовать Material You стиль всплывающих окон</string>
+    <string name="show_material_u_popup_description">Использовать стиль Material You для всплывающих окон</string>
     <string name="popup_menu">Всплывающее меню</string>
     <string name="home_screen_lock_toggle_from_home_popup">Показывать кнопку блокировки</string>
-    <string name="show_system_settings_entry">Показывать пункт систем. настроек</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Показывать кнопку редактирования</string>
+    <string name="show_system_settings_entry">Показывать кнопку системных настроек</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Показывать кнопку редактирования экрана</string>
     <string name="status_bar_label">Строка состояния</string>
     <string name="show_status_bar">Показывать строку состояния</string>
     <string name="dark_status_bar_label">Темная строка состояния</string>
@@ -408,7 +410,7 @@
     <string name="force_widget_resize_label">Принудительное изменение размера виджета</string>
     <string name="force_widget_resize_description">Разрешить изменение размеров фиксир. виджетов</string>
     <string name="widget_unlimited_size_label">Удалить ограничения размера</string>
-    <string name="widget_unlimited_size_description">Убрать мин. и макс. ограничения размера виджетов</string>
+    <string name="widget_unlimited_size_description">Убрать минимальные и максимальные ограничения размера виджетов</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Отображать док-панель</string>
     <string name="search_bar_label">Панель поиска</string>
@@ -453,7 +455,8 @@
         <item quantity="other">%1$d приложение</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Прозрачность фона иконки</string>
+    <string name="folder_preview_bg_opacity_label">Прозрачность фона во время предпоказа иконки</string>
+    <string name="folder_bg_opacity_label">Прозрачность фона иконки</string>
     <string name="folder_preview_bg_color_label">Цвет фона иконки</string>
     <string name="max_folder_columns">Макс. кол-во столбцов в папке</string>
     <string name="max_folder_rows">Макс. кол-во строк в папке</string>
@@ -469,7 +472,7 @@
     <string name="recents_clear_all">Очистить всё</string>
     <string name="task_menu_force_stop">Принудительно закрыть</string>
     <string name="window_corner_radius_label">Радиус скругления краёв экрана</string>
-    <string name="override_window_corner_radius_label">Польз. радиус углов экрана</string>
+    <string name="override_window_corner_radius_label">Пользовательский радиус углов экрана</string>
     <string name="window_corner_radius_description">При жесте \"Свайп Вверх\" для открытия Недавних приложений, текущее приложение следует за пальцем, сворачиваясь в карточку. Используйте этот ползунок для настройки радиуса угла карточки, когда она почти развернута, чтобы соответствовать углам экрана.</string>
     <string name="taskbar_label">Панель задач</string>
     <string name="enable_taskbar_experimental">Показать панель задач (экспериментально)</string>
@@ -505,8 +508,8 @@
     <string name="hidden_apps_show_name_typed">Если указано полное имя</string>
     <string name="app_search_algorithm">Алгоритм поиска</string>
     <string name="search_algorithm_app_search">Поиск приложений</string>
-    <string name="search_algorithm_global_search_on_device">Глобал. поиск (на устройстве)</string>
-    <string name="search_algorithm_global_search_via_asi">Глобал. поиск (с помощью ASI)</string>
+    <string name="search_algorithm_global_search_on_device">Глобальный поиск (на устройстве)</string>
+    <string name="search_algorithm_global_search_via_asi">Глобальный поиск (с помощью ASI)</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Показывать в результатах поиска</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Приложения и Ярлыки</string>
@@ -523,19 +526,19 @@
     <string name="search_pref_result_contacts_description">Контакты и другое</string>
     <string name="search_pref_result_web_provider_description">Источник: <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Макс. кол-во приложений в результатах поиска</string>
-    <string name="max_people_result_count_title">Макс. кол-во людей в результатах поиска</string>
-    <string name="max_file_result_count_title">Макс. кол-во файлов в результатах поиска</string>
-    <string name="max_settings_entry_result_count_title">Макс. кол-во пунктов настроек в результатах поиска</string>
-    <string name="max_recent_result_count_title">Макс. кол-во записей истории в результатах поиска</string>
-    <string name="max_suggestion_result_count_title">Макс. кол-во предлож. в результатах поиска</string>
+    <string name="max_apps_result_count_title">Макс. кол-во приложений</string>
+    <string name="max_people_result_count_title">Макс. кол-во людей</string>
+    <string name="max_file_result_count_title">Макс. кол-во файлов</string>
+    <string name="max_settings_entry_result_count_title">Макс. кол-во пунктов настроек</string>
+    <string name="max_recent_result_count_title">Макс. кол-во записей истории поиска</string>
+    <string name="max_suggestion_result_count_title">Макс. кол-во предложений</string>
     <string name="max_web_suggestion_delay">Макс. задержка веб-предлож.</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Для поиска контактов, предоставьте доступ к контактам и телефону для Lawnchair</string>
     <string name="warn_files_permission_content">Чтобы искать файлы, предоставьте доступ к хранилищу для Lawnchair</string>
     <string name="grant_requested_permissions">Предоставить доступ</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
     <string name="allapps_web_suggestion_provider_label">Провайдер веб-предложений</string>
     <string name="allapps_use_web_suggestion_icon_label">Показать иконку провайдера веб-предлож. в панели поиска</string>
     <string name="allapps_match_qsb_style_label">Соответствовать стилю строки поиска в док-панели</string>
+    <string name="allapps_match_qsb_style_description">Нажатие на поле поиска в док-панели теперь открывает интерфейс поиска приложений</string>
 </resources>

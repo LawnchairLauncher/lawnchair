@@ -143,6 +143,7 @@
     <string name="transparent_background_icons_description">Usar fondo transparente en iconos temáticos</string>
     <string name="auto_adaptive_icons_label">Iconos adaptativos</string>
     <string name="auto_adaptive_icons_description">Para todos los iconos que no se adapten</string>
+    <string name="shadow_bg_icons_label">Mostrar sombra detrás de los iconos</string>
     <string name="background_lightness_label">Luminosidad del fondo</string>
     <string name="adaptive_icon_background_description">Usar 100% de luz de fondo para blancos</string>
     <string name="reset_custom_icons">Restablecer los iconos personalizados</string>
@@ -161,6 +162,7 @@
     <string name="icon_shape_egg">Huevo</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octágono</string>
+    <string name="icon_shape_hexagon">Hexágono</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Cuadrado redondo</string>
     <string name="icon_shape_sharp_square">Cuadrado afilado</string>
@@ -373,7 +375,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotation_description">Permitir rotación de la pantalla de inicio cuando se gira el dispositivo</string>
-    <string name="wallpaper_blur">Habilitar desenfoque de fondo de pantalla</string>
+    <string name="wallpaper_blur">Desenfocar fondo de pantalla (experimental)</string>
     <string name="wallpaper_background_blur">Intensidad del desenfoque</string>
     <string name="wallpaper_background_blur_factor">Umbral de factor</string>
     <string name="auto_add_shortcuts_label">Añadir nuevas aplicaciones a la pantalla de inicio</string>
@@ -396,8 +398,8 @@
     <string name="show_material_u_popup_description">Usa el estilo del material rebotado y ligeramente consolidado estilo</string>
     <string name="popup_menu">Menú emergente</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo</string>
-    <string name="show_system_settings_entry">Mostrar entrada de configuración del sistema</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Mostrar botón de edición botón</string>
+    <string name="show_system_settings_entry">Mostrar botón de configuración del sistema</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Mostrar el botón de edición de la pantalla de inicio</string>
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_status_bar">Mostrar Barra de estado</string>
     <string name="dark_status_bar_label">Barra de Estado Oscura</string>
@@ -452,7 +454,8 @@
         <item quantity="other">%1$d aplicaciones</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Opacidad del fondo del icono</string>
+    <string name="folder_preview_bg_opacity_label">Opacidad del fondo de vista previa del icono</string>
+    <string name="folder_bg_opacity_label">Opacidad del fondo de carpeta</string>
     <string name="folder_preview_bg_color_label">Color de fondo del icono</string>
     <string name="max_folder_columns">Columnas máximas de carpetas</string>
     <string name="max_folder_rows">Máximas filas de carpetas</string>
@@ -522,19 +525,19 @@
     <string name="search_pref_result_contacts_description">Contactos y más</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Número máximo de aplicaciones en los resultados de la búsqueda</string>
-    <string name="max_people_result_count_title">Número máximo de personas en los resultados de la búsqueda</string>
-    <string name="max_file_result_count_title">Número máximo de archivos en los resultados de búsqueda</string>
-    <string name="max_settings_entry_result_count_title">Número máximo de entradas de ajustes en los resultados de búsqueda</string>
-    <string name="max_recent_result_count_title">Número máximo de entradas del historial en los resultados de búsqueda</string>
-    <string name="max_suggestion_result_count_title">Número máximo de sugerencias en los resultados de búsqueda</string>
+    <string name="max_apps_result_count_title">Número máximo de aplicaciones</string>
+    <string name="max_people_result_count_title">Número máximo de personas</string>
+    <string name="max_file_result_count_title">Número máximo de archivos</string>
+    <string name="max_settings_entry_result_count_title">Número máximo de configuraciones</string>
+    <string name="max_recent_result_count_title">Número máximo de elementos para el historial de búsqueda</string>
+    <string name="max_suggestion_result_count_title">Número máximo de sugerencias</string>
     <string name="max_web_suggestion_delay">Retraso máximo de sugerencias web</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Para buscar contactos, permítele a Lawnchair los permisos de Contactos y Teléfono</string>
     <string name="warn_files_permission_content">Para buscar en tus archivos, permítele a Lawnchair los permisos de Almacenamiento</string>
     <string name="grant_requested_permissions">Permitir los permisos</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compuesto)</string>
     <string name="allapps_web_suggestion_provider_label">Proveedor de sugerencias web</string>
     <string name="allapps_use_web_suggestion_icon_label">Mostrar icono del proveedor de sugerencias en la barra de búsqueda</string>
-    <string name="allapps_match_qsb_style_label">Coincidir con el estilo de barra de búsqueda</string>
+    <string name="allapps_match_qsb_style_label">Coincidir con acciones de la barra de búsqueda</string>
+    <string name="allapps_match_qsb_style_description">Al hacer clic en la barra de búsqueda del dock, se abrirá la interfaz de búsqueda del cajón de aplicaciones</string>
 </resources>

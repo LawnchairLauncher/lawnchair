@@ -142,6 +142,7 @@
     <string name="transparent_background_icons_description">在主题图标上使用透明背景</string>
     <string name="auto_adaptive_icons_label">自适应图标</string>
     <string name="auto_adaptive_icons_description">用于全部非自适应图标</string>
+    <string name="shadow_bg_icons_label">在图标后显示阴影</string>
     <string name="background_lightness_label">背景亮度</string>
     <string name="adaptive_icon_background_description">使用 100% 背景亮度为白色</string>
     <string name="reset_custom_icons">重置自定义图标</string>
@@ -160,6 +161,7 @@
     <string name="icon_shape_egg">鹅卵石形</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">八边形</string>
+    <string name="icon_shape_hexagon">六边形</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">圆角方形</string>
     <string name="icon_shape_sharp_square">尖角方形</string>
@@ -276,12 +278,12 @@
     <string name="smartspace_battery_status">电池状态</string>
     <string name="smartspace_now_playing">正在播放</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="maximum_number_of_targets">目标数量上限</string>
+    <string name="open_smartspacer_settings">打开 Smartspacer 设置</string>
+    <string name="smartspacer_settings">Smartspacer设置</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">点击以设置</string>
-    <string name="event_provider_missing_notification_dots">要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，请启用通知圆点。</string>
+    <string name="event_provider_missing_notification_dots">要使用<xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，请打开通知圆点</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">在主屏幕显示</string>
     <string name="smartspace_widget_toggle_description">资讯一览可以通过将 Lawnchair 小部件放置在主屏幕上来手动添加</string>
@@ -308,7 +310,7 @@
     <string name="support_and_pr">支持和公关</string>
     <string name="acknowledgements">鸣谢</string>
     <string name="translate">翻译</string>
-    <string name="donate">Donate</string>
+    <string name="donate">捐赠</string>
     <!--
 
     Backup and restore
@@ -372,7 +374,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotation_description">允许在设备旋转时旋转主屏幕</string>
-    <string name="wallpaper_blur">启用壁纸模糊</string>
+    <string name="wallpaper_blur">壁纸模糊（实验性）</string>
     <string name="wallpaper_background_blur">模糊强度</string>
     <string name="wallpaper_background_blur_factor">因素阈值</string>
     <string name="auto_add_shortcuts_label">添加新应用到主屏</string>
@@ -395,8 +397,8 @@
     <string name="show_material_u_popup_description">使用 Material You 的弹性和略微缩小的弹出样式</string>
     <string name="popup_menu">弹出菜单</string>
     <string name="home_screen_lock_toggle_from_home_popup">显示锁定按钮</string>
-    <string name="show_system_settings_entry">显示系统设置条目</string>
-    <string name="home_screen_edit_toggle_from_home_popup">显示编辑按钮</string>
+    <string name="show_system_settings_entry">显示系统设置按钮</string>
+    <string name="home_screen_edit_toggle_from_home_popup">显示编辑主屏幕按钮</string>
     <string name="status_bar_label">状态栏</string>
     <string name="show_status_bar">显示状态栏</string>
     <string name="dark_status_bar_label">深色状态栏</string>
@@ -416,8 +418,8 @@
     <string name="hotseat_mode_disabled">已禁用</string>
     <string name="hotseat_mode_google_search">Google 搜索栏</string>
     <string name="qsb_hotseat_background_transparency">背景不透明度</string>
-    <string name="qsb_hotseat_stroke_width">Outline width</string>
-    <string name="qsb_hotseat_stroke_color">Outline color</string>
+    <string name="qsb_hotseat_stroke_width">轮廓宽度</string>
+    <string name="qsb_hotseat_stroke_color">轮廓颜色</string>
     <string name="corner_radius_label">圆角半径</string>
     <string name="apply_accent_color_label">应用强调色</string>
     <string name="search_provider">搜索提供程序</string>
@@ -450,7 +452,8 @@
         <item quantity="other">%1$d 个应用</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">图标背景不透明度</string>
+    <string name="folder_preview_bg_opacity_label">图标预览背景不透明度</string>
+    <string name="folder_bg_opacity_label">文件夹背景不透明度</string>
     <string name="folder_preview_bg_color_label">图标背景颜色</string>
     <string name="max_folder_columns">最大文件夹列数</string>
     <string name="max_folder_rows">最大文件夹行数</string>
@@ -520,19 +523,19 @@
     <string name="search_pref_result_contacts_description">联系人及更多</string>
     <string name="search_pref_result_web_provider_description">通过 <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">搜索结果中的最大应用数</string>
-    <string name="max_people_result_count_title">搜索结果中的最大人数</string>
-    <string name="max_file_result_count_title">搜索结果中的最大文件数</string>
-    <string name="max_settings_entry_result_count_title">搜索结果中的最大设置条目数</string>
-    <string name="max_recent_result_count_title">搜索结果中的最大历史记录条目数</string>
-    <string name="max_suggestion_result_count_title">搜索结果中的最大建议数</string>
+    <string name="max_apps_result_count_title">最大应用数量</string>
+    <string name="max_people_result_count_title">最多人数</string>
+    <string name="max_file_result_count_title">最大文件数量</string>
+    <string name="max_settings_entry_result_count_title">最大设置数量</string>
+    <string name="max_recent_result_count_title">搜索历史记录最大条数</string>
+    <string name="max_suggestion_result_count_title">最大建议数量</string>
     <string name="max_web_suggestion_delay">最大网络建议延迟</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">要搜索联系人，请向 Lawnchair 授予联系人和电话权限</string>
     <string name="warn_files_permission_content">要搜索您的文件，请向 Lawnchair 授予存储权限</string>
     <string name="grant_requested_permissions">授予权限</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair（组合）</string>
     <string name="allapps_web_suggestion_provider_label">网络建议提供程序</string>
     <string name="allapps_use_web_suggestion_icon_label">在搜索栏中显示网络建议提供程序图标</string>
-    <string name="allapps_match_qsb_style_label">匹配 Dock 搜索栏样式</string>
+    <string name="allapps_match_qsb_style_label">匹配dock搜索栏操作</string>
+    <string name="allapps_match_qsb_style_description">现在，点击 dock 搜索栏将打开应用程序抽屉</string>
 </resources>

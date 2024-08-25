@@ -142,8 +142,9 @@
     <string name="transparent_background_icons_description">Appliquer un arrière-plan transparent aux icônes à thème</string>
     <string name="auto_adaptive_icons_label">Icônes adaptatives automatiques</string>
     <string name="auto_adaptive_icons_description">Pour toutes les icônes non-adaptatives</string>
+    <string name="shadow_bg_icons_label">Afficher une ombre derrière les icônes</string>
     <string name="background_lightness_label">Luminosité de l\'arrière-plan</string>
-    <string name="adaptive_icon_background_description">Définissez la luminosité à 100 % pour un arrière-plan blanc</string>
+    <string name="adaptive_icon_background_description">Définissez la luminosité à 100 % pour obtenir un arrière-plan blanc</string>
     <string name="reset_custom_icons">Réinitialiser les icônes personnalisées</string>
     <string name="reset_custom_icons_confirmation">Toutes les icônes personnalisées seront réinitialisées. Voulez-vous continuer ?</string>
     <!-- Icon picker -->
@@ -160,6 +161,7 @@
     <string name="icon_shape_egg">Œuf</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octogone</string>
+    <string name="icon_shape_hexagon">Hexagone</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Carré arrondi</string>
     <string name="icon_shape_sharp_square">Carré net</string>
@@ -281,7 +283,7 @@
     <string name="smartspacer_settings">Paramètres Smartspacer</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Appuyez pour configurer</string>
-    <string name="event_provider_missing_notification_dots">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les pastilles de notifications.</string>
+    <string name="event_provider_missing_notification_dots">Pour pouvoir utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les pastilles de notification.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Afficher sur l\'écran d\'accueil</string>
     <string name="smartspace_widget_toggle_description">Aperçu peut être ajouté manuellement à l\'écran d\'accueil en plaçant le widget Lawnchair</string>
@@ -372,7 +374,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
     <string name="home_screen_rotation_description">Autoriser la rotation de l\'écran d\'accueil lorsque l\'appareil est tourné</string>
-    <string name="wallpaper_blur">Activer le floutage du fond d\'écran</string>
+    <string name="wallpaper_blur">Flouter le fond d\'écran (expérimental)</string>
     <string name="wallpaper_background_blur">Intensité du flou</string>
     <string name="wallpaper_background_blur_factor">Seuil factoriel</string>
     <string name="auto_add_shortcuts_label">Ajouter les nouvelles applications à l\'écran d\'accueil</string>
@@ -396,7 +398,7 @@
     <string name="popup_menu">Menu pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Afficher le bouton Verrouiller</string>
     <string name="show_system_settings_entry">Afficher le bouton Paramètres du système</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Afficher le bouton Modifier</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Afficher le bouton Modifier l\'écran d\'accueil</string>
     <string name="status_bar_label">Barre d\'état</string>
     <string name="show_status_bar">Afficher la barre d\'état</string>
     <string name="dark_status_bar_label">Barre d\'état sombre</string>
@@ -451,7 +453,8 @@
         <item quantity="other">%1$d applications</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Opacité de l\'arrière-plan des icônes</string>
+    <string name="folder_preview_bg_opacity_label">Opacité de l\'arrière-plan de l\'aperçu des icônes</string>
+    <string name="folder_bg_opacity_label">Opacité de l\'arrière-plan des dossiers</string>
     <string name="folder_preview_bg_color_label">Couleur de l\'arrière-plan des icônes</string>
     <string name="max_folder_columns">Nombre maximal de colonnes dans les dossiers</string>
     <string name="max_folder_rows">Nombre maximal de lignes dans les dossiers</string>
@@ -521,19 +524,19 @@
     <string name="search_pref_result_contacts_description">Contacts et autres</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Nombre maximal d\'applications dans les résultats de recherche</string>
-    <string name="max_people_result_count_title">Nombre maximal de personnes dans les résultats de recherche</string>
-    <string name="max_file_result_count_title">Nombre maximal de fichiers dans les résultats de recherche</string>
-    <string name="max_settings_entry_result_count_title">Nombre maximal de paramètres dans les résultats de recherche</string>
-    <string name="max_recent_result_count_title">Nombre maximal d\'éléments de l\'historique dans les résultats de recherche</string>
-    <string name="max_suggestion_result_count_title">Nombre maximal de suggestions dans les résultats de recherche</string>
+    <string name="max_apps_result_count_title">Nombre maximal d\'applications</string>
+    <string name="max_people_result_count_title">Nombre maximal de personnes</string>
+    <string name="max_file_result_count_title">Nombre maximal de fichiers</string>
+    <string name="max_settings_entry_result_count_title">Nombre maximal de paramètres</string>
+    <string name="max_recent_result_count_title">Maximum d\'éléments dans l\'historique des recherches</string>
+    <string name="max_suggestion_result_count_title">Nombre maximal de suggestions</string>
     <string name="max_web_suggestion_delay">Délai maximal des suggestions Web</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Pour rechercher des contacts, accordez à Lawnchair les autorisations Contacts et Téléphone.</string>
     <string name="warn_files_permission_content">Pour rechercher des fichiers, autorisez Lawnchair à accéder au stockage.</string>
     <string name="grant_requested_permissions">Accorder les autorisations</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (composition)</string>
     <string name="allapps_web_suggestion_provider_label">Fournisseur de suggestions Web</string>
     <string name="allapps_use_web_suggestion_icon_label">Afficher l\'icône du fournisseur de suggestions Web dans la barre de recherche</string>
-    <string name="allapps_match_qsb_style_label">Utiliser le style de la barre de recherche du dock</string>
+    <string name="allapps_match_qsb_style_label">Utiliser les actions de la barre de recherche du dock</string>
+    <string name="allapps_match_qsb_style_description">Appuyer sur la barre de recherche du dock ouvrira désormais l\'interface de recherche du tiroir d\'applications</string>
 </resources>
