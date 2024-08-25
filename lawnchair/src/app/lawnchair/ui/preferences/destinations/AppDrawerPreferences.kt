@@ -94,7 +94,7 @@ fun AppDrawerPreferences(
             SliderPreference(
                 adapter = prefs2.drawerCellHeightFactor.getAdapter(),
                 label = stringResource(id = R.string.row_height_label),
-                valueRange = 0.7F..1.5F,
+                valueRange = 0.2F..1.5F,
                 step = 0.1F,
                 showAsPercentage = true,
             )
