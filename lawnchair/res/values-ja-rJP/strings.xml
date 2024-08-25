@@ -23,7 +23,7 @@
     -->
     <string name="preview_label">プレビュー</string>
     <string name="action_create">作成</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_backup">バックアップ</string>
     <string name="action_restore">復元</string>
     <string name="action_delete">削除</string>
     <string name="action_reset">リセット</string>
@@ -31,8 +31,8 @@
     <string name="action_lock">ロックする</string>
     <string name="action_apply">適用</string>
     <string name="action_customize">カスタマイズ</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
+    <string name="always_choice">常に許可</string>
+    <string name="never_choice">常に拒否</string>
     <string name="clipboard">クリップボード</string>
     <string name="action_copy_link">リンクをコピー</string>
     <string name="action_copy">コピー</string>
@@ -103,7 +103,7 @@
     <!-- Experimental features -->
     <string name="font_picker_label">フォントのカスタマイズ</string>
     <string name="font_picker_description">一部のテキストは変更されません</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
+    <string name="smartspace_calendar_label">At a Grance カレンダーのカスタマイズ</string>
     <string name="smartspace_calendar_description">グレゴリオ暦以外の暦で日付を表示できるようにします</string>
     <string name="workspace_increase_max_grid_size_label">グリッドサイズ制限の上限を上げる</string>
     <string name="workspace_increase_max_grid_size_description">ホーム画面のグリッド数を 10 × 10 から 20 × 20 まで増やします</string>
@@ -142,8 +142,9 @@
     <string name="transparent_background_icons_description">テーマアイコンの背景を透明にします</string>
     <string name="auto_adaptive_icons_label">自動アダプティブアイコン</string>
     <string name="auto_adaptive_icons_description">すべての非アダプティブアイコンが対象</string>
+    <string name="shadow_bg_icons_label">アイコンの影を表示</string>
     <string name="background_lightness_label">背景の明るさ</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
+    <string name="adaptive_icon_background_description">背景の明るさを100%に設定すると背景が白くなります</string>
     <string name="reset_custom_icons">カスタムアイコンをリセット</string>
     <string name="reset_custom_icons_confirmation">すべてのカスタムアイコンがリセットされます。続行しますか？</string>
     <!-- Icon picker -->
@@ -160,6 +161,7 @@
     <string name="icon_shape_egg">楕円形</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">オクタゴン</string>
+    <string name="icon_shape_hexagon">Hexagon</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">角丸四角形</string>
     <string name="icon_shape_sharp_square">正方形</string>
@@ -281,7 +283,7 @@
     <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tap to set up</string>
-    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> を使用するには、通知ドットを有効にします</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">ホーム画面に表示します</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
@@ -372,7 +374,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Home screen rotation</string>
     <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
-    <string name="wallpaper_blur">Enable wallpaper blur</string>
+    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
@@ -382,7 +384,7 @@
     <string name="feed_provider">Feed provider</string>
     <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
     <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
+    <string name="wallpaper_depth_effect_description">ランチャーのエリアを移動する際に背景がズームイン・ズームアウトします</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
     <string name="home_screen_grid">Home screen grid</string>
     <string name="home_screen_lock">Lock home screen</string>
@@ -395,8 +397,8 @@
     <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
     <string name="popup_menu">Pop-up menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
-    <string name="show_system_settings_entry">Show system settings entry</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit button</string>
+    <string name="show_system_settings_entry">Show system settings button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
     <string name="status_bar_label">Status bar</string>
     <string name="show_status_bar">Show status bar</string>
     <string name="dark_status_bar_label">Dark status bar</string>
@@ -447,29 +449,30 @@
     <string name="hide_from_drawer">Hide from app drawer</string>
     <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="other">%1$d apps</item>
+        <item quantity="other">%1$d個のアプリ</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon background opacity</string>
+    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
+    <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Icon background color</string>
     <string name="max_folder_columns">Maximum folder columns</string>
-    <string name="max_folder_rows">Maximum folder rows</string>
+    <string name="max_folder_rows">フォルダーの行の最大値</string>
     <!-- Quickstep settings -->
     <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
     <string name="quickstep_incompatible">Incompatible system integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
-    <string name="translucent_background">Translucent background</string>
-    <string name="translucent_background_alpha">Background opacity</string>
-    <string name="recents_actions_label">Quick actions</string>
+    <string name="translucent_background">半透明の背景</string>
+    <string name="translucent_background_alpha">背景の透明度</string>
+    <string name="recents_actions_label">クイックアクション</string>
     <string name="action_share">共有する</string>
     <string name="action_lens">レンズ</string>
     <string name="recents_clear_all">すべてクリア</string>
-    <string name="task_menu_force_stop">Force close</string>
-    <string name="window_corner_radius_label">Screen corner radius</string>
+    <string name="task_menu_force_stop">強制的に閉じる</string>
+    <string name="window_corner_radius_label">画面の角の半径</string>
     <string name="override_window_corner_radius_label">Custom screen corner radius</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">タスクバー</string>
-    <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <string name="enable_taskbar_experimental">タスクバーを表示(実験的な機能)</string>
     <!--
 
     All Apps search
@@ -490,9 +493,9 @@
     <string name="search_input_action_clear_results">Clear search box</string>
     <!-- Search settings -->
     <string name="pref_category_search">検索</string>
-    <string name="show_app_search_bar">Show search bar</string>
-    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
-    <string name="fuzzy_search_title">Fuzzy search</string>
+    <string name="show_app_search_bar">サーチバーを表示する</string>
+    <string name="pref_search_auto_show_keyboard">自動的にキーボードを表示する</string>
+    <string name="fuzzy_search_title">あいまい検索</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches</string>
     <string name="suggestion_pref_screen_title">サジェスト</string>
     <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
@@ -520,19 +523,19 @@
     <string name="search_pref_result_contacts_description">連絡先やその他</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
-    <string name="max_people_result_count_title">Maximum number of people in search results</string>
-    <string name="max_file_result_count_title">Maximum number of files in search results</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings entries in search results</string>
-    <string name="max_recent_result_count_title">Maximum number of history entries in search results</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
+    <string name="max_apps_result_count_title">Maximum number of apps</string>
+    <string name="max_people_result_count_title">Maximum number of people</string>
+    <string name="max_file_result_count_title">Maximum number of files</string>
+    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
+    <string name="max_recent_result_count_title">Maximum items for search history</string>
+    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">連絡先を検索するには、Lawnchair に連絡先と電話の権限を付与してください</string>
     <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
     <string name="grant_requested_permissions">Grant permissions</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
     <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
     <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
+    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
 </resources>

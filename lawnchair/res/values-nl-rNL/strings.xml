@@ -142,6 +142,7 @@
     <string name="transparent_background_icons_description">Transparante achtergrond gebruiken bij themapictogrammen</string>
     <string name="auto_adaptive_icons_label">Automatische adaptieve pictogrammen</string>
     <string name="auto_adaptive_icons_description">Voor alle niet-adaptieve pictogrammen</string>
+    <string name="shadow_bg_icons_label">Schaduw achter pictogrammen weergeven</string>
     <string name="background_lightness_label">Achtergrond helderheid</string>
     <string name="adaptive_icon_background_description">Gebruik 100% achtergrondhelderheid voor wit</string>
     <string name="reset_custom_icons">Aangepaste pictogrammen herstellen</string>
@@ -160,6 +161,7 @@
     <string name="icon_shape_egg">Ei</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Achthoek</string>
+    <string name="icon_shape_hexagon">Zeshoek</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Afgerond vierkant</string>
     <string name="icon_shape_sharp_square">Scherp vierkant</string>
@@ -281,7 +283,7 @@
     <string name="smartspacer_settings">Smartspacer-instellingen</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tik om in te stellen</string>
-    <string name="event_provider_missing_notification_dots">Schakel meldingsstippen in om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken.</string>
+    <string name="event_provider_missing_notification_dots">Schakel meldingsstippen in om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>te gebruiken.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Weergeven op startscherm</string>
     <string name="smartspace_widget_toggle_description">At a Glance kan handmatig aan het startscherm worden toegevoegd door de “Lawnchair ” widget te plaatsen</string>
@@ -372,7 +374,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Startscherm-rotatie</string>
     <string name="home_screen_rotation_description">Startscherm-rotatie toestaan wanneer het apparaat wordt gedraaid</string>
-    <string name="wallpaper_blur">Achtergrond-vervaging inschakelen</string>
+    <string name="wallpaper_blur">Achtergrond vervagen (experimenteel)</string>
     <string name="wallpaper_background_blur">Intensiteit van vervaging</string>
     <string name="wallpaper_background_blur_factor">Factor-drempelwaarde</string>
     <string name="auto_add_shortcuts_label">Nieuwe apps toevoegen aan startscherm</string>
@@ -396,7 +398,7 @@
     <string name="popup_menu">Pop-upmenu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Knop Vergrendelen weergeven</string>
     <string name="show_system_settings_entry">Knop Systeeminstellingen weergeven</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Knop Bewerken weergeven</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Knop voor bewerken startscherm weergeven</string>
     <string name="status_bar_label">Statusbalk</string>
     <string name="show_status_bar">Statusbalk weergeven</string>
     <string name="dark_status_bar_label">Donkere statusbalk</string>
@@ -425,7 +427,7 @@
     <string name="hotseat_bottom_space_label">Opvulling aan onderkant</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">App zoeken</string>
-    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair heeft een overeenkomst a.g. het delen van inkomsten.\n\nZoeken met %1$s helpt Lawnchair te ondersteunen.</string>
+    <string name="search_provider_sponsored_description">%1$s en Lawnchair hebben een overeenkomst a.g. het delen van inkomsten.\n\nZoeken met %1$s helpt Lawnchair te ondersteunen.</string>
     <string name="app_label">App</string>
     <string name="website_label">Website</string>
     <string name="qsb_search_provider_app_required">App vereist</string>
@@ -451,7 +453,8 @@
         <item quantity="other">%1$d apps</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Pictogram achtergronddekking</string>
+    <string name="folder_preview_bg_opacity_label">Pictogram voorbeeld achtergronddekking</string>
+    <string name="folder_bg_opacity_label">Map achtergronddekking</string>
     <string name="folder_preview_bg_color_label">Pictogram achtergrondkleur</string>
     <string name="max_folder_columns">Maximum aantal mapkolommen</string>
     <string name="max_folder_rows">Maximum aantal maprijen</string>
@@ -521,19 +524,19 @@
     <string name="search_pref_result_contacts_description">Contacten en meer</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum aantal apps in zoekresultaten</string>
-    <string name="max_people_result_count_title">Maximaal aantal personen in zoekresultaten</string>
-    <string name="max_file_result_count_title">Maximum aantal bestanden in zoekresultaten</string>
-    <string name="max_settings_entry_result_count_title">Maximum aantal instellingen in zoekresultaten</string>
-    <string name="max_recent_result_count_title">Maximum aantal geschiedenisvermeldingen in zoekresultaten</string>
-    <string name="max_suggestion_result_count_title">Maximum aantal suggesties in zoekresultaten</string>
+    <string name="max_apps_result_count_title">Maximum aantal apps</string>
+    <string name="max_people_result_count_title">Maximum aantal personen</string>
+    <string name="max_file_result_count_title">Maximum aantal bestanden</string>
+    <string name="max_settings_entry_result_count_title">Maximum aantal instellingen</string>
+    <string name="max_recent_result_count_title">Maximum aantal items voor zoekgeschiedenis</string>
+    <string name="max_suggestion_result_count_title">Maximum aantal suggesties</string>
     <string name="max_web_suggestion_delay">Maximale vertraging bij websuggestie</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Om naar contacten te zoeken, moet Lawnchair toegang krijgen tot contacten en telefoon</string>
     <string name="warn_files_permission_content">Om bestanden te doorzoeken, moet Lawnchair toegang krijgen tot opslag</string>
     <string name="grant_requested_permissions">Machtigingen verlenen</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (samenstelling)</string>
     <string name="allapps_web_suggestion_provider_label">Websuggestie-aanbieder</string>
     <string name="allapps_use_web_suggestion_icon_label">Pictogram van aanbieder van websuggesties in zoekbalk weergeven</string>
-    <string name="allapps_match_qsb_style_label">Stijl van de zoekbalk in het dok</string>
+    <string name="allapps_match_qsb_style_label">Acties van de zoekbalk in het dok</string>
+    <string name="allapps_match_qsb_style_description">Door op de zoekbalk van het dok te klikken, wordt nu zoeken in de app-lade geopend</string>
 </resources>

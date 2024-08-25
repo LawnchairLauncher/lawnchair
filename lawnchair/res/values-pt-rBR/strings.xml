@@ -142,6 +142,7 @@
     <string name="transparent_background_icons_description">Usar fundo transparente nos ícones temáticos</string>
     <string name="auto_adaptive_icons_label">Ícones adaptativos automáticos</string>
     <string name="auto_adaptive_icons_description">Para todos os ícones não-adaptativos</string>
+    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
     <string name="background_lightness_label">Luminosidade do fundo</string>
     <string name="adaptive_icon_background_description">Use 100% de luz de fundo para fundo branco</string>
     <string name="reset_custom_icons">Resetar ícones customizados</string>
@@ -160,6 +161,7 @@
     <string name="icon_shape_egg">Ovo</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octógono</string>
+    <string name="icon_shape_hexagon">Hexagon</string>
     <string name="icon_shape_sammy">Interface do Usuário</string>
     <string name="icon_shape_rounded_square">Quadrado Arredondado</string>
     <string name="icon_shape_sharp_square">Quadrado Afiado</string>
@@ -281,7 +283,7 @@
     <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Toque para configurar</string>
-    <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, habilite os Pontos de Notificação.</string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Mostrar na tela inicial</string>
     <string name="smartspace_widget_toggle_description">O widget Resumo pode ser adicionado manualmente à tela inicial ao colocar o widget do Lawnchair</string>
@@ -372,7 +374,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotação da tela inicial</string>
     <string name="home_screen_rotation_description">Permitir a rotação da tela inicial quando o dispositivo for girado</string>
-    <string name="wallpaper_blur">Enable wallpaper blur</string>
+    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Adicionar novos aplicativos à tela inicial</string>
@@ -395,8 +397,8 @@
     <string name="show_material_u_popup_description">Usar o estilo de pop-up animado e ligeiramente consolidado do Material You</string>
     <string name="popup_menu">Menu flutuante</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar o botão de bloqueio</string>
-    <string name="show_system_settings_entry">Mostrar entrada para as configurações do sistema</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Exibir botão Editar</string>
+    <string name="show_system_settings_entry">Show system settings button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
     <string name="status_bar_label">Barra de status</string>
     <string name="show_status_bar">Mostrar barra de status</string>
     <string name="dark_status_bar_label">Barra de status escura</string>
@@ -451,7 +453,8 @@
         <item quantity="other">%1$d aplicativos</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Opacidade do fundo dos ícones</string>
+    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
+    <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Cor de fundo do ícone</string>
     <string name="max_folder_columns">Máximo de colunas nas pastas</string>
     <string name="max_folder_rows">Máximo de linhas nas pastas</string>
@@ -521,19 +524,19 @@
     <string name="search_pref_result_contacts_description">Contatos e mais</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Número máximo de aplicativos nos resultados da pesquisa</string>
-    <string name="max_people_result_count_title">Número máximo de contatos nos resultados de busca</string>
-    <string name="max_file_result_count_title">Número máximo de arquivos nos resultados da pesquisa</string>
-    <string name="max_settings_entry_result_count_title">Número máximo de entradas de configurações nos resultados da pesquisa</string>
-    <string name="max_recent_result_count_title">Número máximo de entradas de histórico nos resultados de pesquisa</string>
-    <string name="max_suggestion_result_count_title">Número máximo de sugestões nos resultados da pesquisa</string>
+    <string name="max_apps_result_count_title">Maximum number of apps</string>
+    <string name="max_people_result_count_title">Maximum number of people</string>
+    <string name="max_file_result_count_title">Maximum number of files</string>
+    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
+    <string name="max_recent_result_count_title">Maximum items for search history</string>
+    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">Atraso máximo de sugestões da Web</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Para pesquisar por contatos, permita as permissões de Contatos e Telefone ao Lawnchair</string>
     <string name="warn_files_permission_content">Para pesquisar nos seus arquivos, permita a permissão de Armazenamento ao Lawnchair</string>
     <string name="grant_requested_permissions">Permitir permissões</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (composto)</string>
     <string name="allapps_web_suggestion_provider_label">Provedor de sugestões da web</string>
     <string name="allapps_use_web_suggestion_icon_label">Mostrar o ícone do provedor de sugestões da web na barra de pesquisa</string>
-    <string name="allapps_match_qsb_style_label">Combinar com o estilo da barra de pesquisa do dock</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
+    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
 </resources>

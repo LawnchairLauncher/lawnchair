@@ -23,27 +23,27 @@
     -->
     <string name="preview_label">Előnézet</string>
     <string name="action_create">Létrehoz</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_backup">Mentés</string>
     <string name="action_restore">Visszaállítás</string>
     <string name="action_delete">Törlés</string>
     <string name="action_reset">Visszaállítás</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
+    <string name="action_unlock">Feloldás</string>
+    <string name="action_lock">Lezárás</string>
     <string name="action_apply">Alkalmaz</string>
     <string name="action_customize">Testreszabás</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
+    <string name="always_choice">Mindig</string>
+    <string name="never_choice">Soha</string>
     <string name="clipboard">Vágólap</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy_link">Hivatkozás másolása</string>
     <string name="action_copy">Másolás</string>
     <string name="action_paste">Beillesztés</string>
     <string name="loading">Betöltés…</string>
     <string name="managed_by_lawnchair">A Lawnchair által kezelve</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Beállítások</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">Kezdőoldal-beállítások</string>
+    <string name="system_settings">Rendszerbeállítások</string>
+    <string name="title_change_settings">Beállítások módosítása</string>
     <!--
 
     General "words" used throughout Lawnchair
@@ -53,7 +53,7 @@
     <string name="dynamic">Dinamikus</string>
     <string name="presets">Előbeállítások</string>
     <string name="custom">Egyéni</string>
-    <string name="feed_default">Default</string>
+    <string name="feed_default">Alapértelmezett</string>
     <string name="system">Rendszer</string>
     <!-- Relating to the Launcher ui -->
     <string name="columns">Oszlopok</string>
@@ -64,15 +64,15 @@
     <string name="layout">Elrendezés</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Háttérkép</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="background_opacity">Háttér átlátszatlansága</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
-    <string name="item_removed">Item removed</string>
+    <string name="copied_toast">Vágólapra másolva</string>
+    <string name="item_removed">Elem eltávolítva</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
+    <string name="what_to_show">Mi jelenjen meg</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, Lawnchair uses the performGlobalAction Accessibility service.</string>
-    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="accessibility_service_description">Kézmozdulattal való telefonlezáráshoz a Lawnchar-nak jogosultságra van szüksége\n\nA Lawnchair nem figyel semmilyen felhasználói műveletet, az ehhez szükséges jogosultság minden akadálymentesítési szolgáltatáshoz szükséges.  A Lawnchair figyelmen kívül hagy  minden, a rendszer által küldött eseményt.\n\nA telefon zárolásához a Lawnchair a \'performGlobalAction\' hozzáférési szolgáltatást használja.</string>
+    <string name="x_by_y">%1$d ; %2$d</string>
     <string name="x_and_y">%s és %s</string>
     <!--
 
@@ -81,77 +81,78 @@
     -->
     <string name="settings">Beállítások</string>
     <string name="general_label">Általános</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="general_description">Színek, ikoncsomagok, értesítési pöttyök</string>
+    <string name="home_screen_label">Kezdőképernyő</string>
+    <string name="home_screen_description">Rács, blokk, ikonok</string>
     <string name="dock_label">Dokk</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="dock_description">Keresősáv, ikonszám</string>
+    <string name="app_drawer_label">Alkalmazástár</string>
+    <string name="app_drawer_description">Rejtett alkalmazások, oszlopszám, ikonok</string>
+    <string name="drawer_search_label">Alkalmazáskereső</string>
+    <string name="drawer_search_description">Webes javaslatok, globális kereső</string>
     <string name="folders_label">Mappák</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">Sor és oszlop mennyisége</string>
     <string name="gestures_label">Gesztusok</string>
-    <string name="gestures_description">Taps and swipes</string>
+    <string name="gestures_description">Érintések és csúsztatások</string>
     <string name="quickstep_label">Legutóbbiak</string>
-    <string name="quickstep_description">Clear All button, corner radius</string>
+    <string name="quickstep_description">A \'Mindent töröljön\' gomb, sarokkerekítés</string>
     <string name="about_label">Névjegy</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">Alkalmazásinformáció</string>
     <string name="debug_restart_launcher">Lawnchair Újraindítása</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="experimental_features_label">Funkciók kísérleti stádiumban</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">Font customization</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="font_picker_label">Betűtípus-módosítás</string>
+    <string name="font_picker_description">Néhány szöveg változatlan maradhat</string>
+    <string name="smartspace_calendar_label">Alternatív naptárformátum</string>
+    <string name="smartspace_calendar_description">Lehetővé teszi a nem Gergely-naptárrend szerintiek megjelenítését</string>
+    <string name="workspace_increase_max_grid_size_label">A maximális rácsméret-határ növelése</string>
+    <string name="workspace_increase_max_grid_size_description">Lehetővé teszi 10x10-ről 20x20-ra növelni a kezdőképernyő rácsozását</string>
+    <string name="always_reload_icons_label">Az ikonok mindig újratöltődnek</string>
     <string name="always_reload_icons_description">A gyorsítótárazott ikonok használatának elkerülése</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <string name="recents_lock_unlock">Lezárás/Feloldás</string>
+    <string name="recents_lock_unlock_description">Megakadályozza, hogy a „Mindent töröljön” gomb megnyomásakor a kiválasztott alkalmazás bezáródjon</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
-    <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
-    <string name="notification_dots_text_color">Notification counter color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
-    <string name="missing_notification_access_label">Notification access needed</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="set_default_launcher_tip">A parancsikonok és a további funkciók eléréséhez állítsa be a Lawnchair-t alapértelmezettként</string>
+    <string name="notification_dots">Értesítési pöttyök</string>
+    <string name="show_notification_count">Legyen látható az értesítés-számláló</string>
+    <string name="notification_dots_color">Az értesítési pöttyök színe</string>
+    <string name="notification_dots_text_color">A számláló színe</string>
+    <string name="notification_dots_color_contrast_warning_always">Ne basszon ki magával! Állítsa kontrasztosan eltérő színekre a pöttyöt és a számlálót!</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Legyen biztos benne, hogy kontrasztosan eltérő színekre állította a pöttyöt és a számlálót!</string>
+    <string name="missing_notification_access_label">Jogosultság szükséges az értesítésekhez</string>
+    <string name="missing_notification_access_desc">Az értesítési pöttyök megjelenéséhez kapcsolja be az alkalmazás (<xliff:g id="name" example="My App">%1$s</xliff:g>) értesítéseit</string>
     <!--
 
     Icons
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">Icon style</string>
-    <string name="icon_shape_label">Icon shape</string>
-    <string name="icon_sizes">Icon size</string>
-    <string name="show_labels">Show labels</string>
-    <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="icon_style_label">Ikonstílus</string>
+    <string name="icon_shape_label">Ikonforma</string>
+    <string name="icon_sizes">Ikonméret</string>
+    <string name="show_labels">Látható címkék</string>
+    <string name="label_size">Címkeméret</string>
+    <string name="twoline_label">Több sor használata</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent themed icons</string>
+    <string name="transparent_background_icons_label">Átlátszó témájú ikonok</string>
     <string name="transparent_background_icons_description">Áttetsző háttér használata témázott ikonok esetén</string>
-    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
-    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
-    <string name="background_lightness_label">Background lightness</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
-    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="auto_adaptive_icons_label">Automatikusan adaptív ikonok</string>
+    <string name="auto_adaptive_icons_description">Minden nem adaptív ikonhoz</string>
+    <string name="shadow_bg_icons_label">Árnyék az ikonok mögött</string>
+    <string name="background_lightness_label">A háttér világossága</string>
+    <string name="adaptive_icon_background_description">A fehér eléréséhez állítsa 100%-ra</string>
+    <string name="reset_custom_icons">Az egyéni ikonok visszaállítása</string>
     <string name="reset_custom_icons_confirmation">Az összes egyéni ikon alaphelyzetbe lesz állítva. Folytatja?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Ikonok</string>
     <string name="icon_picker_reset_to_default">Alapértelmezett visszaállítása</string>
-    <string name="icon_pack_external_picker">Open external picker</string>
-    <string name="pick_icon_from_label">Pick icon from</string>
-    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="icon_pack_external_picker">Külső kijelölő megnyitása</string>
+    <string name="pick_icon_from_label">Válasszon ikont innen</string>
+    <string name="icon_picker_load_failed">Nem sikerült több ikont betölteni</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">Rendszer</string>
     <string name="icon_shape_circle">Kör</string>
@@ -160,55 +161,56 @@
     <string name="icon_shape_egg">Tojás</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Nyolcszög</string>
+    <string name="icon_shape_hexagon">Hatszög</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="icon_shape_sharp_square">Sharp square</string>
+    <string name="icon_shape_rounded_square">Lekerekített négyzet</string>
+    <string name="icon_shape_sharp_square">Éles négyzet</string>
     <string name="icon_shape_square">Négyzet</string>
     <string name="icon_shape_squircle">Lekerekített négyzet</string>
     <string name="icon_shape_teardrop">Könycsepp</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Custom icon shape</string>
-    <string name="custom_icon_shape_create">Create custom icon shape</string>
-    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
-    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape">Egyéni ikonalak</string>
+    <string name="custom_icon_shape_create">Egyéni alak létrehozása</string>
+    <string name="custom_icon_shape_edit">Egyéni alak szerkesztése</string>
+    <string name="custom_icon_shape_corner">Sarokalak</string>
     <string name="custom_icon_shape_corner_round">Kerek</string>
     <string name="custom_icon_shape_corner_squircle">Lágy</string>
     <string name="custom_icon_shape_corner_cut">Vágott</string>
-    <string name="custom_icon_shape_top_left">Top left</string>
-    <string name="custom_icon_shape_top_right">Top right</string>
-    <string name="custom_icon_shape_bottom_left">Bottom left</string>
-    <string name="custom_icon_shape_bottom_right">Bottom right</string>
-    <string name="export_to_clipboard">Export to clipboard</string>
-    <string name="import_from_clipboard">Import from clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <string name="custom_icon_shape_top_left">Bal felső</string>
+    <string name="custom_icon_shape_top_right">Jobb felső</string>
+    <string name="custom_icon_shape_bottom_left">Bal alsó</string>
+    <string name="custom_icon_shape_bottom_right">Jobb alsó</string>
+    <string name="export_to_clipboard">Exportálás a vágólapra</string>
+    <string name="import_from_clipboard">Importálás a vágólapról</string>
+    <string name="icon_shape_clipboard_import_error">Nincs a vágólapon valós ikonalak</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">Icon pack</string>
-    <string name="themed_icon_pack">Themed icon source</string>
-    <string name="system_icons">System icons</string>
-    <string name="themed_icon_title">Themed icons</string>
+    <string name="icon_pack">Ikoncsomag</string>
+    <string name="themed_icon_pack">Témázott ikonforrás</string>
+    <string name="system_icons">Rendszerikonok</string>
+    <string name="themed_icon_title">Témázott ikonok</string>
     <string name="themed_icons_off_label">Kikapcsolás</string>
-    <string name="themed_icons_home_label">Home screen</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen &amp; app drawer</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="themed_icons_home_label">Kezdőképernyő</string>
+    <string name="themed_icons_home_and_drawer_label">Kezdőképernyő és Alkalmazástár</string>
+    <string name="lawnicons_not_installed_description">Nem támogatott ikoncsomagok</string>
     <!-- Fonts -->
-    <string name="pref_fonts_add_fonts">Add fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
-    <string name="font_label">Font (experimental)</string>
+    <string name="pref_fonts_add_fonts">Betűtípus-hozzáadás</string>
+    <string name="pref_fonts_add_fonts_summary">Támogatott formátumok: TTF és OTF</string>
+    <string name="pref_fonts_missing_font">Nem található betűtípus</string>
+    <string name="font_label">Betűtípus (kísérleti)</string>
     <string name="fontWorkspace">Általános</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (medium)</string>
+    <string name="fontHeading">Címsorok</string>
+    <string name="fontHeadingMedium">Címsorok (közepes)</string>
+    <string name="fontBody">Betűtest</string>
+    <string name="fontBodyMedium">Betűtest (közepes)</string>
     <string name="font_variant_italic">Dőlt betű</string>
     <string name="font_weight_thin">Vékony betű</string>
-    <string name="font_weight_extra_light">Extra light</string>
+    <string name="font_weight_extra_light">Extra vékony</string>
     <string name="font_weight_light">Világos</string>
     <string name="font_weight_regular">Szokásos</string>
     <string name="font_weight_medium">Közepes</string>
     <string name="font_weight_semi_bold">Félkövér</string>
     <string name="font_weight_bold">Kövér</string>
-    <string name="font_weight_extra_bold">Extra bold</string>
+    <string name="font_weight_extra_bold">Extra vastag</string>
     <string name="font_weight_extra_black">Fekete</string>
     <!--
 
@@ -220,20 +222,20 @@
     <string name="theme_light">Világos</string>
     <string name="theme_dark">Sötét</string>
     <string name="theme_system_default">Rendszer</string>
-    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <string name="theme_follow_wallpaper">Háttérképhez illeszkedő</string>
     <!-- Color style -->
-    <string name="color_style_label">Color style</string>
-    <string name="color_style_spritz">Spritz</string>
-    <string name="color_style_tonal_spot">Tonal Spot</string>
-    <string name="color_style_vibrant">Vibrant</string>
-    <string name="color_style_expressive">Expressive</string>
-    <string name="color_style_rainbow">Rainbow</string>
-    <string name="color_style_fruit_salad">Fruit Salad</string>
-    <string name="color_style_content">Content</string>
-    <string name="color_style_monochromatic">Monochromatic</string>
+    <string name="color_style_label">Színstílus</string>
+    <string name="color_style_spritz">Spricc</string>
+    <string name="color_style_tonal_spot">Tónusos folt</string>
+    <string name="color_style_vibrant">Vibráló</string>
+    <string name="color_style_expressive">Kifejező</string>
+    <string name="color_style_rainbow">Szivárvány</string>
+    <string name="color_style_fruit_salad">Gyümölcssaláta</string>
+    <string name="color_style_content">Tartalmas</string>
+    <string name="color_style_monochromatic">Monokróm</string>
     <!-- Accent color and color picker -->
     <string name="colors">Színek</string>
-    <string name="accent_color">Accent color</string>
+    <string name="accent_color">Kiemelőszín</string>
     <string name="swatches">Színminták</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Piros</string>
@@ -245,7 +247,7 @@
     <string name="hsb_brightness">Fényerősség</string>
     <string name="hex">Hexa</string>
     <string name="color_sliders">Csúszkák</string>
-    <string name="invalid_color">Invalid color</string>
+    <string name="invalid_color">Nem létező szín</string>
     <!--
 
     Smartspace
@@ -258,35 +260,35 @@
     <!-- Battery labels -->
     <string name="smartspace_battery_charging">Töltés</string>
     <string name="smartspace_battery_full">Feltöltve</string>
-    <string name="smartspace_battery_low">Battery low</string>
+    <string name="smartspace_battery_low">Alacsony akkuszint</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% – Feltöltve %2$s múlva"</string>
     <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">What to show</string>
+    <string name="smartspace_widget_description">Mi jelenjen meg</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Naptár</string>
-    <string name="smartspace_date_and_time">Date &amp; time</string>
+    <string name="smartspace_date_and_time">Dátum és Idő</string>
     <string name="smartspace_date">Dátum</string>
     <string name="smartspace_time">Idő</string>
-    <string name="smartspace_time_format">Time format</string>
-    <string name="smartspace_time_follow_system">Follow system</string>
-    <string name="smartspace_time_12_hour_format">12-hour format</string>
-    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <string name="smartspace_time_format">Időformátum</string>
+    <string name="smartspace_time_follow_system">Rendszerkövető</string>
+    <string name="smartspace_time_12_hour_format">12-órás</string>
+    <string name="smartspace_time_24_hour_format">24-órás</string>
     <!-- Available targets -->
     <string name="smartspace_weather">Időjárás</string>
-    <string name="smartspace_battery_status">Battery status</string>
-    <string name="smartspace_now_playing">Most játszott</string>
+    <string name="smartspace_battery_status">Akkuállapot</string>
+    <string name="smartspace_now_playing">Most hallható</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="maximum_number_of_targets">A célok maximális száma</string>
+    <string name="open_smartspacer_settings">A \'Smartpacer\' beállításainak megnyitása</string>
+    <string name="smartspacer_settings">A \'Smartpacer\' beállításai</string>
     <!-- Setup settings -->
-    <string name="smartspace_requires_setup">Tap to set up</string>
-    <string name="event_provider_missing_notification_dots">A <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához engedélyezze az értesítési pöttyöket.</string>
+    <string name="smartspace_requires_setup">Érintse meg a beállításhoz</string>
+    <string name="event_provider_missing_notification_dots">Kapcsolja be az Értesítési pöttyöket a <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához</string>
     <!-- Toggle button for enabling Smartspace -->
-    <string name="smartspace_widget_toggle_label">Show on home screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_label">Megjelenítés a Kezdőképernyőn</string>
+    <string name="smartspace_widget_toggle_description">A \'Bepillantás\' manuálisan hozzáadható a Kezdőképernyőhöz a Lawnchair kisalkalmazás elhelyezésével</string>
     <!-- List of available providers -->
-    <string name="smartspace_mode_label">At a Glance provider</string>
+    <string name="smartspace_mode_label">A \'Bepillantás\' szolgáltatója</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Keresés</string>
     <!-- Miscellaneous Smartspace strings -->
@@ -301,176 +303,177 @@
     <string name="news">Hírek</string>
     <string name="support">Támogatás</string>
     <string name="product">Termék</string>
-    <string name="design_and_development">Design &amp; development</string>
+    <string name="design_and_development">Dizájn és Fejlesztés</string>
     <string name="development">Fejlesztés</string>
-    <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
+    <string name="quickswitch_maintenance">A QuickSwitch karbantartása</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Támogatás és PR</string>
     <string name="acknowledgements">Elismerések</string>
     <string name="translate">Fordítás</string>
-    <string name="donate">Donate</string>
+    <string name="donate">Támogatás</string>
     <!--
 
     Backup and restore
 
     -->
-    <string name="create_backup">Create backup</string>
-    <string name="what_to_backup">What to back up</string>
-    <string name="backup_content_layout_and_settings">Layout and settings</string>
+    <string name="create_backup">Egy mentés elkészítése</string>
+    <string name="what_to_backup">Miről kell biztonsági másolatot készíteni</string>
+    <string name="backup_content_layout_and_settings">Kinézet és Beállítások</string>
     <string name="backup_content_wallpaper">Háttérkép</string>
-    <string name="backup_create_success">Backup created</string>
-    <string name="backup_create_error">Failed to create backup</string>
-    <string name="restore_backup">Restore backup</string>
-    <string name="what_to_restore">What to restore</string>
-    <string name="backup_restore_success">Backup restored</string>
-    <string name="backup_restore_error">Failed to restore backup</string>
-    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="backup_create_success">A mentés elkészült</string>
+    <string name="backup_create_error">A mentés meghiúsult</string>
+    <string name="restore_backup">Egy mentés visszaállítása</string>
+    <string name="what_to_restore">Mi állítható vissza</string>
+    <string name="backup_restore_success">A visszaállítás elkészült</string>
+    <string name="backup_restore_error">A visszaállítás meghiúsult</string>
+    <string name="invalid_backup_file">Hibás visszaállítási fájl</string>
     <!--
 
     Gesture settings
 
     -->
-    <string name="gesture_double_tap">Double tap</string>
-    <string name="gesture_swipe_up">Swipe up</string>
-    <string name="gesture_swipe_down">Swipe down</string>
-    <string name="gesture_home_tap">Home button</string>
-    <string name="gesture_back_tap">Back button</string>
-    <string name="gesture_handler_no_op">Do nothing</string>
+    <string name="gesture_double_tap">Duplakopp</string>
+    <string name="gesture_swipe_up">Felfelé húzás</string>
+    <string name="gesture_swipe_down">Lefelé húzás</string>
+    <string name="gesture_home_tap">Kezdőképernyő gomb</string>
+    <string name="gesture_back_tap">Vissza gomb</string>
+    <string name="gesture_handler_no_op">Ne történjen semmi</string>
     <string name="gesture_handler_sleep">Alvás</string>
-    <string name="gesture_handler_open_notifications">Open notification panel</string>
-    <string name="gesture_handler_open_app_option">Open app</string>
+    <string name="gesture_handler_open_notifications">Nyíljon meg az értesítési panel</string>
+    <string name="gesture_handler_open_app_option">Nyíljon meg egy alkalmazás</string>
     <string name="gesture_handler_open_app_config">%1$s megnyitása</string>
-    <string name="gesture_handler_open_app_drawer">Open app drawer</string>
-    <string name="gesture_handler_open_app_search">Open app search</string>
-    <string name="gesture_handler_open_search">Open search</string>
-    <string name="pick_app_for_gesture">Pick app</string>
-    <string name="dt2s_admin_hint_title">Admin permissions required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="gesture_handler_open_app_drawer">Nyíljon meg az Alkalmazástár</string>
+    <string name="gesture_handler_open_app_search">Nyíljon meg az alkalmazáskereső</string>
+    <string name="gesture_handler_open_search">Nyíljon meg a Keresés</string>
+    <string name="pick_app_for_gesture">Alkalmazásválasztó</string>
+    <string name="dt2s_admin_hint_title">Adminisztrátori jogosultság szükséges</string>
+    <string name="dt2s_admin_hint">A \'Képernyőkikapcsolás Duplakoppal\' funkcióhoz állítsa be készülékvezérlőként a Lawnchair-t. Nyissa meg a Beállításokat és érintse meg az \"Aktiválja a készülék-adminisztrátori alkalmazást\" lehetőséget</string>
     <string name="dt2s_admin_warning">A dupla koppintásos alvás ki lesz kapcsolva.</string>
-    <string name="dt2s_a11y_hint_title">Turn on accessibility service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="dt2s_warning_open_settings">Open settings</string>
+    <string name="dt2s_a11y_hint_title">Kapcsolja be a kisegítő lehetőségeket</string>
+    <string name="dt2s_a11y_hint">A \'Képernyőkikapcsolás Duplakoppal\' funkcióhoz kapcsolja be a Lawnchair kisegítő lehetőségeit. Nyissa meg a Beállítást, válassza a Lawnchair-t, kapcsolja be a \"Lawnchair használatát\"</string>
+    <string name="dt2s_warning_open_settings">Beállítások megnyitása</string>
     <!--
 
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Lawnchair bug report</string>
-    <string name="crash_report_notif_title">%1$s crashed</string>
-    <string name="action_upload_crash_report">Upload crash log</string>
+    <string name="lawnchair_bug_report">Lawnchair-hibajelentés</string>
+    <string name="crash_report_notif_title">%1$s összeomlás</string>
+    <string name="action_upload_crash_report">Összeomlási napló feltöltése</string>
     <string name="action_upload_error">Feltöltési hiba</string>
     <string name="dogbin_uploading">Feltöltés…</string>
-    <string name="bugreport_channel_name">Bug reports</string>
-    <string name="status_channel_name">Upload status</string>
-    <string name="bugreport_group_summary">%d new reports</string>
-    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
+    <string name="bugreport_channel_name">Hibajelentések</string>
+    <string name="status_channel_name">A feltöltés állapota</string>
+    <string name="bugreport_group_summary">%d új jelentés</string>
+    <string name="bugreport_group_summary_multiple">Több új jelentés</string>
     <!--
 
     Preferences (without special screens)
 
     -->
     <!-- General and home screen settings -->
-    <string name="home_screen_rotation_label">Home screen rotation</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
-    <string name="wallpaper_blur">Enable wallpaper blur</string>
-    <string name="wallpaper_background_blur">Blur intensity</string>
-    <string name="wallpaper_background_blur_factor">Factor threshold</string>
-    <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
-    <string name="minus_one_enable">Show feed</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
+    <string name="home_screen_rotation_label">Kezdőképernyő elforgatása</string>
+    <string name="home_screen_rotation_description">Lehetővé teszi, hogy a Kezdőképernyő is orientálódjon, ha a készülék elforog</string>
+    <string name="wallpaper_blur">Homályos háttérkép (kísérleti)</string>
+    <string name="wallpaper_background_blur">A homályosítás erőssége</string>
+    <string name="wallpaper_background_blur_factor">Küszöbtényező</string>
+    <string name="auto_add_shortcuts_label">Új alkalmazás hozzáadása a Kezdőképernyőhöz</string>
+    <string name="minus_one_enable">Látható Feed</string>
+    <string name="minus_one_unavailable">Nincs a Feed-hez alkalmazás</string>
     <string name="minus_one">Csatorna</string>
-    <string name="feed_provider">Feed provider</string>
-    <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
-    <string name="show_sys_ui_scrim">Top shadow</string>
-    <string name="home_screen_grid">Home screen grid</string>
-    <string name="home_screen_lock">Lock home screen</string>
-    <string name="home_screen_unlock">Unlock home screen</string>
-    <string name="home_screen_locked">Home screen is locked</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use new pop-up style</string>
-    <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
-    <string name="popup_menu">Pop-up menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
-    <string name="show_system_settings_entry">Show system settings entry</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show Edit button</string>
-    <string name="status_bar_label">Status bar</string>
-    <string name="show_status_bar">Show status bar</string>
-    <string name="dark_status_bar_label">Dark status bar</string>
-    <string name="home_screen_text_color">Text color</string>
+    <string name="feed_provider">A Feed szolgáltatója</string>
+    <string name="wallpaper_scrolling_label">Görgethető háttérkép</string>
+    <string name="wallpaper_depth_effect_label">Mélységi hatású háttérkép</string>
+    <string name="wallpaper_depth_effect_description">Nagyítson vagy kicsinyítsen a háttérképen, amikor a launcher területei között vált</string>
+    <string name="show_sys_ui_scrim">Felső árnyék</string>
+    <string name="home_screen_grid">A Kezdőképernyő rácsozata</string>
+    <string name="home_screen_lock">A Kezdőképernyő lezárása</string>
+    <string name="home_screen_unlock">A Kezdőképernyő feloldása</string>
+    <string name="home_screen_locked">Zárolt Kezdőképernyő</string>
+    <string name="home_screen_lock_description">Megakadályozza a Kezdőképernyő elrendezésének változásait</string>
+    <string name="show_dot_pagination_label">Pontozott oldalszámozás</string>
+    <string name="show_dot_pagination_description">Az oldalszám megjelenítéséhez használjon pontokat vonalak helyett</string>
+    <string name="show_material_u_popup_label">Az új felugró ablakstílus használata</string>
+    <string name="show_material_u_popup_description">Egy lendületes és konszolidált pop-up stílus (Material You)</string>
+    <string name="popup_menu">Felugró menü</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Látható \'Lezárás\' gomb</string>
+    <string name="show_system_settings_entry">Látható \'Rendszerbeállítások\' gomb</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Látható \'Kezdőképernyő szerkesztő\' gomb</string>
+    <string name="status_bar_label">Állapotsor</string>
+    <string name="show_status_bar">Látható \'Állapotsor\'</string>
+    <string name="dark_status_bar_label">Sötét \'Állapotsor\'</string>
+    <string name="home_screen_text_color">Szövegszín</string>
     <string name="color_light">Világos</string>
     <string name="color_dark">Sötét</string>
-    <string name="force_rounded_widgets">Rounded corners</string>
-    <string name="allow_widget_overlap">Allow overlap</string>
-    <string name="force_widget_resize_label">Enforce widget resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove size constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <string name="force_rounded_widgets">Lekerekített sarkok</string>
+    <string name="allow_widget_overlap">Az átfedés engedélyezése</string>
+    <string name="force_widget_resize_label">Kényszerített átméretezés</string>
+    <string name="force_widget_resize_description">Azok a kisalkalmazások is átméretezhetők, amelyeknek kötött a mérete</string>
+    <string name="widget_unlimited_size_label">Méretkorlátok megszüntetése</string>
+    <string name="widget_unlimited_size_description">Eltávolítja a kisalkalmazások minimális és maximális méretkorlátozását</string>
     <!-- Dock settings -->
-    <string name="show_hotseat_title">Show dock</string>
-    <string name="search_bar_label">Search bar</string>
-    <string name="hotseat_mode_label">Search bar widget</string>
+    <string name="show_hotseat_title">Látható dokk</string>
+    <string name="search_bar_label">Keresősor</string>
+    <string name="hotseat_mode_label">Kisalkalmazás a kereséshez</string>
     <string name="hotseat_mode_disabled">Letiltva</string>
-    <string name="hotseat_mode_google_search">Google Search bar</string>
-    <string name="qsb_hotseat_background_transparency">Background opacity</string>
-    <string name="qsb_hotseat_stroke_width">Outline width</string>
-    <string name="qsb_hotseat_stroke_color">Outline color</string>
+    <string name="hotseat_mode_google_search">Google Keresősor</string>
+    <string name="qsb_hotseat_background_transparency">A háttér átlátszósága</string>
+    <string name="qsb_hotseat_stroke_width">A körvonal szélessége</string>
+    <string name="qsb_hotseat_stroke_color">A körvonal színe</string>
     <string name="corner_radius_label">Sarok sugár</string>
-    <string name="apply_accent_color_label">Apply accent color</string>
-    <string name="search_provider">Search provider</string>
-    <string name="dock_icons">Dock icons</string>
-    <string name="hotseat_bottom_space_label">Bottom padding</string>
+    <string name="apply_accent_color_label">A kiemelőszín alkalmazása</string>
+    <string name="search_provider">Keresési szolgáltató</string>
+    <string name="dock_icons">A Dokk ikonjai</string>
+    <string name="hotseat_bottom_space_label">Alsó kitöltés</string>
     <!-- Search providers -->
-    <string name="search_provider_app_search">App search</string>
-    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_app_search">Alkalmazás-kereső</string>
+    <string name="search_provider_sponsored_description">%1$s és a Lawnchair bevételmegosztási megállapodást kötött.\n\nHa a keresést a %1$s végzi, azzal segít a Lawnchair-nek is.</string>
     <string name="app_label">Alkalmazás</string>
     <string name="website_label">Weboldal</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="qsb_search_provider_app_required">Ehhez kell egy alkalmazás</string>
     <!-- Dock search bar a11y -->
     <string name="label_search">Keresés</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Hangalapú keresés</string>
     <!-- App drawer settings -->
-    <string name="hidden_apps_label">Hidden apps</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load apps in bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
-    <string name="pref_all_apps_remember_position_title">Remember position</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
-    <string name="app_drawer_columns">App drawer columns</string>
-    <string name="row_height_label">Row height</string>
-    <string name="app_drawer_indent_label">Horizontal padding</string>
+    <string name="hidden_apps_label">Rejtett alkalmazások</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Alkalmazások tömeges betöltése</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Az ikonok tömeges betöltése és megjelenítése, nem egyenként</string>
+    <string name="pref_all_apps_remember_position_title">Fix pozíció</string>
+    <string name="pref_all_apps_remember_position_description">Emlékezzen az Alkalmazástár helyzetére, miután elhagyta azt</string>
+    <string name="pref_all_apps_show_scrollbar_title">Látható görgetősáv</string>
+    <string name="app_drawer_columns">Az Alkalmazástár oszlopai</string>
+    <string name="row_height_label">Sormagasság</string>
+    <string name="app_drawer_indent_label">Vízszintes kitöltés</string>
     <!-- HiddenAppsPreferences -->
-    <string name="hide_from_drawer">Hide from app drawer</string>
-    <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
+    <string name="hide_from_drawer">Elrejtés az Alkalmazástárban</string>
+    <string name="hidden_apps_label_with_count">Rejtett alkalmazások (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d app</item>
-        <item quantity="other">%1$d apps</item>
+        <item quantity="one">%1$d alkalmazás</item>
+        <item quantity="other">%1$d alkalmazás</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon background opacity</string>
-    <string name="folder_preview_bg_color_label">Icon background color</string>
-    <string name="max_folder_columns">Maximum folder columns</string>
-    <string name="max_folder_rows">Maximum folder rows</string>
+    <string name="folder_preview_bg_opacity_label">Az ikon előnézeti hátterének átlátszósága</string>
+    <string name="folder_bg_opacity_label">A mappaháttér átlátszósága</string>
+    <string name="folder_preview_bg_color_label">Az ikonháttér színe</string>
+    <string name="max_folder_columns">Mappaoszlopok maximuma</string>
+    <string name="max_folder_rows">Mappasorok maximuma</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
-    <string name="quickstep_incompatible">Incompatible system integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
-    <string name="translucent_background">Translucent background</string>
-    <string name="translucent_background_alpha">Background opacity</string>
-    <string name="recents_actions_label">Quick actions</string>
+    <string name="quickswitch_ignored_warning">Ezeket a beállításokat a rendszer figyelmen kívül hagyja, mivel a Lawnchair nincs beállítva az Előzmények szolgáltatójaként</string>
+    <string name="quickstep_incompatible">Nem kompatibilis rendszerintegráció</string>
+    <string name="quickstep_incompatible_description">Eszköze úgy van konfigurálva, hogy a(z) %1$s által biztosított rendszermozdulatokat (az úgynevezett Quickstep-et) tartalmazza, de a %1$s verziója nem kompatibilis az Android-verzióval. A készülék további használatához, kérjük távolítsa el az utolsó %1$s-frissítést vagy állítsa be úgy készülékét hogy nem a(z) %1$s a rendszer mozdulatvezérlője.</string>
+    <string name="translucent_background">Átlátszó háttér</string>
+    <string name="translucent_background_alpha">A háttér átlátszósága</string>
+    <string name="recents_actions_label">Gyorsműveletek</string>
     <string name="action_share">Megosztás</string>
     <string name="action_lens">Lencse</string>
-    <string name="recents_clear_all">Clear all</string>
-    <string name="task_menu_force_stop">Force close</string>
-    <string name="window_corner_radius_label">Screen corner radius</string>
-    <string name="override_window_corner_radius_label">Custom screen corner radius</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="recents_clear_all">Mindent töröljön</string>
+    <string name="task_menu_force_stop">Kényszerített bezárás</string>
+    <string name="window_corner_radius_label">A képernyősarok sugara</string>
+    <string name="override_window_corner_radius_label">Egyéni képernyősarok sugár</string>
+    <string name="window_corner_radius_description">Ha felfelé csúsztatva nyitja meg az Előzményeket, az aktuális alkalmazás követi az ujját, és kártyává zsugorodik. Ezzel a csúszkával állíthatja be a kártya sarkának sugarát, ha az majdnem teljes képernyőn van, hogy az illeszkedjen a képernyő sarkaihoz.</string>
     <string name="taskbar_label">Tálca</string>
-    <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <string name="enable_taskbar_experimental">Látható Tálca (kísérleti)</string>
     <!--
 
     All Apps search
@@ -479,61 +482,61 @@
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">Keresés</string>
     <string name="all_apps_search_bar_hint">Alkalmazások keresése</string>
-    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
-    <string name="all_apps_search_result_files">Files from device</string>
-    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
-    <string name="all_apps_search_market_message">Search for more apps</string>
-    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
-    <string name="clear_history">Clear search history</string>
-    <string name="search_input_action_clear_results">Clear search box</string>
+    <string name="all_apps_no_search_results">Nem található olyan alkalmazás, amely megfelel a következőnek: \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+    <string name="all_apps_search_result_suggestions">Az internetről</string>
+    <string name="all_apps_search_result_contacts_from_device">Névjegyek a készülékről</string>
+    <string name="all_apps_search_result_files">Fájlok a készülékről</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Beállítások a készülékről</string>
+    <string name="all_apps_search_market_message">További alkalmazások keresése</string>
+    <string name="all_apps_search_on_web_message">Keresés itt: <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="error_no_market_or_browser_installed">Nincs telepítve alkalmazás-áruház vagy böngésző</string>
+    <string name="clear_history">A keresési előzmények törlése</string>
+    <string name="search_input_action_clear_results">A keresőmező törlése</string>
     <!-- Search settings -->
     <string name="pref_category_search">Keresés</string>
-    <string name="show_app_search_bar">Show search bar</string>
+    <string name="show_app_search_bar">Látható keresősor</string>
     <string name="pref_search_auto_show_keyboard">Billentyűzet automatikus mutatása</string>
-    <string name="fuzzy_search_title">Fuzzy search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
+    <string name="fuzzy_search_title">Megközelítő keresés</string>
+    <string name="fuzzy_search_desc">Hozzávetőleges egyezés az alkalmazáskeresésekhez</string>
     <string name="suggestion_pref_screen_title">Javaslatok</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
-    <string name="perform_wide_search_title">Device search</string>
-    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
-    <string name="show_hidden_apps_in_search_results">Show hidden apps in search results</string>
-    <string name="hidden_apps_show_name_typed">If full name is typed</string>
-    <string name="app_search_algorithm">Search algorithm</string>
+    <string name="show_suggested_apps_at_drawer_top">A javasolt alkalmazások megjelenítése az alkalmazástár tetején</string>
+    <string name="perform_wide_search_title">Keresés a készüléken</string>
+    <string name="perform_wide_search_description">Keressen a telefon névjegyei, fájljai és beállításai között</string>
+    <string name="show_hidden_apps_in_search_results">A keresési eredményekben a rejtett alkalmazások is látszódnak</string>
+    <string name="hidden_apps_show_name_typed">Ha a teljes nevet beírta</string>
+    <string name="app_search_algorithm">Keresőalgoritmus</string>
     <string name="search_algorithm_app_search">Alkalmazáskeresés</string>
-    <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global search (via ASI)</string>
+    <string name="search_algorithm_global_search_on_device">Globális keresés (a készüléken)</string>
+    <string name="search_algorithm_global_search_via_asi">Globális keresés (ASI-val)</string>
     <!-- Labels of each search result types -->
-    <string name="show_search_result_types">Show in search results</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
-    <string name="search_pref_result_shortcuts_title">App shortcuts</string>
+    <string name="show_search_result_types">A keresési eredmények megjelenítése</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Alkalmazások és Parancsikonok</string>
+    <string name="search_pref_result_shortcuts_title">Parancsikonok</string>
     <string name="search_pref_result_people_title">Emberek</string>
-    <string name="search_pref_result_tips_title">Pixel tips</string>
-    <string name="search_pref_result_settings_title">Android settings</string>
-    <string name="search_pref_result_files_title">Files</string>
-    <string name="search_pref_result_web_title">Web suggestions</string>
-    <string name="search_pref_result_history_title">Search history</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="search_pref_result_tips_title">Pixel tippek</string>
+    <string name="search_pref_result_settings_title">Android beállítások</string>
+    <string name="search_pref_result_files_title">Fájlok</string>
+    <string name="search_pref_result_web_title">Webes javaslatok</string>
+    <string name="search_pref_result_history_title">Keresési előzmények</string>
+    <string name="all_apps_search_result_calculator">Számológép</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_result_files_description">Media, files, and more</string>
-    <string name="search_pref_result_contacts_description">Contacts and more</string>
-    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
+    <string name="search_pref_result_files_description">Média, fájlok, és a többi</string>
+    <string name="search_pref_result_contacts_description">Névjegyek, kapcsolatok</string>
+    <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g> segítségével</string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps in search results</string>
-    <string name="max_people_result_count_title">Maximum number of people in search results</string>
-    <string name="max_file_result_count_title">Maximum number of files in search results</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings entries in search results</string>
-    <string name="max_recent_result_count_title">Maximum number of history entries in search results</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions in search results</string>
-    <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
+    <string name="max_apps_result_count_title">Az alkalmazások maximális száma</string>
+    <string name="max_people_result_count_title">A személyek maximális száma</string>
+    <string name="max_file_result_count_title">A fájlok maximális száma</string>
+    <string name="max_settings_entry_result_count_title">A beállítások maximális száma</string>
+    <string name="max_recent_result_count_title">A keresési előzmények maximális száma</string>
+    <string name="max_suggestion_result_count_title">A javaslatok maximális száma</string>
+    <string name="max_web_suggestion_delay">Az internetes javaslatok maximális késleltetése</string>
     <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
-    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
-    <string name="grant_requested_permissions">Grant permissions</string>
-    <string name="hotseat_mode_lawnchair_compose">Lawnchair (compose)</string>
-    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
+    <string name="warn_contact_permission_content">Névjegyek kereséséhez adjon a Lawnchair-nek hozzáférést a névjegyekhez és a telefonhoz</string>
+    <string name="warn_files_permission_content">Fájlok kereséséhez adjon a Lawnchair-nek hozzáférést a készülék tárhelyéhez</string>
+    <string name="grant_requested_permissions">Engedély megadása</string>
+    <string name="allapps_web_suggestion_provider_label">A webes javaslatok szolgáltatója</string>
+    <string name="allapps_use_web_suggestion_icon_label">A szolgáltató ikonja megjelenik a keresősoron.</string>
+    <string name="allapps_match_qsb_style_label">A Dokk keresőjével megegyező művelet</string>
+    <string name="allapps_match_qsb_style_description">A Dokk keresősávjára kattintva az Alkalmazástár keresőfelülete nyílik meg</string>
 </resources>
