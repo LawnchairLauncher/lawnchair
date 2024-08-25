@@ -87,9 +87,7 @@ private fun AnnouncementItem(
 ) {
     ExpandAndShrink(
         modifier = modifier,
-        visible = show && announcement.active &&
-            announcement.text.isNotBlank() &&
-            (!announcement.test || BuildConfig.DEBUG),
+        visible = show && announcement.shouldBeVisible,
     ) {
         AnnouncementItemContent(
             text = announcement.text,
