@@ -29,7 +29,7 @@ data class Announcement(
     val channel: String? = null,
 ) {
 
-    val id get() = text to url
+    val id: AnnouncementId get() = text to url
 
     val iconImageVector
         get() = when (icon) {

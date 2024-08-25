@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.lawnchair.ui.preferences.data.liveinfo.model.AnnouncementId
 import app.lawnchair.ui.preferences.data.liveinfo.model.LiveInformation
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
@@ -59,7 +60,7 @@ class LiveInformationManager private constructor(context: Context) : PreferenceM
         defaultValue = emptySet(),
         parse = {
             val withUnknownKeys = Json { ignoreUnknownKeys = true }
-            withUnknownKeys.decodeFromString<Set<Pair<String, String?>>>(it)
+            withUnknownKeys.decodeFromString<Set<AnnouncementId>>(it)
         },
         save = {
             Json.encodeToString(it)
