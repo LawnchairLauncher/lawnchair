@@ -111,7 +111,7 @@ private fun AnnouncementItem(
         AnnouncementItemContent(
             text = announcement.text,
             url = announcement.url,
-            icon = announcement.iconImageVector,
+            icon = announcement.getIcon(),
             onClose = onClose,
         )
     }

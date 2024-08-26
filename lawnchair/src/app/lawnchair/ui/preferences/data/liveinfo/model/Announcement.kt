@@ -25,30 +25,29 @@ data class Announcement(
     val url: String? = null,
     val active: Boolean = true,
     val test: Boolean = false,
-    val icon: String? = null,
     val channel: String? = null,
+    private val icon: String? = null,
 ) {
 
     val id: AnnouncementId get() = text to url
 
-    val iconImageVector
-        get() = when (icon) {
-            "bug-report" -> Icons.Rounded.BugReport
-            "check-circle" -> Icons.Rounded.CheckCircle
-            "error" -> Icons.Rounded.Error
-            "favorite" -> Icons.Rounded.Favorite
-            "feedback" -> Icons.Rounded.Feedback
-            "forum" -> Icons.Rounded.Forum
-            "hub" -> Icons.Rounded.Hub
-            "loyalty" -> Icons.Rounded.Loyalty
-            "priority-high" -> Icons.Rounded.PriorityHigh
-            "privacy-tip" -> Icons.Rounded.PrivacyTip
-            "sos" -> Icons.Rounded.Sos
-            "star" -> Icons.Rounded.Star
-            "support" -> Icons.Rounded.Support
-            "warning" -> Icons.Rounded.Warning
-            else -> Icons.Rounded.NewReleases
-        }
+    fun getIcon() = when (icon) {
+        "bug-report" -> Icons.Rounded.BugReport
+        "check-circle" -> Icons.Rounded.CheckCircle
+        "error" -> Icons.Rounded.Error
+        "favorite" -> Icons.Rounded.Favorite
+        "feedback" -> Icons.Rounded.Feedback
+        "forum" -> Icons.Rounded.Forum
+        "hub" -> Icons.Rounded.Hub
+        "loyalty" -> Icons.Rounded.Loyalty
+        "priority-high" -> Icons.Rounded.PriorityHigh
+        "privacy-tip" -> Icons.Rounded.PrivacyTip
+        "sos" -> Icons.Rounded.Sos
+        "star" -> Icons.Rounded.Star
+        "support" -> Icons.Rounded.Support
+        "warning" -> Icons.Rounded.Warning
+        else -> Icons.Rounded.NewReleases
+    }
 
     val shouldBeVisible
         get(): Boolean {
