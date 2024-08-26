@@ -251,8 +251,8 @@ android {
             dimension "channel"
         }
 
-        market {
-            applicationId "ch.deletescape.lawnchair.plah"
+        play {
+            applicationId "app.lawnchair.play"
             dimension "channel"
             isDefault true
         }
@@ -289,7 +289,7 @@ android {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
-        lawnWithQuickstepMarket {
+        lawnWithQuickstepPlay {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 

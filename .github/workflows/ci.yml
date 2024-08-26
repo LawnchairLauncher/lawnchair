@@ -52,7 +52,7 @@ jobs:
             echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
           fi
       - name: Build debug APK
-        run: ./gradlew assembleLawnWithQuickstepGithubDebug assembleLawnWithQuickstepMarketDebug
+        run: ./gradlew assembleLawnWithQuickstepGithubDebug assembleLawnWithQuickstepPlayDebug
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
