@@ -178,6 +178,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * state.
      */
     private boolean mIsSearching;
+    boolean showFastScroller;
     private boolean mRebindAdaptersAfterSearchAnimation;
     private int mNavBarScrimHeight = 0;
     public SearchRecyclerView mSearchRecyclerView;
@@ -259,7 +260,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * onFinishInflate -> onPostCreate
      */
     protected void initContent() {
-        boolean showFastScroller = PreferenceExtensionsKt.firstBlocking(pref2.getShowScrollbar());
+        showFastScroller = PreferenceExtensionsKt.firstBlocking(pref2.getShowScrollbar());
         
         mMainAdapterProvider = mSearchUiDelegate.createMainAdapterProvider();
 
@@ -409,6 +410,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         } else if (mAllAppsTransitionController != null) {
             // If exiting search, revert predictive back scale on all apps
             mAllAppsTransitionController.animateAllAppsToNoScale();
+            mFastScroller.setVisibility(showFastScroller ? VISIBLE : INVISIBLE);
         }
         mSearchTransitionController.animateToSearchState(goingToSearch, durationMs,
                 /* onEndRunnable = */ () -> {
