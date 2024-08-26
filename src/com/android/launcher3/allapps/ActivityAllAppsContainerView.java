@@ -410,7 +410,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         } else if (mAllAppsTransitionController != null) {
             // If exiting search, revert predictive back scale on all apps
             mAllAppsTransitionController.animateAllAppsToNoScale();
-            //mFastScroller.setVisibility(showFastScroller ? VISIBLE : INVISIBLE);
+            mFastScroller.setVisibility(showFastScroller ? VISIBLE : INVISIBLE);
         }
         mSearchTransitionController.animateToSearchState(goingToSearch, durationMs,
                 /* onEndRunnable = */ () -> {
