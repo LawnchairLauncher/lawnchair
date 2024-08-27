@@ -23,9 +23,9 @@ import kotlinx.serialization.Serializable
 data class Announcement(
     val text: String,
     val url: String? = null,
-    val active: Boolean = true,
-    val test: Boolean = false,
-    val channel: String? = null,
+    private val active: Boolean = true,
+    private val test: Boolean = false,
+    private val channel: String? = null,
     private val icon: String? = null,
 ) {
 
