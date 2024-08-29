@@ -359,7 +359,7 @@ dependencies {
     implementation "androidx.preference:preference-ktx:1.2.1"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.2'
     implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7"
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
