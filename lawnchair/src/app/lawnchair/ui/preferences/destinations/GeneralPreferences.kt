@@ -23,11 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.FontPreference
@@ -36,6 +38,8 @@ import app.lawnchair.ui.preferences.components.NotificationDotsPreference
 import app.lawnchair.ui.preferences.components.ThemePreference
 import app.lawnchair.ui.preferences.components.colorpreference.ColorContrastWarning
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreference
+import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
@@ -46,6 +50,8 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.notificationDotsEnabled
 import app.lawnchair.ui.preferences.components.notificationServiceEnabled
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
+import kotlinx.collections.immutable.toPersistentList
 
 object GeneralRoutes {
     const val ICON_PACK = "iconPack"
@@ -119,7 +125,7 @@ fun GeneralPreferences() {
             }
         }
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
-        val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
+
         PreferenceGroup(
             heading = stringResource(id = R.string.icons),
             description = stringResource(id = (R.string.adaptive_icon_background_description)),
@@ -165,6 +171,13 @@ fun GeneralPreferences() {
         PreferenceGroup(heading = stringResource(id = R.string.colors)) {
             ThemePreference()
             ColorPreference(preference = prefs2.accentColor)
+            if (Utilities.ATLEAST_S && prefs2.accentColor.getAdapter().state.value == ColorOption.SystemAccent) {
+                if (!Utilities.ATLEAST_S) {
+                    ColorStylePreference(prefs2.colorStyle.getAdapter())
+                }
+            } else {
+                ColorStylePreference(prefs2.colorStyle.getAdapter())
+            }
         }
 
         PreferenceGroup(heading = stringResource(id = R.string.notification_dots)) {
@@ -190,6 +203,28 @@ fun GeneralPreferences() {
             }
         }
     }
+}
+
+@Composable
+private fun ColorStylePreference(
+    adapter: PreferenceAdapter<ColorStyle>,
+    modifier: Modifier = Modifier,
+) {
+    val entries = remember {
+        ColorStyle.values().map { mode ->
+            ListPreferenceEntry(
+                value = mode,
+                label = { stringResource(id = mode.nameResourceId) },
+            )
+        }.toPersistentList()
+    }
+
+    ListPreference(
+        adapter = adapter,
+        entries = entries,
+        label = stringResource(id = R.string.color_style_label),
+        modifier = modifier,
+    )
 }
 
 @Composable

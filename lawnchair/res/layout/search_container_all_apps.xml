@@ -16,6 +16,7 @@
 
 <app.lawnchair.allapps.AllAppsSearchInput xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/search_container_all_apps"
     android:layout_width="match_parent"
     android:layout_height="@dimen/search_box_container_height"
@@ -73,21 +74,53 @@
         android:layout_height="@dimen/search_box_height"
         android:layout_gravity="bottom|center|start"
         android:background="@drawable/pill_ripple"
+        android:layout_marginEnd="6dp"
         android:clickable="true"
         android:contentDescription="@string/search_bar_label"
         android:scaleType="center"
         android:src="@drawable/ic_allapps_search"
         app:tint="?android:textColorSecondary" />
 
-    <ImageButton
-        android:id="@+id/action_btn"
-        android:layout_width="@dimen/search_box_height"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/search_box_height"
-        android:layout_gravity="bottom|center|end"
-        android:background="@drawable/pill_ripple"
-        android:clickable="true"
-        android:contentDescription="@string/search_input_action_clear_results"
-        android:scaleType="center"
-        android:src="@drawable/ic_remove_no_shadow"
-        app:tint="?android:textColorSecondary" />
+        android:layout_gravity="bottom|end|center"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        tools:ignore="RtlSymmetry">
+
+        <app.lawnchair.qsb.AssistantIconView
+            android:id="@+id/mic_btn"
+            android:layout_width="@dimen/search_box_height"
+            android:layout_height="@dimen/search_box_height"
+            android:background="@drawable/pill_ripple"
+            android:clickable="true"
+            android:contentDescription="@string/label_voice_search"
+            android:scaleType="center"
+            android:src="@drawable/ic_remove_no_shadow"
+            app:tint="?android:textColorSecondary" />
+
+        <ImageButton
+            android:id="@+id/lens_btn"
+            android:layout_width="@dimen/search_box_height"
+            android:layout_height="@dimen/search_box_height"
+            android:background="@drawable/pill_ripple"
+            android:clickable="true"
+            android:contentDescription="@string/label_lens"
+            android:scaleType="center"
+            android:src="@drawable/ic_remove_no_shadow"
+            app:tint="?android:textColorSecondary" />
+
+        <ImageButton
+            android:id="@+id/action_btn"
+            android:layout_width="@dimen/search_box_height"
+            android:layout_height="@dimen/search_box_height"
+            android:background="@drawable/pill_ripple"
+            android:clickable="true"
+            android:contentDescription="@string/search_input_action_clear_results"
+            android:scaleType="center"
+            android:src="@drawable/ic_remove_no_shadow"
+            app:tint="?android:textColorSecondary" />
+    </LinearLayout>
+
 </app.lawnchair.allapps.AllAppsSearchInput>

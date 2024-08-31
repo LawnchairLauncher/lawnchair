@@ -15,6 +15,8 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.components.QuickActionsPreferences
+import app.lawnchair.ui.preferences.components.RecentsQuickAction
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
@@ -37,6 +39,35 @@ fun QuickstepPreferences(
         context.packageManager.getLaunchIntentForPackage("com.google.ar.lens") != null
     }
 
+    val recentActionsPreferences: List<RecentsQuickAction> = listOfNotNull(
+        RecentsQuickAction(
+            id = 0,
+            adapter = prefs.recentsActionScreenshot.getAdapter(),
+            label = stringResource(id = R.string.action_screenshot),
+        ).takeIf { !isOnePlusStock },
+        RecentsQuickAction(
+            id = 1,
+            adapter = prefs.recentsActionShare.getAdapter(),
+            label = stringResource(id = R.string.action_share),
+        ),
+        RecentsQuickAction(
+            id = 2,
+            adapter = prefs.recentsActionLens.getAdapter(),
+            label = stringResource(id = R.string.action_lens),
+        ).takeIf { lensAvailable },
+        RecentsQuickAction(
+            id = 3,
+            adapter = prefs.recentsActionLocked.getAdapter(),
+            label = stringResource(id = R.string.recents_lock_unlock),
+            description = stringResource(id = R.string.recents_lock_unlock_description),
+        ),
+        RecentsQuickAction(
+            id = 4,
+            adapter = prefs.recentsActionClearAll.getAdapter(),
+            label = stringResource(id = R.string.recents_clear_all),
+        ),
+    )
+
     PreferenceLayout(
         label = stringResource(id = R.string.quickstep_label),
         modifier = modifier,
@@ -58,28 +89,12 @@ fun QuickstepPreferences(
                 )
             }
         }
-        PreferenceGroup(heading = stringResource(id = R.string.recents_actions_label)) {
-            if (!isOnePlusStock) {
-                SwitchPreference(
-                    adapter = prefs.recentsActionScreenshot.getAdapter(),
-                    label = stringResource(id = R.string.action_screenshot),
-                )
-            }
-            SwitchPreference(
-                adapter = prefs.recentsActionShare.getAdapter(),
-                label = stringResource(id = R.string.action_share),
-            )
-            if (lensAvailable) {
-                SwitchPreference(
-                    adapter = prefs.recentsActionLens.getAdapter(),
-                    label = stringResource(id = R.string.action_lens),
-                )
-            }
-            SwitchPreference(
-                adapter = prefs.recentsActionClearAll.getAdapter(),
-                label = stringResource(id = R.string.recents_clear_all),
-            )
-        }
+
+        QuickActionsPreferences(
+            items = recentActionsPreferences,
+            adapter = prefs.recentActionOrder.getAdapter(),
+        )
+
         val overrideWindowCornerRadius by prefs.overrideWindowCornerRadius.observeAsState()
         PreferenceGroup(
             heading = stringResource(id = R.string.window_corner_radius_label),

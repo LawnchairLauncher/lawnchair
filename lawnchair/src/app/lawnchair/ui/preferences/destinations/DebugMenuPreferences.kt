@@ -11,6 +11,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
@@ -38,13 +39,14 @@ fun DebugMenuPreferences(
     val enableDebug = prefs.enableDebugMenu.getAdapter()
 
     PreferenceLayout(
-        label = "Debug Menu",
+        label = "Debug menu",
+        backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
-        MainSwitchPreference(adapter = enableDebug, label = "Show Debug Menu") {
+        MainSwitchPreference(adapter = enableDebug, label = "Show debug menu") {
             PreferenceGroup {
                 ClickablePreference(
-                    label = "Feature Flags",
+                    label = "Feature flags",
                     onClick = {
                         Intent(context, SettingsActivity::class.java)
                             .putExtra(
@@ -55,12 +57,12 @@ fun DebugMenuPreferences(
                     },
                 )
                 ClickablePreference(
-                    label = "Crash Launcher",
+                    label = "Crash launcher",
                     onClick = { throw RuntimeException("User triggered crash") },
                 )
             }
 
-            PreferenceGroup(heading = "Debug Flags") {
+            PreferenceGroup(heading = "Debug flags") {
                 flags2.forEach {
                     SwitchPreference(
                         adapter = it.getAdapter(),
@@ -91,11 +93,4 @@ private val PreferenceManager2.textFlags: List<Preference<String, String, Prefer
     get() = listOf(additionalFonts)
 
 private val PreferenceManager.debugFlags
-    get() = listOf(
-        deviceSearch,
-        searchResultShortcuts,
-        searchResultPeople,
-        searchResultPixelTips,
-        searchResultSettings,
-        ignoreFeedWhitelist,
-    )
+    get() = listOf(ignoreFeedWhitelist)

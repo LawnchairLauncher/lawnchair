@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.animation.Interpolator
 import android.widget.LinearLayout
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -29,7 +32,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import app.lawnchair.theme.color.ColorTokens
+import app.lawnchair.theme.color.tokens.ColorTokens
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.ProvideLifecycleState
 import app.lawnchair.util.minus
@@ -209,21 +212,28 @@ class ComposeBottomSheet<T>(context: Context) :
         setImeShift(with(LocalDensity.current) { -translation.calculateBottomPadding().toPx() })
 
         SystemUi(setStatusBar = false)
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = backgroundShape,
-            color = MaterialTheme.colorScheme.background,
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            Box(
+            Surface(
                 modifier = Modifier
-                    .padding(contentPaddings)
-                    .graphicsLayer(
-                        alpha = 1f - (hintCloseProgress * 0.5f),
-                        translationY = hintCloseProgress * -hintCloseDistance,
-                    ),
+                    .widthIn(max = 640.dp)
+                    .fillMaxWidth(),
+                shape = backgroundShape,
+                color = MaterialTheme.colorScheme.background,
+
             ) {
-                content(this@ComposeBottomSheet)
+                Box(
+                    modifier = Modifier
+                        .padding(contentPaddings)
+                        .graphicsLayer(
+                            alpha = 1f - (hintCloseProgress * 0.5f),
+                            translationY = hintCloseProgress * -hintCloseDistance,
+                        ),
+                ) {
+                    content(this@ComposeBottomSheet)
+                }
             }
         }
     }

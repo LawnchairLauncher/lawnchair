@@ -6,7 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.view.View
-import app.lawnchair.theme.color.ColorTokens
+import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
 
 class SearchItemBackground(

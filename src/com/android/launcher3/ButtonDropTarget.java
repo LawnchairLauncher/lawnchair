@@ -43,8 +43,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Themes;
-import app.lawnchair.theme.color.ColorTokens;
-import app.lawnchair.theme.drawable.DrawableToken;
+import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 import com.android.launcher3.views.ActivityContext;
 
@@ -122,7 +121,7 @@ public abstract class ButtonDropTarget extends TextView
 
     private void setTextColor() {
         int normalColor = ColorTokens.WorkspaceAccentColor.resolveColor(getContext());
-        int selectedColor = Themes.getAttrColor(getContext(), R.attr.dropTargetHoverTextColor);
+        int selectedColor = ColorTokens.DropTargetHoverTextColor.resolveColor(getContext());
         setTextColor(new ColorStateList(
                 new int[][] { new int[] { -android.R.attr.state_selected },
                         new int[] { android.R.attr.state_selected } },

@@ -7,8 +7,10 @@ import android.content.Intent
 import android.content.pm.LauncherApps
 import android.os.Process
 import android.provider.Settings
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,9 +22,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,7 +37,6 @@ import app.lawnchair.backup.ui.restoreBackupOpener
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.OverflowMenu
-import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
@@ -43,6 +46,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
 import app.lawnchair.ui.preferences.navigation.Routes
+import app.lawnchair.ui.util.addIf
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
@@ -62,7 +66,7 @@ fun PreferencesDashboard(
         modifier = modifier,
         verticalArrangement = Arrangement.Top,
         backArrowVisible = false,
-        actions = { PreferencesOverflowMenu() },
+        actions = { PreferencesOverflowMenu(currentRoute = currentRoute, onNavigate = onNavigate) },
     ) {
         AnnouncementPreference()
 
@@ -161,22 +165,39 @@ fun PreferencesDashboard(
 }
 
 @Composable
-fun PreferencesOverflowMenu(
+fun RowScope.PreferencesOverflowMenu(
+    currentRoute: String,
+    onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val navController = LocalNavController.current
     val enableDebug by preferenceManager().enableDebugMenu.observeAsState()
+    val highlightColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
+    val highlightShape = MaterialTheme.shapes.large
+
     val experimentalFeaturesRoute = Routes.EXPERIMENTAL_FEATURES
     if (enableDebug) {
         val resolvedRoute = Routes.DEBUG_MENU
         ClickableIcon(
             imageVector = Icons.Rounded.Build,
-            onClick = { navController.navigate(resolvedRoute) },
+            onClick = { onNavigate(resolvedRoute) },
+            modifier = Modifier.addIf(currentRoute.contains(resolvedRoute)) {
+                Modifier
+                    .clip(highlightShape)
+                    .background(highlightColor)
+            },
         )
     }
     val openRestoreBackup = restoreBackupOpener()
     OverflowMenu(
-        modifier = modifier,
+        modifier = modifier.addIf(
+            listOf(Routes.CREATE_BACKUP, Routes.RESTORE_BACKUP, experimentalFeaturesRoute).any {
+                currentRoute.contains(it)
+            },
+        ) {
+            Modifier
+                .clip(highlightShape)
+                .background(highlightColor)
+        },
     ) {
         val context = LocalContext.current
         DropdownMenuItem(onClick = {
@@ -192,14 +213,14 @@ fun PreferencesOverflowMenu(
             Text(text = stringResource(id = R.string.debug_restart_launcher))
         })
         DropdownMenuItem(onClick = {
-            navController.navigate(experimentalFeaturesRoute)
+            onNavigate(experimentalFeaturesRoute)
             hideMenu()
         }, text = {
             Text(text = stringResource(id = R.string.experimental_features_label))
         })
         PreferenceDivider(modifier = Modifier.padding(vertical = 8.dp))
         DropdownMenuItem(onClick = {
-            navController.navigate(Routes.CREATE_BACKUP)
+            onNavigate(Routes.CREATE_BACKUP)
             hideMenu()
         }, text = {
             Text(text = stringResource(id = R.string.create_backup))

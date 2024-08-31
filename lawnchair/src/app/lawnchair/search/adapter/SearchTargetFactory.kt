@@ -3,6 +3,7 @@ package app.lawnchair.search.adapter
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ShortcutInfo
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Icon
 import android.net.Uri
@@ -21,34 +22,63 @@ import app.lawnchair.search.algorithms.data.FolderInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
 import app.lawnchair.search.algorithms.data.SettingInfo
-import app.lawnchair.theme.color.ColorTokens
+import app.lawnchair.search.algorithms.data.WebSearchProvider
+import app.lawnchair.theme.color.tokens.ColorTokens
 import app.lawnchair.util.createTextBitmap
 import app.lawnchair.util.file2Uri
 import app.lawnchair.util.mimeCompat
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.security.MessageDigest
 import java.util.Locale
+import okio.ByteString
 
-class GenerateSearchTarget(private val context: Context) {
+class SearchTargetFactory(
+    private val context: Context,
+) {
+    fun createAppSearchTarget(appInfo: AppInfo, asRow: Boolean = false): SearchTargetCompat {
+        val componentName = appInfo.componentName
+        val user = appInfo.user
+        return SearchTargetCompat.Builder(
+            SearchTargetCompat.RESULT_TYPE_APPLICATION,
+            if (asRow) LayoutType.SMALL_ICON_HORIZONTAL_TEXT else LayoutType.ICON_SINGLE_VERTICAL_TEXT,
+            generateHashKey(ComponentKey(componentName, user).toString()),
+        ).apply {
+            setPackageName(componentName.packageName)
+            setUserHandle(user)
+            setExtras(bundleOf("class" to componentName.className))
+        }.build()
+    }
 
-    private val marketSearchComponent = resolveMarketSearchActivity()
+    fun createShortcutTarget(shortcutInfo: ShortcutInfo): SearchTargetCompat {
+        return SearchTargetCompat.Builder(
+            SearchTargetCompat.RESULT_TYPE_SHORTCUT,
+            LayoutType.SMALL_ICON_HORIZONTAL_TEXT,
+            "shortcut_" + generateHashKey("${shortcutInfo.`package`}|${shortcutInfo.userHandle}|${shortcutInfo.id}"),
+        ).apply {
+            setShortcutInfo(shortcutInfo)
+            setUserHandle(shortcutInfo.userHandle)
+            setExtras(Bundle())
+        }.build()
+    }
 
-    internal fun getSuggestionTarget(suggestion: String): SearchTargetCompat {
-        val url = getStartPageUrl(suggestion)
+    fun createWebSuggestionsTarget(suggestion: String, suggestionProvider: String): SearchTargetCompat {
+        val url = WebSearchProvider.fromString(suggestionProvider).getSearchUrl(suggestion)
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         val id = suggestion + url
-        val action = SearchActionCompat.Builder(id, suggestion)
-            .setIcon(
+        val action = SearchActionCompat.Builder(id, suggestion).apply {
+            setIcon(
                 Icon.createWithResource(context, R.drawable.ic_allapps_search)
                     .setTint(ColorTokens.TextColorSecondary.resolveColor(context)),
             )
-            .setIntent(browserIntent)
-            .build()
+            setIntent(browserIntent)
+        }.build()
         return createSearchTarget(
             id,
             action,
@@ -58,7 +88,7 @@ class GenerateSearchTarget(private val context: Context) {
         )
     }
 
-    internal fun getCalculationTarget(
+    internal fun createCalculatorTarget(
         calculation: Calculation,
     ): SearchTargetCompat {
         val result = calculation.result
@@ -75,16 +105,37 @@ class GenerateSearchTarget(private val context: Context) {
 
         val extras = bundleOf()
 
-        return createCalculatorTarget(
+        return createSearchTarget(
             id,
             action,
+            LayoutType.CALCULATOR,
+            SearchTargetCompat.RESULT_TYPE_CALCULATOR,
+            "",
             extras,
         )
     }
 
-    internal fun getRecentKeywordTarget(recentKeyword: RecentKeyword): SearchTargetCompat {
+    fun createHeaderTarget(header: String, pkg: String = HEADER): SearchTargetCompat {
+        val id = "header_$header"
+        val action = SearchActionCompat.Builder(id, header)
+            .setIcon(
+                Icon.createWithResource(context, R.drawable.ic_allapps_search)
+                    .setTint(ColorTokens.TextColorPrimary.resolveColor(context)),
+            )
+            .setIntent(Intent())
+            .build()
+        return createSearchTarget(
+            id,
+            action,
+            LayoutType.TEXT_HEADER,
+            SearchTargetCompat.RESULT_TYPE_SECTION_HEADER,
+            pkg,
+        )
+    }
+
+    fun createSearchHistoryTarget(recentKeyword: RecentKeyword, suggestionProvider: String): SearchTargetCompat {
         val value = recentKeyword.getValueByKey("display1") ?: ""
-        val url = getStartPageUrl(value)
+        val url = WebSearchProvider.fromString(suggestionProvider).getSearchUrl(value)
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         val id = recentKeyword.data.toString() + url
         val action = SearchActionCompat.Builder(id, value)
@@ -103,25 +154,7 @@ class GenerateSearchTarget(private val context: Context) {
         )
     }
 
-    internal fun getHeaderTarget(header: String, pkg: String = HEADER): SearchTargetCompat {
-        val id = "header_$header"
-        val action = SearchActionCompat.Builder(id, header)
-            .setIcon(
-                Icon.createWithResource(context, R.drawable.ic_allapps_search)
-                    .setTint(ColorTokens.TextColorPrimary.resolveColor(context)),
-            )
-            .setIntent(Intent())
-            .build()
-        return createSearchTarget(
-            id,
-            action,
-            LayoutType.TEXT_HEADER,
-            SearchTargetCompat.RESULT_TYPE_SECTION_HEADER,
-            pkg,
-        )
-    }
-
-    internal fun getSettingSearchItem(info: SettingInfo): SearchTargetCompat? {
+    fun createSettingsTarget(info: SettingInfo): SearchTargetCompat? {
         val id = "_${info.id}"
 
         val intent = Intent(info.action)
@@ -134,12 +167,12 @@ class GenerateSearchTarget(private val context: Context) {
             return null
         }
 
-        if (!hasRequiredPermissions(intent)) {
+        if (!SettingsTarget.hasRequiredPermissions(context, intent)) {
             Log.w("SettingSearch", "App does not have required permissions for intent: $intent")
             return null
         }
 
-        val actionBuilder = SearchActionCompat.Builder(id, formatSettingTitle(info.name))
+        val actionBuilder = SearchActionCompat.Builder(id, SettingsTarget.formatSettingTitle(info.name))
             .setIcon(
                 Icon.createWithResource(context, R.drawable.ic_setting)
                     .setTint(ColorTokens.Accent1_600.resolveColor(context)),
@@ -156,24 +189,26 @@ class GenerateSearchTarget(private val context: Context) {
         )
     }
 
-    private fun hasRequiredPermissions(intent: Intent): Boolean {
-        val packageManager = context.packageManager
-        val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
-        return resolveInfo?.activityInfo?.exported == true
+    private fun createSearchLinksTarget(
+        id: String,
+        action: SearchActionCompat,
+        pkg: String,
+        extras: Bundle = Bundle(),
+    ): SearchTargetCompat {
+        return SearchTargetCompat.Builder(
+            SearchTargetCompat.RESULT_TYPE_REDIRECTION,
+            LayoutType.ICON_HORIZONTAL_TEXT,
+            generateHashKey(id),
+        )
+            .setPackageName(pkg)
+            .setUserHandle(Process.myUserHandle())
+            .setSearchAction(action)
+            .setExtras(extras)
+            .build()
     }
 
-    private fun formatSettingTitle(rawTitle: String?): String {
-        return rawTitle?.replace('_', ' ')
-            ?.replace("ACTION", "")
-            ?.lowercase()
-            ?.split(' ')
-            ?.joinToString(" ") {
-                it.replaceFirstChar { char -> char.uppercase(Locale.ROOT) }
-            }.orEmpty()
-    }
-
-    internal fun getMarketSearchItem(query: String): SearchTargetCompat? {
-        if (marketSearchComponent == null) return null
+    internal fun createMarketSearchTarget(query: String): SearchTargetCompat? {
+        val marketSearchComponent = SearchLinksTarget.resolveMarketSearchActivity(context) ?: return null
         val id = "marketSearch:$query"
         val action = SearchActionCompat.Builder(
             id,
@@ -186,27 +221,34 @@ class GenerateSearchTarget(private val context: Context) {
             SearchResultView.EXTRA_ICON_COMPONENT_KEY to marketSearchComponent.toString(),
             SearchResultView.EXTRA_HIDE_SUBTITLE to true,
         )
-        return createSearchTarget(id, action, MARKET_STORE, extras)
+        return createSearchLinksTarget(
+            id,
+            action,
+            MARKET_STORE,
+            extras,
+        )
     }
 
-    internal fun getStartPageSearchItem(query: String): SearchTargetCompat {
-        val url = getStartPageUrl(query)
+    internal fun createWebSearchTarget(query: String, suggestionProvider: String): SearchTargetCompat {
+        val webSearchProvider = WebSearchProvider.fromString(suggestionProvider)
+        val webSearchLabel = context.getString(webSearchProvider.label)
+        val url = webSearchProvider.getSearchUrl(query)
         val id = "browser:$query"
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         val action = SearchActionCompat.Builder(
             id,
-            context.getString(R.string.all_apps_search_startpage_message),
+            context.getString(R.string.all_apps_search_on_web_message, webSearchLabel),
         )
-            .setIcon(Icon.createWithResource(context, R.drawable.ic_startpage))
+            .setIcon(Icon.createWithResource(context, webSearchProvider.iconRes))
             .setIntent(browserIntent)
             .build()
         val extras = bundleOf(
             SearchResultView.EXTRA_HIDE_SUBTITLE to true,
         )
-        return createSearchTarget(id, action, START_PAGE, extras)
+        return createSearchLinksTarget(id, action, START_PAGE, extras)
     }
 
-    internal fun getContactSearchItem(info: ContactInfo): SearchTargetCompat {
+    fun createContactsTarget(info: ContactInfo): SearchTargetCompat {
         val id = "contact:${info.contactId}${info.number}"
         val contactUri = Uri.withAppendedPath(
             ContactsContract.Contacts.CONTENT_URI,
@@ -215,7 +257,7 @@ class GenerateSearchTarget(private val context: Context) {
 
         val contactIntent = Intent(Intent.ACTION_VIEW, contactUri)
         val action = SearchActionCompat.Builder(id, info.name)
-            .setIcon(displayContactPhoto(context, info.name, Uri.parse(info.uri)))
+            .setIcon(ContactsTarget.displayContactPhoto(context, info.name, Uri.parse(info.uri)))
             .setContentDescription(info.contactId)
             .setSubtitle(info.number)
             .setIntent(contactIntent)
@@ -231,7 +273,7 @@ class GenerateSearchTarget(private val context: Context) {
         )
     }
 
-    internal fun getFileInfoSearchItem(info: IFileInfo): SearchTargetCompat {
+    fun createFilesTarget(info: IFileInfo): SearchTargetCompat {
         val fileUri = when (info) {
             is FileInfo -> Uri.withAppendedPath(
                 MediaStore.Files.getContentUri("external"),
@@ -251,7 +293,7 @@ class GenerateSearchTarget(private val context: Context) {
             .setDataAndType(fileUri, mimeType)
 
         val action = SearchActionCompat.Builder(info.path, info.name)
-            .setIcon(getPreviewIcon(info))
+            .setIcon(FilesTarget.getPreviewIcon(context, info))
             .setIntent(fileIntent)
             .build()
 
@@ -265,7 +307,53 @@ class GenerateSearchTarget(private val context: Context) {
         )
     }
 
-    private fun displayContactPhoto(context: Context, name: String, contactUri: Uri): Icon {
+    companion object {
+        private const val HASH_ALGORITHM = "SHA-256"
+
+        // TODO find a way to properly provide tag/provide ids to search target
+        private val messageDigest by lazy { MessageDigest.getInstance(HASH_ALGORITHM) }
+
+        private fun generateHashKey(input: String): String =
+            ByteString.of(*messageDigest.digest(input.toByteArray())).hex()
+
+        fun createSearchTarget(
+            id: String,
+            action: SearchActionCompat,
+            layoutType: String,
+            targetCompat: Int,
+            pkg: String,
+            extras: Bundle = Bundle(),
+        ): SearchTargetCompat {
+            return SearchTargetCompat.Builder(
+                targetCompat,
+                layoutType,
+                generateHashKey(id),
+            ).apply {
+                setPackageName(pkg)
+                setUserHandle(Process.myUserHandle())
+                setSearchAction(action)
+                setExtras(extras)
+            }.build()
+        }
+    }
+}
+
+object FilesTarget {
+    fun getPreviewIcon(
+        context: Context,
+        info: IFileInfo,
+    ): Icon {
+        val fileInfo = info as? FileInfo
+        return if (fileInfo?.isImageType == true) {
+            Icon.createWithFilePath(fileInfo.path)
+        } else {
+            Icon.createWithResource(context, fileInfo?.iconRes ?: R.drawable.ic_folder)
+        }
+    }
+}
+
+object ContactsTarget {
+    fun displayContactPhoto(context: Context, name: String, contactUri: Uri): Icon {
         var inputStream: InputStream? = null
         try {
             inputStream = context.contentResolver.openInputStream(contactUri)
@@ -279,30 +367,54 @@ class GenerateSearchTarget(private val context: Context) {
             inputStream?.close()
         }
 
-        // If contact photo not available, create an icon with the first letter of the name
+        // If contact photo is not available, create an icon with the first letter of the contact's name
         val initial = if (name.isNotEmpty()) name[0].uppercaseChar().toString() else "U"
         val textBitmap = createTextBitmap(context, initial)
         return Icon.createWithBitmap(textBitmap)
     }
+}
 
-    private fun getStartPageUrl(query: String): String {
-        return "https://www.startpage.com/do/search?segment=startpage.lawnchair&query=$query&cat=web"
-    }
-
-    private fun resolveMarketSearchActivity(): ComponentKey? {
+object SearchLinksTarget {
+    fun resolveMarketSearchActivity(context: Context): ComponentKey? {
         val intent = PackageManagerHelper.getMarketSearchIntent(context, "")
         val resolveInfo = context.packageManager.resolveActivity(intent, 0) ?: return null
         val packageName = resolveInfo.activityInfo.packageName
         val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName) ?: return null
         return ComponentKey(launchIntent.component, Process.myUserHandle())
     }
+}
 
-    private fun getPreviewIcon(info: IFileInfo): Icon {
-        val fileInfo = info as? FileInfo
-        return if (fileInfo?.isImageType == true) {
-            Icon.createWithFilePath(fileInfo.path)
-        } else {
-            Icon.createWithResource(context, fileInfo?.iconRes ?: R.drawable.ic_folder)
-        }
+object SettingsTarget {
+    fun hasRequiredPermissions(context: Context, intent: Intent): Boolean {
+        val packageManager = context.packageManager
+        val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        return resolveInfo?.activityInfo?.exported == true
+    }
+
+    fun formatSettingTitle(rawTitle: String?): String {
+        return rawTitle?.replace('_', ' ')
+            ?.replace("ACTION", "")
+            ?.lowercase()
+            ?.split(' ')
+            ?.joinToString(" ") {
+                it.replaceFirstChar { char -> char.uppercase(Locale.ROOT) }
+            }.orEmpty()
     }
 }
+
+// keys used in `pkg` param
+const val START_PAGE = "startpage"
+const val MARKET_STORE = "marketstore"
+const val WEB_SUGGESTION = "suggestion"
+const val HEADER = "header"
+const val CONTACT = "contact"
+const val FILES = "files"
+const val SPACE = "space"
+const val SPACE_MINI = "space_mini"
+const val LOADING = "loading"
+const val ERROR = "error"
+const val SETTINGS = "setting"
+const val SHORTCUT = "shortcut"
+const val HISTORY = "recent_keyword"
+const val HEADER_JUSTIFY = "header_justify"
+const val CALCULATOR = "calculator"

@@ -41,6 +41,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Surface;
 
@@ -1460,8 +1461,13 @@ public class DeviceProfile {
                 .firstBlocking(preferenceManager2.getDrawerLeftRightMarginFactor());
         var marginMultiplier = allAppLeftRightMarginMultiplier * (!isTablet ? 100 : 2);
         allAppsLeftRightMargin = (int) (allAppsLeftRightMargin * marginMultiplier);
-        allAppsPadding.left = (int) (allAppsPadding.left * marginMultiplier);
-        allAppsPadding.right = (int) (allAppsPadding.right * marginMultiplier);
+        
+        // todo fix how drawer padding values are calculated in responsive grid type
+        int leftPadding = (int) (allAppsPadding.left != 0 ? allAppsPadding.left * marginMultiplier : marginMultiplier);
+        int rightPadding = (int) (allAppsPadding.right != 0 ? allAppsPadding.right * marginMultiplier : marginMultiplier);
+        
+        allAppsPadding.left = leftPadding;
+        allAppsPadding.right = rightPadding;
     }
 
     private void setupAllAppsStyle(Context context) {

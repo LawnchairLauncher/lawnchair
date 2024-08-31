@@ -107,6 +107,31 @@ fun HomeScreenPreferences(
                 adapter = prefs2.showTopShadow.getAdapter(),
                 label = stringResource(id = R.string.show_sys_ui_scrim),
             )
+
+            val enableWallpaperBlur = prefs.enableWallpaperBlur.getAdapter()
+
+            SwitchPreference(
+                adapter = enableWallpaperBlur,
+                label = stringResource(id = R.string.wallpaper_blur),
+            )
+            ExpandAndShrink(visible = enableWallpaperBlur.state.value) {
+                SliderPreference(
+                    label = stringResource(id = R.string.wallpaper_background_blur),
+                    adapter = prefs.wallpaperBlur.getAdapter(),
+                    step = 5,
+                    valueRange = 0..100,
+                    showUnit = "%",
+                )
+            }
+            ExpandAndShrink(visible = enableWallpaperBlur.state.value) {
+                SliderPreference(
+                    label = stringResource(id = R.string.wallpaper_background_blur_factor),
+                    adapter = prefs.wallpaperBlurFactorThreshold.getAdapter(),
+                    step = 5,
+                    valueRange = 0..100,
+                    showUnit = "%",
+                )
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.layout)) {
             val columns by prefs.workspaceColumns.getAdapter()

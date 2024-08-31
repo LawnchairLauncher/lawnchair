@@ -221,9 +221,20 @@
     <string name="theme_dark">Тамна</string>
     <string name="theme_system_default">Системска</string>
     <string name="theme_follow_wallpaper">На основу позадине</string>
+    <!-- Color style -->
+    <string name="color_style_label">Шема боја</string>
+    <string name="color_style_spritz">Аперол</string>
+    <string name="color_style_tonal_spot">Нијансирање</string>
+    <string name="color_style_vibrant">Живописно</string>
+    <string name="color_style_expressive">Експресивно</string>
+    <string name="color_style_rainbow">Дуга</string>
+    <string name="color_style_fruit_salad">Воћна салата</string>
+    <string name="color_style_content">Садржај</string>
+    <string name="color_style_monochromatic">Монохроматско</string>
     <!-- Accent color and color picker -->
     <string name="colors">Боје</string>
     <string name="accent_color">Боја за наглашавање</string>
+    <string name="stroke_color">Stroke color</string>
     <string name="swatches">Обрасци</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Црвена</string>
@@ -357,6 +368,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Ротација почетног екрана</string>
     <string name="home_screen_rotation_description">Дозволите ротацију почетног екрана када се уређај ротира</string>
+    <string name="wallpaper_blur">Enable wallpaper blur</string>
+    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Додај нове апликације на почетни екран</string>
     <string name="minus_one_enable">Прикажи фид</string>
     <string name="minus_one_unavailable">Ниједна апликација за фид није инсталирана</string>
@@ -397,6 +411,8 @@
     <string name="hotseat_mode_label">Виџет траке за претрагу</string>
     <string name="hotseat_mode_disabled">Онемогућено</string>
     <string name="hotseat_mode_google_search">Google трака за претрагу</string>
+    <string name="search_background_transparency">Opacity</string>
+    <string name="stroke_width">Stroke</string>
     <string name="corner_radius_label">Заобљеност углова</string>
     <string name="apply_accent_color_label">Примени боју за наглашавање</string>
     <string name="search_provider">Претраживач</string>
@@ -465,7 +481,7 @@
     <string name="all_apps_search_result_files">Фајлови са уређаја</string>
     <string name="all_apps_search_result_settings_entry_from_device">Подешавања са уређаја</string>
     <string name="all_apps_search_market_message">Претражите још апликација</string>
-    <string name="all_apps_search_startpage_message">Претражуј помоћу услуге <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Није инсталирана продавница апликација ни прегледач</string>
     <string name="clear_history">Обриши историју претраге</string>
     <string name="search_input_action_clear_results">Обриши поље за претрагу</string>
@@ -499,7 +515,7 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Медији, фајлови и друго</string>
     <string name="search_pref_result_contacts_description">Контакти и друго</string>
-    <string name="search_pref_result_web_description">Помоћу услуге <xliff:g id="startpage">Startpage</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Максималан број апликација у резултатима претраге</string>
     <string name="max_people_result_count_title">Максималан број контаката у резултатима претраге</string>
@@ -512,4 +528,8 @@
     <string name="warn_contact_permission_content">Да бисте претраживали контакте, доделите Lawnchair-у дозволе Контакти и Телефон</string>
     <string name="warn_files_permission_content">Да бисте претраживали фајлове, доделите Lawnchair-у приступ меморији</string>
     <string name="grant_requested_permissions">Додели дозволе</string>
+    <string name="hotseat_mode_lawnchair_compose">Lawnchair (састављено)</string>
+    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
+    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_match_qsb_style_label">Match dock search bar style</string>
 </resources>

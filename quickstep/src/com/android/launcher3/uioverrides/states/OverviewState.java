@@ -27,13 +27,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.Themes;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
 import app.lawnchair.preferences.PreferenceManager;
-import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.color.tokens.ColorTokens;
 
 /**
  * Definition for overview state

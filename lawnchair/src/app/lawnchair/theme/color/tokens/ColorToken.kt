@@ -1,4 +1,4 @@
-package app.lawnchair.theme.color
+package app.lawnchair.theme.color.tokens
 
 import android.content.Context
 import android.util.Log
@@ -6,6 +6,7 @@ import androidx.core.graphics.ColorUtils
 import app.lawnchair.theme.ResourceToken
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.UiColorMode
+import app.lawnchair.theme.color.AndroidColor
 import app.lawnchair.theme.toAndroidColor
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes

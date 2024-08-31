@@ -25,6 +25,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE;
+import static com.topjohnwu.superuser.internal.Utils.context;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -64,14 +65,12 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
@@ -88,7 +87,6 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.ScrimView;
-import com.android.launcher3.views.SpringRelativeLayout;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
@@ -101,7 +99,7 @@ import java.util.stream.Stream;
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
 import app.lawnchair.font.FontManager;
 import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.ui.StretchRecyclerViewContainer;
 
 /**
@@ -309,7 +307,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 0 // Bottom left
         };
         mBottomSheetBackgroundColor =
-                Themes.getAttrColor(getContext(), R.attr.materialColorSurfaceDim);
+                ColorTokens.SurfaceDimColor.resolveColor(getContext());
         updateBackgroundVisibility(mActivityContext.getDeviceProfile());
         mSearchUiManager.initializeSearch(this);
     }

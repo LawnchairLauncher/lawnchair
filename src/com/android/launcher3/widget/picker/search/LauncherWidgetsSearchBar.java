@@ -29,7 +29,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.popup.PopupDataProvider;
 
 import app.lawnchair.font.FontManager;
-import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
