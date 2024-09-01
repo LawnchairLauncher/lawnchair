@@ -1,17 +1,25 @@
 package app.lawnchair.ui.preferences.components.controls
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
+import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 
 /**
  * A toggle to enable a list of preferences.
@@ -86,8 +94,8 @@ fun MainSwitchPreference(
 ) {
     Surface(
         modifier = modifier.padding(horizontal = 16.dp),
-        shape = MaterialTheme.shapes.large,
-        color = if (checked) {
+        shape = MaterialTheme.shapes.extraLarge,
+        color = if (checked && enabled) {
             MaterialTheme.colorScheme.primaryContainer
         } else if (enabled) {
             MaterialTheme.colorScheme.surfaceVariant
@@ -95,11 +103,35 @@ fun MainSwitchPreference(
             MaterialTheme.colorScheme.surfaceContainer
         },
     ) {
-        SwitchPreference(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            label = label,
+        val interactionSource = remember { MutableInteractionSource() }
+
+        PreferenceTemplate(
+            modifier = Modifier
+                .clickable(
+                    enabled = enabled,
+                    indication = ripple(),
+                    interactionSource = interactionSource,
+                ) {
+                    onCheckedChange(!checked)
+                },
+            contentModifier = Modifier
+                .fillMaxHeight()
+                .padding(vertical = 24.dp)
+                .padding(start = 16.dp),
+            title = { Text(text = label) },
+            endWidget = {
+                Switch(
+                    modifier = Modifier
+                        .padding(all = 16.dp)
+                        .height(24.dp),
+                    checked = checked,
+                    onCheckedChange = onCheckedChange,
+                    enabled = enabled,
+                    interactionSource = interactionSource,
+                )
+            },
             enabled = enabled,
+            applyPaddings = false,
         )
     }
 }
