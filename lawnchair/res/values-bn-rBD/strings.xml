@@ -91,13 +91,13 @@
     <string name="drawer_search_label">Drawer search</string>
     <string name="drawer_search_description">Web suggestions, global search</string>
     <string name="folders_label">ফোল্ডার-সমুহ</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">সারি ও কলাম গণনা</string>
     <string name="gestures_label">জেসচার</string>
     <string name="gestures_description">Taps and swipes</string>
     <string name="quickstep_label">সাম্প্রতিক</string>
     <string name="quickstep_description">Clear All button, corner radius</string>
     <string name="about_label">সম্পর্কে</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">অ্যাপের তথ্য</string>
     <string name="debug_restart_launcher">লনচেয়ার পুনরায় চালু করুন</string>
     <string name="experimental_features_label">Experimental features</string>
     <!-- Experimental features -->

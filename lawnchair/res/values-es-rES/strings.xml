@@ -318,13 +318,13 @@
 
     -->
     <string name="create_backup">Crear copia de seguridad</string>
-    <string name="what_to_backup">Que quieres respaldar</string>
+    <string name="what_to_backup">Qué respaldar</string>
     <string name="backup_content_layout_and_settings">Diseño y configuración</string>
     <string name="backup_content_wallpaper">Fondo de pantalla</string>
     <string name="backup_create_success">Copia de seguridad creada</string>
     <string name="backup_create_error">No se pudo crear la copia de seguridad</string>
     <string name="restore_backup">Restaurar respaldo</string>
-    <string name="what_to_restore">Que quieres restaurar</string>
+    <string name="what_to_restore">Qué restaurar</string>
     <string name="backup_restore_success">Copia de seguridad restaurada</string>
     <string name="backup_restore_error">No se pudo restaurar la copia de seguridad</string>
     <string name="invalid_backup_file">Archivo de copia de seguridad inválido</string>
@@ -386,7 +386,7 @@
     <string name="wallpaper_scrolling_label">Desplazar fondo</string>
     <string name="wallpaper_depth_effect_label">Efecto de profundidad del fondo de pantalla</string>
     <string name="wallpaper_depth_effect_description">Acerca y aleja el fondo de pantalla al cambiar entre áreas del launcher</string>
-    <string name="show_sys_ui_scrim">Mostrar sombra superior</string>
+    <string name="show_sys_ui_scrim">Sombra superior</string>
     <string name="home_screen_grid">Cuadrícula de Pantalla de Inicio</string>
     <string name="home_screen_lock">Bloquear pantalla de inicio</string>
     <string name="home_screen_unlock">Desbloquear pantalla de inicio</string>
@@ -394,19 +394,19 @@
     <string name="home_screen_lock_description">Evita cambios en la disposición de la pantalla de inicio</string>
     <string name="show_dot_pagination_label">Mostrar paginación de puntos</string>
     <string name="show_dot_pagination_description">Usar puntos en vez de líneas para mostrar el número de página</string>
-    <string name="show_material_u_popup_label">Usar nuevo estilo de ventana emergente</string>
-    <string name="show_material_u_popup_description">Usa el estilo del material rebotado y ligeramente consolidado estilo</string>
+    <string name="show_material_u_popup_label">Usar el nuevo estilo del menú emergente</string>
+    <string name="show_material_u_popup_description">Usar el estilo de Material You animado y consolidado para los menús emergentes</string>
     <string name="popup_menu">Menú emergente</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo</string>
     <string name="show_system_settings_entry">Mostrar botón de configuración del sistema</string>
     <string name="home_screen_edit_toggle_from_home_popup">Mostrar el botón de edición de la pantalla de inicio</string>
     <string name="status_bar_label">Barra de estado</string>
-    <string name="show_status_bar">Mostrar Barra de estado</string>
+    <string name="show_status_bar">Mostrar la barra de estado</string>
     <string name="dark_status_bar_label">Barra de Estado Oscura</string>
     <string name="home_screen_text_color">Color del texto</string>
     <string name="color_light">Claro</string>
     <string name="color_dark">Oscuro</string>
-    <string name="force_rounded_widgets">Esquinas Redondeadas</string>
+    <string name="force_rounded_widgets">Esquinas redondeadas</string>
     <string name="allow_widget_overlap">Permitir superposición</string>
     <string name="force_widget_resize_label">Forzar redimensionamiento del Widget</string>
     <string name="force_widget_resize_description">Permite redimensionar los widgets que están limitados a un tamaño específico</string>
@@ -497,7 +497,7 @@
     <string name="pref_category_search">Buscar</string>
     <string name="show_app_search_bar">Mostrar Barra de Búsqueda</string>
     <string name="pref_search_auto_show_keyboard">Mostrar teclado automáticamente</string>
-    <string name="fuzzy_search_title">Búsqueda Aproximada</string>
+    <string name="fuzzy_search_title">Búsqueda aproximada</string>
     <string name="fuzzy_search_desc">Coincidencia aproximada de búsquedas de aplicaciones</string>
     <string name="suggestion_pref_screen_title">Sugerencias</string>
     <string name="show_suggested_apps_at_drawer_top">Mostrar las aplicaciones sugeridas en la parte superior del cajón de aplicaciones</string>
@@ -523,7 +523,7 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Multimedia, archivos y más</string>
     <string name="search_pref_result_contacts_description">Contactos y más</string>
-    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Mediante <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Número máximo de aplicaciones</string>
     <string name="max_people_result_count_title">Número máximo de personas</string>

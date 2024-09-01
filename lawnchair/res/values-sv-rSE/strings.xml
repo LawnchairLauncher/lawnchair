@@ -310,7 +310,7 @@
     <string name="support_and_pr">Support &amp; pr</string>
     <string name="acknowledgements">Erkännanden</string>
     <string name="translate">Översätt</string>
-    <string name="donate">Donate</string>
+    <string name="donate">Donera</string>
     <!--
 
     Backup and restore
@@ -397,8 +397,8 @@
     <string name="show_material_u_popup_description">Använd Material Yous studsiga och något tätare popup-stil</string>
     <string name="popup_menu">Snabbmeny</string>
     <string name="home_screen_lock_toggle_from_home_popup">Visa låsknapp</string>
-    <string name="show_system_settings_entry">Show system settings button</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
+    <string name="show_system_settings_entry">Visa systeminställningar-knapp</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Visa redigera startskärm-knapp</string>
     <string name="status_bar_label">Statusfält</string>
     <string name="show_status_bar">Visa statusfält</string>
     <string name="dark_status_bar_label">Mörkt statusfält</string>
@@ -418,8 +418,8 @@
     <string name="hotseat_mode_disabled">Inaktiverad</string>
     <string name="hotseat_mode_google_search">Google Sök-fält</string>
     <string name="qsb_hotseat_background_transparency">Bakgrundsopacitet</string>
-    <string name="qsb_hotseat_stroke_width">Outline width</string>
-    <string name="qsb_hotseat_stroke_color">Outline color</string>
+    <string name="qsb_hotseat_stroke_width">Konturbredd</string>
+    <string name="qsb_hotseat_stroke_color">Konturfärg</string>
     <string name="corner_radius_label">Hörnradie</string>
     <string name="apply_accent_color_label">Använd accentfärg</string>
     <string name="search_provider">Sökleverantör</string>
@@ -454,7 +454,7 @@
     </plurals>
     <!-- Folder settings -->
     <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
-    <string name="folder_bg_opacity_label">Folder background opacity</string>
+    <string name="folder_bg_opacity_label">Mappbakgrundsopacitet</string>
     <string name="folder_preview_bg_color_label">Ikonbakgrundsfärg</string>
     <string name="max_folder_columns">Maximalt antal mappkolumner</string>
     <string name="max_folder_rows">Maximalt antal mapprader</string>
@@ -524,12 +524,12 @@
     <string name="search_pref_result_contacts_description">Kontakter med mera</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps</string>
-    <string name="max_people_result_count_title">Maximum number of people</string>
-    <string name="max_file_result_count_title">Maximum number of files</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
-    <string name="max_recent_result_count_title">Maximum items for search history</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
+    <string name="max_apps_result_count_title">Maximalt antal appar</string>
+    <string name="max_people_result_count_title">Maximalt antal personer</string>
+    <string name="max_file_result_count_title">Maximalt antal filer</string>
+    <string name="max_settings_entry_result_count_title">Maximalt antal inställningar</string>
+    <string name="max_recent_result_count_title">Maximalt antal objekt för sökhistorik</string>
+    <string name="max_suggestion_result_count_title">Maximalt antal förslag</string>
     <string name="max_web_suggestion_delay">Maximal fördröjning av webbförslag</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">För att söka efter kontakter, bevilja kontakter- och telefonbehörigheter till Lawnchair</string>
