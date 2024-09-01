@@ -87,7 +87,7 @@
     <string name="dock_label">Alt Sıra</string>
     <string name="dock_description">Arama çubuğu, simge sayısı</string>
     <string name="app_drawer_label">Uglama çekmecesi</string>
-    <string name="app_drawer_description">Gizlenmiş uygulamalar, sutün sayısı, simgeler</string>
+    <string name="app_drawer_description">Gizlenmiş uygulamalar, sütun sayısı, simgeler</string>
     <string name="drawer_search_label">Uygulama çekmecesi arama çubuğu</string>
     <string name="drawer_search_description">Web önerileri, global arama</string>
     <string name="folders_label">Klasörler</string>

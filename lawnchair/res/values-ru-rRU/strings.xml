@@ -99,18 +99,18 @@
     <string name="about_label">О программе</string>
     <string name="app_info_drop_target_label">О приложении</string>
     <string name="debug_restart_launcher">Перезапустить Lawnchair</string>
-    <string name="experimental_features_label">Эксперимент. функции</string>
+    <string name="experimental_features_label">Другие функции</string>
     <!-- Experimental features -->
     <string name="font_picker_label">Настройка шрифта</string>
     <string name="font_picker_description">Некоторый текст останется без изменений</string>
     <string name="smartspace_calendar_label">Настройки календаря секции \"Самое главное\"</string>
-    <string name="smartspace_calendar_description">Разрешить отображение даты календаря негригорианского типа</string>
+    <string name="smartspace_calendar_description">Разрешить показ даты из других календарей</string>
     <string name="workspace_increase_max_grid_size_label">Увеличить макс. размер сетки</string>
     <string name="workspace_increase_max_grid_size_description">Увеличить максимально допустимый размер сетки главного экрана с 10 х 10 на 20 x 20</string>
     <string name="always_reload_icons_label">Всегда перезагружать иконки</string>
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
     <string name="recents_lock_unlock">Блокировка/Разблокировка</string>
-    <string name="recents_lock_unlock_description">Запретить очистку выбранного приложения при использовании “Очистить все\"</string>
+    <string name="recents_lock_unlock_description">Запретить закрытие выбран. приложения при нажатии кнопки \"Очистить всё\"</string>
     <!--
 
     Notifications
@@ -118,11 +118,11 @@
     -->
     <string name="set_default_launcher_tip">Для доступа к ярлыкам и дополнительным функциям, установите Lawnchair в качестве лаунчера по умолчанию</string>
     <string name="notification_dots">Включить Точки уведомлений</string>
-    <string name="show_notification_count">Отображать счетчик уведомлений</string>
+    <string name="show_notification_count">Отображать счётчик уведомлений</string>
     <string name="notification_dots_color">Цвет Точек уведомлений</string>
-    <string name="notification_dots_text_color">Цвет счетчика уведомлений</string>
+    <string name="notification_dots_text_color">Цвет счётчика уведомлений</string>
     <string name="notification_dots_color_contrast_warning_always">Внимание: Цвета Точек уведомлений и счетчика уведомлений недостаточно контрастируют друг с другом</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Внимание: Цвета Точек уведомлений и счетчика не всегда могут быть достаточно контрастны друг с другом</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Внимание: Цвета Точек уведомлений и счётчика не всегда могут быть достаточно контрастны друг с другом</string>
     <string name="missing_notification_access_label">Необходимо разрешение доступа к уведомлениям</string>
     <string name="missing_notification_access_desc">Для отображения Точек уведомлений, включите уведомления приложения для <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
@@ -191,7 +191,7 @@
     <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Главный экран</string>
     <string name="themed_icons_home_and_drawer_label">Главный экран и меню приложений</string>
-    <string name="lawnicons_not_installed_description">Нет поддерж. наборов значков</string>
+    <string name="lawnicons_not_installed_description">Нет поддерж. наборов иконок</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
     <string name="pref_fonts_add_fonts_summary">Поддерживаются OTF и TTF шрифты</string>
@@ -211,7 +211,7 @@
     <string name="font_weight_semi_bold">Полужирный</string>
     <string name="font_weight_bold">Жирный</string>
     <string name="font_weight_extra_bold">Очень толстый</string>
-    <string name="font_weight_extra_black">Черный</string>
+    <string name="font_weight_extra_black">Чёрный</string>
     <!--
 
     Colors and theme
@@ -225,7 +225,7 @@
     <string name="theme_follow_wallpaper">Соответствовать обоям</string>
     <!-- Color style -->
     <string name="color_style_label">Цветовой стиль</string>
-    <string name="color_style_spritz">Форме шприца</string>
+    <string name="color_style_spritz">Форма брызг</string>
     <string name="color_style_tonal_spot">Тональная точка</string>
     <string name="color_style_vibrant">Яркий</string>
     <string name="color_style_expressive">Выразительно</string>

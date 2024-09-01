@@ -142,7 +142,7 @@
     <string name="transparent_background_icons_description">Користи прозирну позадину на тематским иконама</string>
     <string name="auto_adaptive_icons_label">Прилагодљиве иконе</string>
     <string name="auto_adaptive_icons_description">За све неприлагодљиве иконе</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
+    <string name="shadow_bg_icons_label">Прикажи сенку иза икона</string>
     <string name="background_lightness_label">Осветљеност позадине</string>
     <string name="adaptive_icon_background_description">Бела позадина при 100% осветљености</string>
     <string name="reset_custom_icons">Ресетуј прилагођене иконе</string>
@@ -161,7 +161,7 @@
     <string name="icon_shape_egg">Јаје</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Осмоугао</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">Шестоугао</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Заобљени квадрат</string>
     <string name="icon_shape_sharp_square">Оштри квадрат</string>
@@ -226,7 +226,7 @@
     <!-- Color style -->
     <string name="color_style_label">Шема боја</string>
     <string name="color_style_spritz">Аперол</string>
-    <string name="color_style_tonal_spot">Нијансирање</string>
+    <string name="color_style_tonal_spot">Мешавина нијанси</string>
     <string name="color_style_vibrant">Живописно</string>
     <string name="color_style_expressive">Експресивно</string>
     <string name="color_style_rainbow">Дуга</string>
@@ -278,12 +278,12 @@
     <string name="smartspace_battery_status">Статус батерије</string>
     <string name="smartspace_now_playing">Репродукује се</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="maximum_number_of_targets">Максималан број циљева</string>
+    <string name="open_smartspacer_settings">Отвори подешавања Smartspacer-а</string>
+    <string name="smartspacer_settings">Подешавања Smartspacer-а</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Додирните за подешавање</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">Да бисте користили „<xliff:g example="My Provider" id="providerName">%1$s</xliff:g>”, укључите тачке за обавештења.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Прикажи на почетном екрану</string>
     <string name="smartspace_widget_toggle_description">„Кратак преглед” можете да додате ручно постављањем виџета „Lawnchair”</string>
@@ -310,7 +310,7 @@
     <string name="support_and_pr">Подршка и односи са јавношћу</string>
     <string name="acknowledgements">Признања</string>
     <string name="translate">Превод</string>
-    <string name="donate">Donate</string>
+    <string name="donate">Донирај</string>
     <!--
 
     Backup and restore
@@ -374,9 +374,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Ротација почетног екрана</string>
     <string name="home_screen_rotation_description">Дозволите ротацију почетног екрана када се уређај ротира</string>
-    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
-    <string name="wallpaper_background_blur">Blur intensity</string>
-    <string name="wallpaper_background_blur_factor">Factor threshold</string>
+    <string name="wallpaper_blur">Замагли позадину (експериментално)</string>
+    <string name="wallpaper_background_blur">Ниво замагљења</string>
+    <string name="wallpaper_background_blur_factor">Праг ефекта замагљења</string>
     <string name="auto_add_shortcuts_label">Додај нове апликације на почетни екран</string>
     <string name="minus_one_enable">Прикажи фид</string>
     <string name="minus_one_unavailable">Ниједна апликација за фид није инсталирана</string>
@@ -397,8 +397,8 @@
     <string name="show_material_u_popup_description">Користите анимиране и компактније искачуће прозоре у складу са дизајном Material You</string>
     <string name="popup_menu">Искачући мени</string>
     <string name="home_screen_lock_toggle_from_home_popup">Прикажи дугме за закључавање</string>
-    <string name="show_system_settings_entry">Show system settings button</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
+    <string name="show_system_settings_entry">Прикажи дугме за системска подешавања</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Прикажи дугме за уређивање почетног екрана</string>
     <string name="status_bar_label">Статусна трака</string>
     <string name="show_status_bar">Прикажи статусну траку</string>
     <string name="dark_status_bar_label">Тамна статусна трака</string>
@@ -418,8 +418,8 @@
     <string name="hotseat_mode_disabled">Онемогућено</string>
     <string name="hotseat_mode_google_search">Google трака за претрагу</string>
     <string name="qsb_hotseat_background_transparency">Непрозирност позадине</string>
-    <string name="qsb_hotseat_stroke_width">Outline width</string>
-    <string name="qsb_hotseat_stroke_color">Outline color</string>
+    <string name="qsb_hotseat_stroke_width">Ширина контуре</string>
+    <string name="qsb_hotseat_stroke_color">Боја контуре</string>
     <string name="corner_radius_label">Заобљеност углова</string>
     <string name="apply_accent_color_label">Примени боју за наглашавање</string>
     <string name="search_provider">Претраживач</string>
@@ -454,8 +454,8 @@
         <item quantity="other">%1$d апликација</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
-    <string name="folder_bg_opacity_label">Folder background opacity</string>
+    <string name="folder_preview_bg_opacity_label">Непрозирност позадине при приказу икона</string>
+    <string name="folder_bg_opacity_label">Непрозирност позадине фолдера</string>
     <string name="folder_preview_bg_color_label">Позадинска боја иконе</string>
     <string name="max_folder_columns">Максималан број колона у фолдеру</string>
     <string name="max_folder_rows">Максималан број редова у фолдеру</string>
@@ -489,7 +489,7 @@
     <string name="all_apps_search_result_files">Фајлови са уређаја</string>
     <string name="all_apps_search_result_settings_entry_from_device">Подешавања са уређаја</string>
     <string name="all_apps_search_market_message">Претражите још апликација</string>
-    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Претражите помоћу услуге <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Није инсталирана продавница апликација ни прегледач</string>
     <string name="clear_history">Обриши историју претраге</string>
     <string name="search_input_action_clear_results">Обриши поље за претрагу</string>
@@ -523,21 +523,21 @@
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">Медији, фајлови и друго</string>
     <string name="search_pref_result_contacts_description">Контакти и друго</string>
-    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
+    <string name="search_pref_result_web_provider_description">Извор: <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps</string>
-    <string name="max_people_result_count_title">Maximum number of people</string>
-    <string name="max_file_result_count_title">Maximum number of files</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
-    <string name="max_recent_result_count_title">Maximum items for search history</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
+    <string name="max_apps_result_count_title">Максималан број апликација</string>
+    <string name="max_people_result_count_title">Максималан број контаката</string>
+    <string name="max_file_result_count_title">Максималан број фајлова</string>
+    <string name="max_settings_entry_result_count_title">Максималан број подешавања</string>
+    <string name="max_recent_result_count_title">Максималан број ставки у историји претраге</string>
+    <string name="max_suggestion_result_count_title">Максималан број предлога</string>
     <string name="max_web_suggestion_delay">Максимално кашњење веб-предлога</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Да бисте претраживали контакте, доделите Lawnchair-у дозволе Контакти и Телефон</string>
     <string name="warn_files_permission_content">Да бисте претраживали фајлове, доделите Lawnchair-у приступ меморији</string>
     <string name="grant_requested_permissions">Додели дозволе</string>
-    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
-    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
+    <string name="allapps_web_suggestion_provider_label">Добављач веб-предлога</string>
+    <string name="allapps_use_web_suggestion_icon_label">Прикажи икону добављача веб-предлога на траци за претрагу</string>
+    <string name="allapps_match_qsb_style_label">Подударај радње траке за претрагу на доку</string>
+    <string name="allapps_match_qsb_style_description">Кликом на претрагу у доку сада отвара интерфејс за претрагу апликација</string>
 </resources>
