@@ -19,7 +19,6 @@ import android.content.res.Resources
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Handler
 import android.os.UserHandle
 import android.os.UserManager
@@ -34,6 +33,7 @@ import app.lawnchair.util.getPackageVersionCode
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.icons.ThemedIconDrawable
 import com.android.launcher3.util.ComponentKey
@@ -49,25 +49,31 @@ class LawnchairIconProvider @JvmOverloads constructor(
     private val prefs = PreferenceManager.getInstance(context)
     private val iconPackPref = prefs.iconPackPackage
     private val themedIconPackPref = prefs.themedIconPackPackage
-    private val drawerThemedIcons get() = prefs.drawerThemedIcons
+
     private val iconPackProvider = IconPackProvider.INSTANCE.get(context)
     private val overrideRepo = IconOverrideRepository.INSTANCE.get(context)
-    private val iconPack get() = iconPackProvider.getIconPack(iconPackPref.get())?.apply { loadBlocking() }
-    private val themedIconPack get() = iconPackProvider.getIconPack(themedIconPackPref.get())?.apply { loadBlocking() }
-    private var isOlderLawnIconsInstalled = context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME) in 1..3
+
+    private val iconPack
+        get() = iconPackProvider.getIconPack(iconPackPref.get())?.apply { loadBlocking() }
+    private val themedIconPack
+        get() = iconPackProvider.getIconPack(themedIconPackPref.get())?.apply { loadBlocking() }
+
+    private var isOlderLawniconsInstalled = context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME) in 1..3
+
     private var iconPackVersion = 0L
+
     private var themeMapName: String = ""
     private var _themeMap: Map<ComponentName, ThemedIconDrawable.ThemeData>? = null
 
     val themeMap: Map<ComponentName, ThemedIconDrawable.ThemeData>
         get() {
-            if (drawerThemedIcons.get() && !(isOlderLawnIconsInstalled)) {
+            if (!context.isThemedIconsEnabled()) {
                 _themeMap = DISABLED_MAP
             }
             if (_themeMap == null) {
                 _themeMap = createThemedIconMap()
             }
-            if (isOlderLawnIconsInstalled && themedIconPackPref.get() == LAWNICONS_PACKAGE_NAME) {
+            if (isOlderLawniconsInstalled) {
                 themeMapName = themedIconPackPref.get()
                 _themeMap = createThemedIconMap()
             }
@@ -84,7 +90,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
     }
 
     override fun setIconThemeSupported(isSupported: Boolean) {
-        _themeMap = if (isSupported && isOlderLawnIconsInstalled) null else DISABLED_MAP
+        _themeMap = if (isSupported && isOlderLawniconsInstalled) null else DISABLED_MAP
     }
 
     private fun resolveIconEntry(componentName: ComponentName, user: UserHandle): IconEntry? {
@@ -151,23 +157,41 @@ class LawnchairIconProvider @JvmOverloads constructor(
         val icon = resolvedEntry?.let { iconPackProvider.getDrawable(it, iconDpi, user) }
         val td = themeData
         if (icon != null) return if (td != null) td.wrapDrawable(icon, iconType) else icon
+
+        // use default icon from system
         var defaultIcon =
             super.getIconWithOverrides(packageName, component, user, iconDpi, fallback)
-        if (context.isThemedIconsEnabled() && defaultIcon is AdaptiveIconDrawable &&
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && defaultIcon.monochrome != null
-        ) {
-            defaultIcon = defaultIcon.monochrome
-            return if (td != null) {
-                td.wrapDrawable(defaultIcon, iconType)
-            } else {
-                val themedColors = ThemedIconDrawable.getThemedColors(context)
-                if (context.shouldTransparentBGIcons()) {
-                    return defaultIcon.apply { setTint(themedColors[1]) }
+
+        if (context.shouldTintIconPackBackgrounds() && defaultIcon is AdaptiveIconDrawable) {
+            if (Utilities.ATLEAST_T && defaultIcon.monochrome != null) {
+                defaultIcon = defaultIcon.monochrome
+                return if (td != null) {
+                    td.wrapDrawable(defaultIcon, iconType)
+                } else {
+                    val themedColors = ThemedIconDrawable.getThemedColors(context)
+                    if (context.shouldTransparentBGIcons()) {
+                        return defaultIcon.apply { setTint(themedColors[1]) }
+                    }
+                    CustomAdaptiveIconDrawable(
+                        ColorDrawable(themedColors[0]),
+                        defaultIcon.apply { setTint(themedColors[1]) },
+                    )
                 }
-                CustomAdaptiveIconDrawable(
-                    ColorDrawable(themedColors[0]),
-                    defaultIcon.apply { setTint(themedColors[1]) },
-                )
+            } else {
+                val iconCompat = ThemedIconCompat.getThemedIcon(context, componentName) ?: return defaultIcon
+
+                return if (td != null) {
+                    td.wrapDrawable(iconCompat, iconType)
+                } else {
+                    val themedColors = ThemedIconDrawable.getThemedColors(context)
+                    if (context.shouldTransparentBGIcons()) {
+                        return iconCompat.apply { setTint(themedColors[1]) }
+                    }
+                    CustomAdaptiveIconDrawable(
+                        ColorDrawable(themedColors[0]),
+                        iconCompat.apply { setTint(themedColors[1]) },
+                    )
+                }
             }
         }
         return defaultIcon
@@ -368,17 +392,13 @@ class LawnchairIconProvider @JvmOverloads constructor(
             }
         }
 
-        updateMapFromResources(
-            resources = context.resources,
-            packageName = context.packageName,
-        )
         if (context.packageManager.isPackageInstalled(packageName = themeMapName)) {
             iconPackVersion = context.packageManager.getPackageVersionCode(themeMapName)
             updateMapFromResources(
                 resources = context.packageManager.getResourcesForApplication(themeMapName),
                 packageName = themeMapName,
             )
-            if (isOlderLawnIconsInstalled) {
+            if (isOlderLawniconsInstalled) {
                 updateMapWithDynamicIcons(context, map)
             }
         }

@@ -19,20 +19,26 @@ package app.lawnchair.ui.preferences.destinations
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import androidx.annotation.StringRes
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,9 +47,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -60,8 +68,9 @@ import app.lawnchair.ui.preferences.components.DummyLauncherLayout
 import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
+import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.invariantDeviceProfile
-import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
+import app.lawnchair.ui.preferences.components.layout.Chip
 import app.lawnchair.ui.preferences.components.layout.NestedScrollStretch
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -71,6 +80,7 @@ import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.launch
 
 data class IconPackInfo(
     val name: String,
@@ -106,6 +116,8 @@ fun IconPackPreferences(
     modifier: Modifier = Modifier,
 ) {
     val prefs = preferenceManager()
+    val context = LocalContext.current
+
     val iconPackAdapter = prefs.iconPackPackage.getAdapter()
     val themedIconPackAdapter = prefs.themedIconPackPackage.getAdapter()
     val themedIconsAdapter = prefs.themedIcons.getAdapter()
@@ -144,74 +156,98 @@ fun IconPackPreferences(
             }
         }
         Column {
-            ExpandAndShrink(visible = !drawerThemedIconsEnabled) {
-                PreferenceGroup(
-                    heading = stringResource(id = R.string.icon_pack),
-                ) {
-                    IconPackGrid(
-                        adapter = iconPackAdapter,
-                        themedIconsAdapter.state.value,
-                        false,
-                    )
-                }
-            }
-            ExpandAndShrink(visible = themedIconsAdapter.state.value && !drawerThemedIconsEnabled) {
-                PreferenceGroup(
-                    heading = stringResource(id = R.string.themed_icon_pack),
-                ) {
-                    IconPackGrid(
-                        adapter = themedIconPackAdapter,
-                        drawerThemedIconsEnabled,
-                        true,
-                    )
-                }
-            }
-            ExpandAndShrink(visible = drawerThemedIconsEnabled) {
-                PreferenceGroup(
-                    heading = stringResource(id = R.string.themed_icon_pack),
-                ) {
-                    IconPackGrid(
-                        adapter = iconPackAdapter,
-                        drawerThemedIconsEnabled,
-                        true,
-                    )
-                }
-            }
-            PreferenceGroup {
-                val themedIconsAvailable = LocalContext.current.packageManager
-                    .getThemedIconPacksInstalled(LocalContext.current)
-                    .any { LocalContext.current.packageManager.isPackageInstalled(it) } ||
-                    LocalContext.current.packageManager
-                        .isPackageInstalled(Constants.LAWNICONS_PACKAGE_NAME)
-                ListPreference(
-                    enabled = themedIconsAvailable,
-                    label = stringResource(id = R.string.themed_icon_title),
-                    entries = ThemedIconsState.entries.map {
-                        ListPreferenceEntry(
-                            value = it,
-                            label = { stringResource(id = it.labelResourceId) },
-                        )
-                    }.toPersistentList(),
-                    value = ThemedIconsState.getForSettings(
-                        themedIcons = themedIconsAdapter.state.value,
-                        drawerThemedIcons = drawerThemedIconsEnabled,
-                    ),
-                    onValueChange = {
-                        themedIconsAdapter.onChange(newValue = it.themedIcons)
-                        drawerThemedIconsAdapter.onChange(newValue = it.drawerThemedIcons)
-                        iconPackAdapter.onChange(newValue = iconPackAdapter.state.value)
-                        if (it.themedIcons && !it.drawerThemedIcons) {
-                            themedIconPackAdapter.onChange(newValue = themedIconPackAdapter.state.value)
-                        } else {
-                            themedIconPackAdapter.onChange(newValue = "")
-                        }
-                    },
-                    description = if (themedIconsAvailable.not()) {
-                        stringResource(id = R.string.lawnicons_not_installed_description)
-                    } else {
-                        null
-                    },
+            val pagerState = rememberPagerState(
+                initialPage = 0,
+                pageCount = { 2 },
+            )
+
+            val scope = rememberCoroutineScope()
+            val scrollToPage =
+                { page: Int -> scope.launch { pagerState.animateScrollToPage(page) } }
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
+                modifier = Modifier.padding(horizontal = 16.dp),
+            ) {
+                Chip(
+                    label = stringResource(id = R.string.icon_pack),
+                    onClick = { scrollToPage(0) },
+                    currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
+                    page = 0,
                 )
+                Chip(
+                    label = stringResource(id = R.string.themed_icon_pack),
+                    onClick = { scrollToPage(1) },
+                    currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
+                    page = 1,
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            HorizontalPager(
+                state = pagerState,
+                verticalAlignment = Alignment.Top,
+                modifier = Modifier.animateContentSize(),
+            ) { page ->
+                when (page) {
+                    0 -> {
+                        PreferenceGroup {
+                            IconPackGrid(
+                                adapter = iconPackAdapter,
+                                false,
+                            )
+                            SwitchPreference(
+                                adapter = prefs.tintIconPackBackgrounds.getAdapter(),
+                                label = "Tint with accent color",
+                            )
+                        }
+                    }
+                    1 -> {
+                        val packageManager = context.packageManager
+
+                        PreferenceGroup {
+                            val themedIconsAvailable = packageManager
+                                .getThemedIconPacksInstalled(LocalContext.current)
+                                .any { packageManager.isPackageInstalled(it) } ||
+                                packageManager
+                                    .isPackageInstalled(Constants.LAWNICONS_PACKAGE_NAME)
+
+                            if (themedIconsAvailable && themedIconsAdapter.state.value) {
+                                IconPackGrid(
+                                    adapter = themedIconPackAdapter,
+                                    true,
+                                )
+                            }
+                            ListPreference(
+                                enabled = themedIconsAvailable,
+                                label = stringResource(id = R.string.themed_icon_title),
+                                entries = ThemedIconsState.entries.map {
+                                    ListPreferenceEntry(
+                                        value = it,
+                                        label = { stringResource(id = it.labelResourceId) },
+                                    )
+                                }.toPersistentList(),
+                                value = ThemedIconsState.getForSettings(
+                                    themedIcons = themedIconsAdapter.state.value,
+                                    drawerThemedIcons = drawerThemedIconsEnabled,
+                                ),
+                                onValueChange = {
+                                    themedIconsAdapter.onChange(newValue = it.themedIcons)
+                                    drawerThemedIconsAdapter.onChange(newValue = it.drawerThemedIcons)
+
+                                    iconPackAdapter.onChange(newValue = iconPackAdapter.state.value)
+                                    themedIconPackAdapter.onChange(newValue = themedIconPackAdapter.state.value)
+                                },
+                                description = if (themedIconsAvailable.not()) {
+                                    stringResource(id = R.string.lawnicons_not_installed_description)
+                                } else {
+                                    null
+                                },
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -220,25 +256,21 @@ fun IconPackPreferences(
 @Composable
 fun IconPackGrid(
     adapter: PreferenceAdapter<String>,
-    drawerThemedIcons: Boolean,
     isThemedIconPack: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
-    val themedIconPacks by LocalPreferenceInteractor.current.themedIconPacks.collectAsStateWithLifecycle()
+    val preferenceInteractor = LocalPreferenceInteractor.current
+
+    val iconPacks by preferenceInteractor.iconPacks.collectAsStateWithLifecycle()
+    val themedIconPacks by preferenceInteractor.themedIconPacks.collectAsStateWithLifecycle()
+
     val lazyListState = rememberLazyListState()
     val padding = 12.dp
-    var iconPacksLocal = iconPacks
-    val themedIconPacksName = themedIconPacks.map { it.name }
 
-    if (isThemedIconPack) {
-        iconPacksLocal = if (drawerThemedIcons) {
-            themedIconPacks
-        } else {
-            themedIconPacks.filter { it.packageName != "" }
-        }
-    } else if (drawerThemedIcons) {
-        iconPacksLocal = iconPacks.filter { it.packageName == "" || !themedIconPacksName.contains(it.name) }
+    val iconPacksLocal = if (isThemedIconPack) {
+        themedIconPacks.filter { it.packageName != "" }
+    } else {
+        iconPacks
     }
 
     val selectedPack = adapter.state.value
@@ -260,7 +292,9 @@ fun IconPackGrid(
                 state = lazyListState,
                 horizontalArrangement = Arrangement.spacedBy(space = padding),
                 contentPadding = PaddingValues(horizontal = padding),
-                modifier = Modifier.padding(bottom = 6.dp, top = 6.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(bottom = 6.dp, top = 6.dp)
+                    .fillMaxWidth(),
             ) {
                 itemsIndexed(iconPacksLocal, { _, item -> item.packageName }) { index, item ->
                     IconPackItem(
@@ -307,7 +341,7 @@ fun IconPackItem(
     Surface(
         onClick = onClick,
         shape = MaterialTheme.shapes.large,
-        tonalElevation = if (selected) 2.dp else 0.dp,
+        color = if (selected) MaterialTheme.colorScheme.surfaceContainerHighest else Color.Transparent,
         modifier = modifier,
     ) {
         Column(
