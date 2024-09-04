@@ -410,7 +410,7 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
-    implementation 'com.airbnb.android:lottie:6.5.1'
+    implementation 'com.airbnb.android:lottie:6.5.2'
 
     // Compose drag and drop library
     implementation 'sh.calvin.reorderable:reorderable:2.3.2'
