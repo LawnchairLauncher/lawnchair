@@ -44,7 +44,7 @@ import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class SleepGestureHandler(context: Context) : GestureHandler(context) {
+class RecentsGestureHandler(context: Context) : GestureHandler(context) {
 
     override suspend fun onTrigger(launcher: LawnchairLauncher) {
         val app = context.lawnchairApp
