@@ -18,8 +18,6 @@ package app.lawnchair.gestures.handlers
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.TargetApi
-import android.app.admin.DeviceAdminReceiver
-import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -53,7 +51,7 @@ class RecentsGestureHandler(context: Context) : GestureHandler(context) {
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             ComposeBottomSheet.show(launcher) {
                 ServiceWarningDialog(
-                    title = R.string.dt2s_a11y_hint_title,
+                    title = R.string.a11y_hint_title,
                     description = R.string.recents_a11y_hint,
                     settingsIntent = intent,
                 ) { close(true) }
