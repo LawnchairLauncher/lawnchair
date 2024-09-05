@@ -54,7 +54,7 @@ class RecentsGestureHandler(context: Context) : GestureHandler(context) {
             ComposeBottomSheet.show(launcher) {
                 ServiceWarningDialog(
                     title = R.string.dt2s_a11y_hint_title,
-                    description = R.string.dt2s_a11y_hint,
+                    description = R.string.recents_a11y_hint,
                     settingsIntent = intent,
                 ) { close(true) }
             }

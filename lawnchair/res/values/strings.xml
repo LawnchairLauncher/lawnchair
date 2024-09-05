@@ -435,12 +435,14 @@
 
     <string name="gesture_handler_no_op">Do nothing</string>
     <string name="gesture_handler_sleep">Sleep</string>
+    <string name="gesture_handler_recents">Open Recents</string>
     <string name="gesture_handler_open_notifications">Open notification panel</string>
     <string name="gesture_handler_open_app_option">Open app</string>
     <string name="gesture_handler_open_app_config">Open %1$s</string>
     <string name="gesture_handler_open_app_drawer">Open app drawer</string>
     <string name="gesture_handler_open_app_search">Open app search</string>
     <string name="gesture_handler_open_search">Open search</string>
+    
 
     <string name="pick_app_for_gesture">Pick app</string>
 
@@ -451,6 +453,8 @@
     <string name="dt2s_a11y_hint_title">Turn on accessibility service</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Open settings</string>
+
+    <string name="recents_a11y_hint">To launch Recents from Lawnchair, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
 
     <!--
 
