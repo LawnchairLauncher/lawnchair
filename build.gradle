@@ -364,7 +364,7 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
-    implementation platform("androidx.compose:compose-bom:2024.08.00")
+    implementation platform("androidx.compose:compose-bom:2024.09.00")
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
