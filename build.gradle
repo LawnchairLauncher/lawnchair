@@ -318,6 +318,11 @@ androidComponents {
     }
 }
 
+composeCompiler {
+    stabilityConfigurationFile = layout.projectDirectory.file("compose_compiler_config.conf")
+    reportsDestination = layout.buildDirectory.dir("compose_build_reports")
+}
+
 addFrameworkJar('framework-14.jar')
 
 dependencies {
