@@ -44,7 +44,6 @@ import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
 import app.lawnchair.ui.util.addIf
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
-import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun AnnouncementPreference() {
@@ -56,14 +55,14 @@ fun AnnouncementPreference() {
 
     if (enabled && showAnnouncements) {
         AnnouncementPreference(
-            announcements = liveInformation.announcementsImmutable,
+            announcements = liveInformation.announcements,
         )
     }
 }
 
 @Composable
 fun AnnouncementPreference(
-    announcements: ImmutableList<Announcement>,
+    announcements: List<Announcement>,
     modifier: Modifier = Modifier,
 ) {
     Column(

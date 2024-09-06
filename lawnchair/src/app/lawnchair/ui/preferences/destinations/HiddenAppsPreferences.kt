@@ -40,8 +40,6 @@ import app.lawnchair.util.appComparator
 import app.lawnchair.util.appsState
 import com.android.launcher3.R
 import java.util.Comparator.comparing
-import kotlinx.collections.immutable.ImmutableSet
-import kotlinx.collections.immutable.toPersistentSet
 
 @Composable
 fun HiddenAppsPreferences(
@@ -55,7 +53,7 @@ fun HiddenAppsPreferences(
         } else {
             stringResource(id = R.string.hidden_apps_label_with_count, hiddenApps.size)
         }
-    val apps by appsState(comparator = hiddenAppsComparator(hiddenApps.toPersistentSet()))
+    val apps by appsState(comparator = hiddenAppsComparator(hiddenApps))
     val state = rememberLazyListState()
     PreferenceScaffold(
         label = pageTitle,
@@ -109,7 +107,7 @@ fun HiddenAppsPreferences(
 }
 
 @Composable
-fun hiddenAppsComparator(hiddenApps: ImmutableSet<String>): Comparator<App> = remember {
+fun hiddenAppsComparator(hiddenApps: Set<String>): Comparator<App> = remember {
     comparing<App, Int> {
         if (hiddenApps.contains(it.key.toString())) 0 else 1
     }.then(appComparator)

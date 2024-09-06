@@ -41,7 +41,6 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
 import com.kieronquinn.app.smartspacer.sdk.SmartspacerConstants
-import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun SmartspacePreferences(
@@ -136,7 +135,7 @@ fun SmartspaceProviderPreference(
                 label = { stringResource(id = mode.nameResourceId) },
                 enabled = mode.isAvailable(context = context),
             )
-        }.toPersistentList()
+        }.toList()
     }
 
     ListPreference(
@@ -244,7 +243,7 @@ fun SmartspaceTimeFormatPreference(
 
     ListPreference(
         adapter = adapter,
-        entries = entries.toPersistentList(),
+        entries = entries,
         label = stringResource(id = R.string.smartspace_time_format),
         modifier = modifier,
     )
@@ -257,7 +256,7 @@ fun SmartspaceCalendarPreference(
     val entries = remember {
         SmartspaceCalendar.values().map { calendar ->
             ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
-        }.toPersistentList()
+        }
     }
 
     val adapter = preferenceManager2().smartspaceCalendar.getAdapter()

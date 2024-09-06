@@ -35,12 +35,11 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.addIf
 import app.lawnchair.ui.util.bottomSheetHandler
-import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun <T> ListPreference(
     adapter: PreferenceAdapter<T>,
-    entries: ImmutableList<ListPreferenceEntry<T>>,
+    entries: List<ListPreferenceEntry<T>>,
     label: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -61,7 +60,7 @@ fun <T> ListPreference(
 
 @Composable
 fun <T> ListPreference(
-    entries: ImmutableList<ListPreferenceEntry<T>>,
+    entries: List<ListPreferenceEntry<T>>,
     value: T,
     onValueChange: (T) -> Unit,
     label: String,
