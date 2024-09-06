@@ -51,7 +51,7 @@ class RecentsGestureHandler(context: Context) : GestureHandler(context) {
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             ComposeBottomSheet.show(launcher) {
                 ServiceWarningDialog(
-                    title = R.string.a11y_hint_title,
+                    title = R.string.d2ts_recents_a11y_hint_title,
                     description = R.string.recents_a11y_hint,
                     settingsIntent = intent,
                 ) { close(true) }
