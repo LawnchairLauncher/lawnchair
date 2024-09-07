@@ -442,10 +442,6 @@
     <string name="gesture_handler_open_app_drawer">Open app drawer</string>
     <string name="gesture_handler_open_app_search">Open app search</string>
     <string name="gesture_handler_open_search">Open search</string>
-<<<<<<< HEAD
-    
-=======
->>>>>>> upstream/14-dev
 
     <string name="pick_app_for_gesture">Pick app</string>
 
