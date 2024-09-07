@@ -45,7 +45,7 @@ import com.android.launcher3.Utilities
 class RecentsGestureHandler(context: Context) : GestureHandler(context) {
 
     override suspend fun onTrigger(launcher: LawnchairLauncher) {
-        val app = context.lawnchairApp
+        val app = launcher.lawnchairApp
         if (!app.isAccessibilityServiceBound()) {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -58,7 +58,7 @@ class RecentsGestureHandler(context: Context) : GestureHandler(context) {
             }
             return
         }
-        launcher.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
+        app.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
     }
 }
 
