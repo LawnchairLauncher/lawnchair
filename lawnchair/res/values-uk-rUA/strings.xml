@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">Щоб використовувати «Подвійний дотик для переходу в Сплячий режим», надайте Lawnchair дозвіл адміністратора. Натисніть «Відкрити Налаштування», потім натисніть «Активувати цю програму адміністратором пристрою.»</string>
     <string name="dt2s_admin_warning">«Подвійне Натискання в Сплячий Режим» буде відключено.</string>
     <string name="dt2s_a11y_hint_title">Увімкнути службу Спеціальних Можливостей</string>
-    <string name="dt2s_a11y_hint">Для використання функції \"Подвійний дотик для переходу в режим сну\", увімкніть службу доступності Lawnchair. Торкніться «Відкрити налаштування», потім виберіть «Lawnchair» і ввімкніть «Використовувати Lawnchair»</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">Відкрити Налаштування</string>
     <!--
 

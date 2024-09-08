@@ -97,7 +97,7 @@
     <string name="quickstep_label">最近使用的應用程式</string>
     <string name="quickstep_description">Clear All button, corner radius</string>
     <string name="about_label">關於</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">應用程式資訊</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="experimental_features_label">Experimental features</string>
     <!-- Experimental features -->
@@ -107,7 +107,7 @@
     <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
     <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="always_reload_icons_label">永遠重新載入圖示</string>
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
     <string name="recents_lock_unlock">Lock/unlock</string>
     <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
@@ -186,7 +186,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Icon pack</string>
     <string name="themed_icon_pack">Themed icon source</string>
-    <string name="system_icons">System icons</string>
+    <string name="system_icons">系統圖示</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">關閉</string>
     <string name="themed_icons_home_label">Home screen</string>
@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">將停用「輕觸兩下來關閉螢幕」</string>
     <string name="dt2s_a11y_hint_title">Turn on accessibility service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">Open settings</string>
     <!--
 

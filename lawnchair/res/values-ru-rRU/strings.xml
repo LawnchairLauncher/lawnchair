@@ -161,7 +161,7 @@
     <string name="icon_shape_egg">Яйцо</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Восьмиугольник</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">Шестиугольник</string>
     <string name="icon_shape_sammy">Из OneUI</string>
     <string name="icon_shape_rounded_square">Скруглённый квадрат</string>
     <string name="icon_shape_sharp_square">Острый квадрат</string>
@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">Чтобы использовать Спящий режим по двойному нажатию, назначьте Lawnchair администратором устройства. Для этого: откройте Настройки, затем нажмите на \"Активировать приложение администратора устройства.\"</string>
     <string name="dt2s_admin_warning">Двойное нажатие для Спящего режима будет отключено.</string>
     <string name="dt2s_a11y_hint_title">Включить службу спец. возможностей</string>
-    <string name="dt2s_a11y_hint">Чтобы использовать Спящий режим по двойному нажатию, включите Lawnchair в меню спец. возможностей. Для этого: откройте Настройки, затем выберите \"Lawnchair\" и нажмите \"Использовать Lawnchair\"</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">Открыть настройки</string>
     <!--
 

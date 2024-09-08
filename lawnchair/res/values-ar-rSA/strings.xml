@@ -161,7 +161,7 @@
     <string name="icon_shape_egg">بيضة</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">ثماني</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">سداسي</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">مربع مستدير</string>
     <string name="icon_shape_sharp_square">مربع حاد</string>
@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">لاستخدام النقرة المزدوجة لإطفاء الشاشة، عيّن Lawnchair كتطبيق مشرف للجهاز. انقر على فتح الإعدادات، ثم انقر على \"فعِّل التطبيق كمشرف على الجهاز.\"</string>
     <string name="dt2s_admin_warning">سيتم إيقاف تشغيل الضغط المزدوج للسكون.</string>
     <string name="dt2s_a11y_hint_title">تشغيل خدمة الوصول</string>
-    <string name="dt2s_a11y_hint">لاستخدام الضغط المزدوج للسكون، قم بتشغيل خدمة الوصول إلى Lawnchair. اضغط على \"فتح الإعدادات\" ثم قم باختيار \"Lawnchair\" وفعِّل \"استخدم Lawnchair\"</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">فتح الإعدادات</string>
     <!--
 

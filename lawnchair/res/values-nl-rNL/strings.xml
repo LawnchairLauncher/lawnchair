@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">Om Dubbeltikken voor Slaapstand te gebruiken, moet Lawnchair worden ingesteld als een apparaatbeheerder-app. Tik op \"Instellingen openen\" en tik vervolgens op \"Activeer deze apparaatbeheerder-app.\"</string>
     <string name="dt2s_admin_warning">Dubbeltikken voor Slaapstand wordt uitgeschakeld.</string>
     <string name="dt2s_a11y_hint_title">Toegankelijkheidsservice inschakelen</string>
-    <string name="dt2s_a11y_hint">Om Dubbeltikken voor Slaapstand te gebruiken, moet de Lawnchair toegankelijkheidsdienst worden ingeschakeld. Tik op \"Instellingen openen\", selecteer \"Lawnchair\" en schakel \"Lawnchair gebruiken\" in.</string>
+    <string name="dt2s_a11y_hint">Om \'Dubbel tikken om in de sluimerstand te zetten\' te gebruiken, moet de toegankelijkheidsservice Lawnchair ingeschakeld zijn. Tik op \"Instellingen openen\", selecteer \"Lawnchair\" en schakel \"Lawnchair gebruiken\" in. \n\nLawnchair gebruikt de \'performGlobalAction\'-methode van Toegankelijkheid om deze actie uit te voeren. Dit is een gevoelige machtiging waarmee andere apps kunnen worden bewaakt. Lawnchair is echter niet geconfigureerd voor die functionaliteit en ontvangt geen gebeurtenissen.</string>
     <string name="dt2s_warning_open_settings">Instellingen openen</string>
     <!--
 
