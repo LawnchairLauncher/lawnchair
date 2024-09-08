@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">要使用双击息屏，请把 Lawnchair 设置为设备管理员应用，点击\"打开设置\"，然后点击\"启用设备管理员应用\"</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
     <string name="dt2s_a11y_hint_title">打开无障碍服务</string>
-    <string name="dt2s_a11y_hint">要使用双击息屏，请打开 Lawnchair 的无障碍服务，点击\"打开设置\"，然后选择\"Lawnchair\"，然后打开开关</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">打开设置</string>
     <!--
 

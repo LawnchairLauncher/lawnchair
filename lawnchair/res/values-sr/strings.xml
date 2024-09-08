@@ -104,7 +104,7 @@
     <string name="font_picker_label">Прилагођавање фонта</string>
     <string name="font_picker_description">Не утиче на сав текст</string>
     <string name="smartspace_calendar_label">Прилагођавање календара у виџету „Кратак преглед”</string>
-    <string name="smartspace_calendar_description">Омогућава приказ датума у календарским системима који нису грегоријански</string>
+    <string name="smartspace_calendar_description">Омогућите приказ датума из других календара</string>
     <string name="workspace_increase_max_grid_size_label">Већа мрежа</string>
     <string name="workspace_increase_max_grid_size_description">Повећајте максималну величину мреже почетног екрана из 10 × 10 у 20 × 20</string>
     <string name="always_reload_icons_label">Увек учитавај иконе изнова</string>
@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, подесите Lawnchair као администратор уређаја. У подешавањима додирните „Активирај ову апликацију за администратора уређаја”.</string>
     <string name="dt2s_admin_warning">Функција „Додирните двапут за стање спавања” ће бити искључена</string>
     <string name="dt2s_a11y_hint_title">Укључи услугу приступачности</string>
-    <string name="dt2s_a11y_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, укључите Lawnchair-ову услугу приступачности. У подешавањима изаберите Lawnchair и додирните „Користи Lawnchair”.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">Отвори подешавања</string>
     <!--
 

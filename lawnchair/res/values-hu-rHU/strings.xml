@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">A dupla koppintásos altatáshoz állítsa be a Lawnchairt eszközrendszergazdai alkalmazásként. Koppintson a beállítások megnyitására, majd koppintson „Az eszközrendszergazdai alkalmazás aktiválása” lehetőségre.</string>
     <string name="dt2s_admin_warning">A dupla koppintásos alvás ki lesz kapcsolva.</string>
     <string name="dt2s_a11y_hint_title">Akadálymentesítési szolgáltatás bekapcsolása</string>
-    <string name="dt2s_a11y_hint">A dupla koppintásos alvás bekapcsolásához kapcsolja be a Lawnchair akadálymentesítési szolgáltatást. Koppintson a „Beállítások megnyitása” gombra, majd válassza a „Lawnchair” lehetőséget, és kapcsolja be ezt: „Lawnchair használata”.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">Beállítások megnyitása</string>
     <!--
 

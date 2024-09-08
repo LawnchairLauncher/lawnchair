@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, podesite Lawnchair kao administrator uređaja. U podešavanjima dodirnite „Aktiviraj ovu aplikaciju za administratora uređaja”.</string>
     <string name="dt2s_admin_warning">Funkcija „Dodirnite dvaput za stanje spavanja” će biti isključena</string>
     <string name="dt2s_a11y_hint_title">Uključi uslugu pristupačnosti</string>
-    <string name="dt2s_a11y_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, uključite Lawnchairovu uslugu pristupačnosti. U podešavanjima izaberite Lawnchair i dodirnite „Koristi Lawnchair”.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">Otvori podešavanja</string>
     <!--
 
