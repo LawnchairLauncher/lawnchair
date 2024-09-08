@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">Um Doppeltippen zum Display Ausschalten zu verwenden, aktiviere Lawnchair als App zur Geräteverwaltung. Tippe auf \"Einstellungen öffnen\" und tippe auf „Diese App zur Geräteverwaltung aktivieren“.</string>
     <string name="dt2s_admin_warning">Doppeltes Tippen zum Schlafen wird deaktiviert.</string>
     <string name="dt2s_a11y_hint_title">Bedienungshilfen aktivieren</string>
-    <string name="dt2s_a11y_hint">Um Doppel-Tippen zum Display Ausschalten zu verwenden, aktiviere die Bedienungshilfe für Lawnchair. Tippe auf \"Einstellungen öffnen\", wähle Lawnchair aus und aktiviere \"Lawnchair verwenden\".</string>
+    <string name="dt2s_a11y_hint">Um Doppeltippen zum Display ausschalten zu verwenden, aktiviere die Bedienungshilfen. Tippe auf \"Einstellungen öffnen\", wähle \"Lawnchair\" aus und aktiviere \"Lawnchair verwenden\"\"\n\nLawnchair verwendet die Bedienungshilfe \'performGlobalAction\', um diese Aktion auszuführen. Dies ist eine sensible Berechtigung, die es ermöglicht, andere Apps zu überwachen. Lawnchair ist jedoch nicht für derartige Funktionen konfiguriert und liest keine Vorgänge aus.</string>
     <string name="dt2s_warning_open_settings">Einstellungen öffnen</string>
     <!--
 

@@ -142,7 +142,7 @@
     <string name="transparent_background_icons_description">Použít průhledné pozadí u ikon s tématem</string>
     <string name="auto_adaptive_icons_label">Automaticky adaptivní ikony</string>
     <string name="auto_adaptive_icons_description">Pro všechny neadaptivní ikony</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
+    <string name="shadow_bg_icons_label">Zobrazit stín za ikomana</string>
     <string name="background_lightness_label">Jas pozadí</string>
     <string name="adaptive_icon_background_description">Pro bílý režim použít 100% osvětlení pozadí</string>
     <string name="reset_custom_icons">Obnovit upravené ikony</string>
@@ -161,7 +161,7 @@
     <string name="icon_shape_egg">Vajíčko</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Osmiúhelník</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">Šestiúhelník</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Zaoblený čtverec</string>
     <string name="icon_shape_sharp_square">Ostrý čtverec</string>
@@ -226,7 +226,7 @@
     <!-- Color style -->
     <string name="color_style_label">Barevný styl</string>
     <string name="color_style_spritz">Spritz</string>
-    <string name="color_style_tonal_spot">Tonal Spot</string>
+    <string name="color_style_tonal_spot">Tónová skvrna</string>
     <string name="color_style_vibrant">Sytá</string>
     <string name="color_style_expressive">Expressive</string>
     <string name="color_style_rainbow">Rainbow</string>
@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">Uspání dvojitým poklepáním bude vypnuto.</string>
     <string name="dt2s_a11y_hint_title">Zapnout službu usnadnění</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">Otevřít nastavení</string>
     <!--
 

@@ -64,7 +64,7 @@
     <string name="layout">Layout</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Bakgrundsbild</string>
-    <string name="background_opacity">Bakgrundsopacitet</string>
+    <string name="background_opacity">Opacitet för bakgrund</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopierad till urklipp</string>
     <string name="item_removed">Objekt borttaget</string>
@@ -105,7 +105,7 @@
     <string name="font_picker_description">En del text förblir oförändrad</string>
     <string name="smartspace_calendar_label">Anpassning av snabböversiktskalender</string>
     <string name="smartspace_calendar_description">Tillåt visning av datum i icke-gregorianska kalendersystem</string>
-    <string name="workspace_increase_max_grid_size_label">Utöka gränsen för maximal rutnätsstorlek</string>
+    <string name="workspace_increase_max_grid_size_label">Utöka gräns för maximal rutnätsstorlek</string>
     <string name="workspace_increase_max_grid_size_description">Utöka maximalt tillåten storlek på startskärmsrutnätet från 10 x 10 till 20 x 20</string>
     <string name="always_reload_icons_label">Ladda alltid om ikoner</string>
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
@@ -142,7 +142,7 @@
     <string name="transparent_background_icons_description">Använd transparent bakgrund på tematiserade ikoner</string>
     <string name="auto_adaptive_icons_label">Autoadaptiva ikoner</string>
     <string name="auto_adaptive_icons_description">För alla icke-adaptiva ikoner</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
+    <string name="shadow_bg_icons_label">Visa skugga bakom ikoner</string>
     <string name="background_lightness_label">Bakgrundens ljushet</string>
     <string name="adaptive_icon_background_description">Använd 100 % bakgrundsljushet för vitt</string>
     <string name="reset_custom_icons">Återställ anpassade ikoner</string>
@@ -278,12 +278,12 @@
     <string name="smartspace_battery_status">Batteristatus</string>
     <string name="smartspace_now_playing">Nu spelas</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="maximum_number_of_targets">Maximalt antal mål</string>
+    <string name="open_smartspacer_settings">Öppna Smartspacer-inställningar</string>
+    <string name="smartspacer_settings">Smartspacer-inställningar</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tryck för att konfigurera</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsprickar.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Visa på startskärmen</string>
     <string name="smartspace_widget_toggle_description">Snabböversikt kan läggas till manuellt på startskärmen genom att placera ut Lawnchair-widgeten</string>
@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">För att använda dubbeltryck för att vila, ange Lawnchair som en enhetsadminapp. Tryck på \"Öppna inställningar\", tryck sedan på \"Aktivera denna enhetsadminapp\".</string>
     <string name="dt2s_admin_warning">Dubbeltryck för att vila kommer att inaktiveras.</string>
     <string name="dt2s_a11y_hint_title">Aktivera tillgänglighetstjänst</string>
-    <string name="dt2s_a11y_hint">För att använda dubbeltryck för att vila, aktivera Lawnchairs tillgänglighetstjänst. Tryck på \"Öppna inställningar\", välj \"Lawnchair\" och aktivera \"Använd Lawnchair\".</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">Öppna inställningar</string>
     <!--
 
@@ -374,7 +374,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotation av startskärmen</string>
     <string name="home_screen_rotation_description">Tillåt rotation av startskärmen när enheten roteras</string>
-    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
+    <string name="wallpaper_blur">Gör bakgrundsbild oskarp (experimentell)</string>
     <string name="wallpaper_background_blur">Oskärpans intensitet</string>
     <string name="wallpaper_background_blur_factor">Faktortröskel</string>
     <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
@@ -453,8 +453,8 @@
         <item quantity="other">%1$d appar</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
-    <string name="folder_bg_opacity_label">Mappbakgrundsopacitet</string>
+    <string name="folder_preview_bg_opacity_label">Opacitet för ikonförhandsgranskningens bakgrund</string>
+    <string name="folder_bg_opacity_label">Opacitet för mappbakgrund</string>
     <string name="folder_preview_bg_color_label">Ikonbakgrundsfärg</string>
     <string name="max_folder_columns">Maximalt antal mappkolumner</string>
     <string name="max_folder_rows">Maximalt antal mapprader</string>
@@ -463,7 +463,7 @@
     <string name="quickstep_incompatible">Inkompatibel systemintegration</string>
     <string name="quickstep_incompatible_description">Din enhet är konfigurerad för att ha systemgester (kända som Quickstep) tillhandahållna av %1$s, men denna version av %1$s är inte kompatibel med din Android-version. För att fortsätta att använda din enhet, vänligen avinstallera uppdateringar till %1$s eller inaktivera %1$s som systemgestsleverantör.</string>
     <string name="translucent_background">Genomlysande bakgrund</string>
-    <string name="translucent_background_alpha">Bakgrundsopacitet</string>
+    <string name="translucent_background_alpha">Opacitet för bakgrund</string>
     <string name="recents_actions_label">Snabbåtgärder</string>
     <string name="action_share">Dela</string>
     <string name="action_lens">Lins</string>
@@ -537,6 +537,6 @@
     <string name="grant_requested_permissions">Bevilja behörigheter</string>
     <string name="allapps_web_suggestion_provider_label">Webbförslagsleverantör</string>
     <string name="allapps_use_web_suggestion_icon_label">Visa webbförslagsleverantörens ikon i sökfältet</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
-    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
+    <string name="allapps_match_qsb_style_label">Matcha åtgärder i favoritfältets sökfält</string>
+    <string name="allapps_match_qsb_style_description">Att klicka på favoritfältets sökfält kommer nu att öppna applådans sökgränssnitt</string>
 </resources>

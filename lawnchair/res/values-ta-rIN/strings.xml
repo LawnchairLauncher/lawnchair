@@ -350,7 +350,7 @@
     <string name="dt2s_admin_hint">அணைக்க இரட்டைத்தட்டலைப் பயன்படுத்த Lawnchairஐச் சாதன நிர்வாகிச் செயலியாக அமை. அமைப்பைத் திற என்பதைத் தட்டி, “இந்தச் சாதன நிர்வாகி ஆப்ஸைச் செயல்படுத்து” என்பதைத் தட்டுக</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">அணுகல்தன்மை சேவையை இயக்கு</string>
-    <string name="dt2s_a11y_hint">அணைக்க இரட்டைத்தட்டலைப் பயன்படுத்த, Lawnchair அணுகல்தன்மை சேவையை இயக்கு. அமைப்பைத் திற என்பதைத் தட்டி Lawnchairஐத் தேர்ந்தெடுத்து Lawnchairஐப் பயன்படுத்து என்பதை இயக்கு</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_warning_open_settings">அமைப்புகளைத் திற</string>
     <!--
 
