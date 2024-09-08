@@ -17,30 +17,13 @@
 package app.lawnchair.gestures.handlers
 
 import android.accessibilityservice.AccessibilityService
-import android.annotation.TargetApi
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.provider.Settings
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.lawnchairApp
-import app.lawnchair.ui.ModalBottomSheetContent
-import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 
 class RecentsGestureHandler(context: Context) : GestureHandler(context) {
 
@@ -61,4 +44,3 @@ class RecentsGestureHandler(context: Context) : GestureHandler(context) {
         app.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
     }
 }
-
