@@ -25,6 +25,7 @@ sealed class GestureHandlerOption(
 
     data object NoOp : Simple(GestureHandlerConfig.NoOp)
     data object Sleep : Simple(GestureHandlerConfig.Sleep)
+    data object Recents : Simple(GestureHandlerConfig.Recents)
     data object OpenNotifications : Simple(GestureHandlerConfig.OpenNotifications)
     data object OpenAppDrawer : Simple(GestureHandlerConfig.OpenAppDrawer)
     data object OpenAppSearch : Simple(GestureHandlerConfig.OpenAppSearch)

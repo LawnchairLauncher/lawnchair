@@ -83,7 +83,7 @@ class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepM
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             ComposeBottomSheet.show(launcher) {
                 ServiceWarningDialog(
-                    title = R.string.dt2s_a11y_hint_title,
+                    title = R.string.d2ts_recents_a11y_hint_title,
                     description = R.string.dt2s_a11y_hint,
                     settingsIntent = intent,
                 ) { close(true) }
@@ -155,7 +155,7 @@ fun ServiceWarningDialog(
                     handleClose()
                 },
             ) {
-                Text(text = stringResource(id = R.string.dt2s_warning_open_settings))
+                Text(text = stringResource(id = R.string.dt2s_recents_warning_open_settings))
             }
         },
     )

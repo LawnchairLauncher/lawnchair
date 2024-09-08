@@ -9,6 +9,7 @@ import app.lawnchair.gestures.handlers.OpenAppSearchGestureHandler
 import app.lawnchair.gestures.handlers.OpenAppTarget
 import app.lawnchair.gestures.handlers.OpenNotificationsHandler
 import app.lawnchair.gestures.handlers.OpenSearchGestureHandler
+import app.lawnchair.gestures.handlers.RecentsGestureHandler
 import app.lawnchair.gestures.handlers.SleepGestureHandler
 import com.android.launcher3.R
 import kotlinx.serialization.SerialName
@@ -41,7 +42,11 @@ sealed class GestureHandlerConfig {
     data object Sleep : Simple(R.string.gesture_handler_sleep, ::SleepGestureHandler)
 
     @Serializable
-    @SerialName("openNotifications")
+    @SerialName("recents")
+    data object Recents : Simple(R.string.gesture_handler_recents, ::RecentsGestureHandler)
+
+    @Serializable
+    @SerialName("openNotificationdata")
     data object OpenNotifications : Simple(R.string.gesture_handler_open_notifications, ::OpenNotificationsHandler)
 
     @Serializable
