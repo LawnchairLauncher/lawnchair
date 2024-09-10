@@ -11,14 +11,14 @@
         <item name="android:colorBackground">@color/white_50</item>
     </style>
 
-    <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="Base.Theme.MaterialThemeBuilder" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
     </style>
 
-    <style name="Theme.Transparent" parent="Theme.AppCompat.Light">
+    <style name="Theme.Transparent" parent="android:Theme.Material.Light">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
