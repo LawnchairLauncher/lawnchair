@@ -111,7 +111,7 @@ data class SearchActionCompat(
         private var extras: Bundle? = null
 
         /**
-         * Sets the subtitle.
+         * Sets the icon.
          */
         fun setIcon(icon: Icon?) = apply {
             this.icon = icon
