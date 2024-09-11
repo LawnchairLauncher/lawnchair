@@ -19,7 +19,7 @@
 
 <resources>
     <!-- Launcher theme -->
-    <style name="BaseLauncherTheme" parent="@android:style/Theme.DeviceDefault.Light">
+    <style name="BaseLauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="disabledIconAlpha">.54</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
@@ -406,7 +406,7 @@
         <item name="android:stateListAnimator">@null</item>
     </style>
 
-    <style name="AddItemActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+    <style name="AddItemActivityTheme" parent="Theme.AppCompat.Translucent.NoTitleBar">
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowTranslucentStatus">true</item>

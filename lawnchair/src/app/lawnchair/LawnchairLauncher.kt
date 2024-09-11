@@ -19,34 +19,14 @@ package app.lawnchair
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.content.IntentSender
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.Display
 import android.view.View
 import android.view.ViewTreeObserver
-import androidx.activity.OnBackPressedDispatcher
-import androidx.activity.OnBackPressedDispatcherOwner
-import androidx.activity.result.ActivityResultRegistry
-import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.lifecycleScope
-import androidx.savedstate.SavedStateRegistry
-import androidx.savedstate.SavedStateRegistryController
-import androidx.savedstate.SavedStateRegistryOwner
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.factory.LawnchairWidgetHolder
@@ -82,7 +62,6 @@ import com.android.launcher3.util.RunnableList
 import com.android.launcher3.util.SystemUiController.UI_STATE_BASE_WINDOW
 import com.android.launcher3.util.Themes
 import com.android.launcher3.util.TouchController
-import com.android.launcher3.views.ComposeInitializer
 import com.android.launcher3.views.FloatingSurfaceView
 import com.android.launcher3.widget.LauncherWidgetHolder
 import com.android.launcher3.widget.RoundedCornerEnforcement
@@ -98,14 +77,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class LawnchairLauncher :
-    QuickstepLauncher(),
-    LifecycleOwner,
-    SavedStateRegistryOwner,
-    ActivityResultRegistryOwner,
-    OnBackPressedDispatcherOwner {
-
-    private val savedStateRegistryController = SavedStateRegistryController.create(this)
+class LawnchairLauncher : QuickstepLauncher() {
     private val defaultOverlay by unsafeLazy { OverlayCallbackImpl(this) }
     private val prefs by unsafeLazy { PreferenceManager.getInstance(this) }
     private val preferenceManager2 by unsafeLazy { PreferenceManager2.getInstance(this) }
@@ -136,92 +108,9 @@ class LawnchairLauncher :
 
     val gestureController by unsafeLazy { GestureController(this) }
 
-    override val savedStateRegistry: SavedStateRegistry = savedStateRegistryController.savedStateRegistry
-    override val activityResultRegistry = object : ActivityResultRegistry() {
-        override fun <I : Any?, O : Any?> onLaunch(
-            requestCode: Int,
-            contract: ActivityResultContract<I, O>,
-            input: I,
-            options: ActivityOptionsCompat?,
-        ) {
-            val activity = this@LawnchairLauncher
-
-            // Immediate result path
-            val synchronousResult = contract.getSynchronousResult(activity, input)
-            if (synchronousResult != null) {
-                Handler(Looper.getMainLooper()).post {
-                    dispatchResult(
-                        requestCode,
-                        synchronousResult.value,
-                    )
-                }
-                return
-            }
-
-            // Start activity path
-            val intent = contract.createIntent(activity, input)
-            var optionsBundle: Bundle? = null
-            // If there are any extras, we should defensively set the classLoader
-            if (intent.extras != null && intent.extras!!.classLoader == null) {
-                intent.setExtrasClassLoader(activity.classLoader)
-            }
-            if (intent.hasExtra(StartActivityForResult.EXTRA_ACTIVITY_OPTIONS_BUNDLE)) {
-                optionsBundle =
-                    intent.getBundleExtra(StartActivityForResult.EXTRA_ACTIVITY_OPTIONS_BUNDLE)
-                intent.removeExtra(StartActivityForResult.EXTRA_ACTIVITY_OPTIONS_BUNDLE)
-            } else if (options != null) {
-                optionsBundle = options.toBundle()
-            }
-            if (RequestMultiplePermissions.ACTION_REQUEST_PERMISSIONS == intent.action) {
-                // requestPermissions path
-                var permissions =
-                    intent.getStringArrayExtra(RequestMultiplePermissions.EXTRA_PERMISSIONS)
-                if (permissions == null) {
-                    permissions = arrayOfNulls(0)
-                }
-                ActivityCompat.requestPermissions(activity, permissions, requestCode)
-            } else if (StartIntentSenderForResult.ACTION_INTENT_SENDER_REQUEST == intent.action) {
-                val request: IntentSenderRequest =
-                    intent.getParcelableExtra(StartIntentSenderForResult.EXTRA_INTENT_SENDER_REQUEST)!!
-                try {
-                    // startIntentSenderForResult path
-                    ActivityCompat.startIntentSenderForResult(
-                        activity,
-                        request.intentSender,
-                        requestCode,
-                        request.fillInIntent,
-                        request.flagsMask,
-                        request.flagsValues,
-                        0,
-                        optionsBundle,
-                    )
-                } catch (e: IntentSender.SendIntentException) {
-                    Handler(Looper.getMainLooper()).post {
-                        dispatchResult(
-                            requestCode,
-                            RESULT_CANCELED,
-                            Intent()
-                                .setAction(StartIntentSenderForResult.ACTION_INTENT_SENDER_REQUEST)
-                                .putExtra(StartIntentSenderForResult.EXTRA_SEND_INTENT_EXCEPTION, e),
-                        )
-                    }
-                }
-            } else {
-                // startActivityForResult path
-                ActivityCompat.startActivityForResult(activity, intent, requestCode, optionsBundle)
-            }
-        }
-    }
-    override val onBackPressedDispatcher = OnBackPressedDispatcher {
-        super.onBackPressed()
-    }
-    override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
-        savedStateRegistryController.performRestore(savedInstanceState)
         super.onCreate(savedInstanceState)
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.feedProvider.subscribeChanges(this, defaultOverlay::reconnect)
@@ -295,11 +184,6 @@ class LawnchairLauncher :
         showQuickstepWarningIfNecessary()
 
         reloadIconsIfNeeded()
-    }
-
-    override fun setupViews() {
-        super.setupViews()
-        ComposeInitializer.initCompose(this)
     }
 
     override fun collectStateHandlers(out: MutableList<StateManager.StateHandler<*>>) {
@@ -427,14 +311,8 @@ class LawnchairLauncher :
         return ActivityOptionsWrapper(options, callback)
     }
 
-    override fun onStart() {
-        super.onStart()
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_START)
-    }
-
     override fun onResume() {
         super.onResume()
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         restartIfPending()
 
         dragLayer.viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
@@ -454,39 +332,9 @@ class LawnchairLauncher :
         })
     }
 
-    override fun onPause() {
-        super.onPause()
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        // Only actually closes if required, safe to call if not enabled
         SmartspacerClient.close()
-    }
-
-    @Suppress("OVERRIDE_DEPRECATION")
-    override fun onBackPressed() {
-        onBackPressedDispatcher.onBackPressed()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        savedStateRegistryController.performSave(outState)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (activityResultRegistry.dispatchResult(requestCode, resultCode, data)) {
-            mPendingActivityRequestCode = -1
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-        }
     }
 
     override fun getDefaultOverlay(): LauncherOverlayManager = defaultOverlay

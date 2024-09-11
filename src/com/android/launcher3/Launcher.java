@@ -1035,6 +1035,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     public void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         mPendingActivityRequestCode = -1;
         handleActivityResult(requestCode, resultCode, data);
     }
@@ -1336,7 +1337,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         LauncherState[] stateValues = LauncherState.values();
         LauncherState state = stateValues[stateOrdinal];
 
-        NonConfigInstance lastInstance = (NonConfigInstance) getLastNonConfigurationInstance();
+        NonConfigInstance lastInstance = (NonConfigInstance) getLastCustomNonConfigurationInstance();
         boolean forceRestore = lastInstance != null
                 && (lastInstance.config.diff(mOldConfig) & CONFIG_UI_MODE) != 0;
         if (forceRestore || !state.shouldDisableRestore()) {
@@ -1612,8 +1613,9 @@ public class Launcher extends StatefulActivity<LauncherState>
         closeContextMenu();
     }
 
+    @Nullable
     @Override
-    public Object onRetainNonConfigurationInstance() {
+    public Object onRetainCustomNonConfigurationInstance() {
         NonConfigInstance instance = new NonConfigInstance();
         instance.config = new Configuration(mOldConfig);
         return instance;

@@ -40,7 +40,7 @@ class SmartspaceQsb @JvmOverloads constructor(context: Context, attrs: Attribute
 
         override fun createBindOptions(): Bundle {
             val opts = super.createBindOptions()
-            opts.putString("attached-launcher-identifier", context.packageName)
+            opts.putString("attached-launcher-identifier", requireContext().packageName)
             opts.putBoolean("com.google.android.apps.gsa.widget.PREINSTALLED", true)
             return opts
         }

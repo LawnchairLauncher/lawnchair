@@ -3,33 +3,32 @@ name: CI
 on:
   push:
     branches:
-      - '*-dev'
+      - trunk
     paths-ignore:
       - '.idea/**'
       - '.gitattributes'
       - '.github/**.json'
       - '.gitignore'
-      - '.gitmodules'
       - '**.md'
       - 'LICENSE'
       - 'NOTICE'
   pull_request:
+    branches:
+      - trunk
     paths-ignore:
       - '.idea/**'
       - '.gitattributes'
       - '.github/**.json'
       - '.gitignore'
-      - '.gitmodules'
       - '**.md'
       - 'LICENSE'
       - 'NOTICE'
-  workflow_dispatch:
-  workflow_call:
 
 jobs:
-  build-debug-apk:
+  build:
     runs-on: ubuntu-latest
-    continue-on-error: true
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,25 +38,14 @@ jobs:
           distribution: 'zulu'
           java-version: 21
       - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew assembleLawnWithQuickstepRelease
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/trunk' && github.event_name == 'push'
         with:
-          cache-encryption-key: Da25KUVSE5jbGds2zXmfXw==
-      - name: Write sign info
-        if: github.repository_owner == 'LawnchairLauncher'
-        run: |
-          if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
-            echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
-            echo keyAlias='${{ secrets.KEY_ALIAS }}' >> keystore.properties
-            echo keyPassword='${{ secrets.KEY_PASSWORD }}' >> keystore.properties
-            echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
-            echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
-          fi
-      - name: Build debug APK
-        run: ./gradlew assembleLawnWithQuickstepGithubDebug assembleLawnWithQuickstepPlayDebug
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Debug APK
-          path: build/outputs/apk/**/*.apk
+          name: Release APK
+          path: |
+            build/outputs/apk/lawnWithQuickstep/release/*.apk
+            build/outputs/mapping/lawnWithQuickstepRelease/mapping.txt
 
   check-style:
     runs-on: ubuntu-latest
@@ -72,67 +60,20 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew spotlessCheck
 
-  send-notifications:
-    runs-on: ubuntu-latest
-    if: github.repository_owner == 'LawnchairLauncher'
-    needs: build-debug-apk
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - name: Install Python packages
-        run: |
-          python -m pip install --upgrade pip
-          pip install gitpython requests
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: Debug APK
-          path: artifacts/debug-apk
-      - name: Send notifications
-        run: python ci.py
-        env:
-          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
-          TELEGRAM_CI_CHANNEL_ID: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
-          TELEGRAM_TEAM_GROUP_ID: ${{ secrets.NOTIFY_CHANNEL_ID }}
-          ARTIFACT_DIRECTORY: artifacts/debug-apk
-          GITHUB_REF: ${{ github.ref }}
-          ACTION: internal_notifications
-
-  crowdin-auto-merge:
-    runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login == 'lawnchair-bot' && github.event.pull_request.title == 'New Crowdin translations by Github Action'
-    needs: build-debug-apk
-    steps:
-      - env:
-          GH_TOKEN: ${{ secrets.LAWNCHAIR_BOT_TOKEN }}
-          PR_URL: ${{ github.event.pull_request.html_url }}
-        run: |
-          gh pr comment $PR_URL --body "No issues found, auto-merging the Crowdin pull request."
-          gh pr merge $PR_URL --auto --squash --delete-branch
-
   nightly-release:
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && github.ref == 'refs/heads/14-dev'
-    needs: build-debug-apk
+    if: github.repository_owner == 'Goooler' && github.ref == 'refs/heads/trunk' && github.event_name == 'push'
+    needs: build
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
-      # Note the # and () symbols are not supported in GitHub Release filenames, even manually
-      - name: Export APK_NAME for later use
-        run: echo "APK_NAME=Lawnchair.Debug.${{ github.ref_name }}.Nightly-CI_${{ github.run_number }}-$(echo ${{ github.sha }} | cut -c1-7).apk" >> $GITHUB_ENV
-      - name: Rename .apk file
-        run: mv "./Debug APK/lawnWithQuickstepGithub/debug/"*.apk "./$APK_NAME"
+      - name: Generate release name with current date
+        run: echo "RELEASE_NAME=14.0.0-$(date +'%Y%m%d')" >> $GITHUB_ENV
       - name: Delete release if exist then create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag
-          gh release create "nightly" "./$APK_NAME" -p -t "Lawnchair Nightly" --generate-notes
+          gh release view ${{ env.RELEASE_NAME }} && gh release delete ${{ env.RELEASE_NAME }} -y --cleanup-tag
+          gh release create ${{ env.RELEASE_NAME }} "./Release APK/apk/lawnWithQuickstep/release/"*.apk "./Release APK/mapping/lawnWithQuickstepRelease/"mapping.txt -t ${{ env.RELEASE_NAME }} --generate-notes
