@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - trunk
+      - orignal
     paths-ignore:
       - '.idea/**'
       - '.gitattributes'
@@ -59,21 +59,3 @@ jobs:
           java-version: 21
       - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew spotlessCheck
-
-  nightly-release:
-    runs-on: ubuntu-latest
-    if: github.repository_owner == 'Goooler' && github.ref == 'refs/heads/trunk' && github.event_name == 'push'
-    needs: build
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-      - name: Generate release name with current date
-        run: echo "RELEASE_NAME=14.0.0-$(date +'%Y%m%d')" >> $GITHUB_ENV
-      - name: Delete release if exist then create release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release view ${{ env.RELEASE_NAME }} && gh release delete ${{ env.RELEASE_NAME }} -y --cleanup-tag
-          gh release create ${{ env.RELEASE_NAME }} "./Release APK/apk/lawnWithQuickstep/release/"*.apk "./Release APK/mapping/lawnWithQuickstepRelease/"mapping.txt -t ${{ env.RELEASE_NAME }} --generate-notes
