@@ -138,10 +138,11 @@ fun SliderPreference(
 
 fun getSteps(valueRange: ClosedFloatingPointRange<Float>, step: Float): Int {
     if (step == 0f) return 0
-    val start = valueRange.start
-    val end = valueRange.endInclusive
-    val steps = ((end - start) / step).toInt()
-    require(start + step * steps == end) {
+    val start = valueRange.start.toBigDecimal()
+    val end = valueRange.endInclusive.toBigDecimal()
+    val test = (end - start) / step.toBigDecimal()
+    val steps = test.toInt()
+    require(test.compareTo(steps.toBigDecimal()) == 0) {
         "value range must be a multiple of step"
     }
     return steps - 1
