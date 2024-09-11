@@ -9,11 +9,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import app.lawnchair.allapps.views.SearchResultView.Companion.FLAG_HIDE_SUBTITLE
 import app.lawnchair.font.FontManager
+import app.lawnchair.search.adapter.CALCULATOR
 import app.lawnchair.search.adapter.HISTORY
 import app.lawnchair.search.adapter.SETTINGS
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.WEB_SUGGESTION
 import app.lawnchair.search.model.SearchResultActionCallBack
+import app.lawnchair.util.copyToClipboard
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.touch.ItemClickHandler
@@ -92,6 +94,10 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
             target.resultType == SearchTargetCompat.RESULT_TYPE_SETTING_TILE &&
             target.packageName == SETTINGS
 
+        val isCalculator = target.layoutType == LayoutType.CALCULATOR &&
+            target.resultType == SearchTargetCompat.RESULT_TYPE_CALCULATOR &&
+            target.packageName == CALCULATOR
+
         bindShortcuts(shortcuts)
         var showDelimiter = true
         if (isSmall) {
@@ -118,6 +124,15 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
             layoutParams.height = resources.getDimensionPixelSize(R.dimen.search_result_small_row_height)
             setOnClickListener {
                 target.searchAction?.intent?.let { intent -> handleSearchTargetClick(context, intent) }
+            }
+        }
+        if (isCalculator) {
+            setOnClickListener {
+                copyToClipboard(
+                    context = context,
+                    text = target.extras.getString("result"),
+                    toastMessage = context.getString(R.string.calculator_search_result_copied_toast),
+                )
             }
         }
     }

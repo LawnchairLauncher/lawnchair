@@ -81,6 +81,7 @@
 
     <!-- Toast text and tips -->
     <string name="copied_toast">Copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">Item removed</string>
 
     <!-- Miscellaneous -->
