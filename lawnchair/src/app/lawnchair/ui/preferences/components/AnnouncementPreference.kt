@@ -81,12 +81,14 @@ fun AnnouncementPreference(
         modifier = modifier,
     ) {
         announcements.forEachIndexed { index, announcement ->
-            var show by rememberSaveable { mutableStateOf(true) }
-            AnnouncementItem(show, announcement) {
+            var notDismissed by rememberSaveable { mutableStateOf(true) }
+            val visible = announcement.shouldBeVisible && notDismissed
+
+            AnnouncementItem(visible, announcement) {
                 onDismiss(announcement)
-                show = false
+                notDismissed = false
             }
-            if (index != announcements.lastIndex && show) {
+            if (index != announcements.lastIndex && visible) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -95,14 +97,14 @@ fun AnnouncementPreference(
 
 @Composable
 private fun AnnouncementItem(
-    show: Boolean,
+    visible: Boolean,
     announcement: Announcement,
     modifier: Modifier = Modifier,
     onClose: () -> Unit,
 ) {
     ExpandAndShrink(
         modifier = modifier,
-        visible = show && announcement.shouldBeVisible,
+        visible = visible,
     ) {
         AnnouncementItemContent(
             text = announcement.text,
