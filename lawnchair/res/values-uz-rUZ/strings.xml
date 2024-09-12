@@ -74,7 +74,7 @@
     <string name="accessibility_service_description">Imo-ishorani bajarayotganda telefoningizni qulflash uchun Lawnchair maxsus imkoniyatlarga kirishni talab qiladi.\n\nLawnchair hech qanday foydalanuvchi harakatini kuzatmaydi, lekin bu imtiyoz barcha maxsus imkoniyatlar xizmatlari uchun talab qilinadi.
 Lawnchair tizim tomonidan yuborilgan har qanday hodisani bekor qiladi.\n\nTelefoningizni qulflash uchun Lawnchair Global Action Accessibility xizmatidan foydalanadi.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

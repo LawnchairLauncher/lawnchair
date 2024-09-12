@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">Lawnchair 需要無障礙設定存取權來啟用手勢鎖定螢幕。\n\n由於權限所需，系統可能提示您授予畫面權限，但請放心，Lawnchair 不會監看、存取您的畫面。\n\nLawnchair 使用 performGlobalAction 無障礙服務來鎖定您的裝置。</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

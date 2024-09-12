@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">Om je telefoon te vergrendelen bij het uitvoeren van een gebaar, heeft Lawnchair toegang tot toegankelijkheid nodig.\n\nLawnchair kijkt niet naar gebruikersacties, hoewel het voorrecht om dit te doen vereist is voor alle toegankelijkheidsdiensten. Lawnchair negeert elke gebeurtenis die door het systeem wordt gemeld.\n\nOm je telefoon te vergrendelen, gebruikt Lawnchair de performGlobalAction Accessibility service.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

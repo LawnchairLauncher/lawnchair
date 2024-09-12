@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">لقفل هاتفك عند تنفيذ إيماءة، يتطلب Lawnchair الوصول إلى إمكانية الوصول.\n\nLawnchair لا يراقب أي إجراء للمستخدم، رغم أن الصلاحية للقيام بذلك مطلوبة لجميع خدمات إمكانية الوصول. يقوم Lawnchair بالتخلص من أي حدث يتم إرساله بواسطة النظام.\n\nلقفل هاتفك، يستخدم Lawnchair خدمة إمكانية الوصول لتنفيذ الإجراء العالمي.</string>
     <string name="x_by_y">18. %1$d x %2$d</string>
-    <string name="x_and_y">19. %s &amp; %s</string>
+    <string name="x_and_y">19. %1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">제스처를 수행할 때 휴대폰을 잠그려면 접근성 액세스 권한이 필요합니다.\n\nLawnchair는 모든 접근성 서비스를 위해 필요한 권한이지만 사용자 동작을 감시하지 않습니다. Lawnchair는 시스템에서 보낸 모든 이벤트를 삭제합니다.\n\nLawnchair는 휴대전화를 잠그기 위해 performGlobalAction 접근성 서비스를 사용합니다.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

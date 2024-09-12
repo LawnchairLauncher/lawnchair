@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">Para bloquear su teléfono al realizar un gesto, Lawnchair requiere acceso de accesibilidad.\n\nLawnchair no observará ninguna acción del usuario, aunque se requiere el privilegio de hacerlo para todos los servicios de accesibilidad. Lawnchair descarta cualquier evento enviado por el sistema.\n\nPara bloquear su teléfono, Lawnchair utiliza el servicio de accesibilidad performGlobalAction.</string>
     <string name="x_by_y"></string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

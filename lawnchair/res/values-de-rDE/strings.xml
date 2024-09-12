@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">Um Dein Gerät mit einer Geste zu sperren, benötigt Lawnchair Bedienungshilfen-Zugriff.\n\nLawnchair beobachtet keine Nutzeraktionen, auch wenn die Bedienungshilfen dies ermöglichen würden. Lawnchair verwirft alle vom System gesendeten Ereignisse.\n\nUm Dein Gerät zu sperren, verwendet Lawnchair den performGlobalAction-Dienst.</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

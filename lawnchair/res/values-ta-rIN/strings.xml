@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">சைகையைச் செய்யும்போது உங்கள் தொலைபேசியைப் பூட்ட, Lawnchair க்கு அணுகல்தன்மை அணுகல் தேவைப்படுகிறது.\n\nலான்ச்சர் எந்தவொரு பயனர் செயலையும் பார்ப்பதில்லை, இருப்பினும் அனைத்து அணுகல் சேவைகளுக்கும் அவ்வாறு செய்வதற்கான சிறப்புரிமை தேவைப்படுகிறது. கணினியால் அனுப்பப்பட்ட எந்த நிகழ்வையும் லான்ச்சர் நிராகரிக்கிறது.\n\nஉங்கள் தொலைபேசியைப் பூட்டுவதற்கு, லான்ச்சர் performGlobalAction அணுகல் சேவையைப் பயன்படுத்துகிறது.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

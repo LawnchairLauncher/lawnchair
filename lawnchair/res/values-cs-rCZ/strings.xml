@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">K uzamčení telefonu při provádění gesta vyžaduje Lawnchair přístup k usnadnění.\n\nLawnchair nesleduje žádnou akci uživatele, ačkoli oprávnění k tomu je vyžadováno pro všechny služby usnadnění. Lawnchair zahodí jakoukoli událost odeslanou systémem.\n\nAby byl váš telefon uzamčen, používá Lawnchair službu usnadnění performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard
