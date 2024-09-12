@@ -17,8 +17,6 @@ import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.Chip
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import com.android.launcher3.R
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun WebSearchProvider(
@@ -31,7 +29,7 @@ fun WebSearchProvider(
                 value = mode,
                 label = { stringResource(id = mode.label) },
             )
-        }.toPersistentList()
+        }
     }
 
     ListPreferenceChips(
@@ -45,7 +43,7 @@ fun WebSearchProvider(
 @Composable
 fun <T> ListPreferenceChips(
     adapter: PreferenceAdapter<T>,
-    entries: ImmutableList<ListPreferenceEntry<T>>,
+    entries: List<ListPreferenceEntry<T>>,
     label: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -62,7 +60,7 @@ fun <T> ListPreferenceChips(
 
 @Composable
 fun <T> ListPreferenceChips(
-    entries: ImmutableList<ListPreferenceEntry<T>>,
+    entries: List<ListPreferenceEntry<T>>,
     value: T,
     onValueChange: (T) -> Unit,
     label: String,

@@ -16,11 +16,10 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import com.android.launcher3.R
-import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PresetsList(
-    dynamicEntries: ImmutableList<ColorPreferenceEntry<ColorOption>>,
+    dynamicEntries: List<ColorPreferenceEntry<ColorOption>>,
     onPresetClick: (ColorOption) -> Unit,
     isPresetSelected: (ColorOption) -> Boolean,
     modifier: Modifier = Modifier,

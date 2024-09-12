@@ -37,7 +37,6 @@ import app.lawnchair.util.filesAndStorageGranted
 import com.android.launcher3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun SearchPreferences() {
@@ -138,16 +137,18 @@ private fun ASISearchSettings(prefs: PreferenceManager) {
 private fun SearchProvider(
     context: Context,
 ) {
-    val searchAlgorithmEntries = sequenceOf(
-        ListPreferenceEntry(LawnchairSearchAlgorithm.APP_SEARCH) { stringResource(R.string.search_algorithm_app_search) },
-        ListPreferenceEntry(LawnchairSearchAlgorithm.LOCAL_SEARCH) { stringResource(R.string.search_algorithm_global_search_on_device) },
-        ListPreferenceEntry(LawnchairSearchAlgorithm.ASI_SEARCH) { stringResource(R.string.search_algorithm_global_search_via_asi) },
-    ).filter {
-        when (it.value) {
-            LawnchairSearchAlgorithm.ASI_SEARCH -> LawnchairSearchAlgorithm.isASISearchEnabled(context)
-            else -> true
-        }
-    }.toPersistentList()
+    val searchAlgorithmEntries = remember {
+        sequenceOf(
+            ListPreferenceEntry(LawnchairSearchAlgorithm.APP_SEARCH) { stringResource(R.string.search_algorithm_app_search) },
+            ListPreferenceEntry(LawnchairSearchAlgorithm.LOCAL_SEARCH) { stringResource(R.string.search_algorithm_global_search_on_device) },
+            ListPreferenceEntry(LawnchairSearchAlgorithm.ASI_SEARCH) { stringResource(R.string.search_algorithm_global_search_via_asi) },
+        ).filter {
+            when (it.value) {
+                LawnchairSearchAlgorithm.ASI_SEARCH -> LawnchairSearchAlgorithm.isASISearchEnabled(context)
+                else -> true
+            }
+        }.toList()
+    }
 
     ListPreference(
         adapter = preferenceManager2().searchAlgorithm.getAdapter(),

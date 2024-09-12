@@ -8,7 +8,6 @@ import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import kotlinx.collections.immutable.toPersistentList
 
 object ThemeChoice {
     const val LIGHT = "light"
@@ -28,7 +27,7 @@ val themeEntries = sequenceOf(
             ThemeChoice.SYSTEM -> Utilities.ATLEAST_O_MR1
             else -> true
         }
-    }.toPersistentList()
+    }.toList()
 
 @Composable
 fun ThemePreference() {

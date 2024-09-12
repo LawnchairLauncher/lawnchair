@@ -4,8 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import com.android.launcher3.R
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
 
 enum class ColorMode(
     @StringRes val labelResourceId: Int,
@@ -30,8 +28,8 @@ enum class ColorMode(
 
         fun fromString(string: String) = values().firstOrNull { it.toString() == string }
 
-        fun entries(): ImmutableList<ListPreferenceEntry<ColorMode>> = values().map {
+        fun entries(): List<ListPreferenceEntry<ColorMode>> = values().map {
             ListPreferenceEntry(value = it) { stringResource(id = it.labelResourceId) }
-        }.toPersistentList()
+        }
     }
 }

@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import app.lawnchair.util.isPackageInstalledAndEnabled
 import com.android.launcher3.R
-import kotlinx.collections.immutable.persistentListOf
 
 sealed class SmartspaceMode(
     @StringRes val nameResourceId: Int,
@@ -23,7 +22,7 @@ sealed class SmartspaceMode(
         /**
          * @return The list of all smartspace options
          */
-        fun values() = persistentListOf(
+        fun values() = listOf(
             LawnchairSmartspace,
             GoogleSmartspace,
             GoogleSearchSmartspace,

@@ -79,7 +79,6 @@ import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
 data class IconPackInfo(
@@ -227,7 +226,7 @@ fun IconPackPreferences(
                                         value = it,
                                         label = { stringResource(id = it.labelResourceId) },
                                     )
-                                }.toPersistentList(),
+                                },
                                 value = ThemedIconsState.getForSettings(
                                     themedIcons = themedIconsAdapter.state.value,
                                     drawerThemedIcons = drawerThemedIconsEnabled,
