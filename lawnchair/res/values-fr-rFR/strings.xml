@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">Pour pouvoir verrouiller votre téléphone en un seul geste, Lawnchair a besoin des droits d\'accessibilité.\n\nLawnchair n\'observe aucune action utilisateur, mais ce privilège est accordé à tous les services d\'accessibilité. Lawnchair rejette tout événement envoyé par le système.\n\nAfin de verrouiller votre téléphone, Lawnchair utilise le service d\'accessibilité performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s et %s</string>
+    <string name="x_and_y">%1$s et %2$s</string>
     <!--
 
     Preference Dashboard

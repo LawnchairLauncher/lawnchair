@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">Чтобы заблокировать телефон с помощью жеста, Lawnchair требуется доступ к специальным возможностям.\n\nLawnchair не отслеживает никакие действия пользователя, хотя это требуется для всех служб специальных возможностей. Lawnchair отбрасывает любые события, отправленные системой.\n\nЧтобы заблокировать ваш телефон, Lawnchair использует службу специальных возможностей PerformGlobalAction.</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

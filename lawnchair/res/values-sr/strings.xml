@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">Да бисте закључали уређај покретом потребно је да доделите Lawnchair-у приступ услузи приступачности.\n\nLawnchair не надгледа корисничке радње, али је привилегија за то потребна свим услугама приступачности. Lawnchair одбацује све догађаје које пошаље систем.\n\nКако би закључао уређај, Lawnchair користи услугу приступачности performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s и %s</string>
+    <string name="x_and_y">%1$s и %2$s</string>
     <!--
 
     Preference Dashboard

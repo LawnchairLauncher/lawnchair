@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">თქვენი ტელეფონის დაბლოკვის ჟესტისთვის, Lawnchair საჭიროებს Accessibility წვდომას.\n\nLawnchair არ უთვალთვალებს მომხმარებლის ნებისმიერ მოქმედებას, თუმცა ამის პრივილეგია საჭიროა ყველა ხელმისაწვდომი სერვისისთვის. Lawnchair უგულებელყოფს სისტემის მიერ გაგზავნილ ნებისმიერ მოვლენას.\n\nთქვენი ტელეფონის დაბლოკვის მიზნით, Lawnchair იყენებს performGlobalAction Accessibility სერვისს.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

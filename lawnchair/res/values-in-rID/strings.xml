@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">Untuk mengunci ponsel Anda saat melakukan gerakan, Lawnchair memerlukan akses aksesibilitas.\n\nLawnchair tidak mengawasi tindakan pengguna apa pun, meskipun hak istimewa untuk melakukannya diperlukan untuk semua layanan aksesibilitas. Lawnchair membuang acara apa pun yang dikirim oleh sistem.\n\nUntuk mengunci ponsel Anda, Lawnchair menggunakan layanan aksesibilitas performGlobalAction.</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard

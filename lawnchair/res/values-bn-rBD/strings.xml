@@ -73,7 +73,7 @@
     <!-- A11y description -->
     <string name="accessibility_service_description">জেসচারের মাধ্যমে ফোন লক করার জন্য Lawnchair এর এক্সেসিবিলিটি এক্সেস প্রয়োজন।\n\nLawnchair ব্যবহারকারীদের কর্মকান্ডে কোন নজরদারি করে না, যদিও এক্সেসিবিলিটি সার্ভিসের জন্য এই ক্ষমতা প্রয়োজন। সিস্টেম কর্তৃক পাঠানো যেকোন কিছু Lawnchair সংরক্ষণ করবে না।\n\nLawnchair ফোন লক করার জন্য performGlobalAction এক্সেসিবিলিটি সার্ভিস ব্যবহার করে।</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard
