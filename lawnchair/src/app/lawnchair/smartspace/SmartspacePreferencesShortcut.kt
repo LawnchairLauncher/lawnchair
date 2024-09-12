@@ -1,11 +1,11 @@
 package app.lawnchair.smartspace
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.navigation.Routes
 
-class SmartspacePreferencesShortcut : AppCompatActivity() {
+class SmartspacePreferencesShortcut : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
