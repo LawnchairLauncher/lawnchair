@@ -26,6 +26,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -57,9 +58,11 @@ fun AnnouncementPreference() {
     val dismissedAnnouncementIds by liveInformationManager.dismissedAnnouncementIds.asState()
     val liveInformation by liveInformationManager.liveInformation.asState()
 
+    val announcements = remember { liveInformation.announcements.filter { it.id !in dismissedAnnouncementIds } }
+
     if (enabled && showAnnouncements) {
         AnnouncementPreference(
-            announcements = liveInformation.announcements.filter { it.id !in dismissedAnnouncementIds },
+            announcements = announcements,
             onDismiss = { announcement ->
                 val dismissed = dismissedAnnouncementIds.toMutableSet().apply { add(announcement.id) }
                 coroutineScope.launch { liveInformationManager.dismissedAnnouncementIds.set(dismissed) }
