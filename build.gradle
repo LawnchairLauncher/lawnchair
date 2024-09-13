@@ -416,7 +416,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.5.2'
 
     // Compose drag and drop library
-    implementation 'sh.calvin.reorderable:reorderable:2.3.2'
+    implementation 'sh.calvin.reorderable:reorderable:2.3.3'
 
     // Smartspacer
     implementation('com.kieronquinn.smartspacer:sdk-client:1.0.11') {
