@@ -566,6 +566,7 @@
     <string name="search_provider_youtube" translatable="false">YouTube</string>
     <string name="search_provider_pixel_search" translatable="false">Pixel Search</string>
     <string name="search_provider_yandex" translatable="false">Yandex</string>
+    <string name="search_provider_mull" translatable="false">Mull</string>
 
     <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
 

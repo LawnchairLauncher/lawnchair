@@ -134,6 +134,7 @@ sealed class QsbSearchProvider(
             Brave,
             Yandex,
             Startpage,
+            Mull,
         )
 
         /**
