@@ -37,6 +37,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.security.MessageDigest
 import java.util.Locale
+import java.util.UUID
 import okio.ByteString
 
 class SearchTargetFactory(
@@ -93,7 +94,8 @@ class SearchTargetFactory(
     ): SearchTargetCompat {
         val result = calculation.result
         val equation = calculation.equation
-        val id = "calculator:$result"
+        val uuid = UUID.randomUUID().toString()
+        val id = "calculator:$uuid"
         val action = SearchActionCompat.Builder(id, result)
             .setIcon(
                 Icon.createWithResource(context, R.drawable.calculator)
