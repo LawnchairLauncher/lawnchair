@@ -16,5 +16,6 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+      <mapping directory="$PROJECT_DIR$/platform_frameworks_libs_systemui" vcs="Git" />
   </component>
 </project>
