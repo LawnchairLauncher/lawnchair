@@ -20,7 +20,7 @@ fun calculateEquationFromString(
         val absoluteValue = formattedValue.abs()
         val threshold = BigDecimal("9999999999999999")
 
-        val result = if (absoluteValue.compareTo(threshold) > 0) {
+        val result = if (absoluteValue > threshold) {
             formattedValue.toString()
         } else {
             formattedValue.toPlainString()
