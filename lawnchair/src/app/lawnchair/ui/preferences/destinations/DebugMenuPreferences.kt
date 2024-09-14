@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.LifecycleCoroutineScope
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -18,9 +19,14 @@ import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.TextPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
+import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
+import app.lawnchair.ui.preferences.data.liveinfo.model.LiveInformation
 import com.android.launcher3.settings.SettingsActivity
 import com.android.launcher3.uioverrides.flags.DeveloperOptionsFragment
 import com.patrykmichalik.opto.domain.Preference
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /**
  * A screen to house unfinished preferences and debug flags
@@ -31,6 +37,7 @@ fun DebugMenuPreferences(
 ) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
+    val liveInfoManager = liveInformationManager()
     val flags = remember { prefs.debugFlags }
     val flags2 = remember { prefs2.debugFlags }
     val textFlags = remember { prefs2.textFlags }
@@ -59,6 +66,15 @@ fun DebugMenuPreferences(
                 ClickablePreference(
                     label = "Crash launcher",
                     onClick = { throw RuntimeException("User triggered crash") },
+                )
+                ClickablePreference(
+                    label = "Reset live information",
+                    onClick = {
+                        runBlocking {
+                            liveInfoManager.liveInformation.set(LiveInformation.default)
+                            liveInfoManager.dismissedAnnouncementIds.set(emptySet())
+                        }
+                    },
                 )
             }
 
