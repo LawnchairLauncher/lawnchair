@@ -26,11 +26,14 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -42,20 +45,28 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
 import app.lawnchair.ui.preferences.data.liveinfo.model.Announcement
 import app.lawnchair.ui.util.addIf
-import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
+import kotlinx.coroutines.launch
 
 @Composable
 fun AnnouncementPreference() {
     val liveInformationManager = liveInformationManager()
 
+    val coroutineScope = rememberCoroutineScope()
     val enabled by liveInformationManager.enabled.asState()
     val showAnnouncements by liveInformationManager.showAnnouncements.asState()
+    val dismissedAnnouncementIds by liveInformationManager.dismissedAnnouncementIds.asState()
     val liveInformation by liveInformationManager.liveInformation.asState()
+
+    val announcements = remember { liveInformation.announcements.filter { it.id !in dismissedAnnouncementIds } }
 
     if (enabled && showAnnouncements) {
         AnnouncementPreference(
-            announcements = liveInformation.announcements,
+            announcements = announcements,
+            onDismiss = { announcement ->
+                val dismissed = dismissedAnnouncementIds.toMutableSet().apply { add(announcement.id) }
+                coroutineScope.launch { liveInformationManager.dismissedAnnouncementIds.set(dismissed) }
+            },
         )
     }
 }
@@ -63,15 +74,21 @@ fun AnnouncementPreference() {
 @Composable
 fun AnnouncementPreference(
     announcements: List<Announcement>,
+    onDismiss: (Announcement) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
     ) {
         announcements.forEachIndexed { index, announcement ->
-            var show by rememberSaveable { mutableStateOf(true) }
-            AnnouncementItem(show, announcement) { show = false }
-            if (index != announcements.lastIndex && show && announcement.active && (!announcement.test || BuildConfig.DEBUG)) {
+            var dismissed by rememberSaveable { mutableStateOf(false) }
+            val visible = announcement.shouldBeVisible && !dismissed
+
+            AnnouncementItem(visible, announcement) {
+                onDismiss(announcement)
+                dismissed = true
+            }
+            if (index != announcements.lastIndex && visible) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -80,20 +97,19 @@ fun AnnouncementPreference(
 
 @Composable
 private fun AnnouncementItem(
-    show: Boolean,
+    visible: Boolean,
     announcement: Announcement,
     modifier: Modifier = Modifier,
     onClose: () -> Unit,
 ) {
     ExpandAndShrink(
         modifier = modifier,
-        visible = show && announcement.active &&
-            announcement.text.isNotBlank() &&
-            (!announcement.test || BuildConfig.DEBUG),
+        visible = visible,
     ) {
         AnnouncementItemContent(
             text = announcement.text,
             url = announcement.url,
+            icon = announcement.getIcon(),
             onClose = onClose,
         )
     }
@@ -103,6 +119,7 @@ private fun AnnouncementItem(
 private fun AnnouncementItemContent(
     text: String,
     url: String?,
+    icon: ImageVector,
     modifier: Modifier = Modifier,
     onClose: () -> Unit,
 ) {
@@ -112,6 +129,7 @@ private fun AnnouncementItemContent(
                 SwipeToDismissBoxValue.StartToEnd -> {
                     onClose()
                 }
+
                 SwipeToDismissBoxValue.EndToStart -> return@rememberSwipeToDismissBoxState false
                 SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState false
             }
@@ -151,7 +169,11 @@ private fun AnnouncementItemContent(
             shape = MaterialTheme.shapes.large,
             color = MaterialTheme.colorScheme.surfaceVariant,
         ) {
-            AnnouncementPreferenceItemContent(text = text, url = url)
+            AnnouncementPreferenceItemContent(
+                text = text,
+                url = url,
+                icon = icon,
+            )
         }
     }
 }
@@ -167,6 +189,7 @@ private fun calculateAlpha(progress: Float): Float {
 private fun AnnouncementPreferenceItemContent(
     text: String,
     url: String?,
+    icon: ImageVector,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -195,7 +218,7 @@ private fun AnnouncementPreferenceItemContent(
         },
         startWidget = {
             Icon(
-                imageVector = Icons.Rounded.NewReleases,
+                imageVector = icon,
                 tint = MaterialTheme.colorScheme.primary,
                 contentDescription = null,
             )
@@ -225,6 +248,7 @@ private fun InfoPreferenceWithoutLinkPreview() {
     AnnouncementPreferenceItemContent(
         text = "Very important announcement ",
         url = "",
+        icon = Icons.Rounded.NewReleases,
     )
 }
 
@@ -234,5 +258,6 @@ private fun InfoPreferenceWithLinkPreview() {
     AnnouncementPreferenceItemContent(
         text = "Very important announcement with a very important link",
         url = "https://lawnchair.app/",
+        icon = Icons.Rounded.NewReleases,
     )
 }
