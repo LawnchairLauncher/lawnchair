@@ -81,12 +81,12 @@ fun AnnouncementPreference(
         modifier = modifier,
     ) {
         announcements.forEachIndexed { index, announcement ->
-            var notDismissed by rememberSaveable { mutableStateOf(true) }
-            val visible = announcement.shouldBeVisible && notDismissed
+            var dismissed by remember { mutableStateOf(false) }
+            val visible = announcement.shouldBeVisible && !dismissed
 
             AnnouncementItem(visible, announcement) {
                 onDismiss(announcement)
-                notDismissed = false
+                dismissed = true
             }
             if (index != announcements.lastIndex && visible) {
                 Spacer(modifier = Modifier.height(16.dp))
