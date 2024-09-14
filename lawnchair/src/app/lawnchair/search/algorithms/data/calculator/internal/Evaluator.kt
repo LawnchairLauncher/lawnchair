@@ -23,7 +23,7 @@ import java.util.Locale
 import kotlin.math.pow
 
 internal class Evaluator : ExprVisitor<BigDecimal> {
-    internal var mathContext: MathContext = MathContext.DECIMAL64
+    internal var mathContext: MathContext = MathContext.DECIMAL128
 
     private val variables: LinkedHashMap<String, BigDecimal> = linkedMapOf()
     private val functions: MutableMap<String, Function> = mutableMapOf()
