@@ -43,13 +43,13 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 import com.android.app.animation.Interpolators;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
-import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.views.RecentsViewContainer;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 import java.util.function.Consumer;
@@ -78,7 +78,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private float mTimeFraction;
     private long mDragTime;
     private float mLastProgress;
-    private BaseActivityInterface mActivityInterface;
+    private BaseContainerInterface mContainerInterface;
 
     private final float mDragDistThreshold;
     private final float mFlingDistThreshold;
@@ -106,7 +106,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         float slop = ViewConfiguration.get(context).getScaledTouchSlop();
 
         mSquaredSlop = slop * slop;
-        mActivityInterface = gestureState.getActivityInterface();
+        mContainerInterface = gestureState.getContainerInterface();
 
         boolean flingDisabled = deviceState.isAssistantGestureIsConstrained()
                 || deviceState.isInDeferredGestureRegion(startEvent);
@@ -237,9 +237,9 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     }
 
     private void startAssistantInternal() {
-        BaseDraggingActivity launcherActivity = mActivityInterface.getCreatedActivity();
-        if (launcherActivity != null) {
-            launcherActivity.getRootView().performHapticFeedback(
+        RecentsViewContainer container = mContainerInterface.getCreatedContainer();
+        if (container != null) {
+            container.getRootView().performHapticFeedback(
                 13, // HapticFeedbackConstants.GESTURE_END
                 HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }

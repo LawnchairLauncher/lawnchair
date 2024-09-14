@@ -17,6 +17,7 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -122,9 +123,8 @@ public class DiscoveryBounce extends AbstractFloatingView {
     }
 
     private static void showForHomeIfNeeded(Launcher launcher, boolean withDelay) {
-        OnboardingPrefs onboardingPrefs = launcher.getOnboardingPrefs();
         if (!launcher.isInState(NORMAL)
-                || onboardingPrefs.getBoolean(OnboardingPrefs.HOME_BOUNCE_SEEN)
+                || HOME_BOUNCE_SEEN.get(launcher)
                 || AbstractFloatingView.getTopOpenView(launcher) != null
                 || launcher.getSystemService(UserManager.class).isDemoUser()
                 || Utilities.isRunningInTestHarness()) {
@@ -135,7 +135,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
             new Handler().postDelayed(() -> showForHomeIfNeeded(launcher, false), DELAY_MS);
             return;
         }
-        onboardingPrefs.incrementEventCount(OnboardingPrefs.HOME_BOUNCE_COUNT);
+        OnboardingPrefs.HOME_BOUNCE_COUNT.increment(launcher);
         new DiscoveryBounce(launcher).show();
     }
 

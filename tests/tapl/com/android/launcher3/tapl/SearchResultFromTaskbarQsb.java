@@ -45,4 +45,14 @@ public class SearchResultFromTaskbarQsb extends SearchResultFromQsb {
     protected TaskbarSearchWebSuggestion createWebSuggestion(UiObject2 webSuggestion) {
         return new TaskbarSearchWebSuggestion(mLauncher, webSuggestion);
     }
+
+    @Override
+    protected void verifyVisibleContainerOnDismiss() {
+        mLauncher.getLaunchedAppState().assertTaskbarVisible();
+    }
+
+    @Override
+    protected void tapOutside(boolean tapRight, UiObject2 allAppsBottomSheet) {
+        mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
+    }
 }

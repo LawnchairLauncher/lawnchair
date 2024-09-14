@@ -16,28 +16,30 @@
 
 <!-- Tablet - 6x5 portrait -->
 <folderSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
-    <folderSpec launcher:specType="width" launcher:maxAvailableSize="800dp">
-        <startPadding launcher:fixedSize="16dp" />
-        <endPadding launcher:fixedSize="16dp" />
-        <!--  more than 1 value in one tag -->
-        <gutter
-            launcher:ofAvailableSpace="0.0125"
-            launcher:fixedSize="16dp" />
-        <cellSize launcher:matchWorkspace="true" />
-    </folderSpec>
-    <folderSpec launcher:specType="width" launcher:maxAvailableSize="9999dp">
-        <startPadding launcher:fixedSize="16dp" />
-        <endPadding launcher:fixedSize="16dp" />
-        <gutter launcher:fixedSize="16dp" />
-        <cellSize launcher:fixedSize="102dp" />
-    </folderSpec>
+    <specs launcher:maxAspectRatio="10">
+        <folderSpec launcher:dimensionType="width" launcher:maxAvailableSize="800dp">
+            <startPadding launcher:fixedSize="16dp" />
+            <endPadding launcher:fixedSize="16dp" />
+            <!--  more than 1 value in one tag -->
+            <gutter
+                launcher:ofAvailableSpace="0.0125"
+                launcher:fixedSize="16dp" />
+            <cellSize launcher:matchWorkspace="true" />
+        </folderSpec>
+        <folderSpec launcher:dimensionType="width" launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="16dp" />
+            <endPadding launcher:fixedSize="16dp" />
+            <gutter launcher:fixedSize="16dp" />
+            <cellSize launcher:fixedSize="102dp" />
+        </folderSpec>
 
-    <!-- Height spec is fixed -->
-    <folderSpec launcher:specType="height" launcher:maxAvailableSize="9999dp">
-        <startPadding launcher:fixedSize="24dp" />
-        <!-- mapped to footer height size -->
-        <endPadding launcher:fixedSize="64dp" />
-        <gutter launcher:fixedSize="16dp" />
-        <cellSize launcher:fixedSize="104dp" />
-    </folderSpec>
+        <!-- Height spec is fixed -->
+        <folderSpec launcher:dimensionType="height" launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="24dp" />
+            <!-- mapped to footer height size -->
+            <endPadding launcher:fixedSize="64dp" />
+            <gutter launcher:fixedSize="16dp" />
+            <cellSize launcher:fixedSize="104dp" />
+        </folderSpec>
+    </specs>
 </folderSpecs>

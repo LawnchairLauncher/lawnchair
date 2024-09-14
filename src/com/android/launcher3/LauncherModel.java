@@ -21,14 +21,19 @@ package com.android.launcher3;
 import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURCE_UPDATED;
 
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
+import static com.android.launcher3.LauncherPrefs.WORK_EDU_STEP;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
+import static com.android.launcher3.icons.cache.BaseIconCache.EMPTY_CLASS_NAME;
+import static com.android.launcher3.model.PackageUpdatedTask.OP_UPDATE;
+import static com.android.launcher3.pm.UserCache.ACTION_PROFILE_AVAILABLE;
+import static com.android.launcher3.pm.UserCache.ACTION_PROFILE_UNAVAILABLE;
 import static com.android.launcher3.testing.shared.TestProtocol.sDebugTracing;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
@@ -43,20 +48,19 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.AllAppsList;
-import com.android.launcher3.model.BaseModelUpdateTask;
+import com.android.launcher3.model.BaseLauncherBinder;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.CacheDataUpdatedTask;
 import com.android.launcher3.model.ItemInstallQueue;
-import com.android.launcher3.model.LauncherBinder;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.ModelDelegate;
+import com.android.launcher3.model.ModelLauncherCallbacks;
+import com.android.launcher3.model.ModelTaskController;
 import com.android.launcher3.model.ModelWriter;
-import com.android.launcher3.model.PackageIncrementalDownloadUpdatedTask;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ReloadStringCacheTask;
@@ -71,6 +75,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 
@@ -80,7 +85,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -91,7 +95,7 @@ import java.util.function.Supplier;
  * database state
  * for the Launcher.
  */
-public class LauncherModel extends LauncherApps.Callback implements InstallSessionTracker.Callback {
+public class LauncherModel implements InstallSessionTracker.Callback {
     private static final boolean DEBUG_RECEIVER = false;
 
     static final String TAG = "Launcher.Model";
@@ -109,6 +113,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     @NonNull
     private final LauncherAppState mApp;
+    @NonNull
+    private final PackageManagerHelper mPmHelper;
     @NonNull
     private final ModelDbController mModelDbController;
     @NonNull
@@ -166,12 +172,13 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     LauncherModel(@NonNull final Context context, @NonNull final LauncherAppState app,
             @NonNull final IconCache iconCache, @NonNull final AppFilter appFilter,
-            final boolean isPrimaryInstance) {
+            @NonNull final PackageManagerHelper pmHelper, final boolean isPrimaryInstance) {
         mApp = app;
+        mPmHelper = pmHelper;
         mModelDbController = new ModelDbController(context);
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
-        mModelDelegate = ModelDelegate.newInstance(context, app, mBgAllAppsList, mBgDataModel,
-                isPrimaryInstance);
+        mModelDelegate = ModelDelegate.newInstance(context, app, mPmHelper, mBgAllAppsList,
+                mBgDataModel, isPrimaryInstance);
     }
 
     @NonNull
@@ -181,6 +188,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     public ModelDbController getModelDbController() {
         return mModelDbController;
+    }
+
+    public ModelLauncherCallbacks newModelCallbacks() {
+        return new ModelLauncherCallbacks(this::enqueueModelUpdateTask);
     }
 
     /**
@@ -195,81 +206,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     @NonNull
-    public ModelWriter getWriter(final boolean hasVerticalHotseat, final boolean verifyChanges,
-            CellPosMapper cellPosMapper, @Nullable final Callbacks owner) {
-        return new ModelWriter(mApp.getContext(), this, mBgDataModel,
-                hasVerticalHotseat, verifyChanges, cellPosMapper, owner);
-    }
-
-    @Override
-    public void onPackageChanged(
-            @NonNull final String packageName, @NonNull final UserHandle user) {
-        int op = PackageUpdatedTask.OP_UPDATE;
-        enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packageName));
-    }
-
-    @Override
-    public void onPackageRemoved(
-            @NonNull final String packageName, @NonNull final UserHandle user) {
-        onPackagesRemoved(user, packageName);
-    }
-
-    public void onPackagesRemoved(
-            @NonNull final UserHandle user, @NonNull final String... packages) {
-        int op = PackageUpdatedTask.OP_REMOVE;
-        FileLog.d(TAG, "package removed received " + TextUtils.join(",", packages));
-        enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packages));
-    }
-
-    @Override
-    public void onPackageAdded(@NonNull final String packageName, @NonNull final UserHandle user) {
-        int op = PackageUpdatedTask.OP_ADD;
-        enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packageName));
-    }
-
-    @Override
-    public void onPackagesAvailable(@NonNull final String[] packageNames,
-            @NonNull final UserHandle user, final boolean replacing) {
-        enqueueModelUpdateTask(
-                new PackageUpdatedTask(PackageUpdatedTask.OP_UPDATE, user, packageNames));
-    }
-
-    @Override
-    public void onPackagesUnavailable(@NonNull final String[] packageNames,
-            @NonNull final UserHandle user, final boolean replacing) {
-        if (!replacing) {
-            enqueueModelUpdateTask(new PackageUpdatedTask(
-                    PackageUpdatedTask.OP_UNAVAILABLE, user, packageNames));
-        }
-    }
-
-    @Override
-    public void onPackagesSuspended(
-            @NonNull final String[] packageNames, @NonNull final UserHandle user) {
-        enqueueModelUpdateTask(new PackageUpdatedTask(
-                PackageUpdatedTask.OP_SUSPEND, user, packageNames));
-    }
-
-    @Override
-    public void onPackagesUnsuspended(
-            @NonNull final String[] packageNames, @NonNull final UserHandle user) {
-        enqueueModelUpdateTask(new PackageUpdatedTask(
-                PackageUpdatedTask.OP_UNSUSPEND, user, packageNames));
-    }
-
-    @Override
-    public void onPackageLoadingProgressChanged(@NonNull final String packageName,
-            @NonNull final UserHandle user, final float progress) {
-        if (Utilities.ATLEAST_S) {
-            enqueueModelUpdateTask(new PackageIncrementalDownloadUpdatedTask(
-                    packageName, user, progress));
-        }
-    }
-
-    @Override
-    public void onShortcutsChanged(@NonNull final String packageName,
-            @NonNull final List<ShortcutInfo> shortcuts, @NonNull final UserHandle user) {
-        enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, true));
+    public ModelWriter getWriter(final boolean verifyChanges, CellPosMapper cellPosMapper,
+            @Nullable final Callbacks owner) {
+        return new ModelWriter(mApp.getContext(), this, mBgDataModel, verifyChanges, cellPosMapper,
+                owner);
     }
 
     /**
@@ -280,7 +220,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             @NonNull final UserHandle user) {
         // Update the icon for the calendar package
         Context context = mApp.getContext();
-        onPackageChanged(packageName, user);
+        enqueueModelUpdateTask(new PackageUpdatedTask(OP_UPDATE, user, packageName));
 
         List<ShortcutInfo> pinnedShortcuts = new ShortcutRequest(context, user)
                 .forPackage(packageName).query(ShortcutRequest.PINNED);
@@ -346,6 +286,20 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         } else if (UserCache.ACTION_PROFILE_ADDED.equals(action)
                 || UserCache.ACTION_PROFILE_REMOVED.equals(action)) {
             forceReload();
+        } else if (ACTION_PROFILE_AVAILABLE.equals(action)
+                || ACTION_PROFILE_UNAVAILABLE.equals(action)) {
+            /*
+             * This broadcast is only available when android.os.Flags.allowPrivateProfile()
+             * is set.
+             * For Work-profile this broadcast will be sent in addition to
+             * ACTION_MANAGED_PROFILE_AVAILABLE/UNAVAILABLE.
+             * So effectively, this if block only handles the non-work profile case.
+             */
+            enqueueModelUpdateTask(new PackageUpdatedTask(
+                    PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
+        }
+        if (Intent.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
+            LauncherPrefs.get(mApp.getContext()).put(WORK_EDU_STEP, 0);
         }
     }
 
@@ -444,7 +398,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                     MAIN_EXECUTOR.execute(cb::clearPendingBinds);
                 }
 
-                LauncherBinder launcherBinder = new LauncherBinder(
+                BaseLauncherBinder launcherBinder = new BaseLauncherBinder(
                         mApp, mBgDataModel, mBgAllAppsList, callbacksList);
                 if (bindDirectly) {
                     // Divide the set of loaded items into those that we are binding synchronously,
@@ -508,13 +462,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     @Override
     public void onInstallSessionCreated(@NonNull final PackageInstallInfo sessionInfo) {
         if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
-            enqueueModelUpdateTask(new BaseModelUpdateTask() {
-                @Override
-                public void execute(@NonNull final LauncherAppState app,
-                        @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
-                    apps.addPromiseApp(app.getContext(), sessionInfo);
-                    bindApplicationsIfNeeded();
-                }
+            enqueueModelUpdateTask((taskController, dataModel, apps) -> {
+                apps.addPromiseApp(mApp.getContext(), sessionInfo);
+                taskController.bindApplicationsIfNeeded();
             });
         }
     }
@@ -522,28 +472,55 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     @Override
     public void onSessionFailure(@NonNull final String packageName,
             @NonNull final UserHandle user) {
-        enqueueModelUpdateTask(new BaseModelUpdateTask() {
-            @Override
-            public void execute(@NonNull final LauncherAppState app,
-                    @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
-                final IntSet removedIds = new IntSet();
-                synchronized (dataModel) {
-                    for (ItemInfo info : dataModel.itemsIdMap) {
-                        if (info instanceof WorkspaceItemInfo
-                                && ((WorkspaceItemInfo) info).hasPromiseIconUi()
-                                && user.equals(info.user)
-                                && info.getIntent() != null
-                                && TextUtils.equals(packageName, info.getIntent().getPackage())) {
+        enqueueModelUpdateTask((taskController, dataModel, apps) -> {
+            IconCache iconCache = mApp.getIconCache();
+            final IntSet removedIds = new IntSet();
+            HashSet<WorkspaceItemInfo> archivedWorkspaceItemsToCacheRefresh = new HashSet<>();
+            boolean isAppArchived = PackageManagerHelper.INSTANCE.get(mApp.getContext())
+                    .isAppArchivedForUser(packageName, user);
+            synchronized (dataModel) {
+                if (isAppArchived) {
+                    // Remove package icon cache entry for archived app in case of a session
+                    // failure.
+                    mApp.getIconCache().remove(
+                            new ComponentName(packageName, packageName + EMPTY_CLASS_NAME),
+                            user);
+                }
+
+                for (ItemInfo info : dataModel.itemsIdMap) {
+                    if (info instanceof WorkspaceItemInfo
+                            && ((WorkspaceItemInfo) info).hasPromiseIconUi()
+                            && user.equals(info.user)
+                            && info.getIntent() != null) {
+                        if (TextUtils.equals(packageName, info.getIntent().getPackage())) {
                             removedIds.add(info.id);
+                        }
+                        if (((WorkspaceItemInfo) info).isArchived()) {
+                            WorkspaceItemInfo workspaceItem = (WorkspaceItemInfo) info;
+                            // Refresh icons on the workspace for archived apps.
+                            iconCache.getTitleAndIcon(workspaceItem,
+                                    workspaceItem.usingLowResIcon());
+                            archivedWorkspaceItemsToCacheRefresh.add(workspaceItem);
                         }
                     }
                 }
 
-                if (!removedIds.isEmpty()) {
-                    deleteAndBindComponentsRemoved(
-                            ItemInfoMatcher.ofItemIds(removedIds),
-                            "removed because install session failed");
+                if (isAppArchived) {
+                    apps.updateIconsAndLabels(new HashSet<>(List.of(packageName)), user);
                 }
+            }
+
+            if (!removedIds.isEmpty() && !isAppArchived) {
+                taskController.deleteAndBindComponentsRemoved(
+                        ItemInfoMatcher.ofItemIds(removedIds),
+                        "removed because install session failed");
+            }
+            if (!archivedWorkspaceItemsToCacheRefresh.isEmpty()) {
+                taskController.bindUpdatedWorkspaceItems(
+                        archivedWorkspaceItemsToCacheRefresh.stream().toList());
+            }
+            if (isAppArchived) {
+                taskController.bindApplicationsIfNeeded();
             }
         });
     }
@@ -636,13 +613,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      */
     public void onWidgetLabelsUpdated(@NonNull final HashSet<String> updatedPackages,
             @NonNull final UserHandle user) {
-        enqueueModelUpdateTask(new BaseModelUpdateTask() {
-            @Override
-            public void execute(@NonNull final LauncherAppState app,
-                    @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
-                dataModel.widgetsModel.onPackageIconsUpdated(updatedPackages, user, app);
-                bindUpdatedWidgets(dataModel);
-            }
+        enqueueModelUpdateTask((taskController, dataModel, apps) -> {
+            dataModel.widgetsModel.onPackageIconsUpdated(updatedPackages, user, mApp);
+            taskController.bindUpdatedWidgets(dataModel);
         });
     }
 
@@ -650,8 +623,15 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         if (mModelDestroyed) {
             return;
         }
-        task.init(mApp, this, mBgDataModel, mBgAllAppsList, MAIN_EXECUTOR);
-        MODEL_EXECUTOR.execute(task);
+        MODEL_EXECUTOR.execute(() -> {
+            if (!isModelLoaded()) {
+                // Loader has not yet run.
+                return;
+            }
+            ModelTaskController controller = new ModelTaskController(
+                    mApp, mBgDataModel, mBgAllAppsList, this, MAIN_EXECUTOR);
+            task.execute(controller, mBgDataModel, mBgAllAppsList);
+        });
     }
 
     /**
@@ -663,19 +643,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         void execute(@NonNull Callbacks callbacks);
     }
 
-    /**
-     * A runnable which changes/updates the data model of the launcher based on
-     * certain events.
-     */
-    public interface ModelUpdateTask extends Runnable {
+    public interface ModelUpdateTask {
 
-        /**
-         * Called before the task is posted to initialize the internal state.
-         */
-        void init(@NonNull LauncherAppState app, @NonNull LauncherModel model,
-                @NonNull BgDataModel dataModel, @NonNull AllAppsList allAppsList,
-                @NonNull Executor uiExecutor);
-
+        void execute(@NonNull ModelTaskController taskController,
+                @NonNull BgDataModel dataModel, @NonNull AllAppsList apps);
     }
 
     public void updateAndBindWorkspaceItem(@NonNull final WorkspaceItemInfo si,
@@ -692,27 +663,19 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      */
     public void updateAndBindWorkspaceItem(
             @NonNull final Supplier<WorkspaceItemInfo> itemProvider) {
-        enqueueModelUpdateTask(new BaseModelUpdateTask() {
-            @Override
-            public void execute(@NonNull final LauncherAppState app,
-                    @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
-                WorkspaceItemInfo info = itemProvider.get();
-                getModelWriter().updateItemInDatabase(info);
-                ArrayList<WorkspaceItemInfo> update = new ArrayList<>();
-                update.add(info);
-                bindUpdatedWorkspaceItems(update);
-            }
+        enqueueModelUpdateTask((taskController, dataModel, apps) -> {
+            WorkspaceItemInfo info = itemProvider.get();
+            taskController.getModelWriter().updateItemInDatabase(info);
+            ArrayList<WorkspaceItemInfo> update = new ArrayList<>();
+            update.add(info);
+            taskController.bindUpdatedWorkspaceItems(update);
         });
     }
 
     public void refreshAndBindWidgetsAndShortcuts(@Nullable final PackageUserKey packageUser) {
-        enqueueModelUpdateTask(new BaseModelUpdateTask() {
-            @Override
-            public void execute(@NonNull final LauncherAppState app,
-                    @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
-                dataModel.widgetsModel.update(app, packageUser);
-                bindUpdatedWidgets(dataModel);
-            }
+        enqueueModelUpdateTask((taskController, dataModel, apps) -> {
+            dataModel.widgetsModel.update(taskController.getApp(), packageUser);
+            taskController.bindUpdatedWidgets(dataModel);
         });
     }
 

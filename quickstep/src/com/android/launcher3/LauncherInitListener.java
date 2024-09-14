@@ -15,14 +15,10 @@
  */
 package com.android.launcher3;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
 import com.android.quickstep.util.ActivityInitListener;
 
 import java.util.function.BiPredicate;
 
-@TargetApi(Build.VERSION_CODES.P)
 public class LauncherInitListener extends ActivityInitListener<Launcher> {
 
     /**

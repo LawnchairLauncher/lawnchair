@@ -21,4 +21,7 @@
     <bool name="enable_niu_actions">true</bool>
 
     <string name="task_overlay_factory_class" translatable="false">com.android.quickstep.TaskOverlayFactoryGo</string>
+
+    <!-- String representing the intent to delete a package. -->
+    <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;B.android.intent.extra.RETURN_RESULT=true;end</string>
 </resources>

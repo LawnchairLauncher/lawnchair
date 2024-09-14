@@ -36,11 +36,18 @@ public class MultiTranslateDelegate {
     // Specific for items in taskbar (icons, folders, qsb)
     public static final int INDEX_TASKBAR_ALIGNMENT_ANIM = 3;
     public static final int INDEX_TASKBAR_REVEAL_ANIM = 4;
+    public static final int INDEX_TASKBAR_PINNING_ANIM = 5;
+
+    // Affect all items inside of a MultipageCellLayout
+    public static final int INDEX_CELLAYOUT_MULTIPAGE_SPACING = 3;
 
     // Specific for widgets
-    public static final int INDEX_WIDGET_CENTERING = 3;
+    public static final int INDEX_WIDGET_CENTERING = 4;
 
-    public static final int COUNT = 5;
+    // Specific for hotseat items when adjusting for bubbles
+    public static final int INDEX_BUBBLE_ADJUSTMENT_ANIM = 3;
+
+    public static final int COUNT = 6;
 
     private final MultiPropertyFactory<View> mTranslationX;
     private final MultiPropertyFactory<View> mTranslationY;

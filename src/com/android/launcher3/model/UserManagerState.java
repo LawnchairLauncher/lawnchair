@@ -17,6 +17,7 @@ package com.android.launcher3.model;
 
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.SparseBooleanArray;
 
@@ -26,6 +27,8 @@ import com.android.launcher3.pm.UserCache;
  * Utility class to manager store and user manager state at any particular time
  */
 public class UserManagerState {
+
+    private static final String TAG = "UserManagerState";
 
     public final LongSparseArray<UserHandle> allUsers = new LongSparseArray<>();
 
@@ -39,6 +42,13 @@ public class UserManagerState {
         for (UserHandle user : userManager.getUserProfiles()) {
             long serialNo = userCache.getSerialNumberForUser(user);
             boolean isUserQuiet = userManager.isQuietModeEnabled(user);
+            // Mapping different UserHandles to the same serialNo in allUsers could lead to losing
+            // UserHandle and cause a series of problems, such as incorrectly marking app as
+            // disabled and deleting app icons from workspace.
+            if (allUsers.get(serialNo) != null) {
+                Log.w(TAG, String.format("Override allUsers[%d]=%s with %s",
+                        serialNo, allUsers.get(serialNo), user));
+            }
             allUsers.put(serialNo, user);
             mQuietUsersHashCodeMap.put(user.hashCode(), isUserQuiet);
             mQuietUsersSerialNoMap.put(serialNo, isUserQuiet);
@@ -61,6 +71,9 @@ public class UserManagerState {
 
     /**
      * Returns true if any user profile has quiet mode enabled.
+     * <p>
+     * Do not use this for determining if a specific profile has quiet mode enabled, as their can
+     * be more than one profile in quiet mode.
      */
     public boolean isAnyProfileQuietModeEnabled() {
         for (int i = mQuietUsersHashCodeMap.size() - 1; i >= 0; i--) {

@@ -19,6 +19,7 @@ package com.android.launcher3.tapl;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.LauncherInstrumentation.log;
 
+import android.annotation.Nullable;
 import android.graphics.Rect;
 
 import androidx.test.uiautomator.By;
@@ -34,13 +35,29 @@ import java.util.Collection;
 /**
  * All widgets container.
  */
-public final class Widgets extends LauncherInstrumentation.VisibleContainer {
+public final class Widgets extends LauncherInstrumentation.VisibleContainer
+        implements KeyboardQuickSwitchSource {
     private static final int FLING_STEPS = 10;
     private static final int SCROLL_ATTEMPTS = 60;
 
     Widgets(LauncherInstrumentation launcher) {
         super(launcher);
         verifyActiveContainer();
+    }
+
+    @Override
+    public LauncherInstrumentation getLauncher() {
+        return mLauncher;
+    }
+
+    @Override
+    public LauncherInstrumentation.ContainerType getStartingContainerType() {
+        return getContainerType();
+    }
+
+    @Override
+    public boolean isHomeState() {
+        return true;
     }
 
     /**
@@ -98,7 +115,13 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    /** Get widget with supplied text. */
     public Widget getWidget(String labelText) {
+        return getWidget(labelText, null);
+    }
+
+    /** Get widget with supplied text and app package */
+    public Widget getWidget(String labelText, @Nullable String testAppWidgetPackage) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "getting widget " + labelText + " in widgets list")) {
@@ -108,7 +131,8 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             mLauncher.assertTrue("Widgets container didn't become scrollable",
                     fullWidgetsPicker.wait(Until.scrollable(true), WAIT_TIME_MS));
 
-            final UiObject2 widgetsContainer = findTestAppWidgetsTableContainer();
+            final UiObject2 widgetsContainer =
+                    findTestAppWidgetsTableContainer(testAppWidgetPackage);
             mLauncher.assertTrue("Can't locate widgets list for the test app: "
                             + mLauncher.getLauncherPackageName(),
                     widgetsContainer != null);
@@ -164,14 +188,22 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
         return searchBar;
     }
 
-    /** Finds the widgets list of this test app from the collapsed full widgets picker. */
-    private UiObject2 findTestAppWidgetsTableContainer() {
+    /**
+     * Finds the widgets list of this test app or supplied test app package from the collapsed full
+     * widgets picker.
+     */
+    private UiObject2 findTestAppWidgetsTableContainer(@Nullable String testAppWidgetPackage) {
         final BySelector headerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "widgets_list_header");
         final BySelector widgetPickerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "container");
-        final BySelector targetAppSelector = By.clazz("android.widget.TextView").text(
-                mLauncher.getContext().getPackageName());
+
+        String packageName =  mLauncher.getContext().getPackageName();
+        final BySelector targetAppSelector = By
+                .clazz("android.widget.TextView")
+                .text((testAppWidgetPackage == null || testAppWidgetPackage.isEmpty())
+                                ? packageName
+                                : testAppWidgetPackage);
         final BySelector widgetsContainerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "widgets_table");
 

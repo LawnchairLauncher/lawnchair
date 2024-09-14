@@ -16,8 +16,8 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
-import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
+import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_OVERVIEW;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
@@ -44,14 +44,17 @@ import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
+import com.android.quickstep.util.SystemUiFlagUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.animation.ViewRootSync;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -64,17 +67,17 @@ import java.util.StringJoiner;
  */
 public class TaskbarLauncherStateController {
 
-    private static final String TAG = TaskbarLauncherStateController.class.getSimpleName();
+    private static final String TAG = "TaskbarLauncherStateController";
     private static final boolean DEBUG = false;
 
-    /** Launcher activity is resumed and focused. */
-    public static final int FLAG_RESUMED = 1 << 0;
+    /** Launcher activity is visible and focused. */
+    public static final int FLAG_VISIBLE = 1 << 0;
 
     /**
-     * A external transition / animation is running that will result in FLAG_RESUMED
+     * A external transition / animation is running that will result in FLAG_VISIBLE
      * being set.
      **/
-    public static final int FLAG_TRANSITION_TO_RESUMED = 1 << 1;
+    public static final int FLAG_TRANSITION_TO_VISIBLE = 1 << 1;
 
     /**
      * Set while the launcher state machine is performing a state transition, see
@@ -127,7 +130,7 @@ public class TaskbarLauncherStateController {
      */
     private static final int FLAG_TASKBAR_HIDDEN = 1 << 6;
 
-    private static final int FLAGS_LAUNCHER_ACTIVE = FLAG_RESUMED | FLAG_TRANSITION_TO_RESUMED;
+    private static final int FLAGS_LAUNCHER_ACTIVE = FLAG_VISIBLE | FLAG_TRANSITION_TO_VISIBLE;
     /** Equivalent to an int with all 1s for binary operation purposes */
     private static final int FLAGS_ALL = ~0;
 
@@ -158,6 +161,7 @@ public class TaskbarLauncherStateController {
     private Integer mPrevState;
     private int mState;
     private LauncherState mLauncherState = LauncherState.NORMAL;
+    private boolean mSkipNextRecentsAnimEnd;
 
     // Time when FLAG_TASKBAR_HIDDEN was last cleared, SystemClock.elapsedRealtime
     // (milliseconds).
@@ -174,64 +178,66 @@ public class TaskbarLauncherStateController {
 
     private boolean mIsQsbInline;
 
-    private final DeviceProfile.OnDeviceProfileChangeListener mOnDeviceProfileChangeListener = new DeviceProfile.OnDeviceProfileChangeListener() {
-        @Override
-        public void onDeviceProfileChanged(DeviceProfile dp) {
-            if (mIsQsbInline && !dp.isQsbInline) {
-                // We only modify QSB alpha if isQsbInline = true. If we switch to a DP
-                // where isQsbInline = false, then we need to reset the alpha.
-                mLauncher.getHotseat().setQsbAlpha(1f);
-            }
-            mIsQsbInline = dp.isQsbInline;
-            TaskbarLauncherStateController.this.updateIconAlphaForHome(
-                    mIconAlphaForHome.getValue());
-        }
-    };
+    private final DeviceProfile.OnDeviceProfileChangeListener mOnDeviceProfileChangeListener=new DeviceProfile.OnDeviceProfileChangeListener(){@Override public void onDeviceProfileChanged(DeviceProfile dp){if(mIsQsbInline&&!dp.isQsbInline){
+    // We only modify QSB alpha if isQsbInline = true. If we switch to a DP
+    // where isQsbInline = false, then we need to reset the alpha.
+    mLauncher.getHotseat().setQsbAlpha(1f);}mIsQsbInline=dp.isQsbInline;TaskbarLauncherStateController.this.updateIconAlphaForHome(mIconAlphaForHome.getValue());}};
 
     private final StateManager.StateListener<LauncherState> mStateListener = new StateManager.StateListener<LauncherState>() {
 
-        @Override
-        public void onStateTransitionStart(LauncherState toState) {
-            if (toState != mLauncherState) {
-                // Treat FLAG_LAUNCHER_IN_STATE_TRANSITION as a changed flag even if a
-                // previous state transition was already running, so we update the new
-                // target.
-                mPrevState &= ~FLAG_LAUNCHER_IN_STATE_TRANSITION;
-                mLauncherState = toState;
-            }
-            updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, true);
-            if (!mShouldDelayLauncherStateAnim) {
-                if (toState == LauncherState.NORMAL) {
-                    applyState(QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION);
-                } else {
-                    applyState();
-                }
-            }
-        }
-
                 @Override
-                public void onStateTransitionComplete(LauncherState finalState) {
-                    mLauncherState = finalState;
-                    updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, false);
-                    // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
-                    // taskbar on top of transparent activity.
-                    if (finalState == LauncherState.NORMAL && mLauncher.isResumed()) {
-                        updateStateForFlag(FLAG_RESUMED, true);
+                public void onStateTransitionStart(LauncherState toState) {
+                    if (toState != mLauncherState) {
+                        // Treat FLAG_LAUNCHER_IN_STATE_TRANSITION as a changed flag even if a
+                        // previous state transition was already running, so we update the new
+                        // target.
+                        mPrevState &= ~FLAG_LAUNCHER_IN_STATE_TRANSITION;
+                        mLauncherState = toState;
                     }
-                    applyState();
-                    boolean disallowLongClick = finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
-                    com.android.launcher3.taskbar.Utilities.setOverviewDragState(
-                            mControllers, finalState.disallowTaskbarGlobalDrag(),
-                            disallowLongClick, finalState.allowTaskbarInitialSplitSelection());
+                    updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, true);
+                    if (!mShouldDelayLauncherStateAnim) {
+                        if (toState == LauncherState.NORMAL) {
+                            applyState(QuickstepTransitionManager.getTaskbarToHomeDuration());
+                        } else {
+                            applyState();
+                        }
+                    }
                 }
-            };
+            }
+    }
+
+    @Override
+    public void onStateTransitionComplete(LauncherState finalState) {
+        mLauncherState = finalState;
+        updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, false);
+        applyState();
+        updateOverviewDragState(finalState);
+    }
+
+    };
+
+    /**
+     * Callback for when launcher state transition completes after user swipes to
+     * home.
+     * 
+     * @param finalState The final state of the transition.
+     */
+    public void onStateTransitionCompletedAfterSwipeToHome(LauncherState finalState) {
+        // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
+        // taskbar on top of transparent activity.
+        if ((finalState == LauncherState.NORMAL)
+                && mLauncher.hasBeenResumed()) {
+            updateStateForFlag(FLAG_VISIBLE, true);
+            applyState();
+        }
+    }
 
     /**
      * Initializes the controller instance, and applies the initial state
      * immediately.
      */
     public void init(TaskbarControllers controllers, QuickstepLauncher launcher,
-            int sysuiStateFlags) {
+            @SystemUiStateFlags long sysuiStateFlags) {
         mCanSyncViews = false;
 
         mControllers = controllers;
@@ -256,6 +262,7 @@ public class TaskbarLauncherStateController {
 
         mCanSyncViews = true;
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
+        updateOverviewDragState(mLauncherState);
     }
 
     public void onDestroy() {
@@ -293,18 +300,22 @@ public class TaskbarLauncherStateController {
         }
         stashController.updateStateForFlag(FLAG_IN_APP, false);
 
-        updateStateForFlag(FLAG_TRANSITION_TO_RESUMED, true);
+        updateStateForFlag(FLAG_TRANSITION_TO_VISIBLE, true);
         animatorSet.play(stashController.createApplyStateAnimator(duration));
         animatorSet.play(applyState(duration, false));
 
         if (mTaskBarRecentsAnimationListener != null) {
             mTaskBarRecentsAnimationListener.endGestureStateOverride(
-                    !mLauncher.isInState(LauncherState.OVERVIEW));
+                    !mLauncher.isInState(LauncherState.OVERVIEW), false /* canceled */);
         }
         mTaskBarRecentsAnimationListener = new TaskBarRecentsAnimationListener(callbacks);
         callbacks.addListener(mTaskBarRecentsAnimationListener);
-        ((RecentsView) mLauncher.getOverviewPanel())
-                .setTaskLaunchListener(() -> mTaskBarRecentsAnimationListener.endGestureStateOverride(true));
+        ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(
+                () -> mTaskBarRecentsAnimationListener.endGestureStateOverride(true, false /* canceled */));
+
+        ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchCancelledRunnable(() -> {
+            updateStateForUserFinishedToApp(false /* finishedToApp */);
+        });
         return animatorSet;
     }
 
@@ -322,12 +333,18 @@ public class TaskbarLauncherStateController {
         mShouldDelayLauncherStateAnim = shouldDelayLauncherStateAnim;
     }
 
+    /** Will make the next onRecentsAnimationFinished() a no-op. */
+    public void setSkipNextRecentsAnimEnd() {
+        mSkipNextRecentsAnimEnd = true;
+    }
+
     /** SysUI flags updated, see QuickStepContract.SYSUI_STATE_* values. */
-    public void updateStateForSysuiFlags(int systemUiStateFlags) {
+    public void updateStateForSysuiFlags(@SystemUiStateFlags long systemUiStateFlags) {
         updateStateForSysuiFlags(systemUiStateFlags, /* applyState */ true);
     }
 
-    private void updateStateForSysuiFlags(int systemUiStateFlags, boolean applyState) {
+    private void updateStateForSysuiFlags(@SystemUiStateFlags long systemUiStateFlags,
+            boolean applyState) {
         final boolean prevIsAwake = hasAnyFlag(FLAG_AWAKE);
         final boolean currIsAwake = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_AWAKE);
 
@@ -339,8 +356,7 @@ public class TaskbarLauncherStateController {
                     prevIsAwake && hasAnyFlag(FLAGS_LAUNCHER_ACTIVE));
         }
 
-        boolean isDeviceLocked = hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED);
-        updateStateForFlag(FLAG_DEVICE_LOCKED, isDeviceLocked);
+        updateStateForFlag(FLAG_DEVICE_LOCKED, SystemUiFlagUtils.isLocked(systemUiStateFlags));
 
         // Taskbar is hidden whenever the device is dreaming. The dreaming state
         // includes the
@@ -361,6 +377,21 @@ public class TaskbarLauncherStateController {
     }
 
     /**
+     * Updates overview drag state on various controllers based on
+     * {@link #mLauncherState}.
+     *
+     * @param launcherState The current state launcher is in
+     */
+    private void updateOverviewDragState(LauncherState launcherState) {
+        boolean disallowLongClick = FeatureFlags.enableSplitContextually()
+                ? mLauncher.isSplitSelectionActive()
+                : launcherState == LauncherState.OVERVIEW_SPLIT_SELECT;
+        com.android.launcher3.taskbar.Utilities.setOverviewDragState(
+                mControllers, launcherState.disallowTaskbarGlobalDrag(),
+                disallowLongClick, launcherState.allowTaskbarInitialSplitSelection());
+    }
+
+    /**
      * Updates the proper flag to change the state of the task bar.
      *
      * Note that this only updates the flag. {@link #applyState()} needs to be
@@ -377,11 +408,11 @@ public class TaskbarLauncherStateController {
         }
     }
 
-    private boolean hasAnyFlag(int flagMask) {
+    private boolean hasAnyFlag(long flagMask) {
         return hasAnyFlag(mState, flagMask);
     }
 
-    private boolean hasAnyFlag(int flags, int flagMask) {
+    private boolean hasAnyFlag(long flags, long flagMask) {
         return (flags & flagMask) != 0;
     }
 
@@ -438,6 +469,9 @@ public class TaskbarLauncherStateController {
             controllers.bubbleStashController.setBubblesShowingOnOverview(onOverview);
         });
 
+        mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_OVERVIEW,
+                mLauncherState == LauncherState.OVERVIEW);
+
         AnimatorSet animatorSet = new AnimatorSet();
 
         if (hasAnyFlag(changedFlags, FLAG_LAUNCHER_IN_STATE_TRANSITION)) {
@@ -447,7 +481,7 @@ public class TaskbarLauncherStateController {
             if (launcherTransitionCompleted
                     && mLauncherState == LauncherState.QUICK_SWITCH_FROM_HOME) {
                 // We're about to be paused, set immediately to ensure seamless handoff.
-                updateStateForFlag(FLAG_RESUMED, false);
+                updateStateForFlag(FLAG_VISIBLE, false);
                 applyState(0 /* duration */);
             }
             if (mLauncherState == LauncherState.NORMAL) {
@@ -504,121 +538,76 @@ public class TaskbarLauncherStateController {
                 // Stash the transient taskbar once the taskbar is not visible. This reduces
                 // visual noise when unlocking the device afterwards.
                 animatorSet.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        TaskbarStashController stashController = mControllers.taskbarStashController;
-                        stashController.updateAndAnimateTransientTaskbar(
-                                /* stash */ true, /* bubblesShouldFollow */ true);
-                    }
-                });
-            } else {
-                // delay the fade in animation a bit to reduce visual noise when waking up a
-                // device
-                // with a fingerprint reader. This should only be done when the device was woken
-                // up via fingerprint reader, however since this information is currently not
-                // available, opting to always delay the fade-in a bit.
-                long durationSinceLastUnlockMs = SystemClock.elapsedRealtime() - mLastUnlockTimeMs;
-                taskbarVisibility.setStartDelay(
-                        Math.max(0, TASKBAR_SHOW_DELAY_MS - durationSinceLastUnlockMs));
-            }
-            animatorSet.play(taskbarVisibility);
-        }
 
-        float backgroundAlpha = isInLauncher && isTaskbarAlignedWithHotseat() ? 0 : 1;
+    @Override
+    public void onAnimationEnd(Animator animation) {
+        TaskbarStashController stashController = mControllers.taskbarStashController;
+        stashController.updateAndAnimateTransientTaskbar(
+                /* stash */ true, /* bubblesShouldFollow */ true);
+    }});}else{
 
-        // Don't animate if background has reached desired value.
-        if (mTaskbarBackgroundAlpha.isAnimating()
-                || mTaskbarBackgroundAlpha.value != backgroundAlpha) {
-            mTaskbarBackgroundAlpha.cancelAnimation();
-            if (DEBUG) {
-                Log.d(TAG, "onStateChangeApplied - taskbarBackgroundAlpha - "
-                        + mTaskbarBackgroundAlpha.value
-                        + " -> " + backgroundAlpha + ": " + duration);
-            }
+    // delay the fade in animation a bit to reduce visual noise when waking up a
+    // device
+    // with a fingerprint reader. This should only be done when the device was woken
+    // up via fingerprint reader, however since this information is currently not
+    // available, opting to always delay the fade-in a bit.
+    long durationSinceLastUnlockMs = SystemClock.elapsedRealtime()
+            - mLastUnlockTimeMs;taskbarVisibility.setStartDelay(Math.max(0,TASKBAR_SHOW_DELAY_MS-durationSinceLastUnlockMs));}animatorSet.play(taskbarVisibility);}
 
-            boolean isInLauncherIconNotAligned = isInLauncher && !isIconAlignedWithHotseat;
-            boolean notInLauncherIconNotAligned = !isInLauncher && !isIconAlignedWithHotseat;
-            boolean isInLauncherIconIsAligned = isInLauncher && isIconAlignedWithHotseat;
+    float backgroundAlpha = isInLauncher && isTaskbarAlignedWithHotseat() ? 0 : 1;
 
-            float startDelay = 0;
-            // We want to delay the background from fading in so that the icons have time to
-            // move
-            // into the bounds of the background before it appears.
-            if (isInLauncherIconNotAligned) {
-                startDelay = duration * TASKBAR_BG_ALPHA_LAUNCHER_NOT_ALIGNED_DELAY_MULT;
-            } else if (notInLauncherIconNotAligned) {
-                startDelay = duration * TASKBAR_BG_ALPHA_NOT_LAUNCHER_NOT_ALIGNED_DELAY_MULT;
-            }
-            float newDuration = duration - startDelay;
-            if (isInLauncherIconIsAligned) {
-                // Make the background fade out faster so that it is gone by the time the
-                // icons move outside of the bounds of the background.
-                newDuration = duration * TASKBAR_BG_ALPHA_LAUNCHER_IS_ALIGNED_DURATION_MULT;
-            }
-            Animator taskbarBackgroundAlpha = mTaskbarBackgroundAlpha
-                    .animateToValue(backgroundAlpha)
-                    .setDuration((long) newDuration);
-            taskbarBackgroundAlpha.setStartDelay((long) startDelay);
-            animatorSet.play(taskbarBackgroundAlpha);
-        }
+    // Don't animate if background has reached desired value.
+    if(mTaskbarBackgroundAlpha.isAnimating()||mTaskbarBackgroundAlpha.value!=backgroundAlpha){mTaskbarBackgroundAlpha.cancelAnimation();if(DEBUG){Log.d(TAG,"onStateChangeApplied - taskbarBackgroundAlpha - "+mTaskbarBackgroundAlpha.value+" -> "+backgroundAlpha+": "+duration);}
 
-        float cornerRoundness = isInLauncher ? 0 : 1;
+    boolean isInLauncherIconNotAligned = isInLauncher && !isIconAlignedWithHotseat;
+    boolean notInLauncherIconNotAligned = !isInLauncher && !isIconAlignedWithHotseat;
+    boolean isInLauncherIconIsAligned = isInLauncher && isIconAlignedWithHotseat;
 
-        // Don't animate if corner roundness has reached desired value.
-        if (mTaskbarCornerRoundness.isAnimating()
-                || mTaskbarCornerRoundness.value != cornerRoundness) {
-            mTaskbarCornerRoundness.cancelAnimation();
-            if (DEBUG) {
-                Log.d(TAG, "onStateChangeApplied - taskbarCornerRoundness - "
-                        + mTaskbarCornerRoundness.value
-                        + " -> " + cornerRoundness + ": " + duration);
-            }
-            animatorSet.play(mTaskbarCornerRoundness.animateToValue(cornerRoundness));
-        }
+    float startDelay = 0;
+    // We want to delay the background from fading in so that the icons have time to
+    // move
+    // into the bounds of the background before it appears.
+    if(isInLauncherIconNotAligned){startDelay=duration*TASKBAR_BG_ALPHA_LAUNCHER_NOT_ALIGNED_DELAY_MULT;}else if(notInLauncherIconNotAligned){startDelay=duration*TASKBAR_BG_ALPHA_NOT_LAUNCHER_NOT_ALIGNED_DELAY_MULT;}
+    float newDuration = duration - startDelay;if(isInLauncherIconIsAligned){
+    // Make the background fade out faster so that it is gone by the time the
+    // icons move outside of the bounds of the background.
+    newDuration=duration*TASKBAR_BG_ALPHA_LAUNCHER_IS_ALIGNED_DURATION_MULT;}
+    Animator taskbarBackgroundAlpha = mTaskbarBackgroundAlpha
+            .animateToValue(backgroundAlpha)
+            .setDuration(
+                    (long) newDuration);taskbarBackgroundAlpha.setStartDelay((long)startDelay);animatorSet.play(taskbarBackgroundAlpha);}
 
-        // Keep isUnlockTransition in sync with its counterpart in
-        // TaskbarStashController#createAnimToIsStashed.
-        boolean isUnlockTransition = hasAnyFlag(changedFlags, FLAG_DEVICE_LOCKED) && !hasAnyFlag(FLAG_DEVICE_LOCKED);
-        if (isUnlockTransition) {
-            // When transitioning to unlocked, ensure the hotseat is fully visible from the
-            // beginning. The hotseat itself is animated by
-            // LauncherUnlockAnimationController.
-            mIconAlignment.cancelAnimation();
-            // updateValue ensures onIconAlignmentRatioChanged will be called if there is an
-            // actual
-            // change in value
-            mIconAlignment.updateValue(toAlignment);
+    float cornerRoundness = isInLauncher ? 0 : 1;
 
-            // Make sure FLAG_IN_APP is set when launching applications from keyguard.
-            if (!isInLauncher) {
-                mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP, true);
-                mControllers.taskbarStashController.applyState(0);
-            }
-        } else if (mIconAlignment.isAnimatingToValue(toAlignment)
-                || mIconAlignment.isSettledOnValue(toAlignment)) {
-            // Already at desired value, but make sure we run the callback at the end.
-            animatorSet.addListener(AnimatorListeners.forEndCallback(
-                    this::onIconAlignmentRatioChanged));
-        } else {
-            mIconAlignment.cancelAnimation();
-            ObjectAnimator iconAlignAnim = mIconAlignment
-                    .animateToValue(toAlignment)
-                    .setDuration(duration);
-            if (DEBUG) {
-                Log.d(TAG, "onStateChangeApplied - iconAlignment - "
-                        + mIconAlignment.value
-                        + " -> " + toAlignment + ": " + duration);
-            }
-            animatorSet.play(iconAlignAnim);
-        }
+    // Don't animate if corner roundness has reached desired value.
+    if(mTaskbarCornerRoundness.isAnimating()||mTaskbarCornerRoundness.value!=cornerRoundness){mTaskbarCornerRoundness.cancelAnimation();if(DEBUG){Log.d(TAG,"onStateChangeApplied - taskbarCornerRoundness - "+mTaskbarCornerRoundness.value+" -> "+cornerRoundness+": "+duration);}animatorSet.play(mTaskbarCornerRoundness.animateToValue(cornerRoundness));}
 
-        animatorSet.setInterpolator(EMPHASIZED);
+    // Keep isUnlockTransition in sync with its counterpart in
+    // TaskbarStashController#createAnimToIsStashed.
+    boolean isUnlockTransition = hasAnyFlag(changedFlags, FLAG_DEVICE_LOCKED)
+            && !hasAnyFlag(FLAG_DEVICE_LOCKED);if(isUnlockTransition){
+    // When transitioning to unlocked, ensure the hotseat is fully visible from the
+    // beginning. The hotseat itself is animated by
+    // LauncherUnlockAnimationController.
+    mIconAlignment.cancelAnimation();
+    // updateValue ensures onIconAlignmentRatioChanged will be called if there is an
+    // actual
+    // change in value
+    mIconAlignment.updateValue(toAlignment);
 
-        if (start) {
-            animatorSet.start();
-        }
-        return animatorSet;
-    }
+    // Make sure FLAG_IN_APP is set when launching applications from keyguard.
+    if(!isInLauncher){mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP,true);mControllers.taskbarStashController.applyState(0);}}else if(mIconAlignment.isAnimatingToValue(toAlignment)||mIconAlignment.isSettledOnValue(toAlignment)){
+    // Already at desired value, but make sure we run the callback at the end.
+    animatorSet.addListener(AnimatorListeners.forEndCallback(this::onIconAlignmentRatioChanged));}else{mIconAlignment.cancelAnimation();
+    ObjectAnimator iconAlignAnim = mIconAlignment
+            .animateToValue(toAlignment)
+            .setDuration(
+                    duration);if(DEBUG){Log.d(TAG,"onStateChangeApplied - iconAlignment - "+mIconAlignment.value+" -> "+toAlignment+": "+duration);
+    }animatorSet.play(iconAlignAnim);}
+
+    animatorSet.setInterpolator(EMPHASIZED);
+
+    if(start){animatorSet.start();}return animatorSet;}
 
     /**
      * Whether the taskbar is aligned with the hotseat in the current/target
@@ -650,11 +639,12 @@ public class TaskbarLauncherStateController {
      * Returns if the current Launcher state has hotseat on top of other elemnets.
      */
     public boolean isInHotseatOnTopStates() {
-        return mLauncherState != LauncherState.ALL_APPS;
+        return mLauncherState != LauncherState.ALL_APPS
+                && !mLauncher.getWorkspace().isOverlayShown();
     }
 
-    boolean isInOverview() {
-        return mLauncherState == LauncherState.OVERVIEW;
+    boolean isInOverviewUi() {
+        return mLauncherState.isRecentsViewVisible;
     }
 
     private void playStateTransitionAnim(AnimatorSet animatorSet, long duration,
@@ -743,6 +733,7 @@ public class TaskbarLauncherStateController {
         }
         mIconAlphaForHome.setValue(alpha);
         boolean hotseatVisible = alpha == 0
+                || mControllers.taskbarActivityContext.isPhoneMode()
                 || (!mControllers.uiController.isHotseatIconOnTopWhenAligned()
                         && mIconAlignment.value > 0);
         /*
@@ -766,44 +757,71 @@ public class TaskbarLauncherStateController {
         @Override
         public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
             boolean isInOverview = mLauncher.isInState(LauncherState.OVERVIEW);
-            endGestureStateOverride(!isInOverview);
+            endGestureStateOverride(!isInOverview, true /* canceled */);
         }
 
         @Override
         public void onRecentsAnimationFinished(RecentsAnimationController controller) {
-            endGestureStateOverride(!controller.getFinishTargetIsLauncher());
+            endGestureStateOverride(!controller.getFinishTargetIsLauncher(), false /* canceled */);
         }
 
-        private void endGestureStateOverride(boolean finishedToApp) {
+        /**
+         * Handles whatever cleanup is needed after the recents animation is completed.
+         * NOTE: If {@link #mSkipNextRecentsAnimEnd} is set and we're coming from a
+         * non-cancelled
+         * path, this will not call {@link #updateStateForUserFinishedToApp(boolean)}
+         *
+         * @param finishedToApp {@code true} if the recents animation finished to
+         *                      showing an app and
+         *                      not workspace or overview
+         * @param canceled      {@code true} if the recents animation was canceled
+         *                      instead of finishing
+         *                      to completion
+         */
+        private void endGestureStateOverride(boolean finishedToApp, boolean canceled) {
             mCallbacks.removeListener(this);
             mTaskBarRecentsAnimationListener = null;
             ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(null);
 
-            // Update the resumed state immediately to ensure a seamless handoff
-            boolean launcherResumed = !finishedToApp;
-            updateStateForFlag(FLAG_TRANSITION_TO_RESUMED, false);
-            updateStateForFlag(FLAG_RESUMED, launcherResumed);
-            applyState();
-
-            TaskbarStashController controller = mControllers.taskbarStashController;
-            if (DEBUG) {
-                Log.d(TAG, "endGestureStateOverride - FLAG_IN_APP: " + finishedToApp);
+            if (mSkipNextRecentsAnimEnd && !canceled) {
+                mSkipNextRecentsAnimEnd = false;
+                return;
             }
-            controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
-            controller.applyState();
+            updateStateForUserFinishedToApp(finishedToApp);
         }
+    }
+
+    /**
+     * Updates the visible state immediately to ensure a seamless handoff.
+     * 
+     * @param finishedToApp True iff user is in an app.
+     */
+    private void updateStateForUserFinishedToApp(boolean finishedToApp) {
+        // Update the visible state immediately to ensure a seamless handoff
+        boolean launcherVisible = !finishedToApp;
+        updateStateForFlag(FLAG_TRANSITION_TO_VISIBLE, false);
+        updateStateForFlag(FLAG_VISIBLE, launcherVisible);
+        applyState();
+
+        TaskbarStashController controller = mControllers.taskbarStashController;
+        if (DEBUG) {
+            Log.d(TAG, "endGestureStateOverride - FLAG_IN_APP: " + finishedToApp);
+        }
+        controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
+        controller.applyState();
     }
 
     private static String getStateString(int flags) {
         StringJoiner result = new StringJoiner("|");
-        appendFlag(result, flags, FLAG_RESUMED, "resumed");
-        appendFlag(result, flags, FLAG_TRANSITION_TO_RESUMED, "transition_to_resumed");
+        appendFlag(result, flags, FLAG_VISIBLE, "flag_visible");
+        appendFlag(result, flags, FLAG_TRANSITION_TO_VISIBLE, "transition_to_visible");
         appendFlag(result, flags, FLAG_LAUNCHER_IN_STATE_TRANSITION,
                 "launcher_in_state_transition");
         appendFlag(result, flags, FLAG_AWAKE, "awake");
         appendFlag(result, flags, FLAG_LAUNCHER_WAS_ACTIVE_WHILE_AWAKE,
                 "was_active_while_awake");
         appendFlag(result, flags, FLAG_DEVICE_LOCKED, "device_locked");
+        appendFlag(result, flags, FLAG_TASKBAR_HIDDEN, "taskbar_hidden");
         return result.toString();
     }
 

@@ -37,14 +37,14 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
+import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
@@ -101,14 +101,15 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
 
     public FolderPagedView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        InvariantDeviceProfile profile = LauncherAppState.getIDP(context);
+        ActivityContext activityContext = ActivityContext.lookupContext(context);
+        DeviceProfile profile = activityContext.getDeviceProfile();
         mOrganizer = new FolderGridOrganizer(profile);
 
         mIsRtl = Utilities.isRtl(getResources());
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
-        mViewCache = ActivityContext.lookupContext(context).getViewCache();
+        mViewCache = activityContext.getViewCache();
     }
 
     public void setFolder(Folder folder) {
@@ -149,7 +150,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     /**
      * Binds items to the layout.
      */
-    public void bindItems(List<WorkspaceItemInfo> items) {
+    public void bindItems(List<ItemInfo> items) {
         if (mViewsBound) {
             unbindItems();
         }
@@ -165,8 +166,11 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             CellLayout page = (CellLayout) getChildAt(i);
             ShortcutAndWidgetContainer container = page.getShortcutsAndWidgets();
             for (int j = container.getChildCount() - 1; j >= 0; j--) {
-                container.getChildAt(j).setVisibility(View.VISIBLE);
-                mViewCache.recycleView(R.layout.folder_application, container.getChildAt(j));
+                View iconView = container.getChildAt(j);
+                iconView.setVisibility(View.VISIBLE);
+                if (iconView instanceof BubbleTextView) {
+                    mViewCache.recycleView(R.layout.folder_application, iconView);
+                }
             }
             page.removeAllViews();
             mViewCache.recycleView(R.layout.folder_page, page);
@@ -186,7 +190,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
      * Creates and adds an icon corresponding to the provided rank
      * @return the created icon
      */
-    public View createAndAddViewForRank(WorkspaceItemInfo item, int rank) {
+    public View createAndAddViewForRank(ItemInfo item, int rank) {
         View icon = createNewView(item);
         if (!mViewsBound) {
             return icon;
@@ -201,7 +205,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
      * Adds the {@param view} to the layout based on {@param rank} and updated the position
      * related attributes. It assumes that {@param item} is already attached to the view.
      */
-    public void addViewForRank(View view, WorkspaceItemInfo item, int rank) {
+    public void addViewForRank(View view, ItemInfo item, int rank) {
         int pageNo = rank / mOrganizer.getMaxItemsPerPage();
 
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) view.getLayoutParams();
@@ -210,26 +214,36 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     }
 
     @SuppressLint("InflateParams")
-    public View createNewView(WorkspaceItemInfo item) {
+    public View createNewView(ItemInfo item) {
         if (item == null) {
             return null;
         }
-        final BubbleTextView textView = mViewCache.getView(
-                R.layout.folder_application, getContext(), null);
-        textView.applyFromWorkspaceItem(item);
-        textView.setOnClickListener(mFolder.mActivityContext.getItemOnClickListener());
-        textView.setOnLongClickListener(mFolder);
-        textView.setOnFocusChangeListener(mFocusIndicatorHelper);
-        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) textView.getLayoutParams();
+
+        final View icon;
+        if (item instanceof AppPairInfo api) {
+            // TODO (b/332607759): Make view cache work with app pair icons
+            icon = AppPairIcon.inflateIcon(R.layout.folder_app_pair, ActivityContext.lookupContext(
+                    getContext()), null , api, BubbleTextView.DISPLAY_FOLDER);
+        } else {
+            icon = mViewCache.getView(R.layout.folder_application, getContext(), null);
+            ((BubbleTextView) icon).applyFromWorkspaceItem((WorkspaceItemInfo) item);
+        }
+
+        icon.setOnClickListener(mFolder.mActivityContext.getItemOnClickListener());
+        icon.setOnLongClickListener(mFolder);
+        icon.setOnFocusChangeListener(mFocusIndicatorHelper);
+
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) icon.getLayoutParams();
         if (lp == null) {
-            textView.setLayoutParams(new CellLayoutLayoutParams(
+            icon.setLayoutParams(new CellLayoutLayoutParams(
                     item.cellX, item.cellY, item.spanX, item.spanY));
         } else {
             lp.setCellX(item.cellX);
             lp.setCellY(item.cellY);
             lp.cellHSpan = lp.cellVSpan = 1;
         }
-        return textView;
+
+        return icon;
     }
 
     @Nullable
@@ -498,13 +512,20 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         if (page != null) {
             ShortcutAndWidgetContainer parent = page.getShortcutsAndWidgets();
             for (int i = parent.getChildCount() - 1; i >= 0; i--) {
-                BubbleTextView icon = ((BubbleTextView) parent.getChildAt(i));
-                icon.verifyHighRes();
+                View iconView = parent.getChildAt(i);
+                Drawable d = null;
+                if (iconView instanceof BubbleTextView btv) {
+                    btv.verifyHighRes();
+                    d = btv.getIcon();
+                } else if (iconView instanceof AppPairIcon api) {
+                    api.verifyHighRes();
+                    d = api.getIconDrawableArea().getDrawable();
+                }
+
                 // Set the callback back to the actual icon, in case
                 // it was captured by the FolderIcon
-                Drawable d = icon.getIcon();
                 if (d != null) {
-                    d.setCallback(icon);
+                    d.setCallback(iconView);
                 }
             }
         }

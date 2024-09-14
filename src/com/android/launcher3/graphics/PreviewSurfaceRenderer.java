@@ -37,7 +37,6 @@ import android.view.Display;
 import android.view.SurfaceControlViewHost;
 import android.view.SurfaceControlViewHost.SurfacePackage;
 import android.view.View;
-import android.view.WindowManager.LayoutParams;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import androidx.annotation.NonNull;
@@ -49,13 +48,12 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
+import com.android.launcher3.model.BaseLauncherBinder;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.GridSizeMigrationUtil;
-import com.android.launcher3.model.LauncherBinder;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -88,6 +86,7 @@ public class PreviewSurfaceRenderer {
     private final int mHeight;
     private String mGridName;
 
+    private final int mDisplayId;
     private final Display mDisplay;
     private final WallpaperColors mWallpaperColors;
     private final RunnableList mOnDestroyCallbacks = new RunnableList();
@@ -111,13 +110,22 @@ public class PreviewSurfaceRenderer {
         mHostToken = bundle.getBinder(KEY_HOST_TOKEN);
         mWidth = bundle.getInt(KEY_VIEW_WIDTH);
         mHeight = bundle.getInt(KEY_VIEW_HEIGHT);
+        mDisplayId = bundle.getInt(KEY_DISPLAY_ID);
         mDisplay = context.getSystemService(DisplayManager.class)
-                .getDisplay(bundle.getInt(KEY_DISPLAY_ID));
+                .getDisplay(mDisplayId);
+        if (mDisplay == null) {
+            throw new IllegalArgumentException("Display ID does not match any displays.");
+        }
 
-        mSurfaceControlViewHost = MAIN_EXECUTOR.submit(() -> new SurfaceControlViewHost(mContext,
-                context.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY),
-                mHostToken)).get(5, TimeUnit.SECONDS);
+        mSurfaceControlViewHost = MAIN_EXECUTOR.submit(() ->
+                new SurfaceControlViewHost(mContext, context.getSystemService(DisplayManager.class)
+                        .getDisplay(DEFAULT_DISPLAY), mHostToken)
+        ).get(5, TimeUnit.SECONDS);
         mOnDestroyCallbacks.add(mSurfaceControlViewHost::release);
+    }
+
+    public int getDisplayId() {
+        return mDisplayId;
     }
 
     public IBinder getHostToken() {
@@ -208,10 +216,6 @@ public class PreviewSurfaceRenderer {
             return new ContextThemeWrapper(context,
                     Themes.getActivityThemeRes(context));
         }
-        if (Utilities.ATLEAST_R) {
-            context = context.createWindowContext(
-                    LayoutParams.TYPE_APPLICATION_OVERLAY, null);
-        }
         LocalColorExtractor.newInstance(context)
                 .applyColorsOverride(context, mWallpaperColors);
         return new ContextThemeWrapper(context,
@@ -227,7 +231,7 @@ public class PreviewSurfaceRenderer {
             PreviewContext previewContext = new PreviewContext(inflationContext, idp);
             // Copy existing data to preview DB
             LauncherDbUtils.copyTable(LauncherAppState.getInstance(mContext)
-                    .getModel().getModelDbController().getDb(),
+                            .getModel().getModelDbController().getDb(),
                     TABLE_NAME,
                     LauncherAppState.getInstance(previewContext)
                             .getModel().getModelDbController().getDb(),
@@ -242,7 +246,7 @@ public class PreviewSurfaceRenderer {
                     /* bgAllAppsList= */ null,
                     bgModel,
                     LauncherAppState.getInstance(previewContext).getModel().getModelDelegate(),
-                    new LauncherBinder(LauncherAppState.getInstance(previewContext), bgModel,
+                    new BaseLauncherBinder(LauncherAppState.getInstance(previewContext), bgModel,
                             /* bgAllAppsList= */ null, new Callbacks[0])) {
 
                 @Override
@@ -255,7 +259,7 @@ public class PreviewSurfaceRenderer {
                         query += " or " + LauncherSettings.Favorites.SCREEN + " = "
                                 + Workspace.SECOND_SCREEN_ID;
                     }
-                    loadWorkspace(new ArrayList<>(), query, null);
+                    loadWorkspace(new ArrayList<>(), query, null, null);
 
                     final SparseArray<Size> spanInfo = getLoadedLauncherWidgetInfo(previewContext.getBaseContext());
 

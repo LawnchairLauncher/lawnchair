@@ -108,6 +108,15 @@ public class TISBindHelper implements ServiceConnection {
         return mBinder == null ? null : mBinder.getTaskbarManager();
     }
 
+    /**
+     * Sets flag whether a predictive back-to-home animation is in progress
+     */
+    public void setPredictiveBackToHomeInProgress(boolean isInProgress) {
+        if (mBinder != null) {
+            mBinder.setPredictiveBackToHomeInProgress(isInProgress);
+        }
+    }
+
     @Nullable
     public OverviewCommandHelper getOverviewCommandHelper() {
         return mBinder == null ? null : mBinder.getOverviewCommandHelper();

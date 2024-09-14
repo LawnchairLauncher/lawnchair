@@ -28,6 +28,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
@@ -36,6 +37,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.widget.util.WidgetDragScaleUtils;
 
 /**
  * Drag controller for Launcher activity
@@ -43,7 +45,6 @@ import com.android.launcher3.model.data.ItemInfo;
 public class LauncherDragController extends DragController<Launcher> {
 
     private static final boolean PROFILE_DRAWING_DURING_DRAG = false;
-
     private final FlingToDeleteHelper mFlingToDeleteHelper;
 
     public LauncherDragController(Launcher launcher) {
@@ -92,8 +93,13 @@ public class LauncherDragController extends DragController<Launcher> {
                 && !mOptions.preDragCondition.shouldStartDrag(0);
 
         final Resources res = mActivity.getResources();
-        final float scaleDps = mIsInPreDrag
-                ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
+
+        final float scalePx;
+        if (originalView.getViewType() == DraggableView.DRAGGABLE_WIDGET) {
+            scalePx = mIsInPreDrag ? 0f : getWidgetDragScalePx(drawable, view, dragInfo);
+        } else {
+            scalePx = mIsInPreDrag ? res.getDimensionPixelSize(R.dimen.pre_drag_view_scale) : 0f;
+        }
         final DragView dragView = mDragObject.dragView = drawable != null
                 ? new LauncherDragView(
                 mActivity,
@@ -102,7 +108,7 @@ public class LauncherDragController extends DragController<Launcher> {
                 registrationY,
                 initialDragViewScale,
                 dragViewScaleOnDrop,
-                scaleDps)
+                scalePx)
                 : new LauncherDragView(
                         mActivity,
                         view,
@@ -112,7 +118,7 @@ public class LauncherDragController extends DragController<Launcher> {
                         registrationY,
                         initialDragViewScale,
                         dragViewScaleOnDrop,
-                        scaleDps);
+                        scalePx);
         dragView.setItemInfo(dragInfo);
         mDragObject.dragComplete = false;
 
@@ -149,11 +155,35 @@ public class LauncherDragController extends DragController<Launcher> {
 
         handleMoveEvent(mLastTouch.x, mLastTouch.y);
 
-        if (!mActivity.isTouchInProgress() && options.simulatedDndStartPoint == null) {
+        if (!isItemPinnable()
+                || (!mActivity.isTouchInProgress() && options.simulatedDndStartPoint == null)) {
             // If it is an internal drag and the touch is already complete, cancel immediately
-            MAIN_EXECUTOR.submit(this::cancelDrag);
+            MAIN_EXECUTOR.post(this::cancelDrag);
         }
         return dragView;
+    }
+
+
+    /**
+     * Returns the scale in terms of pixels (to be applied on width) to scale the preview
+     * during drag and drop.
+     */
+    @VisibleForTesting
+    float getWidgetDragScalePx(@Nullable Drawable drawable, @Nullable View view,
+            ItemInfo dragInfo) {
+        float draggedViewWidthPx = 0;
+        float draggedViewHeightPx = 0;
+
+        if (view != null) {
+            draggedViewWidthPx = view.getMeasuredWidth();
+            draggedViewHeightPx = view.getMeasuredHeight();
+        } else if (drawable != null) {
+            draggedViewWidthPx = drawable.getIntrinsicWidth();
+            draggedViewHeightPx = drawable.getIntrinsicHeight();
+        }
+
+        return WidgetDragScaleUtils.getWidgetDragScalePx(mActivity, mActivity.getDeviceProfile(),
+                draggedViewWidthPx, draggedViewHeightPx, dragInfo);
     }
 
     @Override

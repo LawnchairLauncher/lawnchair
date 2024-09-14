@@ -17,6 +17,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
+import static com.android.launcher3.Utilities.SHOULD_SHOW_FIRST_PAGE_WIDGET;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -41,6 +42,8 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger;
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RestoreError;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.FileLog;
@@ -48,12 +51,16 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.IconRequestInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.UserIconInfo;
 
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
@@ -72,8 +79,10 @@ public class LoaderCursor extends CursorWrapper {
 
     private final LauncherAppState mApp;
     private final Context mContext;
+    private final PackageManagerHelper mPmHelper;
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mIDP;
+    private final @Nullable LauncherRestoreEventLogger mRestoreEventLogger;
 
     private final IntArray mItemsToRemove = new IntArray();
     private final IntArray mRestoredRows = new IntArray();
@@ -113,16 +122,18 @@ public class LoaderCursor extends CursorWrapper {
     public int itemType;
     public int restoreFlag;
 
-    private final PreferenceManager2 preferenceManager2;
-
-    public LoaderCursor(Cursor cursor, LauncherAppState app, UserManagerState userManagerState) {
+    public LoaderCursor(Cursor cursor, LauncherAppState app, UserManagerState userManagerState,
+            PackageManagerHelper pmHelper,
+            @Nullable LauncherRestoreEventLogger restoreEventLogger) {
         super(cursor);
 
         mApp = app;
         allUsers = userManagerState.allUsers;
         mContext = app.getContext();
         mIconCache = app.getIconCache();
+        mPmHelper = pmHelper;
         mIDP = app.getInvariantDeviceProfile();
+        mRestoreEventLogger = restoreEventLogger;
 
         preferenceManager2 = PreferenceManager2.getInstance(mContext);
         mPM = mContext.getPackageManager();
@@ -361,6 +372,8 @@ public class LoaderCursor extends CursorWrapper {
         final WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.user = user;
         info.intent = newIntent;
+        UserCache userCache = UserCache.getInstance(mContext);
+        UserIconInfo userIconInfo = userCache.getUserInfo(user);
 
         if (loadIcon) {
             mIconCache.getTitleAndIcon(info, mActivityInfo, useLowResIcon);
@@ -370,7 +383,8 @@ public class LoaderCursor extends CursorWrapper {
         }
 
         if (mActivityInfo != null) {
-            AppInfo.updateRuntimeFlagsForActivityTarget(info, mActivityInfo);
+            AppInfo.updateRuntimeFlagsForActivityTarget(info, mActivityInfo, userIconInfo,
+                    ApiWrapper.INSTANCE.get(mContext), mPmHelper);
         }
 
         // from the db
@@ -403,9 +417,12 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * Marks the current item for removal
      */
-    public void markDeleted(String reason) {
+    public void markDeleted(String reason, @RestoreError String errorType) {
         FileLog.e(TAG, reason);
         mItemsToRemove.add(id);
+        if (mRestoreEventLogger != null) {
+            mRestoreEventLogger.logSingleFavoritesItemRestoreFailed(itemType, errorType);
+        }
     }
 
     /**
@@ -444,6 +461,9 @@ public class LoaderCursor extends CursorWrapper {
             values.put(Favorites.RESTORED, 0);
             mApp.getModel().getModelDbController().update(TABLE_NAME, values,
                     Utilities.createDbSelectionQuery(Favorites._ID, mRestoredRows), null);
+        }
+        if (mRestoreEventLogger != null) {
+            mRestoreEventLogger.reportLauncherRestoreResults();
         }
     }
 
@@ -486,10 +506,13 @@ public class LoaderCursor extends CursorWrapper {
             // cause the item loading to get skipped
             ShortcutKey.fromItemInfo(info);
         }
-        if (checkItemPlacement(info)) {
+        if (checkItemPlacement(info, dataModel.isFirstPagePinnedItemEnabled)) {
             dataModel.addItem(mContext, info, false, logger);
+            if (mRestoreEventLogger != null) {
+                mRestoreEventLogger.logSingleFavoritesItemRestored(itemType);
+            }
         } else {
-            markDeleted("Item position overlap");
+            markDeleted("Item position overlap", RestoreError.INVALID_LOCATION);
         }
     }
 
@@ -497,7 +520,7 @@ public class LoaderCursor extends CursorWrapper {
      * check & update map of what's occupied; used to discard overlapping/invalid
      * items
      */
-    protected boolean checkItemPlacement(ItemInfo item) {
+    protected boolean checkItemPlacement(ItemInfo item, boolean isFirstPagePinnedItemEnabled) {
         int containerIndex = item.screenId;
         if (item.container == Favorites.CONTAINER_HOTSEAT) {
             final GridOccupancy hotseatOccupancy = mOccupied.get(Favorites.CONTAINER_HOTSEAT);

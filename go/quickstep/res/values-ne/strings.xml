@@ -8,7 +8,7 @@
     <string name="dialog_acknowledge" msgid="2804025517675853172">"बुझेँ"</string>
     <string name="dialog_cancel" msgid="6464336969134856366">"रद्द गर्नुहोस्"</string>
     <string name="dialog_settings" msgid="6564397136021186148">"सेटिङ"</string>
-    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"स्क्रिनमा देखिने पाठ अनुवाद गरियोस् वा पढेर सुनाइयोस्"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"स्क्रिनमा देखिने पाठ अनुवाद गर्नुहोस् वा पढेर सुनाउनुहोस्"</string>
     <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"तपाईंको स्क्रिनमा देखिने पाठ, वेब ठेगाना र स्क्रिनसटलगायतका जानकारी Google सँग सेयर गर्न सकिन्छ।\n\nकुन कुन जानकारी सेयर गर्न दिने भन्ने सेटिङ बदल्न "<b>"सेटिङ &gt; एप &gt; डिफल्ट एप &gt; डिजिटल सहायक एप"</b>" मा जानुहोस्।"</string>
     <string name="assistant_not_selected_title" msgid="5017072974603345228">"तपाईं यो सुविधा चलाउन चाहनुहुन्छ भने कुनै सहायक छनौट गर्नुहोस्"</string>
     <string name="assistant_not_selected_text" msgid="3244613673884359276">"तपाईं आफ्नो स्क्रिनमा देखिने पाठ सुन्न वा अनुवाद गर्न चाहनुहुन्छ भने सेटिङमा गई कुनै डिजिटल सहायक एप छनौट गर्नुहोस्"</string>

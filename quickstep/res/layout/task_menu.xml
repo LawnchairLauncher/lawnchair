@@ -30,15 +30,21 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:layout_marginBottom="2dp"
-        android:paddingTop="@dimen/task_menu_vertical_padding"
-        android:paddingBottom="@dimen/task_menu_vertical_padding"
+        android:paddingTop="@dimen/task_menu_edge_padding"
+        android:paddingBottom="@dimen/task_menu_edge_padding"
         android:textSize="16sp"/>
 
-    <LinearLayout
-        android:id="@+id/menu_option_layout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:showDividers="middle" />
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/menu_option_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:showDividers="middle" />
+
+    </ScrollView>
 
 </com.android.quickstep.views.TaskMenuView>

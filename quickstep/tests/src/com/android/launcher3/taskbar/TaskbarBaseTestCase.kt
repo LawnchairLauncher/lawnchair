@@ -55,7 +55,7 @@ abstract class TaskbarBaseTestCase {
     @Mock lateinit var taskbarOverlayController: TaskbarOverlayController
     @Mock lateinit var taskbarEduTooltipController: TaskbarEduTooltipController
     @Mock lateinit var keyboardQuickSwitchController: KeyboardQuickSwitchController
-    @Mock lateinit var taskbarPinningController: TaskbarDividerPopupController
+    @Mock lateinit var taskbarPinningController: TaskbarPinningController
     @Mock lateinit var optionalBubbleControllers: Optional<BubbleControllers>
 
     lateinit var taskbarControllers: TaskbarControllers

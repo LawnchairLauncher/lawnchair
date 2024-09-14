@@ -15,6 +15,16 @@
  */
 package com.android.launcher3.allapps;
 
+import static android.view.View.GONE;
+
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_LEFT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_RIGHT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_TOP_LEFT;
+import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_TOP_RIGHT;
+import static com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED;
+import static com.android.launcher3.allapps.UserProfileManager.STATE_ENABLED;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,15 +32,17 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Flags;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
@@ -56,14 +68,18 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     // A divider that separates the apps list and the search market button
     public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 4;
 
-    public static final int VIEW_TYPE_WORK_EDU_CARD = 1 << 5;
-    public static final int VIEW_TYPE_WORK_DISABLED_CARD = 1 << 6;
-
-    public static final int NEXT_ID = 7;
+    public static final int VIEW_TYPE_WORK_EDU_CARD = 1 << 4;
+    public static final int VIEW_TYPE_WORK_DISABLED_CARD = 1 << 5;
+    public static final int VIEW_TYPE_PRIVATE_SPACE_HEADER = 1 << 6;
+    public static final int VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER = 1 << 7;
+    public static final int NEXT_ID = 8;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
+
+    public static final int VIEW_TYPE_MASK_PRIVATE_SPACE_HEADER = VIEW_TYPE_PRIVATE_SPACE_HEADER;
+    public static final int VIEW_TYPE_MASK_PRIVATE_SPACE_SYS_APPS_DIVIDER = VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER;
 
     protected final SearchAdapterProvider<?> mAdapterProvider;
 
@@ -77,7 +93,9 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         }
     }
 
-    /** Sets the number of apps to be displayed in one row of the all apps screen. */
+    /**
+     * Sets the number of apps to be displayed in one row of the all apps screen.
+     */
     public abstract void setAppsPerRow(int appsPerRow);
 
     /**
@@ -94,7 +112,10 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         // The index of this app in the row
         public int rowAppIndex;
         // The associated ItemInfoWithIcon for the item
-        public AppInfo itemInfo = new AppInfo ();
+        public AppInfo itemInfo = new AppInfo();
+
+        // Private App Decorator
+        public SectionDecorationInfo decorationInfo = null;
 
         public AdapterItem(int viewType) {
             this.viewType = viewType;
@@ -106,6 +127,13 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         public static AdapterItem asApp(AppInfo appInfo) {
             AdapterItem item = new AdapterItem(VIEW_TYPE_ICON);
             item.itemInfo = appInfo;
+            return item;
+        }
+
+        public static AdapterItem asAppWithDecorationInfo(AppInfo appInfo,
+                SectionDecorationInfo decorationInfo) {
+            AdapterItem item = asApp(appInfo);
+            item.decorationInfo = decorationInfo;
             return item;
         }
 
@@ -121,29 +149,38 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         }
 
         /**
-         * This is called only if {@link #isSameAs} returns true to check if the contents are same
+         * This is called only if {@link #isSameAs} returns true to check if the
+         * contents are same
          * as well. Returning true will prevent redrawing of thee item.
          */
         public boolean isContentSame(AdapterItem other) {
             return itemInfo == null && other.itemInfo == null;
         }
 
-        /** Sets the alpha of the decorator for this item. Returns true if successful. */
-        public boolean setDecorationFillAlpha(int alpha) {
-            return false;
+        @Nullable
+        public SectionDecorationInfo getDecorationInfo() {
+            return decorationInfo;
+        }
+
+        /** Sets the alpha of the decorator for this item. */
+        protected void setDecorationFillAlpha(int alpha) {
+            if (decorationInfo == null || decorationInfo.getDecorationHandler() == null) {
+                return;
+            }
+            decorationInfo.getDecorationHandler().setFillAlpha(alpha);
         }
     }
 
     protected final T mActivityContext;
     public final AlphabeticalAppsList<T> mApps;
-    // The text to show when there are no search results and no market search handler.
+    // The text to show when there are no search results and no market search
+    // handler.
     protected int mAppsPerRow;
 
     protected final LayoutInflater mLayoutInflater;
     protected final OnClickListener mOnIconClickListener;
     protected final OnLongClickListener mOnIconLongClickListener;
     protected OnFocusChangeListener mIconFocusListener;
-    private final int mExtraTextHeight;
 
     public BaseAllAppsAdapter(T activityContext, LayoutInflater inflater,
             AlphabeticalAppsList<T> apps, SearchAdapterProvider<?> adapterProvider) {
@@ -155,8 +192,6 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         mOnIconLongClickListener = mActivityContext.getAllAppsItemLongClickListener();
 
         mAdapterProvider = adapterProvider;
-        mExtraTextHeight = Utilities.calculateTextHeight(
-                mActivityContext.getDeviceProfile().allAppsIconTextSizePx);
     }
 
     /** Checks if the passed viewType represents all apps divider. */
@@ -167,6 +202,18 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     /** Checks if the passed viewType represents all apps icon. */
     public static boolean isIconViewType(int viewType) {
         return isViewType(viewType, VIEW_TYPE_MASK_ICON);
+    }
+
+    /** Checks if the passed viewType represents private space header. */
+    public static boolean isPrivateSpaceHeaderView(int viewType) {
+        return isViewType(viewType, VIEW_TYPE_MASK_PRIVATE_SPACE_HEADER);
+    }
+
+    /**
+     * Checks if the passed viewType represents private space system apps divider.
+     */
+    public static boolean isPrivateSpaceSysAppsDividerView(int viewType) {
+        return isViewType(viewType, VIEW_TYPE_MASK_PRIVATE_SPACE_SYS_APPS_DIVIDER);
     }
 
     public void setIconFocusListener(OnFocusChangeListener focusListener) {
@@ -191,8 +238,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 icon.setOnClickListener(mOnIconClickListener);
                 icon.setOnLongClickListener(mOnIconLongClickListener);
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
-                icon.getLayoutParams().height =
-                        mActivityContext.getDeviceProfile().allAppsCellHeightPx;
+                icon.getLayoutParams().height = mActivityContext.getDeviceProfile().allAppsCellHeightPx;
                 if (FeatureFlags.twoLineAllApps(parent.getContext())) {
                     icon.getLayoutParams().height += mExtraTextHeight;
                 }
@@ -200,15 +246,18 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_EMPTY_SEARCH:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
-            case VIEW_TYPE_ALL_APPS_DIVIDER:
+            case VIEW_TYPE_ALL_APPS_DIVIDER, VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_divider, parent, false));
+                        R.layout.private_space_divider, parent, false));
             case VIEW_TYPE_WORK_EDU_CARD:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.work_apps_edu, parent, false));
             case VIEW_TYPE_WORK_DISABLED_CARD:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.work_apps_paused, parent, false));
+            case VIEW_TYPE_PRIVATE_SPACE_HEADER:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.private_space_header, parent, false));
             default:
                 if (mAdapterProvider.isViewSupported(viewType)) {
                     return mAdapterProvider.onCreateViewHolder(mLayoutInflater, parent, viewType);
@@ -219,12 +268,37 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.itemView.setVisibility(View.VISIBLE);
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ICON: {
                 AdapterItem adapterItem = mApps.getAdapterItems().get(position);
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
                 icon.applyFromApplicationInfo(adapterItem.itemInfo);
+                icon.setOnFocusChangeListener(mIconFocusListener);
+                PrivateProfileManager privateProfileManager = mApps.getPrivateProfileManager();
+                if (privateProfileManager != null) {
+                    // Set the alpha of the private space icon to 0 upon expanding the header so the
+                    // alpha can animate -> 1. This should only be in effect when doing a
+                    // transitioning between Locked/Unlocked state.
+                    boolean isPrivateSpaceItem = privateProfileManager.isPrivateSpaceItem(adapterItem);
+                    if (icon.getAlpha() == 0 || icon.getAlpha() == 1) {
+                        icon.setAlpha(isPrivateSpaceItem
+                                && privateProfileManager.isStateTransitioning()
+                                && (privateProfileManager.isScrolling() ||
+                                        privateProfileManager.getReadyToAnimate())
+                                && privateProfileManager.getCurrentState() == STATE_ENABLED
+                                        ? 0
+                                        : 1);
+                    }
+                    // Views can still be bounded before the app list is updated hence showing icons
+                    // after collapsing.
+                    if (privateProfileManager.getCurrentState() == STATE_DISABLED
+                            && isPrivateSpaceItem) {
+                        adapterItem.decorationInfo = null;
+                        icon.setVisibility(GONE);
+                    }
+                }
                 break;
             }
             case VIEW_TYPE_EMPTY_SEARCH: {
@@ -235,6 +309,24 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 }
                 break;
             }
+            case VIEW_TYPE_PRIVATE_SPACE_HEADER:
+                RelativeLayout psHeaderLayout = holder.itemView.findViewById(
+                        R.id.ps_header_layout);
+                mApps.getPrivateProfileManager().bindPrivateSpaceHeaderViewElements(psHeaderLayout);
+                AdapterItem adapterItem = mApps.getAdapterItems().get(position);
+                int roundRegions = ROUND_TOP_LEFT | ROUND_TOP_RIGHT;
+                if (mApps.getPrivateProfileManager().getCurrentState() == STATE_DISABLED) {
+                    roundRegions |= (ROUND_BOTTOM_LEFT | ROUND_BOTTOM_RIGHT);
+                }
+                adapterItem.decorationInfo = new SectionDecorationInfo(mActivityContext, roundRegions,
+                        false /* decorateTogether */);
+                break;
+            case VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER:
+                adapterItem = mApps.getAdapterItems().get(position);
+                adapterItem.decorationInfo = mApps.getPrivateProfileManager().getCurrentState() == STATE_DISABLED ? null
+                        : new SectionDecorationInfo(mActivityContext,
+                                ROUND_NOTHING, true /* decorateTogether */);
+                break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
             case VIEW_TYPE_WORK_DISABLED_CARD:
                 // nothing to do

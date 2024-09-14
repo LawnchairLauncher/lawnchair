@@ -1,0 +1,55 @@
+package: "com.android.launcher3"
+container: "system_ext"
+
+flag {
+    name: "enable_private_space"
+    namespace: "launcher_search"
+    description: "Enables all Launcher features associated with private space."
+    bug: "306187906"
+}
+
+flag {
+    name: "private_space_animation"
+    namespace: "launcher_search"
+    description: "This flag enables the animation of the Private Space container"
+    bug: "299294792"
+}
+
+flag {
+    name: "private_space_sys_apps_separation"
+    namespace: "launcher_search"
+    description: "This flag enables showing system apps separate in Private Space container."
+    bug: "308054233"
+}
+
+flag {
+    name: "private_space_app_installer_button"
+    namespace: "launcher_search"
+    description: "This flag enables addition of App Installer button in Private Space container."
+    bug: "308064949"
+}
+
+flag {
+    name: "private_space_restrict_accessibility_drag"
+    namespace: "launcher_search"
+    description: "This flag disables accessibility drag for Private Space Apps."
+    bug: "289223923"
+}
+
+flag {
+    name: "private_space_restrict_item_drag"
+    namespace: "launcher_search"
+    description: "This flag disables drag and drop for Private Space Items."
+    bug: "289223923"
+}
+
+
+flag {
+    name: "private_space_add_floating_mask_view"
+    namespace: "launcher_search"
+    description: "This flag enables the floating mask view as part of the Private Space animation. "
+    bug: "339850589"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}

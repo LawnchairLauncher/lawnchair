@@ -73,7 +73,7 @@ public class WidgetsRecyclerView extends FastScrollRecyclerView implements OnIte
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      */
     @Override
-    public String scrollToPositionAtProgress(float touchFraction) {
+    public CharSequence scrollToPositionAtProgress(float touchFraction) {
         // Skip early if widgets are not bound.
         if (isModelNotReady()) {
             return "";

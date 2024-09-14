@@ -48,6 +48,8 @@ public class RecentTasksListTest {
 
     @Mock
     private SystemUiProxy mockSystemUiProxy;
+    @Mock
+    private TopTaskTracker mTopTaskTracker;
 
     // Class under test
     private RecentTasksList mRecentTasksList;
@@ -58,7 +60,7 @@ public class RecentTasksListTest {
         LooperExecutor mockMainThreadExecutor = mock(LooperExecutor.class);
         KeyguardManager mockKeyguardManager = mock(KeyguardManager.class);
         mRecentTasksList = new RecentTasksList(mockMainThreadExecutor, mockKeyguardManager,
-                mockSystemUiProxy);
+                mockSystemUiProxy, mTopTaskTracker);
     }
 
     @Test

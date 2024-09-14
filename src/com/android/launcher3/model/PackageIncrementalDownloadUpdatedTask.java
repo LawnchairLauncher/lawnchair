@@ -19,7 +19,7 @@ import android.os.UserHandle;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Handles updates due to incremental download progress updates.
  */
-public class PackageIncrementalDownloadUpdatedTask extends BaseModelUpdateTask {
+public class PackageIncrementalDownloadUpdatedTask implements ModelUpdateTask {
 
     @NonNull
     private final UserHandle mUser;
@@ -49,8 +49,8 @@ public class PackageIncrementalDownloadUpdatedTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(@NonNull LauncherAppState app, @NonNull final BgDataModel dataModel,
-            @NonNull final AllAppsList appsList) {
+    public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
+            @NonNull AllAppsList appsList) {
         PackageInstallInfo downloadInfo = new PackageInstallInfo(
                 mPackageName,
                 PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING,
@@ -62,11 +62,11 @@ public class PackageIncrementalDownloadUpdatedTask extends BaseModelUpdateTask {
             if (!updatedAppInfos.isEmpty()) {
                 for (AppInfo appInfo : updatedAppInfos) {
                     appInfo.runtimeStatusFlags &= ~ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE;
-                    scheduleCallbackTask(
+                    taskController.scheduleCallbackTask(
                             c -> c.bindIncrementalDownloadProgressUpdated(appInfo));
                 }
             }
-            bindApplicationsIfNeeded();
+            taskController.bindApplicationsIfNeeded();
         }
 
         final ArrayList<WorkspaceItemInfo> updatedWorkspaceItems = new ArrayList<>();
@@ -79,6 +79,6 @@ public class PackageIncrementalDownloadUpdatedTask extends BaseModelUpdateTask {
                 }
             });
         }
-        bindUpdatedWorkspaceItems(updatedWorkspaceItems);
+        taskController.bindUpdatedWorkspaceItems(updatedWorkspaceItems);
     }
 }

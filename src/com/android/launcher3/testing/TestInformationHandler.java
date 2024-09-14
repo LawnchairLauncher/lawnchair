@@ -15,50 +15,70 @@
  */
 package com.android.launcher3.testing;
 
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
+import static com.android.launcher3.config.FeatureFlags.enableAppPairs;
+import static com.android.launcher3.config.FeatureFlags.enableSplitContextually;
+import static com.android.launcher3.testing.shared.TestProtocol.TEST_INFO_RESPONSE_FIELD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Build;
+import android.os.Binder;
 import android.os.Bundle;
+import android.system.Os;
 import android.view.WindowInsets;
 
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
+import androidx.core.view.WindowInsetsCompat;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.icons.ClockDrawableWrapper;
 import com.android.launcher3.testing.shared.HotseatCellCenterRequest;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.testing.shared.WorkspaceCellCenterRequest;
+import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * Class to handle requests from tests
  */
-@TargetApi(Build.VERSION_CODES.Q)
 public class TestInformationHandler implements ResourceBasedOverride {
 
     public static TestInformationHandler newInstance(Context context) {
@@ -66,15 +86,29 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 context, R.string.test_information_handler_class);
     }
 
+    private static Collection<String> sEvents;
+    private static Application.ActivityLifecycleCallbacks sActivityLifecycleCallbacks;
+    private static final Set<Activity> sActivities =
+            Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
+    private static int sActivitiesCreatedCount = 0;
+
     protected Context mContext;
     protected DeviceProfile mDeviceProfile;
-    protected LauncherAppState mLauncherAppState;
 
     public void init(Context context) {
         mContext = context;
-        mDeviceProfile = InvariantDeviceProfile.INSTANCE.
-                get(context).getDeviceProfile(context);
-        mLauncherAppState = LauncherAppState.getInstanceNoCreate();
+        mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(context).getDeviceProfile(context);
+        if (sActivityLifecycleCallbacks == null) {
+            sActivityLifecycleCallbacks = new ActivityLifecycleCallbacksAdapter() {
+                @Override
+                public void onActivityCreated(Activity activity, Bundle bundle) {
+                    sActivities.add(activity);
+                    ++sActivitiesCreatedCount;
+                }
+            };
+            ((Application) context.getApplicationContext())
+                    .registerActivityLifecycleCallbacks(sActivityLifecycleCallbacks);
+        }
     }
 
     /**
@@ -101,6 +135,15 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
                 return getUIProperty(Bundle::putBoolean, t -> isLauncherInitialized(), () -> true);
+            }
+
+            case TestProtocol.REQUEST_IS_LAUNCHER_LAUNCHER_ACTIVITY_STARTED: {
+                final Bundle bundle = getLauncherUIProperty(Bundle::putBoolean, l -> l.isStarted());
+                if (bundle != null) return bundle;
+
+                // If Launcher activity wasn't created, it's not started.
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, false);
+                return response;
             }
 
             case TestProtocol.REQUEST_FREEZE_APP_LIST:
@@ -142,6 +185,22 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 }, this::getCurrentActivity);
             }
 
+            case TestProtocol.REQUEST_CELL_LAYOUT_BOARDER_HEIGHT: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.cellLayoutBorderSpacePx.y);
+                return response;
+            }
+
+            case TestProtocol.REQUEST_SYSTEM_GESTURE_REGION: {
+                return getUIProperty(Bundle::putParcelable, activity -> {
+                    WindowInsetsCompat insets = WindowInsetsCompat.toWindowInsetsCompat(
+                            activity.getWindow().getDecorView().getRootWindowInsets());
+                    return insets.getInsets(WindowInsetsCompat.Type.ime()
+                            | WindowInsetsCompat.Type.systemGestures())
+                            .toPlatformInsets();
+                }, this::getCurrentActivity);
+            }
+
             case TestProtocol.REQUEST_ICON_HEIGHT: {
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                         mDeviceProfile.allAppsCellHeightPx);
@@ -154,6 +213,24 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_IS_TABLET:
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, mDeviceProfile.isTablet);
+                return response;
+            case TestProtocol.REQUEST_IS_PREDICTIVE_BACK_SWIPE_ENABLED:
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.isPredictiveBackSwipe);
+                return response;
+            case TestProtocol.REQUEST_ENABLE_TASKBAR_NAVBAR_UNIFICATION:
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        ENABLE_TASKBAR_NAVBAR_UNIFICATION);
+                return response;
+
+            case TestProtocol.REQUEST_NUM_ALL_APPS_COLUMNS:
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.numShownAllAppsColumns);
+                return response;
+
+            case TestProtocol.REQUEST_IS_TRANSIENT_TASKBAR:
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        DisplayController.isTransientTaskbar(mContext));
                 return response;
 
             case TestProtocol.REQUEST_IS_TWO_PANELS:
@@ -173,6 +250,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
                                 + resources.getDimensionPixelSize(R.dimen.pre_drag_view_scale));
                 return response;
             }
+
+            case TestProtocol.REQUEST_GET_SPLIT_SELECTION_ACTIVE:
+                response.putBoolean(TEST_INFO_RESPONSE_FIELD, enableSplitContextually()
+                        && Launcher.ACTIVITY_TRACKER.getCreatedActivity().isSplitSelectionActive());
+                return response;
 
             case TestProtocol.REQUEST_ENABLE_ROTATION:
                 MAIN_EXECUTOR.submit(() ->
@@ -249,9 +331,135 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_FLAG_ENABLE_GRID_ONLY_OVERVIEW: {
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        ENABLE_GRID_ONLY_OVERVIEW.get());
+                        enableGridOnlyOverview());
                 return response;
             }
+
+            case TestProtocol.REQUEST_FLAG_ENABLE_APP_PAIRS: {
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, enableAppPairs());
+                return response;
+            }
+
+            case TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS: {
+                return getLauncherUIProperty(Bundle::putInt,
+                        l -> l.getAppsView().getAppsStore().getDeferUpdatesFlags());
+            }
+
+            case TestProtocol.REQUEST_ENABLE_DEBUG_TRACING:
+                TestProtocol.sDebugTracing = true;
+                ClockDrawableWrapper.sRunningInTest = true;
+                return response;
+
+            case TestProtocol.REQUEST_DISABLE_DEBUG_TRACING:
+                TestProtocol.sDebugTracing = false;
+                ClockDrawableWrapper.sRunningInTest = false;
+                return response;
+
+            case TestProtocol.REQUEST_PID: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, Os.getpid());
+                return response;
+            }
+
+            case TestProtocol.REQUEST_FORCE_GC: {
+                runGcAndFinalizersSync();
+                return response;
+            }
+
+            case TestProtocol.REQUEST_START_EVENT_LOGGING: {
+                sEvents = new ArrayList<>();
+                TestLogging.setEventConsumer(
+                        (sequence, event) -> {
+                            final Collection<String> events = sEvents;
+                            if (events != null) {
+                                synchronized (events) {
+                                    events.add(sequence + '/' + event);
+                                }
+                            }
+                        });
+                return response;
+            }
+
+            case TestProtocol.REQUEST_STOP_EVENT_LOGGING: {
+                TestLogging.setEventConsumer(null);
+                sEvents = null;
+                return response;
+            }
+
+            case TestProtocol.REQUEST_GET_TEST_EVENTS: {
+                if (sEvents == null) {
+                    // sEvents can be null if Launcher died and restarted after
+                    // REQUEST_START_EVENT_LOGGING.
+                    return response;
+                }
+
+                synchronized (sEvents) {
+                    response.putStringArrayList(
+                            TestProtocol.TEST_INFO_RESPONSE_FIELD, new ArrayList<>(sEvents));
+                }
+                return response;
+            }
+
+            case TestProtocol.REQUEST_REINITIALIZE_DATA: {
+                final long identity = Binder.clearCallingIdentity();
+                try {
+                    MODEL_EXECUTOR.execute(() -> {
+                        LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
+                        model.getModelDbController().createEmptyDB();
+                        MAIN_EXECUTOR.execute(model::forceReload);
+                    });
+                    return response;
+                } finally {
+                    Binder.restoreCallingIdentity(identity);
+                }
+            }
+
+            case TestProtocol.REQUEST_CLEAR_DATA: {
+                final long identity = Binder.clearCallingIdentity();
+                try {
+                    MODEL_EXECUTOR.execute(() -> {
+                        LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
+                        model.getModelDbController().createEmptyDB();
+                        model.getModelDbController().clearEmptyDbFlag();
+                        MAIN_EXECUTOR.execute(model::forceReload);
+                    });
+                    return response;
+                } finally {
+                    Binder.restoreCallingIdentity(identity);
+                }
+            }
+
+            case TestProtocol.REQUEST_HOTSEAT_ICON_NAMES: {
+                return getLauncherUIProperty(Bundle::putStringArrayList, l -> {
+                    ShortcutAndWidgetContainer hotseatIconsContainer =
+                            l.getHotseat().getShortcutsAndWidgets();
+                    ArrayList<String> hotseatIconNames = new ArrayList<>();
+
+                    for (int i = 0; i < hotseatIconsContainer.getChildCount(); i++) {
+                        // Use unchecked cast to catch changes in hotseat layout
+                        BubbleTextView icon = (BubbleTextView) hotseatIconsContainer.getChildAt(i);
+                        hotseatIconNames.add((String) icon.getText());
+                    }
+
+                    return hotseatIconNames;
+                });
+            }
+
+            case TestProtocol.REQUEST_GET_ACTIVITIES_CREATED_COUNT: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, sActivitiesCreatedCount);
+                return response;
+            }
+
+            case TestProtocol.REQUEST_GET_ACTIVITIES: {
+                response.putStringArray(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        sActivities.stream().map(
+                                        a -> a.getClass().getSimpleName() + " ("
+                                                + (a.isDestroyed() ? "destroyed" : "current") + ")")
+                                .toArray(String[]::new));
+                return response;
+            }
+
+            case TestProtocol.REQUEST_MODEL_QUEUE_CLEARED:
+                return getFromExecutorSync(MODEL_EXECUTOR, Bundle::new);
 
             default:
                 return null;
@@ -301,6 +509,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 return null;
             }
             T value = provider.apply(target);
+
             Bundle response = new Bundle();
             bundleSetter.set(response, TestProtocol.TEST_INFO_RESPONSE_FIELD, value);
             return response;
@@ -329,5 +538,39 @@ public class TestInformationHandler implements ResourceBasedOverride {
          * Sets any generic property to the bundle
          */
         void set(Bundle b, String key, T value);
+    }
+
+
+    private static void runGcAndFinalizersSync() {
+        Runtime.getRuntime().gc();
+        Runtime.getRuntime().runFinalization();
+
+        final CountDownLatch fence = new CountDownLatch(1);
+        createFinalizationObserver(fence);
+        try {
+            do {
+                Runtime.getRuntime().gc();
+                Runtime.getRuntime().runFinalization();
+            } while (!fence.await(100, TimeUnit.MILLISECONDS));
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    // Create the observer in the scope of a method to minimize the chance that
+    // it remains live in a DEX/machine register at the point of the fence guard.
+    // This must be kept to avoid R8 inlining it.
+    @Keep
+    private static void createFinalizationObserver(CountDownLatch fence) {
+        new Object() {
+            @Override
+            protected void finalize() throws Throwable {
+                try {
+                    fence.countDown();
+                } finally {
+                    super.finalize();
+                }
+            }
+        };
     }
 }

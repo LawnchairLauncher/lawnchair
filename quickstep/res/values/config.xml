@@ -17,8 +17,7 @@
     <string name="overscroll_plugin_factory_class" translatable="false" />
     <string name="task_overlay_factory_class" translatable="false"/>
 
-    <!-- Activities which block home gesture -->
-    <string-array name="gesture_blocking_activities" translatable="false">
+    <string-array name="back_gesture_blocking_activities" translatable="false">
         <item>com.android.launcher3/com.android.quickstep.interaction.GestureSandboxActivity</item>
     </string-array>
 
@@ -26,6 +25,21 @@
     <string name="test_information_handler_class" translatable="false">com.android.quickstep.QuickstepTestInformationHandler</string>
     <string name="window_manager_proxy_class" translatable="false">com.android.quickstep.util.SystemWindowManagerProxy</string>
     <string name="widget_holder_factory_class" translatable="false">com.android.launcher3.uioverrides.QuickstepWidgetHolder$QuickstepHolderFactory</string>
+    <string name="instant_app_resolver_class" translatable="false">com.android.quickstep.InstantAppResolverImpl</string>
+    <string name="app_launch_tracker_class" translatable="false">com.android.launcher3.appprediction.PredictionAppTracker</string>
+    <string name="main_process_initializer_class" translatable="false">com.android.quickstep.QuickstepProcessInitializer</string>
+    <string name="model_delegate_class" translatable="false">com.android.launcher3.model.QuickstepModelDelegate</string>
+    <string name="secondary_display_predictions_class" translatable="false">com.android.launcher3.secondarydisplay.SecondaryDisplayPredictionsImpl</string>
+    <string name="taskbar_model_callbacks_factory_class" translatable="false">com.android.launcher3.taskbar.TaskbarModelCallbacksFactory</string>
+    <string name="taskbar_view_callbacks_factory_class" translatable="false">com.android.launcher3.taskbar.TaskbarViewCallbacksFactory</string>
+    <string name="launcher_restore_event_logger_class" translatable="false">com.android.quickstep.LauncherRestoreEventLoggerImpl</string>
+    <string name="plugin_manager_wrapper_class" translatable="false">com.android.launcher3.uioverrides.plugins.PluginManagerWrapperImpl</string>
+    <string name="taskbar_edu_tooltip_controller_class" translatable="false">com.android.launcher3.taskbar.TaskbarEduTooltipController</string>
+
+    <string name="nav_handle_long_press_handler_class" translatable="false"></string>
+    <string name="assist_utils_class" translatable="false"></string>
+    <string name="assist_state_manager_class" translatable="false"></string>
+    <string name="api_wrapper_class" translatable="false">com.android.launcher3.uioverrides.SystemApiWrapper</string>
 
     <!-- The number of thumbnails and icons to keep in the cache. The thumbnail cache size also
          determines how many thumbnails will be fetched in the background. -->
@@ -53,5 +67,5 @@
     <string name="setup_wizard_pkg" translatable="false" />
 
     <!-- This is a float because it is converted to dp later in DeviceProfile -->
-    <item name="taskbar_icon_size" type="dimen" format="float">48.4</item>
+    <item name="taskbar_icon_size" type="dimen" format="float">44</item>
 </resources>

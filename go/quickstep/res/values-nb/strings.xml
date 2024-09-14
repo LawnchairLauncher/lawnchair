@@ -9,7 +9,7 @@
     <string name="dialog_cancel" msgid="6464336969134856366">"AVBRYT"</string>
     <string name="dialog_settings" msgid="6564397136021186148">"INNSTILLINGER"</string>
     <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Oversett eller lytt til tekst på skjermen"</string>
-    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Informasjon som tekst på skjermen, nettadresser og skjermdumper kan deles med Google.\n\nFor å endre hvilken informasjon du deler, gå til "<b>"Innstillinger &gt; Apper &gt; Standardapper &gt; Digital assistent-app"</b>"."</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Informasjon som tekst på skjermen, nettadresser og skjermbilder kan deles med Google.\n\nFor å endre hvilken informasjon du deler, gå til "<b>"Innstillinger &gt; Apper &gt; Standardapper &gt; Digital assistent-app"</b>"."</string>
     <string name="assistant_not_selected_title" msgid="5017072974603345228">"Velg en assistent for å bruke denne funksjonen"</string>
     <string name="assistant_not_selected_text" msgid="3244613673884359276">"For å høre eller oversette tekst på skjermen, velg en digital assistent-app i innstillingene"</string>
     <string name="assistant_not_supported_title" msgid="1675788067597484142">"Endre assistenten for å bruke denne funksjonen"</string>

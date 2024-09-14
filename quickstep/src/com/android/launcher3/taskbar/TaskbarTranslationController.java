@@ -53,6 +53,7 @@ public class TaskbarTranslationController implements TaskbarControllers.Loggable
 
     private boolean mHasSprungOnceThisGesture;
     private @Nullable ValueAnimator mSpringBounce;
+    private boolean mGestureInProgress;
     private boolean mGestureEnded;
     private boolean mAnimationToHomeRunning;
 
@@ -155,7 +156,12 @@ public class TaskbarTranslationController implements TaskbarControllers.Loggable
     /**
      * Returns an animation to reset the taskbar translation to {@code 0}.
      */
-    public ObjectAnimator createAnimToResetTranslation(long duration) {
+    public ValueAnimator createAnimToResetTranslation(long duration) {
+        if (mGestureInProgress) {
+            // Return an empty animator as the translation will reset itself after gesture ends.
+            return ValueAnimator.ofFloat(0).setDuration(duration);
+        }
+
         ObjectAnimator animator = mTranslationYForSwipe.animateToValue(0);
         animator.setInterpolator(Interpolators.LINEAR);
         animator.setDuration(duration);
@@ -192,6 +198,7 @@ public class TaskbarTranslationController implements TaskbarControllers.Loggable
             mAnimationToHomeRunning = false;
             cancelSpringIfExists();
             reset();
+            mGestureInProgress = true;
         }
         /**
          * Called when there is movement to move the taskbar.
@@ -215,6 +222,7 @@ public class TaskbarTranslationController implements TaskbarControllers.Loggable
                 mGestureEnded = true;
                 startSpring();
             }
+            mGestureInProgress = false;
         }
     }
 

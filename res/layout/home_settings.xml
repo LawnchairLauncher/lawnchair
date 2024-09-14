@@ -3,22 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <EditText
-        android:id="@+id/filter_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/developer_options_filter_margins"
-        android:hint="@string/developer_options_filter_hint"
-        android:visibility="gone"
-        android:inputType="text"
-        android:maxLines="1"
-        android:imeOptions="actionDone"
-        />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@android:id/list_container"/>
-</LinearLayout>
+    android:layout_height="match_parent"
+    android:id="@android:id/list_container"/>

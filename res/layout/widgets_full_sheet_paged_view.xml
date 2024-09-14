@@ -73,15 +73,19 @@
             <include layout="@layout/widgets_search_bar" />
         </FrameLayout>
 
-        <com.android.launcher3.widget.picker.WidgetsRecommendationTableLayout
-            android:id="@+id/recommended_widget_table"
+        <!-- Shown when there are recommendations to display -->
+        <LinearLayout
+            android:id="@+id/widget_recommendations_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/widgets_surface_background"
-            android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
+            android:visibility="gone">
+            <include layout="@layout/widget_recommendations" />
+        </LinearLayout>
 
         <com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
             android:id="@+id/tabs"
@@ -89,7 +93,7 @@
             android:layout_height="64dp"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:paddingVertical="8dp"
+            android:paddingBottom="8dp"
             android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             style="@style/TextHeadline"
             launcher:layout_sticky="true">

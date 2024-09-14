@@ -25,6 +25,21 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <style name="TextAppearance.GestureTutorial.MainTitle.Home"
+        parent="TextAppearance.GestureTutorial.MainTitle">
+        <item name="android:textColor">?attr/onSurfaceHome</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Back"
+        parent="TextAppearance.GestureTutorial.MainTitle">
+        <item name="android:textColor">?attr/onSurfaceBack</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Overview"
+        parent="TextAppearance.GestureTutorial.MainTitle">
+        <item name="android:textColor">?attr/onSurfaceOverview</item>
+    </style>
+
     <style name="TextAppearance.GestureTutorial.MenuButton.Home"
         parent="TextAppearance.GestureTutorial.MenuButton">
         <item name="android:textColor">?attr/onSurfaceHome</item>

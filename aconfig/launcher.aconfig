@@ -1,0 +1,318 @@
+package: "com.android.launcher3"
+container: "system_ext"
+
+flag {
+    name: "enable_expanding_pause_work_button"
+    namespace: "launcher"
+    description: "Expand and collapse pause work button while scrolling."
+    bug: "270390779"
+}
+
+flag {
+    name: "enable_twoline_allapps"
+    namespace: "launcher"
+    description: "Enables two line label inside all apps."
+    bug: "270390937"
+}
+
+flag {
+    name: "enable_twoline_toggle"
+    namespace: "launcher"
+    description: "Enables visibility in home settings to see the toggle to turn on/off two lines in all apps."
+    bug: "316027081"
+}
+
+flag {
+    name: "enable_grid_only_overview"
+    namespace: "launcher"
+    description: "Enable a grid-only overview without a focused task."
+    bug: "257950105"
+}
+
+flag {
+    name: "enable_cursor_hover_states"
+    namespace: "launcher"
+    description: "Enables cursor hover states for certain elements."
+    bug: "243191650"
+}
+
+flag {
+    name: "enable_responsive_workspace"
+    namespace: "launcher"
+    description: "Enables new workspace grid calculations method."
+    bug: "302189128"
+}
+
+flag {
+    name: "enable_overview_icon_menu"
+    namespace: "launcher"
+    description: "Enable updated overview icon and menu within task."
+    bug: "257950105"
+}
+
+flag {
+    name: "enable_focus_outline"
+    namespace: "launcher"
+    description: "Enables focus states outline for launcher."
+    bug: "310953377"
+}
+
+flag {
+    name: "enable_taskbar_no_recreate"
+    namespace: "launcher"
+    description: "Enables taskbar with no recreation from lifecycle changes of TaskbarActivityContext."
+    bug: "299193589"
+}
+
+flag {
+    name: "enable_home_transition_listener"
+    namespace: "launcher"
+    description: "Enables launcher to listen to all transitions that include home activity"
+    bug: "306053414"
+}
+
+flag {
+    name: "enable_taskbar_pinning"
+    namespace: "launcher"
+    description: "Enables taskbar pinning to allow user to switch between transient and persistent taskbar flavors."
+    bug: "296231746"
+}
+
+flag {
+    name: "enable_taskbar_customization"
+    namespace: "launcher"
+    description: "Enables taskbar customization framework."
+    bug: "347281365"
+}
+
+flag {
+    name: "enable_unfolded_two_pane_picker"
+    namespace: "launcher"
+    description: "Enables two pane widget picker for unfolded foldables"
+    bug: "313922374"
+}
+
+flag {
+    name: "enable_tablet_two_pane_picker_v2"
+    namespace: "launcher"
+    description: "Enables full width two pane widget picker for tablets in landscape and portrait"
+    bug: "315055849"
+}
+
+flag {
+    name: "enable_two_pane_launcher_settings"
+    namespace: "launcher"
+    description: "Enables two panel settings when on large enough displays"
+    bug: "204463748"
+}
+
+flag {
+    name: "enable_predictive_back_gesture"
+    namespace: "launcher"
+    description: "Enable predictive back gesture on Launcher (including all apps and widget picker)."
+    bug: "238475505"
+}
+
+flag {
+    name: "enable_shortcut_dont_suggest_app"
+    namespace: "launcher"
+    description: "Enables don't suggest app shortcut for suggested apps"
+    bug: "319250810"
+}
+
+flag {
+    name: "enable_support_for_archiving"
+    namespace: "launcher"
+    description: "Enables support for archived apps in Launcher3, such as empty progress bar etc."
+    bug: "210590852"
+}
+
+flag {
+    name: "enable_private_space_install_shortcut"
+    namespace: "launcher"
+    description: "Enables long-press shortcut to install a copy of an app to Private space"
+    bug: "316118005"
+}
+
+flag {
+    name: "enable_launcher_br_metrics_fixed"
+    namespace: "launcher"
+    description: "Enables logging of Launcher restore metrics to the Backup & Restore team"
+    bug: "307527314"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "enable_reboot_unlock_animation"
+    namespace: "launcher"
+    description: "Enables unlock animation after device reboot"
+    bug: "298231234"
+}
+
+flag {
+    name: "enable_workspace_inflation"
+    namespace: "launcher"
+    description: "Enables asnc inflation of workspace icons"
+    bug: "318539160"
+}
+
+flag {
+    name: "enable_unfold_state_animation"
+    namespace: "launcher"
+    description: "Tie unfold animation with state animation"
+    bug: "297057373"
+}
+
+flag {
+    name: "enable_generated_previews"
+    namespace: "launcher"
+    description: "Enables support for RemoteViews previews in the widget picker."
+    bug: "306546610"
+}
+
+flag {
+  name: "enable_categorized_widget_suggestions"
+  namespace: "launcher"
+  description: "Enables widget suggestions in widget picker to be displayed in categories"
+  bug: "318410881"
+}
+
+flag {
+  name: "force_monochrome_app_icons"
+  namespace: "launcher"
+  description: "Enable the ability to generate monochromatic icons, if it is not provided by the app"
+  bug: "270396209"
+}
+
+flag {
+  name: "enable_add_app_widget_via_config_activity_v2"
+  namespace: "launcher"
+  description: "When adding app widget through config activity, directly add it to workspace to reduce flicker"
+  bug: "284236964"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
+    name: "use_activity_overlay"
+    namespace: "launcher"
+    description: "Use an activity for home screen overlay"
+    bug: "273828110"
+}
+
+flag {
+    name: "enable_grid_migration_fix"
+    namespace: "launcher"
+    description: "Keep items in place when migrating to a bigger grid"
+    bug: "325286145"
+    is_fixed_read_only: true
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_narrow_grid_restore"
+    namespace: "launcher"
+    description: "Using only the most recent workspace when restoring to avoid confusion."
+    is_fixed_read_only: true
+    bug: "325285743"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_scaling_reveal_home_animation"
+    namespace: "launcher"
+    description: "Enables the Home gesture animation"
+    bug: "308801666"
+}
+
+flag {
+    name: "enable_widget_tap_to_add"
+    namespace: "launcher"
+    description: "Enables an add button in the widget picker"
+    bug: "323886237"
+}
+
+flag {
+    name: "enable_refactor_task_thumbnail"
+    namespace: "launcher"
+    description: "Enables rewritten version of TaskThumbnailViews in Overview"
+    bug: "331753115"
+}
+
+flag {
+  name: "enable_handle_delayed_gesture_callbacks"
+  namespace: "launcher"
+  description: "Enables additional handling for delayed mid-gesture callbacks"
+  bug: "285636175"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
+    name: "enable_fallback_overview_in_window"
+    namespace: "launcher"
+    description: "Enables fallback recents opening inside of a window instead of an activity."
+    bug: "292269949"
+}
+
+flag {
+    name: "enable_smartspace_as_a_widget"
+    namespace: "launcher"
+    description: "Enables smartspace as a widget"
+    bug: "300140279"
+}
+
+flag {
+    name: "enable_smartspace_removal_toggle"
+    namespace: "launcher"
+    description: "Enables smartspace removal toggle"
+    bug: "303471576"
+}
+
+flag {
+  name: "enable_additional_home_animations"
+  namespace: "launcher"
+  description: "Enables custom home animations for non-running tasks"
+  bug: "237638627"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
+    name: "enabled_folders_in_all_apps"
+    namespace: "launcher"
+    description: "Enables folders in all apps"
+    bug: "341582436"
+}
+
+flag {
+    name: "enable_recents_in_taskbar"
+    namespace: "launcher"
+    description: "Replace hybrid hotseat app predictions with strictly Recent Apps"
+    bug: "315354060"
+}
+
+flag {
+  name: "enable_first_screen_broadcast_archiving_extras"
+  namespace: "launcher"
+  description: "adds Extras to first screen broadcast for archived apps"
+  bug: "322314760"
+  is_fixed_read_only: true
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
+    name: "floating_search_bar"
+    namespace: "launcher"
+    description: "Search bar persists at the bottom of the screen across Launcher states"
+    bug: "346408388"
+}

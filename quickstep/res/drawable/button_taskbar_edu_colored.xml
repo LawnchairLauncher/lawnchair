@@ -20,7 +20,7 @@
         android:color="?android:attr/colorControlHighlight">
         <item>
             <shape android:shape="rectangle">
-                <corners android:radius="16dp"/>
+                <corners android:radius="28dp"/>
                 <solid android:color="@color/taskbar_edu_button_color"/>
             </shape>
         </item>

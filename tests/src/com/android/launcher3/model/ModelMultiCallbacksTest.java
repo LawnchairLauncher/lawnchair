@@ -73,6 +73,10 @@ public class ModelMultiCallbacksTest {
         TestUtil.uninstallDummyApp();
     }
 
+    private ModelLauncherCallbacks getCallbacks() {
+        return mModelHelper.getModel().newModelCallbacks();
+    }
+
     @Test
     public void testTwoCallbacks_loadedTogether() throws Exception {
         setupWorkspacePages(3);
@@ -127,14 +131,14 @@ public class ModelMultiCallbacksTest {
 
         // Install package 1
         TestUtil.installDummyApp();
-        mModelHelper.getModel().onPackageAdded(TestUtil.DUMMY_PACKAGE, Process.myUserHandle());
+        getCallbacks().onPackageAdded(TestUtil.DUMMY_PACKAGE, Process.myUserHandle());
         waitForLoaderAndTempMainThread();
         assertTrue(cb1.allApps().contains(TestUtil.DUMMY_PACKAGE));
         assertTrue(cb2.allApps().contains(TestUtil.DUMMY_PACKAGE));
 
         // Uninstall package 2
         TestUtil.uninstallDummyApp();
-        mModelHelper.getModel().onPackageRemoved(TestUtil.DUMMY_PACKAGE, Process.myUserHandle());
+        getCallbacks().onPackageRemoved(TestUtil.DUMMY_PACKAGE, Process.myUserHandle());
         waitForLoaderAndTempMainThread();
         assertFalse(cb1.allApps().contains(TestUtil.DUMMY_PACKAGE));
         assertFalse(cb2.allApps().contains(TestUtil.DUMMY_PACKAGE));
@@ -142,7 +146,7 @@ public class ModelMultiCallbacksTest {
         // Unregister a callback and verify updates no longer received
         Executors.MAIN_EXECUTOR.execute(() -> mModelHelper.getModel().removeCallbacks(cb2));
         TestUtil.installDummyApp();
-        mModelHelper.getModel().onPackageAdded(TestUtil.DUMMY_PACKAGE, Process.myUserHandle());
+        getCallbacks().onPackageAdded(TestUtil.DUMMY_PACKAGE, Process.myUserHandle());
         waitForLoaderAndTempMainThread();
 
         // cb2 didn't get the update
@@ -183,7 +187,7 @@ public class ModelMultiCallbacksTest {
 
         @Override
         public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
-                int workspaceItemCount, boolean isBindSync) {
+                RunnableList onCompleteSignal, int workspaceItemCount, boolean isBindSync) {
             mPageBoundSync = boundPages;
             mPendingTasks = pendingTasks;
         }

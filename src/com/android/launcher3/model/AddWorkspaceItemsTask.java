@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.model;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
@@ -25,14 +26,16 @@ import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -48,7 +51,7 @@ import java.util.Objects;
 /**
  * Task to add auto-created workspace items.
  */
-public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
+public class AddWorkspaceItemsTask implements ModelUpdateTask {
 
     private static final String LOG = "AddWorkspaceItemsTask";
 
@@ -76,14 +79,15 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
-            @NonNull final AllAppsList apps) {
+    public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
+            @NonNull AllAppsList apps) {
         if (mItemList.isEmpty()) {
             return;
         }
 
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final IntArray addedWorkspaceScreensFinal = new IntArray();
+        final Context context = taskController.getApp().getContext();
 
         synchronized (dataModel) {
             IntArray workspaceScreens = dataModel.collectWorkspaceScreens();
@@ -98,15 +102,20 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     }
 
                     // b/139663018 Short-circuit this logic if the icon is a system app
-                    if (PackageManagerHelper.isSystemApp(app.getContext(),
+                    if (PackageManagerHelper.isSystemApp(context,
                             Objects.requireNonNull(item.getIntent()))) {
+                        continue;
+                    }
+
+                    if (item instanceof ItemInfoWithIcon
+                            && ((ItemInfoWithIcon) item).isArchived()) {
                         continue;
                     }
                 }
 
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                     if (item instanceof WorkspaceItemFactory) {
-                        item = ((WorkspaceItemFactory) item).makeWorkspaceItem(app.getContext());
+                        item = ((WorkspaceItemFactory) item).makeWorkspaceItem(context);
                     }
                 }
                 if (item != null) {
@@ -114,21 +123,21 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 }
             }
 
-            InstallSessionHelper packageInstaller = InstallSessionHelper.INSTANCE.get(app.getContext());
-            LauncherApps launcherApps = app.getContext().getSystemService(LauncherApps.class);
+            InstallSessionHelper packageInstaller = InstallSessionHelper.INSTANCE.get(context);
+            LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
 
             for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.
-                int[] coords = mItemSpaceFinder.findSpaceForItem(app, dataModel, workspaceScreens,
-                        addedWorkspaceScreensFinal, item.spanX, item.spanY);
+                int[] coords = mItemSpaceFinder.findSpaceForItem(taskController.getApp(), dataModel,
+                        workspaceScreens, addedWorkspaceScreensFinal, item.spanX, item.spanY);
                 int screenId = coords[0];
 
                 ItemInfo itemInfo;
-                if (item instanceof WorkspaceItemInfo || item instanceof FolderInfo ||
-                        item instanceof LauncherAppWidgetInfo) {
+                if (item instanceof WorkspaceItemInfo || item instanceof CollectionInfo
+                        || item instanceof LauncherAppWidgetInfo) {
                     itemInfo = item;
                 } else if (item instanceof WorkspaceItemFactory) {
-                    itemInfo = ((WorkspaceItemFactory) item).makeWorkspaceItem(app.getContext());
+                    itemInfo = ((WorkspaceItemFactory) item).makeWorkspaceItem(context);
                 } else {
                     throw new RuntimeException("Unexpected info type");
                 }
@@ -168,8 +177,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     if (hasActivity) {
                         // App was installed while launcher was in the background,
                         // or app was already installed for another user.
-                        itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
-                                .makeWorkspaceItem(app.getContext());
+                        itemInfo = new AppInfo(context, activities.get(0), item.user)
+                                .makeWorkspaceItem(context);
 
                         if (shortcutExists(dataModel, itemInfo.getIntent(), itemInfo.user)) {
                             // We need this additional check here since we treat all auto added
@@ -179,16 +188,17 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                             continue;
                         }
 
+                        IconCache cache = taskController.getApp().getIconCache();
                         WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
                         wii.title = "";
-                        wii.bitmap = app.getIconCache().getDefaultIcon(item.user);
-                        app.getIconCache().getTitleAndIcon(wii,
+                        wii.bitmap = cache.getDefaultIcon(item.user);
+                        cache.getTitleAndIcon(wii,
                                 ((WorkspaceItemInfo) itemInfo).usingLowResIcon());
                     }
                 }
 
                 // Add the shortcut to the db
-                getModelWriter().addItemToDatabase(itemInfo,
+                taskController.getModelWriter().addItemToDatabase(itemInfo,
                         LauncherSettings.Favorites.CONTAINER_DESKTOP, screenId,
                         coords[1], coords[2]);
 
@@ -201,7 +211,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         }
 
         if (!addedItemsFinal.isEmpty()) {
-            scheduleCallbackTask(new CallbackTask() {
+            taskController.scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(@NonNull Callbacks callbacks) {
                     final ArrayList<ItemInfo> addAnimated = new ArrayList<>();

@@ -178,133 +178,143 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
                 return 1 / totalShift;
         }
 
+    @Override
+    protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
+        if (fromState == NORMAL && shouldOpenAllApps(isDragTowardPositive)) {
+            return ALL_APPS;
+        } else if (fromState == ALL_APPS && !isDragTowardPositive) {
+            return NORMAL;
+        }
+
         @Override
-        protected StateAnimationConfig getConfigForStates(LauncherState fromState,
-                        LauncherState toState) {
-                StateAnimationConfig config = super.getConfigForStates(fromState, toState);
-                config.userControlled = true;
-                if (fromState == NORMAL && toState == ALL_APPS) {
-                        applyNormalToAllAppsAnimConfig(mLauncher, config);
-                } else if (fromState == ALL_APPS && toState == NORMAL) {
-                        applyAllAppsToNormalConfig(mLauncher, config);
-                }
-                return config;
+        protected float initCurrentAnimation() {
+                float range = getShiftRange();
+                StateAnimationConfig config = getConfigForStates(mFromState, mToState);
+                config.duration = (long) (2 * range);
+
+                mCurrentAnimation = mLauncher.getStateManager()
+                                .createAnimationToNewWorkspace(mToState, config);
+                float startVerticalShift = mFromState.getVerticalProgress(mLauncher) * range;
+                float endVerticalShift = mToState.getVerticalProgress(mLauncher) * range;
+                float totalShift = endVerticalShift - startVerticalShift;
+                return 1 / totalShift;
         }
 
-        /**
-         * Applies Animation config values for transition from all apps to home.
-         */
-        public static void applyAllAppsToNormalConfig(Launcher launcher, StateAnimationConfig config) {
-                if (launcher.getDeviceProfile().isTablet) {
-                        config.setInterpolator(ANIM_SCRIM_FADE,
-                                        Interpolators.reverse(ALL_APPS_SCRIM_RESPONDER));
-                        config.setInterpolator(ANIM_ALL_APPS_FADE, FINAL_FRAME);
-                        if (!config.userControlled) {
-                                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
-                        }
-                        config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATED_EASE);
-                        config.setInterpolator(ANIM_DEPTH, DECELERATED_EASE);
-                } else {
-                        if (config.userControlled) {
-                                config.setInterpolator(ANIM_DEPTH, Interpolators.reverse(BLUR_MANUAL));
-                                config.setInterpolator(ANIM_WORKSPACE_FADE,
-                                                Interpolators.reverse(WORKSPACE_FADE_MANUAL));
-                                config.setInterpolator(ANIM_WORKSPACE_SCALE,
-                                                Interpolators.reverse(WORKSPACE_SCALE_MANUAL));
-                                config.setInterpolator(ANIM_HOTSEAT_FADE,
-                                                Interpolators.reverse(HOTSEAT_FADE_MANUAL));
-                                config.setInterpolator(ANIM_HOTSEAT_SCALE,
-                                                Interpolators.reverse(HOTSEAT_SCALE_MANUAL));
-                                config.setInterpolator(ANIM_HOTSEAT_TRANSLATE,
-                                                Interpolators.reverse(HOTSEAT_TRANSLATE_MANUAL));
-                                config.setInterpolator(ANIM_SCRIM_FADE, Interpolators.reverse(SCRIM_FADE_MANUAL));
-                                config.setInterpolator(ANIM_ALL_APPS_FADE,
-                                                Interpolators.reverse(ALL_APPS_FADE_MANUAL));
-                                config.setInterpolator(ANIM_VERTICAL_PROGRESS,
-                                                Interpolators.reverse(ALL_APPS_VERTICAL_PROGRESS_MANUAL));
-                        } else {
-                                config.setInterpolator(ANIM_SCRIM_FADE,
-                                                Interpolators.reverse(ALL_APPS_SCRIM_RESPONDER));
-                                config.setInterpolator(ANIM_ALL_APPS_FADE, ALL_APPS_CLAMPING_RESPONDER);
-                                config.setInterpolator(ANIM_WORKSPACE_FADE, INSTANT);
-                                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED_ACCELERATE);
-                        }
-                }
+    @Override
+    protected StateAnimationConfig getConfigForStates(LauncherState fromState,
+            LauncherState toState) {
+        StateAnimationConfig config = super.getConfigForStates(fromState, toState);
+        config.animProps |= StateAnimationConfig.USER_CONTROLLED;
+        if (fromState == NORMAL && toState == ALL_APPS) {
+            applyNormalToAllAppsAnimConfig(mLauncher, config);
+        } else if (fromState == ALL_APPS && toState == NORMAL) {
+            applyAllAppsToNormalConfig(mLauncher, config);
         }
 
-        /**
-         * Applies Animation config values for transition from home to all apps.
-         */
-        public static void applyNormalToAllAppsAnimConfig(
-                        Launcher launcher, StateAnimationConfig config) {
-                if (launcher.getDeviceProfile().isTablet) {
-                        config.setInterpolator(ANIM_ALL_APPS_FADE, INSTANT);
-                        config.setInterpolator(ANIM_SCRIM_FADE, ALL_APPS_SCRIM_RESPONDER);
-                        if (!config.userControlled) {
-                                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
-                        }
-                        config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATED_EASE);
-                        config.setInterpolator(ANIM_DEPTH, DECELERATED_EASE);
-                } else {
-                        config.setInterpolator(ANIM_DEPTH, config.userControlled ? BLUR_MANUAL : BLUR_ATOMIC);
-                        config.setInterpolator(ANIM_WORKSPACE_FADE,
-                                        config.userControlled ? WORKSPACE_FADE_MANUAL : WORKSPACE_FADE_ATOMIC);
-                        config.setInterpolator(ANIM_WORKSPACE_SCALE,
-                                        config.userControlled ? WORKSPACE_SCALE_MANUAL : WORKSPACE_SCALE_ATOMIC);
-                        config.setInterpolator(ANIM_HOTSEAT_FADE,
-                                        config.userControlled ? HOTSEAT_FADE_MANUAL : HOTSEAT_FADE_ATOMIC);
-                        config.setInterpolator(ANIM_HOTSEAT_SCALE,
-                                        config.userControlled ? HOTSEAT_SCALE_MANUAL : HOTSEAT_SCALE_ATOMIC);
-                        config.setInterpolator(ANIM_HOTSEAT_TRANSLATE,
-                                        config.userControlled ? HOTSEAT_TRANSLATE_MANUAL : HOTSEAT_TRANSLATE_ATOMIC);
-                        config.setInterpolator(ANIM_SCRIM_FADE,
-                                        config.userControlled ? SCRIM_FADE_MANUAL : SCRIM_FADE_ATOMIC);
-                        config.setInterpolator(ANIM_ALL_APPS_FADE,
-                                        config.userControlled ? ALL_APPS_FADE_MANUAL : ALL_APPS_FADE_ATOMIC);
-                        config.setInterpolator(ANIM_VERTICAL_PROGRESS,
-                                        config.userControlled
-                                                        ? ALL_APPS_VERTICAL_PROGRESS_MANUAL
-                                                        : ALL_APPS_VERTICAL_PROGRESS_ATOMIC);
-                }
+    /**
+     * Applies Animation config values for transition from all apps to home.
+     */
+    public static void applyAllAppsToNormalConfig(Launcher launcher, StateAnimationConfig config) {
+        if (launcher.getDeviceProfile().isTablet) {
+            config.setInterpolator(ANIM_SCRIM_FADE,
+                    Interpolators.reverse(ALL_APPS_SCRIM_RESPONDER));
+            config.setInterpolator(ANIM_ALL_APPS_FADE, FINAL_FRAME);
+            if (!config.isUserControlled()) {
+                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
+            }
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATED_EASE);
+            config.setInterpolator(ANIM_DEPTH, DECELERATED_EASE);
+        } else {
+            if (config.isUserControlled()) {
+                config.setInterpolator(ANIM_DEPTH, Interpolators.reverse(BLUR_MANUAL));
+                config.setInterpolator(ANIM_WORKSPACE_FADE,
+                        Interpolators.reverse(WORKSPACE_FADE_MANUAL));
+                config.setInterpolator(ANIM_WORKSPACE_SCALE,
+                        Interpolators.reverse(WORKSPACE_SCALE_MANUAL));
+                config.setInterpolator(ANIM_HOTSEAT_FADE,
+                        Interpolators.reverse(HOTSEAT_FADE_MANUAL));
+                config.setInterpolator(ANIM_HOTSEAT_SCALE,
+                        Interpolators.reverse(HOTSEAT_SCALE_MANUAL));
+                config.setInterpolator(ANIM_HOTSEAT_TRANSLATE,
+                        Interpolators.reverse(HOTSEAT_TRANSLATE_MANUAL));
+                config.setInterpolator(ANIM_SCRIM_FADE, Interpolators.reverse(SCRIM_FADE_MANUAL));
+                config.setInterpolator(ANIM_ALL_APPS_FADE,
+                        Interpolators.reverse(ALL_APPS_FADE_MANUAL));
+                config.setInterpolator(ANIM_VERTICAL_PROGRESS,
+                        Interpolators.reverse(ALL_APPS_VERTICAL_PROGRESS_MANUAL));
+            } else {
+                config.setInterpolator(ANIM_SCRIM_FADE,
+                        Interpolators.reverse(ALL_APPS_SCRIM_RESPONDER));
+                config.setInterpolator(ANIM_ALL_APPS_FADE, ALL_APPS_CLAMPING_RESPONDER);
+                config.setInterpolator(ANIM_WORKSPACE_FADE, INSTANT);
+                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED_ACCELERATE);
+            }
         }
 
-        /**
-         * Applies Animation config values for transition from overview to all apps.
-         *
-         * @param threshold progress at which all apps will open upon release
-         */
-        public static void applyOverviewToAllAppsAnimConfig(
-                        DeviceProfile deviceProfile, StateAnimationConfig config, float threshold) {
-                config.userControlled = true;
-                config.animFlags = SKIP_OVERVIEW;
-                if (deviceProfile.isTablet) {
-                        config.setInterpolator(ANIM_ALL_APPS_FADE, INSTANT);
-                        config.setInterpolator(ANIM_SCRIM_FADE, ALL_APPS_SCRIM_RESPONDER);
-                        // The fact that we end on Workspace is not very ideal, but since we do, fade it
-                        // in at
-                        // the end of the transition. Don't scale/translate it.
-                        config.setInterpolator(ANIM_WORKSPACE_FADE, clampToProgress(LINEAR, 0.8f, 1));
-                        config.setInterpolator(ANIM_WORKSPACE_SCALE, INSTANT);
-                        config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, INSTANT);
-                } else {
-                        // Pop the background panel, keyboard, and content in at full opacity at the
-                        // threshold.
-                        config.setInterpolator(ANIM_ALL_APPS_BOTTOM_SHEET_FADE,
-                                        thresholdInterpolator(threshold, INSTANT));
-                        config.setInterpolator(ANIM_ALL_APPS_KEYBOARD_FADE,
-                                        thresholdInterpolator(threshold, INSTANT));
-                        config.setInterpolator(ANIM_ALL_APPS_FADE, thresholdInterpolator(threshold, INSTANT));
-
-                        config.setInterpolator(ANIM_VERTICAL_PROGRESS,
-                                        thresholdInterpolator(threshold, mapToProgress(LINEAR, threshold, 1f)));
-                }
+    /**
+     * Applies Animation config values for transition from home to all apps.
+     */
+    public static void applyNormalToAllAppsAnimConfig(
+            Launcher launcher, StateAnimationConfig config) {
+        if (launcher.getDeviceProfile().isTablet) {
+            config.setInterpolator(ANIM_ALL_APPS_FADE, INSTANT);
+            config.setInterpolator(ANIM_SCRIM_FADE, ALL_APPS_SCRIM_RESPONDER);
+            if (!config.isUserControlled()) {
+                config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
+            }
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATED_EASE);
+            config.setInterpolator(ANIM_DEPTH, DECELERATED_EASE);
+        } else {
+            config.setInterpolator(ANIM_DEPTH,
+                    config.isUserControlled() ? BLUR_MANUAL : BLUR_ATOMIC);
+            config.setInterpolator(ANIM_WORKSPACE_FADE,
+                    config.isUserControlled() ? WORKSPACE_FADE_MANUAL : WORKSPACE_FADE_ATOMIC);
+            config.setInterpolator(ANIM_WORKSPACE_SCALE,
+                    config.isUserControlled() ? WORKSPACE_SCALE_MANUAL : WORKSPACE_SCALE_ATOMIC);
+            config.setInterpolator(ANIM_HOTSEAT_FADE,
+                    config.isUserControlled() ? HOTSEAT_FADE_MANUAL : HOTSEAT_FADE_ATOMIC);
+            config.setInterpolator(ANIM_HOTSEAT_SCALE,
+                    config.isUserControlled() ? HOTSEAT_SCALE_MANUAL : HOTSEAT_SCALE_ATOMIC);
+            config.setInterpolator(ANIM_HOTSEAT_TRANSLATE,
+                    config.isUserControlled()
+                            ? HOTSEAT_TRANSLATE_MANUAL
+                            : HOTSEAT_TRANSLATE_ATOMIC);
+            config.setInterpolator(ANIM_SCRIM_FADE,
+                    config.isUserControlled() ? SCRIM_FADE_MANUAL : SCRIM_FADE_ATOMIC);
+            config.setInterpolator(ANIM_ALL_APPS_FADE,
+                    config.isUserControlled() ? ALL_APPS_FADE_MANUAL : ALL_APPS_FADE_ATOMIC);
+            config.setInterpolator(ANIM_VERTICAL_PROGRESS,
+                    config.isUserControlled()
+                            ? ALL_APPS_VERTICAL_PROGRESS_MANUAL
+                            : ALL_APPS_VERTICAL_PROGRESS_ATOMIC);
         }
 
-        /**
-         * Creates an interpolator that is 0 until the threshold, then follows given
-         * interpolator.
-         */
-        private static Interpolator thresholdInterpolator(float threshold, Interpolator interpolator) {
-                return progress -> progress <= threshold ? 0 : interpolator.getInterpolation(progress);
+    /**
+     * Applies Animation config values for transition from overview to all apps.
+     *
+     * @param threshold progress at which all apps will open upon release
+     */
+    public static void applyOverviewToAllAppsAnimConfig(
+            DeviceProfile deviceProfile, StateAnimationConfig config, float threshold) {
+        config.animProps |= StateAnimationConfig.USER_CONTROLLED;
+        config.animFlags = SKIP_OVERVIEW;
+        if (deviceProfile.isTablet) {
+            config.setInterpolator(ANIM_ALL_APPS_FADE, INSTANT);
+            config.setInterpolator(ANIM_SCRIM_FADE, ALL_APPS_SCRIM_RESPONDER);
+            // The fact that we end on Workspace is not very ideal, but since we do, fade it in at
+            // the end of the transition. Don't scale/translate it.
+            config.setInterpolator(ANIM_WORKSPACE_FADE, clampToProgress(LINEAR, 0.8f, 1));
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, INSTANT);
+            config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, INSTANT);
+        } else {
+            // Pop the background panel, keyboard, and content in at full opacity at the threshold.
+            config.setInterpolator(ANIM_ALL_APPS_BOTTOM_SHEET_FADE,
+                    thresholdInterpolator(threshold, INSTANT));
+            config.setInterpolator(ANIM_ALL_APPS_KEYBOARD_FADE,
+                    thresholdInterpolator(threshold, INSTANT));
+            config.setInterpolator(ANIM_ALL_APPS_FADE, thresholdInterpolator(threshold, INSTANT));
+
+            config.setInterpolator(ANIM_VERTICAL_PROGRESS,
+                    thresholdInterpolator(threshold, mapToProgress(LINEAR, threshold, 1f)));
         }
 }

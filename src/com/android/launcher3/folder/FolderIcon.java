@@ -18,7 +18,7 @@
 
 package com.android.launcher3.folder;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
+import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
@@ -31,8 +31,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.LayoutInflater;
@@ -71,6 +73,7 @@ import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.FolderInfo.FolderListener;
 import com.android.launcher3.model.data.FolderInfo.LabelState;
@@ -115,18 +118,18 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     @Thunk
     BubbleTextView mFolderName;
 
-    PreviewBackground mBackground = new PreviewBackground();
+    PreviewBackground mBackground = new PreviewBackground(getContext());
     private boolean mBackgroundIsVisible = true;
 
     FolderGridOrganizer mPreviewVerifier;
     ClippedFolderIconLayoutRule mPreviewLayoutRule;
     private PreviewItemManager mPreviewItemManager;
     private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0);
-    private List<WorkspaceItemInfo> mCurrentPreviewItems = new ArrayList<>();
+    private List<ItemInfo> mCurrentPreviewItems = new ArrayList<>();
 
     boolean mAnimating = false;
 
-    private Alarm mOpenAlarm = new Alarm();
+    private Alarm mOpenAlarm = new Alarm(Looper.getMainLooper());
 
     private boolean mForceHideDot;
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
@@ -219,14 +222,14 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
         // Keep the notification dot up to date with the sum of all the content's dots.
         FolderDotInfo folderDotInfo = new FolderDotInfo();
-        for (WorkspaceItemInfo si : folderInfo.contents) {
+        for (ItemInfo si : folderInfo.getContents()) {
             folderDotInfo.addDotInfo(activity.getDotInfoForItem(si));
         }
         icon.setDotInfo(folderDotInfo);
 
         icon.setAccessibilityDelegate(activity.getAccessibilityDelegate());
 
-        icon.mPreviewVerifier = new FolderGridOrganizer(activity.getDeviceProfile().inv);
+        icon.mPreviewVerifier = new FolderGridOrganizer(activity.getDeviceProfile());
         icon.mPreviewVerifier.setFolderInfo(folderInfo);
         icon.updatePreviewItems(false);
 
@@ -265,20 +268,18 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     private boolean willAcceptItem(ItemInfo item) {
         final int itemType = item.itemType;
-        return ((itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
-                itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) &&
-                item != mInfo && !mFolder.isOpen());
+        return (Folder.willAcceptItemType(itemType) && item != mInfo && !mFolder.isOpen());
     }
 
     public boolean acceptDrop(ItemInfo dragInfo) {
         return !mFolder.isDestroyed() && willAcceptItem(dragInfo);
     }
 
-    public void addItem(WorkspaceItemInfo item) {
+    public void addItem(ItemInfo item) {
         mInfo.add(item, true);
     }
 
-    public void removeItem(WorkspaceItemInfo item, boolean animate) {
+    public void removeItem(ItemInfo item, boolean animate) {
         mInfo.remove(item, animate);
     }
 
@@ -292,8 +293,8 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mOpenAlarm.setOnAlarmListener(mOnOpenListener);
         if (SPRING_LOADING_ENABLED &&
                 ((dragInfo instanceof WorkspaceItemFactory)
-                        || (dragInfo instanceof WorkspaceItemInfo)
-                        || (dragInfo instanceof PendingAddShortcutInfo))) {
+                        || (dragInfo instanceof PendingAddShortcutInfo)
+                        || Folder.willAccept(dragInfo))) {
             mOpenAlarm.setAlarm(ON_OPEN_DELAY);
         }
     }
@@ -308,8 +309,8 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         return mPreviewItemManager.prepareCreateAnimation(destView);
     }
 
-    public void performCreateAnimation(final WorkspaceItemInfo destInfo, final View destView,
-            final WorkspaceItemInfo srcInfo, final DragObject d, Rect dstRect,
+    public void performCreateAnimation(final ItemInfo destInfo, final View destView,
+            final ItemInfo srcInfo, final DragObject d, Rect dstRect,
             float scaleRelativeToDragLayer) {
         final DragView srcView = d.dragView;
         prepareCreateAnimation(destView);
@@ -335,7 +336,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mOpenAlarm.cancelAlarm();
     }
 
-    private void onDrop(final WorkspaceItemInfo item, DragObject d, Rect finalRect,
+    private void onDrop(final ItemInfo item, DragObject d, Rect finalRect,
             float scaleRelativeToDragLayer, int index, boolean itemReturnedOnFailedDrop) {
         item.cellX = -1;
         item.cellY = -1;
@@ -369,7 +370,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             int numItemsInPreview = Math.min(MAX_NUM_ITEMS_IN_PREVIEW, index + 1);
             boolean itemAdded = false;
             if (itemReturnedOnFailedDrop || index >= MAX_NUM_ITEMS_IN_PREVIEW) {
-                List<WorkspaceItemInfo> oldPreviewItems = new ArrayList<>(mCurrentPreviewItems);
+                List<ItemInfo> oldPreviewItems = new ArrayList<>(mCurrentPreviewItems);
                 mInfo.add(item, index, false);
                 mCurrentPreviewItems.clear();
                 mCurrentPreviewItems.addAll(getPreviewItemsOnPage(0));
@@ -431,7 +432,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             FolderNameInfos nameInfos = new FolderNameInfos();
             Executors.MODEL_EXECUTOR.post(() -> {
                 d.folderNameProvider.getSuggestedFolderName(
-                        getContext(), mInfo.contents, nameInfos);
+                        getContext(), mInfo.getAppContents(), nameInfos);
                 postDelayed(() -> {
                     setLabelSuggestion(nameInfos, d.logInstanceId);
                     invalidate();
@@ -483,20 +484,27 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     public void onDrop(DragObject d, boolean itemReturnedOnFailedDrop) {
-        WorkspaceItemInfo item;
+        ItemInfo item;
         if (d.dragInfo instanceof WorkspaceItemFactory) {
             // Came from all apps -- make a copy
             item = ((WorkspaceItemFactory) d.dragInfo).makeWorkspaceItem(getContext());
         } else if (d.dragSource instanceof BaseItemDragListener) {
             // Came from a different window -- make a copy
-            item = new WorkspaceItemInfo((WorkspaceItemInfo) d.dragInfo);
+            if (d.dragInfo instanceof AppPairInfo) {
+                // dragged item is app pair
+                item = new AppPairInfo((AppPairInfo) d.dragInfo);
+            } else {
+                // dragged item is WorkspaceItemInfo
+                item = new WorkspaceItemInfo((WorkspaceItemInfo) d.dragInfo);
+            }
         } else {
-            item = (WorkspaceItemInfo) d.dragInfo;
+            item = d.dragInfo;
         }
         mFolder.notifyDrop();
         onDrop(item, d, null, 1.0f,
-                itemReturnedOnFailedDrop ? item.rank : mInfo.contents.size(),
-                itemReturnedOnFailedDrop);
+                itemReturnedOnFailedDrop ? item.rank : mInfo.getContents().size(),
+                itemReturnedOnFailedDrop
+        );
     }
 
     public void setDotInfo(FolderDotInfo dotInfo) {
@@ -645,6 +653,21 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         }
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        boolean shouldCenterIcon = mActivity.getDeviceProfile().iconCenterVertically;
+        if (shouldCenterIcon) {
+            int iconSize = mActivity.getDeviceProfile().iconSizePx;
+            Paint.FontMetrics fm = mFolderName.getPaint().getFontMetrics();
+            int cellHeightPx = iconSize + mFolderName.getCompoundDrawablePadding()
+                    + (int) Math.ceil(fm.bottom - fm.top);
+            setPadding(getPaddingLeft(), (MeasureSpec.getSize(heightMeasureSpec)
+                    - cellHeightPx) / 2, getPaddingRight(), getPaddingBottom());
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    /** Sets the visibility of the icon's title text */
     public void setTextVisible(boolean visible) {
         if (visible) {
             mFolderName.setVisibility(VISIBLE);
@@ -660,8 +683,8 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     /**
      * Returns the list of items which should be visible in the preview
      */
-    public List<WorkspaceItemInfo> getPreviewItemsOnPage(int page) {
-        return mPreviewVerifier.setFolderInfo(mInfo).previewItemsForPage(page, mInfo.contents);
+    public List<ItemInfo> getPreviewItemsOnPage(int page) {
+        return mPreviewVerifier.setFolderInfo(mInfo).previewItemsForPage(page, mInfo.getContents());
     }
 
     @Override
@@ -685,12 +708,12 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     /**
      * Updates the preview items which match the provided condition
      */
-    public void updatePreviewItems(Predicate<WorkspaceItemInfo> itemCheck) {
+    public void updatePreviewItems(Predicate<ItemInfo> itemCheck) {
         mPreviewItemManager.updatePreviewItems(itemCheck);
     }
 
     @Override
-    public void onAdd(WorkspaceItemInfo item, int rank) {
+    public void onAdd(ItemInfo item, int rank) {
         updatePreviewItems(false);
         boolean wasDotted = mDotInfo.hasDot();
         mDotInfo.addDotInfo(mActivity.getDotInfoForItem(item));
@@ -702,7 +725,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     @Override
-    public void onRemove(List<WorkspaceItemInfo> items) {
+    public void onRemove(List<ItemInfo> items) {
         updatePreviewItems(false);
         boolean wasDotted = mDotInfo.hasDot();
         items.stream().map(mActivity::getDotInfoForItem).forEach(mDotInfo::subtractDotInfo);
@@ -713,6 +736,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         requestLayout();
     }
 
+    @Override
     public void onTitleChanged(CharSequence title) {
         mFolderName.setText(title);
         setContentDescription(getAccessiblityTitle(title));
@@ -805,7 +829,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
      * Returns a formatted accessibility title for folder
      */
     public String getAccessiblityTitle(CharSequence title) {
-        int size = mInfo.contents.size();
+        int size = mInfo.getContents().size();
         if (size < MAX_NUM_ITEMS_IN_PREVIEW) {
             return getContext().getString(R.string.folder_name_format_exact, title, size);
         } else {
@@ -817,7 +841,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     @Override
     public void onHoverChanged(boolean hovered) {
         super.onHoverChanged(hovered);
-        if (ENABLE_CURSOR_HOVER_STATES.get()) {
+        if (enableCursorHoverStates()) {
             mBackground.setHovered(hovered);
         }
     }

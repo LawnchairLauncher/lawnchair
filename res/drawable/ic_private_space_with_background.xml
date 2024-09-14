@@ -1,0 +1,32 @@
+<!-- Copyright (C) 2024 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    android:viewportWidth="48"
+    android:viewportHeight="48"
+    android:width="48dp"
+    android:height="48dp">
+    <path
+        android:pathData="M48 24A24 24 0 0 1 0 24A24 24 0 0 1 48 24Z"
+        android:fillColor="?androidprv:attr/materialColorSurfaceContainerLowest" />
+    <path
+        android:pathData="M24.0021 10.6641L13.3354 14.6641V22.7841C13.3354 29.5174 17.8821 35.7974 24.0021 37.3307C30.1221 35.7974 34.6688 29.5174 34.6688 22.7841V14.6641L24.0021 10.6641ZM32.0021 22.7841C32.0021 28.1174 28.6021 33.0507 24.0021 34.5574C19.4021 33.0507 16.0021 28.1307 16.0021 22.7841V16.5174L24.0021 13.5174L32.0021 16.5174V22.7841Z"
+        android:fillType="evenOdd"
+        android:fillColor="?attr/materialColorOnSurface" />
+    <path
+        android:pathData="M19.3354 20.6657C19.3354 22.7724 20.7488 24.5457 22.6688 25.119V31.999H25.3354V30.6657H28.0021V27.999H25.3354V25.119C27.2554 24.5457 28.6688 22.7857 28.6688 20.6657C28.6688 18.0924 26.5754 15.999 24.0021 15.999C21.4288 15.999 19.3354 18.0924 19.3354 20.6657ZM26.0021 20.6657C26.0021 21.7724 25.1088 22.6657 24.0021 22.6657C22.8954 22.6657 22.0021 21.7724 22.0021 20.6657C22.0021 19.559 22.8954 18.6657 24.0021 18.6657C25.1088 18.6657 26.0021 19.559 26.0021 20.6657Z"
+        android:fillType="evenOdd"
+        android:fillColor="?attr/materialColorOnSurface" />
+</vector>

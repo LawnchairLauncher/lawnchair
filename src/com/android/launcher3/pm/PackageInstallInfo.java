@@ -22,6 +22,7 @@ import android.os.UserHandle;
 import androidx.annotation.NonNull;
 
 public final class PackageInstallInfo {
+    private static final String TAG = "PackageInstallInfo";
 
     public static final int STATUS_INSTALLED = 0;
     public static final int STATUS_INSTALLING = 1;
@@ -61,7 +62,7 @@ public final class PackageInstallInfo {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + dumpProperties() + ")";
+        return TAG + "(" + dumpProperties() + ")";
     }
 
     private String dumpProperties() {

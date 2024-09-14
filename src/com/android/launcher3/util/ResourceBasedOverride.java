@@ -34,16 +34,20 @@ public interface ResourceBasedOverride {
         public static <T extends ResourceBasedOverride> T getObject(
                 Class<T> clazz, Context context, int resId) {
             String className = context.getString(resId);
-            if (!TextUtils.isEmpty(className)) {
-                try {
-                    Class<?> cls = Class.forName(className);
-                    return (T) cls.getDeclaredConstructor(Context.class).newInstance(context);
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                        | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
+            boolean isOverridden = !TextUtils.isEmpty(className);
+
+            // First try to load the class with "Context" param
+            try {
+                Class<?> cls = isOverridden ? Class.forName(className) : clazz;
+                return (T) cls.getDeclaredConstructor(Context.class).newInstance(context);
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                     | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
+                if (isOverridden) {
                     Log.e(TAG, "Bad overriden class", e);
                 }
             }
 
+            // Load the base class with no parameter
             try {
                 return clazz.newInstance();
             } catch (InstantiationException|IllegalAccessException e) {
