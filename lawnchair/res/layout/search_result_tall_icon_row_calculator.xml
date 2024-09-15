@@ -57,4 +57,5 @@
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/search_result_padding"
         android:layout_marginEnd="@dimen/search_result_padding"
-        android:src="@drawable/ic_copy" /></app.lawnchair.allapps.views.SearchResultIconRow>
+        android:src="@drawable/ic_copy" />
+</app.lawnchair.allapps.views.SearchResultIconRow>
