@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">O que mostrar</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Para bloquear seu celular ao executar um gesto, O Lawnchair precisa do acesso à acessibilidade.\n\nO Lawnchair não observa qualquer ação do usuário, porém esta permissão é necessária para todos os serviços de acessibilidade. O Lawnchair descarta qualquer evento enviado pelo sistema.\n\nPara bloquear seu dispositivo, o Lawnchair usa o serviço de acessibilidade \"performGlobalAction\".</string>
+    <string name="accessibility_service_description"></string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -339,6 +339,7 @@
     <string name="gesture_back_tap">Botão voltar</string>
     <string name="gesture_handler_no_op">Não fazer nada</string>
     <string name="gesture_handler_sleep">Desligar a Tela</string>
+    <string name="gesture_handler_recents">Open Recents</string>
     <string name="gesture_handler_open_notifications">Abrir painel de notificações</string>
     <string name="gesture_handler_open_app_option">Abrir aplicativo</string>
     <string name="gesture_handler_open_app_config">Abrir %1$s</string>
@@ -349,9 +350,10 @@
     <string name="dt2s_admin_hint_title">Permissões de administrador necessárias</string>
     <string name="dt2s_admin_hint">Para usar o duplo clique para dormir, defina o Lawnchair como um aplicativo de administrador do dispositivo. Toque em \"Abrir configurações\" e depois em \"Ativar o aplicativo de administrador do dispositivo.\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Ativar serviço de acessibilidade</string>
+    <string name="d2ts_recents_a11y_hint_title">Ativar serviço de acessibilidade</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_warning_open_settings">Abrir as configurações</string>
+    <string name="dt2s_recents_warning_open_settings">Abrir as configurações</string>
+    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting

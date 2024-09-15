@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">选择要显示的项目</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">需要给予 Lawnchair 无障碍权限以使用手势锁屏。\n\nLawnchair 不会获取屏幕内容和用户操作，即使此权限允许这样做，Lawnchair 不接收任何输入。\n\nLawnchair 使用 performGlobalAction 服务来锁屏。</string>
+    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -339,6 +339,7 @@
     <string name="gesture_back_tap">返回键</string>
     <string name="gesture_handler_no_op">什么也不做</string>
     <string name="gesture_handler_sleep">息屏</string>
+    <string name="gesture_handler_recents">Open Recents</string>
     <string name="gesture_handler_open_notifications">打开通知面板</string>
     <string name="gesture_handler_open_app_option">打开应用</string>
     <string name="gesture_handler_open_app_config">打开 %1$s</string>
@@ -349,9 +350,10 @@
     <string name="dt2s_admin_hint_title">需要管理员权限</string>
     <string name="dt2s_admin_hint">要使用双击息屏，请把 Lawnchair 设置为设备管理员应用，点击\"打开设置\"，然后点击\"启用设备管理员应用\"</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
-    <string name="dt2s_a11y_hint_title">打开无障碍服务</string>
+    <string name="d2ts_recents_a11y_hint_title">打开无障碍服务</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_warning_open_settings">打开设置</string>
+    <string name="dt2s_recents_warning_open_settings">打开设置</string>
+    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
