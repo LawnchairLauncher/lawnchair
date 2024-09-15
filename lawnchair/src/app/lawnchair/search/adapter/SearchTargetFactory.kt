@@ -96,7 +96,7 @@ class SearchTargetFactory(
         val id = "calculator:$result"
         val action = SearchActionCompat.Builder(id, result)
             .setIcon(
-                Icon.createWithResource(context, R.drawable.calculator_copy)
+                Icon.createWithResource(context, R.drawable.calculator)
                     .setTint(ColorTokens.TextColorSecondary.resolveColor(context)),
             )
             .setSubtitle(equation)

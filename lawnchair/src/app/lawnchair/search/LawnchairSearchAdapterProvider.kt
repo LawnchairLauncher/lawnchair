@@ -35,7 +35,7 @@ class LawnchairSearchAdapterProvider(
         append(SEARCH_RESULT_SUGGESTION_TILE, R.layout.search_result_small_icon_row)
         append(SEARCH_RESULT_SETTINGS_TILE, R.layout.search_result_small_icon_row)
         append(SEARCH_RESULT_RECENT_TILE, R.layout.search_result_small_icon_row)
-        append(SEARCH_RESULT_CALCULATOR, R.layout.search_result_tall_icon_row)
+        append(SEARCH_RESULT_CALCULATOR, R.layout.search_result_tall_icon_row_calculator)
     }
     private var quickLaunchItem: SearchResultView? = null
         set(value) {
