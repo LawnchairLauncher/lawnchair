@@ -26,7 +26,7 @@
     android:importantForAccessibility="no"
     android:autoMirrored="true"
     android:elevation="@dimen/task_thumbnail_icon_menu_elevation"
-    android:background="?androidprv:attr/materialColorSurfaceBright">
+    android:background="?attr/materialColorSurfaceBright">
 
     <!-- ignoring warning because the user of the anchor is a Rect where RTL is not needed -->
     <!-- This anchor's bounds is in the expected location after rotations and translations are

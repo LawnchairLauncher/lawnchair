@@ -47,7 +47,7 @@
             android:backgroundTint="?android:attr/textColorPrimary" />
 
         <Switch
-            style="@style/Switch.SettingsLib"
+            style="@android:style/Widget.Material.CompoundButton.Switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/taskbar_pinning_switch"

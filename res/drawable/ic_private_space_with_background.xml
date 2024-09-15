@@ -20,7 +20,7 @@
     android:height="48dp">
     <path
         android:pathData="M48 24A24 24 0 0 1 0 24A24 24 0 0 1 48 24Z"
-        android:fillColor="?androidprv:attr/materialColorSurfaceContainerLowest" />
+        android:fillColor="?attr/materialColorSurfaceContainerLowest" />
     <path
         android:pathData="M24.0021 10.6641L13.3354 14.6641V22.7841C13.3354 29.5174 17.8821 35.7974 24.0021 37.3307C30.1221 35.7974 34.6688 29.5174 34.6688 22.7841V14.6641L24.0021 10.6641ZM32.0021 22.7841C32.0021 28.1174 28.6021 33.0507 24.0021 34.5574C19.4021 33.0507 16.0021 28.1307 16.0021 22.7841V16.5174L24.0021 13.5174L32.0021 16.5174V22.7841Z"
         android:fillType="evenOdd"

@@ -124,7 +124,7 @@
     <style name="TextAppearance.GestureTutorial.ButtonLabel"
         parent="TextAppearance.GestureTutorial.CallToAction">
         <item name="android:gravity">center</item>
-        <item name="android:textColor">?androidprv:attr/materialColorOnPrimary</item>
+        <item name="android:textColor">?attr/materialColorOnPrimary</item>
         <item name="android:letterSpacing">0.02</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textAllCaps">false</item>
@@ -268,46 +268,46 @@
     <style name="KeyboardQuickSwitchText">
         <item name="fontFamily">google-sans-text</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
+        <item name="android:textColor">?attr/materialColorOnSurface</item>
         <item name="lineHeight">20sp</item>
     </style>
 
     <style name="KeyboardQuickSwitchText.OnBackground" parent="KeyboardQuickSwitchText">
-        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
+        <item name="android:textColor">?attr/materialColorOnSurface</item>
     </style>
 
     <style name="GestureTutorialActivity" parent="@style/AppTheme">
         <item name="background">@android:color/transparent</item>
         <item name="tutorialSubtitle">@android:color/black</item>
-        <item name="surfaceContainer">?androidprv:attr/materialColorSurfaceContainer</item>
-        <item name="onSurfaceHome">?androidprv:attr/materialColorPrimaryFixed</item>
+        <item name="surfaceContainer">?attr/materialColorSurfaceContainer</item>
+        <item name="onSurfaceHome">?attr/materialColorPrimaryFixed</item>
         <item name="surfaceHome">@android:color/system_accent1_300</item>
-        <item name="secondaryHome">?androidprv:attr/materialColorOnPrimaryFixedVariant</item>
-        <item name="onSurfaceBack">?androidprv:attr/materialColorTertiaryFixed</item>
+        <item name="secondaryHome">?attr/materialColorOnPrimaryFixedVariant</item>
+        <item name="onSurfaceBack">?attr/materialColorTertiaryFixed</item>
         <item name="surfaceBack">@android:color/system_accent3_300</item>
-        <item name="secondaryBack">?androidprv:attr/materialColorOnTertiaryFixedVariant</item>
-        <item name="onSurfaceOverview">?androidprv:attr/materialColorPrimaryFixed</item>
+        <item name="secondaryBack">?attr/materialColorOnTertiaryFixedVariant</item>
+        <item name="onSurfaceOverview">?attr/materialColorPrimaryFixed</item>
         <item name="surfaceOverview">@android:color/system_accent2_300</item>
-        <item name="secondaryOverview">?androidprv:attr/materialColorOnSecondaryFixedVariant</item>
+        <item name="secondaryOverview">?attr/materialColorOnSecondaryFixedVariant</item>
     </style>
 
     <style name="rotate_prompt_title" parent="TextAppearance.GestureTutorial.Dialog.Title">
-        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
+        <item name="android:textColor">?attr/materialColorOnSurface</item>
     </style>
 
     <style name="rotate_prompt_subtitle" parent="TextAppearance.GestureTutorial.Dialog.Subtitle">
-        <item name="android:textColor">?androidprv:attr/materialColorOnSurfaceVariant</item>
+        <item name="android:textColor">?attr/materialColorOnSurfaceVariant</item>
     </style>
 
     <style name="ArrowTipTaskbarStyle">
-        <item name="arrowTipBackground">?androidprv:attr/materialColorSurfaceContainer</item>
-        <item name="arrowTipTextColor">?androidprv:attr/materialColorOnSurface</item>
+        <item name="arrowTipBackground">?attr/materialColorSurfaceContainer</item>
+        <item name="arrowTipTextColor">?attr/materialColorOnSurface</item>
     </style>
 
     <style name="IconAppChipMenuTextStyle">
         <item name="android:fontFamily">google-sans-text-medium</item>
         <item name="android:textSize">@dimen/task_thumbnail_icon_menu_text_size</item>
-        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
+        <item name="android:textColor">?attr/materialColorOnSurface</item>
         <item name="android:letterSpacing">0.025</item>
         <item name="android:lineHeight">20sp</item>
     </style>

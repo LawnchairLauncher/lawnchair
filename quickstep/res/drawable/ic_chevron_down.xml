@@ -19,7 +19,7 @@
     android:width="48dp"
     android:height="48dp"
     android:autoMirrored="true"
-    android:tint="?androidprv:attr/materialColorOnSurface"
+    android:tint="?attr/materialColorOnSurface"
     android:viewportHeight="48"
     android:viewportWidth="48">
     <group
