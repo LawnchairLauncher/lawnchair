@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Weergeven</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Om je telefoon te vergrendelen bij het uitvoeren van een gebaar, heeft Lawnchair toegang tot toegankelijkheid nodig.\n\nLawnchair kijkt niet naar gebruikersacties, hoewel het voorrecht om dit te doen vereist is voor alle toegankelijkheidsdiensten. Lawnchair negeert elke gebeurtenis die door het systeem wordt gemeld.\n\nOm je telefoon te vergrendelen, gebruikt Lawnchair de performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Om je telefoon te vergrendelen tijdens het uitvoeren van een gebaar en om Recente apps via een gebaar te openen, heeft Lawnchair toegankelijkheidsrechten nodig.\n\nLawnchair kijkt niet naar gebruikersacties, hoewel het recht om dit te doen vereist is voor alle toegankelijkheidsservices. Lawnchair verwijdert elke gebeurtenis die door het systeem wordt verzonden.\n\nOm je telefoon te kunnen vergrendelen of Recente apps te openen, maakt Lawnchair gebruik van de toegankelijkheidsservice performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -339,6 +339,7 @@
     <string name="gesture_back_tap">Terugknop</string>
     <string name="gesture_handler_no_op">Niets doen</string>
     <string name="gesture_handler_sleep">Slaapstand</string>
+    <string name="gesture_handler_recents">Recente apps openen</string>
     <string name="gesture_handler_open_notifications">Meldingspaneel openen</string>
     <string name="gesture_handler_open_app_option">App openen</string>
     <string name="gesture_handler_open_app_config">%1$s openen</string>
@@ -349,9 +350,10 @@
     <string name="dt2s_admin_hint_title">Beheerdersrechten vereist</string>
     <string name="dt2s_admin_hint">Om Dubbeltikken voor Slaapstand te gebruiken, moet Lawnchair worden ingesteld als een apparaatbeheerder-app. Tik op \"Instellingen openen\" en tik vervolgens op \"Activeer deze apparaatbeheerder-app.\"</string>
     <string name="dt2s_admin_warning">Dubbeltikken voor Slaapstand wordt uitgeschakeld.</string>
-    <string name="dt2s_a11y_hint_title">Toegankelijkheidsservice inschakelen</string>
+    <string name="d2ts_recents_a11y_hint_title">Toegankelijkheidsservice inschakelen</string>
     <string name="dt2s_a11y_hint">Om \'Dubbel tikken om in de sluimerstand te zetten\' te gebruiken, moet de toegankelijkheidsservice Lawnchair ingeschakeld zijn. Tik op \"Instellingen openen\", selecteer \"Lawnchair\" en schakel \"Lawnchair gebruiken\" in. \n\nLawnchair gebruikt de \'performGlobalAction\'-methode van Toegankelijkheid om deze actie uit te voeren. Dit is een gevoelige machtiging waarmee andere apps kunnen worden bewaakt. Lawnchair is echter niet geconfigureerd voor die functionaliteit en ontvangt geen gebeurtenissen.</string>
-    <string name="dt2s_warning_open_settings">Instellingen openen</string>
+    <string name="dt2s_recents_warning_open_settings">Instellingen openen</string>
+    <string name="recents_a11y_hint">Om Recent apps te gebruiken, moet de toegankelijkheidsservice van Lawnchair worden ingeschakeld. Tik op \"Instellingen openen\", selecteer \"Lawnchair\" en schakel \"Lawchair gebruiken\" in. \n\nLawnchair gebruikt de \'performGlobalAction\'-methode van Toegankelijkheid om deze actie uit te voeren. Dit is een gevoelige machtiging waarmee andere apps kunnen worden bewaakt. Lawnchair is echter niet geconfigureerd voor die functionaliteit en ontvangt geen gebeurtenissen.</string>
     <!--
 
     Bug reporting

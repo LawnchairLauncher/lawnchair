@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Informations à afficher</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Pour pouvoir verrouiller votre téléphone en un seul geste, Lawnchair a besoin des droits d\'accessibilité.\n\nLawnchair n\'observe aucune action utilisateur, mais ce privilège est accordé à tous les services d\'accessibilité. Lawnchair rejette tout événement envoyé par le système.\n\nAfin de verrouiller votre téléphone, Lawnchair utilise le service d\'accessibilité performGlobalAction.</string>
+    <string name="accessibility_service_description">Pour pouvoir verrouiller votre téléphone et ouvrir Récents en un seul geste, Lawnchair a besoin des droits d\'accessibilité.\n\nLawnchair n\'observe aucune action utilisateur, mais ce privilège est accordé à tous les services d\'accessibilité. Lawnchair rejette tout événement envoyé par le système.\n\nAfin de verrouiller votre téléphone ou ouvrir Récents, Lawnchair utilise le service d\'accessibilité performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s et %2$s</string>
     <!--
@@ -339,6 +339,7 @@
     <string name="gesture_back_tap">Bouton Retour</string>
     <string name="gesture_handler_no_op">Ne rien faire</string>
     <string name="gesture_handler_sleep">Mettre en veille</string>
+    <string name="gesture_handler_recents">Ouvrir Récents</string>
     <string name="gesture_handler_open_notifications">Ouvrir le panneau des notifications</string>
     <string name="gesture_handler_open_app_option">Ouvrir une application</string>
     <string name="gesture_handler_open_app_config">Ouvrir %1$s</string>
@@ -349,9 +350,10 @@
     <string name="dt2s_admin_hint_title">Autorisations d\'administration requises</string>
     <string name="dt2s_admin_hint">Pour mettre en veille votre appareil à l\'aide d\'un double appui, définissez Lawnchair comme application d\'administration de l\'appareil. Appuyez sur « Ouvrir les paramètres » puis appuyez sur « Activer l\'appli d\'administration de cet appareil. »</string>
     <string name="dt2s_admin_warning">Vous ne pourrez plus mettre en veille votre appareil à l\'aide d\'un double appui.</string>
-    <string name="dt2s_a11y_hint_title">Activez le service d\'accessibilité</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_warning_open_settings">Ouvrir les paramètres</string>
+    <string name="d2ts_recents_a11y_hint_title">Activez le service d\'accessibilité</string>
+    <string name="dt2s_a11y_hint">Pour mettre en veille votre appareil avec un double appui, activez le service d\'accessibilité Lawnchair. Appuyez sur « Ouvrir les paramètres », sélectionnez « Lawnchair » et activez « Utiliser Lawnchair ».\n\nLawnchair utilise la méthode d\'Accessibility `performGlobalAction`. Il s\'agit d\'une autorisation sensible qui permet de suivre le comportement des autres applications, mais Lawnchair n\'est pas configuré pour utiliser ces fonctionnalités et ne reçoit aucun événement.</string>
+    <string name="dt2s_recents_warning_open_settings">Ouvrir les paramètres</string>
+    <string name="recents_a11y_hint">Pour utiliser Ouvrir Récents, activez le service d\'accessibilité Lawnchair. Appuyez sur « Ouvrir les paramètres », sélectionnez « Lawnchair » et activez « Utiliser Lawnchair ».\n\nLawnchair utilise la méthode d\'Accessibility `performGlobalAction`. Il s\'agit d\'une autorisation sensible qui permet de suivre le comportement des autres applications, mais Lawnchair n\'est pas configuré pour utiliser ces fonctionnalités et ne reçoit aucun événement.</string>
     <!--
 
     Bug reporting

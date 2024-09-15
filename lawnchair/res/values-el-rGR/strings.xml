@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Τι να εμφανίζεται</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Για να κλειδώσετε το τηλέφωνό σας όταν εκτελείτε μια χειρονομία, το εκκινητής Lawnchair απαιτεί πρόσβαση στην προσβασιμότητα.\n\nΟ Lawnchair δεν παρακολουθεί καμία ενέργεια χρήστη, αν και το προνόμιο να το κάνει αυτό απαιτείται για όλες τις υπηρεσίες προσβασιμότητας. Ο Lawnchair απορρίπτει οποιοδήποτε συμβάν αποστέλλεται από το σύστημα.\n\nΓια να κλειδώσετε το τηλέφωνό σας, ο εκκινητής Lawnchair χρησιμοποιεί την υπηρεσία προσβασιμότητας performGlobalAction.</string>
+    <string name="accessibility_service_description">Για να κλειδώσετε το τηλέφωνό σας όταν εκτελείτε μια χειρονομία, όπως και για να ανοίξετε τα Πρόσφατα μέσω χειρονομίας, ο εκκινητής Lawnchair χρειάζεται δικαιώματα Προσβασιμότητας.\n\nΟ εκκινητής Lawnchair δεν παρακολουθεί καμία ενέργεια του χρήστη, αν και το δικαίωμα να το κάνει απαιτείται για όλες τις υπηρεσίες προσβασιμότητας. Ο εκκινητής Lawnchair απορρίπτει οποιοδήποτε συμβάν που αποστέλλεται από το σύστημα.\n\nΓια να κλειδώσει το τηλέφωνό σας ή να ανοίξει τις Πρόσφατες εφαρμογές, ο εκκινητής Lawnchair χρησιμοποιεί την υπηρεσία προσβασιμότητας `performanceGlobalAction`.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -339,6 +339,7 @@
     <string name="gesture_back_tap">Κουμπί επιστροφής</string>
     <string name="gesture_handler_no_op">Καμία ενέργεια</string>
     <string name="gesture_handler_sleep">Αναστολή</string>
+    <string name="gesture_handler_recents">Άνοιγμα πρόσφατων εφαρμογών</string>
     <string name="gesture_handler_open_notifications">Άνοιγμα πίνακα ειδοποιήσεων</string>
     <string name="gesture_handler_open_app_option">Άνοιγμα εφαρμογής</string>
     <string name="gesture_handler_open_app_config">Άνοιγμα %1$s</string>
@@ -349,9 +350,10 @@
     <string name="dt2s_admin_hint_title">Απαιτούνται δικαιώματα διαχειριστή</string>
     <string name="dt2s_admin_hint">Για να χρησιμοποιήσετε το διπλό πάτημα για ύπνο, ορίστε τον εκκινητή Lawnchair ως εφαρμογή διαχείρισης συσκευής. Πατήστε στο “Άνοιγμα ρυθμίσεων” και μετά πατήστε “Ενεργοποίηση αυτής της εφαρμογής ως διαχειριστή της συσκευής.”</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Ενεργοποίηση υπηρεσίας προσβασιμότητας</string>
+    <string name="d2ts_recents_a11y_hint_title">Ενεργοποίηση υπηρεσίας προσβασιμότητας</string>
     <string name="dt2s_a11y_hint">Για να χρησιμοποιήσετε την λειτουργία Διπλό Πάτημα Για Ύπνο, ενεργοποιήστε την υπηρεσία προσβασιμότητας του εκκινητή Lawnchair. Πατήστε \"Άνοιγμα ρυθμίσεων\", επιλέξτε \"Lawnchair\" και ενεργοποιήστε τη \"Χρήση Lawnchair\".\n\nΟ εκκινητής Lawnchair χρησιμοποιεί τη μέθοδο `performGlobalAction` της Προσβασιμότητας Εφαρμογών για την εκτέλεση αυτής της ενέργειας. Αυτή είναι μια ευαίσθητη άδεια που επιτρέπει την παρακολούθηση άλλων εφαρμογών. Ωστόσο, ο εκκινητής Lawnchair δεν έχει ρυθμιστεί για αυτήν τη λειτουργία και δεν λαμβάνει συμβάντα.</string>
-    <string name="dt2s_warning_open_settings">Άνοιγμα ρυθμίσεων</string>
+    <string name="dt2s_recents_warning_open_settings">Άνοιγμα ρυθμίσεων</string>
+    <string name="recents_a11y_hint">Για να χρησιμοποιήσετε το Άνοιγμα Πρόσφατων Εφαρμογών, ενεργοποιήστε την υπηρεσία προσβασιμότητας Lawnchair. Πατήστε `Άνοιγμα ρυθμίσεων`, επιλέξτε `Lawnchair` και ενεργοποιήστε τη `Χρήση Lawnchair`.\n\nΟ εκκινητής Lawnchair χρησιμοποιεί τη μέθοδο `performGlobalAction` της Προσβασιμότητας για την εκτέλεση αυτής της ενέργειας. Αυτή είναι μια ευαίσθητη άδεια που επιτρέπει την παρακολούθηση άλλων εφαρμογών. Ωστόσο, ο εκκινητής Lawnchair δεν έχει ρυθμιστεί για αυτήν τη λειτουργία και δεν λαμβάνει συμβάντα.</string>
     <!--
 
     Bug reporting
