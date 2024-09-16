@@ -13,7 +13,7 @@ data object Iceraven : QsbSearchProvider(
     packageName = "io.github.forkmaintainers.iceraven",
     action = "org.mozilla.fenix.OPEN_TAB",
     className = "org.mozilla.fenix.IntentReceiverActivity",
-    website = "github.com/fork-maintainers/iceraven-browser/releases/latest",
+    website = "https://github.com/fork-maintainers/iceraven-browser/releases/latest",
     type = QsbSearchProviderType.APP,
     supportVoiceIntent = true,
 ) {
