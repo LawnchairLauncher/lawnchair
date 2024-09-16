@@ -114,19 +114,6 @@
     <string name="drawer_search_description">Web suggestions, global search</string>
 
     <string name="folders_label">Folders</string>
-<<<<<<< Translation_String_Labels
-    <string name="folders_description">Row and Column Count</string>
-    <string name="app_drawer_columns">App Drawer Columns</string>
-    <string name="dock_icons">Dock Icons</string>
-    <string name="max_folder_columns">Max. Folder Columns</string>
-    <string name="max_folder_rows">Max. Folder Rows</string>
-    <string name="grid">Grid</string>
-    <string name="icons">Icons</string>
-    <string name="icon_sizes">Icon Size</string>
-    <string name="label_size">Label Size</string>
-    <string name="notification_dots">Notification Dots</string>
-    <string name="smartspace_preferences">Preferences</string>
-=======
     <string name="folders_description">Row and column count</string>
 
     <string name="gestures_label">Gestures</string>
@@ -135,7 +122,6 @@
     <string name="quickstep_label">Recents</string>
     <string name="quickstep_description">Clear All button, corner radius</string>
 
->>>>>>> 14-dev
     <string name="about_label">About</string>
 
     <string name="app_info_drop_target_label">App info</string>
