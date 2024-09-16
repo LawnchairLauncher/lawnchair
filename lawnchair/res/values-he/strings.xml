@@ -39,7 +39,7 @@
     <string name="grid">רשת</string>
     <string name="rows">שורות</string>
     <string name="icons">סמלים</string>
-    <string name="icon_size">גודל סמל</string>
+    <string name="icon_sizes">גודל סמל</string>
     <string name="label_size">גודל טקסט</string>
     <string name="show_home_labels">הצגת תוויות</string>
     <string name="notification_dots">התראות</string>
