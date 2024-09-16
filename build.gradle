@@ -166,19 +166,6 @@ android {
         resValues true
     }
 
-    final def keystorePropertiesFile = rootProject.file("keystore.properties")
-    def releaseSigning = signingConfigs.debug
-    if (keystorePropertiesFile.exists()) {
-        final def keystoreProperties = new Properties()
-        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-        releaseSigning = signingConfigs.create("release") {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile rootProject.file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-        }
-    }
-
     packagingOptions.resources.excludes += [
         "**/*.proto",
         "**/*.bin",
@@ -203,6 +190,20 @@ android {
         .collect { it.file("proguard.flags") }
         .findAll { it.exists() }
         .toArray()
+
+    def releaseSigning
+    try {
+        def keystoreProperties = new Properties()
+        keystoreProperties.load(rootProject.file("keystore.properties").newInputStream())
+        releaseSigning = signingConfigs.create("release") {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile rootProject.file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    } catch (Exception ignored) {
+        releaseSigning = signingConfigs.debug
+    }
 
     buildTypes {
         all {
