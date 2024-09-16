@@ -254,7 +254,7 @@
 
     -->
     <!-- Date formats -->
-    <string name="smartspace_calendar_gregorian">Georgià</string>
+    <string name="smartspace_calendar_gregorian">Gregorià</string>
     <string name="smartspace_calendar_persian">Persa</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
