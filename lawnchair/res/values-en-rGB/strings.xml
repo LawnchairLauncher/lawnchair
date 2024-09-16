@@ -41,7 +41,7 @@
     <string name="max_folder_rows">Max. Folder Rows</string>
     <string name="grid">Grid</string>
     <string name="icons">Icons</string>
-    <string name="icon_size">Icon Size</string>
+    <string name="icon_sizes">Icon Size</string>
     <string name="label_size">Label Size</string>
     <string name="notification_dots">Notification Dots</string>
     <string name="smartspace_preferences">Preferences</string>

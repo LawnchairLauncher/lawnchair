@@ -184,7 +184,7 @@
     <string name="show_status_bar">Onyesha Upau wa Hali</string>
     <string name="dark_status_bar_label">Upau wa Hali ya Giza</string>
     <string name="icons">Ikoni</string>
-    <string name="icon_size">Umbo la ikoni</string>
+    <string name="icon_sizes">Umbo la ikoni</string>
     <string name="show_home_labels">Onyesha Lebo</string>
     <string name="label_size">Ukubwa wa lebo</string>
     <string name="reset_custom_icons">Weka upya Ikoni Maalum</string>
