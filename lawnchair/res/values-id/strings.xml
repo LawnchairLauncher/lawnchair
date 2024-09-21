@@ -39,7 +39,7 @@
     <string name="grid">Kisi</string>
     <string name="rows">Baris</string>
     <string name="icons">Ikon</string>
-    <string name="icon_size">Ukuran Ikon</string>
+    <string name="icon_sizes">Ukuran Ikon</string>
     <string name="label_size">Ukuran Label</string>
     <string name="show_home_labels">Tampilkan Label</string>
     <string name="notification_dots">Bintik Notifikasi</string>

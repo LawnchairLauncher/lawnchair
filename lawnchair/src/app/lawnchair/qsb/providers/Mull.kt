@@ -13,7 +13,7 @@ data object Mull : QsbSearchProvider(
     packageName = "us.spotco.fennec_dos",
     action = "org.mozilla.fenix.OPEN_TAB",
     className = "org.mozilla.fenix.IntentReceiverActivity",
-    website = "gitlab.com/divested-mobile/mull-fenix",
+    website = "https://gitlab.com/divested-mobile/mull-fenix",
     type = QsbSearchProviderType.APP,
     supportVoiceIntent = true,
 ) {

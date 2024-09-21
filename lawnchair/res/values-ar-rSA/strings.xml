@@ -71,9 +71,9 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">ماذا يُعرض</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">لقفل هاتفك عند تنفيذ إيماءة، يتطلب Lawnchair الوصول إلى إمكانية الوصول.\n\nLawnchair لا يراقب أي إجراء للمستخدم، رغم أن الصلاحية للقيام بذلك مطلوبة لجميع خدمات إمكانية الوصول. يقوم Lawnchair بالتخلص من أي حدث يتم إرساله بواسطة النظام.\n\nلقفل هاتفك، يستخدم Lawnchair خدمة إمكانية الوصول لتنفيذ الإجراء العالمي.</string>
+    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_by_y">18. %1$d x %2$d</string>
-    <string name="x_and_y">19. %1$s &amp; %2$s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard
@@ -339,6 +339,7 @@
     <string name="gesture_back_tap">زر العودة</string>
     <string name="gesture_handler_no_op">لا تفعل شيئاً</string>
     <string name="gesture_handler_sleep">السكون</string>
+    <string name="gesture_handler_recents">Open Recents</string>
     <string name="gesture_handler_open_notifications">فتح لوحة الإشعارات</string>
     <string name="gesture_handler_open_app_option">فتح التطبيق</string>
     <string name="gesture_handler_open_app_config">فتح %1$s</string>
@@ -349,9 +350,10 @@
     <string name="dt2s_admin_hint_title">أذونات المشرف مطلوبة</string>
     <string name="dt2s_admin_hint">لاستخدام النقرة المزدوجة لإطفاء الشاشة، عيّن Lawnchair كتطبيق مشرف للجهاز. انقر على فتح الإعدادات، ثم انقر على \"فعِّل التطبيق كمشرف على الجهاز.\"</string>
     <string name="dt2s_admin_warning">سيتم إيقاف تشغيل الضغط المزدوج للسكون.</string>
-    <string name="dt2s_a11y_hint_title">تشغيل خدمة الوصول</string>
+    <string name="d2ts_recents_a11y_hint_title">تشغيل خدمة الوصول</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_warning_open_settings">فتح الإعدادات</string>
+    <string name="dt2s_recents_warning_open_settings">فتح الإعدادات</string>
+    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting

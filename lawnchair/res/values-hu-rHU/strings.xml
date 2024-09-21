@@ -22,14 +22,14 @@
 
     -->
     <string name="preview_label">Előnézet</string>
-    <string name="action_create">Létrehoz</string>
+    <string name="action_create">Létrehozás</string>
     <string name="action_backup">Biztonsági mentés</string>
     <string name="action_restore">Visszaállítás</string>
     <string name="action_delete">Törlés</string>
     <string name="action_reset">Visszaállítás</string>
     <string name="action_unlock">Feloldás</string>
     <string name="action_lock">Lezárás</string>
-    <string name="action_apply">Alkalmaz</string>
+    <string name="action_apply">Alkalmazás</string>
     <string name="action_customize">Testreszabás</string>
     <string name="always_choice">Mindig</string>
     <string name="never_choice">Soha</string>
@@ -64,14 +64,14 @@
     <string name="layout">Elrendezés</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Háttérkép</string>
-    <string name="background_opacity">Háttér átlátszatlansága</string>
+    <string name="background_opacity">Háttér átlátszósága</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Vágólapra másolva</string>
     <string name="item_removed">Elem eltávolítva</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Mi jelenjen meg</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">A kézmozdulattal való telefonlezáráshoz a Lawnchairnek akadálymentesítési engedélyre van szüksége\n\nA Lawnchair nem figyel semmilyen felhasználói műveletet, az ehhez szükséges jogosultság minden akadálymentesítési szolgáltatáshoz szükséges. A Lawnchair figyelmen kívül hagyja az összes, rendszer által küldött eseményt.\n\nA telefon zárolásához a Lawnchair a „performGlobalAction” akadálymentesítési szolgáltatást használja.</string>
+    <string name="accessibility_service_description">A telefon zárolásához kézmozdulat végrehajtása közben, illetve az Előzmények gesztussal történő megnyitásához a Lawnchair kisegítő hozzáférést igényel.\n\nA Lawnchair nem figyel semmilyen felhasználói műveletet, bár az ehhez szükséges jogosultság minden kisegítő lehetőséghez szükséges. A Lawnchair nem rögzít rendszer által küldött eseményeket.\n\nA telefon zárolásához vagy az Előzmények megnyitásához a Lawnchair a performGlobalAction akadálymentesítési szolgáltatást használja.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s és %2$s</string>
     <!--
@@ -83,7 +83,7 @@
     <string name="general_label">Általános</string>
     <string name="general_description">Színek, ikoncsomagok, értesítési pöttyök</string>
     <string name="home_screen_label">Kezdőképernyő</string>
-    <string name="home_screen_description">Hírfolyam, rács, ikonok</string>
+    <string name="home_screen_description">Feed, rács, ikonok</string>
     <string name="dock_label">Dokk</string>
     <string name="dock_description">Keresősáv, ikonszám</string>
     <string name="app_drawer_label">Alkalmazástár</string>
@@ -339,6 +339,7 @@
     <string name="gesture_back_tap">Vissza gomb</string>
     <string name="gesture_handler_no_op">Nincs teendő</string>
     <string name="gesture_handler_sleep">Alvás</string>
+    <string name="gesture_handler_recents">Az Előzmények megnyitása</string>
     <string name="gesture_handler_open_notifications">Értesítési panel megnyitása</string>
     <string name="gesture_handler_open_app_option">Alkalmazás megnyitása</string>
     <string name="gesture_handler_open_app_config">%1$s megnyitása</string>
@@ -349,9 +350,10 @@
     <string name="dt2s_admin_hint_title">Adminisztrátori jogosultság szükséges</string>
     <string name="dt2s_admin_hint">A dupla koppintásos altatáshoz állítsa be a Lawnchairt eszközrendszergazdai alkalmazásként. Koppintson a beállítások megnyitására, majd koppintson „Az eszközrendszergazdai alkalmazás aktiválása” lehetőségre.</string>
     <string name="dt2s_admin_warning">A dupla koppintásos alvás ki lesz kapcsolva.</string>
-    <string name="dt2s_a11y_hint_title">Akadálymentesítési szolgáltatás bekapcsolása</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_warning_open_settings">Beállítások megnyitása</string>
+    <string name="d2ts_recents_a11y_hint_title">Akadálymentesítési szolgáltatás bekapcsolása</string>
+    <string name="dt2s_a11y_hint">A \'Duplakoppra alvómód\' használatához kapcsolja be a Lawnchair akadálymentesítési szolgáltatást. Koppintson a „Beállítások megnyitása”, válassza a „Lawnchair” lehetőséget, és kapcsolja be a „Lawnchair használata” lehetőséget.\n\nA Lawnchair az akadálymentesítés „performGlobalAction” metódusát használja a művelet végrehajtásához. Ez egy bizalmas engedély, amely lehetővé teszi más alkalmazások figyelését. A Lawnchair azonban nincs konfigurálva ehhez a funkcióhoz, és nem fogad eseményeket.</string>
+    <string name="dt2s_recents_warning_open_settings">Beállítások megnyitása</string>
+    <string name="recents_a11y_hint">\'Az Előzmények megnyitása\' használatához kapcsolja be a Lawnchair akadálymentesítési szolgáltatást. Koppintson a „Beállítások megnyitása”, válassza a „Lawnchair” lehetőséget, és kapcsolja be a „Lawnchair használata” lehetőséget.\n\nA Lawnchair az akadálymentesítés „performGlobalAction” metódusát használja a művelet végrehajtásához. Ez egy bizalmas engedély, amely lehetővé teszi más alkalmazások figyelését. A Lawnchair azonban nincs konfigurálva ehhez a funkcióhoz, és nem fogad eseményeket.</string>
     <!--
 
     Bug reporting

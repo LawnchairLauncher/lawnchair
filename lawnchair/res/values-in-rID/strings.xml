@@ -33,8 +33,8 @@
     <string name="action_customize">Kustomisasi</string>
     <string name="always_choice">Selalu</string>
     <string name="never_choice">Tidak pernah</string>
-    <string name="clipboard">Papan Klip</string>
-    <string name="action_copy_link">Salin Tautan</string>
+    <string name="clipboard">Papan klip</string>
+    <string name="action_copy_link">Salin tautan</string>
     <string name="action_copy">Salin</string>
     <string name="action_paste">Tempel</string>
     <string name="loading">Memuat…</string>
@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Yang ditampilkan</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Untuk mengunci ponsel Anda saat melakukan gerakan, Lawnchair memerlukan akses aksesibilitas.\n\nLawnchair tidak mengawasi tindakan pengguna apa pun, meskipun hak istimewa untuk melakukannya diperlukan untuk semua layanan aksesibilitas. Lawnchair membuang acara apa pun yang dikirim oleh sistem.\n\nUntuk mengunci ponsel Anda, Lawnchair menggunakan layanan aksesibilitas performGlobalAction.</string>
+    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -142,7 +142,7 @@
     <string name="transparent_background_icons_description">Gunakan latar belakang transparan pada ikon bertema</string>
     <string name="auto_adaptive_icons_label">Ikon adaptif otomatis</string>
     <string name="auto_adaptive_icons_description">Untuk semua aplikasi non-adaptif</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
+    <string name="shadow_bg_icons_label">Tampilkan bayang di belakang ikon</string>
     <string name="background_lightness_label">Kecerahan latar belakang</string>
     <string name="adaptive_icon_background_description">Gunakan 100% kecerahan latar belakang untuk warna putih</string>
     <string name="reset_custom_icons">Atur ulang ikon kustom</string>
@@ -161,7 +161,7 @@
     <string name="icon_shape_egg">Telur</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Segi delapan</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">Heksagon</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Kotak bundar</string>
     <string name="icon_shape_sharp_square">Kotak tajam</string>
@@ -278,12 +278,12 @@
     <string name="smartspace_battery_status">Status baterai</string>
     <string name="smartspace_now_playing">Sedang Memutar</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="maximum_number_of_targets">Jumlah target maksimum</string>
+    <string name="open_smartspacer_settings">Buka pengaturan Smartspacer</string>
+    <string name="smartspacer_settings">Pengaturan Smartspacer</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Ketuk untuk menyiapkan</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">Untuk gunakan <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, nyalakan Titik Notifikasi.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Tampilkan di layar beranda</string>
     <string name="smartspace_widget_toggle_description">Sekilas dapat ditambahkan secara manual ke layar beranda dengan menaruh widget Lawnchair</string>
@@ -310,7 +310,7 @@
     <string name="support_and_pr">Bantuan &amp; Relasi Publik</string>
     <string name="acknowledgements">Ucapan Terima Kasih</string>
     <string name="translate">Terjemahkan</string>
-    <string name="donate">Donate</string>
+    <string name="donate">Donasi</string>
     <!--
 
     Backup and restore
@@ -339,6 +339,7 @@
     <string name="gesture_back_tap">Tombol kembali</string>
     <string name="gesture_handler_no_op">Tidak melakukan apa-apa</string>
     <string name="gesture_handler_sleep">Tidur</string>
+    <string name="gesture_handler_recents">Open Recents</string>
     <string name="gesture_handler_open_notifications">Buka panel notifikasi</string>
     <string name="gesture_handler_open_app_option">Buka apli</string>
     <string name="gesture_handler_open_app_config">Buka %1$s</string>
@@ -349,9 +350,10 @@
     <string name="dt2s_admin_hint_title">Izin admin diperlukan</string>
     <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai apli admin perangkat. Ketuk \"Buka pengaturan\", lalu ketuk \"Aktifkan apli admin perangkat ini.\"</string>
     <string name="dt2s_admin_warning">Tap Dua Kali untuk Tidur akan dimatikan.</string>
-    <string name="dt2s_a11y_hint_title">Aktifkan layanan aksesibilitas</string>
+    <string name="d2ts_recents_a11y_hint_title">Aktifkan layanan aksesibilitas</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_warning_open_settings">Buka pengaturan</string>
+    <string name="dt2s_recents_warning_open_settings">Buka pengaturan</string>
+    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -375,8 +377,8 @@
     <string name="home_screen_rotation_label">Rotasi layar beranda</string>
     <string name="home_screen_rotation_description">Izinkan rotasi layar beranda ketika perangkat diputar</string>
     <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
-    <string name="wallpaper_background_blur">Blur intensity</string>
-    <string name="wallpaper_background_blur_factor">Factor threshold</string>
+    <string name="wallpaper_background_blur">Intensitas blur</string>
+    <string name="wallpaper_background_blur_factor">Ambang batas faktor</string>
     <string name="auto_add_shortcuts_label">Tambahkan apli baru ke layar beranda</string>
     <string name="minus_one_enable">Tampilkan umpan</string>
     <string name="minus_one_unavailable">Tidak ada aplikasi feed yang terpasang</string>
@@ -397,7 +399,7 @@
     <string name="show_material_u_popup_description">Gunakan gaya pop-up Material You yang bulat dan sedikit terkonsolidasi</string>
     <string name="popup_menu">Gaya pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Tampilkan tombol kunci</string>
-    <string name="show_system_settings_entry">Show system settings button</string>
+    <string name="show_system_settings_entry">Tampilkan tombol pengaturan sistem</string>
     <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
     <string name="status_bar_label">Bar status</string>
     <string name="show_status_bar">Tampilkan bar status</string>
@@ -495,7 +497,7 @@
     <string name="pref_category_search">Cari</string>
     <string name="show_app_search_bar">Tampilkan bilah pencarian</string>
     <string name="pref_search_auto_show_keyboard">Tampilkan keyboard otomatis</string>
-    <string name="fuzzy_search_title">Pencarian kabur</string>
+    <string name="fuzzy_search_title">Pencarian acak</string>
     <string name="fuzzy_search_desc">Perkirakan kecocokan untuk pencarian aplikasi</string>
     <string name="suggestion_pref_screen_title">Saran</string>
     <string name="show_suggested_apps_at_drawer_top">Tampilkan saran aplikasi di bagian atas laci</string>
@@ -523,8 +525,8 @@
     <string name="search_pref_result_contacts_description">Kontak dan lainnya</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps</string>
-    <string name="max_people_result_count_title">Maximum number of people</string>
+    <string name="max_apps_result_count_title">Jumlah maksimal aplikasi</string>
+    <string name="max_people_result_count_title">Jumlah maksimal orang</string>
     <string name="max_file_result_count_title">Maximum number of files</string>
     <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
     <string name="max_recent_result_count_title">Maximum items for search history</string>

@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">எதைக் காட்ட</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">சைகையைச் செய்யும்போது உங்கள் தொலைபேசியைப் பூட்ட, Lawnchair க்கு அணுகல்தன்மை அணுகல் தேவைப்படுகிறது.\n\nலான்ச்சர் எந்தவொரு பயனர் செயலையும் பார்ப்பதில்லை, இருப்பினும் அனைத்து அணுகல் சேவைகளுக்கும் அவ்வாறு செய்வதற்கான சிறப்புரிமை தேவைப்படுகிறது. கணினியால் அனுப்பப்பட்ட எந்த நிகழ்வையும் லான்ச்சர் நிராகரிக்கிறது.\n\nஉங்கள் தொலைபேசியைப் பூட்டுவதற்கு, லான்ச்சர் performGlobalAction அணுகல் சேவையைப் பயன்படுத்துகிறது.</string>
+    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -339,6 +339,7 @@
     <string name="gesture_back_tap">பின் பொத்தான்</string>
     <string name="gesture_handler_no_op">எதுவும் செய்யாதே</string>
     <string name="gesture_handler_sleep">தூங்கு</string>
+    <string name="gesture_handler_recents">Open Recents</string>
     <string name="gesture_handler_open_notifications">அறிவிப்பு பேனலைத் திறக்கவும்</string>
     <string name="gesture_handler_open_app_option">செயலியைத் திற</string>
     <string name="gesture_handler_open_app_config">%1$s திற</string>
@@ -349,9 +350,10 @@
     <string name="dt2s_admin_hint_title">நிர்வாக அனுமதி தேவை</string>
     <string name="dt2s_admin_hint">அணைக்க இரட்டைத்தட்டலைப் பயன்படுத்த Lawnchairஐச் சாதன நிர்வாகிச் செயலியாக அமை. அமைப்பைத் திற என்பதைத் தட்டி, “இந்தச் சாதன நிர்வாகி ஆப்ஸைச் செயல்படுத்து” என்பதைத் தட்டுக</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">அணுகல்தன்மை சேவையை இயக்கு</string>
+    <string name="d2ts_recents_a11y_hint_title">அணுகல்தன்மை சேவையை இயக்கு</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_warning_open_settings">அமைப்புகளைத் திற</string>
+    <string name="dt2s_recents_warning_open_settings">அமைப்புகளைத் திற</string>
+    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
