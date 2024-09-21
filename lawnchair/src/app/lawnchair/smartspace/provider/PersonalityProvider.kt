@@ -3,7 +3,6 @@ package app.lawnchair.smartspace.provider
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.util.Log
 import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceScores
 import app.lawnchair.smartspace.model.SmartspaceTarget
@@ -19,8 +18,6 @@ class PersonalityProvider(context: Context) : SmartspaceDataSource(
     R.string.smartspace_personality_provider,
     { smartspacePersonalityProvider }
 ) {
-    private val TAG = "SmartspacePersonalityProvider"
-
     private val morningStrings = context.resources.getStringArray(
             R.array.smartspace_personality_greetings_morning)
     private val eveningStrings = context.resources.getStringArray(
@@ -39,9 +36,6 @@ class PersonalityProvider(context: Context) : SmartspaceDataSource(
             // addAction(Intent.ACTION_SCREEN_ON)
         }
     ).map {
-        val reason = it.action
-        Log.d(TAG, "Event Triggered: $reason")
-
         val time = Calendar.getInstance()
         listOfNotNull(getSmartspaceTarget(time))
     }
@@ -55,8 +49,6 @@ class PersonalityProvider(context: Context) : SmartspaceDataSource(
             isNight(time) -> nightStrings[randomIndex % nightStrings.size]
             else -> return null
         }
-
-        Log.d(TAG, "Greeting: $greeting at $randomIndex")
 
         /* TODO: We really need target's expiration time which isn't supported on new Smartspace
         *   ImplRef: LawnchairSmartspaceController.kt @ 10-dev */
