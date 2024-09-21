@@ -5,10 +5,6 @@
     <SplitPairRule
         window:splitRatio="@dimen/activity_split_ratio"
         window:splitLayoutDirection="locale"
-        window:splitMinWidthDp="@integer/min_width_split"
-        window:splitMaxAspectRatioInPortrait="alwaysAllow"
-        window:finishPrimaryWithSecondary="never"
-        window:finishSecondaryWithPrimary="always"
         window:clearTop="false">
         <SplitPairFilter
             window:primaryActivityName="com.android.launcher3.settings.SettingsActivity"

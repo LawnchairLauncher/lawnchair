@@ -408,6 +408,9 @@ dependencies {
     implementation "androidx.room:room-ktx:$roomVersion"
     ksp "androidx.room:room-compiler:$roomVersion"
 
+    def core_version = "1.13.1"
+    implementation "androidx.core:core:$core_version"
+
     implementation "com.github.topjohnwu.libsu:service:6.0.0"
 
     // Persian Date
