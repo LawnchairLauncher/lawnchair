@@ -16,14 +16,11 @@ import kotlinx.coroutines.flow.map
 class PersonalityProvider(context: Context) : SmartspaceDataSource(
     context,
     R.string.smartspace_personality_provider,
-    { smartspacePersonalityProvider }
+    { smartspacePersonalityProvider },
 ) {
-    private val morningStrings = context.resources.getStringArray(
-            R.array.smartspace_personality_greetings_morning)
-    private val eveningStrings = context.resources.getStringArray(
-            R.array.smartspace_personality_greetings_evening)
-    private val nightStrings = context.resources.getStringArray(
-            R.array.smartspace_personality_greetings_night)
+    private val morningStrings = context.resources.getStringArray(R.array.smartspace_personality_greetings_morning)
+    private val eveningStrings = context.resources.getStringArray(R.array.smartspace_personality_greetings_evening)
+    private val nightStrings = context.resources.getStringArray(R.array.smartspace_personality_greetings_night)
 
     override val internalTargets = broadcastReceiverFlow(
         context,
@@ -34,7 +31,7 @@ class PersonalityProvider(context: Context) : SmartspaceDataSource(
 
             // Difficulty testing? I know you do, uncomment this.
             // addAction(Intent.ACTION_SCREEN_ON)
-        }
+        },
     ).map {
         val time = Calendar.getInstance()
         listOfNotNull(getSmartspaceTarget(time))
@@ -51,7 +48,7 @@ class PersonalityProvider(context: Context) : SmartspaceDataSource(
         }
 
         /* TODO: We really need target's expiration time which isn't supported on new Smartspace
-        *   ImplRef: LawnchairSmartspaceController.kt @ 10-dev */
+         *   ImplRef: LawnchairSmartspaceController.kt @ 10-dev */
         return SmartspaceTarget(
             id = "personalityGreeting",
             headerAction = SmartspaceAction(
@@ -59,7 +56,7 @@ class PersonalityProvider(context: Context) : SmartspaceDataSource(
                 title = greeting,
             ),
             score = SmartspaceScores.SCORE_PERSONALITY,
-            featureType = SmartspaceTarget.FeatureType.FEATURE_REMINDER
+            featureType = SmartspaceTarget.FeatureType.FEATURE_REMINDER,
         )
     }
 
