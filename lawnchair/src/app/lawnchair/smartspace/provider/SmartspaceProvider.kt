@@ -21,7 +21,10 @@ class SmartspaceProvider private constructor(context: Context) {
         SmartspaceWidgetReader(context),
         BatteryStatusProvider(context),
         NowPlayingProvider(context),
-    )
+        PersonalityProvider(context),
+        CalendarEventProvider(context),
+        OnboardingProvider(context),
+    ).sortedBy { it.providerName } // TODO: Sort by SmartspaceScores? Should make it easier to make... ugh English SUCK
 
     private val state = dataSources
         .map { it.targets }
