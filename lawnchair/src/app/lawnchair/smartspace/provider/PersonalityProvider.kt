@@ -62,8 +62,7 @@ class PersonalityProvider(context: Context) : SmartspaceDataSource(
 
     private fun isMorning(time: Calendar) = time.hourOfDay in 5 until 9
     private fun isEvening(time: Calendar) = time.hourOfDay in 19 until 21
-    private fun isNight(time: Calendar) = time.hourOfDay in 22 until 24
-            || time.hourOfDay in 0 until 4
+    private fun isNight(time: Calendar) = time.hourOfDay in 22 until 24 || time.hourOfDay in 0 until 4
 
     private val Calendar.dayOfYear: Int get() = get(Calendar.DAY_OF_YEAR)
     private val Calendar.hourOfDay: Int get() = get(Calendar.HOUR_OF_DAY)
