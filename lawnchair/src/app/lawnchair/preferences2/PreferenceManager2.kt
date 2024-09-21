@@ -550,16 +550,6 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = false,
     )
 
-    val smartspaceCalendarEvents = preference(
-        key = booleanPreferencesKey("enable_smartspace_calendar"),
-        defaultValue = true,
-    )
-
-    val smartspaceOnboardingProvider = preference(
-        key = booleanPreferencesKey("enable_smartspace_onboarding_assist"),
-        defaultValue = true,
-    )
-
     val smartspaceShowDate = preference(
         key = booleanPreferencesKey("smartspace_show_date"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_smartspace_show_date),

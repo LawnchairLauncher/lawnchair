@@ -363,26 +363,6 @@
         <item>Don’t stay up too late!</item>
     </string-array>
 
-    <!-- Calendar -->
-    <string name="smartspace_calendar_now">now</string>
-    <string name="smartspace_calendar_in_time">in %1$s</string>
-    <plurals name="smartspace_calendar_minutes">
-        <item quantity="other">%d min</item>
-        <item quantity="one">%d min</item>
-    </plurals>
-    <plurals name="smartspace_calendar_hours">
-        <item quantity="other">%d hr</item>
-        <item quantity="one">%d hr</item>
-    </plurals>
-    <string name="smartspace_hours_mins">%1$s %2$s</string>
-    <string name="calendar_permission_needed">Warning: Lawnchair must have access to your calendar to show it</string>
-
-    <!-- Onboarding -->
-    <string name="onboarding">Onboarding</string>
-    <string name="onboarding_settings_title">Set Up %s</string>
-    <string name="onboarding_settings_summary">Touch &amp; hold on the Home Screen.</string>
-    <string name="onboarding_swipe_up">Swipe up to open the App Drawer.</string>
-
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Calendar</string>
     <string name="smartspace_date_and_time">Date &amp; time</string>
@@ -398,8 +378,6 @@
     <string name="smartspace_battery_status">Battery status</string>
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_personality_provider">Greetings</string>
-    <string name="smartspace_calendar_events">Calendar</string>
-    <string name="smartspace_onboarding_provider">Onboarding</string>
 
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maximum number of targets</string>
@@ -409,8 +387,6 @@
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tap to set up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
-    <string name="event_provider_missing_calendar">To use <xliff:g example="Calendar" id="providerName">%1$s</xliff:g> provider, allow Lawnchair to access your calendar.</string>
-    <string name="title_missing_calendar">Calendar access needed</string>
 
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Show on home screen</string>
