@@ -21,6 +21,9 @@ class PersonalityProvider(context: Context) : SmartspaceDataSource(
     private val morningStrings = context.resources.getStringArray(R.array.smartspace_personality_greetings_morning)
     private val eveningStrings = context.resources.getStringArray(R.array.smartspace_personality_greetings_evening)
     private val nightStrings = context.resources.getStringArray(R.array.smartspace_personality_greetings_night)
+    private val morningSubtitleStrings = context.resources.getStringArray(R.array.smartspace_personality_greetings_night_subtitles)
+    private val eveningSubtitleStrings = context.resources.getStringArray(R.array.smartspace_personality_greetings_evening_subtitles)
+    private val nightSubtitleStrings = context.resources.getStringArray(R.array.smartspace_personality_greetings_night_subtitles)
 
     override val internalTargets = broadcastReceiverFlow(
         context,
@@ -40,10 +43,17 @@ class PersonalityProvider(context: Context) : SmartspaceDataSource(
     private fun getSmartspaceTarget(time: Calendar): SmartspaceTarget? {
         val randomIndex = abs(Random(time.dayOfYear).nextInt())
 
-        val greeting = when {
+        val title = when {
             isMorning(time) -> morningStrings[randomIndex % morningStrings.size]
             isEvening(time) -> eveningStrings[randomIndex % eveningStrings.size]
             isNight(time) -> nightStrings[randomIndex % nightStrings.size]
+            else -> return null
+        }
+
+        val subtitle = when {
+            isMorning(time) -> morningSubtitleStrings[randomIndex % morningSubtitleStrings.size]
+            isEvening(time) -> eveningSubtitleStrings[randomIndex % eveningSubtitleStrings.size]
+            isNight(time) -> nightSubtitleStrings[randomIndex % nightSubtitleStrings.size]
             else -> return null
         }
 
@@ -53,7 +63,8 @@ class PersonalityProvider(context: Context) : SmartspaceDataSource(
             id = "personalityGreeting",
             headerAction = SmartspaceAction(
                 id = "personalityGreetingAction",
-                title = greeting,
+                title = title,
+                subtitle = subtitle,
             ),
             score = SmartspaceScores.SCORE_PERSONALITY,
             featureType = SmartspaceTarget.FeatureType.FEATURE_REMINDER,
