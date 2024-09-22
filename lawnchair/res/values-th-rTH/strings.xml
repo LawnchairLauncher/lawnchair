@@ -31,8 +31,8 @@
     <string name="action_lock">ล็อค</string>
     <string name="action_apply">ใช้งานทันที</string>
     <string name="action_customize">ปรับแต่ง</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
+    <string name="always_choice">ตลอด</string>
+    <string name="never_choice">ไม่เลย</string>
     <string name="clipboard">คลิปบอร์ด</string>
     <string name="action_copy_link">คัดลอกลิ้งค์</string>
     <string name="action_copy">คัดลอก</string>
@@ -41,9 +41,9 @@
     <string name="managed_by_lawnchair">จัดการโดย Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">ปรับแต่ง</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">การตั้งค่าหน้าโฮม</string>
+    <string name="system_settings">การตั้งค่าระบบ</string>
+    <string name="title_change_settings">เปลี่ยนการตั้งค่า</string>
     <!--
 
     General "words" used throughout Lawnchair
@@ -64,12 +64,12 @@
     <string name="layout">การจัดหน้า</string>
     <!-- Generic styling options -->
     <string name="wallpaper">ภาพพื้นหลัง</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="background_opacity">ความทึบของพื้นหลัง</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
+    <string name="copied_toast">คัดลอกไปยังคลิปบอร์ดแล้ว</string>
     <string name="item_removed">นำรายการออกแล้ว</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
+    <string name="what_to_show">สิ่งที่อยากให้แสดง</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -81,27 +81,27 @@
     -->
     <string name="settings">การตั้งค่า</string>
     <string name="general_label">ทั่วไป</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="general_description">สี, ชุดไอคอน, จุดแจ้งเตือน</string>
+    <string name="home_screen_label">หน้าโฮม</string>
+    <string name="home_screen_description">ฟีด, กริด, ไอคอน</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="dock_description">แถบค้นหา, จำนวนไอคอน</string>
+    <string name="app_drawer_label">รายการแอป</string>
+    <string name="app_drawer_description">แอปที่ซ่อนอยู่, จำนวนคอลัมน์, ไอคอน</string>
+    <string name="drawer_search_label">ค้นหารายการแอป</string>
+    <string name="drawer_search_description">คำแนะนำเว็บ, การค้นหาทั้งหมด</string>
     <string name="folders_label">โฟลเดอร์</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">แถวและจำนวนคอลัมน์</string>
     <string name="gestures_label">ท่าทาง</string>
-    <string name="gestures_description">Taps and swipes</string>
+    <string name="gestures_description">การแตะและการปัด</string>
     <string name="quickstep_label">แอพที่ใช้งานล่าสุด</string>
     <string name="quickstep_description">Clear All button, corner radius</string>
     <string name="about_label">เกี่ยวกับ</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">ข้อมูลแอป</string>
     <string name="debug_restart_launcher">เริ่มต้น Lawnchair ใหม่</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="experimental_features_label">ฟีเจอร์ทดลอง</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">Font customization</string>
+    <string name="font_picker_label">การปรับแต่งแบบอักษร</string>
     <string name="font_picker_description">ข้อความบางส่วนยังไม่ถูกเปลี่ยนแปลง</string>
     <string name="smartspace_calendar_label">At a Glance calendar customization</string>
     <string name="smartspace_calendar_description">อนุญาตให้แสดงวันที่ในระบบปฏิทินที่ไม่ใช่แบบเกรกอเรียน</string>
@@ -143,7 +143,7 @@
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
     <string name="shadow_bg_icons_label">Show shadow behind icons</string>
-    <string name="background_lightness_label">Background lightness</string>
+    <string name="background_lightness_label">ความสว่างของพื้นหลัง</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
     <string name="reset_custom_icons">Reset custom icons</string>
     <string name="reset_custom_icons_confirmation">ไอคอนที่กำหนดเองทั้งหมดจะถูกคืนเป็นค่าเริ่มต้น, คุณต้องการดำเนินการต่อหรือไม่?</string>
@@ -169,7 +169,7 @@
     <string name="icon_shape_squircle">ทรงจตุรัสมีขอบมนมาก</string>
     <string name="icon_shape_teardrop">ทรงหยดน้ำ</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Custom icon shape</string>
+    <string name="custom_icon_shape"></string>
     <string name="custom_icon_shape_create">Create custom icon shape</string>
     <string name="custom_icon_shape_edit">Edit custom icon shape</string>
     <string name="custom_icon_shape_corner">Corner shape</string>
