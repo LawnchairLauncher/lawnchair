@@ -532,7 +532,7 @@
     <string name="max_settings_entry_result_count_title">Maximalt antal inställningar</string>
     <string name="max_recent_result_count_title">Maximalt antal objekt för sökhistorik</string>
     <string name="max_suggestion_result_count_title">Maximalt antal förslag</string>
-    <string name="max_web_suggestion_delay">Maximal fördröjning av webbförslag</string>
+    <string name="max_web_suggestion_delay">Max fördröjning av webbförslag</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">För att söka efter kontakter, bevilja kontakter- och telefonbehörigheter till Lawnchair</string>
     <string name="warn_files_permission_content">För att söka bland dina filer, bevilja lagringsbehörigheter till Lawnchair</string>
