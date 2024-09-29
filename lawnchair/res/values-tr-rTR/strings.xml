@@ -72,7 +72,7 @@
     <string name="what_to_show">Ne gösterilsin</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
-    <string name="x_by_y">%1$dx%2$d</string>
+    <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
@@ -86,7 +86,7 @@
     <string name="home_screen_description">Akış, ızgara, simgeler</string>
     <string name="dock_label">Alt Sıra</string>
     <string name="dock_description">Arama çubuğu, simge sayısı</string>
-    <string name="app_drawer_label">Uglama çekmecesi</string>
+    <string name="app_drawer_label">Uygulama çekmecesi</string>
     <string name="app_drawer_description">Gizlenmiş uygulamalar, sütun sayısı, simgeler</string>
     <string name="drawer_search_label">Uygulama çekmecesi arama çubuğu</string>
     <string name="drawer_search_description">Web önerileri, global arama</string>
