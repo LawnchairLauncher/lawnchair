@@ -146,7 +146,7 @@
     <string name="background_lightness_label">Luminosité de l\'arrière-plan</string>
     <string name="adaptive_icon_background_description">Définissez la luminosité à 100 % pour obtenir un arrière-plan blanc</string>
     <string name="reset_custom_icons">Réinitialiser les icônes personnalisées</string>
-    <string name="reset_custom_icons_confirmation">Toutes les icônes personnalisées seront réinitialisées. Voulez-vous continuer ?</string>
+    <string name="reset_custom_icons_confirmation">Toutes les icônes personnalisées seront réinitialisées. Voulez-vous continuer ?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Icônes</string>
     <string name="icon_picker_reset_to_default">Réinitialiser</string>

@@ -109,7 +109,7 @@
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
     <string name="always_reload_icons_label">Always reload icons</string>
     <string name="always_reload_icons_description">หลีกเลี่ยงการแคชจากชุดไอคอน</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
+    <string name="recents_lock_unlock">ล็อก/ปลดล็อก</string>
     <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
     <!--
 
@@ -186,7 +186,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Icon pack</string>
     <string name="themed_icon_pack">Themed icon source</string>
-    <string name="system_icons">System icons</string>
+    <string name="system_icons">ไอคอนระบบ</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">ปิด</string>
     <string name="themed_icons_home_label">Home screen</string>
