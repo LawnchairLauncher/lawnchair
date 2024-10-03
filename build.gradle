@@ -356,7 +356,7 @@ dependencies {
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
 
-    implementation 'androidx.profileinstaller:profileinstaller:1.4.0'
+    implementation 'androidx.profileinstaller:profileinstaller:1.4.1'
     baselineProfile projects.baselineProfile
 
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
