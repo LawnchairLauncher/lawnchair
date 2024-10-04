@@ -27,6 +27,8 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -119,6 +121,7 @@ private fun PreferenceScreen(
     navController: NavHostController,
     navHost: @Composable () -> Unit,
 ) {
+    val moveableNavHost = remember { movableContentOf { navHost() } }
     when {
         // Assume that twopane means we are in an expanded screen
         useTwoPane -> {
@@ -138,7 +141,7 @@ private fun PreferenceScreen(
                 },
                 second = {
                     PreferencePane {
-                        navHost()
+                        moveableNavHost()
                     }
                 },
                 strategy = HorizontalTwoPaneStrategy(splitOffset = 420.dp),
@@ -156,12 +159,12 @@ private fun PreferenceScreen(
                 PreferencePane(
                     modifier = Modifier.requiredWidth(640.dp),
                 ) {
-                    navHost()
+                    moveableNavHost()
                 }
             }
         }
         else -> {
-            navHost()
+            moveableNavHost()
         }
     }
 }
