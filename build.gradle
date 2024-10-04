@@ -445,6 +445,7 @@ spotless {
             "io.nlopez.compose.rules:ktlint:0.4.15",
         ]).editorConfigOverride([
             "ktlint_compose_compositionlocal-allowlist": "disabled",
+            "ktlint_compose_lambda-param-event-trailing": "disabled",
         ])
     }
 }
