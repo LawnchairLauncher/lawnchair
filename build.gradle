@@ -446,6 +446,7 @@ spotless {
         ]).editorConfigOverride([
             "ktlint_compose_compositionlocal-allowlist": "disabled",
             "ktlint_compose_lambda-param-event-trailing": "disabled",
+            "ktlint_compose_content-slot-reused": "disabled",
         ])
     }
 }
