@@ -82,24 +82,24 @@
     <string name="settings">Cài đặt</string>
     <string name="general_label">Chung</string>
     <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
+    <string name="home_screen_label">Trang chủ</string>
     <string name="home_screen_description">Feed, grid, icons</string>
     <string name="dock_label">Khay</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
+    <string name="dock_description">Thanh tìm kiếm, số biểu tượng</string>
+    <string name="app_drawer_label">Kho ứng dụng</string>
+    <string name="app_drawer_description">Ứng dụng bị ẩn, số cột, biểu tượng</string>
     <string name="drawer_search_label">Drawer search</string>
     <string name="drawer_search_description">Web suggestions, global search</string>
     <string name="folders_label">Thư mục</string>
     <string name="folders_description">Row and column count</string>
     <string name="gestures_label">Cử chỉ</string>
-    <string name="gestures_description">Taps and swipes</string>
+    <string name="gestures_description">Cử chỉ và chạm</string>
     <string name="quickstep_label">Gần đây</string>
     <string name="quickstep_description">Clear All button, corner radius</string>
     <string name="about_label">Giới thiệu</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">Thông tin ứng dụng</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="experimental_features_label">Chức năng thử nghiệm</string>
     <!-- Experimental features -->
     <string name="font_picker_label">Font customization</string>
     <string name="font_picker_description">Some text remains unchanged</string>
@@ -123,7 +123,7 @@
     <string name="notification_dots_text_color">Notification counter color</string>
     <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
-    <string name="missing_notification_access_label">Notification access needed</string>
+    <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
     <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
@@ -177,26 +177,26 @@
     <string name="custom_icon_shape_corner_squircle">Trơn</string>
     <string name="custom_icon_shape_corner_cut">Gọt</string>
     <string name="custom_icon_shape_top_left">Top left</string>
-    <string name="custom_icon_shape_top_right">Top right</string>
-    <string name="custom_icon_shape_bottom_left">Bottom left</string>
-    <string name="custom_icon_shape_bottom_right">Bottom right</string>
-    <string name="export_to_clipboard">Export to clipboard</string>
-    <string name="import_from_clipboard">Import from clipboard</string>
+    <string name="custom_icon_shape_top_right">Trên cùng, bên phải</string>
+    <string name="custom_icon_shape_bottom_left">Dưới cùng, bên trái</string>
+    <string name="custom_icon_shape_bottom_right">Dưới cùng, bên phải</string>
+    <string name="export_to_clipboard">Xuất ra bảng nhớ tạm</string>
+    <string name="import_from_clipboard">Nhập từ bảng nhớ tạm</string>
     <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">Icon pack</string>
+    <string name="icon_pack">Gói biểu tượng</string>
     <string name="themed_icon_pack">Themed icon source</string>
-    <string name="system_icons">System icons</string>
+    <string name="system_icons">Biểu tượng từ hệ thống</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">Tắt</string>
-    <string name="themed_icons_home_label">Home screen</string>
+    <string name="themed_icons_home_label">Trang chủ</string>
     <string name="themed_icons_home_and_drawer_label">Home screen &amp; app drawer</string>
     <string name="lawnicons_not_installed_description">Gói biểu tượng không tương thích hoặc không được hỗ trợ</string>
     <!-- Fonts -->
-    <string name="pref_fonts_add_fonts">Add fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
+    <string name="pref_fonts_add_fonts">Thêm font</string>
+    <string name="pref_fonts_add_fonts_summary">Hỗ trợ font dạng OTF và TTF</string>
     <string name="pref_fonts_missing_font">Không tìm thấy font</string>
-    <string name="font_label">Font (experimental)</string>
+    <string name="font_label">Font (thử nghiệm)</string>
     <string name="fontWorkspace">Chung</string>
     <string name="fontHeading">Headings</string>
     <string name="fontHeadingMedium">Headings (medium)</string>
@@ -266,26 +266,26 @@
     <string name="smartspace_widget_description">What to show</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Lịch</string>
-    <string name="smartspace_date_and_time">Date &amp; time</string>
+    <string name="smartspace_date_and_time">Thời gian &amp; giờ</string>
     <string name="smartspace_date">Ngày</string>
     <string name="smartspace_time">Giờ</string>
-    <string name="smartspace_time_format">Time format</string>
-    <string name="smartspace_time_follow_system">Follow system</string>
-    <string name="smartspace_time_12_hour_format">12-hour format</string>
-    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <string name="smartspace_time_format">Dạng giờ</string>
+    <string name="smartspace_time_follow_system">Theo hệ thống</string>
+    <string name="smartspace_time_12_hour_format">12 giờ</string>
+    <string name="smartspace_time_24_hour_format">24 giờ</string>
     <!-- Available targets -->
     <string name="smartspace_weather">Thời tiết</string>
-    <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_battery_status">Tình trạng pin</string>
     <string name="smartspace_now_playing">Đang phát</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maximum number of targets</string>
     <string name="open_smartspacer_settings">Open Smartspacer settings</string>
     <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
-    <string name="smartspace_requires_setup">Tap to set up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
+    <string name="smartspace_requires_setup">Chạm để cài đặt</string>
+    <string name="event_provider_missing_notification_dots">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, bật chức năng Chấm Thông báo.</string>
     <!-- Toggle button for enabling Smartspace -->
-    <string name="smartspace_widget_toggle_label">Show on home screen</string>
+    <string name="smartspace_widget_toggle_label">Hiển thị trên màn hình chính</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">At a Glance provider</string>
@@ -310,20 +310,20 @@
     <string name="support_and_pr">Hỗ trợ &amp; PR</string>
     <string name="acknowledgements">Ghi nhận</string>
     <string name="translate">Dịch</string>
-    <string name="donate">Donate</string>
+    <string name="donate">Đóng góp</string>
     <!--
 
     Backup and restore
 
     -->
-    <string name="create_backup">Create backup</string>
-    <string name="what_to_backup">What to back up</string>
-    <string name="backup_content_layout_and_settings">Layout and settings</string>
+    <string name="create_backup">Tạo sao lưu</string>
+    <string name="what_to_backup">Những gì cần được sao lưu</string>
+    <string name="backup_content_layout_and_settings">Bố cục Màn hình chính và cài đặt</string>
     <string name="backup_content_wallpaper">Hình nền</string>
     <string name="backup_create_success">Đã tạo bản sao lưu</string>
     <string name="backup_create_error">Tạo bản sao lưu thất bại</string>
-    <string name="restore_backup">Restore backup</string>
-    <string name="what_to_restore">What to restore</string>
+    <string name="restore_backup">Khôi phục từ bản sao lưu</string>
+    <string name="what_to_restore">Những gì cần được khôi phục</string>
     <string name="backup_restore_success">Đã khôi phục bản sao lưu</string>
     <string name="backup_restore_error">Khôi phục bản sao lưu thất bại</string>
     <string name="invalid_backup_file">Tệp sao lưu không hợp lệ</string>
@@ -332,36 +332,36 @@
     Gesture settings
 
     -->
-    <string name="gesture_double_tap">Double tap</string>
-    <string name="gesture_swipe_up">Swipe up</string>
-    <string name="gesture_swipe_down">Swipe down</string>
-    <string name="gesture_home_tap">Home button</string>
-    <string name="gesture_back_tap">Back button</string>
-    <string name="gesture_handler_no_op">Do nothing</string>
+    <string name="gesture_double_tap">Chạm hai lần</string>
+    <string name="gesture_swipe_up">Trượt lên</string>
+    <string name="gesture_swipe_down">Trượt xuống</string>
+    <string name="gesture_home_tap">Nút Home</string>
+    <string name="gesture_back_tap">Nút Lùi lại</string>
+    <string name="gesture_handler_no_op">Không làm gì</string>
     <string name="gesture_handler_sleep">Ngủ</string>
     <string name="gesture_handler_recents">Open Recents</string>
-    <string name="gesture_handler_open_notifications">Open notification panel</string>
-    <string name="gesture_handler_open_app_option">Open app</string>
+    <string name="gesture_handler_open_notifications">Mở thanh thông báo</string>
+    <string name="gesture_handler_open_app_option">Mở ứng dụng</string>
     <string name="gesture_handler_open_app_config">Mở %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Open app drawer</string>
-    <string name="gesture_handler_open_app_search">Open app search</string>
-    <string name="gesture_handler_open_search">Open search</string>
+    <string name="gesture_handler_open_app_drawer">Mở Kho ứng dụng</string>
+    <string name="gesture_handler_open_app_search">Mở thanh tìm kiếm ứng dụng</string>
+    <string name="gesture_handler_open_search">Mở thanh tìm kiếm</string>
     <string name="pick_app_for_gesture">Pick app</string>
-    <string name="dt2s_admin_hint_title">Admin permissions required</string>
+    <string name="dt2s_admin_hint_title">Cần quyền Quản trị viên</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
     <string name="dt2s_admin_warning">Nhấp đôi để khoá màn hình sẽ được tắt.</string>
     <string name="d2ts_recents_a11y_hint_title">Turn on accessibility service</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_recents_warning_open_settings">Open settings</string>
+    <string name="dt2s_recents_warning_open_settings">Mở Cài đặt</string>
     <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Lawnchair bug report</string>
-    <string name="crash_report_notif_title">%1$s crashed</string>
-    <string name="action_upload_crash_report">Upload crash log</string>
+    <string name="lawnchair_bug_report">Báo lỗi của Lawnchair</string>
+    <string name="crash_report_notif_title">%1$s đã dừng hoạt động</string>
+    <string name="action_upload_crash_report">Tải lên thông tin sự cố</string>
     <string name="action_upload_error">Tải lên thất bại</string>
     <string name="dogbin_uploading">Đang tải lên…</string>
     <string name="bugreport_channel_name">Bug reports</string>
@@ -375,42 +375,42 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Home screen rotation</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
-    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
+    <string name="home_screen_rotation_description">Cho phép quay trang chủ khi thiết bị được quay</string>
+    <string name="wallpaper_blur">Làm mờ hình nền (thử nghiệm)</string>
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
-    <string name="minus_one_enable">Show feed</string>
+    <string name="minus_one_enable">Hiển thị Trang tin tức</string>
     <string name="minus_one_unavailable">Chưa cài đặt bản tin</string>
     <string name="minus_one">Bản tin</string>
-    <string name="feed_provider">Feed provider</string>
+    <string name="feed_provider">Nguồn Trang tin tức</string>
     <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
     <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
     <string name="home_screen_grid">Home screen grid</string>
-    <string name="home_screen_lock">Lock home screen</string>
-    <string name="home_screen_unlock">Unlock home screen</string>
-    <string name="home_screen_locked">Home screen is locked</string>
+    <string name="home_screen_lock">Khóa trang chủ</string>
+    <string name="home_screen_unlock">Mở khóa trang chủ</string>
+    <string name="home_screen_locked">Trang chủ đã bị khóa</string>
     <string name="home_screen_lock_description">Khoá bố cục màn hình chính</string>
     <string name="show_dot_pagination_label">Hiển thị dấu chấm số trang</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
+    <string name="show_dot_pagination_description">Sử dụng chấm thay cho số để hiển thị số trang trên trang chủ</string>
     <string name="show_material_u_popup_label">Use new pop-up style</string>
-    <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
-    <string name="popup_menu">Pop-up menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
-    <string name="show_system_settings_entry">Show system settings button</string>
+    <string name="show_material_u_popup_description">Sử dụng phong cách pop-up có độ nảy và hơi cố định của Material You</string>
+    <string name="popup_menu">Menu Pop-up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Hiển thị nút khóa màn hình</string>
+    <string name="show_system_settings_entry">Hiển thị Cài đặt điện thoại</string>
     <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
-    <string name="status_bar_label">Status bar</string>
-    <string name="show_status_bar">Show status bar</string>
-    <string name="dark_status_bar_label">Dark status bar</string>
-    <string name="home_screen_text_color">Text color</string>
+    <string name="status_bar_label">Thanh trạng thái</string>
+    <string name="show_status_bar">Hiển thị thanh trạng thái</string>
+    <string name="dark_status_bar_label">Thanh trạng thái màu tối</string>
+    <string name="home_screen_text_color">Màu chữ</string>
     <string name="color_light">Sáng</string>
     <string name="color_dark">Tối</string>
     <string name="force_rounded_widgets">Rounded corners</string>
-    <string name="allow_widget_overlap">Allow overlap</string>
+    <string name="allow_widget_overlap">Cho phép chồng chéo</string>
     <string name="force_widget_resize_label">Enforce widget resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
+    <string name="force_widget_resize_description">Cho phép điều chỉnh kích cỡ Widget bị khóa ở một kích cỡ nhất định</string>
     <string name="widget_unlimited_size_label">Remove size constraints</string>
     <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
     <!-- Dock settings -->

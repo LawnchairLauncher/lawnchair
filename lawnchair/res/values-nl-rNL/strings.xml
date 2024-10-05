@@ -383,7 +383,7 @@
     <string name="minus_one_enable">Feed weergeven</string>
     <string name="minus_one_unavailable">Geen feed apps geïnstalleerd</string>
     <string name="minus_one">Feed</string>
-    <string name="feed_provider">Feed-aaanbieder</string>
+    <string name="feed_provider">Feed-aanbieder</string>
     <string name="wallpaper_scrolling_label">Achtergrond schuiven</string>
     <string name="wallpaper_depth_effect_label">Achtergrond diepte-effect</string>
     <string name="wallpaper_depth_effect_description">Achtergrond in- en uitzoomen bij de overgang tussen de verschillende schermen</string>

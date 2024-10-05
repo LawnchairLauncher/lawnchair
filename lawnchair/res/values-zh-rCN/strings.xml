@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">选择要显示的项目</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">要通过手势锁定手机和打开最近任务界面, Lawnchair 需要获取无障碍功能访问权限。\n\nLawnchair 不会监视任何用户操作, 即使此权限允许。Lawnchair 会忽略系统发送的任何事件。\n\n为了锁定手机或打开最近任务界面, Lawnchair 使用 performGlobalAction 无障碍服务。</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -339,7 +339,7 @@
     <string name="gesture_back_tap">返回键</string>
     <string name="gesture_handler_no_op">什么也不做</string>
     <string name="gesture_handler_sleep">息屏</string>
-    <string name="gesture_handler_recents">Open Recents</string>
+    <string name="gesture_handler_recents">打开最近任务界面</string>
     <string name="gesture_handler_open_notifications">打开通知面板</string>
     <string name="gesture_handler_open_app_option">打开应用</string>
     <string name="gesture_handler_open_app_config">打开 %1$s</string>
@@ -351,9 +351,9 @@
     <string name="dt2s_admin_hint">要使用双击息屏，请把 Lawnchair 设置为设备管理员应用，点击\"打开设置\"，然后点击\"启用设备管理员应用\"</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
     <string name="d2ts_recents_a11y_hint_title">打开无障碍服务</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">要使用双击睡眠，请开启 Lawnchair 的无障碍服务。点击“打开设置”，选择“Lawnchair”，并开启“使用Lawnchair”。\n\nLawnchair 使用无障碍的 performGlobalAction 方法来执行此操作。这是一个敏感权限，允许监控其他应用。然而，Lawnchair 并未配置此功能，因此不会接收到任何事件。</string>
     <string name="dt2s_recents_warning_open_settings">打开设置</string>
-    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">要使用打开最近任务，请开启 Lawnchair 的无障碍服务。点击“打开设置”，选择“Lawnchair”，并开启“使用 Lawnchair”。\n\nLawnchair 使用无障碍的 performGlobalAction 方法来执行此操作。这是一个敏感权限，允许监控其他应用。然而，Lawnchair 并未配置此功能，因此不会接收任何事件。</string>
     <!--
 
     Bug reporting
