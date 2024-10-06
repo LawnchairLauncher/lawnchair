@@ -23,7 +23,6 @@ import static android.view.View.ALPHA;
 import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
-import static com.android.launcher3.graphics.IconShape.getShape;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -47,7 +46,11 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyResetListener;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.graphics.IconShape.ShapeDelegate;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.List;
@@ -102,7 +105,7 @@ public class FolderAnimationManager {
 
         mContext = folder.getContext();
         mDeviceProfile = folder.mActivityContext.getDeviceProfile();
-        mPreviewVerifier = new FolderGridOrganizer(mDeviceProfile.inv);
+        mPreviewVerifier = new FolderGridOrganizer(mDeviceProfile);
 
         mIsOpening = isOpening;
 
@@ -133,7 +136,7 @@ public class FolderAnimationManager {
                 (BaseDragLayer.LayoutParams) mFolder.getLayoutParams();
         mFolderIcon.getPreviewItemManager().recomputePreviewDrawingParams();
         ClippedFolderIconLayoutRule rule = mFolderIcon.getLayoutRule();
-        final List<BubbleTextView> itemsInPreview = getPreviewIconsOnPage(0);
+        final List<View> itemsInPreview = getPreviewIconsOnPage(0);
 
         // Match position of the FolderIcon
         final Rect folderIconPos = new Rect();
@@ -145,8 +148,8 @@ public class FolderAnimationManager {
         // Match size/scale of icons in the preview
         float previewScale = rule.scaleForItem(itemsInPreview.size());
         float previewSize = rule.getIconSize() * previewScale;
-        float initialScale = previewSize / itemsInPreview.get(0).getIconSize()
-                * scaleRelativeToDragLayer;
+        float baseIconSize = getBubbleTextView(itemsInPreview.get(0)).getIconSize();
+        float initialScale = previewSize / baseIconSize * scaleRelativeToDragLayer;
         final float finalScale = 1f;
         float scale = mIsOpening ? initialScale : finalScale;
         mFolder.setPivotX(0);
@@ -205,11 +208,12 @@ public class FolderAnimationManager {
         // Initialize the Folder items' text.
         PropertyResetListener colorResetListener =
                 new PropertyResetListener<>(TEXT_ALPHA_PROPERTY, 1f);
-        for (BubbleTextView icon : mFolder.getItemsOnPage(mFolder.mContent.getCurrentPage())) {
+        for (View icon : mFolder.getItemsOnPage(mFolder.mContent.getCurrentPage())) {
+            BubbleTextView titleText = getBubbleTextView(icon);
             if (mIsOpening) {
-                icon.setTextVisibility(false);
+                titleText.setTextVisibility(false);
             }
-            ObjectAnimator anim = icon.createTextAlphaAnimator(mIsOpening);
+            ObjectAnimator anim = titleText.createTextAlphaAnimator(mIsOpening);
             anim.addListener(colorResetListener);
             play(a, anim);
         }
@@ -238,22 +242,37 @@ public class FolderAnimationManager {
         }
         play(a, getAnimator(mFolder.mFooter, ALPHA, 0, 1f), footerStartDelay, footerAlphaDuration);
 
+        ShapeDelegate shapeDelegate = IconShape.INSTANCE.get(mContext).getShape();
         // Create reveal animator for the folder background
-        play(a, getShape().createRevealAnimator(
+        play(a, shapeDelegate.createRevealAnimator(
                 mFolder, startRect, endRect, finalRadius, !mIsOpening));
 
         // Create reveal animator for the folder content (capture the top 4 icons 2x2)
         int width = mDeviceProfile.folderCellLayoutBorderSpacePx.x
                 + mDeviceProfile.folderCellWidthPx * 2;
+        int rtlExtraWidth = 0;
         int height = mDeviceProfile.folderCellLayoutBorderSpacePx.y
                 + mDeviceProfile.folderCellHeightPx * 2;
         int page = mIsOpening ? mContent.getCurrentPage() : mContent.getDestinationPage();
+        // In RTL we want to move to the last 2 columns of icons in the folder.
+        if (Utilities.isRtl(mContext.getResources())) {
+            page = (mContent.getPageCount() - 1) - page;
+            CellLayout clAtPage = mContent.getPageAt(page);
+            if (clAtPage != null) {
+                int numExtraRows = clAtPage.getCountX() - 2;
+                rtlExtraWidth = (int) Math.max(numExtraRows * (mDeviceProfile.folderCellWidthPx
+                        + mDeviceProfile.folderCellLayoutBorderSpacePx.x), rtlExtraWidth);
+            }
+        }
         int left = mContent.getPaddingLeft() + page * lp.width;
-        Rect contentStart = new Rect(left, 0, left + width, height);
+        Rect contentStart = new Rect(
+                left + rtlExtraWidth,
+                0,
+                left + width + mContent.getPaddingRight() + rtlExtraWidth,
+                height);
         Rect contentEnd = new Rect(left, 0, left + lp.width, lp.height);
-        play(a, getShape().createRevealAnimator(
+        play(a, shapeDelegate.createRevealAnimator(
                 mFolder.getContent(), contentStart, contentEnd, finalRadius, !mIsOpening));
-
 
         // Fade in the folder name, as the text can overlap the icons when grid size is small.
         mFolder.mFolderName.setAlpha(mIsOpening ? 0f : 1f);
@@ -346,7 +365,7 @@ public class FolderAnimationManager {
     /**
      * Returns the list of "preview items" on {@param page}.
      */
-    private List<BubbleTextView> getPreviewIconsOnPage(int page) {
+    private List<View> getPreviewIconsOnPage(int page) {
         return mPreviewVerifier.setFolderInfo(mFolder.mInfo)
                 .previewItemsForPage(page, mFolder.getIconsInReadingOrder());
     }
@@ -358,7 +377,7 @@ public class FolderAnimationManager {
             int previewItemOffsetX, int previewItemOffsetY) {
         ClippedFolderIconLayoutRule rule = mFolderIcon.getLayoutRule();
         boolean isOnFirstPage = mFolder.mContent.getCurrentPage() == 0;
-        final List<BubbleTextView> itemsInPreview = getPreviewIconsOnPage(
+        final List<View> itemsInPreview = getPreviewIconsOnPage(
                 isOnFirstPage ? 0 : mFolder.mContent.getCurrentPage());
         final int numItemsInPreview = itemsInPreview.size();
         final int numItemsInFirstPagePreview = isOnFirstPage
@@ -368,48 +387,49 @@ public class FolderAnimationManager {
 
         ShortcutAndWidgetContainer cwc = mContent.getPageAt(0).getShortcutsAndWidgets();
         for (int i = 0; i < numItemsInPreview; ++i) {
-            final BubbleTextView btv = itemsInPreview.get(i);
-            CellLayoutLayoutParams btvLp = (CellLayoutLayoutParams) btv.getLayoutParams();
+            final View v = itemsInPreview.get(i);
+            CellLayoutLayoutParams vLp = (CellLayoutLayoutParams) v.getLayoutParams();
 
             // Calculate the final values in the LayoutParams.
-            btvLp.isLockedToGrid = true;
-            cwc.setupLp(btv);
+            vLp.isLockedToGrid = true;
+            cwc.setupLp(v);
 
             // Match scale of icons in the preview of the items on the first page.
             float previewScale = rule.scaleForItem(numItemsInFirstPagePreview);
             float previewSize = rule.getIconSize() * previewScale;
-            float iconScale = previewSize / itemsInPreview.get(i).getIconSize();
+            float baseIconSize = getBubbleTextView(v).getIconSize();
+            float iconScale = previewSize / baseIconSize;
 
             final float initialScale = iconScale / folderScale;
             final float finalScale = 1f;
             float scale = mIsOpening ? initialScale : finalScale;
-            btv.setScaleX(scale);
-            btv.setScaleY(scale);
+            v.setScaleX(scale);
+            v.setScaleY(scale);
 
             // Match positions of the icons in the folder with their positions in the preview
             rule.computePreviewItemDrawingParams(i, numItemsInFirstPagePreview, mTmpParams);
             // The PreviewLayoutRule assumes that the icon size takes up the entire width so we
             // offset by the actual size.
-            int iconOffsetX = (int) ((btvLp.width - btv.getIconSize()) * iconScale) / 2;
+            int iconOffsetX = (int) ((vLp.width - baseIconSize) * iconScale) / 2;
 
             final int previewPosX =
                     (int) ((mTmpParams.transX - iconOffsetX + previewItemOffsetX) / folderScale);
-            final float paddingTop = btv.getPaddingTop() * iconScale;
+            final float paddingTop = v.getPaddingTop() * iconScale;
             final int previewPosY = (int) ((mTmpParams.transY + previewItemOffsetY - paddingTop)
                     / folderScale);
 
-            final float xDistance = previewPosX - btvLp.x;
-            final float yDistance = previewPosY - btvLp.y;
+            final float xDistance = previewPosX - vLp.x;
+            final float yDistance = previewPosY - vLp.y;
 
-            Animator translationX = getAnimator(btv, View.TRANSLATION_X, xDistance, 0f);
+            Animator translationX = getAnimator(v, View.TRANSLATION_X, xDistance, 0f);
             translationX.setInterpolator(previewItemInterpolator);
             play(animatorSet, translationX);
 
-            Animator translationY = getAnimator(btv, View.TRANSLATION_Y, yDistance, 0f);
+            Animator translationY = getAnimator(v, View.TRANSLATION_Y, yDistance, 0f);
             translationY.setInterpolator(previewItemInterpolator);
             play(animatorSet, translationY);
 
-            Animator scaleAnimator = getAnimator(btv, SCALE_PROPERTY, initialScale, finalScale);
+            Animator scaleAnimator = getAnimator(v, SCALE_PROPERTY, initialScale, finalScale);
             scaleAnimator.setInterpolator(previewItemInterpolator);
             play(animatorSet, scaleAnimator);
 
@@ -433,20 +453,20 @@ public class FolderAnimationManager {
                     super.onAnimationStart(animation);
                     // Necessary to initialize values here because of the start delay.
                     if (mIsOpening) {
-                        btv.setTranslationX(xDistance);
-                        btv.setTranslationY(yDistance);
-                        btv.setScaleX(initialScale);
-                        btv.setScaleY(initialScale);
+                        v.setTranslationX(xDistance);
+                        v.setTranslationY(yDistance);
+                        v.setScaleX(initialScale);
+                        v.setScaleY(initialScale);
                     }
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    btv.setTranslationX(0.0f);
-                    btv.setTranslationY(0.0f);
-                    btv.setScaleX(1f);
-                    btv.setScaleY(1f);
+                    v.setTranslationX(0.0f);
+                    v.setTranslationY(0.0f);
+                    v.setScaleX(1f);
+                    v.setScaleY(1f);
                 }
             });
         }
@@ -488,5 +508,16 @@ public class FolderAnimationManager {
         return mIsOpening
                 ? ObjectAnimator.ofArgb(drawable, property, v1, v2)
                 : ObjectAnimator.ofArgb(drawable, property, v2, v1);
+    }
+
+    /**
+     * Gets the {@link com.android.launcher3.BubbleTextView} from an icon. In some cases the
+     * BubbleTextView is the whole icon itself, while in others it is contained within the view and
+     * only serves to store the title text.
+     */
+    private BubbleTextView getBubbleTextView(View v) {
+        return v instanceof AppPairIcon
+                ? ((AppPairIcon) v).getTitleTextView()
+                : (BubbleTextView) v;
     }
 }

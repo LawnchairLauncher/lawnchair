@@ -18,16 +18,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:minWidth="@dimen/task_menu_width_grid"
     android:animateLayoutChanges="true"
     android:background="@drawable/task_menu_bg"
     android:orientation="vertical"
     android:visibility="invisible">
 
-    <LinearLayout
-        android:id="@+id/menu_option_layout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:showDividers="middle" />
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/menu_option_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:showDividers="middle" />
+
+    </ScrollView>
 
 </com.android.quickstep.views.TaskMenuViewWithArrow>

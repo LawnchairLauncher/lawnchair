@@ -17,9 +17,7 @@ package com.android.quickstep.interaction;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
 
-import android.annotation.TargetApi;
 import android.graphics.PointF;
-import android.os.Build;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -30,7 +28,6 @@ import com.android.quickstep.util.LottieAnimationColorUtils;
 import java.util.Map;
 
 /** A {@link TutorialController} for the Home tutorial. */
-@TargetApi(Build.VERSION_CODES.R)
 final class HomeGestureTutorialController extends SwipeUpGestureTutorialController {
 
     HomeGestureTutorialController(HomeGestureTutorialFragment fragment, TutorialType tutorialType) {
@@ -38,13 +35,13 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
         // Set the Lottie animation colors specifically for the Home gesture
         if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            LottieAnimationColorUtils.updateColors(
+            LottieAnimationColorUtils.updateToArgbColors(
                     mAnimatedGestureDemonstration,
                     Map.of(".onSurfaceHome", fragment.mRootView.mColorOnSurfaceHome,
                             ".surfaceHome", fragment.mRootView.mColorSurfaceHome,
                             ".secondaryHome", fragment.mRootView.mColorSecondaryHome));
 
-            LottieAnimationColorUtils.updateColors(
+            LottieAnimationColorUtils.updateToArgbColors(
                     mCheckmarkAnimation,
                     Map.of(".checkmark",
                             Utilities.isDarkTheme(mContext)

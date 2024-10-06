@@ -77,11 +77,6 @@ public final class SplitConfigurationOptions {
     public @interface StageType {}
     ///////////////////////////////////
 
-    /**
-     * Default split ratio for launching app pair from overview.
-     */
-    public static final float DEFAULT_SPLIT_RATIO = 0.5f;
-
     public static class SplitPositionOption {
         public final int iconResId;
         public final int textResId;
@@ -116,6 +111,8 @@ public final class SplitConfigurationOptions {
         public final float leftTaskPercent;
         public final float dividerWidthPercent;
         public final float dividerHeightPercent;
+        public final int snapPosition;
+
         /**
          * If {@code true}, that means at the time of creation of this object, the
          * split-screened apps were vertically stacked. This is useful in scenarios like
@@ -135,11 +132,12 @@ public final class SplitConfigurationOptions {
         public final int rightBottomTaskId;
 
         public SplitBounds(Rect leftTopBounds, Rect rightBottomBounds, int leftTopTaskId,
-                int rightBottomTaskId) {
+                int rightBottomTaskId, int snapPosition) {
             this.leftTopBounds = leftTopBounds;
             this.rightBottomBounds = rightBottomBounds;
             this.leftTopTaskId = leftTopTaskId;
             this.rightBottomTaskId = rightBottomTaskId;
+            this.snapPosition = snapPosition;
 
             if (rightBottomBounds.top > leftTopBounds.top) {
                 // vertical apps, horizontal divider
@@ -171,6 +169,15 @@ public final class SplitConfigurationOptions {
             dividerWidthPercent = visualDividerBounds.width() / totalWidth;
             dividerHeightPercent = visualDividerBounds.height() / totalHeight;
         }
+
+        @Override
+        public String toString() {
+            return "LeftTop: " + leftTopBounds + ", taskId: " + leftTopTaskId + "\n"
+                    + "RightBottom: " + rightBottomBounds + ", taskId: " + rightBottomTaskId +  "\n"
+                    + "Divider: " + visualDividerBounds + "\n"
+                    + "AppsVertical? " + appsStackedVertically + "\n"
+                    + "snapPosition: " + snapPosition;
+        }
     }
 
     public static class SplitStageInfo {
@@ -179,6 +186,12 @@ public final class SplitConfigurationOptions {
         public int stagePosition = STAGE_POSITION_UNDEFINED;
         @StageType
         public int stageType = STAGE_TYPE_UNDEFINED;
+
+        @Override
+        public String toString() {
+            return "SplitStageInfo { taskId=" + taskId
+                    + ", stagePosition=" + stagePosition + ", stageType=" + stageType + " }";
+        }
     }
 
     public static StatsLogManager.EventEnum getLogEventForPosition(@StagePosition int position) {

@@ -19,8 +19,8 @@ import android.graphics.Paint
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.forEach
+import com.android.app.tracing.traceSection
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener
-import com.android.systemui.util.traceSection
 import java.lang.ref.WeakReference
 
 /**
@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference
  * during fold/unfold transitions.
  */
 class DisableSubpixelTextTransitionListener(private val rootView: ViewGroup?) :
-        TransitionProgressListener {
+    TransitionProgressListener {
     private val childrenTextViews: MutableList<WeakReference<TextView>> = mutableListOf()
     private var isTransitionInProgress: Boolean = false
 
@@ -54,7 +54,7 @@ class DisableSubpixelTextTransitionListener(private val rootView: ViewGroup?) :
             childrenTextViews.forEach { child ->
                 val childTextView = child.get() ?: return@forEach
                 childTextView.paintFlags =
-                        childTextView.paintFlags and Paint.SUBPIXEL_TEXT_FLAG.inv()
+                    childTextView.paintFlags and Paint.SUBPIXEL_TEXT_FLAG.inv()
             }
             childrenTextViews.clear()
         }
@@ -67,8 +67,8 @@ class DisableSubpixelTextTransitionListener(private val rootView: ViewGroup?) :
      * @param childrenTextViews the list to store the retrieved TextView children
      */
     private fun getAllChildTextView(
-            parent: ViewGroup?,
-            childrenTextViews: MutableList<WeakReference<TextView>>
+        parent: ViewGroup?,
+        childrenTextViews: MutableList<WeakReference<TextView>>
     ) {
         parent?.forEach { child ->
             when (child) {

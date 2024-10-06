@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
@@ -77,11 +78,9 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        if (Utilities.ATLEAST_P) {
-            setEnabled(false);
-            mActivityContext.getAppsView().getWorkManager().setWorkProfileEnabled(true);
-            mActivityContext.getStatsLogManager().logger().log(LAUNCHER_TURN_ON_WORK_APPS_TAP);
-        }
+        setEnabled(false);
+        mActivityContext.getAppsView().getWorkManager().setWorkProfileEnabled(true);
+        mActivityContext.getStatsLogManager().logger().log(LAUNCHER_TURN_ON_WORK_APPS_TAP);
     }
 
     @Override

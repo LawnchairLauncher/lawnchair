@@ -18,14 +18,17 @@ package com.android.launcher3.model.data;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Process;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Flags;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.PackageInstallInfo;
-import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.ApiWrapper;
 
 import app.lawnchair.preferences.PreferenceManager;
 
@@ -84,17 +87,6 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final int FLAG_SYSTEM_MASK = FLAG_SYSTEM_YES | FLAG_SYSTEM_NO;
 
     /**
-     * Flag indicating that the icon is an {@link android.graphics.drawable.AdaptiveIconDrawable}
-     * that can be optimized in various way.
-     */
-    public static final int FLAG_ADAPTIVE_ICON = 1 << 8;
-
-    /**
-     * Flag indicating that the icon is badged.
-     */
-    public static final int FLAG_ICON_BADGED = 1 << 9;
-
-    /**
      * The icon is being installed. If {@link WorkspaceItemInfo#FLAG_RESTORED_ICON} or
      * {@link WorkspaceItemInfo#FLAG_AUTOINSTALL_ICON} is set, then the icon is either being
      * installed or is in a broken state.
@@ -125,6 +117,22 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final int FLAG_NOT_PINNABLE = 1 << 13;
 
     /**
+     * Flag indicating whether the package related to the item & user corresponds to that of
+     * archived app.
+     */
+    public static final int FLAG_ARCHIVED = 1 << 14;
+
+    /**
+     * Flag indicating whether the package related to the item & user does not support resizing.
+     */
+    public static final int FLAG_NOT_RESIZEABLE = 1 << 15;
+
+    /**
+     * Flag indicating whether the package related to the item & user supports multiple instances.
+     */
+    public static final int FLAG_SUPPORTS_MULTI_INSTANCE = 1 << 16;
+
+    /**
      * Status associated with the system state of the underlying item. This is calculated every
      * time a new info is created and not persisted on the disk.
      */
@@ -138,7 +146,8 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      */
     private int mProgressLevel = 100;
 
-    protected ItemInfoWithIcon() { }
+    protected ItemInfoWithIcon() {
+    }
 
     protected ItemInfoWithIcon(ItemInfoWithIcon info) {
         super(info);
@@ -151,6 +160,29 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     @Override
     public boolean isDisabled() {
         return (runtimeStatusFlags & FLAG_DISABLED_MASK) != 0;
+    }
+
+    /**
+     * @return {@code true} if the app is pending download (0 progress) or if the app is archived
+     * and its install session is active
+     */
+    public boolean isPendingDownload() {
+        return getProgressLevel() == 0;
+    }
+
+    /**
+     * Returns true if the app corresponding to the item is archived.
+     */
+    public boolean isArchived() {
+        if (!Flags.enableSupportForArchiving()) {
+            return false;
+        }
+        return (runtimeStatusFlags & FLAG_ARCHIVED) != 0;
+    }
+
+    /** Returns true if the app is archived and doesn't have an active install session. */
+    public boolean isInactiveArchive() {
+        return isArchived() && (runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) == 0;
     }
 
     /**
@@ -169,7 +201,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public boolean isAppStartable() {
         return ((runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) == 0)
                 && (((runtimeStatusFlags & FLAG_INCREMENTAL_DOWNLOAD_ACTIVE) != 0)
-                    || mProgressLevel == 100);
+                || mProgressLevel == 100 || isArchived());
     }
 
     /**
@@ -178,7 +210,10 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * progress.
      */
     public int getProgressLevel() {
-        if ((runtimeStatusFlags & FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
+        if (((runtimeStatusFlags & FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0)
+                // This condition for archived apps is so that in case unarchival/update of
+                // archived app is cancelled, the state transitions back to 0% installed state.
+                || isArchived()) {
             return mProgressLevel;
         }
         return 100;
@@ -222,13 +257,50 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
         }
     }
 
+    /**
+     * Sets whether this app info supports multi-instance.
+     */
+    protected void setSupportsMultiInstance(boolean supportsMultiInstance) {
+        if (supportsMultiInstance) {
+            runtimeStatusFlags |= FLAG_SUPPORTS_MULTI_INSTANCE;
+        } else {
+            runtimeStatusFlags &= ~FLAG_SUPPORTS_MULTI_INSTANCE;
+        }
+    }
+
+    /**
+     * Returns whether this app info supports multi-instance.
+     */
+    public boolean supportsMultiInstance() {
+        return (runtimeStatusFlags & FLAG_SUPPORTS_MULTI_INSTANCE) != 0;
+    }
+
+    /**
+     * Sets whether this app info is non-resizeable.
+     */
+    public void setNonResizeable(boolean nonResizeable) {
+        if (nonResizeable) {
+            runtimeStatusFlags |= FLAG_NOT_RESIZEABLE;
+        } else {
+            runtimeStatusFlags &= ~FLAG_NOT_RESIZEABLE;
+        }
+    }
+
+    /**
+     * Returns whether this app info is resizeable.
+     */
+    public boolean isNonResizeable() {
+        return (runtimeStatusFlags & FLAG_NOT_RESIZEABLE) != 0;
+    }
+
     /** Creates an intent to that launches the app store at this app's page. */
     @Nullable
     public Intent getMarketIntent(Context context) {
         String targetPackage = getTargetPackage();
 
         return targetPackage != null
-                ? new PackageManagerHelper(context).getMarketIntent(targetPackage)
+                ? ApiWrapper.INSTANCE.get(context).getAppMarketActivityIntent(
+                        targetPackage, Process.myUserHandle())
                 : null;
     }
 
@@ -253,5 +325,12 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
                 ? bitmap.newThemedIcon(context) : bitmap.newIcon(context);
         drawable.setIsDisabled(isDisabled());
         return drawable;
+    }
+
+    @Override
+    protected String dumpProperties() {
+        return super.dumpProperties()
+                + " supportsMultiInstance=" + supportsMultiInstance()
+                + " nonResizeable=" + isNonResizeable();
     }
 }

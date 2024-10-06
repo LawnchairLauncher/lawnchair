@@ -15,15 +15,20 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.PagedView.INVALID_PAGE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_3_BUTTON;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_KEYBOARD_QUICK_SWITCH;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_KEYBOARD_SHORTCUT;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
-import android.annotation.TargetApi;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.os.Build;
 import android.os.SystemClock;
 import android.os.Trace;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.BinderThread;
@@ -31,13 +36,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.RecentsViewContainer;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
@@ -49,8 +59,8 @@ import java.util.HashMap;
 /**
  * Helper class to handle various atomic commands for switching between Overview.
  */
-@TargetApi(Build.VERSION_CODES.P)
 public class OverviewCommandHelper {
+    private static final String TAG = "OverviewCommandHelper";
 
     public static final int TYPE_SHOW = 1;
     public static final int TYPE_KEYBOARD_INPUT = 2;
@@ -76,7 +86,15 @@ public class OverviewCommandHelper {
      * do not lose the focus across multiple calls of
      * {@link OverviewCommandHelper#executeCommand(CommandInfo)} for the same command
      */
-    private int mTaskFocusIndexOverride = -1;
+    private int mKeyboardTaskFocusIndex = -1;
+
+    /**
+     * Whether we should incoming toggle commands while a previous toggle command is still ongoing.
+     * This serves as a rate-limiter to prevent overlapping animations that can clobber each other
+     * and prevent clean-up callbacks from running. This thus prevents a recurring set of bugs with
+     * janky recents animations and unresponsive home and overview buttons.
+     */
+    private boolean mWaitForToggleCommandComplete = false;
 
     public OverviewCommandHelper(TouchInteractionService service,
             OverviewComponentObserver observer,
@@ -90,10 +108,19 @@ public class OverviewCommandHelper {
      * Called when the command finishes execution.
      */
     private void scheduleNextTask(CommandInfo command) {
-        if (!mPendingCommands.isEmpty() && mPendingCommands.get(0) == command) {
-            mPendingCommands.remove(0);
-            executeNext();
+        if (mPendingCommands.isEmpty()) {
+            Log.d(TAG, "no pending commands to schedule");
+            return;
         }
+        if (mPendingCommands.get(0) != command) {
+            Log.d(TAG, "next task not scheduled."
+                    + " mPendingCommands[0] type is " + mPendingCommands.get(0)
+                    + " - command type is: " + command);
+            return;
+        }
+        Log.d(TAG, "scheduleNextTask called: " + command);
+        mPendingCommands.remove(0);
+        executeNext();
     }
 
     /**
@@ -104,10 +131,14 @@ public class OverviewCommandHelper {
     @UiThread
     private void executeNext() {
         if (mPendingCommands.isEmpty()) {
+            Log.d(TAG, "executeNext - mPendingCommands is empty");
             return;
         }
         CommandInfo cmd = mPendingCommands.get(0);
-        if (executeCommand(cmd)) {
+
+        boolean result = executeCommand(cmd);
+        Log.d(TAG, "executeNext cmd type: " + cmd + ", result: " + result);
+        if (result) {
             scheduleNextTask(cmd);
         }
     }
@@ -129,14 +160,18 @@ public class OverviewCommandHelper {
     @BinderThread
     public void addCommand(int type) {
         if (mPendingCommands.size() >= MAX_QUEUE_SIZE) {
+            Log.d(TAG, "the pending command queue is full (" + mPendingCommands.size() + "). "
+                    + "command not added: " + type);
             return;
         }
+        Log.d(TAG, "adding command type: " + type);
         CommandInfo cmd = new CommandInfo(type);
         MAIN_EXECUTOR.execute(() -> addCommand(cmd));
     }
 
     @UiThread
     public void clearPendingCommands() {
+        Log.d(TAG, "clearing pending commands - size: " + mPendingCommands.size());
         mPendingCommands.clear();
     }
 
@@ -160,15 +195,22 @@ public class OverviewCommandHelper {
     private boolean launchTask(RecentsView recents, @Nullable TaskView taskView, CommandInfo cmd) {
         RunnableList callbackList = null;
         if (taskView != null) {
-            taskView.setEndQuickswitchCuj(true);
+            mWaitForToggleCommandComplete = true;
+            taskView.setEndQuickSwitchCuj(true);
             callbackList = taskView.launchTasks();
         }
 
         if (callbackList != null) {
-            callbackList.add(() -> scheduleNextTask(cmd));
+            callbackList.add(() -> {
+                Log.d(TAG, "launching task callback: " + cmd);
+                scheduleNextTask(cmd);
+                mWaitForToggleCommandComplete = false;
+            });
+            Log.d(TAG, "launching task - waiting for callback: " + cmd);
             return false;
         } else {
             recents.startHome();
+            mWaitForToggleCommandComplete = false;
             return true;
         }
     }
@@ -177,12 +219,24 @@ public class OverviewCommandHelper {
      * Executes the task and returns true if next task can be executed. If false, then the next
      * task is deferred until {@link #scheduleNextTask} is called
      */
-    private <T extends StatefulActivity<?>> boolean executeCommand(CommandInfo cmd) {
+    private <T extends StatefulActivity<?> & RecentsViewContainer> boolean executeCommand(
+            CommandInfo cmd) {
+        if (mWaitForToggleCommandComplete && cmd.type == TYPE_TOGGLE) {
+            Log.d(TAG, "executeCommand: " + cmd
+                    + " - waiting for toggle command complete");
+            return true;
+        }
         BaseActivityInterface<?, T> activityInterface =
                 mOverviewComponentObserver.getActivityInterface();
-        RecentsView recents = activityInterface.getVisibleRecentsView();
-        if (recents == null) {
-            T activity = activityInterface.getCreatedActivity();
+
+        RecentsView<?, ?> visibleRecentsView = activityInterface.getVisibleRecentsView();
+        RecentsView<?, ?> createdRecentsView;
+
+        Log.d(TAG, "executeCommand: " + cmd
+                + " - visibleRecentsView: " + visibleRecentsView);
+        if (visibleRecentsView == null) {
+            T activity = activityInterface.getCreatedContainer();
+            createdRecentsView = activity == null ? null : activity.getOverviewPanel();
             DeviceProfile dp = activity == null ? null : activity.getDeviceProfile();
             TaskbarUIController uiController = activityInterface.getTaskbarController();
             boolean allowQuickSwitch = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
@@ -190,61 +244,102 @@ public class OverviewCommandHelper {
                     && dp != null
                     && (dp.isTablet || dp.isTwoPanels);
 
-            if (cmd.type == TYPE_HIDE) {
-                if (!allowQuickSwitch) {
+            switch (cmd.type) {
+                case TYPE_HIDE:
+                    if (!allowQuickSwitch) {
+                        return true;
+                    }
+                    mKeyboardTaskFocusIndex = uiController.launchFocusedTask();
+                    if (mKeyboardTaskFocusIndex == -1) {
+                        return true;
+                    }
+                    break;
+                case TYPE_KEYBOARD_INPUT:
+                    if (allowQuickSwitch) {
+                        uiController.openQuickSwitchView();
+                        return true;
+                    } else {
+                        mKeyboardTaskFocusIndex = 0;
+                        break;
+                    }
+                case TYPE_HOME:
+                    ActiveGestureLog.INSTANCE.addLog(
+                            "OverviewCommandHelper.executeCommand(TYPE_HOME)");
+                    mService.startActivity(mOverviewComponentObserver.getHomeIntent());
                     return true;
-                }
-                mTaskFocusIndexOverride = uiController.launchFocusedTask();
-                if (mTaskFocusIndexOverride == -1) {
-                    return true;
-                }
-            }
-            if (cmd.type == TYPE_KEYBOARD_INPUT && allowQuickSwitch) {
-                uiController.openQuickSwitchView();
-                return true;
-            }
-            if (cmd.type == TYPE_HOME) {
-                mService.startActivity(mOverviewComponentObserver.getHomeIntent());
-                return true;
+                case TYPE_SHOW:
+                    // When Recents is not currently visible, the command's type is TYPE_SHOW
+                    // when overview is triggered via the keyboard overview button or Action+Tab
+                    // keys (Not Alt+Tab which is KQS). The overview button on-screen in 3-button
+                    // nav is TYPE_TOGGLE.
+                    mKeyboardTaskFocusIndex = 0;
+                    break;
+                default:
+                    // continue below to handle displaying Recents.
             }
         } else {
+            createdRecentsView = visibleRecentsView;
             switch (cmd.type) {
                 case TYPE_SHOW:
                     // already visible
                     return true;
+                case TYPE_KEYBOARD_INPUT: {
+                    if (visibleRecentsView.isHandlingTouch()) {
+                        return true;
+                    }
+                }
                 case TYPE_HIDE: {
-                    mTaskFocusIndexOverride = -1;
-                    int currentPage = recents.getNextPage();
-                    TaskView tv = (currentPage >= 0 && currentPage < recents.getTaskViewCount())
-                            ? (TaskView) recents.getPageAt(currentPage)
+                    if (visibleRecentsView.isHandlingTouch()) {
+                        return true;
+                    }
+                    mKeyboardTaskFocusIndex = INVALID_PAGE;
+                    int currentPage = visibleRecentsView.getNextPage();
+                    TaskView tv = (currentPage >= 0
+                            && currentPage < visibleRecentsView.getTaskViewCount())
+                            ? (TaskView) visibleRecentsView.getPageAt(currentPage)
                             : null;
-                    return launchTask(recents, tv, cmd);
+                    return launchTask(visibleRecentsView, tv, cmd);
                 }
                 case TYPE_TOGGLE:
-                    return launchTask(recents, getNextTask(recents), cmd);
+                    return launchTask(visibleRecentsView, getNextTask(visibleRecentsView), cmd);
                 case TYPE_HOME:
-                    recents.startHome();
+                    visibleRecentsView.startHome();
                     return true;
             }
         }
 
-        final Runnable completeCallback = () -> {
-            RecentsView rv = activityInterface.getVisibleRecentsView();
-            if (rv != null && (cmd.type == TYPE_KEYBOARD_INPUT || cmd.type == TYPE_HIDE)) {
-                updateRecentsViewFocus(rv);
+        if (createdRecentsView != null) {
+            createdRecentsView.setKeyboardTaskFocusIndex(mKeyboardTaskFocusIndex);
+        }
+        // Handle recents view focus when launching from home
+        Animator.AnimatorListener animatorListener = new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                updateRecentsViewFocus(cmd);
+                logShowOverviewFrom(cmd.type);
             }
-            scheduleNextTask(cmd);
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Log.d(TAG, "switching to Overview state - onAnimationEnd: " + cmd);
+                super.onAnimationEnd(animation);
+                onRecentsViewFocusUpdated(cmd);
+                scheduleNextTask(cmd);
+            }
         };
-        if (activityInterface.switchToRecentsIfVisible(completeCallback)) {
+        if (activityInterface.switchToRecentsIfVisible(animatorListener)) {
+            Log.d(TAG, "switching to Overview state - waiting: " + cmd);
             // If successfully switched, wait until animation finishes
             return false;
         }
 
-        final T activity = activityInterface.getCreatedActivity();
+        final T activity = activityInterface.getCreatedContainer();
         if (activity != null) {
             InteractionJankMonitorWrapper.begin(
                     activity.getRootView(),
-                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+                    Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
         }
 
         GestureState gestureState = mService.createGestureState(GestureState.DEFAULT_STATE,
@@ -254,12 +349,14 @@ public class OverviewCommandHelper {
                 .newHandler(gestureState, cmd.createTime);
         interactionHandler.setGestureEndCallback(
                 () -> onTransitionComplete(cmd, interactionHandler));
-        interactionHandler.initWhenReady();
+        interactionHandler.initWhenReady("OverviewCommandHelper: cmd.type=" + cmd.type);
 
         RecentsAnimationListener recentAnimListener = new RecentsAnimationListener() {
             @Override
             public void onRecentsAnimationStart(RecentsAnimationController controller,
                     RecentsAnimationTargets targets) {
+                updateRecentsViewFocus(cmd);
+                logShowOverviewFrom(cmd.type);
                 activityInterface.runOnInitBackgroundStateUI(() ->
                         interactionHandler.onGestureEnded(0, new PointF()));
                 cmd.removeListener(this);
@@ -270,18 +367,16 @@ public class OverviewCommandHelper {
                 interactionHandler.onGestureCancelled();
                 cmd.removeListener(this);
 
-                T createdActivity = activityInterface.getCreatedActivity();
+                T createdActivity = activityInterface.getCreatedContainer();
                 if (createdActivity == null) {
                     return;
                 }
-                RecentsView createdRecents = createdActivity.getOverviewPanel();
-                if (createdRecents != null) {
-                    createdRecents.onRecentsAnimationComplete();
+                if (createdRecentsView != null) {
+                    createdRecentsView.onRecentsAnimationComplete();
                 }
             }
         };
 
-        RecentsView<?, ?> visibleRecentsView = activityInterface.getVisibleRecentsView();
         if (visibleRecentsView != null) {
             visibleRecentsView.moveRunningTaskToFront();
         }
@@ -301,55 +396,95 @@ public class OverviewCommandHelper {
             interactionHandler.onGestureStarted(false /*isLikelyToStartNewTask*/);
             cmd.mActiveCallbacks.addListener(recentAnimListener);
         }
-
         Trace.beginAsyncSection(TRANSITION_NAME, 0);
+        Log.d(TAG, "switching via recents animation - onGestureStarted: " + cmd);
         return false;
     }
 
     private void onTransitionComplete(CommandInfo cmd, AbsSwipeUpHandler handler) {
+        Log.d(TAG, "switching via recents animation - onTransitionComplete: " + cmd);
         cmd.removeListener(handler);
         Trace.endAsyncSection(TRANSITION_NAME, 0);
-
-        RecentsView rv =
-                mOverviewComponentObserver.getActivityInterface().getVisibleRecentsView();
-        if (rv != null && (cmd.type == TYPE_KEYBOARD_INPUT || cmd.type == TYPE_HIDE)) {
-            updateRecentsViewFocus(rv);
-        }
+        onRecentsViewFocusUpdated(cmd);
         scheduleNextTask(cmd);
     }
 
-    private void updateRecentsViewFocus(@NonNull RecentsView rv) {
+    private void updateRecentsViewFocus(CommandInfo cmd) {
+        RecentsView recentsView =
+                mOverviewComponentObserver.getActivityInterface().getVisibleRecentsView();
+        if (recentsView == null || (cmd.type != TYPE_KEYBOARD_INPUT && cmd.type != TYPE_HIDE
+                && cmd.type != TYPE_SHOW)) {
+            return;
+        }
         // When the overview is launched via alt tab (cmd type is TYPE_KEYBOARD_INPUT),
         // the touch mode somehow is not change to false by the Android framework.
         // The subsequent tab to go through tasks in overview can only be dispatched to
         // focuses views, while focus can only be requested in
         // {@link View#requestFocusNoSearch(int, Rect)} when touch mode is false. To note,
         // here we launch overview with live tile.
-        rv.getViewRootImpl().touchModeChanged(false);
+        recentsView.getViewRootImpl().touchModeChanged(false);
         // Ensure that recents view has focus so that it receives the followup key inputs
-        TaskView taskView = rv.getTaskViewAt(mTaskFocusIndexOverride);
-        if (taskView != null) {
-            requestFocus(taskView);
+        if (requestFocus(recentsView.getTaskViewAt(mKeyboardTaskFocusIndex))) {
             return;
         }
-        taskView = rv.getNextTaskView();
-        if (taskView != null) {
-            requestFocus(taskView);
+        if (requestFocus(recentsView.getNextTaskView())) {
             return;
         }
-        taskView = rv.getTaskViewAt(0);
-        if (taskView != null) {
-            requestFocus(taskView);
+        if (requestFocus(recentsView.getTaskViewAt(0))) {
             return;
         }
-        requestFocus(rv);
+        requestFocus(recentsView);
     }
 
-    private void requestFocus(@NonNull View view) {
-        view.post(() -> {
-            view.requestFocus();
-            view.requestAccessibilityFocus();
+    private void onRecentsViewFocusUpdated(CommandInfo cmd) {
+        RecentsView recentsView =
+                mOverviewComponentObserver.getActivityInterface().getVisibleRecentsView();
+        if (recentsView == null
+                || cmd.type != TYPE_HIDE
+                || mKeyboardTaskFocusIndex == INVALID_PAGE) {
+            return;
+        }
+        recentsView.setKeyboardTaskFocusIndex(INVALID_PAGE);
+        recentsView.setCurrentPage(mKeyboardTaskFocusIndex);
+        mKeyboardTaskFocusIndex = INVALID_PAGE;
+    }
+
+    private boolean requestFocus(@Nullable View taskView) {
+        if (taskView == null) {
+            return false;
+        }
+        taskView.post(() -> {
+            taskView.requestFocus();
+            taskView.requestAccessibilityFocus();
         });
+        return true;
+    }
+
+    private <T extends StatefulActivity<?> & RecentsViewContainer>
+            void logShowOverviewFrom(int cmdType) {
+        BaseActivityInterface<?, T> activityInterface =
+                mOverviewComponentObserver.getActivityInterface();
+        var container = activityInterface.getCreatedContainer();
+        if (container != null) {
+            StatsLogManager.LauncherEvent event;
+            switch (cmdType) {
+                case TYPE_SHOW -> event = LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_KEYBOARD_SHORTCUT;
+                case TYPE_HIDE ->
+                        event = LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_KEYBOARD_QUICK_SWITCH;
+                case TYPE_TOGGLE -> event = LAUNCHER_OVERVIEW_SHOW_OVERVIEW_FROM_3_BUTTON;
+                default -> {
+                    return;
+                }
+            }
+
+            StatsLogManager.newInstance(container.asContext())
+                    .logger()
+                    .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                            .setTaskSwitcherContainer(
+                                    LauncherAtom.TaskSwitcherContainer.getDefaultInstance())
+                            .build())
+                    .log(event);
+        }
     }
 
     public void dump(PrintWriter pw) {
@@ -358,7 +493,8 @@ public class OverviewCommandHelper {
         if (!mPendingCommands.isEmpty()) {
             pw.println("    pendingCommandType=" + mPendingCommands.get(0).type);
         }
-        pw.println("  mTaskFocusIndexOverride=" + mTaskFocusIndexOverride);
+        pw.println("  mKeyboardTaskFocusIndex=" + mKeyboardTaskFocusIndex);
+        pw.println("  mWaitForToggleCommandComplete=" + mWaitForToggleCommandComplete);
     }
 
     private static class CommandInfo {
@@ -374,6 +510,16 @@ public class OverviewCommandHelper {
             if (mActiveCallbacks != null) {
                 mActiveCallbacks.removeListener(listener);
             }
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "CommandInfo("
+                    + "type=" + type + ", "
+                    + "createTime=" + createTime + ", "
+                    + "mActiveCallbacks=" + mActiveCallbacks
+                    + ")";
         }
     }
 }

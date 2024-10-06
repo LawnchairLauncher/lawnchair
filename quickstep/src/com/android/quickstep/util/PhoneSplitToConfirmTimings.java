@@ -27,6 +27,8 @@ public class PhoneSplitToConfirmTimings
     public int getPlaceholderIconFadeInEnd() { return 133; }
     public int getStagedRectSlideStart() { return 0; }
     public int getStagedRectSlideEnd() { return 333; }
+    public int getBackingScrimFadeInStart() { return 0; }
+    public int getBackingScrimFadeInEnd() { return 266; }
 
     public int getDuration() { return PHONE_CONFIRM_DURATION; }
 }

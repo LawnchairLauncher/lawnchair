@@ -18,6 +18,9 @@ package com.android.launcher3.taskbar;
 import static android.view.KeyEvent.ACTION_UP;
 import static android.view.KeyEvent.KEYCODE_BACK;
 
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
@@ -28,15 +31,19 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.WindowInsetsCompat;
 
-import com.android.app.viewcapture.SettingsAwareViewCapture;
+import com.android.app.viewcapture.ViewCaptureFactory;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.views.BaseDragLayer;
@@ -74,6 +81,8 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     private SafeCloseable mViewCaptureCloseable;
 
     private float mTaskbarBackgroundOffset;
+    private float mTaskbarBackgroundProgress;
+    private boolean mIsAnimatingTaskbarPinning = false;
 
     private final MultiPropertyFactory<TaskbarDragLayer> mTaskbarBackgroundAlpha;
 
@@ -98,13 +107,28 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         mTaskbarBackgroundAlpha = new MultiPropertyFactory<>(this, BG_ALPHA, INDEX_COUNT,
                 (a, b) -> a * b, 1f);
         mTaskbarBackgroundAlpha.get(INDEX_ALL_OTHER_STATES).setValue(0);
-        mTaskbarBackgroundAlpha.get(INDEX_STASH_ANIM).setValue(1);
+        mTaskbarBackgroundAlpha.get(INDEX_STASH_ANIM).setValue(
+                enableScalingRevealHomeAnimation() && DisplayController.isTransientTaskbar(context)
+                        ? 0
+                        : 1);
     }
 
     public void init(TaskbarDragLayerController.TaskbarDragLayerCallbacks callbacks) {
         mControllerCallbacks = callbacks;
-        mBackgroundRenderer.updateStashedHandleWidth(mActivity.getDeviceProfile(), getResources());
+        mBackgroundRenderer.updateStashedHandleWidth(mActivity, getResources());
         recreateControllers();
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        if (insets != null) {
+            WindowInsetsCompat insetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets, this);
+            Insets imeInsets = insetsCompat.getInsets(WindowInsetsCompat.Type.ime());
+            if (imeInsets != null) {
+                mControllerCallbacks.onImeInsetChanged();
+            }
+        }
+        return insets;
     }
 
     @Override
@@ -125,7 +149,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     }
 
     protected void onDestroy() {
-        onDestroy(!TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW);
+        onDestroy(!ENABLE_TASKBAR_NAVBAR_UNIFICATION);
     }
 
     @Override
@@ -148,6 +172,15 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     }
 
     @Override
+    protected boolean isEventWithinSystemGestureRegion(MotionEvent ev) {
+        final float x = ev.getX();
+        final float y = ev.getY();
+
+        return x >= mSystemGestureRegion.left && x < getWidth() - mSystemGestureRegion.right
+                && y >= mSystemGestureRegion.top;
+    }
+
+    @Override
     protected boolean canFindActiveController() {
         // Unlike super class, we want to be able to find controllers when touches occur in the
         // gesture area. For example, this allows Folder to close itself when touching the Taskbar.
@@ -167,8 +200,18 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         float backgroundHeight = mControllerCallbacks.getTaskbarBackgroundHeight()
                 * (1f - mTaskbarBackgroundOffset);
         mBackgroundRenderer.setBackgroundHeight(backgroundHeight);
+        mBackgroundRenderer.setBackgroundProgress(mTaskbarBackgroundProgress);
         mBackgroundRenderer.draw(canvas);
         super.dispatchDraw(canvas);
+        mControllerCallbacks.drawDebugUi(canvas);
+    }
+
+    /**
+     * Sets animation boolean when taskbar pinning animation starts or stops.
+     */
+    public void setAnimatingTaskbarPinning(boolean animatingTaskbarPinning) {
+        mIsAnimatingTaskbarPinning = animatingTaskbarPinning;
+        mBackgroundRenderer.setAnimatingPinning(mIsAnimatingTaskbarPinning);
     }
 
     protected MultiProperty getBackgroundRendererAlpha() {
@@ -177,6 +220,15 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     protected MultiProperty getBackgroundRendererAlphaForStash() {
         return mTaskbarBackgroundAlpha.get(INDEX_STASH_ANIM);
+    }
+
+    /**
+     * Sets the value for taskbar background switching between persistent and transient backgrounds.
+     * @param progress 0 is transient background, 1 is persistent background.
+     */
+    protected void setTaskbarBackgroundProgress(float progress) {
+        mTaskbarBackgroundProgress = progress;
+        invalidate();
     }
 
     /**

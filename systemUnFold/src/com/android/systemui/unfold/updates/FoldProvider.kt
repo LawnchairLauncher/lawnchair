@@ -20,7 +20,7 @@ interface FoldProvider {
     fun registerCallback(callback: FoldCallback, executor: Executor)
     fun unregisterCallback(callback: FoldCallback)
 
-    interface FoldCallback {
+    fun interface FoldCallback {
         fun onFoldUpdated(isFolded: Boolean)
     }
 }

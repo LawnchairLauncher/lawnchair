@@ -16,6 +16,7 @@
 
 package com.android.launcher3.provider;
 
+import static com.android.launcher3.LauncherSettings.Favorites.getColumns;
 import static com.android.launcher3.icons.IconCache.EXTRA_SHORTCUT_BADGE_OVERRIDE_PACKAGE;
 
 import android.content.ContentValues;
@@ -44,6 +45,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
 
@@ -51,7 +53,6 @@ import java.util.ArrayList;
  * A set of utility methods for Launcher DB used for DB updates and migration.
  */
 public class LauncherDbUtils {
-
     /**
      * Returns a string which can be used as a where clause for DB query to match
      * the given itemId
@@ -94,10 +95,12 @@ public class LauncherDbUtils {
         if (fromDb != toDb) {
             toDb.execSQL("ATTACH DATABASE '" + fromDb.getPath() + "' AS from_db");
             toDb.execSQL(
-                    "INSERT INTO " + toTable + " SELECT * FROM from_db." + fromTable);
+                    "INSERT INTO " + toTable + " SELECT " + getColumns(userSerial)
+                        + " FROM from_db." + fromTable);
             toDb.execSQL("DETACH DATABASE 'from_db'");
         } else {
-            toDb.execSQL("INSERT INTO " + toTable + " SELECT * FROM " + fromTable);
+            toDb.execSQL("INSERT INTO " + toTable + " SELECT " + getColumns(userSerial) + " FROM "
+                    + fromTable);
         }
     }
 
@@ -110,9 +113,11 @@ public class LauncherDbUtils {
         Cursor c = db.query(
                 Favorites.TABLE_NAME, null, "itemType = 1", null, null, null, null);
         UserManagerState ums = new UserManagerState();
+        PackageManagerHelper pmHelper = PackageManagerHelper.INSTANCE.get(context);
         ums.init(UserCache.INSTANCE.get(context),
                 context.getSystemService(UserManager.class));
-        LoaderCursor lc = new LoaderCursor(c, LauncherAppState.getInstance(context), ums);
+        LoaderCursor lc = new LoaderCursor(c, LauncherAppState.getInstance(context), ums, pmHelper,
+                null);
         IntSet deletedShortcuts = new IntSet();
 
         while (lc.moveToNext()) {
@@ -156,7 +161,12 @@ public class LauncherDbUtils {
             }
 
             ShortcutInfo info = infoBuilder.build();
-            if (!PinRequestHelper.createRequestForShortcut(context, info).accept()) {
+            try {
+                if (!PinRequestHelper.createRequestForShortcut(context, info).accept()) {
+                    deletedShortcuts.add(lc.id);
+                    continue;
+                }
+            } catch (Exception e) {
                 deletedShortcuts.add(lc.id);
                 continue;
             }

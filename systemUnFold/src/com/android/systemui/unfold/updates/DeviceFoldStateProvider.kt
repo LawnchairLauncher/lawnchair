@@ -17,44 +17,41 @@ package com.android.systemui.unfold.updates
 
 import android.content.Context
 import android.os.Handler
-import android.os.Trace
 import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.annotation.VisibleForTesting
+import androidx.annotation.WorkerThread
 import androidx.core.util.Consumer
 import com.android.systemui.unfold.compat.INNER_SCREEN_SMALLEST_SCREEN_WIDTH_THRESHOLD_DP
 import com.android.systemui.unfold.config.UnfoldTransitionConfig
-import com.android.systemui.unfold.dagger.UnfoldMain
-import com.android.systemui.unfold.updates.FoldStateProvider.FoldUpdate
-import com.android.systemui.unfold.updates.FoldStateProvider.FoldUpdatesListener
-import com.android.systemui.unfold.updates.RotationChangeProvider.RotationListener
 import com.android.systemui.unfold.updates.hinge.FULLY_CLOSED_DEGREES
 import com.android.systemui.unfold.updates.hinge.FULLY_OPEN_DEGREES
 import com.android.systemui.unfold.updates.hinge.HingeAngleProvider
 import com.android.systemui.unfold.updates.screen.ScreenStatusProvider
 import com.android.systemui.unfold.util.CurrentActivityTypeProvider
 import com.android.systemui.unfold.util.UnfoldKeyguardVisibilityProvider
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executor
-import javax.inject.Inject
 
 class DeviceFoldStateProvider
-@Inject
+@AssistedInject
 constructor(
     config: UnfoldTransitionConfig,
-    private val hingeAngleProvider: HingeAngleProvider,
+    private val context: Context,
     private val screenStatusProvider: ScreenStatusProvider,
-    private val foldProvider: FoldProvider,
     private val activityTypeProvider: CurrentActivityTypeProvider,
     private val unfoldKeyguardVisibilityProvider: UnfoldKeyguardVisibilityProvider,
-    private val rotationChangeProvider: RotationChangeProvider,
-    private val context: Context,
-    @UnfoldMain private val mainExecutor: Executor,
-    @UnfoldMain private val handler: Handler
+    private val foldProvider: FoldProvider,
+    @Assisted private val hingeAngleProvider: HingeAngleProvider,
+    @Assisted private val rotationChangeProvider: RotationChangeProvider,
+    @Assisted private val progressHandler: Handler,
 ) : FoldStateProvider {
+    private val outputListeners = CopyOnWriteArrayList<FoldStateProvider.FoldUpdatesListener>()
 
-    private val outputListeners: MutableList<FoldUpdatesListener> = mutableListOf()
-
-    @FoldUpdate private var lastFoldUpdate: Int? = null
+    @FoldStateProvider.FoldUpdate private var lastFoldUpdate: Int? = null
 
     @FloatRange(from = 0.0, to = 180.0) private var lastHingeAngle: Float = 0f
     @FloatRange(from = 0.0, to = 180.0) private var lastHingeAngleBeforeTransition: Float = 0f
@@ -62,11 +59,9 @@ constructor(
     private val hingeAngleListener = HingeAngleListener()
     private val screenListener = ScreenStatusListener()
     private val foldStateListener = FoldStateListener()
-    private val mainLooper = handler.looper
     private val timeoutRunnable = Runnable { cancelAnimation() }
-    private val rotationListener = RotationListener {
-        if (isTransitionInProgress) cancelAnimation()
-    }
+    private val rotationListener = FoldRotationListener()
+    private val progressExecutor = Executor { progressHandler.post(it) }
 
     /**
      * Time after which [FOLD_UPDATE_FINISH_HALF_OPEN] is emitted following a
@@ -81,9 +76,9 @@ constructor(
     private var isStarted = false
 
     override fun start() {
-        assertMainThread()
         if (isStarted) return
-        foldProvider.registerCallback(foldStateListener, mainExecutor)
+        foldProvider.registerCallback(foldStateListener, progressExecutor)
+        // TODO(b/277879146): get callbacks in the background
         screenStatusProvider.addCallback(screenListener)
         hingeAngleProvider.addCallback(hingeAngleListener)
         rotationChangeProvider.addCallback(rotationListener)
@@ -92,7 +87,6 @@ constructor(
     }
 
     override fun stop() {
-        assertMainThread()
         screenStatusProvider.removeCallback(screenListener)
         foldProvider.unregisterCallback(foldStateListener)
         hingeAngleProvider.removeCallback(hingeAngleListener)
@@ -102,11 +96,11 @@ constructor(
         isStarted = false
     }
 
-    override fun addCallback(listener: FoldUpdatesListener) {
+    override fun addCallback(listener: FoldStateProvider.FoldUpdatesListener) {
         outputListeners.add(listener)
     }
 
-    override fun removeCallback(listener: FoldUpdatesListener) {
+    override fun removeCallback(listener: FoldStateProvider.FoldUpdatesListener) {
         outputListeners.remove(listener)
     }
 
@@ -122,6 +116,7 @@ constructor(
                 lastFoldUpdate == FOLD_UPDATE_START_CLOSING
 
     private fun onHingeAngle(angle: Float) {
+        assertInProgressThread()
         if (DEBUG) {
             Log.d(
                 TAG,
@@ -130,17 +125,16 @@ constructor(
                     "lastHingeAngleBeforeTransition: $lastHingeAngleBeforeTransition"
             )
         }
-        Trace.setCounter("DeviceFoldStateProvider#onHingeAngle", angle.toLong())
 
         val currentDirection =
-                if (angle < lastHingeAngle) FOLD_UPDATE_START_CLOSING else FOLD_UPDATE_START_OPENING
+            if (angle < lastHingeAngle) FOLD_UPDATE_START_CLOSING else FOLD_UPDATE_START_OPENING
         if (isTransitionInProgress && currentDirection != lastFoldUpdate) {
             lastHingeAngleBeforeTransition = lastHingeAngle
         }
 
         val isClosing = angle < lastHingeAngleBeforeTransition
         val transitionUpdate =
-                if (isClosing) FOLD_UPDATE_START_CLOSING else FOLD_UPDATE_START_OPENING
+            if (isClosing) FOLD_UPDATE_START_CLOSING else FOLD_UPDATE_START_OPENING
         val angleChangeSurpassedThreshold =
             Math.abs(angle - lastHingeAngleBeforeTransition) > HINGE_ANGLE_CHANGE_THRESHOLD_DEGREES
         val isFullyOpened = FULLY_OPEN_DEGREES - angle < FULLY_OPEN_THRESHOLD_DEGREES
@@ -152,12 +146,12 @@ constructor(
             angleChangeSurpassedThreshold && // Do not react immediately to small changes in angle
                 eventNotAlreadyDispatched && // we haven't sent transition event already
                 !isFullyOpened && // do not send transition event if we are in fully opened hinge
-                                  // angle range as closing threshold could overlap this range
+                // angle range as closing threshold could overlap this range
                 screenAvailableEventSent && // do not send transition event if we are still in the
-                                            // process of turning on the inner display
+                // process of turning on the inner display
                 isClosingThresholdMet(angle) && // hinge angle is below certain threshold.
                 isOnLargeScreen // Avoids sending closing event when on small screen.
-                                // Start event is sent regardless due to hall sensor.
+        // Start event is sent regardless due to hall sensor.
         ) {
             notifyFoldUpdate(transitionUpdate, lastHingeAngle)
         }
@@ -204,6 +198,7 @@ constructor(
 
     private inner class FoldStateListener : FoldProvider.FoldCallback {
         override fun onFoldUpdated(isFolded: Boolean) {
+            assertInProgressThread()
             this@DeviceFoldStateProvider.isFolded = isFolded
             lastHingeAngle = FULLY_CLOSED_DEGREES
 
@@ -220,7 +215,15 @@ constructor(
         }
     }
 
-    private fun notifyFoldUpdate(@FoldUpdate update: Int, angle: Float) {
+    private inner class FoldRotationListener : RotationChangeProvider.RotationListener {
+        @WorkerThread
+        override fun onRotationChanged(newRotation: Int) {
+            assertInProgressThread()
+            if (isTransitionInProgress) cancelAnimation()
+        }
+    }
+
+    private fun notifyFoldUpdate(@FoldStateProvider.FoldUpdate update: Int, angle: Float) {
         if (DEBUG) {
             Log.d(TAG, update.name())
         }
@@ -238,11 +241,11 @@ constructor(
         if (isTransitionInProgress) {
             cancelTimeout()
         }
-        handler.postDelayed(timeoutRunnable, halfOpenedTimeoutMillis.toLong())
+        progressHandler.postDelayed(timeoutRunnable, halfOpenedTimeoutMillis.toLong())
     }
 
     private fun cancelTimeout() {
-        handler.removeCallbacks(timeoutRunnable)
+        progressHandler.removeCallbacks(timeoutRunnable)
     }
 
     private fun cancelAnimation(): Unit =
@@ -251,42 +254,61 @@ constructor(
     private inner class ScreenStatusListener : ScreenStatusProvider.ScreenListener {
 
         override fun onScreenTurnedOn() {
-            // Trigger this event only if we are unfolded and this is the first screen
-            // turned on event since unfold started. This prevents running the animation when
-            // turning on the internal display using the power button.
-            // Initially isUnfoldHandled is true so it will be reset to false *only* when we
-            // receive 'folded' event. If SystemUI started when device is already folded it will
-            // still receive 'folded' event on startup.
-            if (!isFolded && !isUnfoldHandled) {
-                outputListeners.forEach { it.onUnfoldedScreenAvailable() }
-                isUnfoldHandled = true
+            executeInProgressThread {
+                // Trigger this event only if we are unfolded and this is the first screen
+                // turned on event since unfold started. This prevents running the animation when
+                // turning on the internal display using the power button.
+                // Initially isUnfoldHandled is true so it will be reset to false *only* when we
+                // receive 'folded' event. If SystemUI started when device is already folded it will
+                // still receive 'folded' event on startup.
+                if (!isFolded && !isUnfoldHandled) {
+                    outputListeners.forEach { it.onUnfoldedScreenAvailable() }
+                    isUnfoldHandled = true
+                }
             }
         }
 
         override fun markScreenAsTurnedOn() {
-            if (!isFolded) {
-                isUnfoldHandled = true
+            executeInProgressThread {
+                if (!isFolded) {
+                    isUnfoldHandled = true
+                }
             }
         }
 
         override fun onScreenTurningOn() {
-            isScreenOn = true
-            updateHingeAngleProviderState()
+            executeInProgressThread {
+                isScreenOn = true
+                updateHingeAngleProviderState()
+            }
         }
 
         override fun onScreenTurningOff() {
-            isScreenOn = false
-            updateHingeAngleProviderState()
+            executeInProgressThread {
+                isScreenOn = false
+                updateHingeAngleProviderState()
+            }
+        }
+
+        /**
+         * Needed just for compatibility while not all data sources are providing data in the
+         * background.
+         *
+         * TODO(b/277879146): Remove once ScreeStatusProvider provides in the background.
+         */
+        private fun executeInProgressThread(f: () -> Unit) {
+            progressHandler.post { f() }
         }
     }
 
     private fun isOnLargeScreen(): Boolean {
-      return context.resources.configuration.smallestScreenWidthDp >
-          INNER_SCREEN_SMALLEST_SCREEN_WIDTH_THRESHOLD_DP
+        return context.resources.configuration.smallestScreenWidthDp >
+            INNER_SCREEN_SMALLEST_SCREEN_WIDTH_THRESHOLD_DP
     }
 
     /** While the screen is off or the device is folded, hinge angle updates are not needed. */
     private fun updateHingeAngleProviderState() {
+        assertInProgressThread()
         if (isScreenOn && !isFolded) {
             hingeAngleProvider.start()
         } else {
@@ -296,20 +318,34 @@ constructor(
 
     private inner class HingeAngleListener : Consumer<Float> {
         override fun accept(angle: Float) {
+            assertInProgressThread()
             onHingeAngle(angle)
         }
     }
 
-    private fun assertMainThread() {
-        check(mainLooper.isCurrentThread) {
-            ("should be called from the main thread." +
-                    " sMainLooper.threadName=" + mainLooper.thread.name +
-                    " Thread.currentThread()=" + Thread.currentThread().name)
+    private fun assertInProgressThread() {
+        check(progressHandler.looper.isCurrentThread) {
+            val progressThread = progressHandler.looper.thread
+            val thisThread = Thread.currentThread()
+            """should be called from the progress thread.
+                progressThread=$progressThread tid=${progressThread.id}
+                Thread.currentThread()=$thisThread tid=${thisThread.id}"""
+                .trimMargin()
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        /** Creates a [DeviceFoldStateProvider] using the provided dependencies. */
+        fun create(
+            hingeAngleProvider: HingeAngleProvider,
+            rotationChangeProvider: RotationChangeProvider,
+            progressHandler: Handler,
+        ): DeviceFoldStateProvider
     }
 }
 
-fun @receiver:FoldUpdate Int.name() =
+fun @receiver:FoldStateProvider.FoldUpdate Int.name() =
     when (this) {
         FOLD_UPDATE_START_OPENING -> "START_OPENING"
         FOLD_UPDATE_START_CLOSING -> "START_CLOSING"

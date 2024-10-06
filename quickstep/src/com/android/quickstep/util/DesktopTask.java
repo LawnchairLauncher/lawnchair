@@ -21,7 +21,7 @@ import androidx.annotation.NonNull;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A {@link Task} container that can contain N number of tasks that are part of the desktop in
@@ -30,9 +30,9 @@ import java.util.ArrayList;
 public class DesktopTask extends GroupTask {
 
     @NonNull
-    public final ArrayList<Task> tasks;
+    public final List<Task> tasks;
 
-    public DesktopTask(@NonNull ArrayList<Task> tasks) {
+    public DesktopTask(@NonNull List<Task> tasks) {
         super(tasks.get(0), null, null, TaskView.Type.DESKTOP);
         this.tasks = tasks;
     }
@@ -53,7 +53,19 @@ public class DesktopTask extends GroupTask {
     }
 
     @Override
+    @NonNull
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    @Override
     public DesktopTask copy() {
         return new DesktopTask(tasks);
     }
+
+    @Override
+    public String toString() {
+        return "type=" + taskViewType + " tasks=" + tasks;
+    }
+
 }

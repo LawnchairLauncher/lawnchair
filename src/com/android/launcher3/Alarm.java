@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 
 public class Alarm implements Runnable{
@@ -33,7 +34,11 @@ public class Alarm implements Runnable{
     private long mLastSetTimeout;
 
     public Alarm() {
-        mHandler = new Handler();
+        this(Looper.myLooper());
+    }
+
+    public Alarm(Looper looper) {
+        mHandler = new Handler(looper);
     }
 
     public void setOnAlarmListener(OnAlarmListener alarmListener) {

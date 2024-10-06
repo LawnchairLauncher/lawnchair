@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"പിൻ ചെയ്യുക"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ഫ്രീഫോം"</string>
+    <string name="recent_task_option_desktop" msgid="8280879717125435668">"ഡെസ്‌ക്ടോപ്പ്"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"സമീപകാല ഇനങ്ങൾ ഒന്നുമില്ല"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ആപ്പ് ഉപയോഗ ക്രമീകരണം"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"എല്ലാം മായ്‌ക്കുക"</string>
@@ -49,6 +50,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"വലത്തേയറ്റത്തെയോ ഇടത്തേയറ്റത്തെയോ അരികിൽ നിന്നാണ് സ്വെെപ്പ് ചെയ്യുന്നതെന്ന് ഉറപ്പാക്കുക"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"വലതോ ഇടതോ അരികിൽ നിന്ന് സ്‌ക്രീനിന്റെ മധ്യഭാഗത്തേക്കാണ് സ്വെെപ്പ് ചെയ്യുന്നതെന്ന് ഉറപ്പാക്കുക"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"മടങ്ങാൻ വലതുഭാഗത്ത് നിന്ന് സ്വൈപ്പ് ചെയ്യുന്ന രീതി മനസ്സിലായി. ഇനി, ആപ്പുകൾ മാറുന്ന രീതി അറിയുക."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"മടങ്ങുക ജെസ്ച്ചർ നിങ്ങൾ പൂർത്തിയാക്കി. അടുത്തത്, എങ്ങനെ ആപ്പുകൾ തമ്മിൽ മാറാമെന്ന് മനസ്സിലാക്കുക."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"മടങ്ങുക ജെസ്ച്ചർ നിങ്ങൾ പൂർത്തിയാക്കി"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"സ്‌ക്രീനിന്റെ ഏറ്റവും അടിഭാഗത്തേക്ക് സ്വെെപ്പ് ചെയ്യുന്നില്ലെന്ന് ഉറപ്പാക്കുക"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ബാക്ക്ജെസ്റ്ററിന്റെ സെൻസിറ്റിവിറ്റി മാറ്റാൻ ക്രമീകരണത്തിൽ പോകൂ"</string>
@@ -94,10 +96,14 @@
     <string name="action_share" msgid="2648470652637092375">"പങ്കിടുക"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"സ്ക്രീൻഷോട്ട്"</string>
     <string name="action_split" msgid="2098009717623550676">"വിഭജിക്കുക"</string>
+    <string name="action_save_app_pair" msgid="5974823919237645229">"ആപ്പ് ജോടി സംരക്ഷിക്കൂ"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"സ്പ്ലിറ്റ് സ്ക്രീനിന് മറ്റൊരു ആപ്പിൽ ടാപ്പ് ചെയ്യൂ"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"സ്ക്രീൻ വിഭജന മോഡ് ഉപയോഗിക്കാൻ മറ്റൊരു ആപ്പ് തിരഞ്ഞെടുക്കൂ"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"റദ്ദാക്കുക"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"സ്‌ക്രീൻ വിഭജന തിരഞ്ഞെടുപ്പിൽ നിന്ന് പുറത്തുകടക്കുക"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"സ്ക്രീൻ വിഭജന മോഡിന് മറ്റൊരു ആപ്പ് തിരഞ്ഞെടുക്കൂ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ഈ നടപടി എടുക്കുന്നത് ആപ്പോ നിങ്ങളുടെ സ്ഥാപനമോ അനുവദിക്കുന്നില്ല"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"വിജറ്റുകൾക്ക് നിലവിൽ പിന്തുണയില്ല, മറ്റൊരു ആപ്പ് തിരഞ്ഞെടുക്കുക"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"നാവിഗേഷൻ ട്യൂട്ടോറിയൽ ഒഴിവാക്കണോ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> ആപ്പിൽ നിങ്ങൾക്ക് ഇത് പിന്നീട് കാണാനാകും"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"റദ്ദാക്കുക"</string>
@@ -107,8 +113,12 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ഒരേ സമയം 2 ആപ്പുകൾ ഉപയോഗിക്കാൻ ഒരു ആപ്പ് വശത്തേക്ക് വലിച്ചിടൂ"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ടാസ്‌ക്ബാർ ദൃശ്യമാക്കാൻ മുകളിലേക്ക് പതുക്കെ സ്വൈപ്പ് ചെയ്യൂ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"നിങ്ങളുടെ ദിനചര്യ അനുസരിച്ച് ആപ്പ് നിർദ്ദേശങ്ങൾ നേടുക"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ടാസ്‌ക്‌ബാർ സ്വയമേവ മറയ്‌ക്കാൻ ക്രമീകരണത്തിൽ ജെസ്ച്ചർ നാവിഗേഷൻ ഓണാക്കുക"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"ടാസ്‌ക്ബാർ പിൻ ചെയ്യാൻ ഡിവൈഡറിൽ ദീർഘനേരം അമർത്തുക"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ടാസ്‌ക്‌ബാർ ഉപയോഗിച്ച് കൂടുതൽ ചെയ്യുക"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"എല്ലായ്‌പ്പോഴും ടാസ്‌ക്‌ബാർ കാണിക്കുക"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"ടാസ്‌ക്ബാർ എല്ലായ്‌പ്പോഴും നിങ്ങളുടെ സ്‌ക്രീനിന്റെ ചുവടെ കാണിക്കുന്നതിന് ഡിവൈഡറിൽ സ്‌പർശിച്ച് പിടിക്കുക"</string>
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"നിങ്ങളുടെ സ്‌ക്രീനിൽ എന്താണ് ഉള്ളതെന്ന് തിരയാൻ ആക്ഷൻ കീ സ്‌പർശിച്ച് പിടിക്കുക"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"തിരയുന്നതിന് ഈ ഉൽപ്പന്നം സ്‌ക്രീനിലെ തിരഞ്ഞെടുത്ത ഭാഗം ഉപയോഗിക്കുന്നു. Google-ന്റെ <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>സ്വകാര്യതാ നയവും<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>സേവന നിബന്ധനകളും<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> ബാധകമാണ്."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"അടയ്ക്കുക"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"പൂർത്തിയായി"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ഹോം"</string>
@@ -128,7 +138,10 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"മുകളിലേക്കോ ഇടത്തേക്കോ നീക്കുക"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"താഴേക്കോ വലത്തേക്കോ നീക്കുക"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{# ആപ്പ് കൂടി കാണിക്കുക.}other{# ആപ്പുകൾ കൂടി കാണിക്കുക.}}"</string>
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# ഡെസ്‌ക്ടോപ്പ് ആപ്പ് കാണിക്കുക.}other{# ഡെസ്‌ക്ടോപ്പ് ആപ്പുകൾ കാണിക്കുക.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g>, <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
-    <string name="desktop_select_app_toast" msgid="2306057322833956910">"ആപ്പ് ഡെസ്ക്ടോപ്പിലേക്ക് ചേർക്കുന്നു"</string>
-    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"റദ്ദാക്കുക"</string>
+    <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"ബബിൾ"</string>
+    <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"ഓവർഫ്ലോ"</string>
+    <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="APP_NAME">%2$s</xliff:g> എന്നതിൽ നിന്നുള്ള <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> എന്നതും മറ്റ് <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> എണ്ണവും"</string>
 </resources>

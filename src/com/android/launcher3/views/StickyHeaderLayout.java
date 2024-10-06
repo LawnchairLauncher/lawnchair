@@ -36,6 +36,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A {@link LinearLayout} container which allows scrolling parts of its content based on the
  * scroll of a different view. Views which are marked as sticky are not scrolled, giving the
@@ -240,6 +243,22 @@ public class StickyHeaderLayout extends LinearLayout implements
     @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         return p instanceof MyLayoutParams;
+    }
+
+    /**
+     * Return a list of all the children that have the sticky layout param set.
+     */
+    public List<View> getStickyChildren() {
+        List<View> stickyChildren = new ArrayList<>();
+        int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View v = getChildAt(i);
+            MyLayoutParams lp = (MyLayoutParams) v.getLayoutParams();
+            if (lp.sticky) {
+                stickyChildren.add(v);
+            }
+        }
+        return stickyChildren;
     }
 
     private static class MyLayoutParams extends LayoutParams {

@@ -30,7 +30,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.DimenRes;
 
-import com.android.systemui.navigationbar.buttons.KeyButtonRipple;
+import com.android.systemui.shared.navigationbar.KeyButtonRipple;
 
 public class FloatingRotationButtonView extends ImageView {
 

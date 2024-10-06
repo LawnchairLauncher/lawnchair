@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALL_APPS_EDU_SHOWN;
+import static com.android.quickstep.util.AnimUtils.clampToDuration;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -187,10 +188,14 @@ public class AllAppsEduView extends AbstractFloatingView {
         intro.setInterpolator(LINEAR);
         intro.setDuration(introDuration);
         intro.addUpdateListener((new MultiValueUpdateListener() {
-            FloatProp mCircleAlpha = new FloatProp(0, 255, 0, firstPart, LINEAR);
-            FloatProp mCircleScale = new FloatProp(2f, 1f, 0, firstPart, OVERSHOOT_1_7);
-            FloatProp mDeltaY = new FloatProp(0, transY, firstPart, secondPart, FAST_OUT_SLOW_IN);
-            FloatProp mGradientAlpha = new FloatProp(0, 255, firstPart, secondPart * 0.3f, LINEAR);
+            FloatProp mCircleAlpha = new FloatProp(0, 255,
+                    clampToDuration(LINEAR, 0, firstPart, introDuration));
+            FloatProp mCircleScale = new FloatProp(2f, 1f,
+                    clampToDuration(OVERSHOOT_1_7, 0, firstPart, introDuration));
+            FloatProp mDeltaY = new FloatProp(0, transY,
+                    clampToDuration(FAST_OUT_SLOW_IN, firstPart, secondPart, introDuration));
+            FloatProp mGradientAlpha = new FloatProp(0, 255,
+                    clampToDuration(LINEAR, firstPart, secondPart * 0.3f, introDuration));
 
             @Override
             public void onUpdate(float progress, boolean initOnly) {

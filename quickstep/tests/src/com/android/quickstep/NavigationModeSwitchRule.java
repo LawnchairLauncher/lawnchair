@@ -162,8 +162,8 @@ public class NavigationModeSwitchRule implements TestRule {
             final Context targetContext = getInstrumentation().getTargetContext();
             final DisplayController.DisplayInfoChangeListener listener =
                     (context, info, flags) -> {
-                        if (LauncherInstrumentation.getNavigationModel(info.navigationMode.resValue)
-                                == expectedMode) {
+                        if (LauncherInstrumentation.getNavigationModel(
+                                info.getNavigationMode().resValue) == expectedMode) {
                             latch.countDown();
                         }
                     };
@@ -185,7 +185,7 @@ public class NavigationModeSwitchRule implements TestRule {
                         + launcher.getNavigationModeMismatchError(false),
                 () -> launcher.getNavigationModeMismatchError(false) == null,
                 WAIT_TIME_MS, launcher);
-        AbstractLauncherUiTest.checkDetectedLeaks(launcher);
+        AbstractLauncherUiTest.checkDetectedLeaks(launcher, false);
         return true;
     }
 
@@ -205,11 +205,10 @@ public class NavigationModeSwitchRule implements TestRule {
             boolean condition, Description description) {
         launcher.checkForAnomaly(true, true);
         if (!condition) {
-            final AssertionError assertionError = new AssertionError(message);
             if (description != null) {
-                FailureWatcher.onError(launcher, description, assertionError);
+                FailureWatcher.onError(launcher, description);
             }
-            throw assertionError;
+            throw new AssertionError(message);
         }
     }
 }

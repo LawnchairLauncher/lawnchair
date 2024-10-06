@@ -19,70 +19,152 @@ package com.android.launcher3.taskbar.navbutton
 import android.content.res.Resources
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.core.view.children
-import com.android.launcher3.DeviceProfile
+import android.widget.Space
 import com.android.launcher3.R
-import com.android.launcher3.taskbar.TaskbarManager
-import com.android.launcher3.util.DimensionUtils
+import com.android.launcher3.taskbar.TaskbarActivityContext
 
 open class PhoneLandscapeNavLayoutter(
     resources: Resources,
     navBarContainer: LinearLayout,
     endContextualContainer: ViewGroup,
-    startContextualContainer: ViewGroup
+    startContextualContainer: ViewGroup,
+    imeSwitcher: ImageView?,
+    a11yButton: ImageView?,
+    space: Space?
 ) :
     AbstractNavButtonLayoutter(
         resources,
         navBarContainer,
         endContextualContainer,
-        startContextualContainer
+        startContextualContainer,
+        imeSwitcher,
+        a11yButton,
+        space
     ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
-        // TODO(b/230395757): Polish pending, this is just to make it usable
-        val endStartMargins = resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
-        val taskbarDimensions = DimensionUtils.getTaskbarPhoneDimensions(dp, resources,
-                TaskbarManager.isPhoneMode(dp))
-        navButtonContainer.removeAllViews()
-        navButtonContainer.orientation = LinearLayout.VERTICAL
+    override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
+        val totalHeight = context.deviceProfile.heightPx
+        val homeButtonHeight =
+            resources.getDimensionPixelSize(R.dimen.taskbar_phone_home_button_size)
+        val roundedCornerContentMargin =
+            resources.getDimensionPixelSize(R.dimen.taskbar_phone_rounded_corner_content_margin)
+        val contentPadding = resources.getDimensionPixelSize(R.dimen.taskbar_phone_content_padding)
+        val contentWidth = totalHeight - roundedCornerContentMargin * 2 - contentPadding * 2
 
-        val navContainerParams = FrameLayout.LayoutParams(
-                taskbarDimensions.x, ViewGroup.LayoutParams.MATCH_PARENT)
+        // left:back:space(reserved for home):overview:right = 0.25:0.5:1:0.5:0.25
+        val contextualButtonHeight = contentWidth / (0.25f + 0.5f + 1f + 0.5f + 0.25f) * 0.25f
+        val sideButtonHeight = contextualButtonHeight * 2
+        val navButtonContainerHeight = contentWidth - contextualButtonHeight * 2
+
+        val navContainerParams =
+            FrameLayout.LayoutParams(MATCH_PARENT, navButtonContainerHeight.toInt())
         navContainerParams.apply {
-            topMargin = endStartMargins
-            bottomMargin = endStartMargins
+            topMargin =
+                (contextualButtonHeight + contentPadding + roundedCornerContentMargin).toInt()
+            bottomMargin =
+                (contextualButtonHeight + contentPadding + roundedCornerContentMargin).toInt()
             marginEnd = 0
             marginStart = 0
         }
 
-        // Swap recents and back button
-        navButtonContainer.addView(recentsButton)
-        navButtonContainer.addView(homeButton)
-        navButtonContainer.addView(backButton)
+        // Ensure order of buttons is correct
+        navButtonContainer.removeAllViews()
+        navButtonContainer.orientation = LinearLayout.VERTICAL
+
+        addThreeButtons()
 
         navButtonContainer.layoutParams = navContainerParams
         navButtonContainer.gravity = Gravity.CENTER
 
         // Add the spaces in between the nav buttons
-        val spaceInBetween: Int =
-            resources.getDimensionPixelSize(R.dimen.taskbar_button_space_inbetween_phone)
-        navButtonContainer.children.forEachIndexed { i, navButton ->
+        val spaceInBetween =
+            (navButtonContainerHeight - homeButtonHeight - sideButtonHeight * 2) / 2.0f
+        for (i in 0 until navButtonContainer.childCount) {
+            val navButton = navButtonContainer.getChildAt(i)
             val buttonLayoutParams = navButton.layoutParams as LinearLayout.LayoutParams
-            buttonLayoutParams.weight = 1f
+            val margin = (spaceInBetween / 2).toInt()
             when (i) {
                 0 -> {
-                    buttonLayoutParams.bottomMargin = spaceInBetween / 2
+                    // First button
+                    buttonLayoutParams.bottomMargin = margin
+                    buttonLayoutParams.height = sideButtonHeight.toInt()
                 }
                 navButtonContainer.childCount - 1 -> {
-                    buttonLayoutParams.topMargin = spaceInBetween / 2
+                    // Last button
+                    buttonLayoutParams.topMargin = margin
+                    buttonLayoutParams.height = sideButtonHeight.toInt()
                 }
                 else -> {
-                    buttonLayoutParams.bottomMargin = spaceInBetween / 2
-                    buttonLayoutParams.topMargin = spaceInBetween / 2
+                    // other buttons
+                    buttonLayoutParams.topMargin = margin
+                    buttonLayoutParams.bottomMargin = margin
+                    buttonLayoutParams.height = homeButtonHeight
                 }
             }
         }
+
+        repositionContextualButtons(contextualButtonHeight.toInt())
+    }
+
+    open fun addThreeButtons() {
+        // Swap recents and back button
+        navButtonContainer.addView(recentsButton)
+        navButtonContainer.addView(homeButton)
+        navButtonContainer.addView(backButton)
+    }
+
+    open fun repositionContextualButtons(buttonSize: Int) {
+        endContextualContainer.removeAllViews()
+        startContextualContainer.removeAllViews()
+
+        val roundedCornerContentMargin =
+            resources.getDimensionPixelSize(R.dimen.taskbar_phone_rounded_corner_content_margin)
+        val contentPadding = resources.getDimensionPixelSize(R.dimen.taskbar_phone_content_padding)
+        repositionContextualContainer(
+            startContextualContainer,
+            buttonSize,
+            roundedCornerContentMargin + contentPadding,
+            0,
+            Gravity.TOP
+        )
+        repositionContextualContainer(
+            endContextualContainer,
+            buttonSize,
+            0,
+            roundedCornerContentMargin + contentPadding,
+            Gravity.BOTTOM
+        )
+
+        if (imeSwitcher != null) {
+            startContextualContainer.addView(imeSwitcher)
+            imeSwitcher.layoutParams = getParamsToCenterView()
+        }
+        if (a11yButton != null) {
+            startContextualContainer.addView(a11yButton)
+            a11yButton.layoutParams = getParamsToCenterView()
+        }
+        endContextualContainer.addView(space, MATCH_PARENT, MATCH_PARENT)
+    }
+
+    override fun repositionContextualContainer(
+        contextualContainer: ViewGroup,
+        buttonSize: Int,
+        barAxisMarginTop: Int,
+        barAxisMarginBottom: Int,
+        gravity: Int
+    ) {
+        val contextualContainerParams = FrameLayout.LayoutParams(MATCH_PARENT, buttonSize)
+        contextualContainerParams.apply {
+            marginStart = 0
+            marginEnd = 0
+            topMargin = barAxisMarginTop
+            bottomMargin = barAxisMarginBottom
+        }
+        contextualContainerParams.gravity = gravity or Gravity.CENTER_HORIZONTAL
+        contextualContainer.layoutParams = contextualContainerParams
     }
 }

@@ -42,7 +42,7 @@ import app.lawnchair.common.MagnetizedObject;
  * @see BubbleDragController
  */
 public class BubbleDismissController {
-    private static final String TAG = BubbleDismissController.class.getSimpleName();
+    private static final String TAG = "BubbleDismissController";
     private static final float FLING_TO_DISMISS_MIN_VELOCITY = 6000f;
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mDragLayer;
@@ -69,6 +69,9 @@ public class BubbleDismissController {
     @Nullable
     private BubbleDragAnimator mAnimator;
 
+    @Nullable
+    private Listener mListener;
+
     public BubbleDismissController(TaskbarActivityContext activity, TaskbarDragLayer dragLayer) {
         mActivity = activity;
         mDragLayer = dragLayer;
@@ -81,6 +84,13 @@ public class BubbleDismissController {
      */
     public void init(@NonNull BubbleControllers bubbleControllers) {
         mBubbleBarViewController = bubbleControllers.bubbleBarViewController;
+    }
+
+    /**
+     * Set listener to be notified of dismiss events
+     */
+    public void setListener(@Nullable Listener listener) {
+        mListener = listener;
     }
 
     /**
@@ -161,7 +171,8 @@ public class BubbleDismissController {
 
     private void setupMagnetizedObject(@NonNull View magnetizedView) {
         mMagnetizedObject = new MagnetizedObject<>(mActivity.getApplicationContext(),
-                magnetizedView, DynamicAnimation.TRANSLATION_X, DynamicAnimation.TRANSLATION_Y) {
+                magnetizedView, BubbleDragController.DRAG_TRANSLATION_X,
+                DynamicAnimation.TRANSLATION_Y) {
             @Override
             public float getWidth(@NonNull View underlyingObject) {
                 return underlyingObject.getWidth() * underlyingObject.getScaleX();
@@ -187,22 +198,37 @@ public class BubbleDismissController {
         }
         mMagnetizedObject.setMagnetListener(new MagnetizedObject.MagnetListener() {
             @Override
-            public void onStuckToTarget(@NonNull MagnetizedObject.MagneticTarget target) {
+            public void onStuckToTarget(@NonNull MagnetizedObject.MagneticTarget target,
+                    @NonNull MagnetizedObject<?> draggedObject) {
                 if (mAnimator == null) return;
                 mAnimator.animateDismissCaptured();
+                if (mListener != null) {
+                    mListener.onStuckToDismissChanged(true /* stuck */);
+                }
             }
 
             @Override
             public void onUnstuckFromTarget(@NonNull MagnetizedObject.MagneticTarget target,
+                    @NonNull MagnetizedObject<?> draggedObject,
                     float velX, float velY, boolean wasFlungOut) {
                 if (mAnimator == null) return;
                 mAnimator.animateDismissReleased();
+                if (mListener != null) {
+                    mListener.onStuckToDismissChanged(false /* stuck */);
+                }
             }
 
             @Override
-            public void onReleasedInTarget(@NonNull MagnetizedObject.MagneticTarget target) {
+            public void onReleasedInTarget(@NonNull MagnetizedObject.MagneticTarget target,
+                    @NonNull MagnetizedObject<?> draggedObject) {
                 dismissMagnetizedObject();
             }
         });
+    }
+
+    /** Interface to receive updates about the dismiss state */
+    public interface Listener {
+        /** Called when view is stuck or unstuck from dismiss target */
+        void onStuckToDismissChanged(boolean stuck);
     }
 }

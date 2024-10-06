@@ -24,8 +24,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.android.launcher3.R;
-
 /**
  * View that draws a bitmap horizontally centered. If the image width is greater than the view
  * width, the image is scaled down appropriately.
@@ -33,8 +31,6 @@ import com.android.launcher3.R;
 public class WidgetImageView extends View {
 
     private final RectF mDstRectF = new RectF();
-    private final int mBadgeMargin;
-
     private Drawable mDrawable;
 
     public WidgetImageView(Context context) {
@@ -47,9 +43,6 @@ public class WidgetImageView extends View {
 
     public WidgetImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        mBadgeMargin = context.getResources()
-                .getDimensionPixelSize(R.dimen.profile_badge_margin);
     }
 
     /** Set the drawable to use for this view. */
@@ -82,15 +75,27 @@ public class WidgetImageView extends View {
     private void updateDstRectF() {
         float myWidth = getWidth();
         float myHeight = getHeight();
-        float bitmapWidth = mDrawable.getIntrinsicWidth();
+        final float bitmapWidth = mDrawable.getIntrinsicWidth();
+        final float bitmapHeight = mDrawable.getIntrinsicHeight();
+        final float bitmapAspectRatio = bitmapWidth / bitmapHeight;
+        final float containerAspectRatio = myWidth / myHeight;
 
-        final float scale = bitmapWidth > myWidth ? myWidth / bitmapWidth : 1;
-        float scaledWidth = bitmapWidth * scale;
-        float scaledHeight = mDrawable.getIntrinsicHeight() * scale;
+        // Scale by width if image has larger aspect ratio than the container else by height; and
+        // avoid cropping the previews
+        final float scale = bitmapAspectRatio > containerAspectRatio ? myWidth / bitmapWidth
+                : myHeight / bitmapHeight;
 
-        mDstRectF.left = (myWidth - scaledWidth) / 2;
-        mDstRectF.right = (myWidth + scaledWidth) / 2;
+        final float scaledWidth = bitmapWidth * scale;
+        final float scaledHeight = bitmapHeight * scale;
 
+        // Avoid cropping by checking bounds after scaling.
+        if (scaledWidth > myWidth) {
+            mDstRectF.left = 0;
+            mDstRectF.right = scaledWidth;
+        } else {
+            mDstRectF.left = (myWidth - scaledWidth) / 2;
+            mDstRectF.right = (myWidth + scaledWidth) / 2;
+        }
         if (scaledHeight > myHeight) {
             mDstRectF.top = 0;
             mDstRectF.bottom = scaledHeight;

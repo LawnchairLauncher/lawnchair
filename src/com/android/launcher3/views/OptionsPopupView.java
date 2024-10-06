@@ -17,8 +17,8 @@ package com.android.launcher3.views;
 
 import static androidx.core.content.ContextCompat.getColorStateList;
 
+import static com.android.launcher3.BuildConfig.WIDGETS_ENABLED;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
@@ -27,7 +27,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -51,7 +50,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.EventEnum;
-import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
@@ -170,12 +168,16 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
         return show(activityContext, targetRect, items, shouldAddArrow, 0 /* width */);
     }
 
-    public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
-            ActivityContext activityContext,
+    @Nullable
+    private static <T extends Context & ActivityContext> OptionsPopupView<T> show(
+            @Nullable ActivityContext activityContext,
             RectF targetRect,
             List<OptionItem> items,
             boolean shouldAddArrow,
             int width) {
+        if (activityContext == null) {
+            return null;
+        }
         OptionsPopupView<T> popup = (OptionsPopupView<T>) activityContext.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, activityContext.getDragLayer(), false);
         popup.mTargetRect = targetRect;
@@ -207,7 +209,8 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
                 .firstBlocking(preferenceManager2.getLockHomeScreenButtonOnPopUp());
         boolean showSystemSettings = PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getShowSystemSettingsEntryOnPopUp());
-        boolean showEditMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEditHomeScreenButtonOnPopUp());
+        boolean showEditMode = PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getEditHomeScreenButtonOnPopUp());
 
         ArrayList<OptionItem> options = new ArrayList<>();
         if (showLockToggle) {

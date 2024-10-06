@@ -16,7 +16,9 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.app.animation.Interpolators.DECELERATE_2;
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
+import static com.android.wm.shell.Flags.enableSplitContextual;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -27,6 +29,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.Themes;
+import com.android.quickstep.util.BaseDepthController;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -46,7 +50,7 @@ public class OverviewState extends LauncherState {
     protected static final Rect sTempRect = new Rect();
 
     private static final int STATE_FLAGS = FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
-            | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_WORKSPACE_INACCESSIBLE
+            | FLAG_DISABLE_RESTORE | FLAG_RECENTS_VIEW_VISIBLE | FLAG_WORKSPACE_INACCESSIBLE
             | FLAG_CLOSE_POPUPS;
 
     public OverviewState(int id) {
@@ -127,7 +131,19 @@ public class OverviewState extends LauncherState {
         if (showFloatingSearch) {
             elements |= FLOATING_SEARCH_BAR;
         }
+        if (enableSplitContextual() && launcher.isSplitSelectionActive()) {
+            elements &= ~CLEAR_ALL_BUTTON;
+        }
         return elements;
+    }
+
+    @Override
+    public float getSplitSelectTranslation(Launcher launcher) {
+        if (!enableSplitContextual() || !launcher.isSplitSelectionActive()) {
+            return 0f;
+        }
+        RecentsView recentsView = launcher.getOverviewPanel();
+        return recentsView.getSplitSelectTranslation();
     }
 
     @Override
@@ -174,18 +190,29 @@ public class OverviewState extends LauncherState {
         return launcher.getString(R.string.accessibility_recent_apps);
     }
 
+    @Override
+    public int getTitle() {
+        return R.string.accessibility_recent_apps;
+    }
+
     public static float getDefaultSwipeHeight(Launcher launcher) {
         return LayoutUtils.getDefaultSwipeHeight(launcher, launcher.getDeviceProfile());
     }
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        // TODO revert when b/178661709 is fixed
-        return SystemProperties.getBoolean("ro.launcher.depth.overview", true) ? 1 : 0;
+        // TODO(178661709): revert to always scaled
+        if (enableScalingRevealHomeAnimation()) {
+            return SystemProperties.getBoolean("ro.launcher.depth.overview", true)
+                    ? BaseDepthController.DEPTH_70_PERCENT
+                    : BaseDepthController.DEPTH_0_PERCENT;
+        } else {
+            return SystemProperties.getBoolean("ro.launcher.depth.overview", true) ? 1 : 0;
+        }
     }
 
     @Override
-    public void onBackPressed(Launcher launcher) {
+    public void onBackInvoked(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
         TaskView taskView = recentsView.getRunningTaskView();
         if (taskView != null) {
@@ -195,7 +222,7 @@ public class OverviewState extends LauncherState {
                 recentsView.snapToPage(recentsView.indexOfChild(taskView));
             }
         } else {
-            super.onBackPressed(launcher);
+            super.onBackInvoked(launcher);
         }
     }
 

@@ -18,6 +18,9 @@
     <!-- The duration of the PagedView page snap animation -->
     <integer name="config_pageSnapAnimationDuration">550</integer>
 
+    <!-- The duration of the PagedView page snap animation -->
+    <integer name="config_keyboardTaskFocusSnapAnimationDuration">400</integer>
+
     <!-- The duration of the Widget picker opening and closing animation -->
     <integer name="config_bottomSheetOpenDuration">500</integer>
     <integer name="config_bottomSheetCloseDuration">500</integer>

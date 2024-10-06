@@ -20,10 +20,11 @@ import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_2BUTTON;
 import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_3BUTTON;
 import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_GESTURAL;
 
-import android.annotation.IntDef;
+import static com.android.systemui.shared.Flags.shadeAllowBackGesture;
+
+import android.annotation.LongDef;
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.SystemProperties;
 import android.view.ViewConfiguration;
 import android.view.WindowManagerPolicyConstants;
 
@@ -33,15 +34,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.StringJoiner;
 
-import app.lawnchair.compat.LawnchairQuickstepCompat;
-
 /**
  * Various shared constants between Launcher and SysUI as part of quickstep
  */
 public class QuickStepContract {
-    // Fully qualified name of the Launcher activity.
-    public static final String LAUNCHER_ACTIVITY_CLASS_NAME =
-            "com.google.android.apps.nexuslauncher.NexusLauncherActivity";
 
     public static final String KEY_EXTRA_SYSUI_PROXY = "extra_sysui_proxy";
     public static final String KEY_EXTRA_UNFOLD_ANIMATION_FORWARDER = "extra_unfold_animation";
@@ -55,95 +51,96 @@ public class QuickStepContract {
 
     // Overview is disabled, either because the device is in lock task mode, or because the device
     // policy has disabled the feature
-    public static final int SYSUI_STATE_SCREEN_PINNING = 1 << 0;
+    public static final long SYSUI_STATE_SCREEN_PINNING = 1L << 0;
     // The navigation bar is hidden due to immersive mode
-    public static final int SYSUI_STATE_NAV_BAR_HIDDEN = 1 << 1;
+    public static final long SYSUI_STATE_NAV_BAR_HIDDEN = 1L << 1;
     // The notification panel is expanded and interactive (either locked or unlocked), and the
     // quick settings is not expanded
-    public static final int SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED = 1 << 2;
+    public static final long SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED = 1L << 2;
     // The keyguard bouncer is showing
-    public static final int SYSUI_STATE_BOUNCER_SHOWING = 1 << 3;
+    public static final long SYSUI_STATE_BOUNCER_SHOWING = 1L << 3;
     // The navigation bar a11y button should be shown
-    public static final int SYSUI_STATE_A11Y_BUTTON_CLICKABLE = 1 << 4;
+    public static final long SYSUI_STATE_A11Y_BUTTON_CLICKABLE = 1L << 4;
     // The navigation bar a11y button shortcut is available
-    public static final int SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE = 1 << 5;
+    public static final long SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE = 1L << 5;
     // The keyguard is showing and not occluded
-    public static final int SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING = 1 << 6;
+    public static final long SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING = 1L << 6;
     // The recents feature is disabled (either by SUW/SysUI/device policy)
-    public static final int SYSUI_STATE_OVERVIEW_DISABLED = 1 << 7;
+    public static final long SYSUI_STATE_OVERVIEW_DISABLED = 1L << 7;
     // The home feature is disabled (either by SUW/SysUI/device policy)
-    public static final int SYSUI_STATE_HOME_DISABLED = 1 << 8;
+    public static final long SYSUI_STATE_HOME_DISABLED = 1L << 8;
     // The keyguard is showing, but occluded
-    public static final int SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED = 1 << 9;
+    public static final long SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED = 1L << 9;
     // The search feature is disabled (either by SUW/SysUI/device policy)
-    public static final int SYSUI_STATE_SEARCH_DISABLED = 1 << 10;
+    public static final long SYSUI_STATE_SEARCH_DISABLED = 1L << 10;
     // The notification panel is expanded and interactive (either locked or unlocked), and quick
     // settings is expanded.
-    public static final int SYSUI_STATE_QUICK_SETTINGS_EXPANDED = 1 << 11;
+    public static final long SYSUI_STATE_QUICK_SETTINGS_EXPANDED = 1L << 11;
     // Winscope tracing is enabled
-    public static final int SYSUI_STATE_TRACING_ENABLED = 1 << 12;
+    public static final long SYSUI_STATE_DISABLE_GESTURE_SPLIT_INVOCATION = 1L << 12;
     // The Assistant gesture should be constrained. It is up to the launcher implementation to
     // decide how to constrain it
-    public static final int SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED = 1 << 13;
+    public static final long SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED = 1L << 13;
     // The bubble stack is expanded. This means that the home gesture should be ignored, since a
     // swipe up is an attempt to close the bubble stack, but that the back gesture should remain
     // enabled (since it's used to navigate back within the bubbled app, or to collapse the bubble
     // stack.
-    public static final int SYSUI_STATE_BUBBLES_EXPANDED = 1 << 14;
+    public static final long SYSUI_STATE_BUBBLES_EXPANDED = 1L << 14;
     // A SysUI dialog is showing.
-    public static final int SYSUI_STATE_DIALOG_SHOWING = 1 << 15;
+    public static final long SYSUI_STATE_DIALOG_SHOWING = 1L << 15;
     // The one-handed mode is active
-    public static final int SYSUI_STATE_ONE_HANDED_ACTIVE = 1 << 16;
+    public static final long SYSUI_STATE_ONE_HANDED_ACTIVE = 1L << 16;
     // Allow system gesture no matter the system bar(s) is visible or not
-    public static final int SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY = 1 << 17;
+    public static final long SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY = 1L << 17;
     // The IME is showing
-    public static final int SYSUI_STATE_IME_SHOWING = 1 << 18;
+    public static final long SYSUI_STATE_IME_SHOWING = 1L << 18;
     // The window magnification is overlapped with system gesture insets at the bottom.
-    public static final int SYSUI_STATE_MAGNIFICATION_OVERLAP = 1 << 19;
+    public static final long SYSUI_STATE_MAGNIFICATION_OVERLAP = 1L << 19;
     // ImeSwitcher is showing
-    public static final int SYSUI_STATE_IME_SWITCHER_SHOWING = 1 << 20;
+    public static final long SYSUI_STATE_IME_SWITCHER_SHOWING = 1L << 20;
     // Device dozing/AOD state
-    public static final int SYSUI_STATE_DEVICE_DOZING = 1 << 21;
+    public static final long SYSUI_STATE_DEVICE_DOZING = 1L << 21;
     // The home feature is disabled (either by SUW/SysUI/device policy)
-    public static final int SYSUI_STATE_BACK_DISABLED = 1 << 22;
+    public static final long SYSUI_STATE_BACK_DISABLED = 1L << 22;
     // The bubble stack is expanded AND the mange menu for bubbles is expanded on top of it.
-    public static final int SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED = 1 << 23;
-    // The current app is in immersive mode
-    public static final int SYSUI_STATE_IMMERSIVE_MODE = 1 << 24;
+    public static final long SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED = 1L << 23;
     // The voice interaction session window is showing
-    public static final int SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING = 1 << 25;
+    public static final long SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING = 1L << 25;
     // Freeform windows are showing in desktop mode
-    public static final int SYSUI_STATE_FREEFORM_ACTIVE_IN_DESKTOP_MODE = 1 << 26;
+    public static final long SYSUI_STATE_FREEFORM_ACTIVE_IN_DESKTOP_MODE = 1L << 26;
     // Device dreaming state
-    public static final int SYSUI_STATE_DEVICE_DREAMING = 1 << 27;
+    public static final long SYSUI_STATE_DEVICE_DREAMING = 1L << 27;
     // Whether the device is currently awake (as opposed to asleep, see WakefulnessLifecycle).
     // Note that the device is awake on while waking up on, but not while going to sleep.
-    public static final int SYSUI_STATE_AWAKE = 1 << 28;
+    public static final long SYSUI_STATE_AWAKE = 1L << 28;
     // Whether the device is currently transitioning between awake/asleep indicated by
     // SYSUI_STATE_AWAKE.
-    public static final int SYSUI_STATE_WAKEFULNESS_TRANSITION = 1 << 29;
+    public static final long SYSUI_STATE_WAKEFULNESS_TRANSITION = 1L << 29;
     // The notification panel expansion fraction is > 0
-    public static final int SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE = 1 << 30;
+    public static final long SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE = 1L << 30;
     // When keyguard will be dismissed but didn't start animation yet
-    public static final int SYSUI_STATE_STATUS_BAR_KEYGUARD_GOING_AWAY = 1 << 31;
+    public static final long SYSUI_STATE_STATUS_BAR_KEYGUARD_GOING_AWAY = 1L << 31;
+    // Physical keyboard shortcuts helper is showing
+    public static final long SYSUI_STATE_SHORTCUT_HELPER_SHOWING = 1L << 32;
+    // Touchpad gestures are disabled
+    public static final long SYSUI_STATE_TOUCHPAD_GESTURES_DISABLED = 1L << 33;
 
     // Mask for SystemUiStateFlags to isolate SYSUI_STATE_AWAKE and
     // SYSUI_STATE_WAKEFULNESS_TRANSITION, to match WAKEFULNESS_* constants
-    public static final int SYSUI_STATE_WAKEFULNESS_MASK =
+    public static final long SYSUI_STATE_WAKEFULNESS_MASK =
             SYSUI_STATE_AWAKE | SYSUI_STATE_WAKEFULNESS_TRANSITION;
     // Mirroring the WakefulnessLifecycle#Wakefulness states
-    public static final int WAKEFULNESS_ASLEEP = 0;
-    public static final int WAKEFULNESS_AWAKE = SYSUI_STATE_AWAKE;
-    public static final int WAKEFULNESS_GOING_TO_SLEEP = SYSUI_STATE_WAKEFULNESS_TRANSITION;
-    public static final int WAKEFULNESS_WAKING =
+    public static final long WAKEFULNESS_ASLEEP = 0;
+    public static final long WAKEFULNESS_AWAKE = SYSUI_STATE_AWAKE;
+    public static final long WAKEFULNESS_GOING_TO_SLEEP = SYSUI_STATE_WAKEFULNESS_TRANSITION;
+    public static final long WAKEFULNESS_WAKING =
             SYSUI_STATE_WAKEFULNESS_TRANSITION | SYSUI_STATE_AWAKE;
 
     // Whether the back gesture is allowed (or ignored) by the Shade
-    public static final boolean ALLOW_BACK_GESTURE_IN_SHADE = SystemProperties.getBoolean(
-            "persist.wm.debug.shade_allow_back_gesture", false);
+    public static final boolean ALLOW_BACK_GESTURE_IN_SHADE = shadeAllowBackGesture();
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({SYSUI_STATE_SCREEN_PINNING,
+    @LongDef({SYSUI_STATE_SCREEN_PINNING,
             SYSUI_STATE_NAV_BAR_HIDDEN,
             SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED,
             SYSUI_STATE_QUICK_SETTINGS_EXPANDED,
@@ -155,7 +152,7 @@ public class QuickStepContract {
             SYSUI_STATE_OVERVIEW_DISABLED,
             SYSUI_STATE_HOME_DISABLED,
             SYSUI_STATE_SEARCH_DISABLED,
-            SYSUI_STATE_TRACING_ENABLED,
+            SYSUI_STATE_DISABLE_GESTURE_SPLIT_INVOCATION,
             SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED,
             SYSUI_STATE_BUBBLES_EXPANDED,
             SYSUI_STATE_DIALOG_SHOWING,
@@ -167,7 +164,6 @@ public class QuickStepContract {
             SYSUI_STATE_DEVICE_DOZING,
             SYSUI_STATE_BACK_DISABLED,
             SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED,
-            SYSUI_STATE_IMMERSIVE_MODE,
             SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING,
             SYSUI_STATE_FREEFORM_ACTIVE_IN_DESKTOP_MODE,
             SYSUI_STATE_DEVICE_DREAMING,
@@ -175,10 +171,12 @@ public class QuickStepContract {
             SYSUI_STATE_WAKEFULNESS_TRANSITION,
             SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE,
             SYSUI_STATE_STATUS_BAR_KEYGUARD_GOING_AWAY,
+            SYSUI_STATE_SHORTCUT_HELPER_SHOWING,
+            SYSUI_STATE_TOUCHPAD_GESTURES_DISABLED,
     })
     public @interface SystemUiStateFlags {}
 
-    public static String getSystemUiStateString(int flags) {
+    public static String getSystemUiStateString(long flags) {
         StringJoiner str = new StringJoiner("|");
         if ((flags & SYSUI_STATE_SCREEN_PINNING) != 0) {
             str.add("screen_pinned");
@@ -219,8 +217,8 @@ public class QuickStepContract {
         if ((flags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0) {
             str.add("a11y_long_click");
         }
-        if ((flags & SYSUI_STATE_TRACING_ENABLED) != 0) {
-            str.add("tracing");
+        if ((flags & SYSUI_STATE_DISABLE_GESTURE_SPLIT_INVOCATION) != 0) {
+            str.add("disable_gesture_split_invocation");
         }
         if ((flags & SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED) != 0) {
             str.add("asst_gesture_constrain");
@@ -252,9 +250,6 @@ public class QuickStepContract {
         if ((flags & SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED) != 0) {
             str.add("bubbles_mange_menu_expanded");
         }
-        if ((flags & SYSUI_STATE_IMMERSIVE_MODE) != 0) {
-            str.add("immersive_mode");
-        }
         if ((flags & SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING) != 0) {
             str.add("vis_win_showing");
         }
@@ -276,6 +271,12 @@ public class QuickStepContract {
         if ((flags & SYSUI_STATE_STATUS_BAR_KEYGUARD_GOING_AWAY) != 0) {
             str.add("keygrd_going_away");
         }
+        if ((flags & SYSUI_STATE_SHORTCUT_HELPER_SHOWING) != 0) {
+            str.add("shortcut_helper_showing");
+        }
+        if ((flags & SYSUI_STATE_TOUCHPAD_GESTURES_DISABLED) != 0) {
+            str.add("touchpad_gestures_disabled");
+        }
 
         return str.toString();
     }
@@ -296,13 +297,13 @@ public class QuickStepContract {
      * Returns whether the specified sysui state is such that the assistant gesture should be
      * disabled.
      */
-    public static boolean isAssistantGestureDisabled(int sysuiStateFlags) {
+    public static boolean isAssistantGestureDisabled(long sysuiStateFlags) {
         if ((sysuiStateFlags & SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY) != 0) {
             sysuiStateFlags &= ~SYSUI_STATE_NAV_BAR_HIDDEN;
         }
         // Disable when in quick settings, screen pinning, immersive, the bouncer is showing, 
         // or search is disabled
-        int disableFlags = SYSUI_STATE_SCREEN_PINNING
+        long disableFlags = SYSUI_STATE_SCREEN_PINNING
                 | SYSUI_STATE_NAV_BAR_HIDDEN
                 | SYSUI_STATE_BOUNCER_SHOWING
                 | SYSUI_STATE_SEARCH_DISABLED
@@ -324,7 +325,7 @@ public class QuickStepContract {
      * Returns whether the specified sysui state is such that the back gesture should be
      * disabled.
      */
-    public static boolean isBackGestureDisabled(int sysuiStateFlags, boolean forTrackpad) {
+    public static boolean isBackGestureDisabled(long sysuiStateFlags, boolean forTrackpad) {
         // Always allow when the bouncer/global actions/voice session is showing (even on top of
         // the keyguard)
         if ((sysuiStateFlags & SYSUI_STATE_BOUNCER_SHOWING) != 0
@@ -339,9 +340,9 @@ public class QuickStepContract {
         return (sysuiStateFlags & getBackGestureDisabledMask(forTrackpad)) != 0;
     }
 
-    private static int getBackGestureDisabledMask(boolean forTrackpad) {
+    private static long getBackGestureDisabledMask(boolean forTrackpad) {
         // Disable when in immersive, or the notifications are interactive
-        int disableFlags = SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
+        long disableFlags = SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
         if (!forTrackpad) {
             disableFlags |= SYSUI_STATE_NAV_BAR_HIDDEN;
         }
@@ -375,27 +376,13 @@ public class QuickStepContract {
         return mode == NAV_BAR_MODE_3BUTTON;
     }
 
-    public static boolean sRecentsDisabled = false;
-    public static boolean sHasCustomCornerRadius = false;
-    public static float sCustomCornerRadius = 0f;
-
     /**
      * Corner radius that should be used on windows in order to cover the display.
      * These values are expressed in pixels because they should not respect display or font
-     * scaling, this means that we don't have to reload them on config changes.
+     * scaling. The corner radius may change when folding/unfolding the device.
      */
     public static float getWindowCornerRadius(Context context) {
-        if (sRecentsDisabled || !LawnchairQuickstepCompat.ATLEAST_S) {
-            return 0;
-        }
-        if (sHasCustomCornerRadius) {
-            return sCustomCornerRadius;
-        }
-        try {
-            return ScreenDecorationsUtils.getWindowCornerRadius(context);
-        } catch (Throwable t) {
-            return 0;
-        }
+        return ScreenDecorationsUtils.getWindowCornerRadius(context);
     }
 
     /**

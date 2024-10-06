@@ -46,6 +46,10 @@
         @android:color/system_neutral2_200</color>
     <color name="widget_picker_collapse_handle_color_dark">
         @android:color/system_neutral2_700</color>
+    <color name="widget_picker_add_button_background_color_dark">
+        @android:color/system_accent1_200</color>
+    <color name="widget_picker_add_button_text_color_dark">
+        @android:color/system_accent1_800</color>
 
     <color name="work_fab_bg_color">
         @android:color/system_accent1_200</color>

@@ -23,9 +23,7 @@ import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.WindowInsets;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -59,11 +57,11 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     private final Rect mImeInsets = new Rect();
     private int mFlags;
     private final ActivityContext mActivityContext;
+    private final Context mContext;
 
     // Threshold when user scrolls up/down to determine when should button
     // extend/collapse
     private final int mScrollThreshold;
-    private ImageView mIcon;
     private TextView mTextView;
 
     public WorkModeSwitch(@NonNull Context context) {
@@ -76,6 +74,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
 
     public WorkModeSwitch(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext = context;
         mScrollThreshold = Utilities.dpToPx(SCROLL_THRESHOLD_DP);
         mActivityContext = ActivityContext.lookupContext(getContext());
     }
@@ -84,6 +83,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     protected void onFinishInflate() {
         super.onFinishInflate();
         mIcon = findViewById(R.id.work_icon);
+
         mTextView = findViewById(R.id.pause_text);
         FontManager.INSTANCE.get(getContext()).setCustomFont(mTextView, R.id.font_body_medium);
 

@@ -44,7 +44,6 @@ import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.RoundDrawableWrapper;
-import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 
 import app.lawnchair.LawnchairAppWidgetHostView;
 
@@ -146,8 +145,6 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             }
             if (mAppWidgetHostViewPreview != null) {
                 previewSizeBeforeScale[0] = mAppWidgetHostViewPreview.getMeasuredWidth();
-                launcher.getDragController()
-                        .addDragListener(new AppWidgetHostViewDragListener(launcher));
             }
             if (preview == null && mAppWidgetHostViewPreview == null) {
                 Drawable p = new FastBitmapDrawable(new DatabaseWidgetPreviewLoader(launcher)

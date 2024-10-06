@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.devtools.ksp'
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
@@ -15,19 +15,21 @@ android {
             aidl.srcDirs = ['src']
         }
     }
-    ksp {
-        arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+    kapt {
+        arguments {
+            arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+        }
     }
 }
 
-addFrameworkJar('framework-14.jar')
+addFrameworkJar('framework-15.jar')
 compileOnlyCommonJars()
 
 dependencies {
     implementation "com.google.dagger:hilt-android:$daggerVersion"
-    ksp "com.google.dagger:hilt-compiler:$daggerVersion"
+    kapt "com.google.dagger:hilt-compiler:$daggerVersion"
 
     implementation "androidx.concurrent:concurrent-futures:1.2.0"
     implementation "androidx.lifecycle:lifecycle-common:2.8.6"
-    implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
+    implementation projects.androidxLib
 }

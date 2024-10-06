@@ -17,6 +17,7 @@
 package com.android.systemui.shared.system;
 
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.view.RemoteAnimationTarget;
 
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -29,7 +30,7 @@ public interface RecentsAnimationListener {
      */
     void onAnimationStart(RecentsAnimationControllerCompat controller,
             RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-            Rect homeContentInsets, Rect minimizedHomeBounds);
+            Rect homeContentInsets, Rect minimizedHomeBounds, Bundle extras);
 
     /**
      * Called when the animation into Recents was canceled. This call is made on the binder thread.

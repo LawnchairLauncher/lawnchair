@@ -16,7 +16,7 @@
 
 package com.android.launcher3.dragndrop;
 
-import static com.android.launcher3.Utilities.ATLEAST_Q;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -31,8 +31,11 @@ import androidx.annotation.Nullable;
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.Flags;
 import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
@@ -87,6 +90,10 @@ public abstract class DragController<T extends ActivityContext>
     private int mLastTouchClassification;
     protected int mDistanceSinceScroll = 0;
 
+    /**
+     * This variable is to differentiate between a long press and a drag, if it's true that means
+     * it's a long press and when it's false means that we are no longer in a long press.
+     */
     protected boolean mIsInPreDrag;
 
     private final int DRAG_VIEW_SCALE_DURATION_MS = 500;
@@ -219,6 +226,12 @@ public abstract class DragController<T extends ActivityContext>
         }
     }
 
+    protected boolean isItemPinnable() {
+        return !Flags.privateSpaceRestrictItemDrag()
+                || !(mDragObject.dragInfo instanceof ItemInfoWithIcon itemInfoWithIcon)
+                || (itemInfoWithIcon.runtimeStatusFlags & FLAG_NOT_PINNABLE) == 0;
+    }
+
     public Optional<InstanceId> getLogInstanceId() {
         return Optional.ofNullable(mDragObject)
                 .map(dragObject -> dragObject.logInstanceId);
@@ -277,7 +290,8 @@ public abstract class DragController<T extends ActivityContext>
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
             ItemInfo dragInfo = mDragObject.dragInfo;
-            if (dragInfo instanceof WorkspaceItemInfo && matcher.test(dragInfo)) {
+            if ((dragInfo instanceof WorkspaceItemInfo && matcher.test(dragInfo))
+                    || (dragInfo instanceof AppPairInfo api && api.anyMatch(matcher))) {
                 cancelDrag();
             }
         }
@@ -370,7 +384,7 @@ public abstract class DragController<T extends ActivityContext>
     @Override
     public void onDriverDragEnd(float x, float y) {
         if (!endWithFlingAnimation()) {
-            drop(findDropTarget((int) x, (int) y, mCoordinatesTemp), null);
+            drop(findDropTarget((int) x, (int) y), null);
         }
         endDrag();
     }
@@ -400,9 +414,7 @@ public abstract class DragController<T extends ActivityContext>
             mMotionDown.set(dragLayerPos.x,  dragLayerPos.y);
         }
 
-        if (ATLEAST_Q) {
-            mLastTouchClassification = ev.getClassification();
-        }
+        mLastTouchClassification = ev.getClassification();
         return mDragDriver != null && mDragDriver.onInterceptTouchEvent(ev);
     }
 
@@ -432,25 +444,21 @@ public abstract class DragController<T extends ActivityContext>
     protected void handleMoveEvent(int x, int y) {
         mDragObject.dragView.move(x, y);
 
-        // Drop on someone?
-        final int[] coordinates = mCoordinatesTemp;
-        DropTarget dropTarget = findDropTarget(x, y, coordinates);
-        mDragObject.x = coordinates[0];
-        mDragObject.y = coordinates[1];
-        checkTouchMove(dropTarget);
-
         // Check if we are hovering over the scroll areas
         mDistanceSinceScroll += Math.hypot(mLastTouch.x - x, mLastTouch.y - y);
         mLastTouch.set(x, y);
 
         int distanceDragged = mDistanceSinceScroll;
-        if (ATLEAST_Q && mLastTouchClassification == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
+        if (mLastTouchClassification == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
             distanceDragged /= DEEP_PRESS_DISTANCE_FACTOR;
         }
         if (mIsInPreDrag && mOptions.preDragCondition != null
                 && mOptions.preDragCondition.shouldStartDrag(distanceDragged)) {
             callOnDragStart();
         }
+
+        // Drop on someone?
+        checkTouchMove(x, y);
     }
 
     public float getDistanceDragged() {
@@ -458,14 +466,15 @@ public abstract class DragController<T extends ActivityContext>
     }
 
     public void forceTouchMove() {
-        int[] placeholderCoordinates = mCoordinatesTemp;
-        DropTarget dropTarget = findDropTarget(mLastTouch.x, mLastTouch.y, placeholderCoordinates);
-        mDragObject.x = placeholderCoordinates[0];
-        mDragObject.y = placeholderCoordinates[1];
-        checkTouchMove(dropTarget);
+        checkTouchMove(mLastTouch.x, mLastTouch.y);
     }
 
-    private void checkTouchMove(DropTarget dropTarget) {
+    private DropTarget checkTouchMove(final int x, final int y) {
+        // If we are in predrag, don't trigger any other event until we get out of it
+        if (mIsInPreDrag) {
+            return mLastDropTarget;
+        }
+        DropTarget dropTarget = findDropTarget(x, y);
         if (dropTarget != null) {
             if (mLastDropTarget != dropTarget) {
                 if (mLastDropTarget != null) {
@@ -474,12 +483,11 @@ public abstract class DragController<T extends ActivityContext>
                 dropTarget.onDragEnter(mDragObject);
             }
             dropTarget.onDragOver(mDragObject);
-        } else {
-            if (mLastDropTarget != null) {
-                mLastDropTarget.onDragExit(mDragObject);
-            }
+        } else if (mLastDropTarget != null) {
+            mLastDropTarget.onDragExit(mDragObject);
         }
         mLastDropTarget = dropTarget;
+        return mLastDropTarget;
     }
 
     /**
@@ -487,13 +495,8 @@ public abstract class DragController<T extends ActivityContext>
      * we manually ensure appropriate drag and drop events get emulated for accessible drag.
      */
     public void completeAccessibleDrag(int[] location) {
-        final int[] coordinates = mCoordinatesTemp;
-
         // We make sure that we prime the target for drop.
-        DropTarget dropTarget = findDropTarget(location[0], location[1], coordinates);
-        mDragObject.x = coordinates[0];
-        mDragObject.y = coordinates[1];
-        checkTouchMove(dropTarget);
+        DropTarget dropTarget = checkTouchMove(location[0], location[1]);
 
         dropTarget.prepareAccessibilityDrop();
         // Perform the drop
@@ -502,10 +505,6 @@ public abstract class DragController<T extends ActivityContext>
     }
 
     protected void drop(DropTarget dropTarget, Runnable flingAnimation) {
-        final int[] coordinates = mCoordinatesTemp;
-        mDragObject.x = coordinates[0];
-        mDragObject.y = coordinates[1];
-
         // Move dragging to the final target.
         if (dropTarget != mLastDropTarget) {
             if (mLastDropTarget != null) {
@@ -542,9 +541,9 @@ public abstract class DragController<T extends ActivityContext>
         dispatchDropComplete(dropTargetAsView, accepted);
     }
 
-    private DropTarget findDropTarget(int x, int y, int[] dropCoordinates) {
-        mDragObject.x = x;
-        mDragObject.y = y;
+    private DropTarget findDropTarget(final int x, final int y) {
+        mCoordinatesTemp[0] = x;
+        mCoordinatesTemp[1] = y;
 
         final Rect r = mRectTemp;
         final ArrayList<DropTarget> dropTargets = mDropTargets;
@@ -556,17 +555,17 @@ public abstract class DragController<T extends ActivityContext>
 
             target.getHitRectRelativeToDragLayer(r);
             if (r.contains(x, y)) {
-                dropCoordinates[0] = x;
-                dropCoordinates[1] = y;
-                mActivity.getDragLayer().mapCoordInSelfToDescendant((View) target, dropCoordinates);
+                mActivity.getDragLayer().mapCoordInSelfToDescendant((View) target,
+                        mCoordinatesTemp);
+                mDragObject.x = mCoordinatesTemp[0];
+                mDragObject.y = mCoordinatesTemp[1];
                 return target;
             }
         }
-        // Pass all unhandled drag to workspace. Workspace finds the correct
-        // cell layout to drop to in the existing drag/drop logic.
-        dropCoordinates[0] = x;
-        dropCoordinates[1] = y;
-        return getDefaultDropTarget(dropCoordinates);
+        DropTarget dropTarget = getDefaultDropTarget(mCoordinatesTemp);
+        mDragObject.x = mCoordinatesTemp[0];
+        mDragObject.y = mCoordinatesTemp[1];
+        return dropTarget;
     }
 
     protected abstract DropTarget getDefaultDropTarget(int[] dropCoordinates);

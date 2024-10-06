@@ -38,8 +38,8 @@ public class MulticellReorderAlgorithm extends ReorderAlgorithm {
         mSeam = new View(cellLayout.getContext());
     }
 
-    private CellLayout.ItemConfiguration removeSeamFromSolution(
-            CellLayout.ItemConfiguration solution) {
+    public ItemConfiguration removeSeamFromSolution(ItemConfiguration solution) {
+        solution.map.remove(mSeam);
         solution.map.forEach((view, cell) -> cell.cellX =
                 cell.cellX > mCellLayout.getCountX() / 2 ? cell.cellX - 1 : cell.cellX);
         solution.cellX =
@@ -48,29 +48,24 @@ public class MulticellReorderAlgorithm extends ReorderAlgorithm {
     }
 
     @Override
-    public CellLayout.ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY,
-            int minSpanX, int minSpanY,
-            int spanX, int spanY) {
+    public ItemConfiguration closestEmptySpaceReorder(ReorderParameters reorderParameters) {
         return removeSeamFromSolution(simulateSeam(
-                () -> super.closestEmptySpaceReorder(pixelX, pixelY, minSpanX, minSpanY, spanX,
-                        spanY)));
+                () -> super.closestEmptySpaceReorder(reorderParameters))
+        );
     }
 
     @Override
-    public CellLayout.ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX,
-            int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
-            CellLayout.ItemConfiguration solution) {
+    public ItemConfiguration findReorderSolution(ReorderParameters reorderParameters,
+            boolean decX) {
         return removeSeamFromSolution(simulateSeam(
-                () -> super.findReorderSolution(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY,
-                        direction, dragView, decX, solution)));
+                () -> super.findReorderSolution(reorderParameters, decX)));
     }
 
     @Override
-    public CellLayout.ItemConfiguration dropInPlaceSolution(int pixelX, int pixelY, int spanX,
-            int spanY,
-            View dragView) {
-        return removeSeamFromSolution(simulateSeam(
-                () -> super.dropInPlaceSolution(pixelX, pixelY, spanX, spanY, dragView)));
+    public ItemConfiguration dropInPlaceSolution(ReorderParameters reorderParameters) {
+        return removeSeamFromSolution(
+                simulateSeam(() -> super.dropInPlaceSolution(reorderParameters))
+        );
     }
 
     void addSeam() {

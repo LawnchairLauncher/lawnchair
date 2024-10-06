@@ -15,15 +15,21 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_PERSISTENT;
+import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_TRANSIENT;
+
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.SystemProperties;
 import android.view.ViewTreeObserver;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.util.DimensionUtils;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.TouchController;
 
@@ -34,6 +40,9 @@ import java.io.PrintWriter;
  */
 public class TaskbarDragLayerController implements TaskbarControllers.LoggableTaskbarController,
         TaskbarControllers.BackgroundRendererController {
+
+    private static final boolean DEBUG = SystemProperties.getBoolean(
+            "persist.debug.draw_taskbar_debug_ui", false);
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mTaskbarDragLayer;
@@ -57,6 +66,9 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     // Used to fade in/out the entirety of the taskbar, for a smooth transition before/after sysui
     // changes the inset visibility.
     private final AnimatedFloat mTaskbarAlpha = new AnimatedFloat(this::updateTaskbarAlpha);
+
+    private final AnimatedFloat mTaskbarBackgroundProgress = new AnimatedFloat(
+            this::updateTaskbarBackgroundProgress);
 
     // Initialized in init.
     private TaskbarControllers mControllers;
@@ -82,6 +94,10 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
 
         mOnBackgroundNavButtonColorIntensity = mControllers.navbarButtonsViewController
                 .getOnTaskbarBackgroundNavButtonColorOverride();
+
+        mTaskbarBackgroundProgress.updateValue(DisplayController.isTransientTaskbar(mActivity)
+                ? PINNING_TRANSIENT
+                : PINNING_PERSISTENT);
 
         mBgTaskbar.value = 1;
         mKeyguardBgTaskbar.value = 1;
@@ -138,6 +154,11 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         return mBgOffset;
     }
 
+    // AnimatedFloat is for animating between pinned and transient taskbar
+    public AnimatedFloat getTaskbarBackgroundProgress() {
+        return mTaskbarBackgroundProgress;
+    }
+
     public AnimatedFloat getTaskbarAlpha() {
         return mTaskbarAlpha;
     }
@@ -180,8 +201,11 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
 
     private void updateBackgroundOffset() {
         mTaskbarDragLayer.setTaskbarBackgroundOffset(mBgOffset.value);
-
         updateOnBackgroundNavButtonColorIntensity();
+    }
+
+    private void updateTaskbarBackgroundProgress() {
+        mTaskbarDragLayer.setTaskbarBackgroundProgress(mTaskbarBackgroundProgress.value);
     }
 
     private void updateTaskbarAlpha() {
@@ -246,6 +270,13 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         }
 
         /**
+         * Called when an IME inset is changed.
+         */
+        public void onImeInsetChanged() {
+            mControllers.taskbarStashController.onImeInsetChanged();
+        }
+
+        /**
          * Called when a child is removed from TaskbarDragLayer.
          */
         public void onDragLayerViewRemoved() {
@@ -257,11 +288,10 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
          */
         public int getTaskbarBackgroundHeight() {
             DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-            if (TaskbarManager.isPhoneMode(deviceProfile)) {
+            if (mActivity.isPhoneMode()) {
                 Resources resources = mActivity.getResources();
-                Point taskbarDimensions =
-                        DimensionUtils.getTaskbarPhoneDimensions(deviceProfile, resources,
-                                TaskbarManager.isPhoneMode(deviceProfile));
+                Point taskbarDimensions = DimensionUtils.getTaskbarPhoneDimensions(deviceProfile,
+                        resources, true /* isPhoneMode */);
                 return taskbarDimensions.y == -1 ?
                         deviceProfile.getDisplayInfo().currentSize.y :
                         taskbarDimensions.y;
@@ -280,6 +310,16 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
                     mControllers.navbarButtonsViewController.getTouchController(),
                     mTaskbarStashViaTouchController,
             };
+        }
+
+        /**
+         * Draws debug UI on top of everything in TaskbarDragLayer.
+         */
+        public void drawDebugUi(Canvas canvas) {
+            if (!DEBUG) {
+                return;
+            }
+            mControllers.taskbarInsetsController.drawDebugTouchableRegionBounds(canvas);
         }
     }
 }

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<RelativeLayout
+        android:id="@+id/ps_header_layout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ps_header_height"
+        android:background="@drawable/bg_ps_header"
+        android:clipToOutline="true"
+        android:gravity="center_vertical"
+        android:textDirection="locale"
+        android:orientation="horizontal"
+        android:contentDescription="@string/ps_container_lock_button_content_description"
+        android:importantForAccessibility="yes">
+
+    <LinearLayout
+        android:id="@+id/settingsAndLockGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:layout_alignParentEnd="true"
+        android:animateLayoutChanges="false">
+        <com.android.launcher3.allapps.PrivateSpaceSettingsButton
+            android:id="@+id/ps_settings_button"
+            android:layout_width="@dimen/ps_header_image_height"
+            android:layout_height="@dimen/ps_header_image_height"
+            android:background="@drawable/ps_settings_background"
+            android:src="@drawable/ic_ps_settings"
+            android:contentDescription="@string/ps_container_settings" />
+        <LinearLayout
+            android:id="@+id/ps_lock_unlock_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/ps_header_image_height"
+            android:background="@drawable/ps_lock_background"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="@dimen/ps_lock_button_margin_end"
+            android:contentDescription="@string/ps_container_lock_button_content_description">
+            <ImageView
+                android:id="@+id/lock_icon"
+                android:layout_width="@dimen/ps_lock_icon_size"
+                android:layout_height="@dimen/ps_lock_icon_size"
+                android:layout_marginTop="@dimen/ps_lock_icon_margin_top"
+                android:layout_marginBottom="@dimen/ps_lock_icon_margin_bottom"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_lock"
+                app:tint="@color/material_color_primary_fixed_dim"
+                android:scaleType="center"/>
+            <TextView
+                android:id="@+id/lock_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ps_lock_icon_text_margin_start_expanded"
+                android:layout_marginEnd="@dimen/ps_lock_icon_text_margin_end_expanded"
+                android:textColor="@color/material_color_on_primary_fixed"
+                android:textSize="14sp"
+                android:text="@string/ps_container_lock_title"
+                android:visibility="gone"
+                style="@style/TextHeadline"/>
+        </LinearLayout>
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/ps_transition_image"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/ps_header_image_height"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"
+        android:layout_marginEnd="@dimen/ps_header_layout_margin"
+        android:src="@drawable/bg_ps_transition_image"
+        android:contentDescription="@string/ps_container_transition" />
+
+    <TextView
+        android:id="@+id/ps_container_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/ps_header_text_height"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/settingsAndLockGroup"
+        android:gravity="center_vertical"
+        android:layout_marginStart="@dimen/ps_header_layout_margin"
+        android:text="@string/ps_container_title"
+        android:theme="@style/PrivateSpaceHeaderTextStyle"
+        android:importantForAccessibility="no"/>
+
+</RelativeLayout>

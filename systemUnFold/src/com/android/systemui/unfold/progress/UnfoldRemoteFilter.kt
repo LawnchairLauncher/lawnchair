@@ -41,8 +41,6 @@ class UnfoldRemoteFilter(
             if (inProgress) {
                 logCounter({ "$TAG#filtered_progress" }, newProgress)
                 listener.onTransitionProgress(newProgress)
-            } else {
-                Log.e(TAG, "Filtered progress received received while animation not in progress.")
             }
             field = newProgress
         }

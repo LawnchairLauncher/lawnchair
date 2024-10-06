@@ -79,6 +79,7 @@ public class LoaderCursorTest {
 
     private LauncherModelHelper mModelHelper;
     private LauncherAppState mApp;
+    private PackageManagerHelper mPmHelper;
 
     private MatrixCursor mCursor;
     private InvariantDeviceProfile mIDP;
@@ -92,6 +93,7 @@ public class LoaderCursorTest {
         mContext = mModelHelper.sandboxContext;
         mIDP = InvariantDeviceProfile.INSTANCE.get(mContext);
         mApp = LauncherAppState.getInstance(mContext);
+        mPmHelper = PackageManagerHelper.INSTANCE.get(mContext);
 
         mCursor = new MatrixCursor(new String[] {
                 ICON, TITLE, _ID, CONTAINER, ITEM_TYPE,
@@ -101,7 +103,7 @@ public class LoaderCursorTest {
         });
 
         UserManagerState ums = new UserManagerState();
-        mLoaderCursor = new LoaderCursor(mCursor, mApp, ums);
+        mLoaderCursor = new LoaderCursor(mCursor, mApp, ums, mPmHelper, null);
         ums.allUsers.put(0, Process.myUserHandle());
     }
 
@@ -175,7 +177,7 @@ public class LoaderCursorTest {
 
         // Item outside screen bounds are not placed
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(4, 4, 1, 1, CONTAINER_DESKTOP, 1)));
+                newItemInfo(4, 4, 1, 1, CONTAINER_DESKTOP, 1), true));
     }
 
     @Test
@@ -186,22 +188,22 @@ public class LoaderCursorTest {
 
         // Overlapping mItems are not placed
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1)));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1), true));
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1)));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1), true));
 
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2)));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2), true));
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2)));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2), true));
 
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(1, 1, 1, 1, CONTAINER_DESKTOP, 1)));
+                newItemInfo(1, 1, 1, 1, CONTAINER_DESKTOP, 1), true));
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(2, 2, 2, 2, CONTAINER_DESKTOP, 1)));
+                newItemInfo(2, 2, 2, 2, CONTAINER_DESKTOP, 1), true));
 
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 2, 1, 2, CONTAINER_DESKTOP, 1)));
+                newItemInfo(3, 2, 1, 2, CONTAINER_DESKTOP, 1), true));
     }
 
     @Test
@@ -212,12 +214,12 @@ public class LoaderCursorTest {
 
         // Hotseat mItems are only placed based on screenId
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 1)));
+                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 1), true));
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 2)));
+                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 2), true));
 
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 3)));
+                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 3), true));
     }
 
     private ItemInfo newItemInfo(int cellX, int cellY, int spanX, int spanY,

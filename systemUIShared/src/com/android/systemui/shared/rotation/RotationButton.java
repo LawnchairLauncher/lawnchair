@@ -36,7 +36,6 @@ public interface RotationButton {
     default boolean isVisible() {
         return false;
     }
-    default void setCanShowRotationButton(boolean canShow) {}
     default void onTaskbarStateChanged(boolean taskbarVisible, boolean taskbarStashed) {}
     default void updateIcon(int lightIconColor, int darkIconColor) { }
     default void setOnClickListener(View.OnClickListener onClickListener) { }

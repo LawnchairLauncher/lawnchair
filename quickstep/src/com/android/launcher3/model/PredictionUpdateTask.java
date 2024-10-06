@@ -15,8 +15,9 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.EncryptionType.ENCRYPTED;
+import static com.android.launcher3.LauncherPrefs.nonRestorableItem;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-import static com.android.launcher3.model.QuickstepModelDelegate.LAST_PREDICTION_ENABLED_STATE;
 import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
 import android.app.prediction.AppTarget;
@@ -29,7 +30,9 @@ import android.os.UserHandle;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.ConstantItem;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
@@ -45,7 +48,10 @@ import java.util.stream.Collectors;
 /**
  * Task to update model as a result of predicted apps update
  */
-public class PredictionUpdateTask extends BaseModelUpdateTask {
+public class PredictionUpdateTask implements ModelUpdateTask {
+
+    public static final ConstantItem<Boolean> LAST_PREDICTION_ENABLED =
+            nonRestorableItem("last_prediction_enabled_state", true, ENCRYPTED);
 
     private final List<AppTarget> mTargets;
     private final PredictorState mPredictorState;
@@ -56,13 +62,13 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
-            @NonNull final AllAppsList apps) {
+    public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
+            @NonNull AllAppsList apps) {
+        LauncherAppState app = taskController.getApp();
         Context context = app.getContext();
 
         // TODO: remove this
-        LauncherPrefs.getDevicePrefs(context).edit()
-                .putBoolean(LAST_PREDICTION_ENABLED_STATE, !mTargets.isEmpty()).apply();
+        LauncherPrefs.get(context).put(LAST_PREDICTION_ENABLED, !mTargets.isEmpty());
 
         Set<UserHandle> usersForChangedShortcuts =
                 dataModel.extraItems.get(mPredictorState.containerId).items.stream()
@@ -115,7 +121,7 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
 
         FixedContainerItems fci = new FixedContainerItems(mPredictorState.containerId, items);
         dataModel.extraItems.put(fci.containerId, fci);
-        bindExtraContainerItems(fci);
+        taskController.bindExtraContainerItems(fci);
         usersForChangedShortcuts.forEach(
                 u -> dataModel.updateShortcutPinnedState(app.getContext(), u));
 

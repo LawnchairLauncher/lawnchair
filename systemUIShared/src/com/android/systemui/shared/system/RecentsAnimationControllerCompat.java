@@ -23,13 +23,9 @@ import android.view.SurfaceControl;
 import android.window.PictureInPictureSurfaceTransaction;
 import android.window.TaskSnapshot;
 
+import com.android.internal.os.IResultReceiver;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import app.lawnchair.compat.LawnchairQuickstepCompat;
-import com.android.internal.os.IResultReceiver;
 public class RecentsAnimationControllerCompat {
 
     private static final String TAG = RecentsAnimationControllerCompat.class.getSimpleName();
@@ -43,15 +39,10 @@ public class RecentsAnimationControllerCompat {
     }
 
     public ThumbnailData screenshotTask(int taskId) {
-        if (!LawnchairQuickstepCompat.ATLEAST_S) {
-            var compat =  LawnchairQuickstepCompat.getActivityManagerCompat();
-            var data = compat.takeScreenshot(mAnimationController, taskId);
-            return data != null ? new ThumbnailData(data) : new ThumbnailData();
-        }
         try {
             final TaskSnapshot snapshot = mAnimationController.screenshotTask(taskId);
             if (snapshot != null) {
-                return new ThumbnailData(snapshot);
+                return ThumbnailData.fromSnapshot(snapshot);
             }
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to screenshot task", e);
@@ -99,25 +90,16 @@ public class RecentsAnimationControllerCompat {
      * @param sendUserLeaveHint determines whether userLeaveHint will be set true to the previous
      *                          app.
      */
-    public void finish(boolean toHome, boolean sendUserLeaveHint) {
+    public void finish(boolean toHome, boolean sendUserLeaveHint, IResultReceiver finishCb) {
         try {
-            hookIrecentsController(toHome, sendUserLeaveHint);
+            mAnimationController.finish(toHome, sendUserLeaveHint, finishCb);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to finish recents animation", e);
-        }
-    }
-
-    /**
-     * IRecentsAnimationController @finish reflection
-     */
-    private void hookIrecentsController(boolean toHome, boolean sendUserLeaveHint) throws RemoteException {
-        try {
-            Class<?> iRecentsAnimationControllerClass = Class.forName("android.view.IRecentsAnimationController");
-            Method finishMethod = iRecentsAnimationControllerClass.getMethod("finish", boolean.class, boolean.class, IResultReceiver.class);
-            finishMethod.invoke(mAnimationController, toHome, sendUserLeaveHint, null);
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
-                 InvocationTargetException e) {
-            mAnimationController.finish(toHome, sendUserLeaveHint);
+            try {
+                finishCb.send(0, null);
+            } catch (Exception ex) {
+                // Local call, can ignore
+            }
         }
     }
 
@@ -141,7 +123,6 @@ public class RecentsAnimationControllerCompat {
      * @see {{@link IRecentsAnimationController#setWillFinishToHome(boolean)}}.
      */
     public void setWillFinishToHome(boolean willFinishToHome) {
-        if (!LawnchairQuickstepCompat.ATLEAST_R) return;
         try {
             mAnimationController.setWillFinishToHome(willFinishToHome);
         } catch (RemoteException e) {
@@ -165,7 +146,6 @@ public class RecentsAnimationControllerCompat {
      * @see IRecentsAnimationController#detachNavigationBarFromApp
      */
     public void detachNavigationBarFromApp(boolean moveHomeToTop) {
-        if (!LawnchairQuickstepCompat.ATLEAST_S) return;
         try {
             mAnimationController.detachNavigationBarFromApp(moveHomeToTop);
         } catch (RemoteException e) {
@@ -177,7 +157,6 @@ public class RecentsAnimationControllerCompat {
      * @see IRecentsAnimationController#animateNavigationBarToApp(long)
      */
     public void animateNavigationBarToApp(long duration) {
-        if (!LawnchairQuickstepCompat.ATLEAST_S) return;
         try {
             mAnimationController.animateNavigationBarToApp(duration);
         } catch (RemoteException e) {

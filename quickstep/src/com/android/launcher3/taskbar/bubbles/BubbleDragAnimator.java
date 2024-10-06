@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar.bubbles;
 
 import static androidx.dynamicanimation.animation.SpringForce.DAMPING_RATIO_LOW_BOUNCY;
 import static androidx.dynamicanimation.animation.SpringForce.STIFFNESS_LOW;
-import static androidx.dynamicanimation.animation.SpringForce.STIFFNESS_MEDIUM;
 
 import android.content.res.Resources;
 import android.graphics.PointF;
@@ -36,18 +35,22 @@ import app.lawnchair.animation.PhysicsAnimator;
 import app.lawnchair.bubbles.DismissView;
 
 /**
- * The animator performs the bubble animations while dragging and coordinates bubble and dismiss
+ * The animator performs the bubble animations while dragging and coordinates
+ * bubble and dismiss
  * view animations when it gets magnetized, released or dismissed.
  */
 public class BubbleDragAnimator {
     private static final float SCALE_BUBBLE_FOCUSED = 1.2f;
     private static final float SCALE_BUBBLE_CAPTURED = 0.9f;
     private static final float SCALE_BUBBLE_BAR_FOCUSED = 1.1f;
+    // 400f matches to MEDIUM_LOW spring stiffness
+    private static final float TRANSLATION_SPRING_STIFFNESS = 400f;
 
-    private final PhysicsAnimator.SpringConfig mDefaultConfig =
-            new PhysicsAnimator.SpringConfig(STIFFNESS_LOW, DAMPING_RATIO_LOW_BOUNCY);
-    private final PhysicsAnimator.SpringConfig mTranslationConfig =
-            new PhysicsAnimator.SpringConfig(STIFFNESS_MEDIUM, DAMPING_RATIO_LOW_BOUNCY);
+    private final PhysicsAnimator.SpringConfig mDefaultConfig = new PhysicsAnimator.SpringConfig(STIFFNESS_LOW,
+            DAMPING_RATIO_LOW_BOUNCY);
+    private final PhysicsAnimator.SpringConfig mTranslationConfig = new PhysicsAnimator.SpringConfig(
+            TRANSLATION_SPRING_STIFFNESS,
+            DAMPING_RATIO_LOW_BOUNCY);
     @NonNull
     private final View mView;
     @NonNull
@@ -109,25 +112,26 @@ public class BubbleDragAnimator {
     /**
      * Animates the dragged bubble movement back to the initial position.
      *
-     * @param initialPosition the position to animate to
+     * @param restingPosition the position to animate to
      * @param velocity        the initial velocity to use for the spring animation
-     * @param endActions      gets called when the animation completes or gets cancelled
+     * @param endActions      gets called when the animation completes or gets
+     *                        cancelled
      */
-    public void animateToInitialState(@NonNull PointF initialPosition, @NonNull PointF velocity,
+    public void animateToRestingState(@NonNull PointF restingPosition, @NonNull PointF velocity,
             @Nullable Runnable endActions) {
         mBubbleAnimator.cancel();
         mBubbleAnimator
                 .spring(DynamicAnimation.SCALE_X, 1f)
                 .spring(DynamicAnimation.SCALE_Y, 1f)
-                .spring(DynamicAnimation.TRANSLATION_X, initialPosition.x, velocity.x,
+                .spring(BubbleDragController.DRAG_TRANSLATION_X, restingPosition.x, velocity.x,
                         mTranslationConfig)
-                .spring(DynamicAnimation.TRANSLATION_Y, initialPosition.y, velocity.y,
+                .spring(DynamicAnimation.TRANSLATION_Y, restingPosition.y, velocity.y,
                         mTranslationConfig)
                 .addEndListener((View target, @NonNull FloatPropertyCompat<? super View> property,
                         boolean wasFling, boolean canceled, float finalValue, float finalVelocity,
                         boolean allRelevantPropertyAnimationsEnded) -> {
                     if (canceled || allRelevantPropertyAnimationsEnded) {
-                        resetAnimatedViews(initialPosition);
+                        resetAnimatedViews(restingPosition);
                         if (endActions != null) {
                             endActions.run();
                         }
@@ -137,7 +141,8 @@ public class BubbleDragAnimator {
     }
 
     /**
-     * Animates the dragged view alongside the dismiss view when it gets captured in the dismiss
+     * Animates the dragged view alongside the dismiss view when it gets captured in
+     * the dismiss
      * target area.
      */
     public void animateDismissCaptured() {
@@ -158,7 +163,8 @@ public class BubbleDragAnimator {
     }
 
     /**
-     * Animates the dragged view alongside the dismiss view when it gets released from the dismiss
+     * Animates the dragged view alongside the dismiss view when it gets released
+     * from the dismiss
      * target area.
      */
     public void animateDismissReleased() {
@@ -179,10 +185,13 @@ public class BubbleDragAnimator {
     }
 
     /**
-     * Animates the dragged bubble dismiss when it's released in the dismiss target area.
+     * Animates the dragged bubble dismiss when it's released in the dismiss target
+     * area.
      *
-     * @param initialPosition the initial position to move the bubble too after animation finishes
-     * @param endActions      gets called when the animation completes or gets cancelled
+     * @param initialPosition the initial position to move the bubble too after
+     *                        animation finishes
+     * @param endActions      gets called when the animation completes or gets
+     *                        cancelled
      */
     public void animateDismiss(@NonNull PointF initialPosition, @Nullable Runnable endActions) {
         float dismissHeight = mDismissView != null ? mDismissView.getHeight() : 0f;
@@ -197,7 +206,8 @@ public class BubbleDragAnimator {
                         boolean allRelevantPropertyAnimationsEnded) -> {
                     if (canceled || allRelevantPropertyAnimationsEnded) {
                         resetAnimatedViews(initialPosition);
-                        if (endActions != null) endActions.run();
+                        if (endActions != null)
+                            endActions.run();
                     }
                 })
                 .start();

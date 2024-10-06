@@ -27,18 +27,31 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets uitgezet in veilige modus"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Snelkoppeling is niet beschikbaar"</string>
     <string name="home_screen" msgid="5629429142036709174">"Startscherm"</string>
+    <string name="set_default_home_app" msgid="5808906607627586381">"Stel <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g> in als de standaard startscherm-app in Instellingen"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Gesplitst scherm"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"App-info voor %1$s"</string>
+    <string name="split_app_usage_settings" msgid="7214375263347964093">"Gebruiksinstellingen voor %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"App-paar opslaan"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Dit app-paar wordt niet ondersteund op dit apparaat"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Vouw het apparaat open om dit app-paar te gebruiken"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"App-paar is niet beschikbaar"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Tik en houd vast om een widget te verplaatsen."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dubbeltik en houd vast om een widget te verplaatsen of aangepaste acties te gebruiken."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d breed en %2$d hoog"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Tik op de widget en houd vast om deze te verplaatsen op het startscherm"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>, %2$d breed bij %3$d hoog"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Houd je vinger op de widget om deze te verplaatsen op het startscherm"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Toevoegen aan startscherm"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> toegevoegd aan startscherm"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Suggesties"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Essentials"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Nieuws en tijdschriften"</string>
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Entertainment"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Sociaal"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Voorgesteld voor jou"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g>-widgets aan de rechterkant, zoeken en opties aan de linkerkant"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widgets}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# snelkoppeling}other{# snelkoppelingen}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -51,10 +64,9 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Werk"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Gesprekken"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Aantekeningen maken"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Nuttige informatie binnen handbereik"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Als je informatie wilt krijgen zonder apps te openen, kun je widgets toevoegen aan je startscherm"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"Toevoegen"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> toevoegen"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Tik om de widgetinstellingen te wijzigen"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Widgetinstellingen wijzigen"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Apps zoeken"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Apps laden…"</string>
@@ -73,9 +85,11 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Verwijderen"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Deïnstalleren"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"App-info"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Privé installeren"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"App verwijderen"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Installeren"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Geen app voorstellen"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Vastzetvoorspelling"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Voorspelling vastzetten"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"Snelle links instellen"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Een app toestaan snelkoppelingen toe te voegen zonder tussenkomst van de gebruiker."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"instellingen en snelkoppelingen op startscherm lezen"</string>
@@ -99,6 +113,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"De naam van de map is gewijzigd in <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Map: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> items"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Map: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> of meer items"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"App-paar: <xliff:g id="APP1">%1$s</xliff:g> en <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Achtergrond en stijl"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Startscherm bewerken"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Instellingen start"</string>
@@ -113,7 +128,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"Instellingen wijzigen"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Toon meldingsstipjes"</string>
     <string name="developer_options_title" msgid="700788437593726194">"Ontwikkelaarsopties"</string>
-    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"App-iconen toevoegen aan startscherm"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"App-iconen op startscherm"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Voor nieuwe apps"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Verwijderen"</string>
@@ -123,6 +138,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> installeren, <xliff:g id="PROGRESS">%2$s</xliff:g> voltooid"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> wordt gedownload, <xliff:g id="PROGRESS">%2$s</xliff:g> voltooid"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> wacht op installatie"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> is gearchiveerd. Tik om te downloaden en te herstellen."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"App-update vereist"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"De app voor dit icoon is niet geüpdatet. Je kunt handmatig updaten om deze snelkoppeling weer aan te zetten of het icoon verwijderen."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Updaten"</string>
@@ -152,16 +168,14 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Hoogte verkleinen"</string>
     <string name="widget_resized" msgid="9130327887929620">"Formaat van widget gewijzigd in breedte <xliff:g id="NUMBER_0">%1$s</xliff:g> en hoogte <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Snelkoppelingen"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Snelkoppelingen en meldingen"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Sluiten"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Sluiten"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"Melding gesloten"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Privé"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Werk"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Werkprofiel"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Werk-apps hebben badges en zijn zichtbaar voor je IT-beheerder"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Werk-apps zijn onderbroken"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Werk-apps zijn gepauzeerd"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Je krijgt geen meldingen van je werk-apps"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Je werk-apps kunnen je geen meldingen sturen, je batterij niet gebruiken en geen toegang krijgen tot je locatie"</string>
     <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Je krijgt geen telefoongesprekken, tekstberichten of meldingen van je werk-apps"</string>
@@ -170,7 +184,15 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Werk-apps pauzeren"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Hervatten"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filteren"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Zoeken op je telefoon"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Zoeken op je tablet"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Mislukt: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Privéruimte"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"Tik om in te stellen of te openen"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Privé"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"Instellingen voor privéruimte"</string>
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Privé, niet vergrendeld."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Privé, vergrendeld."</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"Vergrendelen"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Overschakelen naar privéruimte"</string>
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Installeren"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Apps installeren in privégedeelte"</string>
 </resources>

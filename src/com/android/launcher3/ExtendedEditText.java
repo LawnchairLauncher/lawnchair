@@ -15,8 +15,6 @@
  */
 package com.android.launcher3;
 
-import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.SHOW;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextUtils;
@@ -93,25 +91,37 @@ public class ExtendedEditText extends EditText {
     /**
      * Synchronously shows the soft input method.
      *
-     * @param shouldFocus whether this EditText should also request focus.
      * @return true if the keyboard is shown correctly and focus is given to this
-     *         view (if
-     *         applicable).
+     *         view.
      */
-    public boolean showKeyboard(boolean shouldFocus) {
-        onKeyboardShown();
-        boolean focusResult = !shouldFocus || requestFocus();
-        return focusResult && showSoftInputInternal();
+    public boolean showKeyboard() {
+        return requestFocus() && showSoftInputInternal();
+    }
+
+    /**
+     * Requests the framework to show the keyboard in order to ensure that an
+     * already registered
+     * controlled keyboard animation is triggered correctly.
+     * Must NEVER be called in any other case than to trigger a pre-registered
+     * controlled animation.
+     */
+    public void requestShowKeyboardForControlledAnimation() {
+        // We don't log the keyboard state, as that must happen only after the
+        // controlled animation
+        // has completed.
+        // We also must not request focus, as this triggers unwanted side effects.
+        showSoftInputInternal();
     }
 
     public void hideKeyboard() {
-        ActivityContext.lookupContext(getContext()).hideKeyboard();
-        clearFocus();
+        hideKeyboard(/* clearFocus= */ true);
     }
 
-    protected void onKeyboardShown() {
-        ActivityContext.lookupContext(getContext()).getStatsLogManager()
-                .keyboardStateManager().setKeyboardState(SHOW);
+    public void hideKeyboard(boolean clearFocus) {
+        ActivityContext.lookupContext(getContext()).hideKeyboard();
+        if (clearFocus) {
+            clearFocus();
+        }
     }
 
     private boolean showSoftInputInternal() {
@@ -150,6 +160,16 @@ public class ExtendedEditText extends EditText {
         if (!TextUtils.isEmpty(getText())) {
             setText("");
         }
+    }
+
+    @Override
+    public void setText(CharSequence text, BufferType type) {
+        super.setText(text, type);
+        // With hardware keyboard, there is a possibility that the user types before
+        // edit
+        // text is visible during the transition.
+        // So move the cursor to the end of the text.
+        setSelection(getText().length());
     }
 
     /**

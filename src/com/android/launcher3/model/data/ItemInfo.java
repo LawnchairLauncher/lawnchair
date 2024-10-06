@@ -60,9 +60,12 @@ import com.android.launcher3.logger.LauncherAtom.TaskSwitcherContainer;
 import com.android.launcher3.logger.LauncherAtom.WallpapersContainer;
 import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.SettingsCache;
+import com.android.launcher3.util.UserIconInfo;
+import com.android.systemui.shared.system.SysUiStatsLog;
 
 import java.util.Optional;
 
@@ -72,10 +75,12 @@ import app.lawnchair.LawnchairApp;
  * Represents an item in the launcher.
  */
 public class ItemInfo {
+    private static final String TAG = "ItemInfo";
 
     public static final boolean DEBUG = false;
     public static final int NO_ID = -1;
-    // An id that doesn't match any item, including predicted apps with have an id=NO_ID
+    // An id that doesn't match any item, including predicted apps with have an
+    // id=NO_ID
     public static final int NO_MATCHING_ID = Integer.MIN_VALUE;
 
     /** Hidden field Settings.Secure.NAV_BAR_KIDS_MODE */
@@ -93,6 +98,10 @@ public class ItemInfo {
      * {@link Favorites#ITEM_TYPE_APP_PAIR},
      * {@link Favorites#ITEM_TYPE_APPWIDGET} or
      * {@link Favorites#ITEM_TYPE_CUSTOM_APPWIDGET}.
+     * {@link Favorites#ITEM_TYPE_TASK}.
+     * {@link Favorites#ITEM_TYPE_QSB}.
+     * {@link Favorites#ITEM_TYPE_SEARCH_ACTION}.
+     * {@link Favorites#ITEM_TYPE_PRIVATE_SPACE_INSTALL_APP_BUTTON}.
      */
     public int itemType;
 
@@ -105,7 +114,8 @@ public class ItemInfo {
     /**
      * The id of the container that holds this item. For the desktop, this will be
      * {@link Favorites#CONTAINER_DESKTOP}. For the all applications folder it
-     * will be {@link #NO_ID} (since it is not stored in the settings DB). For user folders
+     * will be {@link #NO_ID} (since it is not stored in the settings DB). For user
+     * folders
      * it will be the id of the folder.
      */
     public int container = NO_ID;
@@ -159,13 +169,22 @@ public class ItemInfo {
     public CharSequence title;
 
     /**
+     * Optionally set: The appTitle might e.g. be different if {@code title} is used
+     * to
+     * display progress (e.g. Downloading..).
+     */
+    @Nullable
+    public CharSequence appTitle;
+
+    /**
      * Content description of the item.
      */
     @Nullable
     public CharSequence contentDescription;
 
     /**
-     * When the instance is created using {@link #copyFrom}, this field is used to keep track of
+     * When the instance is created using {@link #copyFrom}, this field is used to
+     * keep track of
      * original {@link ComponentName}.
      */
     @Nullable
@@ -220,7 +239,8 @@ public class ItemInfo {
     /**
      * Returns this item's package name.
      *
-     * Prioritizes the component package name, then uses the intent package name as a fallback.
+     * Prioritizes the component package name, then uses the intent package name as
+     * a fallback.
      * This ensures deep shortcuts are supported.
      */
     @Nullable
@@ -273,7 +293,7 @@ public class ItemInfo {
     @Override
     @NonNull
     public final String toString() {
-        return getClass().getSimpleName() + "(" + dumpProperties() + ")";
+        return TAG + "(" + dumpProperties() + ")";
     }
 
     @NonNull
@@ -328,7 +348,8 @@ public class ItemInfo {
     }
 
     /**
-     * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
+     * Creates {@link LauncherAtom.ItemInfo} with important fields and parent
+     * container info.
      */
     @NonNull
     public LauncherAtom.ItemInfo buildProto() {
@@ -336,11 +357,11 @@ public class ItemInfo {
     }
 
     /**
-     * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
-     * @param fInfo
+     * Creates {@link LauncherAtom.ItemInfo} with important fields and parent
+     * container info.
      */
     @NonNull
-    public LauncherAtom.ItemInfo buildProto(@Nullable final FolderInfo fInfo) {
+    public LauncherAtom.ItemInfo buildProto(@Nullable final CollectionInfo cInfo) {
         LauncherAtom.ItemInfo.Builder itemBuilder = getDefaultItemInfoBuilder();
         Optional<ComponentName> nullableComponent = Optional.ofNullable(getTargetComponent());
         switch (itemType) {
@@ -386,21 +407,20 @@ public class ItemInfo {
             default:
                 break;
         }
-        if (fInfo != null) {
-            LauncherAtom.FolderContainer.Builder folderBuilder =
-                    LauncherAtom.FolderContainer.newBuilder();
+        if (cInfo != null) {
+            LauncherAtom.FolderContainer.Builder folderBuilder = LauncherAtom.FolderContainer.newBuilder();
             folderBuilder.setGridX(cellX).setGridY(cellY).setPageIndex(screenId);
 
-            switch (fInfo.container) {
+            switch (cInfo.container) {
                 case CONTAINER_HOTSEAT:
                 case CONTAINER_HOTSEAT_PREDICTION:
                     folderBuilder.setHotseat(LauncherAtom.HotseatContainer.newBuilder()
-                            .setIndex(fInfo.screenId));
+                            .setIndex(cInfo.screenId));
                     break;
                 case CONTAINER_DESKTOP:
                     folderBuilder.setWorkspace(LauncherAtom.WorkspaceContainer.newBuilder()
-                            .setPageIndex(fInfo.screenId)
-                            .setGridX(fInfo.cellX).setGridY(fInfo.cellY));
+                            .setPageIndex(cInfo.screenId)
+                            .setGridX(cInfo.cellX).setGridY(cInfo.cellY));
                     break;
             }
             itemBuilder.setContainerInfo(ContainerInfo.newBuilder().setFolder(folderBuilder));
@@ -416,10 +436,9 @@ public class ItemInfo {
     @NonNull
     protected LauncherAtom.ItemInfo.Builder getDefaultItemInfoBuilder() {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
-        itemBuilder.setIsWork(!Process.myUserHandle().equals(user));
-        SettingsCache settingsCache = SettingsCache.INSTANCE.getNoCreate();
-        boolean isKidsMode = settingsCache != null && LawnchairApp.isRecentsEnabled () && settingsCache.getValue(NAV_BAR_KIDS_MODE, 0);
-        itemBuilder.setIsKidsMode(isKidsMode);
+        SettingsCache.INSTANCE
+                .executeIfCreated(cache -> itemBuilder.setIsKidsMode(cache.getValue(NAV_BAR_KIDS_MODE, 0)));
+        UserCache.INSTANCE.executeIfCreated(cache -> itemBuilder.setUserType(getUserType(cache.getUserInfo(user))));
         itemBuilder.setRank(rank);
         return itemBuilder;
     }
@@ -487,7 +506,8 @@ public class ItemInfo {
     }
 
     /**
-     * Returns non-AOSP container wrapped by {@link ExtendedContainers} object. Should be overridden
+     * Returns non-AOSP container wrapped by {@link ExtendedContainers} object.
+     * Should be overridden
      * by build variants.
      */
     @NonNull
@@ -511,5 +531,21 @@ public class ItemInfo {
     public void setTitle(@Nullable final CharSequence title,
             @Nullable final ModelWriter modelWriter) {
         this.title = title;
+    }
+
+    private int getUserType(UserIconInfo info) {
+        if (info == null) {
+            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_UNKNOWN;
+        } else if (info.isMain()) {
+            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_MAIN;
+        } else if (info.isPrivate()) {
+            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_PRIVATE;
+        } else if (info.isWork()) {
+            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_WORK;
+        } else if (info.isCloned()) {
+            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_CLONED;
+        } else {
+            return SysUiStatsLog.LAUNCHER_UICHANGED__USER_TYPE__TYPE_UNKNOWN;
+        }
     }
 }

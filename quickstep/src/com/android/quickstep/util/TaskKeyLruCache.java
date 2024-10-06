@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  * A simple LRU cache for task key entries
  * @param <V> The type of the value
  */
-public class TaskKeyLruCache<V> {
+public class TaskKeyLruCache<V> implements TaskKeyCache<V> {
 
     private final MyLinkedHashMap<V> mMap;
 
@@ -92,20 +92,14 @@ public class TaskKeyLruCache<V> {
         }
     }
 
-    private static class Entry<V> {
+    @Override
+    public int getMaxSize() {
+        return mMap.mMaxSize;
+    }
 
-        final TaskKey mKey;
-        V mValue;
-
-        Entry(TaskKey key, V value) {
-            mKey = key;
-            mValue = value;
-        }
-
-        @Override
-        public int hashCode() {
-            return mKey.id;
-        }
+    @Override
+    public int getSize() {
+        return mMap.size();
     }
 
     private static class MyLinkedHashMap<V> extends LinkedHashMap<Integer, Entry<V>> {

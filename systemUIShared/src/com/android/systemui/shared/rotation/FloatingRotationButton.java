@@ -71,7 +71,6 @@ public class FloatingRotationButton implements RotationButton {
 
     private AnimatedVectorDrawable mAnimatedDrawable;
     private boolean mIsShowing;
-    private boolean mCanShow = true;
     private int mDisplayRotation;
 
     private boolean mIsTaskbarVisible = false;
@@ -88,14 +87,13 @@ public class FloatingRotationButton implements RotationButton {
             @DimenRes int roundedContentPadding, @DimenRes int taskbarLeftMargin,
             @DimenRes int taskbarBottomMargin, @DimenRes int buttonDiameter,
             @DimenRes int rippleMaxWidth, @BoolRes int floatingRotationBtnPositionLeftResource) {
-        mWindowManager = context.getSystemService(WindowManager.class);
-        mKeyButtonContainer = (ViewGroup) LayoutInflater.from(context).inflate(layout, null);
+        mContext = context;
+        mWindowManager = mContext.getSystemService(WindowManager.class);
+        mKeyButtonContainer = (ViewGroup) LayoutInflater.from(mContext).inflate(layout, null);
         mKeyButtonView = mKeyButtonContainer.findViewById(keyButtonId);
         mKeyButtonView.setVisibility(View.VISIBLE);
-        mKeyButtonView.setContentDescription(context.getString(contentDescriptionResource));
+        mKeyButtonView.setContentDescription(mContext.getString(contentDescriptionResource));
         mKeyButtonView.setRipple(rippleMaxWidth);
-
-        mContext = context;
 
         mContentDescriptionResource = contentDescriptionResource;
         mMinMarginResource = minMargin;
@@ -150,7 +148,7 @@ public class FloatingRotationButton implements RotationButton {
 
     @Override
     public boolean show() {
-        if (!mCanShow || mIsShowing) {
+        if (mIsShowing) {
             return false;
         }
 
@@ -219,14 +217,6 @@ public class FloatingRotationButton implements RotationButton {
     @Override
     public void setDarkIntensity(float darkIntensity) {
         mKeyButtonView.setDarkIntensity(darkIntensity);
-    }
-
-    @Override
-    public void setCanShowRotationButton(boolean canShow) {
-        mCanShow = canShow;
-        if (!mCanShow) {
-            hide();
-        }
     }
 
     @Override

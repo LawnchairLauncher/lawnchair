@@ -17,6 +17,7 @@ package com.android.launcher3;
 
 import static com.android.app.animation.Interpolators.ACCELERATE_2;
 import static com.android.app.animation.Interpolators.DECELERATE_2;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
@@ -37,6 +38,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.FloatRange;
+import androidx.annotation.StringRes;
 
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
@@ -84,7 +86,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int FLAG_HAS_SYS_UI_SCRIM = BaseState.getFlag(4);
     // Flag to inticate that all popups should be closed when this state is enabled.
     public static final int FLAG_CLOSE_POPUPS = BaseState.getFlag(5);
-    public static final int FLAG_OVERVIEW_UI = BaseState.getFlag(6);
+    public static final int FLAG_RECENTS_VIEW_VISIBLE = BaseState.getFlag(6);
 
     // Flag indicating that hotseat and its contents are not accessible.
     public static final int FLAG_HOTSEAT_INACCESSIBLE = BaseState.getFlag(7);
@@ -167,14 +169,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     /**
      * True if the state has overview panel visible.
      */
-    public final boolean overviewUi;
+    public final boolean isRecentsViewVisible;
 
     private final int mFlags;
 
     public LauncherState(int id, int statsLogOrdinal, int flags) {
         this.statsLogOrdinal = statsLogOrdinal;
         this.mFlags = flags;
-        this.overviewUi = (flags & FLAG_OVERVIEW_UI) != 0;
+        this.isRecentsViewVisible = (flags & FLAG_RECENTS_VIEW_VISIBLE) != 0;
         this.ordinal = id;
         sAllStates[id] = this;
     }
@@ -378,6 +380,10 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return launcher.getWorkspace().getCurrentPageDescription();
     }
 
+    public @StringRes int getTitle() {
+        return R.string.home_screen;
+    }
+
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
         if ((this != NORMAL && this != HINT_STATE)
                 || !launcher.getDeviceProfile().shouldFadeAdjacentWorkspaceScreens()) {
@@ -433,12 +439,30 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return TestProtocol.stateOrdinalToString(ordinal);
     }
 
-    public void onBackPressed(Launcher launcher) {
+    /** Called when predictive back gesture is started. */
+    public void onBackStarted(Launcher launcher) {}
+
+    /**
+     * Called when back action is invoked. This can happen when:
+     * 1. back button is pressed in 3-button navigation.
+     * 2. when back is committed during back swiped (predictive or non-predictive).
+     * 3. when we programmatically perform back action.
+     */
+    public void onBackInvoked(Launcher launcher) {
         if (this != NORMAL) {
-            StateManager<LauncherState> lsm = launcher.getStateManager();
+            StateManager<LauncherState, Launcher> lsm = launcher.getStateManager();
             LauncherState lastState = lsm.getLastState();
-            lsm.goToState(lastState);
+            lsm.goToState(lastState, forEndCallback(this::onBackAnimationCompleted));
         }
+    }
+
+    /**
+     * To be called if back animation is completed in a launcher state.
+     *
+     * @param success whether back animation was successful or canceled.
+     */
+    protected void onBackAnimationCompleted(boolean success) {
+        // Do nothing. To be overridden by child class.
     }
 
     /**
@@ -447,7 +471,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public void onBackProgressed(
             Launcher launcher, @FloatRange(from = 0.0, to = 1.0) float backProgress) {
-        StateManager<LauncherState> lsm = launcher.getStateManager();
+        StateManager<LauncherState, Launcher> lsm = launcher.getStateManager();
         LauncherState toState = lsm.getLastState();
         lsm.onBackProgressed(toState, backProgress);
     }
@@ -457,7 +481,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      * predictive back gesture.
      */
     public void onBackCancelled(Launcher launcher) {
-        StateManager<LauncherState> lsm = launcher.getStateManager();
+        StateManager<LauncherState, Launcher> lsm = launcher.getStateManager();
         LauncherState toState = lsm.getLastState();
         lsm.onBackCancelled(toState);
     }

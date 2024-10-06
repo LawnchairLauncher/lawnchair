@@ -24,7 +24,8 @@ import com.android.systemui.shared.system.smartspace.SmartspaceState;
 interface ISysuiUnlockAnimationController {
     // Provides an implementation of the LauncherUnlockAnimationController to System UI, so that
     // SysUI can use it to control the unlock animation in the launcher window.
-    oneway void setLauncherUnlockController(ILauncherUnlockAnimationController callback);
+    oneway void setLauncherUnlockController(
+        String activityClass, ILauncherUnlockAnimationController callback);
 
     // Called by Launcher whenever anything happens to change the state of its smartspace. System UI
     // proactively saves this and uses it to perform the unlock animation without needing to make a

@@ -16,15 +16,16 @@
 
 package com.android.systemui.shared.system;
 
-import android.graphics.Matrix;
+import static android.os.Trace.TRACE_TAG_INPUT;
+
 import android.os.Looper;
+import android.os.Trace;
+import android.util.Log;
 import android.view.BatchedInputEventReceiver;
 import android.view.Choreographer;
 import android.view.InputChannel;
 import android.view.InputEvent;
 import android.view.MotionEvent;
-
-import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * @see android.view.InputChannel
@@ -54,23 +55,24 @@ public class InputChannelCompat {
         return target.addBatch(src);
     }
 
-    /** @see MotionEvent#createRotateMatrix */
-    public static Matrix createRotationMatrix(
-            /*@Surface.Rotation*/ int rotation, int displayW, int displayH) {
-        return MotionEvent.createRotateMatrix(rotation, displayW, displayH);
-    }
-
     /**
      * @see BatchedInputEventReceiver
      */
     public static class InputEventReceiver {
 
+        private final String mName;
         private final BatchedInputEventReceiver mReceiver;
 
+        @Deprecated
         public InputEventReceiver(InputChannel inputChannel, Looper looper,
                 Choreographer choreographer, final InputEventListener listener) {
-            mReceiver = new BatchedInputEventReceiver(inputChannel, looper, choreographer) {
+            this("unknown", inputChannel, looper, choreographer, listener);
+        }
 
+        public InputEventReceiver(String name, InputChannel inputChannel, Looper looper,
+                Choreographer choreographer, final InputEventListener listener) {
+            mName = name;
+            mReceiver = new BatchedInputEventReceiver(inputChannel, looper, choreographer) {
                 @Override
                 public void onInputEvent(InputEvent event) {
                     listener.onInputEvent(event);
@@ -83,9 +85,7 @@ public class InputChannelCompat {
          * @see BatchedInputEventReceiver#setBatchingEnabled()
          */
         public void setBatchingEnabled(boolean batchingEnabled) {
-            if (LawnchairQuickstepCompat.ATLEAST_S) {
-                mReceiver.setBatchingEnabled(batchingEnabled);
-            }
+            mReceiver.setBatchingEnabled(batchingEnabled);
         }
 
         /**
@@ -93,6 +93,9 @@ public class InputChannelCompat {
          */
         public void dispose() {
             mReceiver.dispose();
+            Trace.instant(TRACE_TAG_INPUT, "InputMonitorCompat-" + mName + " receiver disposed");
+            Log.d(InputMonitorCompat.TAG, "Input event receiver for monitor (" + mName
+                    + ") disposed");
         }
     }
 }

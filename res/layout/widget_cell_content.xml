@@ -35,49 +35,79 @@
             android:layout_height="match_parent"
             android:importantForAccessibility="no"
             android:layout_gravity="fill"/>
-
-        <ImageView
-            android:id="@+id/widget_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:importantForAccessibility="no"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="@dimen/profile_badge_margin"/>
     </com.android.launcher3.widget.WidgetCellPreview>
 
-    <!-- The name of the widget. -->
-    <TextView
-        android:id="@+id/widget_name"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:fadingEdge="horizontal"
-        android:gravity="center_horizontal"
-        android:singleLine="true"
-        android:maxLines="1"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="@dimen/widget_cell_font_size" />
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/widget_text_container"
+            android:orientation="vertical">
+                <!-- The name of the widget. -->
+                <TextView
+                    android:id="@+id/widget_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:fadingEdge="horizontal"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:textColor="?attr/widgetCellTitleColor"
+                    android:textSize="@dimen/widget_cell_title_font_size"
+                    android:textFontWeight="@integer/widget_cell_title_font_weight"
+                    android:lineHeight="@dimen/widget_cell_title_line_height"
+                    android:drawablePadding="@dimen/widget_cell_app_icon_padding" />
 
-    <!-- The original dimensions of the widget -->
-    <TextView
-        android:id="@+id/widget_dims"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="@dimen/widget_cell_font_size"
-        android:alpha="0.7" />
+                <!-- The original dimensions of the widget -->
+                <TextView
+                    android:id="@+id/widget_dims"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textColor="?attr/widgetCellSubtitleColor"
+                    android:textSize="@dimen/widget_cell_dims_font_size"
+                    android:textFontWeight="@integer/widget_cell_dims_font_weight"
+                    android:lineHeight="@dimen/widget_cell_dims_line_height" />
 
-    <TextView
-        android:id="@+id/widget_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="@dimen/widget_cell_font_size"
-        android:textColor="?android:attr/textColorSecondary"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:fadingEdge="horizontal"
-        android:alpha="0.7" />
+                <TextView
+                    android:id="@+id/widget_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textColor="?attr/widgetCellSubtitleColor"
+                    android:textSize="@dimen/widget_cell_description_font_size"
+                    android:textFontWeight="@integer/widget_cell_description_font_weight"
+                    android:lineHeight="@dimen/widget_cell_description_line_height"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:fadingEdge="horizontal" />
+        </LinearLayout>
 
+        <Button
+            android:id="@+id/widget_add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/widget_cell_add_button_height"
+            android:layout_gravity="center"
+            android:minWidth="0dp"
+            android:paddingStart="@dimen/widget_cell_add_button_start_padding"
+            android:paddingEnd="@dimen/widget_cell_add_button_end_padding"
+            android:text="@string/widget_add_button_label"
+            android:textColor="?attr/widgetPickerAddButtonTextColor"
+            android:textSize="@dimen/widget_cell_add_button_font_size"
+            android:fontWeight="@integer/widget_cell_add_button_font_weight"
+            android:lineHeight="@dimen/widget_cell_add_button_line_height"
+            android:gravity="center"
+            android:visibility="gone"
+            android:drawableStart="@drawable/ic_plus"
+            android:drawablePadding="@dimen/widget_cell_add_button_drawable_padding"
+            android:drawableTint="?attr/widgetPickerAddButtonTextColor"
+            android:maxLines="1"
+            style="@style/Button.Rounded.Colored"
+            android:background="@drawable/widget_cell_add_button_background" />
+    </FrameLayout>
 </merge>

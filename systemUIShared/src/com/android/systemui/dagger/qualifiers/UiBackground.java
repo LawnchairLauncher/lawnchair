@@ -23,7 +23,6 @@ import java.lang.annotation.Retention;
 
 import javax.inject.Qualifier;
 
-
 /**
  * An annotation for injecting instances related to UI operations off the main-thread.
  */

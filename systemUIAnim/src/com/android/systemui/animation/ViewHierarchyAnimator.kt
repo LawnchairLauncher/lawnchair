@@ -70,8 +70,10 @@ class ViewHierarchyAnimator {
          * If a new layout change happens while an animation is already in progress, the animation
          * is updated to continue from the current values to the new end state.
          *
-         * A set of [excludedViews] can be passed. If any dependent view from [rootView] matches an
-         * entry in this set, changes to that view will not be animated.
+         * By default, child views whole layout changes are animated as well. However, this can be
+         * controlled by [animateChildren]. If children are included, a set of [excludedViews] can
+         * be passed. If any dependent view from [rootView] matches an entry in this set, changes to
+         * that view will not be animated.
          *
          * The animator continues to respond to layout changes until [stopAnimating] is called.
          *
@@ -86,6 +88,7 @@ class ViewHierarchyAnimator {
             rootView: View,
             interpolator: Interpolator = DEFAULT_INTERPOLATOR,
             duration: Long = DEFAULT_DURATION,
+            animateChildren: Boolean = true,
             excludedViews: Set<View> = emptySet()
         ): Boolean {
             return animate(
@@ -93,6 +96,7 @@ class ViewHierarchyAnimator {
                 interpolator,
                 duration,
                 ephemeral = false,
+                animateChildren = animateChildren,
                 excludedViews = excludedViews
             )
         }
@@ -106,6 +110,7 @@ class ViewHierarchyAnimator {
             rootView: View,
             interpolator: Interpolator = DEFAULT_INTERPOLATOR,
             duration: Long = DEFAULT_DURATION,
+            animateChildren: Boolean = true,
             excludedViews: Set<View> = emptySet()
         ): Boolean {
             return animate(
@@ -113,6 +118,7 @@ class ViewHierarchyAnimator {
                 interpolator,
                 duration,
                 ephemeral = true,
+                animateChildren = animateChildren,
                 excludedViews = excludedViews
             )
         }
@@ -122,6 +128,7 @@ class ViewHierarchyAnimator {
             interpolator: Interpolator,
             duration: Long,
             ephemeral: Boolean,
+            animateChildren: Boolean,
             excludedViews: Set<View> = emptySet()
         ): Boolean {
             if (
@@ -137,7 +144,13 @@ class ViewHierarchyAnimator {
             }
 
             val listener = createUpdateListener(interpolator, duration, ephemeral)
-            addListener(rootView, listener, recursive = true, excludedViews = excludedViews)
+            addListener(
+                rootView,
+                listener,
+                recursive = true,
+                animateChildren = animateChildren,
+                excludedViews = excludedViews
+            )
             return true
         }
 
@@ -940,6 +953,7 @@ class ViewHierarchyAnimator {
             view: View,
             listener: View.OnLayoutChangeListener,
             recursive: Boolean = false,
+            animateChildren: Boolean = true,
             excludedViews: Set<View> = emptySet()
         ) {
             if (excludedViews.contains(view)) return
@@ -952,12 +966,13 @@ class ViewHierarchyAnimator {
 
             view.addOnLayoutChangeListener(listener)
             view.setTag(R.id.tag_layout_listener, listener)
-            if (view is ViewGroup && recursive) {
+            if (animateChildren && view is ViewGroup && recursive) {
                 for (i in 0 until view.childCount) {
                     addListener(
                         view.getChildAt(i),
                         listener,
                         recursive = true,
+                        animateChildren = animateChildren,
                         excludedViews = excludedViews
                     )
                 }

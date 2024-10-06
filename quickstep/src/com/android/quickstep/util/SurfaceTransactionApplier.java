@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.view.SurfaceControl;
@@ -24,6 +22,8 @@ import android.view.SurfaceControl.Transaction;
 import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewRootImpl;
+
+import androidx.annotation.NonNull;
 
 import com.android.quickstep.RemoteAnimationTargets.ReleaseCheck;
 
@@ -34,7 +34,6 @@ import app.lawnchair.compat.LawnchairQuickstepCompat;
  *   android.view.SyncRtSurfaceTransactionApplier
  * with some Launcher specific utility methods
  */
-@TargetApi(Build.VERSION_CODES.R)
 public class SurfaceTransactionApplier extends ReleaseCheck {
 
     private static final int MSG_UPDATE_SEQUENCE_NUMBER = 0;
@@ -50,7 +49,7 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
     /**
      * @param targetView The view in the surface that acts as synchronization anchor.
      */
-    public SurfaceTransactionApplier(View targetView) {
+    public SurfaceTransactionApplier(@NonNull View targetView) {
         if (targetView.isAttachedToWindow()) {
             initialize(targetView);
         } else {

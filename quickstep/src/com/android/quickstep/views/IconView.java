@@ -22,36 +22,55 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
+import com.android.quickstep.util.RecentsOrientedState;
 
 /**
  * A view which draws a drawable stretched to fit its size. Unlike ImageView, it avoids relayout
  * when the drawable changes.
  */
-public class IconView extends View {
+public class IconView extends View implements TaskViewIcon {
+    private static final int NUM_ALPHA_CHANNELS = 2;
+    private static final int INDEX_CONTENT_ALPHA = 0;
+    private static final int INDEX_MODAL_ALPHA = 1;
+
+    private final MultiValueAlpha mMultiValueAlpha;
 
     @Nullable
     private Drawable mDrawable;
     private int mDrawableWidth, mDrawableHeight;
 
     public IconView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public IconView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public IconView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public IconView(Context context, @Nullable AttributeSet attrs, int defStyleAttr,
+            int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        mMultiValueAlpha = new MultiValueAlpha(this, NUM_ALPHA_CHANNELS);
+        mMultiValueAlpha.setUpdateVisibility(/* updateVisibility= */ true);
     }
 
     /**
      * Sets a {@link Drawable} to be displayed.
      */
+    @Override
     public void setDrawable(@Nullable Drawable d) {
         if (mDrawable != null) {
             mDrawable.setCallback(null);
@@ -67,6 +86,7 @@ public class IconView extends View {
     /**
      * Sets the size of the icon drawable.
      */
+    @Override
     public void setDrawableSize(int iconWidth, int iconHeight) {
         mDrawableWidth = iconWidth;
         mDrawableHeight = iconHeight;
@@ -82,15 +102,18 @@ public class IconView extends View {
         mDrawable.setBounds(drawableRect);
     }
 
+    @Override
     @Nullable
     public Drawable getDrawable() {
         return mDrawable;
     }
 
+    @Override
     public int getDrawableWidth() {
         return mDrawableWidth;
     }
 
+    @Override
     public int getDrawableHeight() {
         return mDrawableHeight;
     }
@@ -132,13 +155,13 @@ public class IconView extends View {
     }
 
     @Override
-    public void setAlpha(float alpha) {
-        super.setAlpha(alpha);
-        if (alpha > 0) {
-            setVisibility(VISIBLE);
-        } else {
-            setVisibility(INVISIBLE);
-        }
+    public void setContentAlpha(float alpha) {
+        mMultiValueAlpha.get(INDEX_CONTENT_ALPHA).setValue(alpha);
+    }
+
+    @Override
+    public void setModalAlpha(float alpha) {
+        mMultiValueAlpha.get(INDEX_MODAL_ALPHA).setValue(alpha);
     }
 
     /**
@@ -147,9 +170,40 @@ public class IconView extends View {
      * @param color to blend in.
      * @param amount [0,1] 0 no tint, 1 full tint
      */
+    @Override
     public void setIconColorTint(int color, float amount) {
         if (mDrawable != null) {
             mDrawable.setColorFilter(Utilities.makeColorTintingColorFilter(color, amount));
         }
+    }
+
+    @Override
+    public void setIconOrientation(RecentsOrientedState orientationState, boolean isGridTask) {
+        RecentsPagedOrientationHandler orientationHandler =
+                orientationState.getOrientationHandler();
+        boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        DeviceProfile deviceProfile =
+                ActivityContext.lookupContext(getContext()).getDeviceProfile();
+
+        FrameLayout.LayoutParams iconParams = (FrameLayout.LayoutParams) getLayoutParams();
+
+        int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
+        int taskIconHeight = deviceProfile.overviewTaskIconSizePx;
+        int taskMargin = deviceProfile.overviewTaskMarginPx;
+
+        orientationHandler.setTaskIconParams(iconParams, taskMargin, taskIconHeight,
+                thumbnailTopMargin, isRtl);
+        iconParams.width = iconParams.height = taskIconHeight;
+        setLayoutParams(iconParams);
+
+        setRotation(orientationHandler.getDegreesRotated());
+        int iconDrawableSize = isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
+                : deviceProfile.overviewTaskIconDrawableSizePx;
+        setDrawableSize(iconDrawableSize, iconDrawableSize);
+    }
+
+    @Override
+    public View asView() {
+        return this;
     }
 }
