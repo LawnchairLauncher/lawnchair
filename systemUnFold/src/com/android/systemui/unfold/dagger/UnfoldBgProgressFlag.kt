@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 The Android Open Source Project
+ * Copyright (C) 2023 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.systemui.unfold.config
 
-interface UnfoldTransitionConfig {
-    val isEnabled: Boolean
-    val isHingeAngleEnabled: Boolean
-    val isHapticsEnabled: Boolean
-    val halfFoldedTimeoutMillis: Int
-}
+package com.android.systemui.unfold.dagger
+
+import javax.inject.Qualifier
+
+/**
+ * Annotates the boolean representing whether we are calculating progresses in the background.
+ *
+ * Used to allow clients to provide this value, without depending on the flags directly.
+ */
+@Qualifier @Retention(AnnotationRetention.RUNTIME) annotation class UnfoldBgProgressFlag

@@ -48,6 +48,7 @@ fun createUnfoldSharedComponent(
         singleThreadBgExecutor: Executor,
         tracingTagPrefix: String,
         displayManager: DisplayManager,
+        bgHandler: Handler,
 ): UnfoldSharedComponent =
         DaggerUnfoldSharedComponent.factory()
                 .create(
@@ -62,6 +63,7 @@ fun createUnfoldSharedComponent(
                         singleThreadBgExecutor,
                         tracingTagPrefix,
                         displayManager,
+                        bgHandler,
                 )
 
 /**
@@ -75,6 +77,7 @@ fun createRemoteUnfoldSharedComponent(
         mainExecutor: Executor,
         mainHandler: Handler,
         singleThreadBgExecutor: Executor,
+        bgHandler: Handler,
         tracingTagPrefix: String,
         displayManager: DisplayManager,
         ): RemoteUnfoldSharedComponent =
@@ -85,6 +88,7 @@ fun createRemoteUnfoldSharedComponent(
                         mainExecutor,
                         mainHandler,
                         singleThreadBgExecutor,
+                        bgHandler,
                         displayManager,
                         tracingTagPrefix,
                 )

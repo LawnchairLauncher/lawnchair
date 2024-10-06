@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 The Android Open Source Project
+ * Copyright (C) 2023 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,9 @@
  * KIND, either express or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
-package com.android.systemui.unfold.updates
+package com.android.systemui.unfold.dagger
 
-import java.util.concurrent.Executor
+import javax.inject.Qualifier
 
-interface FoldProvider {
-    fun registerCallback(callback: FoldCallback, executor: Executor)
-    fun unregisterCallback(callback: FoldCallback)
-
-    fun interface FoldCallback {
-        fun onFoldUpdated(isFolded: Boolean)
-    }
-}
+/** Annotation for background computations related to unfold lib. */
+@Qualifier @Retention(AnnotationRetention.RUNTIME) annotation class UnfoldBg

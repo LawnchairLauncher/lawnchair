@@ -31,7 +31,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
-import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
@@ -44,34 +43,25 @@ import com.android.launcher3.util.CancellableTask;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 
-import app.lawnchair.font.FontManager;
-import app.lawnchair.theme.drawable.DrawableTokens;
-
 /**
  * A UI represents a header of an app shown in the full widgets tray.
  *
- * It is a {@link LinearLayout} which contains an app icon, an app name, a
- * subtitle and a checkbox
- * which indicates if the widgets content view underneath this header should be
- * shown.
+ * It is a {@link LinearLayout} which contains an app icon, an app name, a subtitle and a checkbox
+ * which indicates if the widgets content view underneath this header should be shown.
  */
 public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpdateReceiver {
 
-    private static final int[] EXPANDED_DRAWABLE_STATE = new int[] { android.R.attr.state_expanded };
+    private static final int[] EXPANDED_DRAWABLE_STATE = new int[] {android.R.attr.state_expanded};
 
     private final int mIconSize;
     /**
-     * Indicates if the header is collapsable. For example, when displayed in a two
-     * pane layout,
+     * Indicates if the header is collapsable. For example, when displayed in a two pane layout,
      * widget apps aren't collapsable.
-     */
+    */
     private final boolean mIsCollapsable;
-    @Nullable
-    private CancellableTask mIconLoadRequest;
-    @Nullable
-    private Drawable mIconDrawable;
-    @Nullable
-    private WidgetsListDrawableState mListDrawableState;
+    @Nullable private CancellableTask mIconLoadRequest;
+    @Nullable private Drawable mIconDrawable;
+    @Nullable private WidgetsListDrawableState mListDrawableState;
     private ImageView mAppIcon;
     private TextView mTitle;
     private TextView mSubtitle;
@@ -104,43 +94,36 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         mAppIcon = findViewById(R.id.app_icon);
         mTitle = findViewById(R.id.app_title);
         mSubtitle = findViewById(R.id.app_subtitle);
+        // Lists that cannot collapse, don't need EXPAND or COLLAPSE accessibility actions.
+        if (mIsCollapsable) {
+            setAccessibilityDelegate(new AccessibilityDelegate() {
 
-        var mContent = ViewCompat.requireViewById(this, R.id.widgets_list_header);
-        mContent.setBackground(DrawableTokens.WidgetsListBackground.resolve(getContext()));
-
-        FontManager fontManager = FontManager.INSTANCE.get(getContext());
-        fontManager.setCustomFont(mTitle, R.id.font_body_medium);
-        fontManager.setCustomFont(mTitle, R.id.font_body);
-
-        setAccessibilityDelegate(new AccessibilityDelegate() {
-
-            @Override
-            public void onInitializeAccessibilityNodeInfo(View host,
-                    AccessibilityNodeInfo info) {
-                if (mIsExpanded) {
-                    info.removeAction(AccessibilityNodeInfo.ACTION_EXPAND);
-                    info.addAction(AccessibilityNodeInfo.ACTION_COLLAPSE);
-                } else {
-                    info.removeAction(AccessibilityNodeInfo.ACTION_COLLAPSE);
-                    info.addAction(AccessibilityNodeInfo.ACTION_EXPAND);
+                @Override
+                public void onInitializeAccessibilityNodeInfo(View host,
+                        AccessibilityNodeInfo info) {
+                    if (mIsExpanded) {
+                        info.removeAction(AccessibilityNodeInfo.ACTION_EXPAND);
+                        info.addAction(AccessibilityNodeInfo.ACTION_COLLAPSE);
+                    } else {
+                        info.removeAction(AccessibilityNodeInfo.ACTION_COLLAPSE);
+                        info.addAction(AccessibilityNodeInfo.ACTION_EXPAND);
+                    }
+                    super.onInitializeAccessibilityNodeInfo(host, info);
                 }
-                super.onInitializeAccessibilityNodeInfo(host, info);
-            }
 
-            @Override
-            public boolean performAccessibilityAction(View host, int action, Bundle args) {
-                switch (action) {
-                    case AccessibilityNodeInfo.ACTION_EXPAND:
-                    case AccessibilityNodeInfo.ACTION_COLLAPSE:
-                        callOnClick();
-                        return true;
-                    default:
-                        return super.performAccessibilityAction(host, action, args);
+                @Override
+                public boolean performAccessibilityAction(View host, int action, Bundle args) {
+                    switch (action) {
+                        case AccessibilityNodeInfo.ACTION_EXPAND:
+                        case AccessibilityNodeInfo.ACTION_COLLAPSE:
+                            callOnClick();
+                            return true;
+                        default:
+                            return super.performAccessibilityAction(host, action, args);
+                    }
                 }
-            }
-        });
-    }
-
+            });
+        }
     }
 
     /** Sets the expand toggle to expand / collapse. */
@@ -155,22 +138,15 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         return mIsExpanded;
     }
 
-    /**
-     * Sets the {@link WidgetsListDrawableState} and refreshes the background
-     * drawable.
-     */
+    /** Sets the {@link WidgetsListDrawableState} and refreshes the background drawable. */
     @UiThread
     public void setListDrawableState(WidgetsListDrawableState state) {
-        if (state == mListDrawableState)
-            return;
+        if (state == mListDrawableState) return;
         this.mListDrawableState = state;
         refreshDrawableState();
     }
 
-    /**
-     * Apply app icon, labels and tag using a generic
-     * {@link WidgetsListHeaderEntry}.
-     */
+    /** Apply app icon, labels and tag using a generic {@link WidgetsListHeaderEntry}. */
     @UiThread
     public void applyFromItemInfoWithIcon(WidgetsListHeaderEntry entry) {
         PackageItemInfo info = entry.mPkgItem;
@@ -196,7 +172,8 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     private void applyDrawables(Drawable icon) {
         icon.setBounds(0, 0, mIconSize, mIconSize);
 
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mAppIcon.getLayoutParams();
+        LayoutParams layoutParams =
+                (LayoutParams) mAppIcon.getLayoutParams();
         layoutParams.width = mIconSize;
         layoutParams.height = mIconSize;
         mAppIcon.setLayoutParams(layoutParams);
@@ -239,8 +216,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
 
     @Override
     protected int[] onCreateDrawableState(int extraSpace) {
-        // We create a drawable state with an additional two spaces to be able to fit
-        // expanded state
+        // We create a drawable state with an additional two spaces to be able to fit expanded state
         // and the list drawable state.
         int[] drawableState = super.onCreateDrawableState(extraSpace + 2);
         if (mIsExpanded) {
@@ -252,10 +228,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         return drawableState;
     }
 
-    /**
-     * Verifies that the current icon is high-res otherwise posts a request to load
-     * the icon.
-     */
+    /** Verifies that the current icon is high-res otherwise posts a request to load the icon. */
     public void verifyHighRes() {
         if (mIconLoadRequest != null) {
             mIconLoadRequest.cancel();

@@ -73,3 +73,5 @@ include ':compatLib:compatLibVT'
 include ':compatLib:compatLibVU'
 
 include ':baseline-profile'
+
+include ':androidx-lib'
