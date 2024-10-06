@@ -23,27 +23,27 @@
     -->
     <string name="preview_label">प्रीव्यू</string>
     <string name="action_create">बनाएँ</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_backup">बैकअप</string>
     <string name="action_restore">पुनर्स्थापित करें</string>
     <string name="action_delete">नष्ट करे</string>
     <string name="action_reset">रीसेट</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
+    <string name="action_unlock">अनलॉक</string>
+    <string name="action_lock">लॉक</string>
     <string name="action_apply">ओके</string>
     <string name="action_customize">अपने अनुरूप सेट करें</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
+    <string name="always_choice">हमेशा</string>
+    <string name="never_choice">कभी नहीं</string>
     <string name="clipboard">क्लिपबोर्ड</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy_link">लिंक की प्रतिलिपि करें</string>
     <string name="action_copy">कॉपी</string>
     <string name="action_paste">पेस्ट</string>
     <string name="loading">हो रहा है...</string>
     <string name="managed_by_lawnchair">Lawnchair द्वारा प्रबंधित</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">पसंद</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">होम सेटिंग्स</string>
+    <string name="system_settings">सिस्टम सेटिंग्स</string>
+    <string name="title_change_settings">सेटिंग्स परिवर्तित करना</string>
     <!--
 
     General "words" used throughout Lawnchair
@@ -64,16 +64,16 @@
     <string name="layout">लेआउट</string>
     <!-- Generic styling options -->
     <string name="wallpaper">वॉलपेपर</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="background_opacity">पृष्ठभूमि अपारदर्शिता</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
-    <string name="item_removed">Item removed</string>
+    <string name="copied_toast">क्लिपबोर्ड पर कॉपी किया गया</string>
+    <string name="item_removed">आइटम हटाया गया</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
+    <string name="what_to_show">क्या दिखाएं?</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">जेस्चर करते समय अपने फ़ोन को लॉक करने के लिए, और जेस्चर के ज़रिए हाल ही में खोलने के लिए, लॉनचेयर को एक्सेसिबिलिटी एक्सेस की आवश्यकता होती है।\n\nलॉनचेयर किसी भी उपयोगकर्ता की कार्रवाई को नहीं देखता है, हालाँकि ऐसा करने का विशेषाधिकार सभी एक्सेसिबिलिटी सेवाओं के लिए आवश्यक है। लॉनचेयर सिस्टम द्वारा भेजे गए किसी भी ईवेंट को त्याग देता है।\n\n लॉनचेयर आपके फ़ोन को लॉक करने या हाल ही में खोलने के लिए परफ़ॉर्मग्लोबलएक्शन एक्सेसिबिलिटी सेवा का उपयोग करता है।</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="x_and_y">%1$s और %2$s</string>
     <!--
 
     Preference Dashboard
@@ -81,12 +81,12 @@
     -->
     <string name="settings">सेटिंग्स</string>
     <string name="general_label">सामान्य</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="general_description">रंग, आइकन पैक, अधिसूचना बिंदु</string>
+    <string name="home_screen_label">होम स्क्रीन</string>
+    <string name="home_screen_description">फ़ीड, ग्रिड, चिह्न</string>
     <string name="dock_label">गोदी</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
+    <string name="dock_description">खोज बार, आइकन गिनती</string>
+    <string name="app_drawer_label">अनुप्रयोग का दराज</string>
     <string name="app_drawer_description">Hidden apps, column count, icons</string>
     <string name="drawer_search_label">Drawer search</string>
     <string name="drawer_search_description">Web suggestions, global search</string>

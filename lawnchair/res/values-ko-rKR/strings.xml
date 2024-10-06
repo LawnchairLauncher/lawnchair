@@ -64,16 +64,16 @@
     <string name="layout">레이아웃</string>
     <!-- Generic styling options -->
     <string name="wallpaper">배경화면</string>
-    <string name="background_opacity">백그라운드 투명도</string>
+    <string name="background_opacity">배경 투명도</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">클립보드에 복사했습니다.</string>
     <string name="item_removed">항목을 삭제했습니다.</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">표시할 항목</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Lawnchair에서 제스처로 기기를 잠그거나 최근 앱 화면을 열기 위해서는 접근성 권한이 필요합니다.\n\n모든 접근성 서비스에는 대화 상자에 나오는 권한이 필요합니다. Lawnchair는 사용자의 동작을 전혀 감시하지 않으며, 시스템에서 보내는 이벤트를 모두 무시합니다.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="x_and_y">%1$s 및 %2$s</string>
     <!--
 
     Preference Dashboard
@@ -104,7 +104,7 @@
     <string name="font_picker_label">글꼴 사용자 정의</string>
     <string name="font_picker_description">일부 텍스트는 변경되지 않습니다.</string>
     <string name="smartspace_calendar_label">한눈에 보기 달력 사용자 정의</string>
-    <string name="smartspace_calendar_description">그레고리력이 아닌 달력 시스템에 날짜 표시 허용</string>
+    <string name="smartspace_calendar_description">그레고리력을 사용하지 않는 달력 시스템에서 날짜 표시 허용</string>
     <string name="workspace_increase_max_grid_size_label">최대 그리드 크기 제한 늘리기</string>
     <string name="workspace_increase_max_grid_size_description">허용되는 최대 홈 화면 그리드 크기를 10 x 10에서 20 x 20으로 늘립니다.</string>
     <string name="always_reload_icons_label">항상 아이콘 새로고침</string>
@@ -138,13 +138,13 @@
     <string name="label_size">라벨 크기</string>
     <string name="twoline_label">여러 줄 사용</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">투명 테마 아이콘</string>
-    <string name="transparent_background_icons_description">테마 아이콘에 투명한 배경 사용하기</string>
-    <string name="auto_adaptive_icons_label">자동 적응형 아이콘</string>
-    <string name="auto_adaptive_icons_description">모든 비적응형 아이콘들을 위한 기능입니다</string>
+    <string name="transparent_background_icons_label">테마 아이콘 투명화</string>
+    <string name="transparent_background_icons_description">테마 아이콘에 투명한 배경 사용</string>
+    <string name="auto_adaptive_icons_label">적응형 아이콘 자동 적용</string>
+    <string name="auto_adaptive_icons_description">적응형이 아닌 아이콘을 위한 기능입니다.</string>
     <string name="shadow_bg_icons_label">아이콘 뒤에 그림자 표시</string>
-    <string name="background_lightness_label">백그라운드 밝기</string>
-    <string name="adaptive_icon_background_description">백그라운드 밝기를 100%로 할 경우 하얀색이 됩니다</string>
+    <string name="background_lightness_label">아이콘 배경 밝기</string>
+    <string name="adaptive_icon_background_description">배경 밝기를 100%로 설정하면 흰색이 됩니다.</string>
     <string name="reset_custom_icons">커스텀아이콘 리셋</string>
     <string name="reset_custom_icons_confirmation">모든 사용자 정의 아이콘이 재설정됩니다. 계속하시겠습니까?</string>
     <!-- Icon picker -->
@@ -187,7 +187,7 @@
     <string name="icon_pack">아이콘 팩</string>
     <string name="themed_icon_pack">테마 아이콘 소스</string>
     <string name="system_icons">시스템 아이콘</string>
-    <string name="themed_icon_title">테마가 적용된 아이콘</string>
+    <string name="themed_icon_title">테마 아이콘</string>
     <string name="themed_icons_off_label">사용 안함</string>
     <string name="themed_icons_home_label">홈 화면</string>
     <string name="themed_icons_home_and_drawer_label">홈 화면 &amp; 앱 서랍</string>
@@ -339,7 +339,7 @@
     <string name="gesture_back_tap">뒤로가기 버튼</string>
     <string name="gesture_handler_no_op">아무것도 안하기</string>
     <string name="gesture_handler_sleep">절전</string>
-    <string name="gesture_handler_recents">Open Recents</string>
+    <string name="gesture_handler_recents">최근 앱 화면 열기</string>
     <string name="gesture_handler_open_notifications">알림 패널 열기</string>
     <string name="gesture_handler_open_app_option">앱 열기</string>
     <string name="gesture_handler_open_app_config">%1$s 열기</string>
@@ -351,9 +351,9 @@
     <string name="dt2s_admin_hint">두 번 눌러 화면 끄기 기능을 사용하려면, Lawnchair 앱을 기기 관리자 앱으로 할당 받아야 합니다. \"설정 열기\"를 누른 후, \"이 기기 관리자 앱 활성화\"를 누르세요.</string>
     <string name="dt2s_admin_warning">두 번 눌러 화면 끄기 기능이 비활성화 되었습니다.</string>
     <string name="d2ts_recents_a11y_hint_title">접근성 서비스가 활성화되어야합니다</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">두 번 눌러 화면 끄기 기능을 사용하려면 Lawnchair 접근성 서비스를 사용해야 합니다. \"설정 열기\"를 눌러 나오는 화면에서 \"Lawnchair\"를 누른 뒤, \"Lawnchair 사용\"을 켜세요.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다. 이 메소드는 다른 앱을 감시할 수 있는 민감한 권한이지만, Lawnchair는 앱 감시 기능이 없으며 시스템에서 보내는 이벤트를 모두 무시합니다.</string>
     <string name="dt2s_recents_warning_open_settings">설정 열기</string>
-    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">최근 앱 화면 열기 기능을 사용하려면 Lawnchair 접근성 서비스를 사용해야 합니다. \"설정 열기\"를 눌러 나오는 화면에서 \"Lawnchair\"를 누른 뒤, \"Lawnchair 사용\"을 켜세요.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다. 이 메소드는 다른 앱을 감시할 수 있는 민감한 권한이지만, Lawnchair는 앱 감시 기능이 없으며 시스템에서 보내는 이벤트를 모두 무시합니다.</string>
     <!--
 
     Bug reporting
@@ -464,7 +464,7 @@
     <string name="quickstep_incompatible">호환되지 않는 시스템 통합</string>
     <string name="quickstep_incompatible_description">기기가 %1$s에서 제공하는 시스템 제스처(Quickstep으로 알려져 있음)가 설정되어 있지만 %1$s의 이 버전은 Android 버전과 호환되지 않습니다. 장치를 계속 사용하려면 %1$s 업데이트를 제거하거나 시스템 제스처 공급자로 %1$s을(를) 비활성화하십시오.</string>
     <string name="translucent_background">반투명 배경</string>
-    <string name="translucent_background_alpha">백그라운드 투명도</string>
+    <string name="translucent_background_alpha">배경 투명도</string>
     <string name="recents_actions_label">빠른 바로가기</string>
     <string name="action_share">공유</string>
     <string name="action_lens">렌즈</string>
@@ -539,5 +539,5 @@
     <string name="allapps_web_suggestion_provider_label">웹 제안 제공자</string>
     <string name="allapps_use_web_suggestion_icon_label">검색 표시줄에 웹 제안 제공자 아이콘 표시</string>
     <string name="allapps_match_qsb_style_label">독 검색 표시줄 동작에 따르기</string>
-    <string name="allapps_match_qsb_style_description">이제 도크 검색 창을 클릭하면 앱 서랍 검색 UI가 열립니다.</string>
+    <string name="allapps_match_qsb_style_description">이제 독 검색 표시줄을 누르면 앱 서랍 검색 UI가 열립니다.</string>
 </resources>

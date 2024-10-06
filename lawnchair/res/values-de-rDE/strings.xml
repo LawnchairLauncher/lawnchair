@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Was angezeigt werden soll</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Um Ihr Telefon bei der Ausführung einer Geste zu sperren und um zuletzt geöffnete Apps per Geste zu öffnen, benötigt Lawnchair Bedienungshilfen-Zugriff.\n\nLawnchair beobachtet keine Benutzeraktionen, obwohl die Berechtigung dies ermöglicht. Lawnchair verwirft alle vom System gesendeten Ereignisse.\n\nUm Ihr Telefon zu sperren oder zuletzt geöffnete Apps zu öffnen, nutzt Lawnchair den performGlobalAction Accessibility Dienst.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -339,7 +339,7 @@
     <string name="gesture_back_tap">Zurück-Taste</string>
     <string name="gesture_handler_no_op">Nichts tun</string>
     <string name="gesture_handler_sleep">Ruhezustand</string>
-    <string name="gesture_handler_recents">Open Recents</string>
+    <string name="gesture_handler_recents">Öffne zuletzt genutzte Apps</string>
     <string name="gesture_handler_open_notifications">Benachrichtigungsleiste öffnen</string>
     <string name="gesture_handler_open_app_option">App öffnen</string>
     <string name="gesture_handler_open_app_config">%1$s öffnen</string>
@@ -353,7 +353,7 @@
     <string name="d2ts_recents_a11y_hint_title">Bedienungshilfen aktivieren</string>
     <string name="dt2s_a11y_hint">Um Doppeltippen zum Display ausschalten zu verwenden, aktiviere die Bedienungshilfen. Tippe auf \"Einstellungen öffnen\", wähle \"Lawnchair\" aus und aktiviere \"Lawnchair verwenden\"\"\n\nLawnchair verwendet die Bedienungshilfe \'performGlobalAction\', um diese Aktion auszuführen. Dies ist eine sensible Berechtigung, die es ermöglicht, andere Apps zu überwachen. Lawnchair ist jedoch nicht für derartige Funktionen konfiguriert und liest keine Vorgänge aus.</string>
     <string name="dt2s_recents_warning_open_settings">Einstellungen öffnen</string>
-    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">Um zuletzt geöffnete Apps zu öffnen, aktivieren Sie den Lawnchair Bedienungshilfen Dienst. Tippen Sie auf „Einstellungen“ öffnen, wählen Sie „Lawnchair“ und aktivieren Sie „Lawnchair verwenden“.\n\nLawnchair verwendet die „performGlobalAction“ Funktion des Bedienungshilfe Dienstes um diese Aktion durchzuführen. Dies ist eine sensible Berechtigung, die die Überwachung anderer Apps erlaubt. Lawnchair ist jedoch nicht für diese Funktionalität konfiguriert und erhält keine Ereignisse.</string>
     <!--
 
     Bug reporting

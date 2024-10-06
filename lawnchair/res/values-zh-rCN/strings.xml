@@ -351,7 +351,7 @@
     <string name="dt2s_admin_hint">要使用双击息屏，请把 Lawnchair 设置为设备管理员应用，点击\"打开设置\"，然后点击\"启用设备管理员应用\"</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
     <string name="d2ts_recents_a11y_hint_title">打开无障碍服务</string>
-    <string name="dt2s_a11y_hint">要使用双击睡眠，请开启 Lawnchair 的无障碍服务。点击“打开设置”，选择“Lawnchair”，并开启“使用Lawnchair”。\n\nLawnchair 使用无障碍的 performGlobalAction 方法来执行此操作。这是一个敏感权限，允许监控其他应用。然而，Lawnchair 并未配置此功能，因此不会接收到任何事件。</string>
+    <string name="dt2s_a11y_hint">要使用双击息屏，请开启 Lawnchair 的无障碍服务。点击“打开设置”，选择“Lawnchair”，并开启“使用Lawnchair”。\n\nLawnchair 使用无障碍的 performGlobalAction 方法来执行此操作。这是一个敏感权限，允许监控其他应用。然而，Lawnchair 并未配置此功能，因此不会接收到任何事件。</string>
     <string name="dt2s_recents_warning_open_settings">打开设置</string>
     <string name="recents_a11y_hint">要使用打开最近任务，请开启 Lawnchair 的无障碍服务。点击“打开设置”，选择“Lawnchair”，并开启“使用 Lawnchair”。\n\nLawnchair 使用无障碍的 performGlobalAction 方法来执行此操作。这是一个敏感权限，允许监控其他应用。然而，Lawnchair 并未配置此功能，因此不会接收任何事件。</string>
     <!--
