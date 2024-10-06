@@ -24,6 +24,8 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
+import kotlinx.coroutines.CoroutineScope;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
@@ -32,8 +34,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
-import kotlinx.coroutines.CoroutineScope;
 
 /**
  * Base class for a condition that needs to be fulfilled in order for {@link Monitor} to inform

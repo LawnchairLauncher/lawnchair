@@ -87,10 +87,15 @@ public class PipSurfaceTransactionHelper {
         mTmpDestinationRect.inset(insets);
         // Scale to the bounds no smaller than the destination and offset such that the top/left
         // of the scaled inset source rect aligns with the top/left of the destination bounds
-        final float scale;
+        final float scale, left, top;
         if (sourceRectHint.isEmpty() || sourceRectHint.width() == sourceBounds.width()) {
             scale = Math.max((float) destinationBounds.width() / sourceBounds.width(),
                     (float) destinationBounds.height() / sourceBounds.height());
+            // Work around the rounding error by fix the position at very beginning.
+            left = scale == 1
+                    ? 0 : destinationBounds.left - (insets.left + sourceBounds.left) * scale;
+            top = scale == 1
+                    ? 0 : destinationBounds.top - (insets.top + sourceBounds.top) * scale;
         } else {
             // scale by sourceRectHint if it's not edge-to-edge
             final float endScale = sourceRectHint.width() <= sourceRectHint.height()
@@ -99,10 +104,10 @@ public class PipSurfaceTransactionHelper {
             final float startScale = sourceRectHint.width() <= sourceRectHint.height()
                     ? (float) destinationBounds.width() / sourceBounds.width()
                     : (float) destinationBounds.height() / sourceBounds.height();
-            scale = (1 - progress) * startScale + progress * endScale;
+            scale = Math.min((1 - progress) * startScale + progress * endScale, 1.0f);
+            left = destinationBounds.left - (insets.left + sourceBounds.left) * scale;
+            top = destinationBounds.top - (insets.top + sourceBounds.top) * scale;
         }
-        final float left = destinationBounds.left - (insets.left + sourceBounds.left) * scale;
-        final float top = destinationBounds.top - (insets.top + sourceBounds.top) * scale;
         mTmpTransform.setScale(scale, scale);
         final float cornerRadius = getScaledCornerRadius(mTmpDestinationRect, destinationBounds);
         tx.setMatrix(leash, mTmpTransform, mTmpFloat9)

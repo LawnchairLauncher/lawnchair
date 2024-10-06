@@ -37,23 +37,18 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.AlphaUpdateListener;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.views.ActivityContext;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import app.lawnchair.preferences2.PreferenceManager2;
-
-@TargetApi(Build.VERSION_CODES.P)
 public class PredictionRowView<T extends Context & ActivityContext>
         extends LinearLayout implements OnDeviceProfileChangeListener, FloatingHeaderRow {
 
@@ -61,23 +56,20 @@ public class PredictionRowView<T extends Context & ActivityContext>
     private int mNumPredictedAppsPerRow;
     // Vertical padding of the icon that contributes to the expected cell height.
     private final int mVerticalPadding;
-    // Extra padding that is used in the top app rows (prediction and search) that
-    // is not used in
+    // Extra padding that is used in the top app rows (prediction and search) that is not used in
     // the regular A-Z list. This only applies to single line label.
     private final int mTopRowExtraHeight;
 
     // Helper to drawing the focus indicator.
     private final FocusIndicatorHelper mFocusHelper;
 
-    // The set of predicted apps resolved from the component names and the current
-    // set of apps
+    // The set of predicted apps resolved from the component names and the current set of apps
     private final List<WorkspaceItemInfo> mPredictedApps = new ArrayList<>();
 
     private FloatingHeaderView mParent;
 
     private boolean mPredictionsEnabled = false;
 
-    private final PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
     private boolean mPredictionUiUpdatePaused = false;
 
     public PredictionRowView(@NonNull Context context) {
@@ -115,23 +107,12 @@ public class PredictionRowView<T extends Context & ActivityContext>
     }
 
     private void updateVisibility() {
-        boolean enabled = mPredictionsEnabled
-                && PreferenceExtensionsKt.firstBlocking(prefs2.getShowSuggestedAppsInDrawer());
-        setVisibility(enabled ? VISIBLE : GONE);
+        setVisibility(mPredictionsEnabled ? VISIBLE : GONE);
         if (mActivityContext.getAppsView() != null) {
-            if (enabled) {
+            if (mPredictionsEnabled) {
                 mActivityContext.getAppsView().getAppsStore().registerIconContainer(this);
             } else {
                 mActivityContext.getAppsView().getAppsStore().unregisterIconContainer(this);
-            }
-        }
-
-        // Set the predicted row in All Apps' text line to 1.
-        if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()
-                || FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()) {
-            for (int i = 0; i < getChildCount(); i++) {
-                BubbleTextView icon = (BubbleTextView) getChildAt(i);
-                icon.setMaxLines(1);
             }
         }
     }
@@ -140,7 +121,6 @@ public class PredictionRowView<T extends Context & ActivityContext>
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(getExpectedHeight(),
                 MeasureSpec.EXACTLY));
-        updateVisibility();
     }
 
     @Override
@@ -156,14 +136,11 @@ public class PredictionRowView<T extends Context & ActivityContext>
         int iconPadding = deviceProfile.allAppsIconDrawablePaddingPx;
         int textHeight = Utilities.calculateTextHeight(deviceProfile.allAppsIconTextSizePx);
         int totalHeight = iconHeight + iconPadding + textHeight + mVerticalPadding * 2;
-        // Prediction row height will be 4dp bigger than the regular apps in A-Z list
-        // when two line
-        // is not enabled. Otherwise, the extra height will increase by just the
-        // textHeight.
+        // Prediction row height will be 4dp bigger than the regular apps in A-Z list when two line
+        // is not enabled. Otherwise, the extra height will increase by just the textHeight.
         int extraHeight = (Flags.enableTwolineToggle() &&
                 LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(getContext()))
-                        ? textHeight
-                        : mTopRowExtraHeight;
+                ? textHeight : mTopRowExtraHeight;
         totalHeight += extraHeight;
         return getVisibility() == GONE ? 0 : totalHeight + getPaddingTop() + getPaddingBottom();
     }
@@ -193,12 +170,10 @@ public class PredictionRowView<T extends Context & ActivityContext>
     /**
      * Sets the current set of predicted apps.
      *
-     * This can be called before we get the full set of applications, we should
-     * merge the results
+     * This can be called before we get the full set of applications, we should merge the results
      * only in onPredictionsUpdated() which is idempotent.
      *
-     * If the number of predicted apps is the same as the previous list of predicted
-     * apps,
+     * If the number of predicted apps is the same as the previous list of predicted apps,
      * we can optimize by swapping them in place.
      */
     public void setPredictedApps(List<ItemInfo> items) {
@@ -287,6 +262,7 @@ public class PredictionRowView<T extends Context & ActivityContext>
     public boolean hasOverlappingRendering() {
         return false;
     }
+
 
     @Override
     public void setVerticalScroll(int scroll, boolean isScrolledOut) {

@@ -71,7 +71,9 @@ include ':compatLib:compatLibVR'
 include ':compatLib:compatLibVS'
 include ':compatLib:compatLibVT'
 include ':compatLib:compatLibVU'
+include ':compatLib:compatLibVV'
 
 include ':baseline-profile'
 
 include ':androidx-lib'
+include ':flags'

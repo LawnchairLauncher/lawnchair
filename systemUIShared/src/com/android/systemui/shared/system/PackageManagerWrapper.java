@@ -18,7 +18,6 @@ package com.android.systemui.shared.system;
 
 import android.app.AppGlobals;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.IPackageManager;
@@ -55,14 +54,6 @@ public class PackageManagerWrapper {
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
-        } catch (Throwable throwable){
-            try {
-                Context context = AppGlobals.getInitialApplication();
-                return context.getPackageManager().getActivityInfo(componentName, PackageManager.GET_META_DATA);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-                return null;
-            }
         }
     }
 
