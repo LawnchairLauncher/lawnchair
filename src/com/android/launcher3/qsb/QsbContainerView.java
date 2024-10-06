@@ -149,7 +149,7 @@ public class QsbContainerView extends FrameLayout {
 
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
-        super.setPadding(left, top, right, bottom);
+        super.setPadding(0, 0, 0, 0);
     }
 
     protected void setPaddingUnchecked(int left, int top, int right, int bottom) {
