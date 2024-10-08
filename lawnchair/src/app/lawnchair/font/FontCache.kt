@@ -67,10 +67,10 @@ class FontCache private constructor(private val context: Context) {
                 .toList()
         }
 
-    val uiRegular = ResourceFont(context, R.font.inter_regular, "Inter")
-    val uiMedium = ResourceFont(context, R.font.inter_medium, "Inter Medium")
-    val uiText = ResourceFont(context, R.font.inter_regular, "Inter")
-    val uiTextMedium = ResourceFont(context, R.font.inter_medium, "Inter Medium")
+    val uiRegular = ResourceFont(context, R.font.inter_regular, "Inter v4.0 Regular")
+    val uiMedium = ResourceFont(context, R.font.inter_medium, "Inter v4.0 Medium")
+    val uiText = ResourceFont(context, R.font.inter_regular, "Inter v4.0 Regular")
+    val uiTextMedium = ResourceFont(context, R.font.inter_medium, "Inter v4.0 Medium")
 
     suspend fun getTypeface(font: Font): Typeface? {
         return loadFontAsync(font).await()?.typeface
@@ -315,6 +315,11 @@ class FontCache private constructor(private val context: Context) {
         override val fullDisplayName = name
         override val composeFontFamily = FontFamily(ComposeFont("$name.ttf", assets))
 
+        override fun saveToJson(obj: JSONObject) {
+            super.saveToJson(obj)
+            obj.put(KEY_FAMILY_NAME, name)
+        }
+
         override fun equals(other: Any?): Boolean {
             return other is AssetFont && name == other.name
         }
@@ -322,11 +327,22 @@ class FontCache private constructor(private val context: Context) {
         override fun hashCode(): Int {
             return hashCode
         }
+
+        companion object {
+
+            @Keep
+            @JvmStatic
+            fun fromJson(context: Context, obj: JSONObject): Font {
+                val assets = context.assets
+                val name = obj.getString(KEY_FAMILY_NAME)
+                return AssetFont(assets, name)
+            }
+        }
     }
 
     class ResourceFont(
         context: Context,
-        resId: Int,
+        private val resId: Int,
         private val name: String,
     ) : TypefaceFont(ResourcesCompat.getFont(context, resId)) {
 
@@ -335,12 +351,29 @@ class FontCache private constructor(private val context: Context) {
         override val fullDisplayName = name
         override val composeFontFamily = FontFamily(ComposeFont(resId))
 
+        override fun saveToJson(obj: JSONObject) {
+            super.saveToJson(obj)
+            obj.put(KEY_RESOURCE_ID, resId)
+            obj.put(KEY_FAMILY_NAME, name)
+        }
+
         override fun equals(other: Any?): Boolean {
             return other is ResourceFont && name == other.name
         }
 
         override fun hashCode(): Int {
             return hashCode
+        }
+
+        companion object {
+
+            @Keep
+            @JvmStatic
+            fun fromJson(context: Context, obj: JSONObject): Font {
+                val resId = obj.getInt(KEY_RESOURCE_ID)
+                val name = obj.getString(KEY_FAMILY_NAME)
+                return ResourceFont(context, resId, name)
+            }
         }
     }
 
@@ -485,6 +518,7 @@ class FontCache private constructor(private val context: Context) {
         private const val KEY_VARIANT = "variant"
         private const val KEY_VARIANTS = "variants"
         private const val KEY_FONT_NAME = "font"
+        private const val KEY_RESOURCE_ID = "resourceId"
 
         private val weightNameMap: Map<String, Int> = mapOf(
             Pair("100", R.string.font_weight_thin),
