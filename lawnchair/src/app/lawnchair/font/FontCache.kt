@@ -67,10 +67,10 @@ class FontCache private constructor(private val context: Context) {
                 .toList()
         }
 
-    val uiRegular = ResourceFont(context, R.font.inter_regular, "Inter v4.0 Regular")
-    val uiMedium = ResourceFont(context, R.font.inter_medium, "Inter v4.0 Medium")
-    val uiText = ResourceFont(context, R.font.inter_regular, "Inter v4.0 Regular")
-    val uiTextMedium = ResourceFont(context, R.font.inter_medium, "Inter v4.0 Medium")
+    val uiRegular = ResourceFont(context, R.font.inter_regular, "Inter v3 Regular")
+    val uiMedium = ResourceFont(context, R.font.inter_medium, "Inter v3 Medium")
+    val uiText = ResourceFont(context, R.font.inter_regular, "Inter v3 Regular")
+    val uiTextMedium = ResourceFont(context, R.font.inter_medium, "Inter v3 Medium")
 
     suspend fun getTypeface(font: Font): Typeface? {
         return loadFontAsync(font).await()?.typeface
