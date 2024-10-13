@@ -161,7 +161,7 @@
     <string name="icon_shape_egg">楕円形</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">オクタゴン</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">六角形</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">角丸四角形</string>
     <string name="icon_shape_sharp_square">正方形</string>
@@ -310,7 +310,7 @@
     <string name="support_and_pr">サポート &amp; PR</string>
     <string name="acknowledgements">謝辞</string>
     <string name="translate">翻訳</string>
-    <string name="donate">Donate</string>
+    <string name="donate">寄付</string>
     <!--
 
     Backup and restore
@@ -333,7 +333,7 @@
 
     -->
     <string name="gesture_double_tap">ダブルタップをしたとき</string>
-    <string name="gesture_swipe_up">Swipe up</string>
+    <string name="gesture_swipe_up">上にスワイプしたとき</string>
     <string name="gesture_swipe_down">下にスワイプしたとき</string>
     <string name="gesture_home_tap">ホームボタンを押したとき</string>
     <string name="gesture_back_tap">戻るボタンを押したとき</string>
@@ -374,8 +374,8 @@
 
     -->
     <!-- General and home screen settings -->
-    <string name="home_screen_rotation_label">Home screen rotation</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
+    <string name="home_screen_rotation_label">ホーム画面の回転</string>
+    <string name="home_screen_rotation_description">デバイスが回転した際にホーム画面も回転します</string>
     <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
@@ -388,7 +388,7 @@
     <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
     <string name="wallpaper_depth_effect_description">ランチャーのエリアを移動する際に背景がズームイン・ズームアウトします</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
-    <string name="home_screen_grid">Home screen grid</string>
+    <string name="home_screen_grid">ホーム画面のグリッド</string>
     <string name="home_screen_lock">Lock home screen</string>
     <string name="home_screen_unlock">Unlock home screen</string>
     <string name="home_screen_locked">Home screen is locked</string>
@@ -483,27 +483,27 @@
     <!-- Launcher strings used -->
     <string name="all_apps_device_search_hint">検索</string>
     <string name="all_apps_search_bar_hint">アプリを検索</string>
-    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+    <string name="all_apps_no_search_results"><xliff:g example="Android" id="query">%1$s</xliff:g> と一致するアプリがありません</string>
     <string name="all_apps_search_result_suggestions">Web</string>
-    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
-    <string name="all_apps_search_result_files">Files from device</string>
-    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
-    <string name="all_apps_search_market_message">Search for more apps</string>
-    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
-    <string name="clear_history">Clear search history</string>
-    <string name="search_input_action_clear_results">Clear search box</string>
+    <string name="all_apps_search_result_contacts_from_device">デバイスの連絡先</string>
+    <string name="all_apps_search_result_files">デバイスのファイル</string>
+    <string name="all_apps_search_result_settings_entry_from_device">デバイスの設定</string>
+    <string name="all_apps_search_market_message">アプリストアで検索</string>
+    <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>で検索</string>
+    <string name="error_no_market_or_browser_installed">アプリストアかブラウザがインストールされていません</string>
+    <string name="clear_history">検索履歴を消去</string>
+    <string name="search_input_action_clear_results">検索ボックスをクリア</string>
     <!-- Search settings -->
     <string name="pref_category_search">検索</string>
     <string name="show_app_search_bar">サーチバーを表示する</string>
     <string name="pref_search_auto_show_keyboard">自動的にキーボードを表示する</string>
     <string name="fuzzy_search_title">あいまい検索</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
+    <string name="fuzzy_search_desc">アプリ検索でおおよその検索ができます</string>
     <string name="suggestion_pref_screen_title">サジェスト</string>
     <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
     <string name="perform_wide_search_title">Device search</string>
     <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
-    <string name="show_hidden_apps_in_search_results">Show hidden apps in search results</string>
+    <string name="show_hidden_apps_in_search_results">検索結果に非表示のアプリを表示する</string>
     <string name="hidden_apps_show_name_typed">If full name is typed</string>
     <string name="app_search_algorithm">Search algorithm</string>
     <string name="search_algorithm_app_search">アプリ検索</string>
@@ -515,26 +515,26 @@
     <string name="search_pref_result_shortcuts_title">App shortcuts</string>
     <string name="search_pref_result_people_title">人物</string>
     <string name="search_pref_result_tips_title">Pixel tips</string>
-    <string name="search_pref_result_settings_title">Android settings</string>
+    <string name="search_pref_result_settings_title">Android 設定</string>
     <string name="search_pref_result_files_title">ファイル</string>
     <string name="search_pref_result_web_title">ウェブの提案</string>
-    <string name="search_pref_result_history_title">Search history</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="search_pref_result_history_title">検索履歴</string>
+    <string name="all_apps_search_result_calculator">電卓</string>
     <!-- Description for each search result type -->
     <string name="search_pref_result_files_description">メディア、ファイル、その他</string>
     <string name="search_pref_result_contacts_description">連絡先やその他</string>
-    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
+    <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g>で検索</string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps</string>
-    <string name="max_people_result_count_title">Maximum number of people</string>
-    <string name="max_file_result_count_title">Maximum number of files</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
-    <string name="max_recent_result_count_title">Maximum items for search history</string>
+    <string name="max_apps_result_count_title">アプリの表示件数</string>
+    <string name="max_people_result_count_title">連絡先の表示件数</string>
+    <string name="max_file_result_count_title">ファイルの表示件数</string>
+    <string name="max_settings_entry_result_count_title">システム設定の表示件数</string>
+    <string name="max_recent_result_count_title">検索履歴の表示件数</string>
     <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">連絡先を検索するには、Lawnchair に連絡先と電話の権限を付与してください</string>
-    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
+    <string name="warn_files_permission_content">デバイス内のファイルを検索する場合はLawnchairにストレージ権限を付与してください。</string>
     <string name="grant_requested_permissions">Grant permissions</string>
     <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
     <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>

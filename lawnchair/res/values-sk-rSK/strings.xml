@@ -71,9 +71,9 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Čo ukázať</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Na uzamknutie telefónu pri vykonávaní gesta vyžaduje aplikácia Lawnchair prístup k funkciám prístupnosti.\n\nLawnchair nesleduje žiadnu činnosť používateľa, hoci oprávnenie na to sa vyžaduje pre všetky služby prístupnosti. Služba Lawnchair zahodí akúkoľvek udalosť odoslanú systémom.\n\nNa uzamknutie telefónu používa služba sprístupnenia performGlobalAction.</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="x_and_y">%1$s a %2$s</string>
     <!--
 
     Preference Dashboard
@@ -226,7 +226,7 @@
     <!-- Color style -->
     <string name="color_style_label">Farebný štýl</string>
     <string name="color_style_spritz">Spritz</string>
-    <string name="color_style_tonal_spot">Tonal Spot</string>
+    <string name="color_style_tonal_spot">Tónová škvrna</string>
     <string name="color_style_vibrant">Nasýtené</string>
     <string name="color_style_expressive">Expressive</string>
     <string name="color_style_rainbow">Dúha</string>
