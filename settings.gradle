@@ -57,13 +57,8 @@ project(':animationlib').projectDir = new File(rootDir, 'platform_frameworks_lib
 
 include ':hidden-api'
 include ':systemUIShared'
-include ':systemUIPlugin'
-include ':systemUIPluginCore'
-include ':systemUICommon'
-include ':systemUILog'
-include ':systemUIAnim'
+
 include ':systemUnFold'
-include ':systemUIViewCapture'
 
 include ':compatLib'
 include ':compatLib:compatLibVQ'

@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
@@ -15,11 +14,6 @@ android {
             aidl.srcDirs = ['src']
         }
     }
-    kapt {
-        arguments {
-            arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
-        }
-    }
 }
 
 addFrameworkJar('framework-15.jar')
@@ -27,7 +21,7 @@ compileOnlyCommonJars()
 
 dependencies {
     implementation "com.google.dagger:hilt-android:$daggerVersion"
-    kapt "com.google.dagger:hilt-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:hilt-compiler:$daggerVersion"
 
     implementation "androidx.concurrent:concurrent-futures:1.2.0"
     implementation "androidx.lifecycle:lifecycle-common:2.8.6"
