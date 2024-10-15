@@ -33,6 +33,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.icons.ClockDrawableWrapper;
 import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.ArrayList;
@@ -136,10 +137,12 @@ public class DebugTestInformationHandler extends TestInformationHandler {
 
             case TestProtocol.REQUEST_ENABLE_DEBUG_TRACING:
                 TestProtocol.sDebugTracing = true;
+                ClockDrawableWrapper.sRunningInTest = true;
                 return response;
 
             case TestProtocol.REQUEST_DISABLE_DEBUG_TRACING:
                 TestProtocol.sDebugTracing = false;
+                ClockDrawableWrapper.sRunningInTest = false;
                 return response;
 
             case TestProtocol.REQUEST_PID: {
