@@ -23,5 +23,5 @@ compileOnlyCommonJars()
 dependencies {
     compileOnly projects.systemUIPluginCore
     compileOnly projects.systemUICommon
-    implementation 'com.google.errorprone:error_prone_annotations:2.33.0'
+    implementation 'com.google.errorprone:error_prone_annotations:2.34.0'
 }
