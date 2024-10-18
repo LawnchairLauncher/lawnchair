@@ -545,6 +545,11 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = true,
     )
 
+    val smartspacePersonalityProvider = preference(
+        key = booleanPreferencesKey("enable_smartspace_personality_provider"),
+        defaultValue = false,
+    )
+
     val smartspaceShowDate = preference(
         key = booleanPreferencesKey("smartspace_show_date"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_smartspace_show_date),

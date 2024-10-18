@@ -343,6 +343,56 @@
     <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_description">What to show</string>
 
+    <!-- Personality provider -->
+    <string name="personality_provider">Contextual messages</string>
+    <string-array name="smartspace_personality_greetings_morning">
+        <item>Good morning!</item>
+        <item>Have a great day!</item>
+        <item>It’s a beautiful day outside!</item>
+        <item>Rise and shine!</item>
+        <item>Top of the morning to you!</item>
+        <item>Ready to start the day?</item>
+    </string-array>
+    <string-array name="smartspace_personality_greetings_morning_subtitles">
+        <item>Wishing you a pleasant start to your day.</item>
+        <item>May your day be filled with joy and success.</item>
+        <item>Don\'t forget to enjoy the sunshine and fresh air.</item>
+        <item>Time to wake up and make things happen!</item>
+        <item>A cheerful greeting for a cheerful morning.</item>
+        <item>Let\'s make today amazing!</item>
+    </string-array>
+    <string-array name="smartspace_personality_greetings_evening">
+        <item>What’s up?</item>
+        <item>Good evening!</item>
+        <item>How did your day go?</item>
+        <item>How was your day?</item>
+        <item>Evening! How are you?</item>
+        <item>Hope you had a good day!</item>
+    </string-array>
+    <string-array name="smartspace_personality_greetings_evening_subtitles">
+        <item>Just checking in to see how your evening is going.</item>
+        <item>Curious to hear about your day\'s adventures.</item>
+        <item>Hoping your day was productive and fulfilling.</item>
+        <item>A friendly greeting for a wonderful evening.</item>
+        <item>Time to unwind and enjoy the rest of your day.</item>
+    </string-array>
+    <string-array name="smartspace_personality_greetings_night">
+        <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Good night!</item>
+        <item>Don’t stay up too late!</item>
+        <item>Night night!</item>
+        <item>Sweet dreams!</item>
+    </string-array>
+    <string-array name="smartspace_personality_greetings_night_subtitles">
+        <item>May you have a restful sleep.</item>
+        <item>Looking forward to seeing you again tomorrow.</item>
+        <item>Wishing you a peaceful and pleasant night.</item>
+        <item>Remember to sleep for your health.</item>
+        <item>A cozy goodnight message for a sweet slumber.</item>
+        <item>May your dreams be filled with wonder and joy.</item>
+    </string-array>
+
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Calendar</string>
     <string name="smartspace_date_and_time">Date &amp; time</string>
@@ -357,6 +407,7 @@
     <string name="smartspace_weather">Weather</string>
     <string name="smartspace_battery_status">Battery status</string>
     <string name="smartspace_now_playing">Now Playing</string>
+    <string name="smartspace_personality_provider">Greetings</string>
 
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maximum number of targets</string>
