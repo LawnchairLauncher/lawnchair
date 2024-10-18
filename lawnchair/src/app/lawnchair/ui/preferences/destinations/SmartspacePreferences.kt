@@ -1,6 +1,9 @@
 package app.lawnchair.ui.preferences.destinations
 
 import android.app.Activity
+import android.icu.text.DateFormat
+import android.icu.text.DisplayContext
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -34,6 +37,7 @@ import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
+import app.lawnchair.ui.preferences.components.controls.TextPreference
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
@@ -216,6 +220,13 @@ fun SmartspaceDateAndTimePreferences(
                 ExpandAndShrink(visible = calendarSelectionEnabled.state.value && showDateAdapter.state.value) {
                     SmartspaceCalendarPreference()
                 }
+                val smartspaceCalendar = preferenceManager2().smartspaceCalendar.getAdapter()
+                ExpandAndShrink(visible = smartspaceCalendar.state.value is SmartspaceCalendar.Custom) {
+                    SmartspaceCustomDateTimePreference()
+                    // TODO: wtf is this layout!!
+                    val TAG = "SmartspacePrefCustom"
+                    Log.w(TAG, "Not supposed to be here?")
+                }
                 SwitchPreference(
                     adapter = showTimeAdapter,
                     label = stringResource(id = R.string.smartspace_time),
@@ -226,6 +237,45 @@ fun SmartspaceDateAndTimePreferences(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun SmartspaceCustomDateTimePreference(
+    modifier: Modifier = Modifier
+) {
+    PreferenceGroup(
+        heading = stringResource(id = R.string.smartspace_custom_date_header),
+        modifier = Modifier,
+        elevation = 2.dp,
+    ) {
+        val preferenceManager2 = preferenceManager2()
+        val TAG = "SmartspaceCustomDateTimePref"
+
+        //val date = preferenceManager2.smartspaceCustomDate.getAdapter().state.value
+        //val formatter = DateTimeFormatter.ofPattern(date)
+        var result: String = "blah" // formatter.format(LocalDate.now())
+
+        // TODO
+        Log.w(TAG, "Live result is not implemented")
+
+        TextPreference(
+            adapter = preferenceManager2.smartspaceCustomTimeFormat.getAdapter(),
+            label = stringResource(id = R.string.smartspace_time_custom_format),
+            modifier = modifier,
+        )
+        result = "Not implemented"
+        TextPreference(
+            adapter = preferenceManager2.smartspaceCustomDate.getAdapter(),
+            label = stringResource(id = R.string.smartspace_date_custom_format),
+            modifier = modifier,
+            description = { "Format: $result" },
+        )
+        TextPreference(
+            adapter = preferenceManager2.smartspaceCustomDateWithoutYear.getAdapter(),
+            label = stringResource(id = R.string.smartspace_time_custom_format),
+            modifier = modifier,
+        )
     }
 }
 
@@ -259,10 +309,10 @@ fun SmartspaceCalendarPreference(
         }
     }
 
-    val adapter = preferenceManager2().smartspaceCalendar.getAdapter()
+    val smartspaceCalendar = preferenceManager2().smartspaceCalendar.getAdapter()
 
     ListPreference(
-        adapter = adapter,
+        adapter = smartspaceCalendar,
         entries = entries,
         label = stringResource(id = R.string.smartspace_calendar),
         modifier = modifier,

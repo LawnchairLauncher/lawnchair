@@ -10,6 +10,7 @@ sealed class SmartspaceTimeFormat(@StringRes val nameResourceId: Int) {
         fun fromString(value: String): SmartspaceTimeFormat = when (value) {
             "12_hour_format" -> TwelveHourFormat
             "24_hour_format" -> TwentyFourHourFormat
+            "custom" -> CustomHourFormat
             else -> FollowSystem
         }
 
@@ -35,5 +36,11 @@ sealed class SmartspaceTimeFormat(@StringRes val nameResourceId: Int) {
         nameResourceId = R.string.smartspace_time_24_hour_format,
     ) {
         override fun toString() = "24_hour_format"
+    }
+
+    object CustomHourFormat : SmartspaceTimeFormat(
+        nameResourceId = R.string.smartspace_time_custom_format
+    ) {
+        override fun toString() = "custom"
     }
 }

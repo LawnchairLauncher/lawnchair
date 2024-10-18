@@ -323,12 +323,16 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persian</string>
+    <string name="smartspace_calendar_custom">Custom</string>
 
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_icu_date_pattern_gregorian_wday_month_day_no_year" translatable="false">EEEMMMd</string>
     <string name="smartspace_icu_date_pattern_gregorian_time" translatable="false">HH:mm</string>
     <string name="smartspace_icu_date_pattern_gregorian_time_12h" translatable="false">hh:mm aa</string>
     <string name="smartspace_icu_date_pattern_gregorian_date" translatable="false"> dd MMMM</string>
+    <string name="smartspace_icu_date_pattern_custom_wday_month_day_no_year" translatable="false">EEEMMMd</string>
+    <string name="smartspace_icu_date_pattern_custom_time" translatable="false">HH:mm</string>
+    <string name="smartspace_icu_date_pattern_custom_date" translatable="false">dd MMMM</string>
     <string name="smartspace_icu_date_pattern_persian_wday_month_day_no_year" translatable="false">l، j F</string>
     <string name="smartspace_icu_date_pattern_persian_time" translatable="false">H:i</string>
     <string name="smartspace_icu_date_pattern_persian_time_12h" translatable="false">g:i a</string>
@@ -346,12 +350,15 @@
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Calendar</string>
     <string name="smartspace_date_and_time">Date &amp; time</string>
+    <string name="smartspace_custom_date_header">Custom Date</string>
     <string name="smartspace_date">Date</string>
     <string name="smartspace_time">Time</string>
     <string name="smartspace_time_format">Time format</string>
     <string name="smartspace_time_follow_system">Follow system</string>
     <string name="smartspace_time_12_hour_format">12-hour format</string>
     <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <string name="smartspace_time_custom_format">Custom Time format</string>
+    <string name="smartspace_date_custom_format">Custom Date format</string>
 
     <!-- Available targets -->
     <string name="smartspace_weather">Weather</string>

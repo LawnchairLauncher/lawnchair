@@ -44,6 +44,7 @@ fun PreferenceGroup(
     dividerStartIndent: Dp = 0.dp,
     dividerEndIndent: Dp = 0.dp,
     dividersToSkip: Int = 0,
+    elevation: Dp = 1.dp,
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -53,7 +54,7 @@ fun PreferenceGroup(
         Surface(
             modifier = Modifier.padding(horizontal = 16.dp),
             shape = MaterialTheme.shapes.large,
-            tonalElevation = 1.dp,
+            tonalElevation = elevation,
         ) {
             if (showDividers) {
                 DividerColumn(
