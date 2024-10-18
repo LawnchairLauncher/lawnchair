@@ -105,14 +105,16 @@ class SearchTargetFactory(
             .setIntent(Intent())
             .build()
 
-        val extras = bundleOf()
+        val extras = bundleOf(
+            "result" to result,
+        )
 
         return createSearchTarget(
             id,
             action,
             LayoutType.CALCULATOR,
             SearchTargetCompat.RESULT_TYPE_CALCULATOR,
-            "",
+            CALCULATOR,
             extras,
         )
     }
