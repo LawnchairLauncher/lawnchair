@@ -23,18 +23,6 @@ android {
 addFrameworkJar('framework-14.jar')
 compileOnlyCommonJars()
 
-// Workaround for https://github.com/google/dagger/issues/4158
-androidComponents {
-    onVariants(selector().all(), { variant ->
-        afterEvaluate {
-            def capName = variant.name.capitalize()
-            tasks.getByName("ksp${capName}Kotlin") {
-                setSource(tasks.getByName("compile${capName}Aidl").outputs)
-            }
-        }
-    })
-}
-
 dependencies {
     implementation "com.google.dagger:hilt-android:$daggerVersion"
     ksp "com.google.dagger:hilt-compiler:$daggerVersion"
