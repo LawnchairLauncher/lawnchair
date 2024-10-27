@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Những gì để hiển thị</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Để mở khoá màn hình </string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -81,17 +81,17 @@
     -->
     <string name="settings">Cài đặt</string>
     <string name="general_label">Chung</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
+    <string name="general_description">Màu sắc, gói biểu tượng, dấu chấm thông báo</string>
     <string name="home_screen_label">Trang chủ</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="home_screen_description">Bản tin, lưới, biểu tượng</string>
     <string name="dock_label">Khay</string>
     <string name="dock_description">Thanh tìm kiếm, số biểu tượng</string>
     <string name="app_drawer_label">Kho ứng dụng</string>
     <string name="app_drawer_description">Ứng dụng bị ẩn, số cột, biểu tượng</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="drawer_search_label">Ngăn tìm kiếm</string>
+    <string name="drawer_search_description">Gợi ý website, tìm kiếm chung</string>
     <string name="folders_label">Thư mục</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">Số hàng và cột</string>
     <string name="gestures_label">Cử chỉ</string>
     <string name="gestures_description">Cử chỉ và chạm</string>
     <string name="quickstep_label">Gần đây</string>
@@ -101,12 +101,12 @@
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="experimental_features_label">Chức năng thử nghiệm</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">Font customization</string>
+    <string name="font_picker_label">Đổi phông chữ</string>
     <string name="font_picker_description">Some text remains unchanged</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
+    <string name="smartspace_calendar_label">Tuỳ chỉnh lịch của xem nhanh</string>
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
+    <string name="workspace_increase_max_grid_size_label">Tăng độ lớn tối đa của lưới</string>
+    <string name="workspace_increase_max_grid_size_description">Cho phép tăng kích thước từ 10x10 lên 20x20 trên màn hình chính</string>
     <string name="always_reload_icons_label">Always reload icons</string>
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
     <string name="recents_lock_unlock">Lock/unlock</string>
