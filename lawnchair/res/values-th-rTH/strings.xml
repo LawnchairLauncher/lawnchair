@@ -189,8 +189,8 @@
     <string name="system_icons">ไอคอนระบบ</string>
     <string name="themed_icon_title">ธีมไอคอน</string>
     <string name="themed_icons_off_label">ปิด</string>
-    <string name="themed_icons_home_label">Home screen</string>
-    <string name="themed_icons_home_and_drawer_label">หน้าจอหลัก &amp; รายการแอพ</string>
+    <string name="themed_icons_home_label">หน้าแรก</string>
+    <string name="themed_icons_home_and_drawer_label">หน้าจอหลักและรายการแอพ</string>
     <string name="lawnicons_not_installed_description">ไม่รองรับไอคอนแพ็ค</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">เพิ่มแบบอักษร</string>
@@ -286,7 +286,7 @@
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">แสดงบนหน้าจอหลัก</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">สามารถเพิ่มข้อมูลโดยย่อในหน้าหลักได้ด้วยตนเองโดยวางวิดเจ็ต Lawnchair</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">ผู้ให้บริการข้อมูลโดยย่อ</string>
     <string name="smartspace_mode_google">Google</string>
@@ -303,11 +303,11 @@
     <string name="news">ข่าวสาร</string>
     <string name="support">ความช่วยเหลือ</string>
     <string name="product">โปรดัก</string>
-    <string name="design_and_development">ดีไซน์ &amp; การพัฒนา</string>
+    <string name="design_and_development">ดีไซน์และการพัฒนา</string>
     <string name="development">การพัฒนา</string>
     <string name="quickswitch_maintenance">ผู้ดูแล QuickSwitch</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">ความช่วยเหลือ &amp; ประชาสัมพันธ์</string>
+    <string name="support_and_pr">ความช่วยเหลือและประชาสัมพันธ์</string>
     <string name="acknowledgements">ใบอนุญาตโอเพนซอร์ส</string>
     <string name="translate">ช่วยแปลภาษาหน่อยจร้า</string>
     <string name="donate">บริจาค</string>
@@ -381,7 +381,7 @@
     <string name="wallpaper_background_blur_factor">เกณฑ์ปัจจัย</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
     <string name="minus_one_enable">แสดงข่าว</string>
-    <string name="minus_one_unavailable">ยังไม่ได้ติดตั้งแอป Feed</string>
+    <string name="minus_one_unavailable">ยังไม่ได้ติดตั้งข่าว</string>
     <string name="minus_one">ฟีดข่าวสาร</string>
     <string name="feed_provider">ผู้ให้บริการข่าว</string>
     <string name="wallpaper_scrolling_label">เลื่อนพื้นหลัง</string>
@@ -391,9 +391,9 @@
     <string name="home_screen_grid">Home screen grid</string>
     <string name="home_screen_lock">ล็อกหน้าแรก</string>
     <string name="home_screen_unlock">ปลดล็อคหน้าแรก</string>
-    <string name="home_screen_locked">Home screen is locked</string>
+    <string name="home_screen_locked">หน้าจอหลักถูกล็อคแล้ว</string>
     <string name="home_screen_lock_description">ป้องกันการเปลี่ยนแปลงของวัตถุบนหน้าจอหลัก</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_label">ใช้ตัวแบ่งหน้าแบบจุด</string>
     <string name="show_dot_pagination_description">ใช้จุดแทนเส้นเพื่อแสดงหมายเลขหน้า</string>
     <string name="show_material_u_popup_label">ใช้ลักษณะป็อปอัพแบบใหม่</string>
     <string name="show_material_u_popup_description">ใช้ลักษณะป๊อปอัพที่เด้งรวมกับ Material You</string>
@@ -420,16 +420,16 @@
     <string name="hotseat_mode_disabled">ปิด</string>
     <string name="hotseat_mode_google_search">แถบค้นหาของ Google</string>
     <string name="qsb_hotseat_background_transparency">ความทึบของพื้นหลัง</string>
-    <string name="qsb_hotseat_stroke_width">Outline width</string>
-    <string name="qsb_hotseat_stroke_color">Outline color</string>
+    <string name="qsb_hotseat_stroke_width">ความกว้างของโครงร่าง</string>
+    <string name="qsb_hotseat_stroke_color">สีของโครงร่าง</string>
     <string name="corner_radius_label">รัศมีมุม</string>
     <string name="apply_accent_color_label">ใช้งานสีที่เน้น</string>
     <string name="search_provider">ผู้ให้บริการค้นหา</string>
     <string name="dock_icons">Dock icons</string>
-    <string name="hotseat_bottom_space_label">Bottom padding</string>
+    <string name="hotseat_bottom_space_label">เว้นขอบล่าง</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">ค้นหาแอป</string>
-    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s และ Lawnchair มีข้อตกลงแบ่งรายได้ร่วมกัน\n\nการค้นหาด้วย %1$s ช่วยสนับสนุน Lawnchair</string>
     <string name="app_label">แอป</string>
     <string name="website_label">เว็บไซต์</string>
     <string name="qsb_search_provider_app_required">จำเป็นต้องมีแอป</string>
@@ -440,15 +440,15 @@
     <!-- App drawer settings -->
     <string name="hidden_apps_label">แอปที่ซ่อน</string>
     <string name="pref_all_apps_bulk_icon_loading_title">โหลดแอปเป็นชุด</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">โหลดและแสดงไอคอนทั้งหมดพร้อมกันแทนที่จะโหลดและแสดงไอคอนทีละไอคอน</string>
     <string name="pref_all_apps_remember_position_title">จดจำตำแหน่ง</string>
     <string name="pref_all_apps_remember_position_description">จดจำตำแหน่งของแอปในลิ้นชักหลังจากออกจากลิ้นชัก</string>
     <string name="pref_all_apps_show_scrollbar_title">แสดงแถบเลื่อน</string>
     <string name="app_drawer_columns">App drawer columns</string>
     <string name="row_height_label">ความสูงของแถว</string>
-    <string name="app_drawer_indent_label">Horizontal padding</string>
+    <string name="app_drawer_indent_label">เว้นขอบข้าง</string>
     <!-- HiddenAppsPreferences -->
-    <string name="hide_from_drawer">Hide from app drawer</string>
+    <string name="hide_from_drawer">ซ่อนจากรายการแอป</string>
     <string name="hidden_apps_label_with_count">แอปที่ซ่อนอยู่ (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="other">%1$d แอป</item>

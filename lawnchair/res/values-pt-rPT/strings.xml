@@ -34,16 +34,16 @@
     <string name="always_choice">Sempre</string>
     <string name="never_choice">Nunca</string>
     <string name="clipboard">Área de Transferência</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy_link">Copiar Link</string>
     <string name="action_copy">Copiar</string>
     <string name="action_paste">Colar</string>
     <string name="loading">Carregando…</string>
     <string name="managed_by_lawnchair">Gerido por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferências</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">Definições Iniciais</string>
+    <string name="system_settings">Configurações Do Sistema</string>
+    <string name="title_change_settings">Alterar Configurações</string>
     <!--
 
     General "words" used throughout Lawnchair
@@ -64,14 +64,14 @@
     <string name="layout">Esquema</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Papel de Parede</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="background_opacity">Opacidade De Fundo</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
+    <string name="copied_toast">Copiado Para a Área De Transferência</string>
     <string name="item_removed">Item removido</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
+    <string name="what_to_show">O que mostrar</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Para bloquear o smartphone ao executar um gesto e abrir Recentes por gesto, o Lawnchair requer acesso de acessibilidade. O Lawnchair não monitora nenhuma ação do usuário, embora o privilégio para fazer isso seja necessário para todos os serviços de acessibilidade. O Lawnchair descarta qualquer evento enviado pelo sistema. Para bloquear seu telefone ou abrir Recentes, o Lawnchair usa o serviço performGlobalAction Accessibility.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -81,78 +81,79 @@
     -->
     <string name="settings">Definições</string>
     <string name="general_label">Geral</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="general_description">Cores, Pacotes de Ícones, Pontos de Notificação</string>
+    <string name="home_screen_label">Tela Inicial</string>
+    <string name="home_screen_description">Feed, Grade, Ícone</string>
     <string name="dock_label">Doca</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="dock_description">Barra De Pesquisa, Contagem De Ícones</string>
+    <string name="app_drawer_label">Gaveta De Aplicativos</string>
+    <string name="app_drawer_description">Aplicativos Ocultos, Contagem De Colunas, Ícones</string>
+    <string name="drawer_search_label">Pesquisa De Gaveta</string>
+    <string name="drawer_search_description">Pesquisa Global De Sugestões Da Web</string>
     <string name="folders_label">Pastas</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">Contagem De Linhas e Colunas</string>
     <string name="gestures_label">Gestos</string>
-    <string name="gestures_description">Taps and swipes</string>
+    <string name="gestures_description">Toques e Deslizes</string>
     <string name="quickstep_label">Recentes</string>
-    <string name="quickstep_description">Clear All button, corner radius</string>
+    <string name="quickstep_description">Limpar Todo o Raio Do Canto Do Botão</string>
     <string name="about_label">Sobre</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">Informações Do Aplicativo</string>
     <string name="debug_restart_launcher">Reiniciar o Lawnchair</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="experimental_features_label">Recursos Experimentais</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">Font customization</string>
+    <string name="font_picker_label">Customização De Fontes</string>
     <string name="font_picker_description">Algum texto mantém-se inalterado</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
+    <string name="smartspace_calendar_label">Personalização De Calendário Resumida</string>
     <string name="smartspace_calendar_description">Permitir mostrar data em sistemas de calendário não-Gregoriano</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="workspace_increase_max_grid_size_label">Aumentar o Limite Máximo De tamanho Da Grade</string>
+    <string name="workspace_increase_max_grid_size_description">Aumentar o Tamanho Máximo Permitido Da Grade da Tela Inicial De 10 x 10 To 20 X 20</string>
+    <string name="always_reload_icons_label">Sempre Recarregue Os Ícones</string>
     <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <string name="recents_lock_unlock">Bloquear/Desbloquear</string>
+    <string name="recents_lock_unlock_description">Impedir Que o Aplicativo Selecionado Feche ao Pressionar \"Limpar Tudo\"</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
-    <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
-    <string name="notification_dots_text_color">Notification counter color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="set_default_launcher_tip">Para Acessar Atalhos e Recursos Adicionais, Defina Lawnchair como seu Inicializador Padrão </string>
+    <string name="notification_dots">Pontos De Notificações</string>
+    <string name="show_notification_count">Mostrar Contador De Notificações</string>
+    <string name="notification_dots_color">Cor Dos Pontos De Notificação</string>
+    <string name="notification_dots_text_color">Cor Dos Pontos De Notificações</string>
+    <string name="notification_dots_color_contrast_warning_always">Aviso: as cores dos pontos e contadores de notificação não têm contraste suficiente entre si</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Aviso: as cores dos pontos e contadores de notificação nem sempre têm contraste suficiente entre si</string>
     <string name="missing_notification_access_label">Necessário acesso às notificações</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="missing_notification_access_desc">Para mostrar pontos de notificação, ative as notificações de aplicativos para <xliff:g id="name" example="Meu aplicativo">%1$s</xliff:g></string>
     <!--
 
     Icons
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">Icon style</string>
-    <string name="icon_shape_label">Icon shape</string>
-    <string name="icon_sizes">Icon size</string>
-    <string name="show_labels">Show labels</string>
+    <string name="icon_style_label">Estilo De Ícone</string>
+    <string name="icon_shape_label">Forma De Ícone</string>
+    <string name="icon_sizes">Tamanho Do Ícone</string>
+    <string name="show_labels">Mostrar Rótulos</string>
     <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="twoline_label">Usa Múltiplas Linhas</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent themed icons</string>
+    <string name="transparent_background_icons_label">Ícones Temáticos 
+Transparentes</string>
     <string name="transparent_background_icons_description">Usar fundo transparente nos ícones temáticos</string>
-    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
-    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
-    <string name="background_lightness_label">Background lightness</string>
+    <string name="auto_adaptive_icons_label">Ícones Auto Adaptados</string>
+    <string name="auto_adaptive_icons_description">Para Todos Os Ícones Não Adaptativos</string>
+    <string name="shadow_bg_icons_label">Mostrar Sobra Atrás Dos Ícones</string>
+    <string name="background_lightness_label">Luminosidade De Fundo</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
-    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="reset_custom_icons">Redefinir Ícones Personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos os ícones personalizados vão ser redefinidos. Quer continuar?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Ícones</string>
     <string name="icon_picker_reset_to_default">Redefinir para padrão</string>
     <string name="icon_pack_external_picker">Abrir selecionador externo</string>
-    <string name="pick_icon_from_label">Pick icon from</string>
-    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="pick_icon_from_label">Escolha o Formulário Do Ícone</string>
+    <string name="icon_picker_load_failed">Não Foi Possível Carregar Mais Ícones</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Círculo</string>
@@ -161,56 +162,56 @@
     <string name="icon_shape_egg">Ovo</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Octágono</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">Hexágono</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="icon_shape_sharp_square">Sharp square</string>
+    <string name="icon_shape_rounded_square">Quadrado Arredondado</string>
+    <string name="icon_shape_sharp_square">Quadrado Afiado</string>
     <string name="icon_shape_square">Quadrado</string>
     <string name="icon_shape_squircle">Quadrado Arredondado</string>
     <string name="icon_shape_teardrop">Lágrima</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Custom icon shape</string>
-    <string name="custom_icon_shape_create">Create custom icon shape</string>
-    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
-    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape">Formato De Ícone Personalizado</string>
+    <string name="custom_icon_shape_create">Cria Formato De Ícone Personalizado</string>
+    <string name="custom_icon_shape_edit">Editar Formato De Ícone Personalizado</string>
+    <string name="custom_icon_shape_corner">Formato De Canto</string>
     <string name="custom_icon_shape_corner_round">Redondo</string>
     <string name="custom_icon_shape_corner_squircle">Suave</string>
     <string name="custom_icon_shape_corner_cut">Cortado</string>
-    <string name="custom_icon_shape_top_left">Top left</string>
-    <string name="custom_icon_shape_top_right">Top right</string>
-    <string name="custom_icon_shape_bottom_left">Bottom left</string>
-    <string name="custom_icon_shape_bottom_right">Bottom right</string>
-    <string name="export_to_clipboard">Export to clipboard</string>
-    <string name="import_from_clipboard">Import from clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <string name="custom_icon_shape_top_left">Canto Superior Esquerdo</string>
+    <string name="custom_icon_shape_top_right">Canto Superior Direito</string>
+    <string name="custom_icon_shape_bottom_left">Canto Inferior Esquerdo</string>
+    <string name="custom_icon_shape_bottom_right">Canto Inferior Direito</string>
+    <string name="export_to_clipboard">Exportado Para a Área De Transferência</string>
+    <string name="import_from_clipboard">Importado Para a Área De Transferência</string>
+    <string name="icon_shape_clipboard_import_error">A Área De Transferência Não Contém Um Formato De Ícone Válido</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">Icon pack</string>
-    <string name="themed_icon_pack">Themed icon source</string>
-    <string name="system_icons">System icons</string>
-    <string name="themed_icon_title">Themed icons</string>
+    <string name="icon_pack">Pacote De Ícones</string>
+    <string name="themed_icon_pack">Fonte De Ícone Temática</string>
+    <string name="system_icons">Ícones Do Sistema</string>
+    <string name="themed_icon_title">Ícones Temáticos</string>
     <string name="themed_icons_off_label">Desligado</string>
-    <string name="themed_icons_home_label">Home screen</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen &amp; app drawer</string>
+    <string name="themed_icons_home_label">Tela Inicial</string>
+    <string name="themed_icons_home_and_drawer_label">Gaveta De Aplicativos Da Tela Inicial</string>
     <string name="lawnicons_not_installed_description">Sem pacotes de ícones suportados</string>
     <!-- Fonts -->
-    <string name="pref_fonts_add_fonts">Add fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
+    <string name="pref_fonts_add_fonts">Adicionar Fontes</string>
+    <string name="pref_fonts_add_fonts_summary">Fontes OFT e TTF São Suportadas</string>
     <string name="pref_fonts_missing_font">Fonte não encontrada</string>
-    <string name="font_label">Font (experimental)</string>
+    <string name="font_label">Fonte (Experimental)</string>
     <string name="fontWorkspace">Geral</string>
     <string name="fontHeading">Títulos</string>
-    <string name="fontHeadingMedium">Headings (medium)</string>
+    <string name="fontHeadingMedium">Títulos (Médio)</string>
     <string name="fontBody">Corpo</string>
-    <string name="fontBodyMedium">Body (medium)</string>
+    <string name="fontBodyMedium">Corpo (Médio)</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
-    <string name="font_weight_extra_light">Extra light</string>
+    <string name="font_weight_extra_light">Luz Extra</string>
     <string name="font_weight_light">Luz</string>
     <string name="font_weight_regular">Normal</string>
     <string name="font_weight_medium">Médio</string>
     <string name="font_weight_semi_bold">Semi negrito</string>
     <string name="font_weight_bold">Negrito</string>
-    <string name="font_weight_extra_bold">Extra bold</string>
+    <string name="font_weight_extra_bold">Extra Ousado</string>
     <string name="font_weight_extra_black">Preto</string>
     <!--
 
@@ -222,20 +223,20 @@
     <string name="theme_light">Luz</string>
     <string name="theme_dark">Escuro</string>
     <string name="theme_system_default">Sistema</string>
-    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <string name="theme_follow_wallpaper">Combinar Papel De Parede</string>
     <!-- Color style -->
-    <string name="color_style_label">Color style</string>
+    <string name="color_style_label">Estilo De Cor</string>
     <string name="color_style_spritz">Spritz</string>
-    <string name="color_style_tonal_spot">Tonal Spot</string>
-    <string name="color_style_vibrant">Vibrant</string>
-    <string name="color_style_expressive">Expressive</string>
-    <string name="color_style_rainbow">Rainbow</string>
-    <string name="color_style_fruit_salad">Fruit Salad</string>
-    <string name="color_style_content">Content</string>
-    <string name="color_style_monochromatic">Monochromatic</string>
+    <string name="color_style_tonal_spot">Ponto Tonal</string>
+    <string name="color_style_vibrant">Vibrante</string>
+    <string name="color_style_expressive">Expressivo</string>
+    <string name="color_style_rainbow">Arco-íris</string>
+    <string name="color_style_fruit_salad">Salada De Frutas</string>
+    <string name="color_style_content">Conteúdo</string>
+    <string name="color_style_monochromatic">Monocromática</string>
     <!-- Accent color and color picker -->
     <string name="colors">Cores</string>
-    <string name="accent_color">Accent color</string>
+    <string name="accent_color">Cor De Destaque</string>
     <string name="swatches">Amostras</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Vermelho</string>
@@ -247,7 +248,7 @@
     <string name="hsb_brightness">Luminosidade</string>
     <string name="hex">Hexadecimal</string>
     <string name="color_sliders">Controlos de cor</string>
-    <string name="invalid_color">Invalid color</string>
+    <string name="invalid_color">Cor Inválida</string>
     <!--
 
     Smartspace
@@ -260,13 +261,13 @@
     <!-- Battery labels -->
     <string name="smartspace_battery_charging">Carregando</string>
     <string name="smartspace_battery_full">Carregado</string>
-    <string name="smartspace_battery_low">Battery low</string>
+    <string name="smartspace_battery_low">Bateria Baixa</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Completo em %2$s"</string>
     <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">What to show</string>
+    <string name="smartspace_widget_description">O Que Mostrar</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Calendário</string>
-    <string name="smartspace_date_and_time">Date &amp; time</string>
+    <string name="smartspace_date_and_time">Data e Hora</string>
     <string name="smartspace_date">Data</string>
     <string name="smartspace_time">Hora</string>
     <string name="smartspace_time_format">Time format</string>

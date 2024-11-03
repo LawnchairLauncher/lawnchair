@@ -103,7 +103,7 @@
     <!-- Experimental features -->
     <string name="font_picker_label">A Betűkészlet testreszabása</string>
     <string name="font_picker_description">Egyes szövegek változatlanok maradnak</string>
-    <string name="smartspace_calendar_label">A bepillantás naptárának testreszabása</string>
+    <string name="smartspace_calendar_label">Az Áttekintés naptárának testreszabása</string>
     <string name="smartspace_calendar_description">Lehetővé teszi, hogy a dátum nem gregorián naptárban is megjelenjen</string>
     <string name="workspace_increase_max_grid_size_label">A maximális rácsméret-korlát növelése</string>
     <string name="workspace_increase_max_grid_size_description">A kezdőképernyő legnagyobb rácsméretének 10×10-ről 20×20-ra való növelése</string>
