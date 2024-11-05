@@ -56,6 +56,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
+import com.android.launcher3.statemanager.StateManager.StateHandler
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.AllAppsState
 import com.android.launcher3.uioverrides.states.OverviewState
@@ -132,7 +133,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {
                 try {
-                    RootHelperManager.INSTANCE.get(this@LawnchairLauncher).getService()
+                    RootHelperManager.INSTANCE.get(this@LawnchairLauncher)
                 } catch (_: RootNotAvailableException) {
                 }
             }
@@ -197,7 +198,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         reloadIconsIfNeeded()
     }
 
-    override fun collectStateHandlers(out: MutableList<StateManager.StateHandler<*>>) {
+    override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {
         super.collectStateHandlers(out)
         out.add(SearchBarStateHandler(this))
     }

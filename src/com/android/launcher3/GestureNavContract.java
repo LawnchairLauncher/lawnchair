@@ -20,11 +20,9 @@ import static android.content.Intent.EXTRA_USER;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -69,7 +67,6 @@ public class GestureNavContract {
     /**
      * Sends the position information to the receiver
      */
-    @TargetApi(Build.VERSION_CODES.R)
     public void sendEndPosition(RectF position, ActivityContext context,
             @Nullable SurfaceControl surfaceControl) {
         Bundle result = new Bundle();
@@ -95,9 +92,6 @@ public class GestureNavContract {
      * Clears and returns the GestureNavContract if it was present in the intent.
      */
     public static GestureNavContract fromIntent(Intent intent) {
-        if (!Utilities.ATLEAST_R) {
-            return null;
-        }
         Bundle extras = intent.getBundleExtra(EXTRA_GESTURE_CONTRACT);
         if (extras == null) {
             return null;

@@ -16,6 +16,8 @@
 
 package com.android.launcher3.widget.custom;
 
+import static com.android.launcher3.Flags.enableSmartspaceAsAWidget;
+import static com.android.launcher3.model.data.LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;
 import static com.android.launcher3.widget.LauncherAppWidgetProviderInfo.CLS_CUSTOM_WIDGET_PREFIX;
 
 import android.appwidget.AppWidgetManager;
@@ -24,22 +26,24 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Process;
-import android.util.SparseArray;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.R;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.PluginManagerWrapper;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.systemui.plugins.CustomWidgetPlugin;
 import com.android.systemui.plugins.PluginListener;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -52,24 +56,35 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin>, 
     public static final MainThreadInitializedObject<CustomWidgetManager> INSTANCE =
             new MainThreadInitializedObject<>(CustomWidgetManager::new);
 
+    private static final String TAG = "CustomWidgetManager";
+    private static final String PLUGIN_PKG = "android";
     private final Context mContext;
-    /**
-     * auto provider Id is an ever-increasing number that serves as the providerId whenever a new
-     * custom widget has been connected.
-     */
-    private int mAutoProviderId = 0;
-    private final SparseArray<CustomWidgetPlugin> mPlugins;
+    private final HashMap<ComponentName, CustomWidgetPlugin> mPlugins;
     private final List<CustomAppWidgetProviderInfo> mCustomWidgets;
-    private final SparseArray<ComponentName> mWidgetsIdMap;
     private Consumer<PackageUserKey> mWidgetRefreshCallback;
 
     private CustomWidgetManager(Context context) {
         mContext = context;
-        mPlugins = new SparseArray<>();
+        mPlugins = new HashMap<>();
         mCustomWidgets = new ArrayList<>();
-        mWidgetsIdMap = new SparseArray<>();
         PluginManagerWrapper.INSTANCE.get(context)
                 .addPluginListener(this, CustomWidgetPlugin.class, true);
+
+        if (enableSmartspaceAsAWidget()) {
+            for (String s: context.getResources()
+                    .getStringArray(R.array.custom_widget_providers)) {
+                try {
+                    Class<?> cls = Class.forName(s);
+                    CustomWidgetPlugin plugin = (CustomWidgetPlugin)
+                            cls.getDeclaredConstructor(Context.class).newInstance(context);
+                    onPluginConnected(plugin, context);
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                         | ClassCastException | NoSuchMethodException
+                         | InvocationTargetException e) {
+                    Log.e(TAG, "Exception found when trying to add custom widgets: " + e);
+                }
+            }
+        }
     }
 
     @Override
@@ -79,28 +94,23 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin>, 
 
     @Override
     public void onPluginConnected(CustomWidgetPlugin plugin, Context context) {
-        mPlugins.put(mAutoProviderId, plugin);
         List<AppWidgetProviderInfo> providers = AppWidgetManager.getInstance(context)
                 .getInstalledProvidersForProfile(Process.myUserHandle());
         if (providers.isEmpty()) return;
         Parcel parcel = Parcel.obtain();
         providers.get(0).writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
-        CustomAppWidgetProviderInfo info = newInfo(mAutoProviderId, plugin, parcel, context);
+        CustomAppWidgetProviderInfo info = newInfo(plugin, parcel);
         parcel.recycle();
+        mPlugins.put(info.provider, plugin);
         mCustomWidgets.add(info);
-        mWidgetsIdMap.put(mAutoProviderId, info.provider);
-        mWidgetRefreshCallback.accept(null);
-        mAutoProviderId++;
     }
 
     @Override
     public void onPluginDisconnected(CustomWidgetPlugin plugin) {
-        int providerId = findProviderId(plugin);
-        if (providerId == -1) return;
-        mPlugins.remove(providerId);
-        mCustomWidgets.remove(getWidgetProvider(providerId));
-        mWidgetsIdMap.remove(providerId);
+        ComponentName cn = getWidgetProviderComponent(plugin);
+        mPlugins.remove(cn);
+        mCustomWidgets.removeIf(w -> w.getComponent().equals(cn));
     }
 
     /**
@@ -115,7 +125,7 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin>, 
      */
     public void onViewCreated(LauncherAppWidgetHostView view) {
         CustomAppWidgetProviderInfo info = (CustomAppWidgetProviderInfo) view.getAppWidgetInfo();
-        CustomWidgetPlugin plugin = mPlugins.get(info.providerId);
+        CustomWidgetPlugin plugin = mPlugins.get(info.provider);
         if (plugin == null) return;
         plugin.onViewCreated(view);
     }
@@ -129,53 +139,30 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin>, 
     }
 
     /**
-     * Returns the widget id for a specific provider.
-     */
-    public int getWidgetIdForCustomProvider(@NonNull ComponentName provider) {
-        int index = mWidgetsIdMap.indexOfValue(provider);
-        if (index >= 0) {
-            return LauncherAppWidgetInfo.CUSTOM_WIDGET_ID - mWidgetsIdMap.keyAt(index);
-        } else {
-            return AppWidgetManager.INVALID_APPWIDGET_ID;
-        }
-    }
-
-    /**
      * Returns the widget provider in respect to given widget id.
      */
     @Nullable
-    public LauncherAppWidgetProviderInfo getWidgetProvider(int widgetId) {
-        ComponentName cn = mWidgetsIdMap.get(LauncherAppWidgetInfo.CUSTOM_WIDGET_ID - widgetId);
-        for (LauncherAppWidgetProviderInfo info : mCustomWidgets) {
-            if (info.provider.equals(cn)) return info;
-        }
-        return null;
+    public LauncherAppWidgetProviderInfo getWidgetProvider(ComponentName cn) {
+        return mCustomWidgets.stream()
+                .filter(w -> w.getComponent().equals(cn)).findAny().orElse(null);
     }
 
-    private static CustomAppWidgetProviderInfo newInfo(int providerId, CustomWidgetPlugin plugin,
-            Parcel parcel, Context context) {
-        CustomAppWidgetProviderInfo info = new CustomAppWidgetProviderInfo(
-                parcel, false, providerId);
-        info.provider = new ComponentName(
-                context.getPackageName(), CLS_CUSTOM_WIDGET_PREFIX + providerId);
-
-        info.label = plugin.getLabel();
-        info.resizeMode = plugin.getResizeMode();
-
-        info.spanX = plugin.getSpanX();
-        info.spanY = plugin.getSpanY();
-        info.minSpanX = plugin.getMinSpanX();
-        info.minSpanY = plugin.getMinSpanY();
+    private CustomAppWidgetProviderInfo newInfo(CustomWidgetPlugin plugin, Parcel parcel) {
+        CustomAppWidgetProviderInfo info = new CustomAppWidgetProviderInfo(parcel, false);
+        info.provider = getWidgetProviderComponent(plugin);
+        plugin.updateWidgetInfo(info, mContext);
         return info;
     }
 
-    private int findProviderId(CustomWidgetPlugin plugin) {
-        for (int i = 0; i < mPlugins.size(); i++) {
-            int providerId = mPlugins.keyAt(i);
-            if (mPlugins.get(providerId) == plugin) {
-                return providerId;
-            }
-        }
-        return -1;
+    /**
+     * Returns an id to set as the appWidgetId for a custom widget.
+     */
+    public int allocateCustomAppWidgetId(ComponentName componentName) {
+        return CUSTOM_WIDGET_ID - mCustomWidgets.indexOf(getWidgetProvider(componentName));
+    }
+
+    private ComponentName getWidgetProviderComponent(CustomWidgetPlugin plugin) {
+        return new ComponentName(
+                PLUGIN_PKG, CLS_CUSTOM_WIDGET_PREFIX + plugin.getClass().getName());
     }
 }

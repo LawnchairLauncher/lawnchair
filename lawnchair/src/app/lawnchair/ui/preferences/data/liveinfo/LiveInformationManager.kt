@@ -8,8 +8,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.ui.preferences.data.liveinfo.model.AnnouncementId
 import app.lawnchair.ui.preferences.data.liveinfo.model.LiveInformation
+import app.lawnchair.util.MainThreadInitializedObject
 import com.android.launcher3.R
-import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

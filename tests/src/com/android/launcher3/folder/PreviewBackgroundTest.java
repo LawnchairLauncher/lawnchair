@@ -30,6 +30,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.PathInterpolator;
 
 import androidx.test.filters.SmallTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.launcher3.CellLayout;
 
@@ -50,7 +51,8 @@ public class PreviewBackgroundTest {
     @Mock
     CellLayout mCellLayout;
 
-    private final PreviewBackground mPreviewBackground = new PreviewBackground();
+    private final PreviewBackground mPreviewBackground =
+            new PreviewBackground(InstrumentationRegistry.getInstrumentation().getContext());
 
     @Before
     public void setUp() {

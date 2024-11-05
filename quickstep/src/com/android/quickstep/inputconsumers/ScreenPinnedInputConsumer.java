@@ -19,12 +19,12 @@ import android.content.Context;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.MotionPauseDetector;
+import com.android.quickstep.views.RecentsViewContainer;
 
 /**
  * An input consumer that detects swipe up and hold to exit screen pinning mode.
@@ -44,10 +44,10 @@ public class ScreenPinnedInputConsumer implements InputConsumer {
         mMotionPauseDetector = new MotionPauseDetector(context, true /* makePauseHarderToTrigger*/);
         mMotionPauseDetector.setOnMotionPauseListener(() -> {
             SystemUiProxy.INSTANCE.get(context).stopScreenPinning();
-            BaseDraggingActivity launcherActivity = gestureState.getActivityInterface()
-                    .getCreatedActivity();
-            if (launcherActivity != null) {
-                launcherActivity.getRootView().performHapticFeedback(
+            RecentsViewContainer container = gestureState.getContainerInterface()
+                    .getCreatedContainer();
+            if (container != null) {
+                container.getRootView().performHapticFeedback(
                         HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
             }

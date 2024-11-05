@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.states;
 
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 
 import android.content.Context;
@@ -34,6 +35,8 @@ public class HintState extends LauncherState {
     private static final int STATE_FLAGS = FLAG_WORKSPACE_INACCESSIBLE | FLAG_DISABLE_RESTORE
             | FLAG_HAS_SYS_UI_SCRIM;
 
+    public static final float DEPTH_5_PERCENT = 0.05f;
+
     public HintState(int id) {
         this(id, LAUNCHER_STATE_HOME);
     }
@@ -49,7 +52,11 @@ public class HintState extends LauncherState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        return 0.15f;
+        if (enableScalingRevealHomeAnimation()) {
+            return DEPTH_5_PERCENT;
+        } else {
+            return 0.15f;
+        }
     }
 
     @Override

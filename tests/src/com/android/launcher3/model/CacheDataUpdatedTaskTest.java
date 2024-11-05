@@ -26,10 +26,13 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
@@ -42,6 +45,9 @@ import java.util.List;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class CacheDataUpdatedTaskTest {
+
+    @Rule(order = 0)
+    public TestRule testStabilityRule = new TestStabilityRule();
 
     private static final String PENDING_APP_1 = TEST_PACKAGE + ".pending1";
     private static final String PENDING_APP_2 = TEST_PACKAGE + ".pending2";
@@ -150,6 +156,6 @@ public class CacheDataUpdatedTaskTest {
     }
 
     private List<WorkspaceItemInfo> allItems() {
-        return ((FolderInfo) mModelHelper.getBgDataModel().itemsIdMap.get(1)).contents;
+        return ((FolderInfo) mModelHelper.getBgDataModel().itemsIdMap.get(1)).getAppContents();
     }
 }

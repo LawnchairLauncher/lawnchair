@@ -19,7 +19,6 @@ package com.android.systemui.plugins.statusbar;
 import com.android.systemui.plugins.annotations.DependsOn;
 import com.android.systemui.plugins.annotations.ProvidesInterface;
 
-
 /**
  * Sends updates to {@link StateListener}s about changes to the status bar state and dozing state
  */
@@ -122,13 +121,6 @@ public interface StatusBarStateController {
          * performance regressions.
          */
         default void onDozeAmountChanged(float linear, float eased) {}
-
-        /**
-         * Callback to be notified when the fullscreen or immersive state changes.
-         *
-         * @param isFullscreen if any of the system bar is hidden by the focused window.
-         */
-        default void onFullscreenStateChanged(boolean isFullscreen) {}
 
         /**
          * Callback to be notified when the pulsing state changes

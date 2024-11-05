@@ -1,0 +1,76 @@
+<!--
+  ~ Copyright (C) 2019 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License
+  -->
+
+<com.android.wm.shell.bubbles.BubbleOverflowContainerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bubble_overflow_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/bubble_overflow_container_padding_horizontal"
+    android:paddingRight="@dimen/bubble_overflow_container_padding_horizontal"
+    android:orientation="vertical"
+    android:layout_gravity="center_horizontal">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bubble_overflow_recycler"
+        android:nestedScrollingEnabled="false"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:clipChildren="false"/>
+
+    <LinearLayout
+        android:id="@+id/bubble_overflow_empty_state"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/bubble_overflow_empty_state_padding"
+        android:paddingRight="@dimen/bubble_overflow_empty_state_padding"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/bubble_overflow_empty_state_image"
+            android:layout_width="@dimen/bubble_empty_overflow_image_height"
+            android:layout_height="@dimen/bubble_empty_overflow_image_height"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/bubble_overflow_empty_title"
+            android:text="@string/bubble_overflow_empty_title"
+            android:fontFamily="@*android:string/config_bodyFontFamilyMedium"
+            android:textAppearance="@*android:style/TextAppearance.DeviceDefault.Body2"
+            android:textSize="@*android:dimen/text_size_body_2_material"
+            android:textColor="?android:attr/textColorSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/bubble_overflow_empty_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@*android:string/config_bodyFontFamily"
+            android:textAppearance="@*android:style/TextAppearance.DeviceDefault.Body2"
+            android:textSize="@*android:dimen/text_size_body_2_material"
+            android:textColor="?android:attr/textColorSecondary"
+            android:text="@string/bubble_overflow_empty_subtitle"
+            android:paddingBottom="@dimen/bubble_empty_overflow_subtitle_padding"
+            android:gravity="center"/>
+    </LinearLayout>
+</com.android.wm.shell.bubbles.BubbleOverflowContainerView>

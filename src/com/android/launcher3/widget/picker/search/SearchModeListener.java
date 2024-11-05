@@ -26,7 +26,7 @@ public interface SearchModeListener {
     /**
      * Notifies the subscriber when user enters widget picker search mode.
      */
-    void enterSearchMode();
+    void enterSearchMode(boolean shouldLog);
 
     /**
      * Notifies the subscriber when user exits widget picker search mode.

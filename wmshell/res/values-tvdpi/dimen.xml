@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<resources>
+    <!-- The dimensions to use for tv window menu action buttons. -->
+    <dimen name="tv_window_menu_button_size">48dp</dimen>
+    <dimen name="tv_window_menu_button_radius">20dp</dimen>
+    <dimen name="tv_window_menu_icon_size">20dp</dimen>
+    <dimen name="tv_window_menu_button_margin">4dp</dimen>
+    <integer name="tv_window_menu_fade_animation_duration">500</integer>
+    <!-- The pip menu front border corner radius is 2dp smaller than
+        the background corner radius to hide the background from
+        showing through. -->
+    <dimen name="pip_menu_border_corner_radius">4dp</dimen>
+    <dimen name="pip_menu_background_corner_radius">6dp</dimen>
+    <dimen name="pip_menu_border_width">4dp</dimen>
+    <dimen name="pip_menu_outer_space">24dp</dimen>
+    <dimen name="pip_menu_button_start_end_offset">30dp</dimen>
+
+    <!-- outer space minus border width -->
+    <dimen name="pip_menu_outer_space_frame">20dp</dimen>
+
+    <dimen name="pip_menu_arrow_size">12dp</dimen>
+    <dimen name="pip_menu_arrow_elevation">1dp</dimen>
+
+    <dimen name="pip_menu_elevation_no_menu">1dp</dimen>
+    <dimen name="pip_menu_elevation_move_menu">7dp</dimen>
+    <dimen name="pip_menu_elevation_all_actions_menu">4dp</dimen>
+
+    <dimen name="pip_menu_edu_text_view_height">24dp</dimen>
+    <dimen name="pip_menu_edu_text_home_icon">9sp</dimen>
+    <dimen name="pip_menu_edu_text_home_icon_outline">14sp</dimen>
+    <integer name="pip_edu_text_scroll_times">2</integer>
+    <integer name="pip_edu_text_non_scroll_show_duration">10500</integer>
+    <integer name="pip_edu_text_start_scroll_delay">2000</integer>
+    <integer name="pip_edu_text_window_exit_animation_duration">1000</integer>
+    <integer name="pip_edu_text_view_exit_animation_duration">300</integer>
+</resources>
+

@@ -32,8 +32,8 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logger.LauncherAtom.SearchActionItem;
 import com.android.launcher3.model.AllAppsList;
-import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.ModelTaskController;
 
 /**
  * Represents a SearchAction with in launcher
@@ -135,7 +135,6 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
         return new SearchActionItemInfo(this);
     }
 
-    @Override
     public ItemInfo buildProto(FolderInfo fInfo) {
         SearchActionItem.Builder itemBuilder = SearchActionItem.newBuilder()
                 .setPackageName(mFallbackPackageName);
@@ -169,14 +168,14 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
             info.options |= WorkspaceItemInfo.FLAG_START_FOR_RESULT;
         }
 
-        model.enqueueModelUpdateTask(new BaseModelUpdateTask() {
+        model.enqueueModelUpdateTask(new LauncherModel.ModelUpdateTask() {
             @Override
-            public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+            public void execute(ModelTaskController app, BgDataModel dataModel, AllAppsList apps) {
 
                 model.updateAndBindWorkspaceItem(() -> {
                     PackageItemInfo pkgInfo = new PackageItemInfo(getIntentPackageName(), user);
-                    app.getIconCache().getTitleAndIconForApp(pkgInfo, false);
-                    try (LauncherIcons li = LauncherIcons.obtain(app.getContext())) {
+                    app.getApp().getIconCache().getTitleAndIconForApp(pkgInfo, false);
+                    try (LauncherIcons li = LauncherIcons.obtain(app.getApp().getContext())) {
                         info.bitmap = li.badgeBitmap(info.bitmap.icon, pkgInfo.bitmap);
                     }
                     return info;

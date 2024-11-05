@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
+import static com.android.window.flags.Flags.enableDesktopWindowingTaskbarRunningApps;
+
 import android.util.SparseArray;
 import android.view.View;
 
@@ -26,6 +29,7 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -33,6 +37,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.RecentsModel;
 
 import java.io.PrintWriter;
@@ -42,6 +47,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -62,6 +68,8 @@ public class TaskbarModelCallbacks implements
     // Used to defer any UI updates during the SUW unstash animation.
     private boolean mDeferUpdatesForSUW;
     private Runnable mDeferredUpdates;
+    private final DesktopVisibilityController.DesktopVisibilityListener mDesktopVisibilityListener =
+            visible -> updateRunningApps();
 
     public TaskbarModelCallbacks(
             TaskbarActivityContext context, TaskbarView container) {
@@ -71,8 +79,17 @@ public class TaskbarModelCallbacks implements
 
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
-        if (mControllers.taskbarRecentAppsController.isEnabled()) {
+        if (mControllers.taskbarRecentAppsController.getCanShowRunningApps()) {
             RecentsModel.INSTANCE.get(mContext).registerRunningTasksListener(this);
+
+            if (shouldShowRunningAppsInDesktopMode()) {
+                DesktopVisibilityController desktopVisibilityController =
+                        LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
+                if (desktopVisibilityController != null) {
+                    desktopVisibilityController.registerDesktopVisibilityListener(
+                            mDesktopVisibilityListener);
+                }
+            }
         }
     }
 
@@ -81,6 +98,20 @@ public class TaskbarModelCallbacks implements
      */
     public void unregisterListeners() {
         RecentsModel.INSTANCE.get(mContext).unregisterRunningTasksListener();
+
+        if (shouldShowRunningAppsInDesktopMode()) {
+            DesktopVisibilityController desktopVisibilityController =
+                    LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
+            if (desktopVisibilityController != null) {
+                desktopVisibilityController.unregisterDesktopVisibilityListener(
+                        mDesktopVisibilityListener);
+            }
+        }
+    }
+
+    private boolean shouldShowRunningAppsInDesktopMode() {
+        // TODO(b/335401172): unify DesktopMode checks in Launcher
+        return enableDesktopWindowingMode() && enableDesktopWindowingTaskbarRunningApps();
     }
 
     @Override
@@ -203,20 +234,24 @@ public class TaskbarModelCallbacks implements
         }
         hotseatItemInfos = mControllers.taskbarRecentAppsController
                 .updateHotseatItemInfos(hotseatItemInfos);
+        Set<String> runningPackages = mControllers.taskbarRecentAppsController.getRunningApps();
+        Set<String> minimizedPackages = mControllers.taskbarRecentAppsController.getMinimizedApps();
 
         if (mDeferUpdatesForSUW) {
             ItemInfo[] finalHotseatItemInfos = hotseatItemInfos;
-            mDeferredUpdates = () -> {
-                updateHotseatItemsAndBackground(finalHotseatItemInfos);
-            };
+            mDeferredUpdates = () ->
+                    commitHotseatItemUpdates(finalHotseatItemInfos, runningPackages,
+                            minimizedPackages);
         } else {
-            updateHotseatItemsAndBackground(hotseatItemInfos);
+            commitHotseatItemUpdates(hotseatItemInfos, runningPackages, minimizedPackages);
         }
     }
 
-    private void updateHotseatItemsAndBackground(ItemInfo[] hotseatItemInfos) {
+    private void commitHotseatItemUpdates(ItemInfo[] hotseatItemInfos, Set<String> runningPackages,
+            Set<String> minimizedPackages) {
         mContainer.updateHotseatItems(hotseatItemInfos);
-        mControllers.taskbarViewController.updateIconsBackground();
+        mControllers.taskbarViewController.updateIconViewsRunningStates(runningPackages,
+                minimizedPackages);
     }
 
     /**
@@ -247,7 +282,7 @@ public class TaskbarModelCallbacks implements
 
     /** Call TaskbarRecentAppsController to update running apps with mHotseatItems. */
     public void updateRunningApps() {
-        mControllers.taskbarRecentAppsController.updateRunningApps(mHotseatItems);
+        mControllers.taskbarRecentAppsController.updateRunningApps();
     }
 
     @Override

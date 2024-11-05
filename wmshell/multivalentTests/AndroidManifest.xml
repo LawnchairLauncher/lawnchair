@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.wm.shell.multivalenttests">
+
+    <application android:debuggable="true" android:supportsRtl="true" >
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+    <instrumentation
+        android:name="androidx.test.runner.AndroidJUnitRunner"
+        android:label="Multivalent tests for WindowManager-Shell"
+        android:targetPackage="com.android.wm.shell.multivalenttests">
+    </instrumentation>
+</manifest>

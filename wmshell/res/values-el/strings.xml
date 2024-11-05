@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Κλείσιμο"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Ανάπτυξη"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Ρυθμίσεις"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Μενού"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Μενού λειτουργίας Picture-in-Picture"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"Η λειτουργία picture-in-picture είναι ενεργή σε <xliff:g id="NAME">%s</xliff:g>."</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Εάν δεν θέλετε να χρησιμοποιείται αυτή η λειτουργία από την εφαρμογή <xliff:g id="NAME">%s</xliff:g>, πατήστε για να ανοίξετε τις ρυθμίσεις και απενεργοποιήστε την."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Αναπαραγωγή"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Παύση"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Μετάβαση στο επόμενο"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Μετάβαση στο προηγούμενο"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Αλλαγή μεγέθους"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Απόκρυψη"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Κατάργηση απόκρυψης"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Η εφαρμογή ενδέχεται να μην λειτουργεί με διαχωρισμό οθόνης."</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Η εφαρμογή δεν υποστηρίζει διαχωρισμό οθόνης."</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Αυτή η εφαρμογή μπορεί να ανοίξει μόνο σε ένα παράθυρο"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Η εφαρμογή ίσως να μην λειτουργήσει σε δευτερεύουσα οθόνη."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Η εφαρμογή δεν υποστηρίζει την εκκίνηση σε δευτερεύουσες οθόνες."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Διαχωριστικό οθόνης"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Διαχωριστικό οθόνης"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Αριστερή πλήρης οθόνη"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Αριστερή 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Αριστερή 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Αριστερή 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Δεξιά πλήρης οθόνη"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Πάνω πλήρης οθόνη"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Πάνω 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Πάνω 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Πάνω 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Κάτω πλήρης οθόνη"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Διαχωρισμός αριστερά"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Διαχωρισμός δεξιά"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Διαχωρισμός επάνω"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Διαχωρισμός κάτω"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Χρήση λειτουργίας ενός χεριού"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Για έξοδο, σύρετε προς τα πάνω από το κάτω μέρος της οθόνης ή πατήστε οπουδήποτε πάνω από την εφαρμογή."</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Έναρξη λειτουργίας ενός χεριού"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"\'Έξοδος από τη λειτουργία ενός χεριού"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Ρυθμίσεις για συννεφάκια <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Υπερχείλιση"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Προσθήκη ξανά στη στοίβα"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> από <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> από την εφαρμογή <xliff:g id="APP_NAME">%2$s</xliff:g> και <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> ακόμη"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Μετακίνηση επάνω αριστερά"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Μετακίνηση επάνω δεξιά"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Μετακίνηση κάτω αριστερά"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Μετακίνηση κάτω δεξιά"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"ανάπτυξη <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"σύμπτυξη <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"Ρυθμίσεις <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Παράβλ. για συννεφ."</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Να μην γίνει προβολή της συζήτησης σε συννεφάκια."</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Συζητήστε χρησιμοποιώντας συννεφάκια."</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Οι νέες συζητήσεις εμφανίζονται ως κινούμενα εικονίδια ή συννεφάκια. Πατήστε για να ανοίξετε το συννεφάκι. Σύρετε για να το μετακινήσετε."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Ελέγξτε τα συννεφάκια ανά πάσα στιγμή."</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Πατήστε Διαχείριση για να απενεργοποιήσετε τα συννεφάκια από αυτή την εφαρμογή."</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Το κατάλαβα"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Δεν υπάρχουν πρόσφατα συννεφάκια"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Τα πρόσφατα συννεφάκια και τα συννεφάκια που παραβλέψατε θα εμφανίζονται εδώ."</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Συζητήστε χρησιμοποιώντας συννεφάκια"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Οι νέες συζητήσεις εμφανίζονται ως εικονίδια σε μια από τις κάτω γωνίες της οθόνης. Πατήστε για να τις αναπτύξετε ή σύρετε για να τις παραβλέψετε."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Ελέγξτε τα συννεφάκια ανά πάσα στιγμή."</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Πατήστε εδώ για τη διαχείριση εφαρμογών και συζητήσεων που προβάλλουν συννεφάκια"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Συννεφάκι"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Διαχείριση"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Το συννεφάκι παραβλέφθηκε."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Συννεφάκια"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Εμφάνιση συννεφακίων"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Πατήστε για να επανεκκινήσετε αυτή την εφαρμογή για καλύτερη προβολή"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Αλλάξτε τον λόγο διαστάσεων αυτής της εφαρμογής στις Ρυθμίσεις"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Αλλαγή λόγου διαστάσεων"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Προβλήματα με την κάμερα;\nΠατήστε για επιδιόρθωση."</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Δεν διορθώθηκε;\nΠατήστε για επαναφορά."</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Δεν αντιμετωπίζετε προβλήματα με την κάμερα; Πατήστε για παράβλεψη."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Δείτε και κάντε περισσότερα"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Σύρετε σε μια άλλη εφαρμογή για διαχωρισμό οθόνης."</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Πατήστε δύο φορές έξω από μια εφαρμογή για να αλλάξετε τη θέση της"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"Το κατάλαβα"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Ανάπτυξη για περισσότερες πληροφορίες."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Επανεκκίνηση για καλύτερη προβολή;"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Μπορείτε να επανεκκινήσετε την εφαρμογή για να προβάλλεται καλύτερα στην οθόνη σας, αλλά η πρόοδός σας και τυχόν μη αποθηκευμένες αλλαγές ενδέχεται να χαθούν."</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Ακύρωση"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Επανεκκίνηση"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Να μην εμφανιστεί ξανά"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Πατήστε δύο φορές για\nμετακίνηση αυτής της εφαρμογής"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Μεγιστοποίηση"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Ελαχιστοποίηση"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Κλείσιμο"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Πίσω"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Λαβή"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Εικονίδιο εφαρμογής"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Πλήρης οθόνη"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Λειτουργία επιφάνειας εργασίας"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Διαχωρισμός οθόνης"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Περισσότερα"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Κινούμενο"</string>
+    <string name="select_text" msgid="5139083974039906583">"Επιλογή"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Στιγμιότυπο οθόνης"</string>
+    <string name="close_text" msgid="4986518933445178928">"Κλείσιμο"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Κλείσιμο μενού"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Άνοιγμα μενού"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Μεγιστοποίηση οθόνης"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Προβολή στο μισό της οθόνης"</string>
+</resources>

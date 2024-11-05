@@ -27,7 +27,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Utility class for tracking if the screen is currently on or off
  */
-public class ScreenOnTracker {
+public class ScreenOnTracker implements SafeCloseable {
 
     public static final MainThreadInitializedObject<ScreenOnTracker> INSTANCE =
             new MainThreadInitializedObject<>(ScreenOnTracker::new);
@@ -35,12 +35,19 @@ public class ScreenOnTracker {
     private final SimpleBroadcastReceiver mReceiver = new SimpleBroadcastReceiver(this::onReceive);
     private final CopyOnWriteArrayList<ScreenOnListener> mListeners = new CopyOnWriteArrayList<>();
 
+    private final Context mContext;
     private boolean mIsScreenOn;
 
     private ScreenOnTracker(Context context) {
         // Assume that the screen is on to begin with
+        mContext = context;
         mIsScreenOn = true;
         mReceiver.register(context, ACTION_SCREEN_ON, ACTION_SCREEN_OFF, ACTION_USER_PRESENT);
+    }
+
+    @Override
+    public void close() {
+        mReceiver.unregisterReceiverSafely(mContext);
     }
 
     private void onReceive(Intent intent) {

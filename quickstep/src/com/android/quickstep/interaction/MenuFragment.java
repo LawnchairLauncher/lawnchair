@@ -39,6 +39,11 @@ public final class MenuFragment extends GestureSandboxFragment {
     }
 
     @Override
+    boolean canRecreateFragment() {
+        return true;
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         final View root = inflater.inflate(

@@ -15,16 +15,14 @@
  */
 package com.android.systemui.plugins.shared;
 
-import android.app.Activity;
-import android.app.Application;
-import android.os.Bundle;
+import android.view.MotionEvent;
 
 import java.io.PrintWriter;
 
 /**
  * Interface to control the overlay on Launcher
  */
-public interface LauncherOverlayManager extends Application.ActivityLifecycleCallbacks {
+public interface LauncherOverlayManager {
 
     default void onDeviceProvideChanged() { }
 
@@ -41,32 +39,21 @@ public interface LauncherOverlayManager extends Application.ActivityLifecycleCal
 
     default void hideOverlay(int duration) { }
 
-    default boolean startSearch(byte[] config, Bundle extras) {
-        return false;
-    }
+    default void onActivityStarted() { }
 
-    @Override
-    default void onActivityCreated(Activity activity, Bundle bundle) { }
+    default void onActivityResumed() { }
 
-    @Override
-    default void onActivityStarted(Activity activity) { }
+    default void onActivityPaused() { }
 
-    @Override
-    default void onActivityResumed(Activity activity) { }
+    default void onActivityStopped() { }
 
-    @Override
-    default void onActivityPaused(Activity activity) { }
+    default void onActivityDestroyed() { }
 
-    @Override
-    default void onActivityStopped(Activity activity) { }
-
-    @Override
-    default void onActivitySaveInstanceState(Activity activity, Bundle bundle) { }
-
-    @Override
-    default void onActivityDestroyed(Activity activity) { }
-
-    interface LauncherOverlay {
+    /**
+     * @deprecated use LauncherOverlayTouchProxy directly
+     */
+    @Deprecated
+    interface LauncherOverlay extends LauncherOverlayTouchProxy {
 
         /**
          * Touch interaction leading to overscroll has begun
@@ -89,6 +76,38 @@ public interface LauncherOverlayManager extends Application.ActivityLifecycleCal
          * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
          */
         void setOverlayCallbacks(LauncherOverlayCallbacks callbacks);
+
+        @Override
+        default void onFlingVelocity(float velocity) { }
+
+        @Override
+        default void onOverlayMotionEvent(MotionEvent ev, float scrollProgress) {
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN ->  onScrollInteractionBegin();
+                case MotionEvent.ACTION_MOVE -> onScrollChange(scrollProgress, false);
+                case MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> onScrollInteractionEnd();
+            }
+
+        }
+    }
+
+    interface LauncherOverlayTouchProxy {
+
+        /**
+         * Called just before finishing scroll interaction to indicate the fling velocity
+         */
+        void onFlingVelocity(float velocity);
+
+        /**
+         * Called to dispatch various motion events to the overlay
+         */
+        void onOverlayMotionEvent(MotionEvent ev, float scrollProgress);
+
+        /**
+         * Called when the launcher is ready to use the overlay
+         * @param callbacks A set of callbacks provided by Launcher in relation to the overlay
+         */
+        default void setOverlayCallbacks(LauncherOverlayCallbacks callbacks) { }
     }
 
     interface LauncherOverlayCallbacks {

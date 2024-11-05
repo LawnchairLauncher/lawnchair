@@ -77,6 +77,7 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
         canvas.restore();
 
         drawDotIfNecessary(canvas);
+        drawRunningAppIndicatorIfNecessary(canvas);
     }
 
     public static class ShadowInfo {

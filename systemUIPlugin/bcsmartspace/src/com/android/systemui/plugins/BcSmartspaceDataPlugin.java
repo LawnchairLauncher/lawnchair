@@ -44,6 +44,7 @@ public interface BcSmartspaceDataPlugin extends Plugin {
     String UI_SURFACE_HOME_SCREEN = "home";
     String UI_SURFACE_MEDIA = "media_data_manager";
     String UI_SURFACE_DREAM = "dream";
+    String UI_SURFACE_GLANCEABLE_HUB = "glanceable_hub";
 
     String ACTION = "com.android.systemui.action.PLUGIN_BC_SMARTSPACE_DATA";
     int VERSION = 1;
@@ -126,6 +127,17 @@ public interface BcSmartspaceDataPlugin extends Plugin {
          * Range [0.0 - 1.0] when transitioning from Lockscreen to/from AOD
          */
         void setDozeAmount(float amount);
+
+        /**
+         * Set if the screen is on.
+         */
+        default void setScreenOn(boolean screenOn) {}
+
+        /**
+         * Sets a delegate to handle clock event registration. Should be called immediately after
+         * the view is created.
+         */
+        default void setTimeChangedDelegate(TimeChangedDelegate delegate) {}
 
         /**
          * Set if dozing is true or false
@@ -221,5 +233,14 @@ public interface BcSmartspaceDataPlugin extends Plugin {
 
         /** Start the PendingIntent */
         void startPendingIntent(View v, PendingIntent pi, boolean showOnLockscreen);
+    }
+
+    /** Interface for delegating time updates */
+    interface TimeChangedDelegate {
+        /** Register the callback to be called when time is updated **/
+        void register(Runnable callback);
+
+        /** Unegister the callback **/
+        void unregister();
     }
 }

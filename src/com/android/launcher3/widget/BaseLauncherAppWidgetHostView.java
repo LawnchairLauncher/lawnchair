@@ -34,6 +34,17 @@ import com.android.launcher3.util.Executors;
  */
 public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHostView {
 
+    private static final ViewOutlineProvider VIEW_OUTLINE_PROVIDER = new ViewOutlineProvider() {
+        @Override
+        public void getOutline(View view, Outline outline) {
+            // Since ShortcutAndWidgetContainer sets clipChildren to false, we should restrict the
+            // outline to be the view bounds, otherwise widgets might draw themselves outside of
+            // the launcher view. Setting alpha to 0 to match the previous behavior.
+            outline.setRect(0, 0, view.getWidth(), view.getHeight());
+            outline.setAlpha(.0f);
+        }
+    };
+
     protected final LayoutInflater mInflater;
 
     private final Rect mEnforcedRectangle = new Rect();
@@ -49,10 +60,13 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
         }
     };
 
+    private boolean mIsCornerRadiusEnforced;
+
     public BaseLauncherAppWidgetHostView(Context context) {
         super(context);
 
         setExecutor(Executors.THREAD_POOL_EXECUTOR);
+        setClipToOutline(true);
 
         mInflater = LayoutInflater.from(context);
         mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(getContext());
@@ -84,8 +98,8 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
 
     @UiThread
     private void resetRoundedCorners() {
-        setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-        setClipToOutline(false);
+        setOutlineProvider(VIEW_OUTLINE_PROVIDER);
+        mIsCornerRadiusEnforced = false;
     }
 
     @UiThread
@@ -104,7 +118,7 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
                 background,
                 mEnforcedRectangle);
         setOutlineProvider(mCornerRadiusEnforcementOutline);
-        setClipToOutline(true);
+        mIsCornerRadiusEnforced = true;
         invalidateOutline();
     }
 
@@ -115,6 +129,6 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
 
     /** Returns true if the corner radius are enforced for this App Widget. */
     public boolean hasEnforcedCornerRadius() {
-        return getClipToOutline();
+        return mIsCornerRadiusEnforced;
     }
 }

@@ -19,7 +19,7 @@ import static com.android.app.animation.Interpolators.DECELERATE_3;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL_APPS_EDU;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
-import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
+import static com.android.launcher3.LauncherAnimUtils.newSingleUseCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
@@ -45,6 +45,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
@@ -53,7 +54,7 @@ import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * Handles swiping up on the nav bar to go home from launcher, e.g. overview or all apps.
@@ -66,7 +67,7 @@ public class NavBarToHomeTouchController implements TouchController,
     private static final float OVERVIEW_TO_HOME_SCRIM_MULTIPLIER = 0.5f;
 
     private final Launcher mLauncher;
-    private final Consumer<AnimatorSet> mCancelSplitRunnable;
+    private final BiConsumer<AnimatorSet, Long> mCancelSplitRunnable;
     private final SingleAxisSwipeDetector mSwipeDetector;
     private final float mPullbackDistance;
 
@@ -80,7 +81,7 @@ public class NavBarToHomeTouchController implements TouchController,
      *                            Animation should be added to the provided AnimatorSet
      */
     public NavBarToHomeTouchController(Launcher launcher,
-            Consumer<AnimatorSet> cancelSplitRunnable) {
+            BiConsumer<AnimatorSet, Long> cancelSplitRunnable) {
         mLauncher = launcher;
         mCancelSplitRunnable = cancelSplitRunnable;
         mSwipeDetector = new SingleAxisSwipeDetector(mLauncher, this,
@@ -117,7 +118,7 @@ public class NavBarToHomeTouchController implements TouchController,
         if (!cameFromNavBar) {
             return false;
         }
-        if (mStartState.overviewUi || mStartState == ALL_APPS) {
+        if (mStartState.isRecentsViewVisible || mStartState == ALL_APPS) {
             return true;
         }
         int typeToClose = TYPE_ALL & ~TYPE_ALL_APPS_EDU;
@@ -144,7 +145,7 @@ public class NavBarToHomeTouchController implements TouchController,
     private void initCurrentAnimation() {
         long accuracy = (long) (getShiftRange() * 2);
         final PendingAnimation builder = new PendingAnimation(accuracy);
-        if (mStartState.overviewUi) {
+        if (mStartState.isRecentsViewVisible) {
             RecentsView recentsView = mLauncher.getOverviewPanel();
             AnimatorControllerWithResistance.createRecentsResistanceFromOverviewAnim(mLauncher,
                     builder);
@@ -164,7 +165,7 @@ public class NavBarToHomeTouchController implements TouchController,
             topView.addHintCloseAnim(mPullbackDistance, PULLBACK_INTERPOLATOR, builder);
         }
         mCurrentAnimation = builder.createPlaybackController();
-        mCurrentAnimation.getTarget().addListener(newCancelListener(this::clearState));
+        mCurrentAnimation.getTarget().addListener(newSingleUseCancelListener(this::clearState));
     }
 
     private void clearState() {
@@ -193,9 +194,22 @@ public class NavBarToHomeTouchController implements TouchController,
             RecentsView recentsView = mLauncher.getOverviewPanel();
             recentsView.switchToScreenshot(null,
                     () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
-            if (mStartState.overviewUi) {
-                new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(mEndState),
-                        FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()
+            if (mStartState.isRecentsViewVisible) {
+                Runnable onReachedHome = () -> {
+                    StateManager.StateListener<LauncherState> listener =
+                            new StateManager.StateListener<>() {
+                                @Override
+                                public void onStateTransitionComplete(LauncherState finalState) {
+                                    mLauncher.onStateTransitionCompletedAfterSwipeToHome(
+                                            finalState);
+                                    mLauncher.getStateManager().removeStateListener(this);
+                                }
+                            };
+                    mLauncher.getStateManager().addStateListener(listener);
+                    onSwipeInteractionCompleted(mEndState);
+                };
+                new OverviewToHomeAnim(mLauncher, onReachedHome,
+                        FeatureFlags.enableSplitContextually()
                                 ? mCancelSplitRunnable
                                 : null)
                         .animateWithVelocity(velocity);

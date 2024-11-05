@@ -19,6 +19,7 @@
     android:layout_width="@dimen/taskbar_nav_buttons_size"
     android:layout_height="@dimen/taskbar_nav_buttons_size"
     android:background="@drawable/taskbar_icon_click_feedback_roundrect"
+    android:focusable="false"
     android:scaleType="center"
     android:tint="@color/taskbar_nav_icon_light_color"
     tools:ignore="UseAppTint" />

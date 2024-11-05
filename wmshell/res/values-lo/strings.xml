@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"ປິດ"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"ຂະຫຍາຍ"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"ການຕັ້ງຄ່າ"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"ເມນູ"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"ເມນູການສະແດງຜົນຊ້ອນກັນ"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> ແມ່ນເປັນການສະແດງຜົນຫຼາຍຢ່າງພ້ອມກັນ"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"ຫາກທ່ານບໍ່ຕ້ອງການ <xliff:g id="NAME">%s</xliff:g> ໃຫ້ໃຊ້ຄຸນສົມບັດນີ້, ໃຫ້ແຕະເພື່ອເປີດການຕັ້ງຄ່າ ແລ້ວປິດມັນໄວ້."</string>
+    <string name="pip_play" msgid="3496151081459417097">"ຫຼິ້ນ"</string>
+    <string name="pip_pause" msgid="690688849510295232">"ຢຸດຊົ່ວຄາວ"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"ຂ້າມໄປລາຍການໜ້າ"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"ຂ້າມໄປລາຍການກ່ອນນີ້"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"ປ່ຽນຂະໜາດ"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"ເກັບໄວ້ບ່ອນເກັບສ່ວນຕົວ"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"ເອົາອອກຈາກບ່ອນເກັບສ່ວນຕົວ"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"ແອັບອາດໃຊ້ບໍ່ໄດ້ກັບໂໝດແບ່ງໜ້າຈໍ"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"ແອັບບໍ່ຮອງຮັບການແບ່ງໜ້າຈໍ"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"ແອັບນີ້ສາມາດເປີດໄດ້ໃນ 1 ໜ້າຈໍເທົ່ານັ້ນ"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"ແອັບອາດບໍ່ສາມາດໃຊ້ໄດ້ໃນໜ້າຈໍທີສອງ."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"ແອັບບໍ່ຮອງຮັບການເປີດໃນໜ້າຈໍທີສອງ."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"ເສັ້ນແບ່ງໜ້າຈໍ"</string>
+    <string name="divider_title" msgid="1963391955593749442">"ເສັ້ນແບ່ງໜ້າຈໍ"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"ເຕັມໜ້າຈໍຊ້າຍ"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"ຊ້າຍ 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ຊ້າຍ 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ຊ້າຍ 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"ເຕັມໜ້າຈໍຂວາ"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"ເຕັມໜ້າຈໍເທິງສຸດ"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"ເທິງສຸດ 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"ເທິງສຸດ 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"ເທິງສຸດ 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"ເຕັມໜ້າຈໍລຸ່ມສຸດ"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"ແຍກຊ້າຍ"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"ແຍກຂວາ"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"ແຍກເທິງ"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"ແຍກລຸ່ມ"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"ກຳລັງໃຊ້ໂໝດມືດຽວ"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"ເພື່ອອອກ, ໃຫ້ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍ ຫຼື ແຕະບ່ອນໃດກໍໄດ້ຢູ່ເໜືອແອັບ"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"ເລີ່ມໂໝດມືດຽວ"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"ອອກຈາກໂໝດມືດຽວ"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"ການຕັ້ງຄ່າສຳລັບຟອງ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"ລົ້ນ"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"ເພີ່ມກັບໄປຫາການວາງຊ້ອນກັນ"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> ຈາກ <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> ຈາກ <xliff:g id="APP_NAME">%2$s</xliff:g> ແລະ ອີກ <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"ຍ້າຍຊ້າຍເທິງ"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"ຍ້າຍຂວາເທິງ"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"ຍ້າຍຊ້າຍລຸ່ມ"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"ຍ້າຍຂວາລຸ່ມ"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"ຂະຫຍາຍ <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"ຫຍໍ້ <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> ລົງ"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"ການຕັ້ງຄ່າ <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"ປິດຟອງໄວ້"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"ຢ່າໃຊ້ຟອງໃນການສົນທະນາ"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"ສົນທະນາໂດຍໃຊ້ຟອງ"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"ການສົນທະນາໃໝ່ຈະປາກົດເປັນໄອຄອນ ຫຼື ຟອງແບບລອຍ. ແຕະເພື່ອເປີດຟອງ. ລາກເພື່ອຍ້າຍມັນ."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"ຄວບຄຸມຟອງຕອນໃດກໍໄດ້"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"ແຕະຈັດການ ເພື່ອປິດຟອງຈາກແອັບນີ້"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"ເຂົ້າໃຈແລ້ວ"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"ບໍ່ມີຟອງຫຼ້າສຸດ"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"ຟອງຫຼ້າສຸດ ແລະ ຟອງທີ່ປິດໄປຈະປາກົດຢູ່ບ່ອນນີ້"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"ສົນທະນາໂດຍໃຊ້ຟອງ"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"ການສົນທະນາໃໝ່ໆຈະປາກົດເປັນໄອຄອນຢູ່ມຸມລຸ່ມສຸດຂອງໜ້າຈໍຂອງທ່ານ. ແຕະເພື່ອຂະຫຍາຍ ຫຼື ລາກເພື່ອປິດໄວ້."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"ຄວບຄຸມຟອງໄດ້ທຸກເວລາ"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"ແຕະບ່ອນນີ້ເພື່ອຈັດການແອັບ ແລະ ການສົນທະນາທີ່ສາມາດສະແດງເປັນແບບຟອງໄດ້"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"ຟອງ"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"ຈັດການ"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"ປິດ Bubble ໄສ້ແລ້ວ."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"ຟອງ"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"ສະແດງຟອງ"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"ແຕະເພື່ອຣີສະຕາດແອັບນີ້ເພື່ອມຸມມອງທີ່ດີຂຶ້ນ"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"ປ່ຽນອັດຕາສ່ວນຂອງແອັບນີ້ໃນການຕັ້ງຄ່າ"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"ປ່ຽນອັດຕາສ່ວນ"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"ມີບັນຫາກ້ອງຖ່າຍຮູບບໍ?\nແຕະເພື່ອປັບໃໝ່"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"ບໍ່ໄດ້ແກ້ໄຂມັນບໍ?\nແຕະເພື່ອແປງກັບຄືນ"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"ບໍ່ມີບັນຫາກ້ອງຖ່າຍຮູບບໍ? ແຕະເພື່ອ​ປິດ​ໄວ້."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"ເບິ່ງ ແລະ ເຮັດຫຼາຍຂຶ້ນ"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"ລາກໄປໄວ້ໃນແອັບອື່ນເພື່ອແບ່ງໜ້າຈໍ"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"ແຕະສອງເທື່ອໃສ່ນອກແອັບໃດໜຶ່ງເພື່ອຈັດຕຳແໜ່ງຂອງມັນຄືນໃໝ່"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"ເຂົ້າໃຈແລ້ວ"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"ຂະຫຍາຍເພື່ອເບິ່ງຂໍ້ມູນເພີ່ມເຕີມ."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"ຣີສະຕາດເພື່ອໃຫ້ມີມຸມມອງທີ່ດີຂຶ້ນບໍ?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"ທ່ານສາມາດຣີສະຕາດແອັບໄດ້ເພື່ອໃຫ້ມັນເບິ່ງດີຂຶ້ນໃນໜ້າຈໍຂອງທ່ານ ແຕ່ທ່ານອາດຈະສູນເສຍຄວາມຄືບໜ້າ ຫຼື ການປ່ຽນແປງທີ່ບໍ່ໄດ້ບັນທຶກໄວ້"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"ຍົກເລີກ"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"ຣີສະຕາດ"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"ບໍ່ຕ້ອງສະແດງອີກ"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"ແຕະສອງເທື່ອເພື່ອ\nຍ້າຍແອັບນີ້"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"ຂະຫຍາຍໃຫຍ່ສຸດ"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"ຫຍໍ້ລົງ"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"ປິດ"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"ກັບຄືນ"</string>
+    <string name="handle_text" msgid="1766582106752184456">"ມືບັງຄັບ"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"ໄອຄອນແອັບ"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"ເຕັມຈໍ"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"ໂໝດເດັສທັອບ"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"ແບ່ງໜ້າຈໍ"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"ເພີ່ມເຕີມ"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"ລອຍ"</string>
+    <string name="select_text" msgid="5139083974039906583">"ເລືອກ"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"ຮູບໜ້າຈໍ"</string>
+    <string name="close_text" msgid="4986518933445178928">"ປິດ"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"ປິດເມນູ"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"ເປີດເມນູ"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"ປັບຈໍໃຫຍ່ສຸດ"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"ສະແນັບໜ້າຈໍ"</string>
+</resources>

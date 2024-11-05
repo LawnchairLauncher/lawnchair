@@ -48,7 +48,7 @@ class ReloadHelper(private val context: Context) {
 
     fun reloadTaskbar() {
         tisBinder.runOnBindToTouchInteractionService {
-            tis?.taskbarManager?.onUserPreferenceChanged()
+            tis?.taskbarManager?.recreateTaskbar()
         }
     }
 }

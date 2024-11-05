@@ -53,6 +53,7 @@ import java.util.HashMap;
 public class ProgressDelegateInputConsumer implements InputConsumer,
         RecentsAnimationCallbacks.RecentsAnimationListener,
         SingleAxisSwipeDetector.Listener {
+    private static final String TAG = "ProgressDelegateInputConsumer";
 
     private static final float SWIPE_DISTANCE_THRESHOLD = 0.2f;
 
@@ -165,7 +166,7 @@ public class ProgressDelegateInputConsumer implements InputConsumer,
             mRecentsAnimationController.finishController(endToRecents /* toRecents */,
                     null /* callback */, false /* sendUserLeaveHint */);
         } else if (endToRecents) {
-            startHomeIntentSafely(mContext, null);
+            startHomeIntentSafely(mContext, null, TAG);
         }
     }
 

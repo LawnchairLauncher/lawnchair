@@ -59,9 +59,8 @@ public class PreviewPositionHelper {
      * Updates the matrix based on the provided parameters
      */
     public void updateThumbnailMatrix(Rect thumbnailBounds, ThumbnailData thumbnailData,
-            int canvasWidth, int canvasHeight, int screenWidthPx, int screenHeightPx,
-            int taskbarSize, boolean isLargeScreen,
-            int currentRotation, boolean isRtl) {
+            int canvasWidth, int canvasHeight, boolean isLargeScreen, int currentRotation,
+            boolean isRtl) {
         boolean isRotated = false;
         boolean isOrientationDifferent;
 

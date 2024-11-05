@@ -24,26 +24,19 @@ import android.content.pm.ShortcutInfo;
 import android.os.Handler;
 import android.os.UserHandle;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.notification.NotificationInfo;
-import com.android.launcher3.notification.NotificationKeyData;
-import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Contains logic relevant to populating a {@link PopupContainerWithArrow}. In particular,
@@ -52,24 +45,20 @@ import java.util.stream.Collectors;
 public class PopupPopulator {
 
     public static final int MAX_SHORTCUTS = 4;
-    @VisibleForTesting static final int NUM_DYNAMIC = 2;
-    public static final int MAX_SHORTCUTS_IF_NOTIFICATIONS = 2;
+    @VisibleForTesting
+    static final int NUM_DYNAMIC = 2;
 
     /**
      * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.
      */
-    private static final Comparator<ShortcutInfo> SHORTCUT_RANK_COMPARATOR
-            = new Comparator<ShortcutInfo>() {
-        @Override
-        public int compare(ShortcutInfo a, ShortcutInfo b) {
-            if (a.isDeclaredInManifest() && !b.isDeclaredInManifest()) {
-                return -1;
-            }
-            if (!a.isDeclaredInManifest() && b.isDeclaredInManifest()) {
-                return 1;
-            }
-            return Integer.compare(a.getRank(), b.getRank());
+    private static final Comparator<ShortcutInfo> SHORTCUT_RANK_COMPARATOR = (a, b) -> {
+        if (a.isDeclaredInManifest() && !b.isDeclaredInManifest()) {
+            return -1;
         }
+        if (!a.isDeclaredInManifest() && b.isDeclaredInManifest()) {
+            return 1;
+        }
+        return Integer.compare(a.getRank(), b.getRank());
     };
 
     /**
@@ -77,23 +66,10 @@ public class PopupPopulator {
      * We want the filter to include both static and dynamic shortcuts, so we always
      * include NUM_DYNAMIC dynamic shortcuts, if at least that many are present.
      *
-     * @param shortcutIdToRemoveFirst An id that should be filtered out first, if any.
      * @return a subset of shortcuts, in sorted order, with size <= MAX_SHORTCUTS.
      */
-    public static List<ShortcutInfo> sortAndFilterShortcuts(
-            List<ShortcutInfo> shortcuts, @Nullable String shortcutIdToRemoveFirst) {
-        // Remove up to one specific shortcut before sorting and doing somewhat fancy filtering.
-        if (shortcutIdToRemoveFirst != null) {
-            Iterator<ShortcutInfo> shortcutIterator = shortcuts.iterator();
-            while (shortcutIterator.hasNext()) {
-                if (shortcutIterator.next().getId().equals(shortcutIdToRemoveFirst)) {
-                    shortcutIterator.remove();
-                    break;
-                }
-            }
-        }
-
-        Collections.sort(shortcuts, SHORTCUT_RANK_COMPARATOR);
+    public static List<ShortcutInfo> sortAndFilterShortcuts(List<ShortcutInfo> shortcuts) {
+        shortcuts.sort(SHORTCUT_RANK_COMPARATOR);
         if (shortcuts.size() <= MAX_SHORTCUTS) {
             return shortcuts;
         }
@@ -127,37 +103,20 @@ public class PopupPopulator {
     }
 
     /**
-     * Returns a runnable to update the provided shortcuts and notifications
+     * Returns a runnable to update the provided shortcuts
      */
     public static <T extends Context & ActivityContext> Runnable createUpdateRunnable(
             final T context,
             final ItemInfo originalInfo,
             final Handler uiHandler, final PopupContainerWithArrow container,
-            final List<DeepShortcutView> shortcutViews,
-            final List<NotificationKeyData> notificationKeys) {
+            final List<DeepShortcutView> shortcutViews) {
         final ComponentName activity = originalInfo.getTargetComponent();
         final UserHandle user = originalInfo.user;
         return () -> {
-            if (!notificationKeys.isEmpty()) {
-                NotificationListener notificationListener =
-                        NotificationListener.getInstanceIfConnected();
-                final List<NotificationInfo> infos;
-                if (notificationListener == null) {
-                    infos = Collections.emptyList();
-                } else {
-                    infos = notificationListener.getNotificationsForKeys(notificationKeys).stream()
-                            .map(sbn -> new NotificationInfo(context, sbn, originalInfo))
-                            .collect(Collectors.toList());
-                }
-                uiHandler.post(() -> container.applyNotificationInfos(infos));
-            }
-
             List<ShortcutInfo> shortcuts = new ShortcutRequest(context, user)
                     .withContainer(activity)
                     .query(ShortcutRequest.PUBLISHED);
-            String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
-                    : notificationKeys.get(0).shortcutId;
-            shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
+            shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts);
             IconCache cache = LauncherAppState.getInstance(context).getIconCache();
             for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
                 final ShortcutInfo shortcut = shortcuts.get(i);

@@ -37,10 +37,17 @@ class UnfoldConstantTranslateAnimator(
     private lateinit var rootView: ViewGroup
     private var translationMax = 0f
 
+    /**
+     * Initializes the animator, it is allowed to call this method multiple times, for example
+     * to update the rootView or maximum translation
+     */
     fun init(rootView: ViewGroup, translationMax: Float) {
+        if (!::rootView.isInitialized) {
+            progressProvider.addCallback(this)
+        }
+
         this.rootView = rootView
         this.translationMax = translationMax
-        progressProvider.addCallback(this)
     }
 
     override fun onTransitionStarted() {

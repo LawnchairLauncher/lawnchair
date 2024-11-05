@@ -141,7 +141,7 @@ fun CustomizeAppDialog(
             if (newTitle != previousTitle) {
                 prefs.customAppName[componentKey] = newTitle
                 val model = LauncherAppState.getInstance(context).model
-                model.onPackageChanged(componentKey.componentName.packageName, componentKey.user)
+                model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
             }
         }
     }

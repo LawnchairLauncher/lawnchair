@@ -27,18 +27,31 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"បាន​បិទ​ធាតុ​ក្រាហ្វិក​ក្នុង​របៀប​សុវត្ថិភាព"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ផ្លូវកាត់មិនអាចប្រើបានទេ"</string>
     <string name="home_screen" msgid="5629429142036709174">"អេក្រង់ដើម"</string>
+    <string name="set_default_home_app" msgid="5808906607627586381">"កំណត់ <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g> ជាកម្មវិធីអេក្រង់ដើមលំនាំដើមនៅក្នុង \"ការកំណត់\""</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"មុខងារ​បំបែកអេក្រង់"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"ព័ត៌មានកម្មវិធី​សម្រាប់ %1$s"</string>
+    <string name="split_app_usage_settings" msgid="7214375263347964093">"ការកំណត់ការប្រើប្រាស់សម្រាប់ %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"រក្សាទុកគូកម្មវិធី"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"មិនអាចប្រើគូកម្មវិធីនេះនៅលើឧបករណ៍នេះបានទេ"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"លាឧបករណ៍ ដើម្បីប្រើគូកម្មវិធីនេះ"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"មិនអាចប្រើគូកម្មវិធីបានទេ"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ចុចឱ្យជាប់​ដើម្បីផ្លាស់ទី​ធាតុក្រាហ្វិក​។"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ចុចពីរដង រួចសង្កត់ឱ្យជាប់ ដើម្បីផ្លាស់ទី​ធាតុក្រាហ្វិក ឬប្រើ​សកម្មភាព​តាមបំណង​។"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"ទទឺង %1$d គុណនឹងកម្ពស់ %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"ធាតុ​ក្រាហ្វិក <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"ធាតុ​ក្រាហ្វិក <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ទទឹង %2$d គុណនឹងកម្ពស់ %3$d"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"ចុចលើធាតុក្រាហ្វិកឱ្យជាប់ ដើម្បីផ្លាស់ទីវាជុំវិញអេក្រង់ដើម"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"បញ្ចូល​ទៅក្នុង​អេក្រង់​ដើម"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"បានបញ្ចូល​ធាតុក្រាហ្វិក <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ទៅ​អេក្រង់ដើម"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"ការណែនាំ"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"សំខាន់"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"ព័ត៌មាន និង​ទស្សនាវដ្ដី"</string>
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"កម្សាន្ត"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"សង្គម"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"ណែនាំជូនអ្នក"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"ធាតុក្រាហ្វិក <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> នៅខាងស្ដាំ ការស្វែងរក និងជម្រើសនៅខាងឆ្វេង"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{ធាតុ​ក្រាហ្វិក #}other{ធាតុ​ក្រាហ្វិក #}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{ផ្លូវកាត់ #}other{ផ្លូវកាត់ #}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -51,10 +64,9 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ការងារ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ការសន្ទនា"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"ការកត់ត្រា"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"ទទួលបាន​ព័ត៌មានដែលមានប្រយោជន៍​យ៉ាងងាយស្រួល"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"ដើម្បីទទួលបាន​ព័ត៌មាន​ដោយមិនចាំបាច់​បើកកម្មវិធី អ្នកអាចបញ្ចូលធាតុ​ក្រាហ្វិកទៅក្នុង​អេក្រង់ដើម​របស់អ្នក"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"បញ្ចូល"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"បញ្ចូលធាតុ​ក្រាហ្វិក <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ចុចដើម្បីប្ដូរការកំណត់ធាតុ​ក្រាហ្វិក"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"យល់ហើយ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ប្ដូរការកំណត់ធាតុ​ក្រាហ្វិក"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ស្វែងរក​កម្មវិធី"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"កំពុងផ្ទុកកម្មវិធី…"</string>
@@ -73,6 +85,8 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"យកចេញ"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"លុប"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ព័ត៌មាន​កម្មវិធី"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"ដំឡើងជាលក្ខណៈឯកជន"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"លុប​កម្មវិធី"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ដំឡើង"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"កុំណែនាំកម្មវិធី"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"ខ្ទាស់ការ​ព្យាករ"</string>
@@ -99,6 +113,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"បាន​ប្ដូរ​ឈ្មោះ​ថត​ជា <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ថត៖ <xliff:g id="NAME">%1$s</xliff:g>, ធាតុ <xliff:g id="SIZE">%2$d</xliff:g>"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ថត៖ <xliff:g id="NAME">%1$s</xliff:g>, ធាតុ <xliff:g id="SIZE">%2$d</xliff:g> ឬច្រើនជាងនេះ"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"គូកម្មវិធី៖ <xliff:g id="APP1">%1$s</xliff:g> និង <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ផ្ទាំងរូបភាព និងរចនាប័ទ្ម"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"កែអេក្រង់ដើម"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ការកំណត់​ទំព័រដើម"</string>
@@ -123,6 +138,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"កំពុង​ដំឡើង <xliff:g id="NAME">%1$s</xliff:g>, បាន​បញ្ចប់ <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"កំពុងដោនឡូត <xliff:g id="NAME">%1$s</xliff:g> បានបញ្ចប់ <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> កំពុងរង់ចាំការដំឡើង"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> ត្រូវបានទុក​ក្នុង​បណ្ណសារ។ សូមចុចដើម្បីទាញយក និងស្ដារ។"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"តម្រូវឱ្យមាន​កំណែកម្មវិធីថ្មី"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"កម្មវិធីសម្រាប់​រូបតំណាងនេះ​មិនត្រូវបានដំឡើងកំណែ​ទេ។ អ្នកអាច​ដំឡើងកំណែ​ដោយផ្ទាល់ ដើម្បីបើក​ផ្លូវកាត់នេះឡើងវិញ ឬលុបរូបតំណាងនេះ។"</string>
     <string name="dialog_update" msgid="2178028071796141234">"ដំឡើងកំណែ"</string>
@@ -152,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"បន្ថយកម្ពស់"</string>
     <string name="widget_resized" msgid="9130327887929620">"ធាតុក្រាហ្វិកដែលបានប្តូរទំហំទៅទទឹងប្រវែង <xliff:g id="NUMBER_0">%1$s</xliff:g> កម្ពស់ប្រវែង <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ផ្លូវកាត់"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ផ្លូវកាត់ និង​ការជូនដំណឹង"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ច្រានចោល"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"បិទ"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"បាន​បដិសេធ​ការជូនដំណឹង"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ផ្ទាល់ខ្លួន"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ការងារ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"កម្រងព័ត៌មានការងារ"</string>
@@ -170,7 +184,15 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ផ្អាក​កម្មវិធី​ការងារ"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ឈប់ផ្អាក"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"តម្រង"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"ស្វែងរកក្នុងទូរសព្ទរបស់អ្នក"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ស្វែងរកក្នុង​ថេប្លេតរបស់អ្នក"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"បានបរាជ័យ៖ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"បន្ទប់​ឯកជន"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"ចុចដើម្បីរៀបចំ ឬបើក"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"ឯកជន"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"ការកំណត់ Private Space"</string>
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"ឯកជន បានដោះសោ។"</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ឯកជន ជាប់សោ។"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"ចាក់សោ"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"ការផ្លាស់ប្ដូរ Private Space"</string>
+    <string name="ps_add_button_label" msgid="8127988716897128773">"ដំឡើង"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"ដំឡើងកម្មវិធីទៅលំហឯកជន"</string>
 </resources>

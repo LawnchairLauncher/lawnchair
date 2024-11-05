@@ -72,7 +72,7 @@
             </intent-filter>
             <meta-data
                 android:name="com.android.launcher3.grid.control"
-                android:value="${packageName}.grid_control" />
+                android:value="${applicationId}.grid_control" />
         </activity>
 
     </application>

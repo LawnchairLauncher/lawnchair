@@ -9,13 +9,14 @@ import app.lawnchair.ui.preferences.navigation.Routes
 import app.lawnchair.util.dropWhileBusy
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 
-class SmartspaceProvider private constructor(context: Context) {
+class SmartspaceProvider private constructor(context: Context) : SafeCloseable {
 
     val dataSources = listOf(
         SmartspaceWidgetReader(context),
@@ -63,6 +64,10 @@ class SmartspaceProvider private constructor(context: Context) {
                     it.onSetupDone()
                 }
             }
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
     }
 
     companion object {

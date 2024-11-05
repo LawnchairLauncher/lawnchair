@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Փակել"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Ընդարձակել"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Կարգավորումներ"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Ընտրացանկ"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"«Նկար նկարի մեջ» ռեժիմի ընտրացանկ"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g>-ը «Նկար նկարի մեջ» ռեժիմում է"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Եթե չեք ցանկանում, որ <xliff:g id="NAME">%s</xliff:g>-ն օգտագործի այս գործառույթը, հպեք՝ կարգավորումները բացելու և այն անջատելու համար։"</string>
+    <string name="pip_play" msgid="3496151081459417097">"Նվագարկել"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Դադարեցնել"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Անցնել հաջորդին"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Վերադառնալ նախորդին"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Փոխել չափը"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Թաքցնել"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Ցուցադրել"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Հավելվածը չի կարող աշխատել տրոհված էկրանի ռեժիմում"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Հավելվածը չի աջակցում էկրանի տրոհումը"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Այս հավելվածը հնարավոր է բացել միայն մեկ պատուհանում"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Հավելվածը կարող է չաշխատել լրացուցիչ էկրանի վրա"</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Հավելվածը չի աջակցում գործարկումը լրացուցիչ էկրանների վրա"</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Տրոհված էկրանի բաժանիչ"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Տրոհված էկրանի բաժանիչ"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Ձախ էկրանը՝ լիաէկրան"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Ձախ էկրանը՝ 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Ձախ էկրանը՝ 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Ձախ էկրանը՝ 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Աջ էկրանը՝ լիաէկրան"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Վերևի էկրանը՝ լիաէկրան"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Վերևի էկրանը՝ 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Վերևի էկրանը՝ 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Վերևի էկրանը՝ 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Ներքևի էկրանը՝ լիաէկրան"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Հավելվածը ձախ կողմում"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Հավելվածը աջ կողմում"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Հավելվածը վերևում"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Հավելվածը ներքևում"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Ինչպես օգտվել մեկ ձեռքի ռեժիմից"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Դուրս գալու համար մատը սահեցրեք էկրանի ներքևից վերև կամ հպեք հավելվածի վերևում որևէ տեղ։"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Գործարկել մեկ ձեռքի ռեժիմը"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Դուրս գալ մեկ ձեռքի ռեժիմից"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g>-ի ամպիկների կարգավորումներ"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Լրացուցիչ ընտրացանկ"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Նորից ավելացնել զտիչներում"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>՝ <xliff:g id="APP_NAME">%2$s</xliff:g>-ից"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>` <xliff:g id="APP_NAME">%2$s</xliff:g>-ից ու ևս <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> ամպիկ"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Տեղափոխել վերև՝ ձախ"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Տեղափոխել վերև՝ աջ"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Տեղափոխել ներքև՝ ձախ"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Տեղափոխել ներքև՝ աջ"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>. ծավալել"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>. ծալել"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> – կարգավորումներ"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Փակել ամպիկը"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Զրույցը չցուցադրել ամպիկի տեսքով"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Զրույցի ամպիկներ"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Նոր զրույցները կհայտնվեն լողացող պատկերակների կամ ամպիկների տեսքով։ Հպեք՝ ամպիկը բացելու համար։ Քաշեք՝ այն տեղափոխելու համար։"</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Ամպիկների կարգավորումներ"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Հպեք «Կառավարել» կոճակին՝ այս հավելվածի ամպիկներն անջատելու համար։"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Եղավ"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Ամպիկներ չկան"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Այստեղ կցուցադրվեն վերջերս օգտագործված և փակված ամպիկները, որոնք կկարողանաք հեշտությամբ վերաբացել"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Զրույցի ամպիկներ"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Նոր զրույցները հայտնվում են որպես պատկերակներ էկրանի ներքևի անկյունում։ Հպեք՝ դրանք ծավալելու, կամ քաշեք՝ մերժելու համար։"</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Ամպիկների կարգավորումներ"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Հպեք այստեղ՝ ընտրելու, թե որ հավելվածների և զրույցների համար ամպիկներ ցուցադրել"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Պղպջակ"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Կառավարել"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Ամպիկը փակվեց։"</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Ամպիկներ"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Ցույց տալ ամպիկներ"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Հպեք՝ հավելվածը վերագործարկելու և ավելի հարմար տեսք ընտրելու համար"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Փոխել հավելվածի կողմերի հարաբերակցությունը Կարգավորումներում"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Փոխել չափերի հարաբերակցությունը"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Տեսախցիկի հետ կապված խնդիրնե՞ր կան։\nՀպեք՝ վերակարգավորելու համար։"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Չհաջողվե՞ց շտկել։\nՀպեք՝ փոփոխությունները չեղարկելու համար։"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Տեսախցիկի հետ կապված խնդիրներ չկա՞ն։ Փակելու համար հպեք։"</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Միաժամանակ կատարեք մի քանի առաջադրանք"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Քաշեք մյուս հավելվածի մեջ՝ էկրանի տրոհումն օգտագործելու համար"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Կրկնակի հպեք հավելվածի կողքին՝ այն տեղափոխելու համար"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"Եղավ"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Ծավալեք՝ ավելին իմանալու համար։"</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Վերագործարկե՞լ հավելվածը"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Դուք կարող եք վերագործարկել հավելվածը, որպեսզի այն ավելի լավ ցուցադրվի ձեր էկրանին, սակայն ձեր առաջընթացը և չպահված փոփոխությունները կկորեն"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Չեղարկել"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Վերագործարկել"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Այլևս ցույց չտալ"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Կրկնակի հպեք՝\nհավելվածը տեղափոխելու համար"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Ծավալել"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Ծալել"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Փակել"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Հետ"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Նշիչ"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Հավելվածի պատկերակ"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Լիաէկրան"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Համակարգչի ռեժիմ"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Տրոհված էկրան"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Ավելին"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Լողացող պատուհան"</string>
+    <string name="select_text" msgid="5139083974039906583">"Ընտրել"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Սքրինշոթ"</string>
+    <string name="close_text" msgid="4986518933445178928">"Փակել"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Փակել ընտրացանկը"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Բացել ընտրացանկը"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Ծավալել էկրանը"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Ծալել էկրանը"</string>
+</resources>

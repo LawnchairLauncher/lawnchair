@@ -21,11 +21,11 @@ import android.graphics.drawable.Drawable;
 import android.metrics.LogMaker;
 import android.service.quicksettings.Tile;
 import android.text.TextUtils;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.android.internal.logging.InstanceId;
+import com.android.systemui.animation.Expandable;
 import com.android.systemui.plugins.annotations.DependsOn;
 import com.android.systemui.plugins.annotations.ProvidesInterface;
 import com.android.systemui.plugins.qs.QSTile.Callback;
@@ -55,28 +55,26 @@ public interface QSTile {
     void removeCallback(Callback callback);
     void removeCallbacks();
 
-    QSIconView createTileView(Context context);
-
     /**
      * The tile was clicked.
      *
-     * @param view The view that was clicked.
+     * @param expandable {@link Expandable} that was clicked.
      */
-    void click(@Nullable View view);
+    void click(@Nullable Expandable expandable);
 
     /**
      * The tile secondary click was triggered.
      *
-     * @param view The view that was clicked.
+     * @param expandable {@link Expandable} that was clicked.
      */
-    void secondaryClick(@Nullable View view);
+    void secondaryClick(@Nullable Expandable expandable);
 
     /**
      * The tile was long clicked.
      *
-     * @param view The view that was clicked.
+     * @param expandable {@link Expandable} that was clicked.
      */
-    void longClick(@Nullable View view);
+    void longClick(@Nullable Expandable expandable);
 
     void userSwitch(int currentUser);
 
@@ -170,14 +168,13 @@ public interface QSTile {
         public boolean dualTarget = false;
         public boolean isTransient = false;
         public String expandedAccessibilityClassName;
-        public SlashState slash;
         public boolean handlesLongClick = true;
         @Nullable
         public Drawable sideViewCustomDrawable;
         public String spec;
 
         /** Get the state text. */
-        public String getStateText(int arrayResId, Resources resources) {
+        public CharSequence getStateText(int arrayResId, Resources resources) {
             if (state == Tile.STATE_UNAVAILABLE || this instanceof QSTile.BooleanState) {
                 String[] array = resources.getStringArray(arrayResId);
                 return array[state];
@@ -187,13 +184,13 @@ public interface QSTile {
         }
 
         /** Get the text for secondaryLabel. */
-        public String getSecondaryLabel(String stateText) {
+        public CharSequence getSecondaryLabel(CharSequence stateText) {
             // Use a local reference as the value might change from other threads
             CharSequence localSecondaryLabel = secondaryLabel;
             if (TextUtils.isEmpty(localSecondaryLabel)) {
                 return stateText;
             }
-            return localSecondaryLabel.toString();
+            return localSecondaryLabel;
         }
 
         public boolean copyTo(State other) {
@@ -214,7 +211,6 @@ public interface QSTile {
                     || !Objects.equals(other.state, state)
                     || !Objects.equals(other.isTransient, isTransient)
                     || !Objects.equals(other.dualTarget, dualTarget)
-                    || !Objects.equals(other.slash, slash)
                     || !Objects.equals(other.handlesLongClick, handlesLongClick)
                     || !Objects.equals(other.sideViewCustomDrawable, sideViewCustomDrawable);
             other.spec = spec;
@@ -230,7 +226,6 @@ public interface QSTile {
             other.state = state;
             other.dualTarget = dualTarget;
             other.isTransient = isTransient;
-            other.slash = slash != null ? slash.copy() : null;
             other.handlesLongClick = handlesLongClick;
             other.sideViewCustomDrawable = sideViewCustomDrawable;
             return changed;
@@ -258,7 +253,6 @@ public interface QSTile {
             sb.append(",dualTarget=").append(dualTarget);
             sb.append(",isTransient=").append(isTransient);
             sb.append(",state=").append(state);
-            sb.append(",slash=\"").append(slash).append("\"");
             sb.append(",sideViewCustomDrawable=").append(sideViewCustomDrawable);
             return sb.append(']');
         }
@@ -270,15 +264,18 @@ public interface QSTile {
         }
     }
 
-    @ProvidesInterface(version = BooleanState.VERSION)
-    public static class BooleanState extends State {
+    /**
+     * Distinguished from [BooleanState] for use-case purposes such as allowing null secondary label
+     */
+    @ProvidesInterface(version = AdapterState.VERSION)
+    class AdapterState extends State {
         public static final int VERSION = 1;
         public boolean value;
         public boolean forceExpandIcon;
 
         @Override
         public boolean copyTo(State other) {
-            final BooleanState o = (BooleanState) other;
+            final AdapterState o = (AdapterState) other;
             final boolean changed = super.copyTo(other)
                     || o.value != value
                     || o.forceExpandIcon != forceExpandIcon;
@@ -297,77 +294,20 @@ public interface QSTile {
 
         @Override
         public State copy() {
-            BooleanState state = new BooleanState();
+            AdapterState state = new AdapterState();
             copyTo(state);
             return state;
         }
     }
 
-    @ProvidesInterface(version = SignalState.VERSION)
-    public static final class SignalState extends BooleanState {
+    @ProvidesInterface(version = BooleanState.VERSION)
+    class BooleanState extends AdapterState {
         public static final int VERSION = 1;
-        public boolean activityIn;
-        public boolean activityOut;
-        public boolean isOverlayIconWide;
-        public int overlayIconId;
-
-        @Override
-        public boolean copyTo(State other) {
-            final SignalState o = (SignalState) other;
-            final boolean changed = o.activityIn != activityIn
-                    || o.activityOut != activityOut
-                    || o.isOverlayIconWide != isOverlayIconWide
-                    || o.overlayIconId != overlayIconId;
-            o.activityIn = activityIn;
-            o.activityOut = activityOut;
-            o.isOverlayIconWide = isOverlayIconWide;
-            o.overlayIconId = overlayIconId;
-            return super.copyTo(other) || changed;
-        }
-
-        @Override
-        protected StringBuilder toStringBuilder() {
-            final StringBuilder rt = super.toStringBuilder();
-            rt.insert(rt.length() - 1, ",activityIn=" + activityIn);
-            rt.insert(rt.length() - 1, ",activityOut=" + activityOut);
-            return rt;
-        }
 
         @Override
         public State copy() {
-            SignalState state = new SignalState();
+            BooleanState state = new BooleanState();
             copyTo(state);
-            return state;
-        }
-    }
-
-    @ProvidesInterface(version = SlashState.VERSION)
-    public static class SlashState {
-        public static final int VERSION = 2;
-
-        public boolean isSlashed;
-        public float rotation;
-
-        @Override
-        public String toString() {
-            return "isSlashed=" + isSlashed + ",rotation=" + rotation;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == null) return false;
-            try {
-                return (((SlashState) o).rotation == rotation)
-                        && (((SlashState) o).isSlashed == isSlashed);
-            } catch (ClassCastException e) {
-                return false;
-            }
-        }
-
-        public SlashState copy() {
-            SlashState state = new SlashState();
-            state.rotation = rotation;
-            state.isSlashed = isSlashed;
             return state;
         }
     }

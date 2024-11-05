@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"ಮುಚ್ಚಿ"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"ವಿಸ್ತೃತಗೊಳಿಸು"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"ಮೆನು"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"ಚಿತ್ರದಲ್ಲಿ ಚಿತ್ರ ಮೆನು"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> ಚಿತ್ರದಲ್ಲಿ ಚಿತ್ರವಾಗಿದೆ"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"<xliff:g id="NAME">%s</xliff:g> ಈ ಫೀಚರ್ ಬಳಸುವುದನ್ನು ನೀವು ಬಯಸದಿದ್ದರೆ, ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಲು ಮತ್ತು ಅದನ್ನು ಆಫ್ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
+    <string name="pip_play" msgid="3496151081459417097">"ಪ್ಲೇ"</string>
+    <string name="pip_pause" msgid="690688849510295232">"ವಿರಾಮಗೊಳಿಸಿ"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"ಮುಂದಕ್ಕೆ ಸ್ಕಿಪ್‌ ಮಾಡಿ"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"ಹಿಂದಕ್ಕೆ ಸ್ಕಿಪ್‌ ಮಾಡಿ"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"ಮರುಗಾತ್ರಗೊಳಿಸಿ"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"ಸ್ಟ್ಯಾಶ್ ಮಾಡಿ"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"ಅನ್‌ಸ್ಟ್ಯಾಶ್ ಮಾಡಿ"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"ಸ್ಪ್ಲಿಟ್‌ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ ಆ್ಯಪ್ ಕೆಲಸ ಮಾಡದೇ ಇರಬಹುದು"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"ಸ್ಪ್ಲಿಟ್‌ ಸ್ಕ್ರೀನ್‌ ಅನ್ನು ಆ್ಯಪ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"ಈ ಆ್ಯಪ್ ಅನ್ನು 1 ವಿಂಡೋದಲ್ಲಿ ಮಾತ್ರ ತೆರೆಯಬಹುದು"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"ಸೆಕೆಂಡರಿ ಡಿಸ್‌ಪ್ಲೇಗಳಲ್ಲಿ ಅಪ್ಲಿಕೇಶನ್‌ ಕಾರ್ಯ ನಿರ್ವಹಿಸದೇ ಇರಬಹುದು."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"ಸೆಕೆಂಡರಿ ಡಿಸ್‌ಪ್ಲೇಗಳಲ್ಲಿ ಪ್ರಾರಂಭಿಸುವಿಕೆಯನ್ನು ಅಪ್ಲಿಕೇಶನ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"ಸ್ಪ್ಲಿಟ್‌ ಸ್ಕ್ರೀನ್ ಡಿವೈಡರ್"</string>
+    <string name="divider_title" msgid="1963391955593749442">"ಸ್ಪ್ಲಿಟ್‌ ಸ್ಕ್ರೀನ್ ಡಿವೈಡರ್"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"ಎಡ ಪೂರ್ಣ ಪರದೆ"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"70% ಎಡಕ್ಕೆ"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"50% ಎಡಕ್ಕೆ"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"30% ಎಡಕ್ಕೆ"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"ಬಲ ಪೂರ್ಣ ಪರದೆ"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"ಮೇಲಿನ ಪೂರ್ಣ ಪರದೆ"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"70% ಮೇಲಕ್ಕೆ"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"50% ಮೇಲಕ್ಕೆ"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"30% ಮೇಲಕ್ಕೆ"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"ಕೆಳಗಿನ ಪೂರ್ಣ ಪರದೆ"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"ಎಡಕ್ಕೆ ವಿಭಜಿಸಿ"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"ಬಲಕ್ಕೆ ವಿಭಜಿಸಿ"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"ಮೇಲಕ್ಕೆ ವಿಭಜಿಸಿ"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"ಕೆಳಕ್ಕೆ ವಿಭಜಿಸಿ"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"ಒಂದು ಕೈ ಮೋಡ್ ಬಳಸುವುದರ ಬಗ್ಗೆ"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"ನಿರ್ಗಮಿಸಲು, ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ ಅಥವಾ ಆ್ಯಪ್‌ನ ಮೇಲೆ ಎಲ್ಲಿಯಾದರೂ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"ಒಂದು ಕೈ ಮೋಡ್ ಅನ್ನು ಪ್ರಾರಂಭಿಸಿ"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"ಒಂದು ಕೈ ಮೋಡ್‌ನಿಂದ ನಿರ್ಗಮಿಸಿ"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g> ಬಬಲ್ಸ್‌ಗಾಗಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"ಓವರ್‌ಫ್ಲೋ"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"ಸ್ಟ್ಯಾಕ್‌ಗೆ ಪುನಃ ಸೇರಿಸಿ"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="APP_NAME">%2$s</xliff:g> ಆ್ಯಪ್‌ನ <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="APP_NAME">%2$s</xliff:g> ಮತ್ತು <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> ಹೆಚ್ಚಿನವುಗಳ <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"ಎಡ ಮೇಲ್ಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"ಬಲ ಮೇಲ್ಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"ಸ್ಕ್ರೀನ್‌ನ ಎಡ ಕೆಳಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"ಕೆಳಗಿನ ಬಲಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> ಅನ್ನು ವಿಸ್ತೃತಗೊಳಿಸಿ"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> ಅನ್ನು ಕುಗ್ಗಿಸಿ"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"ಬಬಲ್ ವಜಾಗೊಳಿಸಿ"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"ಸಂಭಾಷಣೆಯನ್ನು ಬಬಲ್ ಮಾಡಬೇಡಿ"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"ಬಬಲ್ಸ್ ಬಳಸಿ ಚಾಟ್ ಮಾಡಿ"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"ಹೊಸ ಸಂಭಾಷಣೆಗಳು ತೇಲುವ ಐಕಾನ್‌ಗಳು ಅಥವಾ ಬಬಲ್ಸ್ ಆಗಿ ಗೋಚರಿಸುತ್ತವೆ. ಬಬಲ್ ತೆರೆಯಲು ಟ್ಯಾಪ್ ಮಾಡಿ. ಅದನ್ನು ಡ್ರ್ಯಾಗ್ ಮಾಡಲು ಎಳೆಯಿರಿ."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಬಬಲ್ಸ್ ಅನ್ನು ನಿಯಂತ್ರಿಸಿ"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"ಈ ಆ್ಯಪ್‌ನಿಂದ ಬಬಲ್ಸ್ ಅನ್ನು ಆಫ್ ಮಾಡಲು ನಿರ್ವಹಿಸಿ ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"ಅರ್ಥವಾಯಿತು"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"ಯಾವುದೇ ಇತ್ತೀಚಿನ ಬಬಲ್ಸ್ ಇಲ್ಲ"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"ಇತ್ತೀಚಿನ ಬಬಲ್ಸ್ ಮತ್ತು ವಜಾಗೊಳಿಸಿದ ಬಬಲ್ಸ್ ಇಲ್ಲಿ ಗೋಚರಿಸುತ್ತವೆ"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"ಬಬಲ್ಸ್ ಬಳಸಿ ಚಾಟ್ ಮಾಡಿ"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"ಹೊಸ ಸಂಭಾಷಣೆಗಳು ನಿಮ್ಮ ಸ್ಕ್ರೀನ್ ಕೆಳಗಿನ ಮೂಲೆಯಲ್ಲಿ ಐಕಾನ್‌ಗಳಾಗಿ ಗೋಚರಿಸುತ್ತವೆ. ವಿಸ್ತರಿಸಲು ಅವುಗಳನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ ಅಥವಾ ವಜಾಗೊಳಿಸಲು ಡ್ರ್ಯಾಗ್ ಮಾಡಿ."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಬಬಲ್ಸ್ ಅನ್ನು ನಿಯಂತ್ರಿಸಿ"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"ಯಾವ ಆ್ಯಪ್‌ಗಳು ಮತ್ತು ಸಂಭಾಷಣೆಗಳನ್ನು ಬಬಲ್ ಮಾಡಬಹುದು ಎಂಬುದನ್ನು ನಿರ್ವಹಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"ಬಬಲ್"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"ನಿರ್ವಹಿಸಿ"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"ಬಬಲ್ ವಜಾಗೊಳಿಸಲಾಗಿದೆ."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"ಬಬಲ್ಸ್"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"ಬಬಲ್ಸ್ ತೋರಿಸಿ"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"ಉತ್ತಮ ವೀಕ್ಷಣೆಗಾಗಿ ಈ ಆ್ಯಪ್ ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಈ ಆ್ಯಪ್‌ನ ದೃಶ್ಯಾನುಪಾತವನ್ನು ಬದಲಾಯಿಸಿ"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"ದೃಶ್ಯಾನುಪಾತವನ್ನು ಬದಲಾಯಿಸಿ"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"ಕ್ಯಾಮರಾ ಸಮಸ್ಯೆಗಳಿವೆಯೇ?\nಮರುಹೊಂದಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"ಅದನ್ನು ಸರಿಪಡಿಸಲಿಲ್ಲವೇ?\nಹಿಂತಿರುಗಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"ಕ್ಯಾಮರಾ ಸಮಸ್ಯೆಗಳಿಲ್ಲವೇ? ವಜಾಗೊಳಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"ನೋಡಿ ಮತ್ತು ಹೆಚ್ಚಿನದನ್ನು ಮಾಡಿ"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"ಸ್ಪ್ಲಿಟ್‌ ಸ್ಕ್ರೀನ್‌ಗಾಗಿ ಮತ್ತೊಂದು ಆ್ಯಪ್‌ನಲ್ಲಿ ಡ್ರ್ಯಾಗ್ ಮಾಡಿ"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"ಆ್ಯಪ್ ಒಂದರ ಸ್ಥಾನವನ್ನು ಬದಲಾಯಿಸಲು ಅದರ ಹೊರಗೆ ಡಬಲ್-ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"ಸರಿ"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"ಇನ್ನಷ್ಟು ಮಾಹಿತಿಗಾಗಿ ವಿಸ್ತೃತಗೊಳಿಸಿ."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"ಉತ್ತಮ ವೀಕ್ಷಣೆಗಾಗಿ ಆ್ಯಪ್ ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಬೇಕೆ?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"ನೀವು ಆ್ಯಪ್ ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಬಹುದು, ಇದರಿಂದ ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ ಆ್ಯಪ್ ಉತ್ತಮವಾಗಿ ಕಾಣಿಸುತ್ತದೆ, ಆದರೆ ನಿಮ್ಮ ಪ್ರಗತಿಯನ್ನು ಅಥವಾ ಯಾವುದೇ ಉಳಿಸದ ಬದಲಾವಣೆಗಳನ್ನು ನೀವು ಕಳೆದುಕೊಳ್ಳಬಹುದು"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"ರದ್ದುಮಾಡಿ"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"ಮರುಪ್ರಾರಂಭಿಸಿ"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"ಮತ್ತೊಮ್ಮೆ ತೋರಿಸಬೇಡಿ"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"ಈ ಆ್ಯಪ್ ಅನ್ನು ಸರಿಸಲು\nಡಬಲ್-ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"ಹಿಗ್ಗಿಸಿ"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"ಕುಗ್ಗಿಸಿ"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"ಮುಚ್ಚಿರಿ"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"ಹಿಂದಕ್ಕೆ"</string>
+    <string name="handle_text" msgid="1766582106752184456">"ಹ್ಯಾಂಡಲ್"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"ಆ್ಯಪ್ ಐಕಾನ್"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"ಫುಲ್‌ಸ್ಕ್ರೀನ್"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"ಡೆಸ್ಕ್‌ಟಾಪ್ ಮೋಡ್"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"ಇನ್ನಷ್ಟು"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"ಫ್ಲೋಟ್"</string>
+    <string name="select_text" msgid="5139083974039906583">"ಆಯ್ಕೆಮಾಡಿ"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"ಸ್ಕ್ರೀನ್‌ಶಾಟ್"</string>
+    <string name="close_text" msgid="4986518933445178928">"ಮುಚ್ಚಿ"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"ಮೆನು ಮುಚ್ಚಿ"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"ಮೆನು ತೆರೆಯಿರಿ"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"ಸ್ಕ್ರೀನ್ ಅನ್ನು ಮ್ಯಾಕ್ಸಿಮೈಸ್ ಮಾಡಿ"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"ಸ್ನ್ಯಾಪ್ ಸ್ಕ್ರೀನ್"</string>
+</resources>

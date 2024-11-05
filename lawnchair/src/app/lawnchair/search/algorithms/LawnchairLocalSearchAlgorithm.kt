@@ -32,11 +32,12 @@ import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.requestContactPermissionGranted
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.model.AllAppsList
-import com.android.launcher3.model.BaseModelUpdateTask
 import com.android.launcher3.model.BgDataModel
+import com.android.launcher3.model.ModelTaskController
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Executors
@@ -123,8 +124,8 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     }
 
     override fun doSearch(query: String, callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
-        appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
-            override fun execute(app: LauncherAppState, dataModel: BgDataModel, apps: AllAppsList) {
+        appState.model.enqueueModelUpdateTask(object : LauncherModel.ModelUpdateTask {
+            override fun execute(app: ModelTaskController, dataModel: BgDataModel, apps: AllAppsList) {
                 coroutineScope.launch(Dispatchers.Main) {
                     getAllSearchResults(apps.data, query, prefs).collect { allResults ->
                         callback.onSearchResult(query, ArrayList(allResults))

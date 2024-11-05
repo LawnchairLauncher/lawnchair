@@ -17,11 +17,9 @@
     <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
 
-    <integer name="extracted_color_gradient_alpha">153</integer>
-
-    <!-- String representing the intent for search on the apps market. To specify a query, add
-    q=<query> to the data to the intent -->
-    <string name="market_search_intent" translatable="false">market://search?c=apps</string>
+    <!-- A string pointer to the original app name string. This allows derived projects to
+     easily override the app name without providing all translations -->
+    <string name="derived_app_name" translatable="false">@string/app_name</string>
 
     <!-- String representing the intent to delete a package.-->
     <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;end</string>
@@ -29,18 +27,12 @@
     <!-- String representing the fragment class for settings activity.-->
     <string name="settings_fragment_name" translatable="false">com.android.launcher3.settings.SettingsActivity$LauncherSettingsFragment</string>
 
-    <!-- DragController -->
-    <item type="id" name="drag_event_parity" />
-
     <!-- AllApps & Launcher transitions -->
-    <!-- The duration of the animation from search hint to text entry -->
-    <integer name="config_searchHintAnimationDuration">50</integer>
-
     <!-- The duration of the PagedView page snap animation -->
     <integer name="config_pageSnapAnimationDuration">750</integer>
 
-    <!-- View tag key used to store SpringAnimation data. -->
-    <item type="id" name="spring_animation_tag" />
+    <!-- The duration of the PagedView page snap animation -->
+    <integer name="config_keyboardTaskFocusSnapAnimationDuration">750</integer>
 
     <!-- View tag key used to determine if we should fade in the child views.. -->
     <string name="popup_container_iterate_children" translatable="false">popup_container_iterate_children</string>
@@ -82,76 +74,37 @@
     <string name="widget_holder_factory_class" translatable="false"></string>
     <string name="taskbar_search_session_controller_class" translatable="false"></string>
     <string name="taskbar_model_callbacks_factory_class" translatable="false"></string>
-
-    <!-- View ID to use for QSB widget -->
-    <item type="id" name="qsb_widget" />
-
-    <!-- View ID used by cell layout to jail its content -->
-    <item type="id" name="cell_layout_jail_id" />
-
-    <!-- View IDs to store item highlight information -->
-    <item type="id" name="view_unhighlight_background" />
-
-    <!-- view ID used to restore work tab state -->
-    <item type="id" name="work_tab_state_id" />
-
-    <!-- Menu id for feature flags -->
-    <item type="id" name="menu_apply_flags" />
+    <string name="taskbar_view_callbacks_factory_class" translatable="false"></string>
+    <string name="launcher_restore_event_logger_class" translatable="false"></string>
+    <string name="taskbar_edu_tooltip_controller_class" translatable="false"></string>
+    <!--  Used for determining category of a widget presented in widget recommendations. -->
+    <string name="widget_recommendation_category_provider_class" translatable="false"></string>
+    <string name="api_wrapper_class" translatable="false"></string>
 
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>
     <string name="local_colors_extraction_class" translatable="false"></string>
     <string name="search_session_manager_class" translatable="false"></string>
-
-    <!-- Accessibility actions -->
-    <item type="id" name="action_remove" />
-    <item type="id" name="action_uninstall" />
-    <item type="id" name="action_reconfigure" />
-    <item type="id" name="action_add_to_workspace" />
-    <item type="id" name="action_move" />
-    <item type="id" name="action_move_to_workspace" />
-    <item type="id" name="action_move_screen_backwards" />
-    <item type="id" name="action_move_screen_forwards" />
-    <item type="id" name="action_resize" />
-    <item type="id" name="action_deep_shortcuts" />
-    <item type="id" name="action_shortcuts_and_notifications"/>
-    <item type="id" name="action_dismiss_notification" />
-    <item type="id" name="action_remote_action_shortcut" />
-    <item type="id" name="action_dismiss_prediction" />
-    <item type="id" name="action_pin_prediction"/>
-
-    <!-- QSB IDs. DO not change -->
-    <item type="id" name="search_container_workspace" />
-    <item type="id" name="search_container_all_apps" />
-    <item type="id" name="search_container_hotseat" />
+    <string name="plugin_manager_wrapper_class" translatable="false"></string>
 
     <!-- Scalable Grid configuration -->
     <!-- This is a float because it is converted to dp later in DeviceProfile -->
     <dimen name="hotseat_bar_bottom_space_default">48</dimen>
     <dimen name="hotseat_qsb_space_default">0</dimen>
 
-    <!-- Recents -->
-    <item type="id" name="overview_panel"/>
-
     <!-- Whether to enable background preloading of task thumbnails. -->
     <bool name="config_enableTaskSnapshotPreloading">true</bool>
 
     <!-- Configuration resources -->
-    <item name="all_apps_spring_damping_ratio" type="dimen" format="float">0.75</item>
-    <item name="all_apps_spring_stiffness" type="dimen" format="float">600</item>
-
     <item name="dismiss_task_trans_y_damping_ratio" type="dimen" format="float">0.73</item>
     <item name="dismiss_task_trans_y_stiffness" type="dimen" format="float">800</item>
-
-    <item name="dismiss_task_trans_x_damping_ratio" type="dimen" format="float">0.73</item>
-    <item name="dismiss_task_trans_x_stiffness" type="dimen" format="float">800</item>
-
-    <item name="horizontal_spring_damping_ratio" type="dimen" format="float">0.8</item>
-    <item name="horizontal_spring_stiffness" type="dimen" format="float">250</item>
 
     <item name="swipe_up_rect_scale_damping_ratio" type="dimen" format="float">0.75</item>
     <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
     <item name="swipe_up_rect_scale_higher_stiffness" type="dimen" format="float">400</item>
+    <!-- Flag: enableScalingRevealHomeAnimation() -->
+    <item name="swipe_up_rect_scale_damping_ratio_v2" type="dimen" format="float">0.99</item>
+    <item name="swipe_up_rect_scale_stiffness_v2" type="dimen" format="float">500</item>
 
     <item name="swipe_up_rect_xy_fling_friction" type="dimen" format="float">1.5</item>
 
@@ -159,6 +112,11 @@
 
     <item name="swipe_up_rect_xy_damping_ratio" type="dimen" format="float">0.8</item>
     <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">200</item>
+    <!-- Flag: enableScalingRevealHomeAnimation() -->
+    <item name="swipe_up_rect_x_damping_ratio" type="dimen" format="float">0.965</item>
+    <item name="swipe_up_rect_x_stiffness" type="dimen" format="float">450</item>
+    <item name="swipe_up_rect_y_damping_ratio" type="dimen" format="float">0.95</item>
+    <item name="swipe_up_rect_y_stiffness" type="dimen" format="float">400</item>
 
     <!-- Taskbar -->
     <!-- This is a float because it is converted to dp later in DeviceProfile -->
@@ -183,6 +141,12 @@
     <dimen name="swipe_up_fling_min_visible_change">18dp</dimen>
     <dimen name="swipe_up_max_workspace_trans_y">-60dp</dimen>
     <dimen name="swipe_up_max_velocity">7.619dp</dimen>
+    <!-- Flag: enableScalingRevealHomeAnimation() -->
+    <item name="swipe_up_min_velocity_x_px_per_s" type="dimen" format="integer">300</item>
+    <item name="swipe_up_max_velocity_x_px_per_s" type="dimen" format="integer">500</item>
+    <item name="swipe_up_min_velocity_y_px_per_s" type="dimen" format="integer">2000</item>
+    <item name="swipe_up_max_velocity_y_px_per_s" type="dimen" format="integer">5000</item>
+    <item name="swipe_up_max_velocity_fall_off_factor" type="dimen" format="float">1.4</item>
 
     <array name="dynamic_resources">
         <item>@dimen/swipe_up_scale_start</item>
@@ -191,12 +155,8 @@
 
     <string-array name="filtered_components" ></string-array>
 
-    <!-- Name of the class used to generate colors from the wallpaper colors. Must be implementing the LauncherAppWidgetHostView.ColorGenerator interface. -->
-    <string name="color_generator_class" translatable="false"/>
-
     <!-- Swipe back to home related -->
     <dimen name="swipe_back_window_scale_x_margin">10dp</dimen>
-    <dimen name="swipe_back_window_max_delta_y">160dp</dimen>
     <dimen name="swipe_back_window_corner_radius">40dp</dimen>
 
     <!-- The duration of the bottom sheet opening and closing animation -->
@@ -224,8 +184,10 @@
     <dimen name="iconSize60dp">66dp</dimen>
     <dimen name="iconSize66dp">72dp</dimen>
     <dimen name="iconSize72dp">79dp</dimen>
+    <dimen name="iconSize82dp">90dp</dimen>
+    <dimen name="iconSize110dp">121dp</dimen>
+    <dimen name="iconSize144dp">158dp</dimen>
 
-    <dimen name="minimum_icon_label_size">8sp</dimen>
 
     <!--  Icon size steps in dp  -->
     <integer-array name="icon_size_steps">
@@ -238,5 +200,29 @@
         <item>@dimen/iconSize60dp</item>
         <item>@dimen/iconSize66dp</item>
         <item>@dimen/iconSize72dp</item>
+        <item>@dimen/iconSize82dp</item>
+        <item>@dimen/iconSize110dp</item>
+        <item>@dimen/iconSize144dp</item>
     </integer-array>
+
+    <dimen name="minimum_icon_label_size">8sp</dimen>
+
+    <!--  Used for custom widgets  -->
+    <array name="custom_widget_providers"/>
+
+    <!-- Embed parameters -->
+    <dimen name="activity_split_ratio"  format="float">0.5</dimen>
+    <integer name="min_width_split">720</integer>
+
+    <!-- Skip "Install to private" long-press shortcut packages name -->
+    <string-array name="skip_private_profile_shortcut_packages" translatable="false">
+        <item>com.android.settings</item>
+    </string-array>
+
+    <!-- Legacy list of components supporting multiple instances.
+         DO NOT ADD TO THIS LIST.  Apps should use the PROPERTY_SUPPORTS_MULTI_INSTANCE_SYSTEM_UI
+         property to declare multi-instance support in V+. This resource should match the resource
+         of the same name in SystemUI. -->
+    <string-array name="config_appsSupportMultiInstancesSplit">
+    </string-array>
 </resources>

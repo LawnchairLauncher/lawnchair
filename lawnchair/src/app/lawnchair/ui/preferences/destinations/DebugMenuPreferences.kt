@@ -21,7 +21,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.data.liveinfo.liveInformationManager
 import app.lawnchair.ui.preferences.data.liveinfo.model.LiveInformation
 import com.android.launcher3.settings.SettingsActivity
-import com.android.launcher3.uioverrides.flags.DeveloperOptionsFragment
+import com.android.launcher3.uioverrides.flags.DevOptionsUiHelper
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.runBlocking
 
@@ -55,7 +55,7 @@ fun DebugMenuPreferences(
                         Intent(context, SettingsActivity::class.java)
                             .putExtra(
                                 ":settings:fragment",
-                                DeveloperOptionsFragment::class.java.name,
+                                DevOptionsUiHelper::class.java.name,
                             )
                             .also { context.startActivity(it) }
                     },

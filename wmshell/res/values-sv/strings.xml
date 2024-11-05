@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Stäng"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Utöka"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Inställningar"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Meny"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Bild-i-bild-meny"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> visas i bild-i-bild"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Om du inte vill att den här funktionen används i <xliff:g id="NAME">%s</xliff:g> öppnar du inställningarna genom att trycka. Sedan inaktiverar du funktionen."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Spela upp"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Pausa"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Hoppa till nästa"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Hoppa till föregående"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Ändra storlek"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Utför stash"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Återställ stash"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Appen kanske inte fungerar med delad skärm"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Appen har inte stöd för delad skärm"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Denna app kan bara vara öppen i ett fönster"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Appen kanske inte fungerar på en sekundär skärm."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Appen kan inte köras på en sekundär skärm."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Avdelare för delad skärm"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Avdelare för delad skärm"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Helskärm på vänster skärm"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Vänster 70 %"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Vänster 50 %"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Vänster 30 %"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Helskärm på höger skärm"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Helskärm på övre skärm"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Övre 70 %"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Övre 50 %"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Övre 30 %"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Helskärm på nedre skärm"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Till vänster på delad skärm"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Till höger på delad skärm"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Upptill på delad skärm"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Nedtill på delad skärm"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Använda enhandsläge"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Avsluta genom att svepa uppåt från skärmens nederkant eller trycka ovanför appen"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Starta enhandsläge"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Avsluta enhandsläge"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Inställningar för <xliff:g id="APP_NAME">%1$s</xliff:g>-bubblor"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Fler menyalternativ"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Lägg tillbaka på stack"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> från <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> från <xliff:g id="APP_NAME">%2$s</xliff:g> och <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> fler"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Flytta högst upp till vänster"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Flytta högst upp till höger"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Flytta längst ned till vänster"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Flytta längst ned till höger"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"utöka <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"komprimera <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"Inställningar för <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Stäng bubbla"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Visa inte konversationen i bubblor"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Chatta med bubblor"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Nya konversationer visas som flytande ikoner, så kallade bubblor. Tryck på bubblan om du vill öppna den. Dra den om du vill flytta den."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Styr bubblor när som helst"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Tryck på Hantera för att stänga av bubblor från den här appen"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"OK"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Inga nya bubblor"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"De senaste bubblorna och ignorerade bubblor visas här"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Chatta med bubblor"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Nya konversationer visas som ikoner nere i hörnet på skärmen. Tryck för att utöka eller dra för att stänga dem."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Styr bubblor när som helst"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Tryck här för att hantera vilka appar och konversationer som får visas i bubblor"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Bubbla"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Hantera"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Bubblan ignorerades."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Bubblor"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Visa bubblor"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Tryck för att starta om appen och få en bättre vy"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Ändra appens bildformat i inställningarna"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Ändra bildformat"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Problem med kameran?\nTryck för att anpassa på nytt"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Löstes inte problemet?\nTryck för att återställa"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Inga problem med kameran? Tryck för att ignorera."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Se och gör mer"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Dra till en annan app för att dela upp skärmen"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Tryck snabbt två gånger utanför en app för att flytta den"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"OK"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Utöka för mer information."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Vill du starta om för en bättre vy?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Du kan starta om appen så den passar bättre på skärmen men du kan förlora dina framsteg och eventuella osparade ändringar."</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Avbryt"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Starta om"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Visa inte igen"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Tryck snabbt två gånger\nför att flytta denna app"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Utöka"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Minimera"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Stäng"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Tillbaka"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Handtag"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Appikon"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Helskärm"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Datorläge"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Delad skärm"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Mer"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Svävande"</string>
+    <string name="select_text" msgid="5139083974039906583">"Välj"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Skärmbild"</string>
+    <string name="close_text" msgid="4986518933445178928">"Stäng"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Stäng menyn"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Öppna menyn"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Maximera skärmen"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Fäst skärmen"</string>
+</resources>

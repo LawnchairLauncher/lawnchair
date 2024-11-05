@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Isara"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Palawakin"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Mga Setting"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Menu"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Menu ng Picture-in-Picture"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"Nasa picture-in-picture ang <xliff:g id="NAME">%s</xliff:g>"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Kung ayaw mong magamit ni <xliff:g id="NAME">%s</xliff:g> ang feature na ito, i-tap upang buksan ang mga setting at i-off ito."</string>
+    <string name="pip_play" msgid="3496151081459417097">"I-play"</string>
+    <string name="pip_pause" msgid="690688849510295232">"I-pause"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Lumaktaw sa susunod"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Lumaktaw sa nakaraan"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"I-resize"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"I-stash"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"I-unstash"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Posibleng hindi gumana sa split screen ang app"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Hindi sinusuportahan ng app ang split-screen"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Sa 1 window lang puwedeng buksan ang app na ito"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Maaaring hindi gumana ang app sa pangalawang display."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Hindi sinusuportahan ng app ang paglulunsad sa mga pangalawang display."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Divider ng split screen"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Divider ng split screen"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"I-full screen ang nasa kaliwa"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Gawing 70% ang nasa kaliwa"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Gawing 50% ang nasa kaliwa"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Gawing 30% ang nasa kaliwa"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"I-full screen ang nasa kanan"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"I-full screen ang nasa itaas"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Gawing 70% ang nasa itaas"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Gawing 50% ang nasa itaas"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Gawing 30% ang nasa itaas"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"I-full screen ang nasa ibaba"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Hatiin sa kaliwa"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Hatiin sa kanan"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Hatiin sa itaas"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Hatiin sa ilalim"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Paggamit ng one-hand mode"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Para lumabas, mag-swipe pataas mula sa ibaba ng screen o mag-tap kahit saan sa itaas ng app"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Simulan ang one-hand mode"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Lumabas sa one-hand mode"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Mga setting para sa mga bubble ng <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Overflow"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Idagdag ulit sa stack"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> mula sa <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> mula sa <xliff:g id="APP_NAME">%2$s</xliff:g> at <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> pa"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Ilipat sa kaliwa sa itaas"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Ilipat sa kanan sa itaas"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Ilipat sa kaliwa sa ibaba"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Ilipat sa kanan sa ibaba"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"I-expand ang <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"i-collapse ang <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"Mga setting ng <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"I-dismiss ang bubble"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Huwag ipakita sa bubble ang mga pag-uusap"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Mag-chat gamit ang bubbles"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Lumalabas bilang mga nakalutang na icon o bubble ang mga bagong pag-uusap. I-tap para buksan ang bubble. I-drag para ilipat ito."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Kontrolin ang mga bubble anumang oras"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"I-tap ang Pamahalaan para i-off ang mga bubble mula sa app na ito"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"OK"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Walang kamakailang bubble"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Lalabas dito ang mga kamakailang bubble at na-dismiss na bubble"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Mag-chat gamit ang mga bubble"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Lalabas ang mga bagong pag-uusap bilang mga icon sa sulok sa ibaba ng iyong screen. I-tap para i-expand ang mga ito o i-drag para i-dismiss ang mga ito."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Kontrolin ang mga bubble anumang oras"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Mag-tap dito para pamahalaan ang mga app at conversion na puwedeng mag-bubble"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Bubble"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Pamahalaan"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Na-dismiss na ang bubble."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Mga Bubble"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Ipakita ang Mga Bubble"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"I-tap para i-restart ang app na ito para sa mas magandang view"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Baguhin ang aspect ratio ng app na ito sa Mga Setting"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Baguhin ang aspect ratio"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"May mga isyu sa camera?\nI-tap para i-refit"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Hindi ito naayos?\nI-tap para i-revert"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Walang isyu sa camera? I-tap para i-dismiss."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Tumingin at gumawa ng higit pa"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Mag-drag ng isa pang app para sa split screen"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Mag-double tap sa labas ng app para baguhin ang posisyon nito"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"OK"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"I-expand para sa higit pang impormasyon."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"I-restart para sa mas magandang hitsura?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Puwede mong i-restart ang app para maging mas maganda ang itsura nito sa iyong screen, pero posibleng mawala ang pag-usad mo o anumang hindi na-save na pagbabago"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Kanselahin"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"I-restart"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Huwag nang ipakita ulit"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"I-double tap para\nilipat ang app na ito"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"I-maximize"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"I-minimize"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Isara"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Bumalik"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Handle"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Icon ng App"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Fullscreen"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Desktop Mode"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Split Screen"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Higit pa"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Float"</string>
+    <string name="select_text" msgid="5139083974039906583">"Piliin"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Screenshot"</string>
+    <string name="close_text" msgid="4986518933445178928">"Isara"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Isara ang Menu"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Buksan ang Menu"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"I-maximize ang Screen"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"I-snap ang Screen"</string>
+</resources>

@@ -47,6 +47,10 @@ class ResourceUnfoldTransitionConfig @Inject constructor() : UnfoldTransitionCon
         getBooleanResource("config_unfoldTransitionHingeAngle")
     }
 
+    override val isHapticsEnabled: Boolean by lazy {
+        getBooleanResource("config_unfoldTransitionHapticsEnabled")
+    }
+
     override val halfFoldedTimeoutMillis: Int by lazy {
         getIntResource("config_unfoldTransitionHalfFoldedTimeout")
     }

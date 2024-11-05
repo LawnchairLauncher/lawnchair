@@ -18,6 +18,8 @@ package com.android.launcher3.search;
 
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.util.IntArray;
 
 import java.text.Collator;
@@ -120,7 +122,11 @@ public class StringMatcherUtility {
         /**
          * Returns true if {@param query} is a prefix of {@param target}
          */
-        public boolean matches(String query, String target) {
+        public boolean matches(@Nullable String query, @Nullable String target) {
+            // `mCollator.compare` requires non-null inputs, so return false earlier (not a match)
+            if (query == null || target == null) {
+                return false;
+            }
             switch (mCollator.compare(query, target)) {
                 case 0:
                     return true;

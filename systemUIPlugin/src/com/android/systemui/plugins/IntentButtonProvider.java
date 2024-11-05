@@ -14,10 +14,10 @@
 
 package com.android.systemui.plugins;
 
-import com.android.systemui.plugins.annotations.ProvidesInterface;
-
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+
+import com.android.systemui.plugins.annotations.ProvidesInterface;
 
 /**
  * An Intent Button represents a triggerable element in SysUI that consists of an

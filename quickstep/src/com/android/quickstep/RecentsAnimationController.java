@@ -21,17 +21,18 @@ import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITION
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FINISH_RECENTS_ANIMATION;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.IRecentsAnimationController;
-import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.view.WindowManagerGlobal;
 import android.window.PictureInPictureSurfaceTransaction;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
+import com.android.internal.jank.Cuj;
+import com.android.internal.os.IResultReceiver;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
@@ -40,6 +41,7 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 
+import java.io.PrintWriter;
 import java.util.function.Consumer;
 
 /**
@@ -172,12 +174,18 @@ public class RecentsAnimationController {
         mFinishTargetIsLauncher = toRecents;
         mOnFinishedListener.accept(this);
         Runnable finishCb = () -> {
-            mController.finish(toRecents, sendUserLeaveHint);
-            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
-            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
-            InteractionJankMonitorWrapper.end(
-                    InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
-            MAIN_EXECUTOR.execute(mPendingFinishCallbacks::executeAllAndDestroy);
+            mController.finish(toRecents, sendUserLeaveHint, new IResultReceiver.Stub() {
+                @Override
+                public void send(int i, Bundle bundle) throws RemoteException {
+                    ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation-callback");
+                    MAIN_EXECUTOR.execute(() -> {
+                        mPendingFinishCallbacks.executeAllAndDestroy();
+                    });
+                }
+            });
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_APP_CLOSE_TO_HOME);
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
         };
         if (forceFinish) {
             finishCb.run();
@@ -259,5 +267,15 @@ public class RecentsAnimationController {
      */
     public boolean getFinishTargetIsLauncher() {
         return mFinishTargetIsLauncher;
+    }
+
+    public void dump(String prefix, PrintWriter pw) {
+        pw.println(prefix + "RecentsAnimationController:");
+
+        pw.println(prefix + "\tmAllowMinimizeSplitScreen=" + mAllowMinimizeSplitScreen);
+        pw.println(prefix + "\tmUseLauncherSysBarFlags=" + mUseLauncherSysBarFlags);
+        pw.println(prefix + "\tmSplitScreenMinimized=" + mSplitScreenMinimized);
+        pw.println(prefix + "\tmFinishRequested=" + mFinishRequested);
+        pw.println(prefix + "\tmFinishTargetIsLauncher=" + mFinishTargetIsLauncher);
     }
 }

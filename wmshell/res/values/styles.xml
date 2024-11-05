@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2020 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
+    <!-- Theme used for the activity that shows when the system forced an app to be resizable -->
+    <style name="ForcedResizableTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="android:windowBackground">@drawable/forced_resizable_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/Animation.ForcedResizable</item>
+    </style>
+
+    <!-- Theme used for the activity that shows below the desktop mode windows to show wallpaper -->
+    <style name="DesktopWallpaperTheme" parent="@android:style/Theme.Wallpaper.NoTitleBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="Animation.ForcedResizable" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/forced_resizable_enter</item>
+
+        <!-- If the target stack doesn't have focus, we do a task to front animation. -->
+        <item name="android:taskToFrontEnterAnimation">@anim/forced_resizable_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/forced_resizable_exit</item>
+    </style>
+
+    <style name="DesktopModeHandleMenuActionButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
+        <item name="android:drawablePadding">16dp</item>
+        <item name="android:background">?android:selectableItemBackground</item>
+    </style>
+
+    <style name="DesktopModeHandleMenuWindowingButton">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">?android:selectableItemBackgroundBorderless</item>
+    </style>
+
+    <style name="CaptionButtonStyle">
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="DockedDividerBackground">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@color/split_divider_background</item>
+    </style>
+
+    <style name="TvPipEduText">
+        <item name="android:fontFamily">@*android:string/config_headlineFontFamilyMedium</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:lineSpacingExtra">4sp</item>
+        <item name="android:lineHeight">16sp</item>
+        <item name="android:textColor">@color/tv_pip_edu_text</item>
+    </style>
+
+    <style name="LetterboxDialog" parent="@android:style/Theme.Holo">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/letterbox_dialog_background</item>
+    </style>
+
+    <style name="RestartDialogTitleText">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:lineSpacingExtra">8sp</item>
+        <item name="android:fontFamily">@*android:string/config_headlineFontFamily</item>
+    </style>
+
+    <style name="RestartDialogBodyStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@*android:string/config_bodyFontFamily</item>
+    </style>
+
+    <style name="RestartDialogBodyText" parent="RestartDialogBodyStyle">
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+    </style>
+
+    <style name="RestartDialogCheckboxText" parent="RestartDialogBodyStyle">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+    </style>
+
+    <style name="RestartDialogDismissButton" parent="RestartDialogBodyStyle">
+        <item name="android:lineSpacingExtra">2sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="RestartDialogConfirmButton" parent="RestartDialogBodyStyle">
+        <item name="android:lineSpacingExtra">2sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+
+    <style name="ReachabilityEduHandLayout" parent="Theme.AppCompat.Light">
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:lineSpacingExtra">-1sp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textAppearance">
+            @*android:style/TextAppearance.DeviceDefault.Body2
+        </item>
+    </style>
+
+</resources>

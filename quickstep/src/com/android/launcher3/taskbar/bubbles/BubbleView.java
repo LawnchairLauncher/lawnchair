@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +71,9 @@ public class BubbleView extends ConstraintLayout {
     private final ImageView mBubbleIcon;
     private final ImageView mAppIcon;
     private final int mBubbleSize;
+
+    private float mDragTranslationX;
+    private float mOffsetX;
 
     private DotRenderer mDotRenderer;
     private DotRenderer.DrawParams mDrawParams;
@@ -135,6 +139,42 @@ public class BubbleView extends ConstraintLayout {
         outline.setOval(inset, inset, inset + normalizedSize, inset + normalizedSize);
     }
 
+    /**
+     * Set translation-x while this bubble is being dragged.
+     * Translation applied to the view is a sum of {@code translationX} and offset
+     * defined by
+     * {@link #setOffsetX(float)}.
+     */
+    public void setDragTranslationX(float translationX) {
+        mDragTranslationX = translationX;
+        applyDragTranslation();
+    }
+
+    /**
+     * Get translation value applied via {@link #setDragTranslationX(float)}.
+     */
+    public float getDragTranslationX() {
+        return mDragTranslationX;
+    }
+
+    /**
+     * Set offset on x-axis while dragging.
+     * Used to counter parent translation in order to keep the dragged view at the
+     * current position
+     * on screen.
+     * Translation applied to the view is a sum of {@code offsetX} and translation
+     * defined by
+     * {@link #setDragTranslationX(float)}
+     */
+    public void setOffsetX(float offsetX) {
+        mOffsetX = offsetX;
+        applyDragTranslation();
+    }
+
+    private void applyDragTranslation() {
+        setTranslationX(mDragTranslationX + mOffsetX);
+    }
+
     @Override
     public void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
@@ -154,7 +194,7 @@ public class BubbleView extends ConstraintLayout {
     }
 
     /** Sets the bubble being rendered in this view. */
-    void setBubble(BubbleBarBubble bubble) {
+    public void setBubble(BubbleBarBubble bubble) {
         mBubble = bubble;
         mBubbleIcon.setImageBitmap(bubble.getIcon());
         mAppIcon.setImageBitmap(bubble.getBadge());
@@ -164,7 +204,18 @@ public class BubbleView extends ConstraintLayout {
         ColorOption counterColorOption = PreferenceExtensionsKt
                 .firstBlocking(preferenceManager2.getNotificationDotTextColor());
         int countColor = counterColorOption.getColorPreferenceEntry().getLightColor().invoke(getContext());
-        mDotRenderer = new DotRenderer(mBubbleSize, bubble.getDotPath(), DEFAULT_PATH_SIZE, false, null, dotColor, countColor);
+        mDotRenderer = new DotRenderer(mBubbleSize, bubble.getDotPath(), DEFAULT_PATH_SIZE, false, null, dotColor,
+                countColor);
+        String contentDesc = bubble.getInfo().getTitle();
+        if (TextUtils.isEmpty(contentDesc)) {
+            contentDesc = getResources().getString(R.string.bubble_bar_bubble_fallback_description);
+        }
+        String appName = bubble.getInfo().getAppName();
+        if (!TextUtils.isEmpty(appName)) {
+            contentDesc = getResources().getString(R.string.bubble_bar_bubble_description,
+                    contentDesc, appName);
+        }
+        setContentDescription(contentDesc);
     }
 
     /**
@@ -176,15 +227,16 @@ public class BubbleView extends ConstraintLayout {
      * UI / doesn't
      * come from an app.
      */
-    void setOverflow(BubbleBarOverflow overflow, Bitmap bitmap) {
+    public void setOverflow(BubbleBarOverflow overflow, Bitmap bitmap) {
         mBubble = overflow;
         mBubbleIcon.setImageBitmap(bitmap);
         mAppIcon.setVisibility(GONE); // Overflow doesn't show the app badge
+        setContentDescription(getResources().getString(R.string.bubble_bar_overflow_description));
     }
 
     /** Returns the bubble being rendered in this view. */
     @Nullable
-    BubbleBarItem getBubble() {
+    public BubbleBarItem getBubble() {
         return mBubble;
     }
 

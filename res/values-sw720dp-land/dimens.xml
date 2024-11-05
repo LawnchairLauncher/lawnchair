@@ -32,7 +32,4 @@
 <!-- Widget picker-->
     <dimen name="widget_list_horizontal_margin">49dp</dimen>
     <dimen name="widget_list_horizontal_margin_two_pane">24dp</dimen>
-
-<!-- Bottom sheet-->
-    <dimen name="bottom_sheet_extra_top_padding">0dp</dimen>
 </resources>

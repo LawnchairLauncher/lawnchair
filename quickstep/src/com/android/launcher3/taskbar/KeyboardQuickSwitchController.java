@@ -20,6 +20,7 @@ import android.content.pm.ActivityInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
@@ -28,9 +29,9 @@ import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
-import com.android.quickstep.views.DesktopTaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -45,7 +46,8 @@ import java.util.stream.Collectors;
 public final class KeyboardQuickSwitchController implements
         TaskbarControllers.LoggableTaskbarController {
 
-    static final int MAX_TASKS = 6;
+    @VisibleForTesting
+    public static final int MAX_TASKS = 6;
 
     @NonNull private final ControllerCallbacks mControllerCallbacks = new ControllerCallbacks();
 
@@ -93,7 +95,11 @@ public final class KeyboardQuickSwitchController implements
 
     private void openQuickSwitchView(int currentFocusedIndex) {
         if (mQuickSwitchViewController != null) {
-            return;
+            if (!mQuickSwitchViewController.isCloseAnimationRunning()) {
+                return;
+            }
+            // Allow the KQS to be reopened during the close animation to make it more responsive
+            closeQuickSwitchView(false);
         }
         TaskbarOverlayContext overlayContext =
                 mControllers.taskbarOverlayController.requestWindow();
@@ -109,13 +115,18 @@ public final class KeyboardQuickSwitchController implements
         DesktopVisibilityController desktopController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         final boolean onDesktop =
-                DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED
-                        && desktopController != null
-                        && desktopController.areFreeformTasksVisible();
+                desktopController != null && desktopController.areDesktopTasksVisible();
 
         if (mModel.isTaskListValid(mTaskListChangeId)) {
-            mQuickSwitchViewController.openQuickSwitchView(mTasks,
-                    mNumHiddenTasks, /* updateTasks= */ false, currentFocusedIndex, onDesktop);
+            // When we are opening the KQS with no focus override, check if the first task is
+            // running. If not, focus that first task.
+            mQuickSwitchViewController.openQuickSwitchView(
+                    mTasks,
+                    mNumHiddenTasks,
+                    /* updateTasks= */ false,
+                    currentFocusedIndex == -1 && !mControllerCallbacks.isFirstTaskRunning()
+                            ? 0 : currentFocusedIndex,
+                    onDesktop);
             return;
         }
 
@@ -125,33 +136,28 @@ public final class KeyboardQuickSwitchController implements
             } else {
                 processLoadedTasks(tasks);
             }
-            mQuickSwitchViewController.openQuickSwitchView(mTasks,
-                    mNumHiddenTasks, /* updateTasks= */ true, currentFocusedIndex, onDesktop);
+            // Check if the first task is running after the recents model has updated so that we use
+            // the correct index.
+            mQuickSwitchViewController.openQuickSwitchView(
+                    mTasks,
+                    mNumHiddenTasks,
+                    /* updateTasks= */ true,
+                    currentFocusedIndex == -1 && !mControllerCallbacks.isFirstTaskRunning()
+                            ? 0 : currentFocusedIndex,
+                    onDesktop);
         });
     }
 
-    private void processLoadedTasks(ArrayList<GroupTask> tasks) {
+    private void processLoadedTasks(List<GroupTask> tasks) {
         // Only store MAX_TASK tasks, from most to least recent
         Collections.reverse(tasks);
-
-        // Hide all desktop tasks and show them on the hidden tile
-        int hiddenDesktopTasks = 0;
-        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
-            DesktopTask desktopTask = findDesktopTask(tasks);
-            if (desktopTask != null) {
-                hiddenDesktopTasks = desktopTask.tasks.size();
-                tasks = tasks.stream()
-                        .filter(t -> !(t instanceof DesktopTask))
-                        .collect(Collectors.toCollection(ArrayList<GroupTask>::new));
-            }
-        }
         mTasks = tasks.stream()
                 .limit(MAX_TASKS)
                 .collect(Collectors.toList());
-        mNumHiddenTasks = Math.max(0, tasks.size() - MAX_TASKS) + hiddenDesktopTasks;
+        mNumHiddenTasks = Math.max(0, tasks.size() - MAX_TASKS);
     }
 
-    private void processLoadedTasksOnDesktop(ArrayList<GroupTask> tasks) {
+    private void processLoadedTasksOnDesktop(List<GroupTask> tasks) {
         // Find the single desktop task that contains a grouping of desktop tasks
         DesktopTask desktopTask = findDesktopTask(tasks);
 
@@ -167,7 +173,7 @@ public final class KeyboardQuickSwitchController implements
     }
 
     @Nullable
-    private DesktopTask findDesktopTask(ArrayList<GroupTask> tasks) {
+    private DesktopTask findDesktopTask(List<GroupTask> tasks) {
         return (DesktopTask) tasks.stream()
                 .filter(t -> t instanceof DesktopTask)
                 .findFirst()
@@ -175,10 +181,14 @@ public final class KeyboardQuickSwitchController implements
     }
 
     void closeQuickSwitchView() {
+        closeQuickSwitchView(true);
+    }
+
+    void closeQuickSwitchView(boolean animate) {
         if (mQuickSwitchViewController == null) {
             return;
         }
-        mQuickSwitchViewController.closeQuickSwitchView(true);
+        mQuickSwitchViewController.closeQuickSwitchView(animate);
     }
 
     /**
@@ -244,6 +254,21 @@ public final class KeyboardQuickSwitchController implements
 
         void onCloseComplete() {
             mQuickSwitchViewController = null;
+        }
+
+        boolean isTaskRunning(@Nullable GroupTask task) {
+            if (task == null) {
+                return false;
+            }
+            int runningTaskId = ActivityManagerWrapper.getInstance().getRunningTask().taskId;
+            Task task2 = task.task2;
+
+            return runningTaskId == task.task1.key.id
+                    || (task2 != null && runningTaskId == task2.key.id);
+        }
+
+        boolean isFirstTaskRunning() {
+            return isTaskRunning(getTaskAt(0));
         }
     }
 }

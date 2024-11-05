@@ -17,6 +17,7 @@
 package com.android.systemui.shared.system;
 
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
@@ -31,7 +32,7 @@ public interface RecentsAnimationListener {
      */
     void onAnimationStart(RecentsAnimationControllerCompat controller,
             RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-            Rect homeContentInsets, Rect minimizedHomeBounds);
+            Rect homeContentInsets, Rect minimizedHomeBounds, Bundle extras);
 
     // Introduced in NothingOS 2.5.5, needed in 2.6
     void onAnimationStart(RecentsAnimationControllerCompat controller,

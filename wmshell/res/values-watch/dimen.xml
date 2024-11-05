@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<resources>
+    <!-- The acceptable area ratio of fg icon area/bg icon area, i.e. (48 X 48) / (72 x 72) -->
+    <item type="dimen" format="float" name="splash_icon_enlarge_foreground_threshold">0.44</item>
+    <!-- Scaling factor applied to splash icons without provided background i.e. (60 / 48) -->
+    <item type="dimen" format="float" name="splash_icon_no_background_scale_factor">1.25</item>
+</resources>

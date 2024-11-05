@@ -39,7 +39,7 @@ fun Dialog.registerAnimationOnBackInvoked(
     targetView: View,
     backAnimationSpec: BackAnimationSpec =
         BackAnimationSpec.floatingSystemSurfacesForSysUi(
-            displayMetrics = targetView.resources.displayMetrics,
+            displayMetricsProvider = { targetView.resources.displayMetrics },
         ),
 ) {
     targetView.registerOnBackInvokedCallbackOnViewAttached(

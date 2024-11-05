@@ -15,9 +15,9 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.graphics.LauncherPreviewRenderer
+import com.android.launcher3.model.BaseLauncherBinder
 import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.GridSizeMigrationUtil
-import com.android.launcher3.model.LauncherBinder
 import com.android.launcher3.model.LoaderTask
 import com.android.launcher3.model.ModelDelegate
 import com.android.launcher3.util.ComponentKey
@@ -89,8 +89,8 @@ class LauncherPreviewView(
                 LauncherAppState.getInstance(previewContext),
                 null,
                 BgDataModel(),
-                ModelDelegate(),
-                LauncherBinder(
+                ModelDelegate(context),
+                BaseLauncherBinder(
                     LauncherAppState.getInstance(previewContext),
                     BgDataModel(),
                     null,
@@ -101,6 +101,7 @@ class LauncherPreviewView(
                     loadWorkspace(
                         emptyList(),
                         "",
+                        null,
                         null,
                     )
                     MAIN_EXECUTOR.execute {

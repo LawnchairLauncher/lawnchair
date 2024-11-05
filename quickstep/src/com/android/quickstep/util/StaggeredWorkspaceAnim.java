@@ -38,7 +38,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
@@ -65,7 +64,7 @@ public class StaggeredWorkspaceAnim {
     // Should be used for animations running alongside this StaggeredWorkspaceAnim.
     public static final int DURATION_MS = 250;
     public static final int DURATION_TASKBAR_MS =
-            QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION;
+            QuickstepTransitionManager.getTaskbarToHomeDuration();
 
     private static final float MAX_VELOCITY_PX_PER_S = 22f;
 
@@ -75,13 +74,13 @@ public class StaggeredWorkspaceAnim {
     private final AnimatorSet mAnimators = new AnimatorSet();
     private final @Nullable View mIgnoredView;
 
-    public StaggeredWorkspaceAnim(Launcher launcher, float velocity, boolean animateOverviewScrim,
-            @Nullable View ignoredView) {
+    public StaggeredWorkspaceAnim(QuickstepLauncher launcher, float velocity,
+            boolean animateOverviewScrim, @Nullable View ignoredView) {
         this(launcher, velocity, animateOverviewScrim, ignoredView, true);
     }
 
-    public StaggeredWorkspaceAnim(Launcher launcher, float velocity, boolean animateOverviewScrim,
-            @Nullable View ignoredView, boolean staggerWorkspace) {
+    public StaggeredWorkspaceAnim(QuickstepLauncher launcher, float velocity,
+            boolean animateOverviewScrim, @Nullable View ignoredView, boolean staggerWorkspace) {
         prepareToAnimate(launcher, animateOverviewScrim);
 
         mIgnoredView = ignoredView;
@@ -124,7 +123,8 @@ public class StaggeredWorkspaceAnim {
                 for (int i = hotseatIcons.getChildCount() - 1; i >= 0; i--) {
                     View child = hotseatIcons.getChildAt(i);
                     CellLayoutLayoutParams lp = ((CellLayoutLayoutParams) child.getLayoutParams());
-                    addStaggeredAnimationForView(child, lp.getCellY() + 1, totalRows, duration);
+                    addStaggeredAnimationForView(child, lp.getCellY() + 1,
+                            totalRows, duration);
                 }
             } else {
                 final int hotseatRow, qsbRow;
@@ -194,7 +194,8 @@ public class StaggeredWorkspaceAnim {
         for (int i = itemsContainer.getChildCount() - 1; i >= 0; i--) {
             View child = itemsContainer.getChildAt(i);
             CellLayoutLayoutParams lp = ((CellLayoutLayoutParams) child.getLayoutParams());
-            addStaggeredAnimationForView(child, lp.getCellY() + lp.cellVSpan, totalRows, duration);
+            addStaggeredAnimationForView(child, lp.getCellY() + lp.cellVSpan,
+                    totalRows, duration);
         }
 
         mAnimators.addListener(new AnimatorListenerAdapter() {
@@ -209,7 +210,7 @@ public class StaggeredWorkspaceAnim {
     /**
      * Setup workspace with 0 duration to prepare for our staggered animation.
      */
-    private void prepareToAnimate(Launcher launcher, boolean animateOverviewScrim) {
+    private void prepareToAnimate(QuickstepLauncher launcher, boolean animateOverviewScrim) {
         StateAnimationConfig config = new StateAnimationConfig();
         config.animFlags = SKIP_OVERVIEW | SKIP_DEPTH_CONTROLLER | SKIP_SCRIM;
         config.duration = 0;
@@ -294,12 +295,10 @@ public class StaggeredWorkspaceAnim {
         mAnimators.play(alpha);
     }
 
-    private void addDepthAnimationForState(Launcher launcher, LauncherState state, long duration) {
-        if (!(launcher instanceof QuickstepLauncher)) {
-            return;
-        }
+    private void addDepthAnimationForState(QuickstepLauncher launcher, LauncherState state,
+            long duration) {
         PendingAnimation builder = new PendingAnimation(duration);
-        DepthController depthController = ((QuickstepLauncher) launcher).getDepthController();
+        DepthController depthController = launcher.getDepthController();
         depthController.setStateWithAnimation(state, new StateAnimationConfig(), builder);
         mAnimators.play(builder.buildAnim());
     }

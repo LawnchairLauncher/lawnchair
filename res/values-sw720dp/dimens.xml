@@ -37,9 +37,7 @@
 
 <!-- Widget picker-->
     <dimen name="widget_list_horizontal_margin">30dp</dimen>
-
-<!-- Bottom sheet-->
-    <dimen name="bottom_sheet_extra_top_padding">300dp</dimen>
+    <dimen name="widget_cell_horizontal_padding">16dp</dimen>
 
     <!--  Folder spaces  -->
     <dimen name="folder_footer_horiz_padding">24dp</dimen>

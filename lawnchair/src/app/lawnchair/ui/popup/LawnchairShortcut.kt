@@ -121,7 +121,7 @@ class LawnchairShortcut {
             if (intent != null) {
                 val info: LauncherActivityInfo? =
                     context.getSystemService(LauncherApps::class.java)
-                        .resolveActivity(intent, user)
+                        ?.resolveActivity(intent, user)
                 if (info != null && (info.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) {
                     return info.componentName
                 }

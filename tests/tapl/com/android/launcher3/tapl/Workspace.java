@@ -16,10 +16,17 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.KeyEvent.KEYCODE_META_RIGHT;
+import static android.view.KeyEvent.KEYCODE_RECENT_APPS;
+import static android.view.KeyEvent.KEYCODE_TAB;
+import static android.view.KeyEvent.META_META_ON;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
+import static com.android.launcher3.testing.shared.TestProtocol.UIOBJECT_STALE_ELEMENT;
 
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
@@ -27,6 +34,7 @@ import static junit.framework.TestCase.assertTrue;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -58,10 +66,6 @@ public final class Workspace extends Home {
     private static final String DROP_BAR_RES_ID = "drop_target_bar";
     private static final String DELETE_TARGET_TEXT_ID = "delete_target_text";
     private static final String UNINSTALL_TARGET_TEXT_ID = "uninstall_target_text";
-
-    static final Pattern EVENT_CTRL_W_DOWN = Pattern.compile(
-            "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_W"
-                    + ".*?metaState=META_CTRL_ON");
     static final Pattern EVENT_CTRL_W_UP = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_W"
                     + ".*?metaState=META_CTRL_ON");
@@ -110,6 +114,57 @@ public final class Workspace extends Home {
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to all apps")) {
                 return new HomeAllApps(mLauncher);
+            }
+        }
+    }
+
+    /** Opens the Launcher all apps page with the meta keyboard shortcut. */
+    public HomeAllApps openAllAppsFromKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to open all apps search")) {
+            verifyActiveContainer();
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT),
+                    ALL_APPS_STATE_ORDINAL,
+                    "pressing keyboard shortcut");
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "pressed meta key")) {
+                return new HomeAllApps(mLauncher);
+            }
+        }
+    }
+
+    /** Opens the Launcher Overview page with the action+tab keyboard shortcut. */
+    public Overview openOverviewFromActionPlusTabKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to open overview")) {
+            verifyActiveContainer();
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_TAB, META_META_ON),
+                    OVERVIEW_STATE_ORDINAL,
+                    "pressing keyboard shortcut");
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "pressed meta+tab key")) {
+                return new Overview(mLauncher);
+            }
+        }
+    }
+
+    /** Opens the Launcher Overview page with the Recents keyboard shortcut. */
+    public Overview openOverviewFromRecentsKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to open overview")) {
+            verifyActiveContainer();
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_RECENT_APPS),
+                    OVERVIEW_STATE_ORDINAL,
+                    "pressing keyboard shortcut");
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "pressed recents apps key")) {
+                return new Overview(mLauncher);
             }
         }
     }
@@ -177,16 +232,24 @@ public final class Workspace extends Home {
     }
 
     /**
-     * Ensures that workspace is scrollable. If it's not, drags an icon icons from hotseat to the
-     * second screen.
+     * Ensures that workspace is scrollable. If it's not, drags a chrome app icon from hotseat
+     * to the second screen.
      */
     public void ensureWorkspaceIsScrollable() {
+        ensureWorkspaceIsScrollable("Chrome");
+    }
+
+    /**
+     * Ensures that workspace is scrollable. If it's not, drags an icon of a given app name from
+     * hotseat to the second screen.
+     */
+    public void ensureWorkspaceIsScrollable(String appName) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             final UiObject2 workspace = verifyActiveContainer();
             if (!isWorkspaceScrollable(workspace)) {
                 try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                         "dragging icon to a second page of workspace to make it scrollable")) {
-                    dragIcon(workspace, getHotseatAppIcon("Chrome"), pagesPerScreen());
+                    dragIcon(workspace, getHotseatAppIcon(appName), pagesPerScreen());
                     verifyActiveContainer();
                 }
             }
@@ -284,13 +347,23 @@ public final class Workspace extends Home {
      */
     public Map<String, Point> getWorkspaceIconsPositions() {
         final UiObject2 workspace = verifyActiveContainer();
+        mLauncher.waitForLauncherInitialized(); // b/319501259
         List<UiObject2> workspaceIcons =
                 mLauncher.waitForObjectsInContainer(workspace, AppIcon.getAnyAppIconSelector());
         return workspaceIcons.stream()
                 .collect(
                         Collectors.toMap(
-                                /* keyMapper= */ UiObject2::getText,
-                                /* valueMapper= */ UiObject2::getVisibleCenter,
+                                /* keyMapper= */ uiObject21 -> {
+                                    Log.d(UIOBJECT_STALE_ELEMENT, "keyText: " +
+                                            uiObject21.getText());
+                                    return uiObject21.getText();
+                                },
+                                /* valueMapper= */ uiObject2 -> {
+                                    Log.d(UIOBJECT_STALE_ELEMENT, uiObject2.getText() +
+                                            " dispId" + uiObject2.getDisplayId() +
+                                            " parent" + uiObject2.getParent());
+                                    return uiObject2.getVisibleCenter();
+                                },
                                 /* mergeFunction= */ (p1, p2) -> p1.x < p2.x ? p1 : p2));
     }
 
@@ -320,7 +393,8 @@ public final class Workspace extends Home {
                     homeAppIcon,
                     () -> new Point(0, 0),
                     () -> mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT),
-                    null);
+                    null,
+                    /* startsActivity = */ false);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "dragged the app across workspace")) {
@@ -344,7 +418,8 @@ public final class Workspace extends Home {
                     homeAppIcon,
                     () -> getDropPointFromDropTargetBar(mLauncher, DELETE_TARGET_TEXT_ID),
                     () -> mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT),
-                    /* expectDropEvents= */ null);
+                    /* expectDropEvents= */ null,
+                    /* startsActivity = */ false);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "dragged the app to the drop bar")) {
@@ -352,7 +427,6 @@ public final class Workspace extends Home {
             }
         }
     }
-
 
     /**
      * Uninstall the appIcon by dragging it to the 'uninstall' drop point of the drop_target_bar.
@@ -370,12 +444,15 @@ public final class Workspace extends Home {
             Runnable expectLongClickEvents) {
         try (LauncherInstrumentation.Closable c = launcher.addContextLayer(
                 "uninstalling app icon")) {
+
+            final String appNameToUninstall = homeAppIcon.getAppName();
             dragIconToWorkspace(
                     launcher,
                     homeAppIcon,
                     () -> getDropPointFromDropTargetBar(launcher, UNINSTALL_TARGET_TEXT_ID),
                     expectLongClickEvents,
-                    /* expectDropEvents= */null);
+                    /* expectDropEvents= */null,
+                    /* startsActivity = */ false);
 
             launcher.waitUntilLauncherObjectGone(DROP_BAR_RES_ID);
 
@@ -393,7 +470,10 @@ public final class Workspace extends Home {
 
             try (LauncherInstrumentation.Closable c1 = launcher.addContextLayer(
                     "uninstalled app by dragging to the drop bar")) {
-                return new Workspace(launcher);
+                final Workspace newWorkspace = new Workspace(launcher);
+                launcher.waitUntilLauncherObjectGone(
+                        AppIcon.getAppIconSelector(appNameToUninstall));
+                return newWorkspace;
             }
         }
     }
@@ -433,7 +513,12 @@ public final class Workspace extends Home {
     }
 
     /** Returns the index of the current page */
-    private static int geCurrentPage(LauncherInstrumentation launcher) {
+    public int getCurrentPage() {
+        return getCurrentPage(mLauncher);
+    }
+
+    /** Returns the index of the current page */
+    private static int getCurrentPage(LauncherInstrumentation launcher) {
         return launcher.getTestInfo(TestProtocol.REQUEST_WORKSPACE_CURRENT_PAGE_INDEX).getInt(
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
@@ -449,14 +534,25 @@ public final class Workspace extends Home {
                 o -> new FolderIcon(mLauncher, o)).collect(Collectors.toList());
     }
 
+    private static void sendUp(LauncherInstrumentation launcher, Point dest,
+            long downTime) {
+        launcher.sendPointer(
+                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest,
+                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+    }
+
     private static void dropDraggedIcon(LauncherInstrumentation launcher, Point dest, long downTime,
-            @Nullable Runnable expectedEvents) {
-        launcher.runToState(
-                () -> launcher.sendPointer(
-                        downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest,
-                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER),
-                NORMAL_STATE_ORDINAL,
-                "sending UP event");
+            @Nullable Runnable expectedEvents, boolean startsActivity) {
+        if (startsActivity) {
+            launcher.executeAndWaitForLauncherStop(
+                    () -> sendUp(launcher, dest, downTime),
+                    "sending UP event");
+        } else {
+            launcher.runToState(
+                    () -> sendUp(launcher, dest, downTime),
+                    NORMAL_STATE_ORDINAL,
+                    "sending UP event");
+        }
         if (expectedEvents != null) {
             expectedEvents.run();
         }
@@ -473,7 +569,8 @@ public final class Workspace extends Home {
                     LauncherInstrumentation.EVENT_START);
         }
         dragIconToWorkspace(
-                launcher, launchable, dest, expectLongClickEvents, expectDropEvents);
+                launcher, launchable, dest, expectLongClickEvents, expectDropEvents,
+                startsActivity);
     }
 
     static void dragIconToWorkspaceCellPosition(LauncherInstrumentation launcher,
@@ -495,14 +592,17 @@ public final class Workspace extends Home {
      * This function expects the launchable is inside the workspace and there is no drop event.
      */
     static void dragIconToWorkspace(
-            LauncherInstrumentation launcher, Launchable launchable, Supplier<Point> destSupplier) {
+            LauncherInstrumentation launcher, Launchable launchable, Supplier<Point> destSupplier,
+            boolean isDraggingToFolder) {
         dragIconToWorkspace(
                 launcher,
                 launchable,
                 destSupplier,
                 /* isDecelerating= */ false,
                 () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT),
-                /* expectDropEvents= */ null);
+                /* expectDropEvents= */ null,
+                /* startsActivity = */ false,
+                isDraggingToFolder);
     }
 
     static void dragIconToWorkspace(
@@ -510,9 +610,11 @@ public final class Workspace extends Home {
             Launchable launchable,
             Supplier<Point> dest,
             Runnable expectLongClickEvents,
-            @Nullable Runnable expectDropEvents) {
+            @Nullable Runnable expectDropEvents,
+            boolean startsActivity) {
         dragIconToWorkspace(launcher, launchable, dest, /* isDecelerating */ true,
-                expectLongClickEvents, expectDropEvents);
+                expectLongClickEvents, expectDropEvents, startsActivity,
+                /* isDraggingToFolder */ false);
     }
 
     static void dragIconToWorkspace(
@@ -521,10 +623,14 @@ public final class Workspace extends Home {
             Supplier<Point> dest,
             boolean isDecelerating,
             Runnable expectLongClickEvents,
-            @Nullable Runnable expectDropEvents) {
+            @Nullable Runnable expectDropEvents,
+            boolean startsActivity,
+            boolean isDraggingToFolder) {
         try (LauncherInstrumentation.Closable ignored = launcher.addContextLayer(
                 "want to drag icon to workspace")) {
             final long downTime = SystemClock.uptimeMillis();
+            Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
+                    "Workspace.dragIconToWorkspace: starting drag | downtime: " + downTime);
             Point dragStart = launchable.startDrag(
                     downTime,
                     expectLongClickEvents,
@@ -548,12 +654,28 @@ public final class Workspace extends Home {
                 dragStart = screenEdge;
             }
 
-            // targetDest.x is now between 0 and displayX so we found the target page,
-            // we just have to put move the icon to the destination and drop it
-            launcher.movePointer(dragStart, targetDest, DEFAULT_DRAG_STEPS, isDecelerating,
-                    downTime, SystemClock.uptimeMillis(), false,
-                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
-            dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
+            // targetDest.x is now between 0 and displayX so we found the target page.
+            // If not a folder, we just have to put move the icon to the destination and drop it.
+            // If it's a folder we want to drag to the folder icon and then drag to the center of
+            // that folder when it opens.
+            if (isDraggingToFolder) {
+                Point finalDragStart = dragStart;
+                Point finalTargetDest = targetDest;
+                Folder folder = executeAndWaitForFolderOpen(launcher, () -> launcher.movePointer(
+                        finalDragStart, finalTargetDest, DEFAULT_DRAG_STEPS, isDecelerating,
+                        downTime, SystemClock.uptimeMillis(), false,
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER));
+
+                Rect dropBounds = folder.getDropLocationBounds();
+                dragStart = targetDest;
+                targetDest = new Point(dropBounds.centerX(), dropBounds.centerY());
+            }
+
+            launcher.movePointer(dragStart, targetDest,
+                    DEFAULT_DRAG_STEPS, isDecelerating, downTime, SystemClock.uptimeMillis(),
+                    false, LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+
+            dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents, startsActivity);
         }
     }
 
@@ -586,7 +708,8 @@ public final class Workspace extends Home {
             launcher.movePointer(dragStart, targetDest, DEFAULT_DRAG_STEPS, isDecelerating,
                     downTime, SystemClock.uptimeMillis(), false,
                     LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
-            dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
+            dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents,
+                    /* startsActivity = */ false);
         }
     }
 
@@ -604,7 +727,7 @@ public final class Workspace extends Home {
             Point currentPosition, int destinationWorkspaceIndex, int y) {
         final long downTime = SystemClock.uptimeMillis();
         int displayX = launcher.getRealDisplaySize().x;
-        int currentPage = Workspace.geCurrentPage(launcher);
+        int currentPage = Workspace.getCurrentPage(launcher);
         int counter = 0;
         while (currentPage != destinationWorkspaceIndex) {
             counter++;
@@ -623,7 +746,7 @@ public final class Workspace extends Home {
                     () -> launcher.movePointer(finalDragStart, screenEdge, DEFAULT_DRAG_STEPS,
                             true, downTime, downTime, true,
                             LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER));
-            currentPage = Workspace.geCurrentPage(launcher);
+            currentPage = Workspace.getCurrentPage(launcher);
             currentPosition = screenEdge;
         }
         return currentPosition;
@@ -634,6 +757,16 @@ public final class Workspace extends Home {
         launcher.executeAndWaitForEvent(command,
                 event -> event.getEventType() == TYPE_VIEW_SCROLLED,
                 () -> "Page scroll didn't happen", "Scrolling page");
+    }
+
+    private static Folder executeAndWaitForFolderOpen(LauncherInstrumentation launcher,
+            Runnable command) {
+        launcher.executeAndWaitForEvent(command,
+                event -> TestProtocol.FOLDER_OPENED_MESSAGE.equals(
+                        event.getClassName().toString()),
+                () -> "Fail to open folder.",
+                "open folder");
+        return new Folder(launcher);
     }
 
     static void dragIconToHotseat(
@@ -652,7 +785,8 @@ public final class Workspace extends Home {
         launcher.movePointer(dragStart, targetDest, DEFAULT_DRAG_STEPS, true,
                 downTime, SystemClock.uptimeMillis(), false,
                 LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
-        dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
+        dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents,
+                /* startsActivity = */ false);
     }
 
     /**
@@ -661,10 +795,9 @@ public final class Workspace extends Home {
      */
     public void flingForward() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            final UiObject2 workspace = verifyActiveContainer();
-            mLauncher.scroll(workspace, Direction.RIGHT,
-                    new Rect(0, 0, mLauncher.getEdgeSensitivityWidth() + 1, 0),
-                    FLING_STEPS, false);
+            Rect workspaceBounds = mLauncher.getVisibleBounds(verifyActiveContainer());
+            mLauncher.pointerScroll(
+                    workspaceBounds.centerX(), workspaceBounds.centerY(), Direction.RIGHT);
             verifyActiveContainer();
         }
     }
@@ -675,10 +808,9 @@ public final class Workspace extends Home {
      */
     public void flingBackward() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            final UiObject2 workspace = verifyActiveContainer();
-            mLauncher.scroll(workspace, Direction.LEFT,
-                    new Rect(mLauncher.getEdgeSensitivityWidth() + 1, 0, 0, 0),
-                    FLING_STEPS, false);
+            Rect workspaceBounds = mLauncher.getVisibleBounds(verifyActiveContainer());
+            mLauncher.pointerScroll(
+                    workspaceBounds.centerX(), workspaceBounds.centerY(), Direction.LEFT);
             verifyActiveContainer();
         }
     }
@@ -692,7 +824,6 @@ public final class Workspace extends Home {
     public Widgets openAllWidgets() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             verifyActiveContainer();
-            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_CTRL_W_DOWN);
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_CTRL_W_UP);
             mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer("pressed Ctrl+W")) {

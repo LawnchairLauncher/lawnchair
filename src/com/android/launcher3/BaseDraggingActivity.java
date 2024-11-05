@@ -44,9 +44,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.OnColorHintListener;
-import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.WallpaperColorHints;
 import com.android.launcher3.util.WindowBounds;
 
@@ -59,26 +57,18 @@ import app.lawnchair.wallpaper.WallpaperManagerCompat;
 public abstract class BaseDraggingActivity extends BaseActivity
         implements WallpaperManagerCompat.OnColorsChangedListener, DisplayInfoChangeListener {
 
-    private static final String TAG = "BaseDraggingActivity";
-
     // When starting an action mode, setting this tag will cause the action mode to
     // be cancelled
     // automatically when user interacts with the launcher.
     public static final Object AUTO_CANCEL_ACTION_MODE = new Object();
 
     private ActionMode mCurrentActionMode;
-    protected boolean mIsSafeModeEnabled;
 
-    private Runnable mOnStartCallback;
-    private final RunnableList mOnResumeCallbacks = new RunnableList();
     private int mThemeRes = R.style.AppTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
-                () -> getPackageManager().isSafeMode());
         DisplayController.INSTANCE.get(this).addChangeListener(this);
 
         // Update theme
@@ -88,16 +78,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
             mThemeRes = themeRes;
             setTheme(themeRes);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mOnResumeCallbacks.executeAllAndClear();
-    }
-
-    public void addOnResumeCallback(Runnable callback) {
-        mOnResumeCallbacks.add(callback);
     }
 
     @MainThread
@@ -143,8 +123,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
         return false;
     }
 
-    public abstract <T extends View> T getOverviewPanel();
-
     public abstract View getRootView();
 
     public void returnToHomescreen() {
@@ -155,25 +133,15 @@ public abstract class BaseDraggingActivity extends BaseActivity
     @NonNull
     public ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
         ActivityOptionsWrapper wrapper = super.getActivityLaunchOptions(v, item);
-        addOnResumeCallback(wrapper.onEndCallback::executeAllAndDestroy);
+        addEventCallback(EVENT_RESUMED, wrapper.onEndCallback::executeAllAndDestroy);
         return wrapper;
     }
 
     @Override
     public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
         ActivityOptionsWrapper wrapper = super.makeDefaultActivityOptions(splashScreenStyle);
-        addOnResumeCallback(wrapper.onEndCallback::executeAllAndDestroy);
+        addEventCallback(EVENT_RESUMED, wrapper.onEndCallback::executeAllAndDestroy);
         return wrapper;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if (mOnStartCallback != null) {
-            mOnStartCallback.run();
-            mOnStartCallback = null;
-        }
     }
 
     @Override
@@ -181,14 +149,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
         super.onDestroy();
         WallpaperManagerCompat.INSTANCE.get(this).removeOnChangeListener(this);
         DisplayController.INSTANCE.get(this).removeChangeListener(this);
-    }
-
-    public void runOnceOnStart(Runnable action) {
-        mOnStartCallback = action;
-    }
-
-    public void clearRunOnceOnStartCallback() {
-        mOnStartCallback = null;
     }
 
     protected void onDeviceProfileInitiated() {
@@ -199,7 +159,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     @Override
     public void onDisplayInfoChanged(Context context, Info info, int flags) {
-        if ((flags & CHANGE_ROTATION) != 0 && mDeviceProfile.updateIsSeascape(this)) {
+        if ((flags & CHANGE_ROTATION) != 0 && mDeviceProfile.isVerticalBarLayout()) {
+            mDeviceProfile.updateIsSeascape(this);
             reapplyUi();
         }
     }
@@ -221,11 +182,11 @@ public abstract class BaseDraggingActivity extends BaseActivity
         Display display = getWindowManager().getDefaultDisplay();
         Point mwSize = new Point();
         display.getSize(mwSize);
-        return new WindowBounds(new Rect(0, 0, mwSize.x, mwSize.y), new Rect());
+        return new WindowBounds(new Rect(0, 0, mwSize.x, mwSize.y), new Rect ());
     }
 
     @Override
     public boolean isAppBlockedForSafeMode() {
-        return mIsSafeModeEnabled;
+        return LauncherAppState.getInstance(this).isSafeModeEnabled();
     }
 }

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package {
+    default_team: "trendy_team_system_ui_please_use_a_more_specific_subteam_if_possible_",
     // See: http://go/android-license-faq
     // A large-scale-change added 'default_applicable_licenses' to import
     // all of the 'license_kinds' from "frameworks_base_packages_SystemUI_license"
@@ -24,6 +25,7 @@ package {
 android_library {
 
     name: "SystemUICommon",
+    use_resource_processor: true,
 
     srcs: [
         "src/**/*.java",

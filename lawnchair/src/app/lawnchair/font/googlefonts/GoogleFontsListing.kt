@@ -22,6 +22,7 @@ import android.content.res.Resources
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.toArrayList
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +30,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import org.json.JSONObject
 
-class GoogleFontsListing private constructor(private val context: Context) {
+class GoogleFontsListing private constructor(private val context: Context) : SafeCloseable {
     private val scope = CoroutineScope(CoroutineName("GoogleFontsListing"))
 
     private val dataProvider = MockDataProvider(context.resources)
@@ -65,6 +66,10 @@ class GoogleFontsListing private constructor(private val context: Context) {
 
     suspend fun getFonts(): List<GoogleFontInfo> {
         return fonts.await()
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
     }
 
     sealed interface DataProvider {

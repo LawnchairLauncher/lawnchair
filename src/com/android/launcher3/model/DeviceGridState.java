@@ -59,6 +59,13 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
     private final @DeviceType int mDeviceType;
     private String mDbFile;
 
+    public DeviceGridState(int columns, int row, int numHotseat, int deviceType, String dbFile) {
+        mGridSizeString = String.format(Locale.ENGLISH, "%d,%d", columns, row);
+        mNumHotseat = numHotseat;
+        mDeviceType = deviceType;
+        mDbFile = dbFile;
+    }
+
     public DeviceGridState(InvariantDeviceProfile idp) {
         mGridSizeString = String.format(Locale.ENGLISH, "%d,%d", idp.numColumns, idp.numRows);
         mNumHotseat = idp.numDatabaseHotseatIcons;
@@ -184,11 +191,11 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
     }
 
     public Integer getColumns() {
-        return Integer.parseInt(String.valueOf(mGridSizeString.charAt(0)));
+        return Integer.parseInt(String.valueOf(mGridSizeString.split(",")[0]));
     }
 
     public Integer getRows() {
-        return Integer.parseInt(String.valueOf(mGridSizeString.charAt(2)));
+        return Integer.parseInt(String.valueOf(mGridSizeString.split(",")[1]));
     }
 
     @Override

@@ -619,6 +619,24 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         mOpenCloseAnimator.start();
     }
 
+    public int getExtraVerticalOffset() {
+        return getResources().getDimensionPixelSize(R.dimen.popup_vertical_padding);
+    }
+
+    /**
+     * Sets X and Y pivots for the view animation considering arrow position.
+     */
+    protected void setPivotForOpenCloseAnimation() {
+        int arrowCenter = mArrowOffsetHorizontal + mArrowWidth / 2;
+        if (mIsArrowRotated) {
+            setPivotX(mIsLeftAligned ? 0f : getMeasuredWidth());
+            setPivotY(arrowCenter);
+        } else {
+            setPivotX(mIsLeftAligned ? arrowCenter : getMeasuredWidth() - arrowCenter);
+            setPivotY(mIsAboveIcon ? getMeasuredHeight() : 0f);
+        }
+    }
+
     private AnimatorSet getOpenCloseAnimator(boolean isOpening, int totalDuration,
             int fadeStartDelay, int fadeDuration, int childFadeStartDelay,
             int childFadeDuration, Interpolator interpolator) {

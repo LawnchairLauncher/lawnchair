@@ -32,8 +32,7 @@ constructor(private val activityManager: ActivityManager) : CurrentActivityTypeP
     override val isHomeActivity: Boolean?
         get() = _isHomeActivity
 
-    private var _isHomeActivity: Boolean? = null
-
+    @Volatile private var _isHomeActivity: Boolean? = null
 
     override fun init() {
         _isHomeActivity = activityManager.isOnHomeActivity()

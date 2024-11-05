@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.util.rule;
 
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
 
@@ -39,7 +39,6 @@ import java.util.ArrayList;
  * Test rule which executes a shell command at the start of the test.
  */
 public class ShellCommandRule implements TestRule {
-
     private final String mCmd;
     private final String mRevertCommand;
     private final boolean mCheckSuccess;
@@ -75,8 +74,7 @@ public class ShellCommandRule implements TestRule {
                 } finally {
                     if (mRevertCommand != null) {
                         final String revertResult = UiDevice.getInstance(
-                                getInstrumentation()).executeShellCommand(
-                                mRevertCommand);
+                                getInstrumentation()).executeShellCommand(mRevertCommand);
                         if (mCheckSuccess) {
                             Assert.assertTrue(
                                     "Failed command: " + mRevertCommand

@@ -65,12 +65,33 @@ object ShaderUtilLibrary {
             return dest;
         }
 
-        // Return range [-1, 1].
+        // Integer mod. GLSL es 1.0 doesn't have integer mod :(
+        int imod(int a, int b) {
+            return a - (b * (a / b));
+        }
+
+        ivec3 imod(ivec3 a, int b) {
+            return ivec3(imod(a.x, b), imod(a.y, b), imod(a.z, b));
+        }
+
+        // Integer based hash function with the return range of [-1, 1].
         vec3 hash(vec3 p) {
-            p = fract(p * vec3(.3456, .1234, .9876));
-            p += dot(p, p.yxz + 43.21);
-            p = (p.xxy + p.yxx) * p.zyx;
-            return (fract(sin(p) * 4567.1234567) - .5) * 2.;
+            ivec3 v = ivec3(p);
+            v = v * 1671731 + 10139267;
+
+            v.x += v.y * v.z;
+            v.y += v.z * v.x;
+            v.z += v.x * v.y;
+
+            ivec3 v2 = v / 65536; // v >> 16
+            v = imod((10 - imod((v + v2), 10)), 10); // v ^ v2
+
+            v.x += v.y * v.z;
+            v.y += v.z * v.x;
+            v.z += v.x * v.y;
+
+            // Use sin and cos to map the range to [-1, 1].
+            return vec3(sin(float(v.x)), cos(float(v.y)), sin(float(v.z)));
         }
 
         // Skew factors (non-uniform).

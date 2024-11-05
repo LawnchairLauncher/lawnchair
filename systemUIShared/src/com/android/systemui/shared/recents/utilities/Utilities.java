@@ -22,6 +22,7 @@ import static android.app.StatusBarManager.NAVIGATION_HINT_IME_SWITCHER_SHOWN;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
@@ -138,11 +139,15 @@ public class Utilities {
     /** @return whether or not {@param context} represents that of a large screen device or not */
     @TargetApi(Build.VERSION_CODES.R)
     public static boolean isLargeScreen(Context context) {
-        final WindowManager windowManager = context.getSystemService(WindowManager.class);
+        return isLargeScreen(context.getSystemService(WindowManager.class), context.getResources());
+    }
+
+    /** @return whether or not {@param context} represents that of a large screen device or not */
+    public static boolean isLargeScreen(WindowManager windowManager, Resources resources) {
         final Rect bounds = windowManager.getCurrentWindowMetrics().getBounds();
 
         float smallestWidth = dpiFromPx(Math.min(bounds.width(), bounds.height()),
-                context.getResources().getConfiguration().densityDpi);
+                resources.getConfiguration().densityDpi);
         return smallestWidth >= TABLET_MIN_DPS;
     }
 

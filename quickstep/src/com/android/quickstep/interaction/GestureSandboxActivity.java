@@ -19,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,6 +27,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +43,7 @@ import com.android.quickstep.TouchInteractionService.TISBinder;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 import com.android.quickstep.util.TISBindHelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /** Shows the gesture interactive sandbox in full screen mode. */
@@ -51,15 +54,15 @@ public class GestureSandboxActivity extends FragmentActivity {
     static final String KEY_TUTORIAL_TYPE = "tutorial_type";
     static final String KEY_GESTURE_COMPLETE = "gesture_complete";
     static final String KEY_USE_TUTORIAL_MENU = "use_tutorial_menu";
+    public static final double SQUARE_ASPECT_RATIO_BOTTOM_BOUND = 0.95;
+    public static final double SQUARE_ASPECT_RATIO_UPPER_BOUND = 1.05;
 
-    @Nullable
-    private TutorialType[] mTutorialSteps;
+    @Nullable private TutorialType[] mTutorialSteps;
     private GestureSandboxFragment mCurrentFragment;
     private GestureSandboxFragment mPendingFragment;
 
     private int mCurrentStep;
     private int mNumSteps;
-    private boolean mShowRotationPrompt;
 
     private SharedPreferences mSharedPrefs;
     private StatsLogManager mStatsLogManager;
@@ -103,7 +106,10 @@ public class GestureSandboxActivity extends FragmentActivity {
             correctUserOrientation();
         }
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
+
+        initWindowInsets();
     }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -115,37 +121,81 @@ public class GestureSandboxActivity extends FragmentActivity {
         }
     }
 
+    private void initWindowInsets() {
+        View root = findViewById(android.R.id.content);
+        root.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                updateExclusionRects(root);
+            }
+        });
+
+        // Return CONSUMED if you don't want want the window insets to keep being
+        // passed down to descendant views.
+        root.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                return WindowInsets.CONSUMED;
+            }
+        });
+    }
+
+    private void updateExclusionRects(View rootView) {
+        Insets gestureInsets = rootView.getRootWindowInsets()
+                .getInsets(WindowInsets.Type.systemGestures());
+        ArrayList<Rect> exclusionRects = new ArrayList<>();
+        // Add rect for left
+        exclusionRects.add(new Rect(0, 0, gestureInsets.left, rootView.getHeight()));
+        // Add rect for right
+        exclusionRects.add(new Rect(
+                rootView.getWidth() - gestureInsets.right,
+                0,
+                rootView.getWidth(),
+                rootView.getHeight()
+        ));
+        rootView.setSystemGestureExclusionRects(exclusionRects);
+    }
+
     /**
-     * Gesture animations are only in landscape for large screens and portrait for
-     * mobile. This
+     * Gesture animations are only in landscape for large screens and portrait for mobile. This
      * method enforces the following flows:
-     * 1) phone / two-panel closed -> lock to portrait
-     * 2) two-panel open / tablet + portrait -> prompt the user to rotate the screen
-     * 3) two-panel open / tablet + landscape -> hide potential rotating prompt
+     *     1) phone / two-panel closed -> lock to portrait
+     *     2) Large screen + portrait -> prompt the user to rotate the screen
+     *     3) Large screen + landscape -> hide potential rotating prompt
+     *     4) Square aspect ratio -> no action taken as the animations will fit both orientations
      */
     private void correctUserOrientation() {
         DeviceProfile deviceProfile = InvariantDeviceProfile.INSTANCE.get(
                 getApplicationContext()).getDeviceProfile(this);
         if (deviceProfile.isTablet) {
-            boolean showRotationPrompt = getResources()
-                    .getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+            // The tutorial will work in either orientation if the height and width are similar
+            boolean isAspectRatioSquare =
+                    deviceProfile.aspectRatio > SQUARE_ASPECT_RATIO_BOTTOM_BOUND
+                            && deviceProfile.aspectRatio < SQUARE_ASPECT_RATIO_UPPER_BOUND;
+            boolean showRotationPrompt = !isAspectRatioSquare
+                    && getResources().getConfiguration().orientation
+                    == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
-            GestureSandboxFragment recreatedFragment = showRotationPrompt || mPendingFragment == null
-                    ? null
-                    : mPendingFragment.recreateFragment();
-            showFragment(showRotationPrompt
+            GestureSandboxFragment fragment = showRotationPrompt
                     ? new RotationPromptFragment()
-                    : recreatedFragment == null
-                            ? mCurrentFragment
-                            : recreatedFragment);
+                    : mCurrentFragment.canRecreateFragment() || mPendingFragment == null
+                            ? mCurrentFragment.recreateFragment()
+                            : mPendingFragment.recreateFragment();
+            showFragment(fragment == null ? mCurrentFragment : fragment);
+
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 
     private void showFragment(@NonNull GestureSandboxFragment fragment) {
-        if (mCurrentFragment.recreateFragment() != null) {
+        // Store the current fragment in mPendingFragment so that it can be recreated after the
+        // new fragment is shown.
+        if (mCurrentFragment.canRecreateFragment()) {
             mPendingFragment = mCurrentFragment;
+        } else {
+            mPendingFragment = null;
         }
         mCurrentFragment = fragment;
         getSupportFragmentManager().beginTransaction()
@@ -185,10 +235,6 @@ public class GestureSandboxActivity extends FragmentActivity {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    protected boolean isRotationPromptShowing() {
-        return mShowRotationPrompt;
-    }
-
     protected SharedPreferences getSharedPrefs() {
         return mSharedPrefs;
     }
@@ -197,9 +243,7 @@ public class GestureSandboxActivity extends FragmentActivity {
         return mStatsLogManager;
     }
 
-    /**
-     * Returns true iff there aren't anymore tutorial types to display to the user.
-     */
+    /** Returns true iff there aren't anymore tutorial types to display to the user. */
     public boolean isTutorialComplete() {
         return mCurrentStep >= mNumSteps;
     }
@@ -213,8 +257,7 @@ public class GestureSandboxActivity extends FragmentActivity {
     }
 
     /**
-     * Replaces the current TutorialFragment, continuing to the next tutorial step
-     * if there is one.
+     * Replaces the current TutorialFragment, continuing to the next tutorial step if there is one.
      *
      * If there is no following step, the tutorial is closed.
      */
@@ -235,8 +278,7 @@ public class GestureSandboxActivity extends FragmentActivity {
     /**
      * Launches the given gesture nav tutorial step.
      *
-     * If the step is being launched from the gesture nav tutorial menu, then that
-     * step will launch
+     * If the step is being launched from the gesture nav tutorial menu, then that step will launch
      * the menu when complete.
      */
     public void launchTutorialStep(@NonNull TutorialType tutorialType, boolean fromMenu) {
@@ -266,7 +308,7 @@ public class GestureSandboxActivity extends FragmentActivity {
         TutorialType[] defaultSteps = new TutorialType[] {
                 TutorialType.HOME_NAVIGATION,
                 TutorialType.BACK_NAVIGATION,
-                TutorialType.OVERVIEW_NAVIGATION };
+                TutorialType.OVERVIEW_NAVIGATION};
         mCurrentStep = 1;
         mNumSteps = defaultSteps.length;
 
@@ -278,8 +320,7 @@ public class GestureSandboxActivity extends FragmentActivity {
         Object savedSteps = extras.get(KEY_TUTORIAL_STEPS);
         if (savedSteps instanceof String) {
             savedStepsNames = TextUtils.isEmpty((String) savedSteps)
-                    ? null
-                    : ((String) savedSteps).split(",");
+                    ? null : ((String) savedSteps).split(",");
         } else if (savedSteps instanceof String[]) {
             savedStepsNames = (String[]) savedSteps;
         } else {

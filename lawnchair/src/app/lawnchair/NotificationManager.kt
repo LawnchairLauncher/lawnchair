@@ -6,6 +6,7 @@ import android.service.notification.StatusBarNotification
 import app.lawnchair.util.checkPackagePermission
 import com.android.launcher3.notification.NotificationListener
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class NotificationManager(@Suppress("UNUSED_PARAMETER") context: Context) {
+class NotificationManager(@Suppress("UNUSED_PARAMETER") context: Context) : SafeCloseable {
 
     private val scope = MainScope()
     private val notificationsMap = mutableMapOf<String, StatusBarNotification>()
@@ -47,6 +48,10 @@ class NotificationManager(@Suppress("UNUSED_PARAMETER") context: Context) {
 
     private fun onChange() {
         _notifications.value = notificationsMap.values.toList()
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
     }
 
     companion object {

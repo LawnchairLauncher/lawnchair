@@ -23,6 +23,7 @@
 <com.android.quickstep.views.GroupedTaskView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/task"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
@@ -31,15 +32,10 @@
     launcher:focusBorderColor="?attr/materialColorOutline"
     launcher:hoverBorderColor="?attr/materialColorPrimary">
 
-    <com.android.quickstep.views.TaskThumbnailView
-        android:id="@+id/snapshot"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <include layout="@layout/task_thumbnail"/>
 
-    <com.android.quickstep.views.TaskThumbnailView
-        android:id="@+id/bottomright_snapshot"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <include layout="@layout/task_thumbnail"
+        android:id="@+id/bottomright_snapshot" />
 
     <!-- Filtering affects only alpha instead of the visibility since visibility can be altered
          separately through RecentsView#resetFromSplitSelectionState() -->
@@ -65,17 +61,15 @@
         android:importantForAccessibility="no"
         android:src="@drawable/ic_select_windows" />
 
-    <com.android.quickstep.views.IconView
+    <ViewStub
         android:id="@+id/icon"
-        android:layout_width="@dimen/task_thumbnail_icon_size"
-        android:layout_height="@dimen/task_thumbnail_icon_size"
-        android:focusable="false"
-        android:importantForAccessibility="no"/>
+        android:inflatedId="@id/icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
 
-    <com.android.quickstep.views.IconView
+    <ViewStub
         android:id="@+id/bottomRight_icon"
-        android:layout_width="@dimen/task_thumbnail_icon_size"
-        android:layout_height="@dimen/task_thumbnail_icon_size"
-        android:focusable="false"
-        android:importantForAccessibility="no"/>
+        android:inflatedId="@id/bottomRight_icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
 </com.android.quickstep.views.GroupedTaskView>

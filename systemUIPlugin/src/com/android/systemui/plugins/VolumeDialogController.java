@@ -227,5 +227,10 @@ public interface VolumeDialogController {
         void onCaptionEnabledStateChanged(Boolean isEnabled, Boolean checkBeforeSwitch);
         // requires version 2
         void onShowCsdWarning(@AudioManager.CsdWarning int csdWarning, int durationMs);
+
+        /**
+         * Callback function for when the volume changed due to a physical key press.
+         */
+        void onVolumeChangedFromKey();
     }
 }

@@ -28,6 +28,8 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -41,21 +43,20 @@ public class TriggerSwipeUpTouchTracker {
     private final float mMinFlingVelocity;
     private final boolean mDisableHorizontalSwipe;
     private final NavBarPosition mNavBarPosition;
-    private final Runnable mOnInterceptTouch;
+
+    @NonNull
     private final OnSwipeUpListener mOnSwipeUp;
 
     private boolean mInterceptedTouch;
     private VelocityTracker mVelocityTracker;
 
     public TriggerSwipeUpTouchTracker(Context context, boolean disableHorizontalSwipe,
-            NavBarPosition navBarPosition, Runnable onInterceptTouch,
-            OnSwipeUpListener onSwipeUp) {
+            NavBarPosition navBarPosition, @NonNull OnSwipeUpListener onSwipeUp) {
         mSquaredTouchSlop = Utilities.squaredTouchSlop(context);
         mMinFlingVelocity = context.getResources().getDimension(
                 R.dimen.quickstep_fling_threshold_speed);
         mNavBarPosition = navBarPosition;
         mDisableHorizontalSwipe = disableHorizontalSwipe;
-        mOnInterceptTouch = onInterceptTouch;
         mOnSwipeUp = onSwipeUp;
 
         init();
@@ -98,21 +99,20 @@ public class TriggerSwipeUpTouchTracker {
                         if (mDisableHorizontalSwipe
                                 && Math.abs(displacementX) > Math.abs(displacementY)) {
                             // Horizontal gesture is not allowed in this region
+                            mOnSwipeUp.onSwipeUpCancelled();
                             endTouchTracking();
                             break;
                         }
 
                         mInterceptedTouch = true;
-
-                        if (mOnInterceptTouch != null) {
-                            mOnInterceptTouch.run();
-                        }
+                        mOnSwipeUp.onSwipeUpTouchIntercepted();
                     }
                 }
                 break;
             }
 
             case ACTION_CANCEL:
+                mOnSwipeUp.onSwipeUpCancelled();
                 endTouchTracking();
                 break;
 
@@ -124,7 +124,8 @@ public class TriggerSwipeUpTouchTracker {
         }
     }
 
-    private void endTouchTracking() {
+    /** Finishes the tracking. All events after this call are ignored */
+    public void endTouchTracking() {
         if (mVelocityTracker != null) {
             mVelocityTracker.recycle();
             mVelocityTracker = null;
@@ -151,12 +152,10 @@ public class TriggerSwipeUpTouchTracker {
             isSwipeUp = squaredHypot(displacementX, displacementY) >= mSquaredTouchSlop;
         }
 
-        if (mOnSwipeUp != null) {
-            if (isSwipeUp) {
-                mOnSwipeUp.onSwipeUp(wasFling, new PointF(velocityX, velocityY));
-            } else {
-                mOnSwipeUp.onSwipeUpCancelled();
-            }
+        if (isSwipeUp) {
+            mOnSwipeUp.onSwipeUp(wasFling, new PointF(velocityX, velocityY));
+        } else {
+            mOnSwipeUp.onSwipeUpCancelled();
         }
     }
 
@@ -172,6 +171,9 @@ public class TriggerSwipeUpTouchTracker {
         void onSwipeUp(boolean wasFling, PointF finalVelocity);
 
         /** Called on touch up if a swipe up was not detected. */
-        void onSwipeUpCancelled();
+        default void onSwipeUpCancelled() { }
+
+        /** Called when the touch for swipe up is intercepted. */
+        default void onSwipeUpTouchIntercepted() { }
     }
 }

@@ -20,7 +20,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -37,9 +36,9 @@ public class ModelUtils {
      */
     public static <T extends ItemInfo> void filterCurrentWorkspaceItems(
             final IntSet currentScreenIds,
-            ArrayList<T> allWorkspaceItems,
-            ArrayList<T> currentScreenItems,
-            ArrayList<T> otherScreenItems) {
+            List<? extends T> allWorkspaceItems,
+            List<T> currentScreenItems,
+            List<T> otherScreenItems) {
         // Purge any null ItemInfos
         allWorkspaceItems.removeIf(Objects::isNull);
         // Order the set of items by their containers first, this allows use to walk through the

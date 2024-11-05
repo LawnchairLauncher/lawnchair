@@ -1,0 +1,148 @@
+//
+// Copyright (C) 2020 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+package {
+    // See: http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // all of the 'license_kinds' from "frameworks_base_license"
+    // to get the below license kinds:
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["frameworks_base_license"],
+}
+
+filegroup {
+    name: "WMShellFlickerTestsPip1-src",
+    srcs: [
+        "src/**/A*.kt",
+        "src/**/B*.kt",
+        "src/**/C*.kt",
+        "src/**/D*.kt",
+        "src/**/F*.kt",
+        "src/**/S*.kt",
+    ],
+}
+
+filegroup {
+    name: "WMShellFlickerTestsPip2-src",
+    srcs: [
+        "src/**/E*.kt",
+    ],
+}
+
+filegroup {
+    name: "WMShellFlickerTestsPip3-src",
+    srcs: ["src/**/*.kt"],
+}
+
+filegroup {
+    name: "WMShellFlickerTestsPipCommon-src",
+    srcs: ["src/**/common/*.kt"],
+}
+
+filegroup {
+    name: "WMShellFlickerTestsPipApps-src",
+    srcs: ["src/**/apps/*.kt"],
+}
+
+android_test {
+    name: "WMShellFlickerTestsPip1",
+    defaults: ["WMShellFlickerTestsDefault"],
+    manifest: "AndroidManifest.xml",
+    package_name: "com.android.wm.shell.flicker.pip",
+    instrumentation_target_package: "com.android.wm.shell.flicker.pip",
+    test_config_template: "AndroidTestTemplate.xml",
+    srcs: [
+        ":WMShellFlickerTestsPip1-src",
+        ":WMShellFlickerTestsPipCommon-src",
+    ],
+    static_libs: ["WMShellFlickerTestsBase"],
+    data: ["trace_config/*"],
+}
+
+android_test {
+    name: "WMShellFlickerTestsPip2",
+    defaults: ["WMShellFlickerTestsDefault"],
+    manifest: "AndroidManifest.xml",
+    package_name: "com.android.wm.shell.flicker.pip",
+    instrumentation_target_package: "com.android.wm.shell.flicker.pip",
+    test_config_template: "AndroidTestTemplate.xml",
+    srcs: [
+        ":WMShellFlickerTestsPip2-src",
+        ":WMShellFlickerTestsPipCommon-src",
+    ],
+    static_libs: ["WMShellFlickerTestsBase"],
+    data: ["trace_config/*"],
+}
+
+android_test {
+    name: "WMShellFlickerTestsPip3",
+    defaults: ["WMShellFlickerTestsDefault"],
+    manifest: "AndroidManifest.xml",
+    package_name: "com.android.wm.shell.flicker.pip",
+    instrumentation_target_package: "com.android.wm.shell.flicker.pip",
+    test_config_template: "AndroidTestTemplate.xml",
+    srcs: [
+        ":WMShellFlickerTestsPip3-src",
+        ":WMShellFlickerTestsPipCommon-src",
+    ],
+    exclude_srcs: [
+        ":WMShellFlickerTestsPip1-src",
+        ":WMShellFlickerTestsPip2-src",
+        ":WMShellFlickerTestsPipApps-src",
+    ],
+    static_libs: ["WMShellFlickerTestsBase"],
+    data: ["trace_config/*"],
+}
+
+android_test {
+    name: "WMShellFlickerTestsPipApps",
+    defaults: ["WMShellFlickerTestsDefault"],
+    manifest: "AndroidManifest.xml",
+    package_name: "com.android.wm.shell.flicker.pip.apps",
+    instrumentation_target_package: "com.android.wm.shell.flicker.pip.apps",
+    test_config_template: "AndroidTestTemplate.xml",
+    srcs: [
+        ":WMShellFlickerTestsPipApps-src",
+        ":WMShellFlickerTestsPipCommon-src",
+    ],
+    static_libs: ["WMShellFlickerTestsBase"],
+    data: ["trace_config/*"],
+}
+
+android_test {
+    name: "WMShellFlickerTestsPipAppsCSuite",
+    defaults: ["WMShellFlickerTestsDefault"],
+    additional_manifests: ["AndroidManifest.xml"],
+    package_name: "com.android.wm.shell.flicker.pip.apps",
+    instrumentation_target_package: "com.android.wm.shell.flicker.pip.apps",
+    test_config_template: "AndroidTestTemplate.xml",
+    srcs: [
+        ":WMShellFlickerTestsPipApps-src",
+        ":WMShellFlickerTestsPipCommon-src",
+    ],
+    static_libs: ["WMShellFlickerTestsBase"],
+    test_suites: [
+        "device-tests",
+        "csuite",
+    ],
+    data: ["trace_config/*"],
+}
+
+csuite_test {
+    name: "csuite-1p3p-pip-flickers",
+    test_plan_include: "csuitePlan.xml",
+    test_config_template: "csuiteDefaultTemplate.xml",
+}

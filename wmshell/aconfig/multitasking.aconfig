@@ -1,0 +1,123 @@
+# proto-file: build/make/tools/aconfig/aconfig_protos/protos/aconfig.proto
+
+package: "com.android.wm.shell"
+container: "system"
+
+flag {
+    name: "enable_app_pairs"
+    namespace: "multitasking"
+    description: "Enables the ability to create and save app pairs to the Home screen"
+    bug: "274835596"
+}
+
+flag {
+    name: "enable_split_contextual"
+    namespace: "multitasking"
+    description: "Enables invoking split contextually"
+    bug: "276361926"
+}
+
+flag {
+    name: "enable_taskbar_navbar_unification"
+    namespace: "multitasking"
+    description: "Enables taskbar / navbar unification"
+    bug: "309671494"
+}
+
+flag {
+    name: "enable_pip2_implementation"
+    namespace: "multitasking"
+    description: "Enables the new implementation of PiP (PiP2)"
+    bug: "290220798"
+    is_fixed_read_only: true
+}
+
+flag {
+    name: "enable_left_right_split_in_portrait"
+    namespace: "multitasking"
+    description: "Enables left/right split in portrait"
+    bug: "291018646"
+}
+
+flag {
+    name: "enable_new_bubble_animations"
+    namespace: "multitasking"
+    description: "Enables new animations for expand and collapse for bubbles"
+    bug: "311450609"
+}
+
+flag {
+    name: "enable_pip_umo_experience"
+    namespace: "multitasking"
+    description: "Enables new UMO experience for PiP menu"
+    bug: "307998712"
+}
+
+flag {
+    name: "enable_bubble_bar"
+    namespace: "multitasking"
+    description: "Enables the new bubble bar UI for tablets"
+    bug: "286246694"
+}
+
+flag {
+    name: "enable_bubbles_long_press_nav_handle"
+    namespace: "multitasking"
+    description: "Enables long-press action for nav handle when a bubble is expanded"
+    bug: "324910035"
+}
+
+flag {
+    name: "enable_optional_bubble_overflow"
+    namespace: "multitasking"
+    description: "Hides the bubble overflow if there aren't any overflowed bubbles"
+    bug: "334175587"
+}
+
+flag {
+    name: "enable_retrievable_bubbles"
+    namespace: "multitasking"
+    description: "Allow opening bubbles overflow UI without bubbles being visible"
+    bug: "340337839"
+}
+
+flag {
+    name: "enable_bubble_stashing"
+    namespace: "multitasking"
+    description: "Allow the floating bubble stack to stash on the edge of the screen"
+    bug: "341361249"
+}
+
+flag {
+    name: "enable_tiny_taskbar"
+    namespace: "multitasking"
+    description: "Enables Taskbar on phones"
+    bug: "341784466"
+}
+
+flag {
+    name: "enable_bubble_anything"
+    namespace: "multitasking"
+    description: "Enable UI affordances to put other content into a bubble"
+    bug: "342245211"
+}
+
+flag {
+    name: "only_reuse_bubbled_task_when_launched_from_bubble"
+    namespace: "multitasking"
+    description: "Allow reusing bubbled tasks for new activities only when launching from bubbles"
+    bug: "328229865"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "animate_bubble_size_change"
+    namespace: "multitasking"
+    description: "Turns on the animation for bubble bar icons size change"
+    bug: "335575529"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}

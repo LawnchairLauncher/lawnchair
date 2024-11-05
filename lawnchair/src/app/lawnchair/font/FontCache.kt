@@ -36,6 +36,7 @@ import app.lawnchair.util.subscribeFiles
 import app.lawnchair.util.uiHelperHandler
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -49,7 +50,7 @@ import kotlinx.coroutines.plus
 import org.json.JSONArray
 import org.json.JSONObject
 
-class FontCache private constructor(private val context: Context) {
+class FontCache private constructor(private val context: Context) : SafeCloseable {
 
     private val scope = MainScope() + CoroutineName("FontCache")
 
@@ -119,6 +120,10 @@ class FontCache private constructor(private val context: Context) {
 
         @Suppress("DeferredResultUnused")
         deferredFonts.remove(TTFFont(context, file))
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
     }
 
     class Family(val displayName: String, val variants: Map<String, Font>) {

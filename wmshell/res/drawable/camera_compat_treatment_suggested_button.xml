@@ -1,0 +1,53 @@
+<!--
+     Copyright (C) 2019 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="48dp"
+        android:height="43dp"
+        android:viewportWidth="48"
+        android:viewportHeight="43">
+    <path
+            android:pathData="M24,0C10.7452,0 0,10.7452 0,24V43H48V24C48,10.7452 37.2548,0 24,0Z"
+            android:fillColor="@color/compat_controls_background"
+            android:strokeAlpha="0.8"
+            android:fillAlpha="0.8"/>
+    <path
+            android:pathData="M32,17H28.83L27,15H21L19.17,17H16C14.9,17 14,17.9 14,19V31C14,32.1 14.9,33 16,33H32C33.1,33 34,32.1 34,31V19C34,17.9 33.1,17 32,17ZM32,31H16V19H32V31Z"
+            android:fillColor="@color/compat_controls_text"/>
+    <path
+            android:pathData="M18,29L18,25.5L19.5,25.5L19.5,29L18,29Z"
+            android:fillColor="@color/compat_controls_text"/>
+    <path
+            android:pathData="M30,29L30,25.5L28.5,25.5L28.5,29L30,29Z"
+            android:fillColor="@color/compat_controls_text"/>
+    <path
+            android:pathData="M30,21L30,24.5L28.5,24.5L28.5,21L30,21Z"
+            android:fillColor="@color/compat_controls_text"/>
+    <path
+            android:pathData="M18,21L18,24.5L19.5,24.5L19.5,21L18,21Z"
+            android:fillColor="@color/compat_controls_text"/>
+    <path
+            android:pathData="M18,27.5L21.5,27.5L21.5,29L18,29L18,27.5Z"
+            android:fillColor="@color/compat_controls_text"/>
+    <path
+            android:pathData="M30,27.5L26.5,27.5L26.5,29L30,29L30,27.5Z"
+            android:fillColor="@color/compat_controls_text"/>
+    <path
+            android:pathData="M30,22.5L26.5,22.5L26.5,21L30,21L30,22.5Z"
+            android:fillColor="@color/compat_controls_text"/>
+    <path
+            android:pathData="M18,22.5L21.5,22.5L21.5,21L18,21L18,22.5Z"
+            android:fillColor="@color/compat_controls_text"/>
+</vector>

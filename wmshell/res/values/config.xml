@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<resources>
+    <!-- Determines whether the shell features all run on another thread. This is to be overrided
+         by the resources of the app using the Shell library. -->
+    <bool name="config_enableShellMainThread">false</bool>
+
+    <!-- Determines whether to register the shell task organizer on init.
+         TODO(b/238217847): This config is temporary until we refactor the base WMComponent. -->
+    <bool name="config_registerShellTaskOrganizerOnInit">true</bool>
+
+    <!-- Determines whether to register the shell transitions on init.
+         TODO(b/238217847): This config is temporary until we refactor the base WMComponent. -->
+    <bool name="config_registerShellTransitionsOnInit">true</bool>
+
+    <!-- Animation duration for PIP when entering. -->
+    <integer name="config_pipEnterAnimationDuration">425</integer>
+
+    <!-- Animation duration for PIP when exiting. -->
+    <integer name="config_pipExitAnimationDuration">250</integer>
+
+    <!-- Animation duration for resizing of PIP. -->
+    <integer name="config_pipResizeAnimationDuration">425</integer>
+
+    <!-- Animation duration for crossfading of PIP (specifically to fade out the layer on top). -->
+    <integer name="config_pipCrossfadeAnimationDuration">150</integer>
+
+    <!-- Allow dragging the PIP to a location to close it -->
+    <bool name="config_pipEnableDismissDragToEdge">true</bool>
+
+    <!-- Allow PIP to resize to a slightly bigger state upon touch/showing the menu -->
+    <bool name="config_pipEnableResizeForMenu">true</bool>
+
+    <!-- Time (duration in milliseconds) that the shell waits for an app to close the PiP by itself
+         if a custom action is present before closing it. -->
+    <integer name="config_pipForceCloseDelay">1000</integer>
+
+    <!-- Allow PIP to resize via pinch gesture. -->
+    <bool name="config_pipEnablePinchResize">true</bool>
+
+    <!-- Animation duration when using long press on recents to dock -->
+    <integer name="long_press_dock_anim_duration">250</integer>
+
+    <!-- Animation duration for translating of one handed when trigger / dismiss. -->
+    <integer name="config_one_handed_translate_animation_duration">600</integer>
+
+    <!-- One handed mode default offset % of display size -->
+    <fraction name="config_one_handed_offset">40%</fraction>
+
+    <!-- Allow one handed to enable round corner -->
+    <bool name="config_one_handed_enable_round_corner">true</bool>
+
+    <!-- Bounds [left top right bottom] on screen for picture-in-picture (PIP) windows,
+     when the PIP menu is shown in center. -->
+    <string translatable="false" name="pip_menu_bounds">"596 280 1324 690"</string>
+
+    <!-- Animation duration when exit starting window: fade out icon -->
+    <integer name="starting_window_app_reveal_icon_fade_out_duration">133</integer>
+
+    <!-- Animation duration when exit starting window: reveal app -->
+    <integer name="starting_window_app_reveal_anim_delay">83</integer>
+
+    <!-- Animation duration when exit starting window: reveal app -->
+    <integer name="starting_window_app_reveal_anim_duration">266</integer>
+
+    <!-- Default animation type when hiding the starting window. The possible values are:
+          - 0 for radial vanish + slide up
+          - 1 for fade out -->
+    <integer name="starting_window_exit_animation_type">0</integer>
+
+    <!-- Default insets [LEFT/RIGHTxTOP/BOTTOM] from the screen edge for picture-in-picture windows.
+         These values are in DPs and will be converted to pixel sizes internally. -->
+    <string translatable="false" name="config_defaultPictureInPictureScreenEdgeInsets">
+        16x16
+    </string>
+
+    <!-- Default percentages for the PIP size logic.
+         1. Determine max widths
+         Subtract width of system UI and default padding from the shortest edge of the device.
+         This is the max width.
+         2. Calculate Default and Mins
+         Default is config_pipSystemPreferredDefaultSizePercent of max-width/height.
+         Min is config_pipSystemPreferredMinimumSizePercent of it. -->
+    <item name="config_pipSystemPreferredDefaultSizePercent" format="float" type="dimen">0.6</item>
+    <item name="config_pipSystemPreferredMinimumSizePercent" format="float" type="dimen">0.5</item>
+    <!-- Default percentages for the PIP size logic when the Display is close to square.
+         This is used instead when the display is square-ish, like fold-ables when unfolded,
+         to make sure that default PiP does not cover the hinge (halfway of the display).
+         0. Determine if the display is square-ish
+         If min(displayWidth, displayHeight) / max(displayWidth, displayHeight) is greater than
+         config_pipSquareDisplayThresholdForSystemPreferredSize, we use the percent for
+         square display listed below.
+         1. Determine max widths
+         Subtract width of system UI and default padding from the shortest edge of the device.
+         This is the max width.
+         2. Calculate Default and Mins
+         Default is config_pipSystemPreferredDefaultSizePercentForSquareDisplay of max-width/height.
+         Min is config_pipSystemPreferredMinimumSizePercentForSquareDisplay of it. -->
+    <item name="config_pipSquareDisplayThresholdForSystemPreferredSize"
+        format="float" type="dimen">0.95</item>
+    <item name="config_pipSystemPreferredDefaultSizePercentForSquareDisplay"
+        format="float" type="dimen">0.5</item>
+    <item name="config_pipSystemPreferredMinimumSizePercentForSquareDisplay"
+        format="float" type="dimen">0.4</item>
+
+    <!-- The percentage of the screen width to use for the default width or height of
+         picture-in-picture windows. Regardless of the percent set here, calculated size will never
+         be smaller than @dimen/default_minimal_size_pip_resizable_task.
+         This is used in legacy spec, use config_pipSystemPreferredDefaultSizePercent instead. -->
+    <item name="config_pictureInPictureDefaultSizePercent" format="float" type="dimen">0.23</item>
+
+    <!-- PiP minimum size, which is a % based off the shorter side of display width and height.
+         This is used in legacy spec, use config_pipSystemPreferredMinimumSizePercent instead. -->
+    <fraction name="config_pipShortestEdgePercent">40%</fraction>
+
+    <!-- The default aspect ratio for picture-in-picture windows. -->
+    <item name="config_pictureInPictureDefaultAspectRatio" format="float" type="dimen">
+        1.777778
+    </item>
+
+    <!-- This is the limit for the max and min aspect ratio (1 / this value) at which the min size
+         will be used instead of an adaptive size based loosely on area. -->
+    <item name="config_pictureInPictureAspectRatioLimitForMinSize" format="float" type="dimen">
+        1.777778
+    </item>
+
+    <!-- The aspect ratio that by which optimizations to large screen sizes are made.
+         Needs to be less that or equal to 1. -->
+    <item name="config_pipLargeScreenOptimizedAspectRatio" format="float" type="dimen">0.5625</item>
+
+    <!-- The default gravity for the picture-in-picture window.
+         Currently, this maps to Gravity.BOTTOM | Gravity.RIGHT -->
+    <integer name="config_defaultPictureInPictureGravity">0x55</integer>
+
+    <!-- Whether to dim a split-screen task when the other is the IME target -->
+    <bool name="config_dimNonImeAttachedSide">true</bool>
+
+    <!-- Components support to launch multiple instances into split-screen -->
+    <string-array name="config_appsSupportMultiInstancesSplit">
+    </string-array>
+
+    <!-- Whether the extended restart dialog is enabled -->
+    <bool name="config_letterboxIsRestartDialogEnabled">false</bool>
+
+    <!-- Whether the additional education about reachability is enabled -->
+    <bool name="config_letterboxIsReachabilityEducationEnabled">false</bool>
+
+    <!-- The minimum tolerance of the percentage of activity bounds within its task to hide
+         size compat restart button. Value lower than 0 or higher than 100 will be ignored.
+         100 is the default value where the activity has to fit exactly within the task to allow
+         size compat restart button to be hidden. 0 means size compat restart button will always
+         be hidden. -->
+    <integer name="config_letterboxRestartButtonHideTolerance">100</integer>
+
+    <!-- Whether DragAndDrop capability is enabled -->
+    <bool name="config_enableShellDragDrop">true</bool>
+
+    <!-- Whether this device allows to use the appIcon as a fallback icon for the splash screen
+        window. If false, the splash screen will be a solid color splash screen whenever the
+        app has not provided a windowSplashScreenAnimatedIcon. -->
+    <bool name="config_canUseAppIconForSplashScreen">true</bool>
+
+    <!-- Whether CompatUIController is enabled -->
+    <bool name="config_enableCompatUIController">true</bool>
+
+    <!-- Whether pointer pilfer is required to start back animation. -->
+    <bool name="config_backAnimationRequiresPointerPilfer">true</bool>
+</resources>

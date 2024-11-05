@@ -38,6 +38,7 @@ import dalvik.system.PathClassLoader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
@@ -57,7 +58,7 @@ public class PluginInstance<T extends Plugin> implements PluginLifecycleManager 
     private final PluginFactory<T> mPluginFactory;
     private final String mTag;
 
-    private boolean mIsDebug = false;
+    private BiConsumer<String, String> mLogConsumer = null;
     private Context mPluginContext;
     private T mPlugin;
 
@@ -86,38 +87,34 @@ public class PluginInstance<T extends Plugin> implements PluginLifecycleManager 
         return mTag;
     }
 
-    public boolean getIsDebug() {
-        return mIsDebug;
+    public void setLogFunc(BiConsumer logConsumer) {
+        mLogConsumer = logConsumer;
     }
 
-    public void setIsDebug(boolean debug) {
-        mIsDebug = debug;
-    }
-
-    private void logDebug(String message) {
-        if (mIsDebug) {
-            Log.i(mTag, message);
+    private void log(String message) {
+        if (mLogConsumer != null) {
+            mLogConsumer.accept(mTag, message);
         }
     }
 
     /** Alerts listener and plugin that the plugin has been created. */
-    public void onCreate() {
+    public synchronized void onCreate() {
         boolean loadPlugin = mListener.onPluginAttached(this);
         if (!loadPlugin) {
             if (mPlugin != null) {
-                logDebug("onCreate: auto-unload");
+                log("onCreate: auto-unload");
                 unloadPlugin();
             }
             return;
         }
 
         if (mPlugin == null) {
-            logDebug("onCreate auto-load");
+            log("onCreate auto-load");
             loadPlugin();
             return;
         }
 
-        logDebug("onCreate: load callbacks");
+        log("onCreate: load callbacks");
         mPluginFactory.checkVersion(mPlugin);
         if (!(mPlugin instanceof PluginFragment)) {
             // Only call onCreate for plugins that aren't fragments, as fragments
@@ -128,8 +125,8 @@ public class PluginInstance<T extends Plugin> implements PluginLifecycleManager 
     }
 
     /** Alerts listener and plugin that the plugin is being shutdown. */
-    public void onDestroy() {
-        logDebug("onDestroy");
+    public synchronized void onDestroy() {
+        log("onDestroy");
         unloadPlugin();
         mListener.onPluginDetached(this);
     }
@@ -143,12 +140,13 @@ public class PluginInstance<T extends Plugin> implements PluginLifecycleManager 
     /**
      * Loads and creates the plugin if it does not exist.
      */
-    public void loadPlugin() {
+    public synchronized void loadPlugin() {
         if (mPlugin != null) {
-            logDebug("Load request when already loaded");
+            log("Load request when already loaded");
             return;
         }
 
+        // Both of these calls take about 1 - 1.5 seconds in test runs
         mPlugin = mPluginFactory.createPlugin();
         mPluginContext = mPluginFactory.createPluginContext();
         if (mPlugin == null || mPluginContext == null) {
@@ -156,7 +154,7 @@ public class PluginInstance<T extends Plugin> implements PluginLifecycleManager 
             return;
         }
 
-        logDebug("Loaded plugin; running callbacks");
+        log("Loaded plugin; running callbacks");
         mPluginFactory.checkVersion(mPlugin);
         if (!(mPlugin instanceof PluginFragment)) {
             // Only call onCreate for plugins that aren't fragments, as fragments
@@ -171,13 +169,13 @@ public class PluginInstance<T extends Plugin> implements PluginLifecycleManager 
      *
      * This will free the associated memory if there are not other references.
      */
-    public void unloadPlugin() {
+    public synchronized void unloadPlugin() {
         if (mPlugin == null) {
-            logDebug("Unload request when already unloaded");
+            log("Unload request when already unloaded");
             return;
         }
 
-        logDebug("Unloading plugin, running callbacks");
+        log("Unloading plugin, running callbacks");
         mListener.onPluginUnloaded(mPlugin, this);
         if (!(mPlugin instanceof PluginFragment)) {
             // Only call onDestroy for plugins that aren't fragments, as fragments
@@ -269,6 +267,7 @@ public class PluginInstance<T extends Plugin> implements PluginLifecycleManager 
         private ClassLoader getParentClassLoader(ClassLoader baseClassLoader) {
             return new PluginManagerImpl.ClassLoaderFilter(
                     baseClassLoader,
+                    "androidx.constraintlayout.widget",
                     "com.android.systemui.common",
                     "com.android.systemui.log",
                     "com.android.systemui.plugin");

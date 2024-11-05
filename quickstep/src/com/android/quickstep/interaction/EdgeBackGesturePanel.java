@@ -42,8 +42,8 @@ import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.R;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.VibratorWrapper;
-import com.android.systemui.shared.testing.ResourceUtils;
 
 /**
  * Forked from

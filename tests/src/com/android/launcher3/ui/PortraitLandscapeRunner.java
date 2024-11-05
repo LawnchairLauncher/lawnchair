@@ -3,7 +3,9 @@ package com.android.launcher3.ui;
 import android.util.Log;
 import android.view.Surface;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.launcher3.util.rule.FailureWatcher;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -13,10 +15,12 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
-public class PortraitLandscapeRunner implements TestRule {
+public class PortraitLandscapeRunner<LAUNCHER_TYPE extends Launcher> implements TestRule {
     private static final String TAG = "PortraitLandscapeRunner";
-    private AbstractLauncherUiTest mTest;
+    private AbstractLauncherUiTest<LAUNCHER_TYPE> mTest;
 
     // Annotation for tests that need to be run in portrait and landscape modes.
     @Retention(RetentionPolicy.RUNTIME)
@@ -24,14 +28,14 @@ public class PortraitLandscapeRunner implements TestRule {
     public @interface PortraitLandscape {
     }
 
-    public PortraitLandscapeRunner(AbstractLauncherUiTest test) {
+    public PortraitLandscapeRunner(AbstractLauncherUiTest<LAUNCHER_TYPE> test) {
         mTest = test;
     }
 
     @Override
     public Statement apply(Statement base, Description description) {
-        if (!TestHelpers.isInLauncherProcess() ||
-                description.getAnnotation(PortraitLandscape.class) == null) {
+        if (!TestHelpers.isInLauncherProcess()
+                || description.getAnnotation(PortraitLandscape.class) == null) {
             return base;
         }
 
@@ -39,13 +43,23 @@ public class PortraitLandscapeRunner implements TestRule {
             @Override
             public void evaluate() throws Throwable {
                 try {
-                    mTest.mDevice.pressHome();
-                    mTest.waitForLauncherCondition("Launcher activity wasn't created",
-                            launcher -> launcher != null);
+                    try {
+                        // we expect to begin unlocked...
+                        AbstractLauncherUiTest.verifyKeyguardInvisible();
 
-                    mTest.executeOnLauncher(launcher ->
-                            launcher.getRotationHelper().forceAllowRotationForTesting(
-                                    true));
+                        mTest.mDevice.pressHome();
+                        mTest.waitForLauncherCondition("Launcher activity wasn't created",
+                                Objects::nonNull,
+                                TimeUnit.SECONDS.toMillis(20));
+
+                        mTest.executeOnLauncher(launcher ->
+                                launcher.getRotationHelper().forceAllowRotationForTesting(
+                                        true));
+
+                    } catch (Throwable e) {
+                        FailureWatcher.onError(mTest.mLauncher, description);
+                        throw e;
+                    }
 
                     evaluateInPortrait();
                     evaluateInLandscape();
@@ -61,13 +75,16 @@ public class PortraitLandscapeRunner implements TestRule {
                         }
                     });
                     mTest.mLauncher.setExpectedRotation(Surface.ROTATION_0);
+
+                    // and end unlocked...
+                    AbstractLauncherUiTest.verifyKeyguardInvisible();
                 }
             }
 
             private void evaluateInPortrait() throws Throwable {
                 mTest.mDevice.setOrientationNatural();
                 mTest.mLauncher.setExpectedRotation(Surface.ROTATION_0);
-                AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher);
+                AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher, true);
                 base.evaluate();
                 mTest.getDevice().pressHome();
             }
@@ -75,7 +92,7 @@ public class PortraitLandscapeRunner implements TestRule {
             private void evaluateInLandscape() throws Throwable {
                 mTest.mDevice.setOrientationLeft();
                 mTest.mLauncher.setExpectedRotation(Surface.ROTATION_90);
-                AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher);
+                AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher, true);
                 base.evaluate();
                 mTest.getDevice().pressHome();
             }
