@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/collapse_handle"
-        android:paddingBottom="16dp"
+        android:paddingBottom="8dp"
         android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
         android:clipToOutline="true"
         android:orientation="vertical">
@@ -56,14 +56,18 @@
             <include layout="@layout/widgets_search_bar" />
         </FrameLayout>
 
-        <com.android.launcher3.widget.picker.WidgetsRecommendationTableLayout
-            android:id="@+id/recommended_widget_table"
+        <!-- Shown when there are recommendations to display -->
+        <LinearLayout
+            android:id="@+id/widget_recommendations_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/widgets_surface_background"
-            android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:visibility="gone">
+            <include layout="@layout/widget_recommendations" />
+        </LinearLayout>
     </com.android.launcher3.views.StickyHeaderLayout>
 
 </merge>

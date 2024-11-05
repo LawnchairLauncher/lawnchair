@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Label for PIP close button [CHAR LIMIT=NONE]-->
+    <string name="pip_phone_close">Close</string>
+
+    <!-- Making the PIP fullscreen [CHAR LIMIT=25] -->
+    <string name="pip_phone_expand">Expand</string>
+
+    <!-- Label for PIP settings button [CHAR LIMIT=NONE]-->
+    <string name="pip_phone_settings">Settings</string>
+
+    <!-- Title of menu shown over picture-in-picture. Used for accessibility. -->
+    <string name="pip_menu_title">Menu</string>
+
+    <!-- accessibility Title of menu shown over picture-in-picture [CHAR LIMIT=NONE] -->
+    <string name="pip_menu_accessibility_title">Picture-in-Picture Menu</string>
+
+    <!-- PiP BTW notification title. [CHAR LIMIT=50] -->
+    <string name="pip_notification_title"><xliff:g id="name" example="Google Maps">%s</xliff:g> is in picture-in-picture</string>
+
+    <!-- PiP BTW notification description. [CHAR LIMIT=NONE] -->
+    <string name="pip_notification_message">If you don\'t want <xliff:g id="name" example="Google Maps">%s</xliff:g> to use this feature, tap to open settings and turn it off.</string>
+
+    <!-- Button to play the current media on picture-in-picture (PIP) [CHAR LIMIT=30] -->
+    <string name="pip_play">Play</string>
+
+    <!-- Button to pause the current media on picture-in-picture (PIP) [CHAR LIMIT=30] -->
+    <string name="pip_pause">Pause</string>
+
+    <!-- Button to skip to the next media on picture-in-picture (PIP) [CHAR LIMIT=30] -->
+    <string name="pip_skip_to_next">Skip to next</string>
+
+    <!-- Button to skip to the prev media on picture-in-picture (PIP) [CHAR LIMIT=30] -->
+    <string name="pip_skip_to_prev">Skip to previous</string>
+
+    <!-- Accessibility action for resizing PIP [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_pip_resize">Resize</string>
+
+    <!-- Accessibility action for stashing PIP [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_pip_stash">Stash</string>
+
+    <!-- Accessibility action for unstashing PIP [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_pip_unstash">Unstash</string>
+
+    <!-- TODO Deprecated. Label for PIP action to Minimize the PIP. DO NOT TRANSLATE [CHAR LIMIT=25] -->
+    <string name="pip_phone_minimize">Minimize</string>
+
+    <!-- TODO Deprecated. Label for PIP the drag to dismiss hint. DO NOT TRANSLATE [CHAR LIMIT=NONE]-->
+    <string name="pip_phone_dismiss_hint">Drag down to dismiss</string>
+
+    <!-- Multi-Window strings -->
+    <!-- Text that gets shown on top of current activity to inform the user that the system force-resized the current activity to be displayed in split screen and that things might crash/not work properly [CHAR LIMIT=NONE] -->
+    <string name="dock_forced_resizable">App may not work with split screen</string>
+    <!-- Warning message when we try to dock a non-resizeable task and launch it in fullscreen instead  [CHAR LIMIT=NONE] -->
+    <string name="dock_non_resizeble_failed_to_dock_text">App does not support split screen</string>
+    <!-- Warning message when we try to dock an app not supporting multiple instances split into multiple sides [CHAR LIMIT=NONE] -->
+    <string name="dock_multi_instances_not_supported_text">This app can only be opened in 1 window</string>
+    <!-- Text that gets shown on top of current activity to inform the user that the system force-resized the current activity to be displayed on a secondary display and that things might crash/not work properly [CHAR LIMIT=NONE] -->
+    <string name="forced_resizable_secondary_display">App may not work on a secondary display.</string>
+    <!-- Warning message when we try to launch a non-resizeable activity on a secondary display and launch it on the primary instead. -->
+    <string name="activity_launch_on_secondary_display_failed_text">App does not support launch on secondary displays.</string>
+
+    <!-- Accessibility label and window tile for the divider that separates the windows in split screen mode [CHAR LIMIT=NONE] -->
+    <string name="accessibility_divider">Split screen divider</string>
+    <!-- Accessibility window title for the split screen divider window [CHAR LIMIT=NONE] -->
+    <string name="divider_title">Split screen divider</string>
+
+    <!-- Accessibility action for moving docked stack divider to make the left screen full screen [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_left_full">Left full screen</string>
+    <!-- Accessibility action for moving docked stack divider to make the left screen 70% [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_left_70">Left 70%</string>
+    <!-- Accessibility action for moving docked stack divider to make the left screen 50% [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_left_50">Left 50%</string>
+    <!-- Accessibility action for moving docked stack divider to make the left screen 30% [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_left_30">Left 30%</string>
+    <!-- Accessibility action for moving docked stack divider to make the right screen full screen [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_right_full">Right full screen</string>
+
+    <!-- Accessibility action for moving docked stack divider to make the top screen full screen [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_top_full">Top full screen</string>
+    <!-- Accessibility action for moving docked stack divider to make the top screen 70% [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_top_70">Top 70%</string>
+    <!-- Accessibility action for moving docked stack divider to make the top screen 50% [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_top_50">Top 50%</string>
+    <!-- Accessibility action for moving docked stack divider to make the top screen 30% [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_top_30">Top 30%</string>
+    <!-- Accessibility action for moving docked stack divider to make the bottom screen full screen [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_divider_bottom_full">Bottom full screen</string>
+
+    <!-- Accessibility label for splitting to the left drop zone [CHAR LIMIT=NONE] -->
+    <string name="accessibility_split_left">Split left</string>
+    <!-- Accessibility label for splitting to the right drop zone [CHAR LIMIT=NONE] -->
+    <string name="accessibility_split_right">Split right</string>
+    <!-- Accessibility label for splitting to the top drop zone [CHAR LIMIT=NONE] -->
+    <string name="accessibility_split_top">Split top</string>
+    <!-- Accessibility label for splitting to the bottom drop zone [CHAR LIMIT=NONE] -->
+    <string name="accessibility_split_bottom">Split bottom</string>
+
+    <!-- One-Handed Tutorial title [CHAR LIMIT=60] -->
+    <string name="one_handed_tutorial_title">Using one-handed mode</string>
+    <!-- One-Handed Tutorial description [CHAR LIMIT=NONE] -->
+    <string name="one_handed_tutorial_description">To exit, swipe up from the bottom of the screen or tap anywhere above the app</string>
+    <!-- Accessibility description for start one-handed mode [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_start_one_handed">Start one-handed mode</string>
+    <!-- Accessibility description for stop one-handed mode [CHAR LIMIT=NONE] -->
+    <string name="accessibility_action_stop_one_handed">Exit one-handed mode</string>
+
+    <!-- Text used for content description of settings button in the header of expanded bubble
+         view. [CHAR_LIMIT=NONE] -->
+    <string name="bubbles_settings_button_description">Settings for <xliff:g id="app_name" example="YouTube">%1$s</xliff:g> bubbles</string>
+    <!-- Content description for button that shows bubble overflow on click [CHAR LIMIT=NONE] -->
+    <string name="bubble_overflow_button_content_description">Overflow</string>
+    <!-- Action to add overflow bubble back to stack. [CHAR LIMIT=NONE] -->
+    <string name="bubble_accessibility_action_add_back">Add back to stack</string>
+    <!-- Content description when a bubble is focused. [CHAR LIMIT=NONE] -->
+    <string name="bubble_content_description_single"><xliff:g id="notification_title" example="some title">%1$s</xliff:g> from <xliff:g id="app_name" example="YouTube">%2$s</xliff:g></string>
+    <!-- Content description when the stack of bubbles is focused. [CHAR LIMIT=NONE] -->
+    <string name="bubble_content_description_stack"><xliff:g id="notification_title" example="some title">%1$s</xliff:g> from <xliff:g id="app_name" example="YouTube">%2$s</xliff:g> and <xliff:g id="bubble_count" example="4">%3$d</xliff:g> more</string>
+    <!-- Action in accessibility menu to move the stack of bubbles to the top left of the screen. [CHAR LIMIT=30] -->
+    <string name="bubble_accessibility_action_move_top_left">Move top left</string>
+    <!-- Action in accessibility menu to move the stack of bubbles to the top right of the screen. [CHAR LIMIT=30] -->
+    <string name="bubble_accessibility_action_move_top_right">Move top right</string>
+    <!-- Action in accessibility menu to move the stack of bubbles to the bottom left of the screen. [CHAR LIMIT=30]-->
+    <string name="bubble_accessibility_action_move_bottom_left">Move bottom left</string>
+    <!-- Action in accessibility menu to move the stack of bubbles to the bottom right of the screen. [CHAR LIMIT=30]-->
+    <string name="bubble_accessibility_action_move_bottom_right">Move bottom right</string>
+    <!-- Accessibility announcement when the stack of bubbles expands. [CHAR LIMIT=NONE]-->
+    <string name="bubble_accessibility_announce_expand">expand <xliff:g id="bubble_title" example="Messages">%1$s</xliff:g></string>
+    <!-- Accessibility announcement when the stack of bubbles collapses. [CHAR LIMIT=NONE]-->
+    <string name="bubble_accessibility_announce_collapse">collapse <xliff:g id="bubble_title" example="Messages">%1$s</xliff:g></string>
+    <!-- Label for the button that takes the user to the notification settings for the given app. -->
+    <string name="bubbles_app_settings"><xliff:g id="notification_title" example="Android Messages">%1$s</xliff:g> settings</string>
+    <!-- Text used for the bubble dismiss area. Bubbles dragged to, or flung towards, this area will go away. [CHAR LIMIT=30] -->
+    <string name="bubble_dismiss_text">Dismiss bubble</string>
+    <!-- Button text to stop a conversation from bubbling [CHAR LIMIT=60]-->
+    <string name="bubbles_dont_bubble_conversation">Don\u2019t bubble conversation</string>
+    <!-- Title text for the bubbles feature education cling shown when a bubble is on screen for the first time. [CHAR LIMIT=60]-->
+    <string name="bubbles_user_education_title">Chat using bubbles</string>
+    <!-- Descriptive text for the bubble feature education cling shown when a bubble is on screen for the first time. [CHAR LIMIT=NONE] -->
+    <string name="bubbles_user_education_description">New conversations appear as floating icons, or bubbles. Tap to open bubble. Drag to move it.</string>
+    <!-- Title text for the bubble "manage" button tool tip highlighting where users can go to control bubble settings. [CHAR LIMIT=60]-->
+    <string name="bubbles_user_education_manage_title">Control bubbles anytime</string>
+    <!-- Descriptive text for the bubble "manage" button tool tip highlighting where users can go to control bubble settings. [CHAR LIMIT=80]-->
+    <string name="bubbles_user_education_manage">Tap Manage to turn off bubbles from this app</string>
+    <!-- Button text for dismissing the bubble "manage" button tool tip  [CHAR LIMIT=20]-->
+    <string name="bubbles_user_education_got_it">Got it</string>
+    <!-- [CHAR LIMIT=NONE] Empty overflow title -->
+    <string name="bubble_overflow_empty_title">No recent bubbles</string>
+    <!-- [CHAR LIMIT=NONE] Empty overflow subtitle -->
+    <string name="bubble_overflow_empty_subtitle">Recent bubbles and dismissed bubbles will appear here</string>
+
+    <!-- Title text for the bubble bar feature education cling shown when a bubble is on screen for the first time. [CHAR LIMIT=60]-->
+    <string name="bubble_bar_education_stack_title">Chat using bubbles</string>
+    <!-- Descriptive text for the bubble bar feature education cling shown when a bubble is on screen for the first time. [CHAR LIMIT=NONE] -->
+    <string name="bubble_bar_education_stack_text">New conversations appear as icons in a bottom corner of your screen. Tap to expand them or drag to dismiss them.</string>
+    <!-- Title text for the bubble bar "manage" button tool tip highlighting where users can go to control bubble settings. [CHAR LIMIT=60]-->
+    <string name="bubble_bar_education_manage_title">Control bubbles anytime</string>
+    <!-- Descriptive text for the bubble bar "manage" button tool tip highlighting where users can go to control bubble settings. [CHAR LIMIT=80]-->
+    <string name="bubble_bar_education_manage_text">Tap here to manage which apps and conversations can bubble</string>
+
+    <!-- [CHAR LIMIT=100] Notification Importance title -->
+    <string name="notification_bubble_title">Bubble</string>
+
+    <!-- The text for the manage bubbles link. [CHAR LIMIT=NONE] -->
+    <string name="manage_bubbles_text">Manage</string>
+
+    <!-- Content description to tell the user a bubble has been dismissed. -->
+    <string name="accessibility_bubble_dismissed">Bubble dismissed.</string>
+
+    <!-- Label used to for bubbles shortcut [CHAR_LIMIT=10] -->
+    <string name="bubble_shortcut_label">Bubbles</string>
+
+    <!-- Longer label used to for bubbles shortcut, shown if there is enough space [CHAR_LIMIT=25] -->
+    <string name="bubble_shortcut_long_label">Show Bubbles</string>
+
+    <!-- Description of the restart button in the hint of size compatibility mode. [CHAR LIMIT=NONE] -->
+    <string name="restart_button_description">Tap to restart this app for a better view</string>
+
+    <!-- Tooltip text of the button for the user aspect ratio settings. [CHAR LIMIT=NONE] -->
+    <string name="user_aspect_ratio_settings_button_hint">Change this app\'s aspect ratio in Settings</string>
+
+    <!-- Content description of the button for the user aspect ratio settings. [CHAR LIMIT=NONE] -->
+    <string name="user_aspect_ratio_settings_button_description">Change aspect ratio</string>
+
+    <!-- Description of the camera compat button for applying stretched issues treatment in the hint for
+         compatibility control. [CHAR LIMIT=NONE] -->
+    <string name="camera_compat_treatment_suggested_button_description">Camera issues?\nTap to refit</string>
+
+    <!-- Description of the camera compat button for reverting stretched issues treatment in the hint for
+         compatibility control. [CHAR LIMIT=NONE] -->
+    <string name="camera_compat_treatment_applied_button_description">Didn\u2019t fix it?\nTap to revert</string>
+
+    <!-- Accessibillity description of the camera dismiss button for stretched issues in the hint for
+         compatibility control. [CHAR LIMIT=NONE] -->
+    <string name="camera_compat_dismiss_button_description">No camera issues? Tap to dismiss.</string>
+
+    <!-- The title of the letterbox education dialog. [CHAR LIMIT=NONE] -->
+    <string name="letterbox_education_dialog_title">See and do more</string>
+
+    <!-- Description of the split screen action. [CHAR LIMIT=NONE] -->
+    <string name="letterbox_education_split_screen_text">Drag in another app for split screen</string>
+
+    <!-- Description of the reposition app action. [CHAR LIMIT=NONE] -->
+    <string name="letterbox_education_reposition_text">Double-tap outside an app to reposition it</string>
+
+    <!-- Button text for dismissing the letterbox education dialog. [CHAR LIMIT=20] -->
+    <string name="letterbox_education_got_it">Got it</string>
+
+    <!-- Accessibility description of the letterbox education toast expand to dialog button. [CHAR LIMIT=NONE] -->
+    <string name="letterbox_education_expand_button_description">Expand for more information.</string>
+
+    <!-- The title of the restart confirmation dialog. [CHAR LIMIT=NONE] -->
+    <string name="letterbox_restart_dialog_title">Restart for a better view?</string>
+
+    <!-- The description of the restart confirmation dialog. [CHAR LIMIT=NONE] -->
+    <string name="letterbox_restart_dialog_description">You can restart the app so it looks better on
+        your screen, but you may lose your progress or any unsaved changes
+    </string>
+
+    <!-- Button text for dismissing the restart confirmation dialog. [CHAR LIMIT=20] -->
+    <string name="letterbox_restart_cancel">Cancel</string>
+
+    <!-- Button text for dismissing the restart confirmation dialog. [CHAR LIMIT=20] -->
+    <string name="letterbox_restart_restart">Restart</string>
+
+    <!-- Checkbox text for asking to not show the restart confirmation dialog again. [CHAR LIMIT=NONE] -->
+    <string name="letterbox_restart_dialog_checkbox_title">Don\u2019t show again</string>
+
+    <!-- When an app is letterboxed, it is initially centered on the screen but the user can
+         double tap to move the app to a different position. With a double-tap on the right,
+         the app moves the right of the screen and with a double-tap on the left the app moves
+         on the left. The same happens if the app has space to be moved to the top or bottom of
+         the screen. This time the double-tap can happen on the top or bottom of the screen.
+         To teach the user about this feature, we display an education explaining how the double-tap
+         works and how the app can be moved on the screen.
+         This is the text we show to the user below an icon visualizing the double-tap
+         action. The description should be split in two lines separated by "\n" like for this
+         locale. [CHAR LIMIT=NONE] -->
+    <string name="letterbox_reachability_reposition_text">Double-tap to\nmove this app</string>
+
+    <!-- Freeform window caption strings -->
+    <!-- Accessibility text for the maximize window button [CHAR LIMIT=NONE] -->
+    <string name="maximize_button_text">Maximize</string>
+     <!-- Accessibility text for the minimize window button [CHAR LIMIT=NONE] -->
+     <string name="minimize_button_text">Minimize</string>
+    <!-- Accessibility text for the close window button [CHAR LIMIT=NONE] -->
+    <string name="close_button_text">Close</string>
+    <!-- Accessibility text for the caption back button [CHAR LIMIT=NONE] -->
+    <string name="back_button_text">Back</string>
+    <!-- Accessibility text for the caption handle [CHAR LIMIT=NONE] -->
+    <string name="handle_text">Handle</string>
+    <!-- Accessibility text for the handle menu app icon [CHAR LIMIT=NONE] -->
+    <string name="app_icon_text">App Icon</string>
+    <!-- Accessibility text for the handle fullscreen button [CHAR LIMIT=NONE] -->
+    <string name="fullscreen_text">Fullscreen</string>
+    <!-- Accessibility text for the handle desktop button [CHAR LIMIT=NONE] -->
+    <string name="desktop_text">Desktop Mode</string>
+    <!-- Accessibility text for the handle split screen button [CHAR LIMIT=NONE] -->
+    <string name="split_screen_text">Split Screen</string>
+    <!-- Accessibility text for the handle more options button [CHAR LIMIT=NONE] -->
+    <string name="more_button_text">More</string>
+    <!-- Accessibility text for the handle floating window button [CHAR LIMIT=NONE] -->
+    <string name="float_button_text">Float</string>
+    <!-- Accessibility text for the handle menu select button [CHAR LIMIT=NONE] -->
+    <string name="select_text">Select</string>
+    <!-- Accessibility text for the handle menu screenshot button [CHAR LIMIT=NONE] -->
+    <string name="screenshot_text">Screenshot</string>
+    <!-- Accessibility text for the handle menu close button [CHAR LIMIT=NONE] -->
+    <string name="close_text">Close</string>
+    <!-- Accessibility text for the handle menu close menu button [CHAR LIMIT=NONE] -->
+    <string name="collapse_menu_text">Close Menu</string>
+    <!-- Accessibility text for the handle menu open menu button [CHAR LIMIT=NONE] -->
+    <string name="expand_menu_text">Open Menu</string>
+    <!-- Maximize menu maximize button string. -->
+    <string name="desktop_mode_maximize_menu_maximize_text">Maximize Screen</string>
+    <!-- Maximize menu snap buttons string. -->
+    <string name="desktop_mode_maximize_menu_snap_text">Snap Screen</string>
+</resources>

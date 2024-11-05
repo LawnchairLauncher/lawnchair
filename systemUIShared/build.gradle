@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -16,9 +17,12 @@ android {
             res.srcDirs = ['res']
         }
     }
+    ksp {
+        arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+    }
 }
 
-addFrameworkJar('framework-14.jar')
+addFrameworkJar('framework-15.jar')
 compileOnlyCommonJars()
 
 dependencies {
@@ -26,9 +30,10 @@ dependencies {
     compileOnly projects.systemUnFold
     compileOnly projects.systemUIPlugin
     compileOnly projects.systemUIPluginCore
+    compileOnly projects.flags
 
     implementation "com.google.dagger:hilt-android:$daggerVersion"
-    annotationProcessor "com.google.dagger:hilt-compiler:$daggerVersion"
+    ksp "com.google.dagger:hilt-compiler:$daggerVersion"
 
     implementation "androidx.concurrent:concurrent-futures:1.2.0"
 }

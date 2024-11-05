@@ -17,7 +17,7 @@ package com.android.launcher3.folder;
 
 import android.graphics.drawable.Drawable;
 
-import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 
 /**
  * Manages the parameters used to draw a Folder preview item.
@@ -30,7 +30,7 @@ class PreviewItemDrawingParams {
     public FolderPreviewItemAnim anim;
     public boolean hidden;
     public Drawable drawable;
-    public WorkspaceItemInfo item;
+    public ItemInfo item;
 
     PreviewItemDrawingParams(float transX, float transY, float scale) {
         this.transX = transX;

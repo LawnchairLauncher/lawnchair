@@ -13,9 +13,9 @@
  */
 package com.android.systemui.plugins;
 
-import com.android.systemui.plugins.annotations.Requires;
-
 import android.content.Context;
+
+import com.android.systemui.plugins.annotations.Requires;
 
 /**
  * Plugins are separate APKs that

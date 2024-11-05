@@ -119,9 +119,8 @@ data class UnreleasedFlag constructor(
 data class ReleasedFlag constructor(
     override val name: String,
     override val namespace: String,
-    override val teamfood: Boolean = false,
     override val overridden: Boolean = false
-) : BooleanFlag(name, namespace, true, teamfood, overridden)
+) : BooleanFlag(name, namespace, true, teamfood = false, overridden)
 
 /**
  * A Flag that reads its default values from a resource overlay instead of code.
@@ -132,8 +131,9 @@ data class ResourceBooleanFlag constructor(
     override val name: String,
     override val namespace: String,
     @BoolRes override val resourceId: Int,
+) : ResourceFlag<Boolean> {
     override val teamfood: Boolean = false
-) : ResourceFlag<Boolean>
+}
 
 /**
  * A Flag that can reads its overrides from System Properties.
@@ -147,7 +147,6 @@ data class SysPropBooleanFlag constructor(
     override val namespace: String,
     override val default: Boolean = false,
 ) : SysPropFlag<Boolean> {
-    // TODO(b/268520433): Teamfood not supported for sysprop flags yet.
     override val teamfood: Boolean = false
 }
 

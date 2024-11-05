@@ -40,7 +40,7 @@ class ResponsiveSpecsProvider(
             groupOfSpecs
                 .onEach { group ->
                     check(group.widthSpecs.isNotEmpty() && group.heightSpecs.isNotEmpty()) {
-                        "${this::class.simpleName} is incomplete - " +
+                        "$LOG_TAG is incomplete - " +
                             "width list size = ${group.widthSpecs.size}; " +
                             "height list size = ${group.heightSpecs.size}."
                     }
@@ -124,6 +124,7 @@ class ResponsiveSpecsProvider(
     }
 
     companion object {
+        private const val LOG_TAG = "ResponsiveSpecsProvider"
         @JvmStatic
         fun create(
             resourceHelper: ResourceHelper,

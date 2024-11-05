@@ -18,10 +18,12 @@ package com.android.quickstep;
 
 import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
 import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
+import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
+import static com.android.window.flags.Flags.enableDesktopWindowingMode;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -29,7 +31,7 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.os.SystemProperties;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
@@ -38,22 +40,24 @@ import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.popup.SystemShortcut.AppInfo;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
-import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
+import com.android.quickstep.util.RecentsOrientedState;
+import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskThumbnailView;
+import com.android.quickstep.views.RecentsViewContainer;
+import com.android.quickstep.views.TaskThumbnailViewDeprecated;
 import com.android.quickstep.views.TaskView;
-import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
+import com.android.quickstep.views.TaskView.TaskContainer;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecCompat;
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
@@ -65,27 +69,32 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import app.lawnchair.compat.LawnchairQuickstepCompat;
-
 /**
- * Represents a system shortcut that can be shown for a recent task. Appears as
- * a single entry in
+ * Represents a system shortcut that can be shown for a recent task. Appears as a single entry in
  * the dropdown menu that shows up when you tap an app icon in Overview.
  */
 public interface TaskShortcutFactory {
     @Nullable
-    default List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-            TaskIdAttributeContainer taskContainer) {
+    default List<SystemShortcut> getShortcuts(RecentsViewContainer container,
+                                              TaskContainer taskContainer) {
         return null;
     }
 
-    default boolean showForSplitscreen() {
+    /**
+     * Returns {@code true} if it should be shown for grouped task; {@code false} otherwise.
+     */
+    default boolean showForGroupedTask() {
         return false;
     }
 
     /**
-     * @return a singleton list if the provided shortcut is non-null, null otherwise
+     * Returns {@code true} if it should be shown for desktop task; {@code false} otherwise.
      */
+    default boolean showForDesktopTask() {
+        return false;
+    }
+
+    /** @return a singleton list if the provided shortcut is non-null, null otherwise */
     @Nullable
     default List<SystemShortcut> createSingletonShortcutList(@Nullable SystemShortcut shortcut) {
         if (shortcut != null) {
@@ -96,19 +105,24 @@ public interface TaskShortcutFactory {
 
     TaskShortcutFactory APP_INFO = new TaskShortcutFactory() {
         @Override
-        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
+        public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
+                                                 TaskContainer taskContainer) {
             TaskView taskView = taskContainer.getTaskView();
-            AppInfo.SplitAccessibilityInfo accessibilityInfo = new AppInfo.SplitAccessibilityInfo(
-                    taskView.containsMultipleTasks(),
-                    TaskUtils.getTitle(taskView.getContext(), taskContainer.getTask()),
-                    taskContainer.getA11yNodeId());
-            return Collections.singletonList(new AppInfo(activity, taskContainer.getItemInfo(),
+            int actionId = taskContainer.getStagePosition() == STAGE_POSITION_BOTTOM_OR_RIGHT
+                    ? R.id.action_app_info_bottom_right
+                    : R.id.action_app_info_top_left;
+
+            AppInfo.SplitAccessibilityInfo accessibilityInfo =
+                    new AppInfo.SplitAccessibilityInfo(taskView.containsMultipleTasks(),
+                            TaskUtils.getTitle(taskView.getContext(), taskContainer.getTask()),
+                            actionId
+                    );
+            return Collections.singletonList(new AppInfo(container, taskContainer.getItemInfo(),
                     taskView, accessibilityInfo));
         }
 
         @Override
-        public boolean showForSplitscreen() {
+        public boolean showForGroupedTask() {
             return true;
         }
     };
@@ -117,9 +131,10 @@ public interface TaskShortcutFactory {
         private final TaskView mTaskView;
         private final SplitPositionOption mSplitPositionOption;
 
-        public SplitSelectSystemShortcut(BaseDraggingActivity target, TaskView taskView,
-                SplitPositionOption option) {
-            super(option.iconResId, option.textResId, target, taskView.getItemInfo(), taskView);
+        public SplitSelectSystemShortcut(RecentsViewContainer container, TaskView taskView,
+                                         SplitPositionOption option) {
+            super(option.iconResId, option.textResId, container, taskView.getFirstItemInfo(),
+                    taskView);
             mTaskView = taskView;
             mSplitPositionOption = option;
         }
@@ -131,55 +146,55 @@ public interface TaskShortcutFactory {
     }
 
     /**
-     * A menu item, "Save app pair", that allows the user to preserve the current
-     * app combination as
-     * a single persistent icon on the Home screen, allowing for quick split screen
-     * initialization.
+     * A menu item, "Save app pair", that allows the user to preserve the current app combination as
+     * one persistent icon on the Home screen, allowing for quick split screen launching.
      */
-    class SaveAppPairSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
-        private final TaskView mTaskView;
+    class SaveAppPairSystemShortcut extends SystemShortcut<RecentsViewContainer> {
+        private final GroupedTaskView mTaskView;
 
-        public SaveAppPairSystemShortcut(BaseDraggingActivity activity, TaskView taskView) {
-            super(R.drawable.ic_save_app_pair, R.string.save_app_pair, activity,
-                    taskView.getItemInfo(), taskView);
+
+        public SaveAppPairSystemShortcut(RecentsViewContainer container, GroupedTaskView taskView,
+                                         int iconResId) {
+            super(iconResId, R.string.save_app_pair, container, taskView.getFirstItemInfo(),
+                    taskView);
             mTaskView = taskView;
         }
 
         @Override
         public void onClick(View view) {
-            dismissTaskMenuView(mTarget);
+            dismissTaskMenuView();
             ((RecentsView) mTarget.getOverviewPanel())
                     .getSplitSelectController().getAppPairsController().saveAppPair(mTaskView);
         }
     }
 
-    class FreeformSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
+    class FreeformSystemShortcut extends SystemShortcut<RecentsViewContainer> {
         private static final String TAG = "FreeformSystemShortcut";
 
         private Handler mHandler;
 
         private final RecentsView mRecentsView;
-        private final TaskThumbnailView mThumbnailView;
+        private final TaskThumbnailViewDeprecated mThumbnailView;
         private final TaskView mTaskView;
         private final LauncherEvent mLauncherEvent;
 
-        public FreeformSystemShortcut(int iconRes, int textRes, BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer, LauncherEvent launcherEvent) {
-            super(iconRes, textRes, activity, taskContainer.getItemInfo(),
+        public FreeformSystemShortcut(int iconRes, int textRes, RecentsViewContainer container,
+                                      TaskContainer taskContainer, LauncherEvent launcherEvent) {
+            super(iconRes, textRes, container, taskContainer.getItemInfo(),
                     taskContainer.getTaskView());
             mLauncherEvent = launcherEvent;
             mHandler = new Handler(Looper.getMainLooper());
             mTaskView = taskContainer.getTaskView();
-            mRecentsView = activity.getOverviewPanel();
-            mThumbnailView = taskContainer.getThumbnailView();
+            mRecentsView = container.getOverviewPanel();
+            mThumbnailView = taskContainer.getThumbnailViewDeprecated();
         }
 
         @Override
         public void onClick(View view) {
-            dismissTaskMenuView(mTarget);
+            dismissTaskMenuView();
             RecentsView rv = mTarget.getOverviewPanel();
             rv.switchToScreenshot(() -> {
-                rv.finishRecentsAnimation(true /* toHome */, () -> {
+                rv.finishRecentsAnimation(true /* toRecents */, false /* shouldPip */, () -> {
                     mTarget.returnToHomescreen();
                     rv.getHandler().post(this::startActivity);
                 });
@@ -187,7 +202,7 @@ public interface TaskShortcutFactory {
         }
 
         private void startActivity() {
-            final Task.TaskKey taskKey = mTaskView.getTask().key;
+            final Task.TaskKey taskKey = mTaskView.getFirstTask().key;
             final int taskId = taskKey.id;
             final ActivityOptions options = makeLaunchOptions(mTarget);
             if (options != null) {
@@ -195,11 +210,11 @@ public interface TaskShortcutFactory {
             }
             if (options != null
                     && ActivityManagerWrapper.getInstance().startActivityFromRecents(taskId,
-                            options)) {
+                    options)) {
                 final Runnable animStartedListener = () -> {
                     // Hide the task view and wait for the window to be resized
                     // TODO: Consider animating in launcher and do an in-place start activity
-                    // afterwards
+                    //       afterwards
                     mRecentsView.setIgnoreResetTask(taskId);
                     mTaskView.setAlpha(0f);
                 };
@@ -219,17 +234,19 @@ public interface TaskShortcutFactory {
                         Color.BLACK);
                 mThumbnailView.setDimAlpha(alpha);
 
-                AppTransitionAnimationSpecsFuture future = new AppTransitionAnimationSpecsFuture(mHandler) {
-                    @Override
-                    public List<AppTransitionAnimationSpecCompat> composeSpecs() {
-                        return Collections.singletonList(new AppTransitionAnimationSpecCompat(
-                                taskId, thumbnail, taskBounds));
-                    }
-                };
+                AppTransitionAnimationSpecsFuture future =
+                        new AppTransitionAnimationSpecsFuture(mHandler) {
+                            @Override
+                            public List<AppTransitionAnimationSpecCompat> composeSpecs() {
+                                return Collections.singletonList(
+                                        new AppTransitionAnimationSpecCompat(
+                                                taskId, thumbnail, taskBounds));
+                            }
+                        };
                 overridePendingAppTransitionMultiThumbFuture(
                         future, animStartedListener, mHandler, true /* scaleUp */,
                         taskKey.displayId);
-                mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getItemInfo())
+                mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getFirstItemInfo())
                         .log(mLauncherEvent);
             }
         }
@@ -245,19 +262,18 @@ public interface TaskShortcutFactory {
                         .overridePendingAppTransitionMultiThumbFuture(
                                 animationSpecFuture.getFuture(),
                                 RecentsTransition.wrapStartedListener(animStartedCallbackHandler,
-                                        animStartedCallback),
-                                scaleUp, displayId);
+                                        animStartedCallback), scaleUp, displayId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed to override pending app transition (multi-thumbnail future): ",
                         e);
             }
         }
 
-        private ActivityOptions makeLaunchOptions(Activity activity) {
+        private ActivityOptions makeLaunchOptions(RecentsViewContainer container) {
             ActivityOptions activityOptions = ActivityOptions.makeBasic();
             activityOptions.setLaunchWindowingMode(WINDOWING_MODE_FREEFORM);
             // Arbitrary bounds only because freeform is in dev mode right now
-            final View decorView = activity.getWindow().getDecorView();
+            final View decorView = container.getWindow().getDecorView();
             final WindowInsets insets = decorView.getRootWindowInsets();
             final Rect r = new Rect(0, 0, decorView.getWidth() / 2, decorView.getHeight() / 2);
             r.offsetTo(insets.getSystemWindowInsetLeft() + 50,
@@ -269,48 +285,43 @@ public interface TaskShortcutFactory {
 
     /**
      * Does NOT add split options in the following scenarios:
-     * * The taskView to add split options is already showing split screen tasks
-     * * There aren't at least 2 tasks in overview to show split options for
-     * * Split isn't supported by the task itself (non resizable activity)
-     * * We aren't currently in multi-window
-     * * The taskView to show split options for is the focused task AND we haven't
-     * started
-     * scrolling in overview (if we haven't scrolled, there's a split overview
-     * action button so
-     * we don't need this menu option)
+     * * 1. Taskbar is not present AND aren't at least 2 tasks in overview to show split options for
+     * * 2. Split isn't supported by the task itself (non resizable activity)
+     * * 3. We aren't currently in multi-window
+     * * 4. The taskView to show split options for is the focused task AND we haven't started
+     * * scrolling in overview (if we haven't scrolled, there's a split overview action button so
+     * * we don't need this menu option)
      */
     TaskShortcutFactory SPLIT_SELECT = new TaskShortcutFactory() {
         @Override
-        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
-            if (!LawnchairQuickstepCompat.ATLEAST_T) return null;
-            DeviceProfile deviceProfile = activity.getDeviceProfile();
+        public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
+                                                 TaskContainer taskContainer) {
+            DeviceProfile deviceProfile = container.getDeviceProfile();
             final Task task = taskContainer.getTask();
             final int intentFlags = task.key.baseIntent.getFlags();
             final TaskView taskView = taskContainer.getTaskView();
             final RecentsView recentsView = taskView.getRecentsView();
-            final PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
+            final RecentsPagedOrientationHandler orientationHandler =
+                    recentsView.getPagedOrientationHandler();
 
-            boolean notEnoughTasksToSplit = recentsView.getTaskViewCount() < 2;
-            boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
-            boolean isTaskInExpectedScrollPosition = recentsView
-                    .isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
+            boolean notEnoughTasksToSplit =
+                    !deviceProfile.isTaskbarPresent && recentsView.getTaskViewCount() < 2;
             boolean isTaskSplitNotSupported = !task.isDockable ||
                     (intentFlags & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;
-            boolean hideForExistingMultiWindow = activity.getDeviceProfile().isMultiWindowMode;
+            boolean hideForExistingMultiWindow = container.getDeviceProfile().isMultiWindowMode;
+            boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
+            boolean isTaskInExpectedScrollPosition =
+                    recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
 
-            if (taskView.containsMultipleTasks()
-                    || notEnoughTasksToSplit
-                    || isTaskSplitNotSupported
-                    || hideForExistingMultiWindow
+            if (notEnoughTasksToSplit || isTaskSplitNotSupported || hideForExistingMultiWindow
                     || (isFocusedTask && isTaskInExpectedScrollPosition)) {
                 return null;
             }
 
             return orientationHandler.getSplitPositionOptions(deviceProfile)
                     .stream()
-                    .map((Function<SplitPositionOption, SystemShortcut>) option -> new SplitSelectSystemShortcut(
-                            activity, taskView, option))
+                    .map((Function<SplitPositionOption, SystemShortcut>) option ->
+                            new SplitSelectSystemShortcut(container, taskView, option))
                     .collect(Collectors.toList());
         }
     };
@@ -318,53 +329,74 @@ public interface TaskShortcutFactory {
     TaskShortcutFactory SAVE_APP_PAIR = new TaskShortcutFactory() {
         @Nullable
         @Override
-        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
+        public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
+                                                 TaskContainer taskContainer) {
+            DeviceProfile deviceProfile = container.getDeviceProfile();
             final TaskView taskView = taskContainer.getTaskView();
+            final RecentsView recentsView = taskView.getRecentsView();
+            boolean isLargeTileFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
+            boolean isInExpectedScrollPosition =
+                    recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
+            boolean shouldShowActionsButtonInstead =
+                    isLargeTileFocusedTask && isInExpectedScrollPosition;
 
-            if (!FeatureFlags.ENABLE_APP_PAIRS.get() || !taskView.containsMultipleTasks()) {
+            // No "save app pair" menu item if:
+            // - we are in 3p launcher
+            // - the Overview Actions Button should be visible
+            // - the task view is not a valid save-able split pair
+            if (!recentsView.supportsAppPairs()
+                    || shouldShowActionsButtonInstead
+                    || !recentsView.getSplitSelectController().getAppPairsController()
+                    .canSaveAppPair(taskView)) {
                 return null;
             }
 
-            return Collections.singletonList(new SaveAppPairSystemShortcut(activity, taskView));
+            int iconResId = deviceProfile.isLeftRightSplit
+                    ? R.drawable.ic_save_app_pair_left_right
+                    : R.drawable.ic_save_app_pair_up_down;
+
+            return Collections.singletonList(
+                    new SaveAppPairSystemShortcut(container,
+                            (GroupedTaskView) taskView, iconResId));
         }
 
         @Override
-        public boolean showForSplitscreen() {
+        public boolean showForGroupedTask() {
             return true;
         }
     };
 
     TaskShortcutFactory FREE_FORM = new TaskShortcutFactory() {
         @Override
-        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
+        public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
+                                                 TaskContainer taskContainer) {
             final Task task = taskContainer.getTask();
             if (!task.isDockable) {
                 return null;
             }
-            if (!isAvailable(activity, task.key.displayId)) {
+            if (!isAvailable(container)) {
                 return null;
             }
 
             return Collections.singletonList(new FreeformSystemShortcut(
                     R.drawable.ic_caption_desktop_button_foreground,
-                    R.string.recent_task_option_freeform, activity, taskContainer,
+                    R.string.recent_task_option_freeform, container, taskContainer,
                     LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP));
         }
 
-        private boolean isAvailable(BaseDraggingActivity activity, int displayId) {
-            return ActivityManagerWrapper.getInstance().supportsFreeformMultiWindow(activity)
-                    && !SystemProperties.getBoolean("persist.wm.debug.desktop_mode", false)
-                    && !SystemProperties.getBoolean("persist.wm.debug.desktop_mode_2", false);
+        private boolean isAvailable(RecentsViewContainer container) {
+            return Settings.Global.getInt(
+                    container.asContext().getContentResolver(),
+                    Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT, 0) != 0
+                    && !enableDesktopWindowingMode();
         }
     };
 
     TaskShortcutFactory PIN = new TaskShortcutFactory() {
         @Override
-        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
-            if (!SystemUiProxy.INSTANCE.get(activity).isActive()) {
+        public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
+                                                 TaskContainer taskContainer) {
+            if (!SystemUiProxy.INSTANCE.get(container.asContext()).isActive()) {
                 return null;
             }
             if (!ActivityManagerWrapper.getInstance().isScreenPinningEnabled()) {
@@ -374,18 +406,18 @@ public interface TaskShortcutFactory {
                 // We shouldn't be able to pin while an app is locked.
                 return null;
             }
-            return Collections.singletonList(new PinSystemShortcut(activity, taskContainer));
+            return Collections.singletonList(new PinSystemShortcut(container, taskContainer));
         }
     };
 
-    class PinSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
+    class PinSystemShortcut extends SystemShortcut<RecentsViewContainer> {
 
         private static final String TAG = "PinSystemShortcut";
 
         private final TaskView mTaskView;
 
-        public PinSystemShortcut(BaseDraggingActivity target,
-                TaskIdAttributeContainer taskContainer) {
+        public PinSystemShortcut(RecentsViewContainer target,
+                                 TaskContainer taskContainer) {
             super(R.drawable.ic_pin, R.string.recent_task_option_pin, target,
                     taskContainer.getItemInfo(), taskContainer.getTaskView());
             mTaskView = taskContainer.getTaskView();
@@ -394,55 +426,78 @@ public interface TaskShortcutFactory {
         @Override
         public void onClick(View view) {
             if (mTaskView.launchTaskAnimated() != null) {
-                SystemUiProxy.INSTANCE.get(mTarget).startScreenPinning(mTaskView.getTask().key.id);
+                SystemUiProxy.INSTANCE.get(mTarget.asContext()).startScreenPinning(
+                        mTaskView.getFirstTask().key.id);
             }
-            dismissTaskMenuView(mTarget);
-            mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getItemInfo())
+            dismissTaskMenuView();
+            mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getFirstItemInfo())
                     .log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP);
         }
     }
 
     TaskShortcutFactory INSTALL = new TaskShortcutFactory() {
         @Override
-        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
+        public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
+                                                 TaskContainer taskContainer) {
             Task t = taskContainer.getTask();
-            return InstantAppResolver.newInstance(activity).isInstantApp(
+            return InstantAppResolver.newInstance(container.asContext()).isInstantApp(
                     t.getTopComponent().getPackageName(), t.getKey().userId)
-                            ? Collections.singletonList(new SystemShortcut.Install(activity,
-                                    taskContainer.getItemInfo(), taskContainer.getTaskView()))
-                            : null;
+                    ? Collections.singletonList(new SystemShortcut.Install(container,
+                    taskContainer.getItemInfo(), taskContainer.getTaskView()))
+                    : null;
         }
     };
 
     TaskShortcutFactory WELLBEING = new TaskShortcutFactory() {
         @Override
-        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
-            SystemShortcut<BaseDraggingActivity> wellbeingShortcut = WellbeingModel.SHORTCUT_FACTORY.getShortcut(
-                    activity,
-                    taskContainer.getItemInfo(), taskContainer.getTaskView());
+        public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
+                                                 TaskContainer taskContainer) {
+            SystemShortcut<ActivityContext> wellbeingShortcut =
+                    WellbeingModel.SHORTCUT_FACTORY.getShortcut(container,
+                            taskContainer.getItemInfo(), taskContainer.getTaskView());
             return createSingletonShortcutList(wellbeingShortcut);
         }
     };
 
     TaskShortcutFactory SCREENSHOT = new TaskShortcutFactory() {
         @Override
-        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
-            SystemShortcut screenshotShortcut = taskContainer.getThumbnailView().getTaskOverlay()
-                    .getScreenshotShortcut(activity, taskContainer.getItemInfo(),
-                            taskContainer.getTaskView());
+        public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
+                                                 TaskContainer taskContainer) {
+            boolean isTablet = container.getDeviceProfile().isTablet;
+            boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
+            // Extra conditions if it's not grid-only overview
+            if (!isGridOnlyOverview) {
+                RecentsOrientedState orientedState = taskContainer.getTaskView().getOrientedState();
+                boolean isFakeLandscape = !orientedState.isRecentsActivityRotationAllowed()
+                        && orientedState.getTouchRotation() != ROTATION_0;
+                if (!isFakeLandscape) {
+                    return null;
+                }
+            }
+
+            SystemShortcut screenshotShortcut = taskContainer.getOverlay().getScreenshotShortcut(
+                    container, taskContainer.getItemInfo(), taskContainer.getTaskView());
             return createSingletonShortcutList(screenshotShortcut);
+        }
+
+        @Override
+        public boolean showForDesktopTask() {
+            return true;
         }
     };
 
     TaskShortcutFactory MODAL = new TaskShortcutFactory() {
         @Override
-        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
-            SystemShortcut modalStateSystemShortcut = taskContainer.getThumbnailView().getTaskOverlay()
-                    .getModalStateSystemShortcut(
+        public List<SystemShortcut> getShortcuts(RecentsViewContainer container,
+                                                 TaskContainer taskContainer) {
+            boolean isTablet = container.getDeviceProfile().isTablet;
+            boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
+            if (!isGridOnlyOverview) {
+                return null;
+            }
+
+            SystemShortcut modalStateSystemShortcut =
+                    taskContainer.getOverlay().getModalStateSystemShortcut(
                             taskContainer.getItemInfo(), taskContainer.getTaskView());
             return createSingletonShortcutList(modalStateSystemShortcut);
         }

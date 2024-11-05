@@ -184,9 +184,9 @@ fun getAllAppsScrimColor(context: Context): Int {
 fun Context.checkPackagePermission(packageName: String, permissionName: String): Boolean {
     try {
         val info = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
-        info.requestedPermissions.forEachIndexed { index, s ->
+        info.requestedPermissions?.forEachIndexed { index, s ->
             if (s == permissionName) {
-                return info.requestedPermissionsFlags[index].hasFlag(REQUESTED_PERMISSION_GRANTED)
+                return info.requestedPermissionsFlags?.get(index)?.hasFlag(REQUESTED_PERMISSION_GRANTED)!!
             }
         }
     } catch (_: PackageManager.NameNotFoundException) {

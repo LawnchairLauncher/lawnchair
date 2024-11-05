@@ -36,6 +36,7 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -67,7 +68,8 @@ public class FirstScreenBroadcast {
     private static final String ACTION_FIRST_SCREEN_ACTIVE_INSTALLS
             = "com.android.launcher3.action.FIRST_SCREEN_ACTIVE_INSTALLS";
 
-    private static final String FOLDER_ITEM_EXTRA = "folderItem";
+    // String retained as "folderItem" for back-compatibility reasons.
+    private static final String COLLECTION_ITEM_EXTRA = "folderItem";
     private static final String WORKSPACE_ITEM_EXTRA = "workspaceItem";
     private static final String HOTSEAT_ITEM_EXTRA = "hotseatItem";
     private static final String WIDGET_ITEM_EXTRA = "widgetItem";
@@ -94,7 +96,7 @@ public class FirstScreenBroadcast {
                 .collect(groupingBy(SessionInfo::getInstallerPackageName,
                         mapping(SessionInfo::getAppPackageName, Collectors.toSet())))
                 .forEach((installer, packages) ->
-                    sendBroadcastToInstaller(context, installer, packages, firstScreenItems));
+                        sendBroadcastToInstaller(context, installer, packages, firstScreenItems));
     }
 
     /**
@@ -105,20 +107,19 @@ public class FirstScreenBroadcast {
     @WorkerThread
     private void sendBroadcastToInstaller(Context context, String installerPackageName,
             Set<String> packages, List<ItemInfo> firstScreenItems) {
-        Set<String> folderItems = new HashSet<>();
+        Set<String> collectionItems = new HashSet<>();
         Set<String> workspaceItems = new HashSet<>();
         Set<String> hotseatItems = new HashSet<>();
         Set<String> widgetItems = new HashSet<>();
 
         for (ItemInfo info : firstScreenItems) {
-            if (info instanceof FolderInfo) {
-                FolderInfo folderInfo = (FolderInfo) info;
-                String folderItemInfoPackage;
-                for (ItemInfo folderItemInfo : cloneOnMainThread(folderInfo.contents)) {
-                    folderItemInfoPackage = getPackageName(folderItemInfo);
-                    if (folderItemInfoPackage != null
-                            && packages.contains(folderItemInfoPackage)) {
-                        folderItems.add(folderItemInfoPackage);
+            if (info instanceof CollectionInfo ci) {
+                String collectionItemInfoPackage;
+                for (ItemInfo collectionItemInfo : cloneOnMainThread(ci.getAppContents())) {
+                    collectionItemInfoPackage = getPackageName(collectionItemInfo);
+                    if (collectionItemInfoPackage != null
+                            && packages.contains(collectionItemInfoPackage)) {
+                        collectionItems.add(collectionItemInfoPackage);
                     }
                 }
             }
@@ -137,13 +138,13 @@ public class FirstScreenBroadcast {
         }
 
         if (DEBUG) {
-            printList(installerPackageName, "Folder item", folderItems);
+            printList(installerPackageName, "Collection item", collectionItems);
             printList(installerPackageName, "Workspace item", workspaceItems);
             printList(installerPackageName, "Hotseat item", hotseatItems);
             printList(installerPackageName, "Widget item", widgetItems);
         }
 
-        if (folderItems.isEmpty()
+        if (collectionItems.isEmpty()
                 && workspaceItems.isEmpty()
                 && hotseatItems.isEmpty()
                 && widgetItems.isEmpty()) {
@@ -152,7 +153,7 @@ public class FirstScreenBroadcast {
         }
         context.sendBroadcast(new Intent(ACTION_FIRST_SCREEN_ACTIVE_INSTALLS)
                 .setPackage(installerPackageName)
-                .putStringArrayListExtra(FOLDER_ITEM_EXTRA, new ArrayList<>(folderItems))
+                .putStringArrayListExtra(COLLECTION_ITEM_EXTRA, new ArrayList<>(collectionItems))
                 .putStringArrayListExtra(WORKSPACE_ITEM_EXTRA, new ArrayList<>(workspaceItems))
                 .putStringArrayListExtra(HOTSEAT_ITEM_EXTRA, new ArrayList<>(hotseatItems))
                 .putStringArrayListExtra(WIDGET_ITEM_EXTRA, new ArrayList<>(widgetItems))
@@ -180,7 +181,7 @@ public class FirstScreenBroadcast {
     }
 
     /**
-     * Clone the provided list on UI thread. This is used for {@link FolderInfo#contents} which
+     * Clone the provided list on UI thread. This is used for {@link FolderInfo#getContents()} which
      * is always modified on UI thread.
      */
     @AnyThread

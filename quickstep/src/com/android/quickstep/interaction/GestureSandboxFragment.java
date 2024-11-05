@@ -28,6 +28,10 @@ public abstract class GestureSandboxFragment extends Fragment {
 
     void onDetachedFromWindow() {}
 
+    boolean canRecreateFragment() {
+        return false;
+    }
+
     @Nullable
     GestureSandboxFragment recreateFragment() {
         return null;

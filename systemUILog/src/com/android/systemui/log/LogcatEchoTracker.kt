@@ -25,7 +25,4 @@ interface LogcatEchoTracker {
 
     /** Whether [tagName] should echo messages of [level] or higher to logcat. */
     fun isTagLoggable(tagName: String, level: LogLevel): Boolean
-
-    /** Whether to log messages in a background thread. */
-    val logInBackgroundThread: Boolean
 }

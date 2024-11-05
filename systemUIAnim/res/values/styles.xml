@@ -15,8 +15,8 @@
      limitations under the License.
 -->
 <resources>
-  <!-- An animation used by DialogLaunchAnimator to make a dialog appear instantly (to animate -->
-  <!-- in-window) and disappear by fading out (when the exit into view is disabled). -->
+  <!-- An animation used by DialogTransitionAnimator to make a dialog appear instantly (to -->
+  <!-- animate in-window) and disappear by fading out (when the exit into view is disabled). -->
   <style name="Animation.LaunchAnimation" parent="@android:style/Animation">
     <item name="android:windowEnterAnimation">@anim/launch_dialog_enter</item>
     <item name="android:windowExitAnimation">@anim/launch_dialog_exit</item>

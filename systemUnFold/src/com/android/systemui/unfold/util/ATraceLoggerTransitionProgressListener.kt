@@ -16,7 +16,9 @@ package com.android.systemui.unfold.util
 
 import android.os.Trace
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import javax.inject.Qualifier
 
 /**
@@ -26,11 +28,11 @@ import javax.inject.Qualifier
  * for each fold/unfold: in (1) systemui and (2) launcher process.
  */
 class ATraceLoggerTransitionProgressListener
-@Inject
-internal constructor(@UnfoldTransitionATracePrefix tracePrefix: String) :
+@AssistedInject
+internal constructor(@UnfoldTransitionATracePrefix tracePrefix: String, @Assisted details: String) :
     TransitionProgressListener {
 
-    private val traceName = "$tracePrefix#$UNFOLD_TRANSITION_TRACE_NAME"
+    private val traceName = "$tracePrefix$details#$UNFOLD_TRANSITION_TRACE_NAME"
 
     override fun onTransitionStarted() {
         Trace.beginAsyncSection(traceName, /* cookie= */ 0)
@@ -42,6 +44,12 @@ internal constructor(@UnfoldTransitionATracePrefix tracePrefix: String) :
 
     override fun onTransitionProgress(progress: Float) {
         Trace.setCounter(traceName, (progress * 100).toLong())
+    }
+
+    @AssistedFactory
+    interface Factory {
+        /** Creates an [ATraceLoggerTransitionProgressListener] with [details] in the track name. */
+        fun create(details: String): ATraceLoggerTransitionProgressListener
     }
 }
 

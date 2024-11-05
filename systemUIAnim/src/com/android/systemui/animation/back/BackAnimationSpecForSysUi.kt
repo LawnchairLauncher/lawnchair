@@ -23,10 +23,10 @@ import android.util.DisplayMetrics
  * https://carbon.googleplex.com/predictive-back-for-apps/pages/st-1-dismiss-app
  */
 fun BackAnimationSpec.Companion.dismissAppForSysUi(
-    displayMetrics: DisplayMetrics,
+    displayMetricsProvider: () -> DisplayMetrics,
 ): BackAnimationSpec =
     BackAnimationSpec.createFloatingSurfaceAnimationSpec(
-        displayMetrics = displayMetrics,
+        displayMetricsProvider = displayMetricsProvider,
         maxMarginXdp = 8f,
         maxMarginYdp = 8f,
         minScale = 0.8f,
@@ -37,10 +37,10 @@ fun BackAnimationSpec.Companion.dismissAppForSysUi(
  * https://carbon.googleplex.com/predictive-back-for-apps/pages/st-2-cross-task
  */
 fun BackAnimationSpec.Companion.crossTaskForSysUi(
-    displayMetrics: DisplayMetrics,
+    displayMetricsProvider: () -> DisplayMetrics,
 ): BackAnimationSpec =
     BackAnimationSpec.createFloatingSurfaceAnimationSpec(
-        displayMetrics = displayMetrics,
+        displayMetricsProvider = displayMetricsProvider,
         maxMarginXdp = 8f,
         maxMarginYdp = 8f,
         minScale = 0.8f,
@@ -51,10 +51,10 @@ fun BackAnimationSpec.Companion.crossTaskForSysUi(
  * https://carbon.googleplex.com/predictive-back-for-apps/pages/st-3-inner-area-dismiss
  */
 fun BackAnimationSpec.Companion.innerAreaDismissForSysUi(
-    displayMetrics: DisplayMetrics,
+    displayMetricsProvider: () -> DisplayMetrics,
 ): BackAnimationSpec =
     BackAnimationSpec.createFloatingSurfaceAnimationSpec(
-        displayMetrics = displayMetrics,
+        displayMetricsProvider = displayMetricsProvider,
         maxMarginXdp = 0f,
         maxMarginYdp = 0f,
         minScale = 0.9f,
@@ -65,11 +65,19 @@ fun BackAnimationSpec.Companion.innerAreaDismissForSysUi(
  * https://carbon.googleplex.com/predictive-back-for-apps/pages/st-4-floating-system-surfaces
  */
 fun BackAnimationSpec.Companion.floatingSystemSurfacesForSysUi(
-    displayMetrics: DisplayMetrics,
+    displayMetricsProvider: () -> DisplayMetrics,
 ): BackAnimationSpec =
     BackAnimationSpec.createFloatingSurfaceAnimationSpec(
-        displayMetrics = displayMetrics,
+        displayMetricsProvider = displayMetricsProvider,
         maxMarginXdp = 8f,
         maxMarginYdp = 8f,
-        minScale = 0.8f,
+        minScale = 0.9f,
     )
+
+/**
+ * SysUI transitions - Bottomsheet (AT3)
+ * https://carbon.googleplex.com/predictive-back-for-apps/pages/at-3-bottom-sheets
+ */
+fun BackAnimationSpec.Companion.bottomSheetForSysUi(
+    displayMetricsProvider: () -> DisplayMetrics,
+): BackAnimationSpec = BackAnimationSpec.createBottomsheetAnimationSpec(displayMetricsProvider)

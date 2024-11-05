@@ -21,19 +21,17 @@ import android.testing.TestableLooper
 import android.testing.TestableLooper.RunWithLooper
 import android.util.Log
 import androidx.test.filters.SmallTest
-import com.android.launcher3.util.any
-import com.android.launcher3.util.mock
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.anyBoolean
-import org.mockito.Mockito.anyFloat
-import org.mockito.Mockito.inOrder
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
+import org.mockito.kotlin.any
+import org.mockito.kotlin.inOrder
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
 
 @SmallTest
 @RunWith(AndroidTestingRunner::class)
@@ -74,7 +72,7 @@ class PreemptiveUnfoldTransitionProgressProviderTest {
         provider.preemptivelyStartTransition(initialProgress = null)
 
         verify(listener).onTransitionStarted()
-        verify(listener, never()).onTransitionProgress(anyFloat())
+        verify(listener, never()).onTransitionProgress(any())
     }
 
     @Test
@@ -90,7 +88,7 @@ class PreemptiveUnfoldTransitionProgressProviderTest {
         provider.preemptivelyStartTransition()
         provider.cancelPreemptiveStart()
 
-        with(inOrder(listener)) {
+        inOrder(listener) {
             verify(listener).onTransitionStarted()
             verify(listener).onTransitionFinished()
         }
@@ -111,7 +109,7 @@ class PreemptiveUnfoldTransitionProgressProviderTest {
         source.onTransitionStarted()
         source.onTransitionFinished()
 
-        with(inOrder(listener)) {
+        inOrder(listener) {
             verify(listener).onTransitionStarted()
             verify(listener).onTransitionFinished()
         }
@@ -152,7 +150,7 @@ class PreemptiveUnfoldTransitionProgressProviderTest {
         provider.preemptivelyStartTransition()
         source.onTransitionFinished()
 
-        with(inOrder(listener)) {
+        inOrder(listener) {
             verify(listener).onTransitionStarted()
             verify(listener).onTransitionFinished()
         }
@@ -165,7 +163,7 @@ class PreemptiveUnfoldTransitionProgressProviderTest {
         testableLooper.moveTimeForward(PREEMPTIVE_UNFOLD_TIMEOUT_MS + 1)
         testableLooper.processAllMessages()
 
-        with(inOrder(listener)) {
+        inOrder(listener) {
             verify(listener).onTransitionStarted()
             verify(listener).onTransitionFinished()
         }
@@ -178,7 +176,7 @@ class PreemptiveUnfoldTransitionProgressProviderTest {
         testableLooper.moveTimeForward(PREEMPTIVE_UNFOLD_TIMEOUT_MS + 1)
         testableLooper.processAllMessages()
 
-        verify(testWtfHandler).onTerribleFailure(any(), any(), anyBoolean())
+        verify(testWtfHandler).onTerribleFailure(any(), any(), any())
     }
 
     @Test
@@ -225,7 +223,7 @@ class PreemptiveUnfoldTransitionProgressProviderTest {
 
         source.onTransitionFinished()
 
-        with(inOrder(listener)) {
+        inOrder(listener) {
             verify(listener).onTransitionStarted()
             verify(listener).onTransitionFinished()
         }

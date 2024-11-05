@@ -21,6 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Закачи"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform"</string>
+    <string name="recent_task_option_desktop" msgid="8280879717125435668">"Компјутер"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Нема неодамнешни ставки"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Поставки за користење на апликациите"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Избриши ги сите"</string>
@@ -49,6 +50,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Повлечете од крајниот десен или крајниот лев раб"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Повлечете од десниот или левиот раб кон средината на екранот и пуштете"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Научивте како да повлекувате оддесно за враќање назад. Научете и како да се префрлате помеѓу апликациите."</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"Го научивте движењето за враќање назад. Научете го и движењето за префрлање помеѓу апликациите."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Завршивте со упатството за враќање назад"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Не повлекувајте преблиску до дното на екранот"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"За да ја промените чувствителноста, одете во „Поставки“"</string>
@@ -94,21 +96,29 @@
     <string name="action_share" msgid="2648470652637092375">"Сподели"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Слика од екранот"</string>
     <string name="action_split" msgid="2098009717623550676">"Раздели"</string>
+    <string name="action_save_app_pair" msgid="5974823919237645229">"Зачувај го паров"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Допрете друга аплик. за да користите поделен екран"</string>
+    <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Изберете друга апликација за да користите поделен екран"</string>
+    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Откажи"</b></string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Излези од изборот на поделен екран"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Изберете друга апликација за да користите поделен екран"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Апликацијата или вашата организација не го дозволува дејствово"</string>
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Виџетите не се поддржани во моментов, изберете друга апликација"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Да се прескокне упатството за навигација?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Ова може да го најдете подоцна во апликацијата <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Откажи"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Прескокни"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ротирајте го екранот"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Обука за лентата со задачи"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Повлечете апликација настрана за да користите 2 апликации"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже лентата со задачи"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Повлечете апликација настрана за да користите 2 апликации одеднаш"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже „Лентата со задачи“"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Добивајте предлози за апликации според вашата рутина"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Вклучете навигација со движење во „Поставки“ за автоматско сокривање на „Лентата со задачи“"</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете повеќе со една лента со задачи"</string>
+    <string name="taskbar_edu_pinning" msgid="6708550858580071558">"Притиснете долго на разделникот за да ја закачите „Лентата со задачи“"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете сешто со „Лентата со задачи“"</string>
+    <string name="taskbar_edu_pinning_title" msgid="210102174154211712">"Како секогаш да се прикажува „Лентата со задачи“"</string>
+    <string name="taskbar_edu_pinning_standalone" msgid="2636919474366410467">"Допрете и задржете го разделникот за да може „Лентата со задачи“ секогаш да се прикажува на дното на екранот"</string>
+    <string name="taskbar_search_edu_title" msgid="5569194922234364530">"Допрете и задржете го копчето за дејство за да пребарувате на екранот"</string>
+    <string name="taskbar_edu_search_disclosure" msgid="8734536088447779686">"Производов го користи избраниот дел од екранот за пребарување. Важат <xliff:g id="BEGIN_PRIVACY_LINK">&lt;a href="%1$s"&gt;</xliff:g>Политиката за приватност<xliff:g id="END_PRIVACY_LINK">&lt;/a&gt;</xliff:g> и <xliff:g id="BEGIN_TOS_LINK">&lt;a href="%2$s"&gt;</xliff:g>Условите за користење<xliff:g id="END_TOS_LINK">&lt;/a&gt;</xliff:g> на Google."</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Затвори"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Дома"</string>
@@ -128,7 +138,10 @@
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Премести горе лево"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Премести долу десно"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Прикажи уште # апликација.}one{Прикажи уште # апликација.}other{Прикажи уште # апликации.}}"</string>
+    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{Прикажи # апликација за компјутер.}one{Прикажи # апликација за компјутер.}other{Прикажи # апликации за компјутер.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> и <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
-    <string name="desktop_select_app_toast" msgid="2306057322833956910">"Додавање на апликацијата во „Работна површина“"</string>
-    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"Откажи"</string>
+    <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Балонче"</string>
+    <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"Проширено балонче"</string>
+    <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> од <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> и уште <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g>"</string>
 </resources>

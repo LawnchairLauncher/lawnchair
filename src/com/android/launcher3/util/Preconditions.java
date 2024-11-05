@@ -51,6 +51,12 @@ public class Preconditions {
         }
     }
 
+    public static void assertTrue(boolean condition) {
+        if (FeatureFlags.IS_STUDIO_BUILD && !condition) {
+            throw new IllegalStateException();
+        }
+    }
+
     private static boolean isSameLooper(Looper looper) {
         return Looper.myLooper() == looper;
     }

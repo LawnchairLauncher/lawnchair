@@ -35,17 +35,26 @@ class SdfShaderLibrary {
             }
         """
 
+        const val BOX_SDF =
+            """
+                float sdBox(vec2 p, vec2 size) {
+                    size = size * 0.5;
+                    vec2 d = abs(p) - size;
+                    return length(max(d, 0.)) + min(max(d.x, d.y), 0.) / size.y;
+                }
+            """
+
         const val ROUNDED_BOX_SDF =
             """
             float sdRoundedBox(vec2 p, vec2 size, float cornerRadius) {
                 size *= 0.5;
                 cornerRadius *= 0.5;
-                vec2 d = abs(p)-size+cornerRadius;
+                vec2 d = abs(p) - size + cornerRadius;
 
                 float outside = length(max(d, 0.0));
                 float inside = min(max(d.x, d.y), 0.0);
 
-                return (outside+inside-cornerRadius)/size.y;
+                return (outside + inside - cornerRadius) / size.y;
             }
 
             float roundedBoxRing(vec2 p, vec2 size, float cornerRadius,

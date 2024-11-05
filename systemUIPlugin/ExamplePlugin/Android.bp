@@ -1,4 +1,5 @@
 package {
+    default_team: "trendy_team_system_ui_please_use_a_more_specific_subteam_if_possible_",
     // See: http://go/android-license-faq
     // A large-scale-change added 'default_applicable_licenses' to import
     // all of the 'license_kinds' from "frameworks_base_packages_SystemUI_license"
@@ -10,6 +11,7 @@ package {
 android_app {
 
     name: "ExamplePlugin",
+    use_resource_processor: true,
 
     libs: ["SystemUIPluginLib"],
 

@@ -1,0 +1,58 @@
+/*
+ * Copyright (C) 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+syntax = "proto2";
+
+package com.android.wm.shell;
+
+option java_multiple_files = true;
+
+/* Represents a file full of transition entries.
+   Encoded, it should start with 0x09 0x57 0x4D 0x53 0x54 0x52 0x41 0x43 0x45 (.WMSTRACE), such
+   that it can be easily identified. */
+message WmShellTransitionTraceProto {
+    /* constant; MAGIC_NUMBER = (long) MAGIC_NUMBER_H << 32 | MagicNumber.MAGIC_NUMBER_L
+   (this is needed because enums have to be 32 bits and there's no nice way to put 64bit
+    constants into .proto files. */
+    enum MagicNumber {
+        INVALID = 0;
+        MAGIC_NUMBER_L = 0x54534D57;  /* WMST (little-endian ASCII) */
+        MAGIC_NUMBER_H = 0x45434152;  /* RACE (little-endian ASCII) */
+    }
+
+    // Must be the first field, set to value in MagicNumber
+    required fixed64 magic_number = 1;
+    repeated Transition transitions = 2;
+    repeated HandlerMapping handlerMappings = 3;
+    /* offset between real-time clock and elapsed time clock in nanoseconds.
+    Calculated as: 1000000 * System.currentTimeMillis() - SystemClock.elapsedRealtimeNanos() */
+    optional fixed64 real_to_elapsed_time_offset_nanos = 4;
+}
+
+message Transition {
+    required int32 id = 1;
+    optional int64 dispatch_time_ns = 2;
+    optional int32 handler = 3;
+    optional int64 merge_time_ns = 4;
+    optional int64 merge_request_time_ns = 5;
+    optional int32 merge_target = 6;
+    optional int64 abort_time_ns = 7;
+}
+
+message HandlerMapping {
+    required int32 id = 1;
+    required string name = 2;
+}

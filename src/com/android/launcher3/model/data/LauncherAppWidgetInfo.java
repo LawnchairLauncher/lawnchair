@@ -32,13 +32,11 @@ import android.os.Process;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
  * Represents a widget (either instantiated or about to be) in the Launcher.
@@ -143,8 +141,6 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      */
     private int widgetFeatures;
 
-    private boolean mHasNotifiedInitialWidgetSizeChanged;
-
     /**
      * The container from which this widget was added (e.g. widgets tray, pin widget, search)
      */
@@ -200,17 +196,6 @@ public class LauncherAppWidgetInfo extends ItemInfo {
                 .put(LauncherSettings.Favorites.OPTIONS, options)
                 .put(LauncherSettings.Favorites.INTENT, bindOptions)
                 .put(LauncherSettings.Favorites.APPWIDGET_SOURCE, sourceContainer);
-    }
-
-    /**
-     * When we bind the widget, we should notify the widget that the size has changed if we have not
-     * done so already (only really for default workspace widgets).
-     */
-    public void onBindAppWidget(Launcher launcher, AppWidgetHostView hostView) {
-        if (!mHasNotifiedInitialWidgetSizeChanged) {
-            WidgetSizes.updateWidgetSizeRanges(hostView, launcher, spanX, spanY);
-            mHasNotifiedInitialWidgetSizeChanged = true;
-        }
     }
 
     @Override
@@ -286,8 +271,8 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     @NonNull
     @Override
-    public LauncherAtom.ItemInfo buildProto(@Nullable FolderInfo folderInfo) {
-        LauncherAtom.ItemInfo info = super.buildProto(folderInfo);
+    public LauncherAtom.ItemInfo buildProto(@Nullable CollectionInfo collectionInfo) {
+        LauncherAtom.ItemInfo info = super.buildProto(collectionInfo);
         return info.toBuilder()
                 .setWidget(info.getWidget().toBuilder().setWidgetFeatures(widgetFeatures))
                 .addItemAttributes(getAttribute(sourceContainer))

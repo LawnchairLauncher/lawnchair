@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"閉じる"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"展開"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"設定"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"メニュー"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"ピクチャー イン ピクチャーのメニュー"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g>はピクチャー イン ピクチャーで表示中です"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"<xliff:g id="NAME">%s</xliff:g>でこの機能を使用しない場合は、タップして設定を開いて OFF にしてください。"</string>
+    <string name="pip_play" msgid="3496151081459417097">"再生"</string>
+    <string name="pip_pause" msgid="690688849510295232">"一時停止"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"次へスキップ"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"前へスキップ"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"サイズ変更"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"非表示"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"表示"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"アプリは分割画面では動作しないことがあります"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"アプリで分割画面がサポートされていません"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"このアプリはウィンドウが 1 つの場合のみ開くことができます"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"アプリはセカンダリ ディスプレイでは動作しないことがあります。"</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"アプリはセカンダリ ディスプレイでの起動に対応していません。"</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"分割画面の分割線"</string>
+    <string name="divider_title" msgid="1963391955593749442">"分割画面の分割線"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"左全画面"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"左 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"左 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"左 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"右全画面"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"上部全画面"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"上 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"上 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"上 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"下部全画面"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"左に分割"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"右に分割"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"上に分割"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"下に分割"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"片手モードの使用"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"終了するには、画面を下から上にスワイプするか、アプリの上側の任意の場所をタップします"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"片手モードを開始します"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"片手モードを終了します"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g> のバブルの設定"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"オーバーフロー"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"スタックに戻す"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>（<xliff:g id="APP_NAME">%2$s</xliff:g>）"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>（<xliff:g id="APP_NAME">%2$s</xliff:g>）、他 <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> 件"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"左上に移動"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"右上に移動"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"左下に移動"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"右下に移動"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>を開きます"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>を閉じます"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> の設定"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"バブルを閉じる"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"会話をバブルで表示しない"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"チャットでバブルを使う"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"新しい会話はフローティング アイコン（バブル）として表示されます。タップするとバブルが開きます。ドラッグしてバブルを移動できます。"</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"バブルはいつでも管理可能"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"このアプリからのバブルを OFF にするには、[管理] をタップしてください"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"OK"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"最近閉じたバブルはありません"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"最近表示されたバブルや閉じたバブルが、ここに表示されます"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"チャットでバブルを使う"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"新しい会話がアイコンとして画面下部に表示されます。タップすると開き、ドラッグして閉じることができます。"</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"バブルはいつでも管理可能"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"バブルで表示するアプリや会話を管理するには、ここをタップします"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"バブル"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"管理"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"ふきだしが非表示になっています。"</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"バブル"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"バブルを表示"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"タップしてこのアプリを再起動すると、表示が適切になります"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"このアプリのアスペクト比を [設定] で変更します"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"アスペクト比を変更"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"カメラに関する問題の場合は、\nタップすると修正できます"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"修正されなかった場合は、\nタップすると元に戻ります"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"カメラに関する問題でない場合は、タップすると閉じます。"</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"表示を拡大して機能を強化"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"分割画面にするにはもう 1 つのアプリをドラッグしてください"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"位置を変えるにはアプリの外側をダブルタップしてください"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"OK"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"開くと詳細が表示されます。"</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"アプリを再起動して画面表示を最適化しますか？"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"アプリを再起動することにより表示を最適化できますが、保存されていない変更は失われる可能性があります"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"キャンセル"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"再起動"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"次回から表示しない"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"ダブルタップすると\nこのアプリを移動できます"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"最大化"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"最小化"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"閉じる"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"戻る"</string>
+    <string name="handle_text" msgid="1766582106752184456">"ハンドル"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"アプリのアイコン"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"全画面表示"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"デスクトップ モード"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"分割画面"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"その他"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"フローティング"</string>
+    <string name="select_text" msgid="5139083974039906583">"選択"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"スクリーンショット"</string>
+    <string name="close_text" msgid="4986518933445178928">"閉じる"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"メニューを閉じる"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"メニューを開く"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"画面の最大化"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"画面のスナップ"</string>
+</resources>

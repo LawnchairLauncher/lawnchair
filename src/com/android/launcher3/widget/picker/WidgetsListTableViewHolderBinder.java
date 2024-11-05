@@ -15,6 +15,11 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.widget.picker.WidgetsListItemAnimator.CHANGE_DURATION_MS;
+import static com.android.launcher3.widget.picker.WidgetsListItemAnimator.MOVE_DURATION_MS;
+
+import static android.animation.ValueAnimator.areAnimatorsEnabled;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -26,7 +31,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Px;
@@ -36,6 +40,7 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.WidgetCell;
+import com.android.launcher3.widget.WidgetTableRow;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
 
@@ -111,17 +116,16 @@ public final class WidgetsListTableViewHolderBinder
         for (int i = 0; i < widgetItemsTable.size(); i++) {
             List<WidgetItem> widgetItemsPerRow = widgetItemsTable.get(i);
             for (int j = 0; j < widgetItemsPerRow.size(); j++) {
-                TableRow row = (TableRow) table.getChildAt(i);
+                WidgetTableRow row = (WidgetTableRow) table.getChildAt(i);
                 row.setVisibility(View.VISIBLE);
                 WidgetCell widget = (WidgetCell) row.getChildAt(j);
                 widget.clear();
+                widget.addPreviewReadyListener(row);
                 WidgetItem widgetItem = widgetItemsPerRow.get(j);
                 widget.setVisibility(View.VISIBLE);
 
-                // When preview loads, notify adapter to rebind the item and possibly animate
-                widget.applyFromCellItem(widgetItem, 1f,
-                        bitmap -> holder.onPreviewLoaded(Pair.create(widgetItem, bitmap)),
-                        holder.previewCache.get(widgetItem));
+                widget.applyFromCellItem(widgetItem);
+                widget.requestLayout();
             }
         }
     }
@@ -142,14 +146,19 @@ public final class WidgetsListTableViewHolderBinder
 
         for (int i = 0; i < widgetItemsTable.size(); i++) {
             List<WidgetItem> widgetItems = widgetItemsTable.get(i);
-            TableRow tableRow;
+            WidgetTableRow tableRow;
             if (i < table.getChildCount()) {
-                tableRow = (TableRow) table.getChildAt(i);
+                tableRow = (WidgetTableRow) table.getChildAt(i);
             } else {
-                tableRow = new TableRow(table.getContext());
+                tableRow = new WidgetTableRow(table.getContext());
                 tableRow.setGravity(Gravity.TOP);
                 table.addView(tableRow);
             }
+            // Pass resize delay to let the "move" and "change" animations run before resizing the
+            // row.
+            tableRow.setupRow(widgetItems.size(),
+                    /*resizeDelayMs=*/
+                    areAnimatorsEnabled() ? (CHANGE_DURATION_MS + MOVE_DURATION_MS) : 0);
             if (tableRow.getChildCount() > widgetItems.size()) {
                 for (int j = widgetItems.size(); j < tableRow.getChildCount(); j++) {
                     tableRow.getChildAt(j).setVisibility(View.GONE);
@@ -159,6 +168,8 @@ public final class WidgetsListTableViewHolderBinder
                     WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
                             R.layout.widget_cell, tableRow, false);
                     // set up touch.
+                    widget.setOnClickListener(mIconClickListener);
+                    widget.addPreviewReadyListener(tableRow);
                     View preview = widget.findViewById(R.id.widget_preview_container);
                     preview.setOnClickListener(mIconClickListener);
                     preview.setOnLongClickListener(mIconLongClickListener);
@@ -174,7 +185,7 @@ public final class WidgetsListTableViewHolderBinder
         int numOfRows = holder.tableContainer.getChildCount();
         holder.previewCache.clear();
         for (int i = 0; i < numOfRows; i++) {
-            TableRow tableRow = (TableRow) holder.tableContainer.getChildAt(i);
+            WidgetTableRow tableRow = (WidgetTableRow) holder.tableContainer.getChildAt(i);
             int numOfCols = tableRow.getChildCount();
             for (int j = 0; j < numOfCols; j++) {
                 WidgetCell widget = (WidgetCell) tableRow.getChildAt(j);

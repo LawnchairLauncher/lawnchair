@@ -20,11 +20,11 @@ import android.graphics.Canvas;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 
-import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
-
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration;
 import androidx.recyclerview.widget.RecyclerView.State;
+
+import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 
 /**
  * {@link ItemDecoration} for drawing and animating focused view background.
@@ -37,12 +37,17 @@ public class FocusedItemDecorator extends ItemDecoration {
         mHelper = new SimpleFocusIndicatorHelper(container);
     }
 
+    public FocusedItemDecorator(FocusIndicatorHelper focusIndicatorHelper) {
+        mHelper = focusIndicatorHelper;
+    }
+
     public OnFocusChangeListener getFocusListener() {
         return mHelper;
     }
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent, State state) {
+    public void onDrawOver(Canvas c, RecyclerView parent, State state) {
+        // Use onDrawOver so focus outline is always visible
         mHelper.draw(c);
     }
 }

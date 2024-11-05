@@ -28,7 +28,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -38,7 +37,7 @@ import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel.Callbacks;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -74,7 +73,6 @@ public class ModelWriter {
     @Nullable
     private final Callbacks mOwner;
 
-    private final boolean mHasVerticalHotseat;
     private final boolean mVerifyChanges;
 
     // Keep track of delete operations that occur when an Undo option is present; we
@@ -84,12 +82,10 @@ public class ModelWriter {
     private final CellPosMapper mCellPosMapper;
 
     public ModelWriter(Context context, LauncherModel model, BgDataModel dataModel,
-            boolean hasVerticalHotseat, boolean verifyChanges, CellPosMapper cellPosMapper,
-            @Nullable Callbacks owner) {
+            boolean verifyChanges, CellPosMapper cellPosMapper, @Nullable Callbacks owner) {
         mContext = context;
         mModel = model;
         mBgDataModel = dataModel;
-        mHasVerticalHotseat = hasVerticalHotseat;
         mVerifyChanges = verifyChanges;
         mOwner = owner;
         mCellPosMapper = cellPosMapper;
@@ -103,16 +99,8 @@ public class ModelWriter {
         item.container = container;
         item.cellX = modelPos.cellX;
         item.cellY = modelPos.cellY;
-        // We store hotseat items in canonical form which is this orientation invariant
-        // position
-        // in the hotseat
-        if (container == Favorites.CONTAINER_HOTSEAT) {
-            item.screenId = mHasVerticalHotseat
-                    ? LauncherAppState.getIDP(mContext).numDatabaseHotseatIcons - cellY - 1
-                    : cellX;
-        } else {
-            item.screenId = modelPos.screenId;
-        }
+        item.screenId = modelPos.screenId;
+
     }
 
     /**
@@ -318,15 +306,15 @@ public class ModelWriter {
     /**
      * Remove the specified folder and all its contents from the database.
      */
-    public void deleteFolderAndContentsFromDatabase(final FolderInfo info) {
+    public void deleteCollectionAndContentsFromDatabase(final CollectionInfo info) {
         ModelVerifier verifier = new ModelVerifier();
         notifyDelete(Collections.singleton(info));
 
         enqueueDeleteRunnable(newModelTask(() -> {
             mModel.getModelDbController().delete(Favorites.TABLE_NAME,
                     Favorites.CONTAINER + "=" + info.id, null);
-            mBgDataModel.removeItem(mContext, info.contents);
-            info.contents.clear();
+            mBgDataModel.removeItem(mContext, info.getContents());
+            info.getContents().clear();
 
             mModel.getModelDbController().delete(Favorites.TABLE_NAME,
                     Favorites._ID + "=" + info.id, null);
@@ -481,12 +469,12 @@ public class ModelWriter {
 
                 if (item.container != Favorites.CONTAINER_DESKTOP &&
                         item.container != Favorites.CONTAINER_HOTSEAT) {
-                    // Item is in a folder, make sure this folder exists
-                    if (!mBgDataModel.folders.containsKey(item.container)) {
+                    // Item is in a collection, make sure this collection exists
+                    if (!mBgDataModel.collections.containsKey(item.container)) {
                         // An items container is being set to a that of an item which is not in
                         // the list of Folders.
                         String msg = "item: " + item + " container being set to: " +
-                                item.container + ", not in the list of folders";
+                                item.container + ", not in the list of collections";
                         Log.e(TAG, msg);
                     }
                 }

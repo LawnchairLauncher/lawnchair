@@ -21,5 +21,14 @@
     <style name="AddItemActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <!-- Add the dim background here, rather than in the activity layout as the window slides
+             in from the bottom, and we don't want the scrim to slide. -->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="WidgetPickerActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="pageIndicatorDotColor">@color/page_indicator_dot_color_dark</item>
     </style>
 </resources>

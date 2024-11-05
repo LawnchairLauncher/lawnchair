@@ -27,6 +27,7 @@ import android.graphics.fonts.FontVariationAxis
 import android.text.Layout
 import android.util.LruCache
 import kotlin.math.roundToInt
+import android.util.Log
 
 private const val DEFAULT_ANIMATION_DURATION: Long = 300
 private const val TYPEFACE_CACHE_MAX_ENTRIES = 5
@@ -140,7 +141,6 @@ class TextAnimator(
     }
 
     sealed class PositionedGlyph {
-
         /** Mutable X coordinate of the glyph position relative from drawing offset. */
         var x: Float = 0f
 
@@ -179,8 +179,15 @@ class TextAnimator(
 
     private val fontVariationUtils = FontVariationUtils()
 
-    fun updateLayout(layout: Layout) {
+    fun updateLayout(layout: Layout, textSize: Float = -1f) {
         textInterpolator.layout = layout
+
+        if (textSize >= 0) {
+            textInterpolator.targetPaint.textSize = textSize
+            textInterpolator.basePaint.textSize = textSize
+            textInterpolator.onTargetPaintModified()
+            textInterpolator.onBasePaintModified()
+        }
     }
 
     fun isRunning(): Boolean {
@@ -269,41 +276,53 @@ class TextAnimator(
         duration: Long = -1L,
         interpolator: TimeInterpolator? = null,
         delay: Long = 0,
-        onAnimationEnd: Runnable? = null
+        onAnimationEnd: Runnable? = null,
+    ) = setTextStyleInternal(fvar, textSize, color, strokeWidth, animate, duration,
+        interpolator, delay, onAnimationEnd, updateLayoutOnFailure = true)
+
+    private fun setTextStyleInternal(
+        fvar: String?,
+        textSize: Float,
+        color: Int?,
+        strokeWidth: Float,
+        animate: Boolean,
+        duration: Long,
+        interpolator: TimeInterpolator?,
+        delay: Long,
+        onAnimationEnd: Runnable?,
+        updateLayoutOnFailure: Boolean,
     ) {
-        if (animate) {
-            animator.cancel()
-            textInterpolator.rebase()
-        }
+        try {
+            if (animate) {
+                animator.cancel()
+                textInterpolator.rebase()
+            }
 
-        if (textSize >= 0) {
-            textInterpolator.targetPaint.textSize = textSize
-        }
+            if (textSize >= 0) {
+                textInterpolator.targetPaint.textSize = textSize
+            }
+            if (!fvar.isNullOrBlank()) {
+                textInterpolator.targetPaint.typeface = typefaceCache.getTypefaceForVariant(fvar)
+            }
+            if (color != null) {
+                textInterpolator.targetPaint.color = color
+            }
+            if (strokeWidth >= 0F) {
+                textInterpolator.targetPaint.strokeWidth = strokeWidth
+            }
+            textInterpolator.onTargetPaintModified()
 
-        if (!fvar.isNullOrBlank()) {
-            textInterpolator.targetPaint.typeface = typefaceCache.getTypefaceForVariant(fvar)
-        }
-
-        if (color != null) {
-            textInterpolator.targetPaint.color = color
-        }
-        if (strokeWidth >= 0F) {
-            textInterpolator.targetPaint.strokeWidth = strokeWidth
-        }
-        textInterpolator.onTargetPaintModified()
-
-        if (animate) {
-            animator.startDelay = delay
-            animator.duration =
-                if (duration == -1L) {
-                    DEFAULT_ANIMATION_DURATION
-                } else {
-                    duration
-                }
-            interpolator?.let { animator.interpolator = it }
-            if (onAnimationEnd != null) {
-                val listener =
-                    object : AnimatorListenerAdapter() {
+            if (animate) {
+                animator.startDelay = delay
+                animator.duration =
+                    if (duration == -1L) {
+                        DEFAULT_ANIMATION_DURATION
+                    } else {
+                        duration
+                    }
+                interpolator?.let { animator.interpolator = it }
+                if (onAnimationEnd != null) {
+                    val listener = object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
                             onAnimationEnd.run()
                             animator.removeListener(this)
@@ -312,14 +331,25 @@ class TextAnimator(
                             animator.removeListener(this)
                         }
                     }
-                animator.addListener(listener)
+                    animator.addListener(listener)
+                }
+                animator.start()
+            } else {
+                // No animation is requested, thus set base and target state to the same state.
+                textInterpolator.progress = 1f
+                textInterpolator.rebase()
+                invalidateCallback()
             }
-            animator.start()
-        } else {
-            // No animation is requested, thus set base and target state to the same state.
-            textInterpolator.progress = 1f
-            textInterpolator.rebase()
-            invalidateCallback()
+        } catch (ex: IllegalArgumentException) {
+            if (updateLayoutOnFailure) {
+                Log.e(TAG, "setTextStyleInternal: Exception caught but retrying. This is usually" +
+                    " due to the layout having changed unexpectedly without being notified.", ex)
+                updateLayout(textInterpolator.layout)
+                setTextStyleInternal(fvar, textSize, color, strokeWidth, animate, duration,
+                    interpolator, delay, onAnimationEnd, updateLayoutOnFailure = false)
+            } else {
+                throw ex
+            }
         }
     }
 
@@ -355,15 +385,13 @@ class TextAnimator(
         interpolator: TimeInterpolator? = null,
         delay: Long = 0,
         onAnimationEnd: Runnable? = null
-    ) {
-        val fvar = fontVariationUtils.updateFontVariation(
-            weight = weight,
-            width = width,
-            opticalSize = opticalSize,
-            roundness = roundness,
-        )
-        setTextStyle(
-            fvar = fvar,
+    ) = setTextStyleInternal(
+            fvar = fontVariationUtils.updateFontVariation(
+                weight = weight,
+                width = width,
+                opticalSize = opticalSize,
+                roundness = roundness,
+            ),
             textSize = textSize,
             color = color,
             strokeWidth = strokeWidth,
@@ -372,6 +400,10 @@ class TextAnimator(
             interpolator = interpolator,
             delay = delay,
             onAnimationEnd = onAnimationEnd,
+            updateLayoutOnFailure = true,
         )
+
+    companion object {
+        private val TAG = TextAnimator::class.simpleName!!
     }
 }

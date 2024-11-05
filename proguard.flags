@@ -54,6 +54,9 @@
   *;
 }
 
+# This is generated automatically by the Android Gradle plugin.
+-dontwarn androidx.dynamicanimation.animation.FrameCallbackScheduler
+
 -keep class com.android.quickstep.** {
   *;
 }

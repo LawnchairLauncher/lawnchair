@@ -30,14 +30,16 @@ import androidx.core.view.OneShotPreDrawListener;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Hotseat;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.unfold.LauncherJankMonitorTransitionProgressListener;
 import com.android.quickstep.util.unfold.PreemptiveUnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.dagger.UnfoldMain;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.NaturalRotationUnfoldProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
@@ -55,7 +57,7 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
     private static final FloatProperty<Hotseat> HOTSEAT_SCALE_PROPERTY =
             HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_UNFOLD_ANIMATION);
 
-    private final Launcher mLauncher;
+    private final QuickstepLauncher mLauncher;
     private final ScopedUnfoldTransitionProgressProvider mProgressProvider;
     private final NaturalRotationUnfoldProgressProvider mNaturalOrientationProgressProvider;
     private final UnfoldMoveFromCenterHotseatAnimator mUnfoldMoveFromCenterHotseatAnimator;
@@ -72,10 +74,10 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
     private HorizontalInsettableView mQsbInsettable;
 
     public LauncherUnfoldAnimationController(
-            Launcher launcher,
+            QuickstepLauncher launcher,
             WindowManager windowManager,
             UnfoldTransitionProgressProvider unfoldTransitionProgressProvider,
-            RotationChangeProvider rotationChangeProvider) {
+            @UnfoldMain RotationChangeProvider rotationChangeProvider) {
         mLauncher = launcher;
 
         if (FeatureFlags.PREEMPTIVE_UNFOLD_ANIMATION_START.get()) {
@@ -91,6 +93,8 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
         }
 
         unfoldTransitionProgressProvider.addCallback(mExternalTransitionStatusProvider);
+        unfoldTransitionProgressProvider.addCallback(
+                new LauncherJankMonitorTransitionProgressListener(launcher::getRootView));
 
         mUnfoldMoveFromCenterHotseatAnimator = new UnfoldMoveFromCenterHotseatAnimator(launcher,
                 windowManager, rotationChangeProvider);

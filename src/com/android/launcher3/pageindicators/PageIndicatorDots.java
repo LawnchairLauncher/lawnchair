@@ -16,6 +16,8 @@
 
 package com.android.launcher3.pageindicators;
 
+import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -131,7 +133,8 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
      */
     private float mCurrentPosition;
     private float mFinalPosition;
-    private boolean mAreScreensBinding;
+    private boolean mIsScrollPaused;
+    private boolean mIsTwoPanels;
     private ObjectAnimator mAnimator;
     private @Nullable ObjectAnimator mAlphaAnimator;
 
@@ -174,7 +177,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         }
 
         // Skip scroll update during binding. We will update it when binding completes.
-        if (mAreScreensBinding) {
+        if (mIsScrollPaused) {
             return;
         }
 
@@ -354,6 +357,13 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     public void setActiveMarker(int activePage) {
+        // In unfolded foldables, every page has two CellLayouts, so we need to halve
+        // the active
+        // page for it to be accurate.
+        if (mIsTwoPanels && !FOLDABLE_SINGLE_PAGE.get()) {
+            activePage = activePage / 2;
+        }
+
         if (mActivePage != activePage) {
             mActivePage = activePage;
         }
@@ -362,17 +372,26 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     @Override
     public void setMarkersCount(int numMarkers) {
         mNumPages = numMarkers;
+
+        // If the last page gets removed we want to go to the previous page.
+        if (mNumPages > 0 && mNumPages == mActivePage) {
+            mActivePage--;
+            CURRENT_POSITION.set(this, (float) mActivePage);
+        }
+
         requestLayout();
     }
 
     @Override
-    public void setAreScreensBinding(boolean areScreensBinding) {
+    public void setPauseScroll(boolean pause, boolean isTwoPanels) {
+        mIsTwoPanels = isTwoPanels;
+
         // Reapply correct current position which was skipped during setScroll.
-        if (mAreScreensBinding && !areScreensBinding) {
+        if (mIsScrollPaused && !pause) {
             CURRENT_POSITION.set(this, (float) mActivePage);
         }
 
-        mAreScreensBinding = areScreensBinding;
+        mIsScrollPaused = pause;
     }
 
     @Override

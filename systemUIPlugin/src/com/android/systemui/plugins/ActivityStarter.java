@@ -17,10 +17,11 @@ package com.android.systemui.plugins;
 import android.annotation.Nullable;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.UserHandle;
 import android.view.View;
 
-import com.android.systemui.animation.ActivityLaunchAnimator;
+import com.android.systemui.animation.ActivityTransitionAnimator;
 import com.android.systemui.plugins.annotations.ProvidesInterface;
 
 /**
@@ -54,7 +55,43 @@ public interface ActivityStarter {
      */
     void startPendingIntentDismissingKeyguard(PendingIntent intent,
             Runnable intentSentUiThreadCallback,
-            @Nullable ActivityLaunchAnimator.Controller animationController);
+            @Nullable ActivityTransitionAnimator.Controller animationController);
+
+    /**
+     * Similar to {@link #startPendingIntentMaybeDismissingKeyguard(PendingIntent, Runnable,
+     * ActivityTransitionAnimator.Controller)} but will always not dismiss the keyguard when
+     * launching activities. This should be avoided and other alternatives should be used.
+     */
+    void startPendingIntentWithoutDismissing(
+            PendingIntent intent,
+            boolean dismissShade,
+            Runnable intentSentUiThreadCallback,
+            @Nullable ActivityTransitionAnimator.Controller animationController,
+            @Nullable Intent fillInIntent,
+            @Nullable Bundle extraOptions);
+
+    /**
+     * Similar to {@link #startPendingIntentDismissingKeyguard}, except that it supports launching
+     * activities on top of the keyguard. If the activity supports {@code showOverLockscreen}, it
+     * will show over keyguard without first dimissing it. If it doesn't support it, calling this
+     * method is exactly the same as calling {@link #startPendingIntentDismissingKeyguard}.
+     */
+    void startPendingIntentMaybeDismissingKeyguard(PendingIntent intent,
+            @Nullable Runnable intentSentUiThreadCallback,
+            @Nullable ActivityTransitionAnimator.Controller animationController);
+
+    /**
+     * Similar to {@link #startPendingIntentMaybeDismissingKeyguard(PendingIntent, Runnable,
+     * ActivityTransitionAnimator.Controller)}, but also specifies a fill-in intent and extra
+     * option that could be used to populate the pending intent and launch the activity. This also
+     * allows the caller to avoid dismissing the shade.
+     */
+    void startPendingIntentMaybeDismissingKeyguard(PendingIntent intent,
+            boolean dismissShade,
+            @Nullable Runnable intentSentUiThreadCallback,
+            @Nullable ActivityTransitionAnimator.Controller animationController,
+            @Nullable Intent fillInIntent,
+            @Nullable Bundle extraOptions);
 
     /**
      * The intent flag can be specified in startActivity().
@@ -62,26 +99,26 @@ public interface ActivityStarter {
     void startActivity(Intent intent, boolean onlyProvisioned, boolean dismissShade, int flags);
     void startActivity(Intent intent, boolean dismissShade);
     default void startActivity(Intent intent, boolean dismissShade,
-            @Nullable ActivityLaunchAnimator.Controller animationController) {
+            @Nullable ActivityTransitionAnimator.Controller animationController) {
         startActivity(intent, dismissShade, animationController,
                 false /* showOverLockscreenWhenLocked */);
     }
 
     void startActivity(Intent intent, boolean dismissShade,
-            @Nullable ActivityLaunchAnimator.Controller animationController,
+            @Nullable ActivityTransitionAnimator.Controller animationController,
             boolean showOverLockscreenWhenLocked);
     void startActivity(Intent intent, boolean dismissShade,
-            @Nullable ActivityLaunchAnimator.Controller animationController,
+            @Nullable ActivityTransitionAnimator.Controller animationController,
             boolean showOverLockscreenWhenLocked, UserHandle userHandle);
     void startActivity(Intent intent, boolean onlyProvisioned, boolean dismissShade);
     void startActivity(Intent intent, boolean dismissShade, Callback callback);
     void postStartActivityDismissingKeyguard(Intent intent, int delay);
     void postStartActivityDismissingKeyguard(Intent intent, int delay,
-            @Nullable ActivityLaunchAnimator.Controller animationController);
+            @Nullable ActivityTransitionAnimator.Controller animationController);
 
     /** Posts a start activity intent that dismisses keyguard. */
     void postStartActivityDismissingKeyguard(Intent intent, int delay,
-            @Nullable ActivityLaunchAnimator.Controller animationController,
+            @Nullable ActivityTransitionAnimator.Controller animationController,
             @Nullable String customMessage);
     void postStartActivityDismissingKeyguard(PendingIntent intent);
 
@@ -90,7 +127,7 @@ public interface ActivityStarter {
      * animation controller that should be used for the activity launch animation.
      */
     void postStartActivityDismissingKeyguard(PendingIntent intent,
-            @Nullable ActivityLaunchAnimator.Controller animationController);
+            @Nullable ActivityTransitionAnimator.Controller animationController);
 
     void postQSRunnableDismissingKeyguard(Runnable runnable);
 
@@ -113,7 +150,7 @@ public interface ActivityStarter {
             boolean disallowEnterPictureInPictureWhileLaunching,
             Callback callback,
             int flags,
-            @Nullable ActivityLaunchAnimator.Controller animationController,
+            @Nullable ActivityTransitionAnimator.Controller animationController,
             UserHandle userHandle);
 
     /** Execute a runnable after dismissing keyguard. */
@@ -122,16 +159,6 @@ public interface ActivityStarter {
             boolean dismissShade,
             boolean afterKeyguardGone,
             boolean deferred);
-
-    /** Execute a runnable after dismissing keyguard. */
-    void executeRunnableDismissingKeyguard(
-            Runnable runnable,
-            Runnable cancelAction,
-            boolean dismissShade,
-            boolean afterKeyguardGone,
-            boolean deferred,
-            boolean willAnimateOnKeyguard,
-            @Nullable String customMessage);
 
     /** Whether we should animate an activity launch. */
     boolean shouldAnimateLaunch(boolean isActivityIntent);

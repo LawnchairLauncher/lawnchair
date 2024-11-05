@@ -16,7 +16,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/deep_shortcuts_container"
-    android:background="@drawable/popup_background_material_u"
+    android:background="@drawable/popup_background"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:tag="@string/popup_container_iterate_children"

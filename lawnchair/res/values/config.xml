@@ -18,6 +18,7 @@
 <resources>
     <string name="app_filter_class" translatable="false">app.lawnchair.DefaultAppFilter</string>
     <string name="calendar_component_name" translatable="false">com.google.android.calendar/com.android.calendar.AllInOneActivity</string>
+    <dimen name="settingslib_preferred_minimum_touch_target">48dp</dimen>
     <string-array name="dynamic_calendar_components_name">
         <item>com.android.calendar</item>
         <item>com.blackberry.calendar</item>
@@ -32,11 +33,14 @@
         <item>org.withouthat.acalendar</item>
         <item>ws.xsoh.etar</item>
     </string-array>
+    <!-- String representing the intent for search on the apps market. To specify a query, add
+    q=<query> to the data to the intent -->
+    <string name="market_search_intent" translatable="false">market://search?c=apps</string>
     <string name="icon_packs_intent_name" translatable="false">app.lawnchair.icons.THEMED_ICON</string>
     <string name="clock_component_name" translatable="false">com.google.android.deskclock/com.android.deskclock.DeskClock</string>
     <string name="launcher_activity_logic_class" translatable="false">app.lawnchair.LauncherActivityCachingLogic</string>
     <string name="main_process_initializer_class" translatable="false">app.lawnchair.LawnchairProcessInitializer</string>
-    <string name="task_overlay_factory_class" translatable="false">app.lawnchair.overview.TaskOverlayFactoryImpl</string>
+<!--    <string name="task_overlay_factory_class" translatable="false">app.lawnchair.overview.TaskOverlayFactoryImpl</string>-->
     <string name="wallpaper_picker_package" translatable="false">com.android.wallpaper</string>
     <string name="wallpaper_picker_package_alt" translatable="false">com.google.android.apps.wallpaper</string>
     <string name="widget_holder_factory_class" translatable="false">app.lawnchair.factory.LawnchairWidgetHolder$LawnchairHolderFactory</string>
@@ -54,6 +58,8 @@
         <!-- Lawnchair -->
         <item>@string/launcher_component</item>
     </string-array>
+
+    <dimen name="page_indicator_dot_size_v2">6dp</dimen>
 
     <!-- Which QSB search provider to use by default -->
     <string name="config_default_qsb_search_provider_id" translatable="false">startpage</string>

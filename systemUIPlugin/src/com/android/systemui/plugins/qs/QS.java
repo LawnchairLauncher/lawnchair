@@ -94,6 +94,9 @@ public interface QS extends FragmentBase {
     default void setHasNotifications(boolean hasNotifications) {
     }
 
+    /** Sets whether the squishiness fraction should be updated on the media host. */
+    default void setShouldUpdateSquishinessOnMedia(boolean shouldUpdate) {}
+
     /**
      * Should touches from the notification panel be disallowed?
      * The notification panel might grab any touches rom QS at any time to collapse the shade.

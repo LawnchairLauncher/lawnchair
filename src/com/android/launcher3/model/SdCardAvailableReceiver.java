@@ -52,7 +52,7 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         final LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
-        final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
+        final PackageManagerHelper pmHelper = PackageManagerHelper.INSTANCE.get(context);
         for (PackageUserKey puk : mPackages) {
             UserHandle user = puk.mUser;
 
@@ -67,11 +67,10 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
                 }
             }
             if (!packagesRemoved.isEmpty()) {
-                mModel.onPackagesRemoved(user,
-                        packagesRemoved.toArray(new String[packagesRemoved.size()]));
+                mModel.newModelCallbacks().onPackagesRemoved(user, packagesRemoved);
             }
             if (!packagesUnavailable.isEmpty()) {
-                mModel.onPackagesUnavailable(
+                mModel.newModelCallbacks().onPackagesUnavailable(
                         packagesUnavailable.toArray(new String[packagesUnavailable.size()]),
                         user, false);
             }

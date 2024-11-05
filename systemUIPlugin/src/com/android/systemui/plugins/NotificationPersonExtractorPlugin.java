@@ -17,7 +17,6 @@
 package com.android.systemui.plugins;
 
 import android.annotation.Nullable;
-import android.app.PendingIntent;
 import android.graphics.drawable.Drawable;
 import android.service.notification.StatusBarNotification;
 

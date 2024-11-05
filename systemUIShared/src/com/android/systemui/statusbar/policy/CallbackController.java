@@ -21,6 +21,11 @@ import androidx.lifecycle.Lifecycle.Event;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
+/**
+ * Implementation of the collection used and thread guarantees are left to the discretion of the
+ * client. Consider using {@link com.android.systemui.util.ListenerSet} to prevent concurrent
+ * modification exceptions.
+ */
 public interface CallbackController<T> {
 
     /** Add a callback */

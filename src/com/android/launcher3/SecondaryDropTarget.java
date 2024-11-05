@@ -34,6 +34,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.FileLog;
@@ -43,6 +45,7 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
@@ -155,6 +158,9 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             }
             return INVALID;
         } else if (info.isPredictedItem()) {
+            if (Flags.enableShortcutDontSuggestApp()) {
+                return INVALID;
+            }
             return DISMISS_PREDICTION;
         }
 
@@ -173,6 +179,10 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         if (uninstallDisabled) {
             return INVALID;
         }
+        if (Flags.enablePrivateSpace() && UserCache.getInstance(getContext()).getUserInfo(
+                info.user).isPrivate()) {
+            return INVALID;
+        }
 
         if (info instanceof ItemInfoWithIcon) {
             ItemInfoWithIcon iconInfo = (ItemInfoWithIcon) info;
@@ -181,7 +191,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
                 return INVALID;
             }
         }
-        if (getUninstallTarget(info) == null) {
+        if (getUninstallTarget(getContext(), info) == null) {
             return INVALID;
         }
         return UNINSTALL;
@@ -190,7 +200,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     /**
      * @return the component name that should be uninstalled or null.
      */
-    private ComponentName getUninstallTarget(ItemInfo item) {
+    public static ComponentName getUninstallTarget(Context context, ItemInfo item) {
         Intent intent = null;
         UserHandle user = null;
         if (item != null &&
@@ -199,7 +209,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             user = item.user;
         }
         if (intent != null) {
-            LauncherActivityInfo info = getContext().getSystemService(LauncherApps.class)
+            LauncherActivityInfo info = context.getSystemService(LauncherApps.class)
                     .resolveActivity(intent, user);
             if (info != null
                     && (info.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -277,32 +287,41 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             if (FeatureFlags.ENABLE_DISMISS_PREDICTION_UNDO.get()) {
                 CharSequence announcement = getContext().getString(R.string.item_removed);
                 mDropTargetHandler
-                        .dismissPrediction(announcement, () -> {}, () -> {
-                    mStatsLogManager.logger()
-                            .withInstanceId(instanceId)
-                            .withItemInfo(info)
-                            .log(LAUNCHER_DISMISS_PREDICTION_UNDO);
-                });
+                        .dismissPrediction(announcement, () -> {
+                        }, () -> {
+                            mStatsLogManager.logger()
+                                    .withInstanceId(instanceId)
+                                    .withItemInfo(info)
+                                    .log(LAUNCHER_DISMISS_PREDICTION_UNDO);
+                        });
             }
             return null;
         }
 
-        ComponentName cn = getUninstallTarget(info);
+        return performUninstall(getContext(), getUninstallTarget(getContext(), info), info);
+    }
+
+    /**
+     * Performs uninstall and returns the target component for the {@link ItemInfo} or null if
+     * the uninstall was not performed.
+     */
+    public static ComponentName performUninstall(Context context, @Nullable ComponentName cn,
+            ItemInfo info) {
         if (cn == null) {
             // System applications cannot be installed. For now, show a toast explaining that.
             // We may give them the option of disabling apps this way.
             Toast.makeText(
-                    getContext(),
+                    context,
                     R.string.uninstall_system_app_text,
                     Toast.LENGTH_SHORT
-                ).show();
+            ).show();
             return null;
         }
         try {
-            Intent i = Intent.parseUri(getContext().getString(R.string.delete_package_intent), 0)
+            Intent i = Intent.parseUri(context.getString(R.string.delete_package_intent), 0)
                     .setData(Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
                     .putExtra(Intent.EXTRA_USER, info.user);
-            getContext().startActivity(i);
+            context.startActivity(i);
             FileLog.d(TAG, "start uninstall activity " + cn.getPackageName());
             return cn;
         } catch (URISyntaxException e) {
@@ -343,7 +362,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
 
         public void onLauncherResume() {
             // We use MATCH_UNINSTALLED_PACKAGES as the app can be on SD card as well.
-            if (new PackageManagerHelper(mContext).getApplicationInfo(mPackageName,
+            if (PackageManagerHelper.INSTANCE.get(mContext).getApplicationInfo(mPackageName,
                     mDragObject.dragInfo.user, PackageManager.MATCH_UNINSTALLED_PACKAGES) == null) {
                 mDragObject.dragSource = mOriginal;
                 mOriginal.onDropCompleted(SecondaryDropTarget.this, mDragObject, true);

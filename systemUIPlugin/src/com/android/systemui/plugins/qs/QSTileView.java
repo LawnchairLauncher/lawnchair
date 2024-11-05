@@ -16,6 +16,7 @@ package com.android.systemui.plugins.qs;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.LinearLayout;
 
 import com.android.systemui.plugins.annotations.DependsOn;
@@ -74,4 +75,9 @@ public abstract class QSTileView extends LinearLayout {
 
     /** Sets the index of this tile in its layout */
     public abstract void setPosition(int position);
+
+    /** Get the duration of a visuo-haptic long-press effect */
+    public int getLongPressEffectDuration() {
+        return ViewConfiguration.getLongPressTimeout() - ViewConfiguration.getTapTimeout();
+    }
 }

@@ -42,4 +42,9 @@ public class TaskbarSearchWebSuggestion extends SearchWebSuggestion implements
     public Launchable getLaunchable() {
         return this;
     }
+
+    @Override
+    protected boolean launcherStopsAfterLaunch() {
+        return false;
+    }
 }

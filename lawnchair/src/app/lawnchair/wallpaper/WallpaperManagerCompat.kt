@@ -2,10 +2,10 @@ package app.lawnchair.wallpaper
 
 import android.app.WallpaperManager
 import android.content.Context
+import app.lawnchair.util.MainThreadInitializedObject
 import app.lawnchair.util.requireSystemService
 import app.lawnchair.wallpaper.WallpaperColorsCompat.Companion.HINT_SUPPORTS_DARK_THEME
 import com.android.launcher3.Utilities
-import com.android.launcher3.util.MainThreadInitializedObject
 
 sealed class WallpaperManagerCompat(val context: Context) {
 

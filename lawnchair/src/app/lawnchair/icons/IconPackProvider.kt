@@ -13,8 +13,9 @@ import android.os.UserHandle
 import com.android.launcher3.icons.ClockDrawableWrapper
 import com.android.launcher3.icons.ThemedIconDrawable
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 
-class IconPackProvider(private val context: Context) {
+class IconPackProvider(private val context: Context) : SafeCloseable {
 
     private val iconPacks = mutableMapOf<String, IconPack?>()
 
@@ -110,6 +111,10 @@ class IconPackProvider(private val context: Context) {
         } catch (_: Exception) {
             return drawable
         }
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
     }
 
     companion object {

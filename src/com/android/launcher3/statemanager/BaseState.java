@@ -21,7 +21,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.views.ActivityContext;
 
 /**
- * Interface representing a state of a StatefulActivity
+ * Interface representing a state of a StatefulContainer
  */
 public interface BaseState<T extends BaseState> {
 

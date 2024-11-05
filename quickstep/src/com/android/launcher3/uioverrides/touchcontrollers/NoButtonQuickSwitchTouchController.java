@@ -66,6 +66,7 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -84,8 +85,6 @@ import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.WorkspaceRevealAnim;
-import com.android.quickstep.views.DesktopTaskView;
-import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
@@ -111,8 +110,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     private final float mMaxYProgress;
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
-    private final LauncherRecentsView mRecentsView;
-    protected final AnimatorListener mClearStateOnCancelListener = newCancelListener(this::clearState);
+    private final RecentsView mRecentsView;
+    protected final AnimatorListener mClearStateOnCancelListener =
+            newCancelListener(this::clearState, /* isSingleUse = */ false);
 
     private boolean mNoIntercept;
     private Boolean mIsTrackpadFourFingerSwipe;
@@ -184,12 +184,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if ((ev.getEdgeFlags() & Utilities.EDGE_NAV_BAR) == 0) {
             return false;
         }
-        int stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
+        long stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
         if ((stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0) {
-            return false;
-        }
-        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
-            // TODO(b/268075592): add support for quickswitch to/from desktop
             return false;
         }
         if (isTrackpadMultiFingerSwipe(ev)) {
@@ -202,8 +198,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     public void onDragStart(boolean start) {
         mMotionPauseDetector.clear();
         if (start) {
-            InteractionJankMonitorWrapper.begin(mRecentsView,
-                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.begin(mRecentsView, Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.begin(mRecentsView, Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS,
+                    "Home");
 
             mStartState = mLauncher.getStateManager().getState();
 
@@ -263,7 +260,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         TASK_THUMBNAIL_SPLASH_ALPHA.set(mRecentsView, fromState.showTaskThumbnailSplash() ? 1f : 0);
         mRecentsView.setContentAlpha(1);
         mRecentsView.setFullscreenProgress(fromState.getOverviewFullscreenProgress());
-        mLauncher.getActionsView().getVisibilityAlpha().setValue(
+        mLauncher.getActionsView().getVisibilityAlpha().updateValue(
                 (fromState.getVisibleElements(mLauncher) & OVERVIEW_ACTIONS) != 0 ? 1f : 0f);
         mRecentsView.setTaskIconScaledDown(true);
 
@@ -337,8 +334,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         boolean noFling = !horizontalFling && !verticalFling;
         if (mMotionPauseDetector.isPaused() && noFling) {
             // Going to Overview.
-            cancelAnimations();
-            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
 
             StateAnimationConfig config = new StateAnimationConfig();
             config.duration = ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
@@ -361,6 +357,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                     .dispatchOnStart();
             return;
         }
+        InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
+        cancelAnimations();
 
         final LauncherState targetState;
         if (horizontalFling && verticalFling) {
@@ -459,13 +457,12 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                     RecentsView.SCROLL_VIBRATION_PRIMITIVE_SCALE,
                     RecentsView.SCROLL_VIBRATION_FALLBACK);
         } else {
-            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
         }
 
         nonOverviewAnim.setDuration(Math.max(xDuration, yDuration));
         mNonOverviewAnim.setEndAction(() -> onAnimationToStateCompleted(targetState));
 
-        cancelAnimations();
         xOverviewAnim.start();
         yOverviewAnim.start();
         nonOverviewAnim.start();
@@ -483,7 +480,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                                         : LAUNCHER_UNKNOWN_SWIPEDOWN));
 
         if (targetState == QUICK_SWITCH_FROM_HOME) {
-            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_QUICK_SWITCH);
+        } else if (targetState == OVERVIEW) {
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_APP_SWIPE_TO_RECENTS);
         }
 
         mLauncher.getStateManager().goToState(targetState, false, forEndCallback(this::clearState));

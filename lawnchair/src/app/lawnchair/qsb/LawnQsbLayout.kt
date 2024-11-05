@@ -110,7 +110,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             val launcher = context.launcher
             launcher.lifecycleScope.launch {
                 if (preferenceManager2.matchHotseatQsbStyle.firstBlocking()) {
-                    launcher.appsView.searchUiManager.editText?.showKeyboard(true)
+                    launcher.appsView.searchUiManager.editText?.showKeyboard()
                     launcher.animateToAllApps()
                 } else {
                     searchProvider.launch(launcher)

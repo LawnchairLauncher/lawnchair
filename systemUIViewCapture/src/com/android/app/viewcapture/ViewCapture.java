@@ -19,7 +19,9 @@ package com.android.app.viewcapture;
 import static com.android.app.viewcapture.data.ExportedData.MagicNumber.MAGIC_NUMBER_H;
 import static com.android.app.viewcapture.data.ExportedData.MagicNumber.MAGIC_NUMBER_L;
 
+import android.content.ComponentCallbacks2;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.media.permission.SafeCloseable;
 import android.os.HandlerThread;
@@ -46,6 +48,7 @@ import com.android.app.viewcapture.data.MotionWindowData;
 import com.android.app.viewcapture.data.ViewNode;
 import com.android.app.viewcapture.data.WindowData;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -125,7 +128,7 @@ public abstract class ViewCapture {
      * Attaches the ViewCapture to the provided window and returns a handle to detach the listener
      */
     @NonNull
-    public SafeCloseable startCapture(Window window) {
+    public SafeCloseable startCapture(@NonNull Window window) {
         String title = window.getAttributes().getTitle().toString();
         String name = TextUtils.isEmpty(title) ? window.toString() : title;
         return startCapture(window.getDecorView(), name);
@@ -136,11 +139,16 @@ public abstract class ViewCapture {
      * Verifies that ViewCapture is enabled before actually attaching an onDrawListener.
      */
     @NonNull
-    public SafeCloseable startCapture(View view, String name) {
+    public SafeCloseable startCapture(@NonNull View view, @NonNull String name) {
         WindowListener listener = new WindowListener(view, name);
         if (mIsEnabled) MAIN_EXECUTOR.execute(listener::attachToRoot);
         mListeners.add(listener);
+        view.getContext().registerComponentCallbacks(listener);
+
         return () -> {
+            if (listener.mRoot != null && listener.mRoot.getContext() != null) {
+                listener.mRoot.getContext().unregisterComponentCallbacks(listener);
+            }
             mListeners.remove(listener);
             listener.detachFromRoot();
         };
@@ -173,9 +181,14 @@ public abstract class ViewCapture {
     }
 
     @AnyThread
-    public void dumpTo(OutputStream os, Context context)
+    protected void dumpTo(OutputStream os, Context context)
             throws InterruptedException, ExecutionException, IOException {
-        if (mIsEnabled) getExportedData(context).writeTo(os);
+        if (mIsEnabled) {
+            DataOutputStream dataOutputStream = new DataOutputStream(os);
+            ExportedData ex = getExportedData(context);
+            dataOutputStream.writeInt(ex.getSerializedSize());
+            ex.writeTo(dataOutputStream);
+        }
     }
 
     @VisibleForTesting
@@ -208,7 +221,7 @@ public abstract class ViewCapture {
 
     @AnyThread
     private CompletableFuture<List<WindowData>> getWindowData(Context context,
-            ArrayList<Class> outClassList, Predicate<WindowListener> filter) {
+                                                              ArrayList<Class> outClassList, Predicate<WindowListener> filter) {
         ViewIdProvider idProvider = new ViewIdProvider(context.getResources());
         return CompletableFuture.supplyAsync(() ->
                 mListeners.stream().filter(filter).toList(), MAIN_EXECUTOR).thenApplyAsync(it ->
@@ -216,48 +229,57 @@ public abstract class ViewCapture {
                 mBgExecutor);
     }
 
+    @WorkerThread
+    protected void onCapturedViewPropertiesBg(long elapsedRealtimeNanos, String windowName,
+                                              ViewPropertyRef startFlattenedViewTree) {
+    }
 
     /**
      * Once this window listener is attached to a window's root view, it traverses the entire
      * view tree on the main thread every time onDraw is called. It then saves the state of the view
      * tree traversed in a local list of nodes, so that this list of nodes can be processed on a
      * background thread, and prepared for being dumped into a bugreport.
-     *
+     * <p>
      * Since some of the work needs to be done on the main thread after every draw, this piece of
      * code needs to be hyper optimized. That is why we are recycling ViewRef and ViewPropertyRef
      * objects and storing the list of nodes as a flat LinkedList, rather than as a tree. This data
      * structure allows recycling to happen in O(1) time via pointer assignment. Without this
      * optimization, a lot of time is wasted creating ViewRef objects, or finding ViewRef objects to
      * recycle.
-     *
+     * <p>
      * Another optimization is to only traverse view nodes on the main thread that have potentially
      * changed since the last frame was drawn. This can be determined via a combination of private
      * flags inside the View class.
-     *
+     * <p>
      * Another optimization is to not store or manipulate any string objects on the main thread.
      * While this might seem trivial, using Strings in any form causes the ViewCapture to hog the
      * main thread for up to an additional 6-7ms. It must be avoided at all costs.
-     *
+     * <p>
      * Another optimization is to only store the class names of the Views in the view hierarchy one
      * time. They are then referenced via a classNameIndex value stored in each ViewPropertyRef.
-     *
+     * <p>
      * TODO: b/262585897: If further memory optimization is required, an effective one would be to
      * only store the changes between frames, rather than the entire node tree for each frame.
      * The go/web-hv UX already does this, and has reaped significant memory improves because of it.
-     *
+     * <p>
      * TODO: b/262585897: Another memory optimization could be to store all integer, float, and
      * boolean information via single integer values via the Chinese remainder theorem, or a similar
      * algorithm, which enables multiple numerical values to be stored inside 1 number. Doing this
      * would allow each ViewProperty / ViewRef to slim down its memory footprint significantly.
-     *
+     * <p>
      * One important thing to remember is that bugs related to recycling will usually only appear
      * after at least 2000 frames have been rendered. If that code is changed, the tester can
      * use hard-coded logs to verify that recycling is happening, and test view capturing at least
      * ~8000 frames or so to verify the recycling functionality is working properly.
+     * <p>
+     * Each WindowListener is memory aware and will both stop collecting view capture information,
+     * as well as delete their current stash of information upon a signal from the system that
+     * memory resources are scarce. The user will need to restart the app process before
+     * more ViewCapture information is captured.
      */
-    private class WindowListener implements ViewTreeObserver.OnDrawListener {
+    private class WindowListener implements ViewTreeObserver.OnDrawListener, ComponentCallbacks2 {
 
-        @Nullable // Nullable in tests only
+        @Nullable
         public View mRoot;
         public final String name;
 
@@ -265,8 +287,8 @@ public abstract class ViewCapture {
 
         private int mFrameIndexBg = -1;
         private boolean mIsFirstFrame = true;
-        private final long[] mFrameTimesNanosBg = new long[mMemorySize];
-        private final ViewPropertyRef[] mNodesBg = new ViewPropertyRef[mMemorySize];
+        private long[] mFrameTimesNanosBg = new long[mMemorySize];
+        private ViewPropertyRef[] mNodesBg = new ViewPropertyRef[mMemorySize];
 
         private boolean mIsActive = true;
         private final Consumer<ViewRef> mCaptureCallback = this::captureViewPropertiesBg;
@@ -284,7 +306,7 @@ public abstract class ViewCapture {
          */
         @Override
         public void onDraw() {
-            Trace.beginSection("view_capture");
+            Trace.beginSection("vc#onDraw");
             captureViewTree(mRoot, mViewRef);
             ViewRef captured = mViewRef.next;
             if (captured != null) {
@@ -302,6 +324,8 @@ public abstract class ViewCapture {
          */
         @WorkerThread
         private void captureViewPropertiesBg(ViewRef viewRefStart) {
+            Trace.beginSection("vc#captureViewPropertiesBg");
+
             long elapsedRealtimeNanos = viewRefStart.elapsedRealtimeNanos;
             mFrameIndexBg++;
             if (mFrameIndexBg >= mMemorySize) {
@@ -370,6 +394,10 @@ public abstract class ViewCapture {
                 viewRefEnd = viewRefEnd.next;
             }
             mNodesBg[mFrameIndexBg] = resultStart;
+
+            onCapturedViewPropertiesBg(elapsedRealtimeNanos, name, resultStart);
+
+            Trace.endSection();
         }
 
         private @Nullable ViewPropertyRef findInLastFrame(int hashCode) {
@@ -382,6 +410,7 @@ public abstract class ViewCapture {
         }
 
         void attachToRoot() {
+            if (mRoot == null) return;
             mIsActive = true;
             if (mRoot.isAttachedToWindow()) {
                 safelyEnableOnDrawListener();
@@ -410,8 +439,10 @@ public abstract class ViewCapture {
         }
 
         private void safelyEnableOnDrawListener() {
-            mRoot.getViewTreeObserver().removeOnDrawListener(this);
-            mRoot.getViewTreeObserver().addOnDrawListener(this);
+            if (mRoot != null) {
+                mRoot.getViewTreeObserver().removeOnDrawListener(this);
+                mRoot.getViewTreeObserver().addOnDrawListener(this);
+            }
         }
 
         @WorkerThread
@@ -462,9 +493,32 @@ public abstract class ViewCapture {
                 return ref;
             }
         }
+
+        @Override
+        public void onTrimMemory(int level) {
+            if (level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
+                mNodesBg = new ViewPropertyRef[0];
+                mFrameTimesNanosBg = new long[0];
+                if (mRoot != null && mRoot.getContext() != null) {
+                    mRoot.getContext().unregisterComponentCallbacks(this);
+                }
+                detachFromRoot();
+                mRoot = null;
+            }
+        }
+
+        @Override
+        public void onConfigurationChanged(Configuration configuration) {
+            // No Operation
+        }
+
+        @Override
+        public void onLowMemory() {
+            onTrimMemory(ComponentCallbacks2.TRIM_MEMORY_BACKGROUND);
+        }
     }
 
-    private static class ViewPropertyRef {
+    protected static class ViewPropertyRef {
         // We store reference in memory to avoid generating and storing too many strings
         public Class clazz;
         public int hashCode;
@@ -512,7 +566,7 @@ public abstract class ViewCapture {
          * at the end of the iteration.
          */
         public ViewPropertyRef toProto(ViewIdProvider idProvider, ArrayList<Class> classList,
-                ViewNode.Builder viewNode) {
+                                       ViewNode.Builder viewNode) {
             int classnameIndex = classList.indexOf(clazz);
             if (classnameIndex < 0) {
                 classnameIndex = classList.size();
@@ -552,6 +606,7 @@ public abstract class ViewCapture {
     private static class ViewRef implements Runnable {
         public View view;
         public int childCount = 0;
+        @Nullable
         public ViewRef next;
 
         public Consumer<ViewRef> callback = null;
@@ -594,7 +649,7 @@ public abstract class ViewCapture {
         }
     }
 
-    private static final class ViewIdProvider {
+    protected static final class ViewIdProvider {
 
         private final SparseArray<String> mNames = new SparseArray<>();
         private final Resources mRes;

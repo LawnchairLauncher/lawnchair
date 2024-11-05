@@ -62,4 +62,9 @@ public abstract class Home extends Background {
     protected boolean zeroButtonToOverviewGestureStateTransitionWhileHolding() {
         return true;
     }
+
+    @Override
+    public boolean isHomeState() {
+        return true;
+    }
 }

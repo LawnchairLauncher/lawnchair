@@ -15,8 +15,8 @@
  */
 package com.android.systemui.surfaceeffects.turbulencenoise
 
-import android.graphics.BlendMode
 import android.graphics.Color
+import java.util.Random
 
 /** Turbulence noise animation configuration. */
 data class TurbulenceNoiseAnimationConfig(
@@ -25,6 +25,11 @@ data class TurbulenceNoiseAnimationConfig(
 
     /** Multiplier for the noise luma matte. Increase this for brighter effects. */
     val luminosityMultiplier: Float = DEFAULT_LUMINOSITY_MULTIPLIER,
+
+    /** Initial noise offsets. */
+    val noiseOffsetX: Float = random.nextFloat(),
+    val noiseOffsetY: Float = random.nextFloat(),
+    val noiseOffsetZ: Float = random.nextFloat(),
 
     /**
      * Noise move speed variables.
@@ -45,18 +50,15 @@ data class TurbulenceNoiseAnimationConfig(
     val noiseMoveSpeedZ: Float = DEFAULT_NOISE_SPEED_Z,
 
     /** Color of the effect. */
-    var color: Int = DEFAULT_COLOR,
+    val color: Int = DEFAULT_COLOR,
     /** Background color of the effect. */
-    val backgroundColor: Int = DEFAULT_BACKGROUND_COLOR,
-    val opacity: Int = DEFAULT_OPACITY,
+    val screenColor: Int = DEFAULT_SCREEN_COLOR,
     val width: Float = 0f,
     val height: Float = 0f,
     val maxDuration: Float = DEFAULT_MAX_DURATION_IN_MILLIS,
     val easeInDuration: Float = DEFAULT_EASING_DURATION_IN_MILLIS,
     val easeOutDuration: Float = DEFAULT_EASING_DURATION_IN_MILLIS,
     val pixelDensity: Float = 1f,
-    val blendMode: BlendMode = DEFAULT_BLEND_MODE,
-    val onAnimationEnd: Runnable? = null,
     /**
      * Variants in noise. Higher number means more contrast; lower number means less contrast but
      * make the noise dimmed. You may want to increase the [lumaMatteBlendFactor] to compensate.
@@ -68,7 +70,9 @@ data class TurbulenceNoiseAnimationConfig(
      * want to use this if you have made the noise softer using [lumaMatteBlendFactor]. Expected
      * range [0, 1].
      */
-    val lumaMatteOverallBrightness: Float = DEFAULT_LUMA_MATTE_OVERALL_BRIGHTNESS
+    val lumaMatteOverallBrightness: Float = DEFAULT_LUMA_MATTE_OVERALL_BRIGHTNESS,
+    /** Whether to flip the luma mask. */
+    val shouldInverseNoiseLuminosity: Boolean = false,
 ) {
     companion object {
         const val DEFAULT_MAX_DURATION_IN_MILLIS = 30_000f // Max 30 sec
@@ -76,11 +80,10 @@ data class TurbulenceNoiseAnimationConfig(
         const val DEFAULT_LUMINOSITY_MULTIPLIER = 1f
         const val DEFAULT_NOISE_GRID_COUNT = 1.2f
         const val DEFAULT_NOISE_SPEED_Z = 0.3f
-        const val DEFAULT_OPACITY = 150 // full opacity is 255.
         const val DEFAULT_COLOR = Color.WHITE
         const val DEFAULT_LUMA_MATTE_BLEND_FACTOR = 1f
         const val DEFAULT_LUMA_MATTE_OVERALL_BRIGHTNESS = 0f
-        const val DEFAULT_BACKGROUND_COLOR = Color.BLACK
-        val DEFAULT_BLEND_MODE = BlendMode.SRC_OVER
+        const val DEFAULT_SCREEN_COLOR = Color.BLACK
+        private val random = Random()
     }
 }

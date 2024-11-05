@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.Utilities.SHOULD_SHOW_FIRST_PAGE_WIDGET;
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 
 import android.util.LongSparseArray;
@@ -66,7 +67,7 @@ public class WorkspaceItemSpaceFinder {
         int screenCount = workspaceScreens.size();
         // First check the preferred screen.
         IntSet screensToExclude = new IntSet();
-        if (FeatureFlags.topQsbOnFirstScreenEnabled (app.getContext ())) {
+        if (FeatureFlags.topQsbOnFirstScreenEnabled(app.getContext())) {
             screensToExclude.add(FIRST_SCREEN_ID);
         }
 
@@ -94,7 +95,7 @@ public class WorkspaceItemSpaceFinder {
                 throw new RuntimeException("Can't find space to add the item");
             }
         }
-        return new int[]{screenId, coordinates[0], coordinates[1]};
+        return new int[] { screenId, coordinates[0], coordinates[1] };
     }
 
     private boolean findNextAvailableIconSpaceInScreen(

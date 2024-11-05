@@ -18,6 +18,7 @@ import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 import com.android.systemui.monet.Style
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
@@ -28,7 +29,7 @@ import dev.kdrag0n.monet.theme.ColorScheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-class ThemeProvider(private val context: Context) {
+class ThemeProvider(private val context: Context) : SafeCloseable {
     private val preferenceManager2 = PreferenceManager2.getInstance(context)
     private val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -119,6 +120,10 @@ class ThemeProvider(private val context: Context) {
     private fun notifyColorSchemeChanged() {
         ArrayList(listeners)
             .forEach(ColorSchemeChangeListener::onColorSchemeChanged)
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
     }
 
     companion object {

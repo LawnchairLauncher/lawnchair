@@ -46,7 +46,7 @@ object SearchUtils {
         val shortcuts = ShortcutRequest(context.launcher, app.user)
             .withContainer(app.targetComponent)
             .query(ShortcutRequest.PUBLISHED)
-        return PopupPopulator.sortAndFilterShortcuts(shortcuts, null)
+        return PopupPopulator.sortAndFilterShortcuts(shortcuts)
     }
 }
 

@@ -62,16 +62,6 @@ interface ISystemUiProxy {
     oneway void onAssistantGestureCompletion(float velocity) = 18;
 
     /**
-    * Get the secondary split screen app's rectangle when not minimized.
-    */
-    Rect getNonMinimizedSplitScreenSecondaryBounds() = 7;
-
-    /**
-    * Creates a new gesture monitor
-    */
-    Bundle monitorGestureInput(String name, int displayId) = 14;
-
-    /**
      * Start the assistant.
      */
     oneway void startAssistant(in Bundle bundle) = 13;
@@ -99,15 +89,6 @@ interface ISystemUiProxy {
      * Ends the system screen pinning.
      */
     oneway void stopScreenPinning() = 17;
-
-    /**
-     * Handle the provided image as if it was a screenshot.
-     *
-     * Deprecated, use handleImageBundleAsScreenshot with image bundle and UserTask
-     * @deprecated
-     */
-     void handleImageAsScreenshot(in Bitmap screenImage, in Rect locationInScreen,
-                  in Insets visibleInsets, int taskId) = 21;
 
     /**
      * Notifies that quickstep will switch to a new task
@@ -154,12 +135,6 @@ interface ISystemUiProxy {
     oneway void takeScreenshot(in ScreenshotRequest request) = 51;
 
     /**
-     * Handle the provided image as if it was a screenshot.
-     */
-    void handleImageBundleAsScreenshot(in Bundle screenImageBundle, in Rect locationInScreen,
-                  in Insets visibleInsets, in Task.TaskKey task) = 26;
-
-    /**
      * Dispatches trackpad status bar motion event to the notification shade. Currently these events
      * are from the input monitor in {@link TouchInteractionService}. This is different from
      * {@link #onStatusBarTouchEvent} above in that, this directly dispatches motion events to the
@@ -169,5 +144,28 @@ interface ISystemUiProxy {
      */
     oneway void onStatusBarTrackpadEvent(in MotionEvent event) = 52;
 
-    // Next id = 54
+    /**
+     * Animate the nav bar being long-pressed.
+     *
+     * @param isTouchDown {@code true} if the button is starting to be pressed ({@code false} if
+     *                                released or canceled)
+     * @param shrink {@code true} if the handle should shrink, {@code false} if it should grow
+     * @param durationMs how long the animation should take (for the {@code isTouchDown} case, this
+     *                   should be the same as the amount of time to trigger a long-press)
+     */
+    oneway void animateNavBarLongPress(boolean isTouchDown, boolean shrink, long durationMs) = 54;
+
+    /**
+     * Set the override value for home button long press duration in ms and slop multiplier and
+     * haptic.
+     */
+    oneway void setOverrideHomeButtonLongPress(long duration, float slopMultiplier, boolean haptic)
+            = 55;
+
+    /**
+     * Notifies to toggle quick settings panel.
+     */
+    oneway void toggleQuickSettingsPanel() = 56;
+
+    // Next id = 57
 }

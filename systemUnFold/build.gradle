@@ -20,7 +20,7 @@ android {
     }
 }
 
-addFrameworkJar('framework-14.jar')
+addFrameworkJar('framework-15.jar')
 compileOnlyCommonJars()
 
 dependencies {
@@ -28,6 +28,8 @@ dependencies {
     ksp "com.google.dagger:hilt-compiler:$daggerVersion"
 
     implementation "androidx.concurrent:concurrent-futures:1.2.0"
-    implementation "androidx.lifecycle:lifecycle-common:2.8.7"
-    implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
+    implementation "androidx.lifecycle:lifecycle-common:2.8.6"
+
+    compileOnly projects.androidxLib
+//    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
 }

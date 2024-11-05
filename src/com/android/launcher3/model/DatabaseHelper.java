@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
+import static com.android.launcher3.Utilities.SHOULD_SHOW_FIRST_PAGE_WIDGET;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.content.ContentValues;
@@ -274,7 +275,6 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                                     Favorites.CELLY, 0),
                             null);
                 }
-                return;
             }
             case 31: {
                 LauncherDbUtils.migrateLegacyShortcuts(mContext, db);
@@ -340,7 +340,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
             for (int widgetId : allWidgets) {
                 if (!validWidgets.contains(widgetId)) {
                     try {
-                        FileLog.d(TAG, "Deleting invalid widget " + widgetId);
+                        FileLog.d(TAG, "Deleting widget not found in db: appWidgetId=" + widgetId);
                         holder.deleteAppWidgetId(widgetId);
                         isAnyWidgetRemoved = true;
                     } catch (RuntimeException e) {
@@ -349,15 +349,16 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                 }
             }
             if (isAnyWidgetRemoved) {
-                final String allWidgetsIds = Arrays.stream(allWidgets).mapToObj(String::valueOf)
+                final String allLauncherHostWidgetIds = Arrays.stream(allWidgets)
+                        .mapToObj(String::valueOf)
                         .collect(Collectors.joining(",", "[", "]"));
-                final String validWidgetsIds = Arrays.stream(
+                final String allValidLauncherDbWidgetIds = Arrays.stream(
                         validWidgets.getArray().toArray()).mapToObj(String::valueOf)
                         .collect(Collectors.joining(",", "[", "]"));
                 FileLog.d(TAG,
-                        "One or more widgets was removed. db_path=" + db.getPath()
-                                + " allWidgetsIds=" + allWidgetsIds
-                                + ", validWidgetsIds=" + validWidgetsIds);
+                        "One or more widgets was removed: "
+                                + " allLauncherHostWidgetIds=" + allLauncherHostWidgetIds
+                                + ", allValidLauncherDbWidgetIds=" + allValidLauncherDbWidgetIds);
             }
         } finally {
             holder.destroy();
@@ -515,7 +516,7 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
 
     public int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
         // TODO: Use multiple loaders with fall-back and transaction.
-        int count = loader.loadLayout(db, new IntArray());
+        int count = loader.loadLayout(db);
 
         // Ensure that the max ids are initialized
         mMaxItemId = initializeMaxItemId(db);

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Zatvori"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Proširivanje"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Postavke"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Izbornik"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Izbornik slike u slici"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> jest na slici u slici"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Ako ne želite da aplikacija <xliff:g id="NAME">%s</xliff:g> upotrebljava tu značajku, dodirnite da biste otvorili postavke i isključili je."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Reproduciraj"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Pauziraj"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Preskoči na sljedeće"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Preskoči na prethodno"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Promjena veličine"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Sakrijte"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Poništite sakrivanje"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Aplikacija možda neće funkcionirati s podijeljenim zaslonom"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Aplikacija ne podržava podijeljeni zaslon"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Ova se aplikacija može otvoriti samo u jednom prozoru"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Aplikacija možda neće funkcionirati na sekundarnom zaslonu."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Aplikacija ne podržava pokretanje na sekundarnim zaslonima."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Razdjelnik podijeljenog zaslona"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Razdjelnik podijeljenog zaslona"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Lijevi zaslon u cijeli zaslon"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Lijevi zaslon na 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Lijevi zaslon na 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Lijevi zaslon na 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Desni zaslon u cijeli zaslon"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Gornji zaslon u cijeli zaslon"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Gornji zaslon na 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Gornji zaslon na 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Gornji zaslon na 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Donji zaslon u cijeli zaslon"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Podijeli lijevo"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Podijeli desno"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Podijeli gore"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Podijeli dolje"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Upotreba načina rada jednom rukom"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Za izlaz prijeđite prstom od dna zaslona prema gore ili dodirnite bio gdje iznad aplikacije"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Pokretanje načina rada jednom rukom"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Izlaz iz načina rada jednom rukom"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Postavke za oblačiće za aplikaciju <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Dodatno"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Dodajte natrag u nizove"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> iz aplikacije <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> iz aplikacije <xliff:g id="APP_NAME">%2$s</xliff:g> i još <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Premjesti u gornji lijevi kut"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Premjesti u gornji desni kut"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Premjesti u donji lijevi kut"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Premjestite u donji desni kut"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"proširite oblačić <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"sažmite oblačić <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"Postavke za <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Odbaci oblačić"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Zaustavi razgovor u oblačićima"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Oblačići u chatu"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Novi razgovori pojavljuju se kao pomične ikone ili oblačići. Dodirnite za otvaranje oblačića. Povucite da biste ga premjestili."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Upravljanje oblačićima u svakom trenutku"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Dodirnite Upravljanje da biste isključili oblačiće iz ove aplikacije"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Shvaćam"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Nema nedavnih oblačića"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Ovdje će se prikazivati nedavni i odbačeni oblačići"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Oblačići u chatu"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Novi se razgovori prikazuju kao ikone u donjem kutu zaslona. Dodirnite da biste ih proširili ili ih povucite da biste ih odbacili."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Upravljanje oblačićima u svakom trenutku"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Dodirnite ovdje da biste odredili koje aplikacije i razgovori mogu imati oblačić"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Oblačić"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Upravljanje"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Oblačić odbačen."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Oblačići"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Prikaži oblačiće"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Dodirnite da biste ponovo pokrenuli tu aplikaciju kako biste bolje vidjeli"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Promijeni omjer slike ove aplikacije u postavkama"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Promijeni omjer slike"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Problemi s fotoaparatom?\nDodirnite za popravak"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Problem nije riješen?\nDodirnite za vraćanje"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Nemate problema s fotoaparatom? Dodirnite za odbacivanje."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Gledajte i učinite više"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Povucite drugu aplikaciju unutra da biste podijelili zaslon"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Dvaput dodirnite izvan aplikacije da biste je premjestili"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"Shvaćam"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Proširite da biste saznali više."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Želite li ponovno pokrenuti za bolji pregled?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Možete ponovno pokrenuti aplikaciju tako da bolje izgleda na zaslonu, no mogli biste izgubiti napredak ili sve nespremljene promjene"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Odustani"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Pokreni ponovno"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Ne prikazuj ponovno"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Dvaput dodirnite da biste\npremjestili ovu aplikaciju"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Maksimiziraj"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Minimiziraj"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Zatvori"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Natrag"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Pokazivač"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Ikona aplikacije"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Puni zaslon"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Stolni način rada"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Razdvojeni zaslon"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Više"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Plutajući"</string>
+    <string name="select_text" msgid="5139083974039906583">"Odaberite"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Snimka zaslona"</string>
+    <string name="close_text" msgid="4986518933445178928">"Zatvorite"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Zatvorite izbornik"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Otvaranje izbornika"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Maksimalno povećaj zaslon"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Izradi snimku zaslona"</string>
+</resources>

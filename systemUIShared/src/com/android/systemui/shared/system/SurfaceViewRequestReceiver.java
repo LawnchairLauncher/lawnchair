@@ -26,7 +26,7 @@ import android.view.SurfaceControl;
 import android.view.SurfaceControlViewHost;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.WindowlessWindowManager;
+import android.window.InputTransferToken;
 
 /**
  * A generic receiver that specifically handles SurfaceView request created by {@link
@@ -69,13 +69,10 @@ public class SurfaceViewRequestReceiver {
 
             IBinder hostToken = SurfaceViewRequestUtils.getHostToken(bundle);
 
-            WindowlessWindowManager windowlessWindowManager =
-                    new WindowlessWindowManager(context.getResources().getConfiguration(),
-                            surfaceControl, hostToken);
             DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
             mSurfaceControlViewHost = new SurfaceControlViewHost(context,
                     dm.getDisplay(SurfaceViewRequestUtils.getDisplayId(bundle)),
-                    windowlessWindowManager, "SurfaceViewRequestReceiver");
+                    new InputTransferToken(hostToken), "SurfaceViewRequestReceiver");
             WindowManager.LayoutParams layoutParams =
                     new WindowManager.LayoutParams(
                             viewSize.getWidth(),

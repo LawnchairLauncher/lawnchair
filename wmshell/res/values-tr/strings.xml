@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Kapat"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Genişlet"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Ayarlar"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Menü"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Pencere içinde pencere menüsü"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g>, pencere içinde pencere özelliğini kullanıyor"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"<xliff:g id="NAME">%s</xliff:g> uygulamasının bu özelliği kullanmasını istemiyorsanız dokunarak ayarları açın ve söz konusu özelliği kapatın."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Oynat"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Duraklat"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Sonrakine atla"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Öncekine atla"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Yeniden boyutlandır"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Depola"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Depolama"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Uygulama bölünmüş ekranda çalışmayabilir"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Uygulama bölünmüş ekranı desteklemiyor."</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Bu uygulama yalnızca 1 pencerede açılabilir"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Uygulama ikincil ekranda çalışmayabilir."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Uygulama ikincil ekranlarda başlatılmayı desteklemiyor."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Bölünmüş ekran ayırıcı"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Bölünmüş ekran ayırıcı"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Solda tam ekran"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Solda %70"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Solda %50"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Solda %30"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Sağda tam ekran"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Üstte tam ekran"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Üstte %70"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Üstte %50"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Üstte %30"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Altta tam ekran"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Sol tarafta böl"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Sağ tarafta böl"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Üst tarafta böl"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Alt tarafta böl"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Tek el modunu kullanma"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Çıkmak için ekranın alt kısmından yukarı kaydırın veya uygulamanın üzerinde herhangi bir yere dokunun"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Tek el modunu başlat"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Tek el modundan çık"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g> baloncukları için ayarlar"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Taşma"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Yığına geri ekle"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="APP_NAME">%2$s</xliff:g> uygulamasından <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="APP_NAME">%2$s</xliff:g> uygulamasından <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> ve diğer <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Sol üste taşı"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Sağ üste taşı"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Sol alta taşı"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Sağ alta taşı"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"genişlet: <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"daralt: <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> ayarları"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Baloncuğu kapat"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Görüşmeyi baloncuk olarak görüntüleme"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Baloncukları kullanarak sohbet edin"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Yeni görüşmeler kayan simgeler veya baloncuk olarak görünür. Açmak için baloncuğa dokunun. Baloncuğu taşımak için sürükleyin."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Baloncukları istediğiniz zaman kontrol edin"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Bu uygulamanın baloncuklarını kapatmak için Yönet\'e dokunun"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Anladım"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Son kapatılan baloncuk yok"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Son baloncuklar ve kapattığınız baloncuklar burada görünür"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Baloncukları kullanarak sohbet edin"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Yeni görüşmeler, ekranınızın alt köşesinde simge olarak görünür. Bunları dokunarak genişletebilir veya sürükleyerek kapatabilirsiniz."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Baloncukları istediğiniz zaman kontrol edin"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Buraya dokunarak baloncuk olarak gösterilecek uygulama ve görüşmeleri yönetin"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Baloncuk"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Yönet"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Balon kapatıldı."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Baloncuklar"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Baloncukları göster"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Bu uygulamayı yeniden başlatarak daha iyi bir görünüm elde etmek için dokunun"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Bu uygulamanın en boy oranını Ayarlar\'dan değiştirin"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"En boy oranını değiştir"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Kameranızda sorun mu var?\nDüzeltmek için dokunun"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Bu işlem sorunu düzeltmedi mi?\nİşlemi geri almak için dokunun"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Kameranızda sorun yok mu? Kapatmak için dokunun."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Daha fazlasını görün ve yapın"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Bölünmüş ekran için başka bir uygulamayı sürükleyin"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Yeniden konumlandırmak için uygulamanın dışına iki kez dokunun"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"Anladım"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Daha fazla bilgi için genişletin."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Daha iyi bir görünüm için yeniden başlatılsın mı?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Ekranınızda daha iyi görünmesi için uygulamayı yeniden başlatabilirsiniz, ancak ilerlemenizi ve kaydedilmemiş değişikliklerinizi kaybedebilirsiniz"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"İptal"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Yeniden başlat"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Bir daha gösterme"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Bu uygulamayı taşımak için\niki kez dokunun"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Ekranı Kapla"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Küçült"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Kapat"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Geri"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Herkese açık kullanıcı adı"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Uygulama Simgesi"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Tam Ekran"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Masaüstü Modu"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Bölünmüş Ekran"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Daha Fazla"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Havada Süzülen"</string>
+    <string name="select_text" msgid="5139083974039906583">"Seç"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Ekran görüntüsü"</string>
+    <string name="close_text" msgid="4986518933445178928">"Kapat"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Menüyü kapat"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Menüyü Aç"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Ekranı Büyüt"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Ekranın Yarısına Tuttur"</string>
+</resources>

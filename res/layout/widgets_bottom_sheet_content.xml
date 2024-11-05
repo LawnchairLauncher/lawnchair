@@ -25,11 +25,10 @@
             android:layout_width="@dimen/bottom_sheet_handle_width"
             android:layout_height="@dimen/bottom_sheet_handle_height"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/bottom_sheet_handle_margin"
+            android:layout_marginBottom="@dimen/widgets_bottom_sheet_handle_margin"
             android:visibility="gone"
             android:background="@drawable/bg_rounded_corner_bottom_sheet_handle"/>
         <TextView
-            style="@style/TextHeadline"
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,8 +40,13 @@
             android:id="@+id/widgets_table_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fadeScrollbars="false"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginHorizontal="@dimen/widget_bottom_sheet_horizontal_margin"
+            android:background="@drawable/widgets_surface_background"
+            android:scrollbarThumbVertical="@drawable/widget_picker_preview_pane_scroll_thumb"
+            android:clipToOutline="true"
+            android:clipChildren="true">
             <include layout="@layout/widgets_table_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

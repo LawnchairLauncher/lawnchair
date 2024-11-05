@@ -52,6 +52,7 @@ public class StartActivityParams implements Parcelable {
     public int flagsValues;
     public int extraFlags;
     public Bundle options;
+    public boolean requireActivityResult = true;
 
     public StartActivityParams(Activity activity, int requestCode) {
         this(activity.createPendingResult(requestCode, new Intent(),
@@ -74,6 +75,7 @@ public class StartActivityParams implements Parcelable {
         flagsValues = parcel.readInt();
         extraFlags = parcel.readInt();
         options = parcel.readBundle();
+        requireActivityResult = parcel.readInt() != 0;
     }
 
 
@@ -94,6 +96,7 @@ public class StartActivityParams implements Parcelable {
         parcel.writeInt(flagsValues);
         parcel.writeInt(extraFlags);
         parcel.writeBundle(options);
+        parcel.writeInt(requireActivityResult ? 1 : 0);
     }
 
     /** Perform the operation on the pendingIntent. */

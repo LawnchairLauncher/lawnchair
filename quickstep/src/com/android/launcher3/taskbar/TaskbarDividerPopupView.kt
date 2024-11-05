@@ -15,22 +15,28 @@
  */
 package com.android.launcher3.taskbar
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.util.Property
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Switch
 import androidx.core.view.postDelayed
+import com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE
 import com.android.launcher3.R
 import com.android.launcher3.popup.ArrowPopup
 import com.android.launcher3.popup.RoundedArrowDrawable
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.Themes
+import com.android.launcher3.views.ActivityContext
 
 /** Popup view with arrow for taskbar pinning */
 class TaskbarDividerPopupView<T : TaskbarActivityContext>
@@ -42,7 +48,8 @@ constructor(
 ) : ArrowPopup<T>(context, attrs, defStyleAttr) {
     companion object {
         private const val TAG = "TaskbarDividerPopupView"
-        private const val DIVIDER_POPUP_CLOSING_DELAY = 500L
+        private const val DIVIDER_POPUP_CLOSING_DELAY = 333L
+        private const val DIVIDER_POPUP_CLOSING_ANIMATION_DURATION = 83L
 
         @JvmStatic
         fun createAndPopulate(
@@ -59,10 +66,9 @@ constructor(
             return taskMenuViewWithArrow.populateForView(view)
         }
     }
+
     private lateinit var dividerView: View
 
-    private val menuWidth =
-        context.resources.getDimensionPixelSize(R.dimen.taskbar_pinning_popup_menu_width)
     private val popupCornerRadius = Themes.getDialogCornerRadius(context)
     private val arrowWidth = resources.getDimension(R.dimen.popup_arrow_width)
     private val arrowHeight = resources.getDimension(R.dimen.popup_arrow_height)
@@ -70,15 +76,11 @@ constructor(
 
     private var alwaysShowTaskbarOn = !DisplayController.isTransientTaskbar(context)
     private var didPreferenceChange = false
+    private var verticalOffsetForPopupView =
+        resources.getDimensionPixelSize(R.dimen.taskbar_pinning_popup_menu_vertical_margin)
 
     /** Callback invoked when the pinning popup view is closing. */
     var onCloseCallback: (preferenceChanged: Boolean) -> Unit = {}
-
-    /**
-     * Callback invoked when the user preference changes in popup view. Preference change will be
-     * based upon current value stored in [LauncherPrefs] for `TASKBAR_PINNING`
-     */
-    var changePreference: () -> Unit = {}
 
     init {
         // This synchronizes the arrow and menu to open at the same time
@@ -94,23 +96,39 @@ constructor(
         popupContainer.getDescendantRectRelativeToSelf(dividerView, outPos)
     }
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    @SuppressLint("UseSwitchCompatOrMaterialCode", "ClickableViewAccessibility")
     override fun onFinishInflate() {
         super.onFinishInflate()
-        val taskbarSwitchOption = findViewById<LinearLayout>(R.id.taskbar_switch_option)
-        val alwaysShowTaskbarSwitch = findViewById<Switch>(R.id.taskbar_pinning_switch)
+        val taskbarSwitchOption = requireViewById<LinearLayout>(R.id.taskbar_switch_option)
+        val alwaysShowTaskbarSwitch = requireViewById<Switch>(R.id.taskbar_pinning_switch)
+        val taskbarVisibilityIcon = requireViewById<View>(R.id.taskbar_pinning_visibility_icon)
+
         alwaysShowTaskbarSwitch.isChecked = alwaysShowTaskbarOn
-        taskbarSwitchOption.setOnClickListener {
-            alwaysShowTaskbarSwitch.isClickable = true
-            alwaysShowTaskbarSwitch.isChecked = !alwaysShowTaskbarOn
-            onClickAlwaysShowTaskbarSwitchOption()
+        alwaysShowTaskbarSwitch.setOnTouchListener { view, event ->
+            (view.parent as View).onTouchEvent(event)
+        }
+        alwaysShowTaskbarSwitch.setOnClickListener { view -> (view.parent as View).performClick() }
+
+        if (ActivityContext.lookupContext<TaskbarActivityContext>(context).isGestureNav) {
+            taskbarSwitchOption.setOnClickListener {
+                alwaysShowTaskbarSwitch.isChecked = !alwaysShowTaskbarOn
+                onClickAlwaysShowTaskbarSwitchOption()
+            }
+        } else {
+            alwaysShowTaskbarSwitch.isEnabled = false
+        }
+
+        if (!alwaysShowTaskbarSwitch.isEnabled) {
+            taskbarVisibilityIcon.background.setTint(
+                resources.getColor(android.R.color.system_neutral2_500, context.theme)
+            )
         }
     }
 
     /** Orient object as usual and then center object horizontally. */
     override fun orientAboutObject() {
         super.orientAboutObject()
-        x = mTempRect.centerX() - menuWidth / 2f
+        x = mTempRect.centerX() - measuredWidth / 2f
     }
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent?): Boolean {
@@ -166,7 +184,7 @@ constructor(
                     measuredWidth.toFloat(),
                     measuredHeight.toFloat(),
                     (measuredWidth - arrowWidth) / 2, // arrowOffsetX
-                    0f, // arrowOffsetY
+                    -mArrowOffsetVertical.toFloat(), // arrowOffsetY
                     false, // isPointingUp
                     true, // leftAligned
                     context.getColor(R.color.popup_shade_first),
@@ -176,15 +194,67 @@ constructor(
         }
     }
 
-    override fun closeComplete() {
+    override fun getExtraVerticalOffset(): Int {
+        return (mActivityContext.deviceProfile.taskbarHeight -
+            mActivityContext.deviceProfile.taskbarIconSize) / 2 + verticalOffsetForPopupView
+    }
+
+    override fun onCreateCloseAnimation(anim: AnimatorSet?) {
+        // If taskbar pinning preference changed insert custom close animation for popup menu.
+        if (didPreferenceChange) {
+            mOpenCloseAnimator = getCloseAnimator()
+        }
         onCloseCallback(didPreferenceChange)
-        super.closeComplete()
+        onCloseCallback = {}
+    }
+
+    /** Aligning the view pivot to center for animation. */
+    override fun setPivotForOpenCloseAnimation() {
+        pivotX = measuredWidth / 2f
+        pivotY = measuredHeight.toFloat()
+    }
+
+    private fun getCloseAnimator(): AnimatorSet {
+        val alphaValues = floatArrayOf(1f, 0f)
+        val translateYValue =
+            if (!alwaysShowTaskbarOn) verticalOffsetForPopupView else -verticalOffsetForPopupView
+        val alpha = getAnimatorOfFloat(this, ALPHA, *alphaValues)
+        val arrowAlpha = getAnimatorOfFloat(mArrow, ALPHA, *alphaValues)
+        val translateY =
+            ObjectAnimator.ofFloat(
+                this,
+                TRANSLATION_Y,
+                *floatArrayOf(this.translationY, this.translationY + translateYValue)
+            )
+        val arrowTranslateY =
+            ObjectAnimator.ofFloat(
+                mArrow,
+                TRANSLATION_Y,
+                *floatArrayOf(mArrow.translationY, mArrow.translationY + translateYValue)
+            )
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(alpha, arrowAlpha, translateY, arrowTranslateY)
+        return animatorSet
+    }
+
+    private fun getAnimatorOfFloat(
+        view: View,
+        property: Property<View, Float>,
+        vararg values: Float
+    ): Animator {
+        val animator: Animator = ObjectAnimator.ofFloat(view, property, *values)
+        animator.setDuration(DIVIDER_POPUP_CLOSING_ANIMATION_DURATION)
+        animator.interpolator = EMPHASIZED_ACCELERATE
+        return animator
     }
 
     private fun onClickAlwaysShowTaskbarSwitchOption() {
         didPreferenceChange = true
-        changePreference()
         // Allow switch animation to finish and then close the popup.
-        postDelayed(DIVIDER_POPUP_CLOSING_DELAY) { close(true) }
+        postDelayed(DIVIDER_POPUP_CLOSING_DELAY) {
+            if (isOpen) {
+                close(true)
+            }
+        }
     }
 }

@@ -1,0 +1,35 @@
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:name="vector"
+    android:width="@dimen/ps_button_height"
+    android:height="@dimen/ps_button_height"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:name="path"
+        android:pathData="M 19.998 36.668 C 10.816 36.668 3.332 29.184 3.332 20 C 3.332 10.818 10.816 3.334 19.998 3.334 C 20.916 3.334 21.666 4.084 21.666 5 C 21.666 5.918 20.916 6.668 19.998 6.668 C 12.648 6.668 6.666 12.65 6.666 20 C 6.666 27.35 12.648 33.334 19.998 33.334 C 27.348 33.334 33.332 27.35 33.332 20 C 33.332 19.084 34.082 18.334 34.998 18.334 C 35.916 18.334 36.666 19.084 36.666 20 C 36.666 29.184 29.182 36.668 19.998 36.668 Z"
+        android:fillColor="?attr/materialColorOnPrimaryFixed"/>
+    <path
+        android:name="path_3"
+        android:pathData="M 20 0 C 25.302 0 30.393 2.109 34.142 5.858 C 37.891 9.607 40 14.698 40 20 C 40 25.302 37.891 30.393 34.142 34.142 C 30.393 37.891 25.302 40 20 40 C 14.698 40 9.607 37.891 5.858 34.142 C 2.109 30.393 0 25.302 0 20 C 0 14.698 2.109 9.607 5.858 5.858 C 9.607 2.109 14.698 0 20 0"
+        android:fillColor="?attr/materialColorPrimaryFixedDim"/>
+    <path
+        android:name="path_4"
+        android:pathData="M 19.999 28.334 C 15.408 28.334 11.666 24.592 11.666 20 C 11.666 15.409 15.408 11.667 19.999 11.667 C 20.458 11.667 20.833 12.042 20.833 12.5 C 20.833 12.959 20.458 13.334 19.999 13.334 C 16.324 13.334 13.333 16.325 13.333 20 C 13.333 23.675 16.324 26.667 19.999 26.667 C 23.674 26.667 26.666 23.675 26.666 20 C 26.666 19.542 27.041 19.167 27.499 19.167 C 27.958 19.167 28.333 19.542 28.333 20 C 28.333 24.592 24.591 28.334 19.999 28.334 Z"
+        android:fillColor="?attr/materialColorOnPrimaryFixed"/>
+</vector>

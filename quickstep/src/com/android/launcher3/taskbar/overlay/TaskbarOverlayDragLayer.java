@@ -30,7 +30,7 @@ import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 
-import com.android.app.viewcapture.SettingsAwareViewCapture;
+import com.android.app.viewcapture.ViewCaptureFactory;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -38,8 +38,8 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /** Root drag layer for the Taskbar overlay window. */
 public class TaskbarOverlayDragLayer extends
@@ -47,28 +47,7 @@ public class TaskbarOverlayDragLayer extends
         ViewTreeObserver.OnComputeInternalInsetsListener {
 
     private SafeCloseable mViewCaptureCloseable;
-    private final List<OnClickListener> mOnClickListeners = new CopyOnWriteArrayList<>();
-    private final TouchController mClickListenerTouchController = new TouchController() {
-        @Override
-        public boolean onControllerTouchEvent(MotionEvent ev) {
-            if (ev.getActionMasked() == MotionEvent.ACTION_UP) {
-                for (OnClickListener listener : mOnClickListeners) {
-                    listener.onClick(TaskbarOverlayDragLayer.this);
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-            for (int i = 0; i < getChildCount(); i++) {
-                if (isEventOverView(getChildAt(i), ev)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    };
+    private final List<TouchController> mTouchControllers = new ArrayList<>();
 
     TaskbarOverlayDragLayer(Context context) {
         super(context, null, 1);
@@ -80,7 +59,7 @@ public class TaskbarOverlayDragLayer extends
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnComputeInternalInsetsListener(this);
-        mViewCaptureCloseable = SettingsAwareViewCapture.getInstance(getContext())
+        mViewCaptureCloseable = ViewCaptureFactory.getInstance(getContext())
                 .startCapture(getRootView(), ".TaskbarOverlay");
     }
 
@@ -93,10 +72,10 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public void recreateControllers() {
-        mControllers = mOnClickListeners.isEmpty()
-                ? new TouchController[]{mActivity.getDragController()}
-                : new TouchController[] {
-                        mActivity.getDragController(), mClickListenerTouchController};
+        List<TouchController> controllers = new ArrayList<>();
+        controllers.add(mActivity.getDragController());
+        controllers.addAll(mTouchControllers);
+        mControllers = controllers.toArray(new TouchController[0]);
     }
 
     @Override
@@ -111,6 +90,15 @@ public class TaskbarOverlayDragLayer extends
             AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
             if (topView != null && topView.canHandleBack()) {
                 topView.onBackInvoked();
+                return true;
+            }
+        } else if (event.getAction() == KeyEvent.ACTION_DOWN
+                && event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE && event.hasNoModifiers()) {
+            // Ignore escape if pressed in conjunction with any modifier keys. Close each
+            // floating view one at a time for each key press.
+            AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+            if (topView != null) {
+                topView.close(/* animate= */ true);
                 return true;
             }
         }
@@ -138,49 +126,16 @@ public class TaskbarOverlayDragLayer extends
         mActivity.getOverlayController().maybeCloseWindow();
     }
 
-    /**
-     * Adds the given callback to clicks to this drag layer.
-     * <p>
-     * Clicks are only accepted on this drag layer if they fall within this drag layer's bounds and
-     * outside the bounds of all child views.
-     * <p>
-     * If the click falls within the bounds of a child view, then this callback does not run and
-     * that child can optionally handle it.
-     */
-    private void addOnClickListener(@NonNull OnClickListener listener) {
-        boolean wasEmpty = mOnClickListeners.isEmpty();
-        mOnClickListeners.add(listener);
-        if (wasEmpty) {
-            recreateControllers();
-        }
+    /** Adds a {@link TouchController} to this drag layer. */
+    public void addTouchController(@NonNull TouchController touchController) {
+        mTouchControllers.add(touchController);
+        recreateControllers();
     }
 
-    /**
-     * Removes the given on click callback.
-     * <p>
-     * No-op if the callback was never added.
-     */
-    private void removeOnClickListener(@NonNull OnClickListener listener) {
-        boolean wasEmpty = mOnClickListeners.isEmpty();
-        mOnClickListeners.remove(listener);
-        if (!wasEmpty && mOnClickListeners.isEmpty()) {
-            recreateControllers();
-        }
-    }
-
-    /**
-     * Queues the given callback on the next click on this drag layer.
-     * <p>
-     * Once run, this callback is immediately removed.
-     */
-    public void runOnClickOnce(@NonNull OnClickListener listener) {
-        addOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onClick(v);
-                removeOnClickListener(this);
-            }
-        });
+    /** Removes a {@link TouchController} from this drag layer. */
+    public void removeTouchController(@NonNull TouchController touchController) {
+        mTouchControllers.remove(touchController);
+        recreateControllers();
     }
 
     /**

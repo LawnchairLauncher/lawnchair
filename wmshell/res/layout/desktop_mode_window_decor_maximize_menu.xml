@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    android:id="@+id/maximize_menu"
+    style="?android:attr/buttonBarStyle"
+    android:layout_width="@dimen/desktop_mode_maximize_menu_width"
+    android:layout_height="@dimen/desktop_mode_maximize_menu_height"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="@drawable/desktop_mode_maximize_menu_background"
+    android:elevation="1dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="94dp"
+            android:layout_height="60dp"
+            android:id="@+id/maximize_menu_maximize_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:stateListAnimator="@null"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="4dp"
+            android:alpha="0"/>
+
+        <TextView
+            android:id="@+id/maximize_menu_maximize_window_text"
+            android:layout_width="94dp"
+            android:layout_height="18dp"
+            android:textSize="11sp"
+            android:layout_marginBottom="76dp"
+            android:gravity="center"
+            android:fontFamily="google-sans-text"
+            android:text="@string/desktop_mode_maximize_menu_maximize_text"
+            android:textColor="?androidprv:attr/materialColorOnSurface"
+            android:alpha="0"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/maximize_menu_snap_menu_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp"
+            android:background="@drawable/desktop_mode_maximize_menu_layout_background"
+            android:layout_marginBottom="4dp"
+            android:alpha="0">
+            <Button
+                android:id="@+id/maximize_menu_snap_left_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="41dp"
+                android:layout_height="@dimen/desktop_mode_maximize_menu_button_height"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/desktop_mode_maximize_menu_button_background"
+                android:stateListAnimator="@null"/>
+
+            <Button
+                android:id="@+id/maximize_menu_snap_right_button"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="41dp"
+                android:layout_height="@dimen/desktop_mode_maximize_menu_button_height"
+                android:background="@drawable/desktop_mode_maximize_menu_button_background"
+                android:stateListAnimator="@null"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/maximize_menu_snap_window_text"
+            android:layout_width="94dp"
+            android:layout_height="18dp"
+            android:textSize="11sp"
+            android:layout_marginBottom="76dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:fontFamily="google-sans-text"
+            android:text="@string/desktop_mode_maximize_menu_snap_text"
+            android:textColor="?androidprv:attr/materialColorOnSurface"
+            android:alpha="0"/>
+    </LinearLayout>
+</LinearLayout>
+

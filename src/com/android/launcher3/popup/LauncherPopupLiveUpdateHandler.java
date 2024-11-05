@@ -87,9 +87,4 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
             }
         }
     }
-
-    @Override
-    protected void showPopupContainerForIcon(BubbleTextView originalIcon) {
-        PopupContainerWithArrow.showForIcon(originalIcon);
-    }
 }

@@ -15,7 +15,6 @@
 package com.android.systemui.plugins;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 
 public class PluginUtils {

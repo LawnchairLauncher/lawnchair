@@ -20,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.OnHierarchyChangeListener;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
@@ -50,13 +52,13 @@ public class AccessibleDragListenerAdapter implements DragListener, OnHierarchyC
     @Override
     public void onDragStart(DragObject dragObject, DragOptions options) {
         mViewGroup.setOnHierarchyChangeListener(this);
-        enableAccessibleDrag(true);
+        enableAccessibleDrag(true, dragObject);
     }
 
     @Override
     public void onDragEnd() {
         mViewGroup.setOnHierarchyChangeListener(null);
-        enableAccessibleDrag(false);
+        enableAccessibleDrag(false, null);
         Launcher.getLauncher(mViewGroup.getContext()).getDragController().removeDragListener(this);
     }
 
@@ -75,7 +77,7 @@ public class AccessibleDragListenerAdapter implements DragListener, OnHierarchyC
         }
     }
 
-    protected void enableAccessibleDrag(boolean enable) {
+    protected void enableAccessibleDrag(boolean enable, @Nullable DragObject dragObject) {
         for (int i = 0; i < mViewGroup.getChildCount(); i++) {
             setEnableForLayout((CellLayout) mViewGroup.getChildAt(i), enable);
         }

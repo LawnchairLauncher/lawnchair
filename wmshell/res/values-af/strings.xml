@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Maak toe"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Vou uit"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Instellings"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Kieslys"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Prent-in-prent-kieslys"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> is in beeld-in-beeld"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"As jy nie wil hê dat <xliff:g id="NAME">%s</xliff:g> hierdie kenmerk moet gebruik nie, tik om instellings oop te maak en skakel dit af."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Speel"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Laat wag"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Slaan oor na volgende"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Slaan oor na vorige"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Verander grootte"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Hou vas"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Laat los"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"App sal dalk nie met verdeelde skerm werk nie"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"App steun nie verdeelde skerm nie"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Hierdie app kan net in 1 venster oopgemaak word"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Program sal dalk nie op \'n sekondêre skerm werk nie."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Program steun nie begin op sekondêre skerms nie."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Skermverdeler"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Skermverdeler"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Volskerm links"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Links 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Links 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Links 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Volskerm regs"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Volskerm bo"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Bo 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Bo 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Bo 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Volskerm onder"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Verdeel links"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Verdeel regs"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Verdeel bo"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Verdeel onder"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Gebruik eenhandmodus"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Swiep van die onderkant van die skerm af op of tik enige plek bo die app om uit te gaan"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Begin eenhandmodus"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Verlaat eenhandmodus"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Instellings vir <xliff:g id="APP_NAME">%1$s</xliff:g>-borrels"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Oorloop"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Voeg terug op stapel"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> vanaf <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> van <xliff:g id="APP_NAME">%2$s</xliff:g> en <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> meer af"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Beweeg na links bo"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Beweeg na regs bo"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Beweeg na links onder"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Beweeg na regs onder"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"vou <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> uit"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"vou <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> in"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>-instellings"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Maak borrel toe"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Moenie dat gesprek \'n borrel word nie"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Klets met borrels"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Nuwe gesprekke verskyn as swerwende ikone, of borrels Tik op borrel om dit oop te maak. Sleep om dit te skuif."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Beheer borrels enige tyd"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Tik op Bestuur om borrels vanaf hierdie program af te skakel"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Het dit"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Geen onlangse borrels nie"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Onlangse borrels en borrels wat toegemaak is, sal hier verskyn"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Klets met borrels"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Nuwe gesprekke verskyn as ikone in ’n hoek onderaan jou skerm. Tik om hulle uit te vou, of sleep om hulle toe te maak."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Beheer borrels enige tyd"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Tik hier om te bestuur watter apps en gesprekke in borrels kan verskyn"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Borrel"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Bestuur"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Borrel is toegemaak."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Borrels"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Wys borrels"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Tik om hierdie app te herbegin vir ’n beter aansig"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Verander hierdie app se aspekverhouding in Instellings"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Verander aspekverhouding"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Kamerakwessies?\nTik om aan te pas"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Nie opgelos nie?\nTik om terug te stel"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Geen kamerakwessies nie? Tik om toe te maak."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Sien en doen meer"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Sleep ’n ander app in vir verdeelde skerm"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Dubbeltik buite ’n program om dit te herposisioneer"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"Het dit"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Vou uit vir meer inligting."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Herbegin vir ’n beter aansig?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Jy kan die app herbegin sodat dit beter op jou skerm lyk, maar jy sal dalk jou vordering of enige ongestoorde veranderinge verloor"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Kanselleer"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Herbegin"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Moenie weer wys nie"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Dubbeltik om\nhierdie app te skuif"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Maksimeer"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Maak klein"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Maak toe"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Terug"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Handvatsel"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Appikoon"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Volskerm"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Rekenaarmodus"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Verdeelde skerm"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Meer"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Sweef"</string>
+    <string name="select_text" msgid="5139083974039906583">"Kies"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Skermskoot"</string>
+    <string name="close_text" msgid="4986518933445178928">"Maak toe"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Maak kieslys toe"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Maak kieslys oop"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Maksimeer skerm"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Gryp skerm vas"</string>
+</resources>

@@ -16,10 +16,12 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.app.animation.Interpolators.DECELERATE_2;
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 
 import android.content.Context;
 
+import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -27,6 +29,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
+import com.android.quickstep.util.BaseDepthController;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
+
+import java.util.concurrent.TimeUnit;
 
 import app.lawnchair.LawnchairLauncher;
 import app.lawnchair.util.LawnchairUtilsKt;
@@ -36,7 +42,10 @@ import app.lawnchair.util.LawnchairUtilsKt;
  */
 public class AllAppsState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_WORKSPACE_INACCESSIBLE | FLAG_CLOSE_POPUPS | FLAG_HOTSEAT_INACCESSIBLE;
+    private static final int STATE_FLAGS =
+            FLAG_WORKSPACE_INACCESSIBLE | FLAG_CLOSE_POPUPS | FLAG_HOTSEAT_INACCESSIBLE;
+    private static final long BACK_CUJ_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(5);
+
 
     public AllAppsState(int id) {
         super(id, LAUNCHER_STATE_ALLAPPS, STATE_FLAGS);
@@ -51,8 +60,53 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
+    public void onBackStarted(Launcher launcher) {
+        // Because the back gesture can take longer time depending on when user release the finger,
+        // we pass BACK_CUJ_TIMEOUT_MS as timeout to the jank monitor.
+        InteractionJankMonitorWrapper.begin(launcher.getAppsView(),
+                Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK, BACK_CUJ_TIMEOUT_MS);
+        super.onBackStarted(launcher);
+    }
+
+    @Override
+    public void onBackInvoked(Launcher launcher) {
+        // In predictive back swipe, onBackInvoked() will be called after onBackStarted().
+        // In 3 button mode, onBackStarted() is not called but onBackInvoked() will be called.
+        // Thus In onBackInvoked(), we should only begin instrumenting if we didn't call
+        // onBackStarted() to start instrumenting CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK.
+        if (!InteractionJankMonitorWrapper.isInstrumenting(Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK)) {
+            InteractionJankMonitorWrapper.begin(
+                    launcher.getAppsView(), Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK);
+        }
+        super.onBackInvoked(launcher);
+    }
+
+    /** Called when predictive back swipe is cancelled. */
+    @Override
+    public void onBackCancelled(Launcher launcher) {
+        super.onBackCancelled(launcher);
+        InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK);
+    }
+
+    @Override
+    protected void onBackAnimationCompleted(boolean success) {
+        if (success) {
+            // Animation was successful.
+            InteractionJankMonitorWrapper.end(Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK);
+        } else {
+            // Animation was canceled.
+            InteractionJankMonitorWrapper.cancel(Cuj.CUJ_LAUNCHER_CLOSE_ALL_APPS_BACK);
+        }
+    }
+
+    @Override
     public String getDescription(Launcher launcher) {
         return launcher.getAppsView().getDescription();
+    }
+
+    @Override
+    public int getTitle() {
+        return R.string.all_apps_label;
     }
 
     @Override
@@ -87,9 +141,14 @@ public class AllAppsState extends LauncherState {
             return context.getDeviceProfile().bottomSheetDepth;
         } else {
             // The scrim fades in at approximately 50% of the swipe gesture.
-            // This means that the depth should be greater than 1, in order to fully zoom
-            // out.
-            return 2f;
+            if (enableScalingRevealHomeAnimation()) {
+                // This means that the depth should be twice of what we want, in order to fully zoom
+                // out during the visible portion of the animation.
+                return BaseDepthController.DEPTH_60_PERCENT;
+            } else {
+                // This means that the depth should be greater than 1, in order to fully zoom out.
+                return 2f;
+            }
         }
     }
 

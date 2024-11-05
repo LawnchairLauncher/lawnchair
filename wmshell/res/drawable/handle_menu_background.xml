@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2022 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="210.0dp"
+        android:height="64.0dp"
+        android:tint="@color/decor_button_light_color"
+>
+    <group android:scaleX="0.5"
+           android:scaleY="0.5"
+           android:translateX="8.0"
+           android:translateY="8.0" >
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M18.3334 14L13.3334 14L13.3334 2L18.3334 2L18.3334 14ZM20.3334 14L20.3334 2C20.3334 0.9 19.4334 -3.93402e-08 18.3334 -8.74228e-08L13.3334 -3.0598e-07C12.2334 -3.54062e-07 11.3334 0.9 11.3334 2L11.3334 14C11.3334 15.1 12.2334 16 13.3334 16L18.3334 16C19.4334 16 20.3334 15.1 20.3334 14ZM7.33337 14L2.33337 14L2.33337 2L7.33337 2L7.33337 14ZM9.33337 14L9.33337 2C9.33337 0.899999 8.43337 -5.20166e-07 7.33337 -5.68248e-07L2.33337 -7.86805e-07C1.23337 -8.34888e-07 0.333374 0.899999 0.333374 2L0.333373 14C0.333373 15.1 1.23337 16 2.33337 16L7.33337 16C8.43337 16 9.33337 15.1 9.33337 14Z"/>
+    </group>
+</vector>

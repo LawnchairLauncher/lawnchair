@@ -22,12 +22,12 @@ import android.hardware.SensorManager
 import android.hardware.display.DisplayManager
 import android.os.Handler
 import com.android.systemui.unfold.config.UnfoldTransitionConfig
+import com.android.systemui.unfold.dagger.UnfoldBg
 import com.android.systemui.unfold.dagger.UnfoldMain
 import com.android.systemui.unfold.dagger.UnfoldSingleThreadBg
 import com.android.systemui.unfold.progress.RemoteUnfoldTransitionReceiver
 import com.android.systemui.unfold.updates.FoldProvider
 import com.android.systemui.unfold.updates.RotationChangeProvider
-import com.android.systemui.unfold.updates.hinge.HingeAngleProvider
 import com.android.systemui.unfold.updates.screen.ScreenStatusProvider
 import com.android.systemui.unfold.util.CurrentActivityTypeProvider
 import com.android.systemui.unfold.util.UnfoldTransitionATracePrefix
@@ -63,13 +63,12 @@ interface UnfoldSharedComponent {
             @BindsInstance @UnfoldSingleThreadBg singleThreadBgExecutor: Executor,
             @BindsInstance @UnfoldTransitionATracePrefix tracingTagPrefix: String,
             @BindsInstance displayManager: DisplayManager,
-            @BindsInstance contentResolver: ContentResolver = context.contentResolver
+            @BindsInstance @UnfoldBg bgHandler: Handler,
+            @BindsInstance contentResolver: ContentResolver = context.contentResolver,
         ): UnfoldSharedComponent
     }
 
     val unfoldTransitionProvider: Optional<UnfoldTransitionProgressProvider>
-    val hingeAngleProvider: HingeAngleProvider
-    val rotationChangeProvider: RotationChangeProvider
 }
 
 /**
@@ -88,13 +87,15 @@ interface RemoteUnfoldSharedComponent {
             @BindsInstance @UnfoldMain executor: Executor,
             @BindsInstance @UnfoldMain handler: Handler,
             @BindsInstance @UnfoldSingleThreadBg singleThreadBgExecutor: Executor,
+            @BindsInstance @UnfoldBg bgHandler: Handler,
             @BindsInstance displayManager: DisplayManager,
             @BindsInstance @UnfoldTransitionATracePrefix tracingTagPrefix: String,
         ): RemoteUnfoldSharedComponent
     }
 
     val remoteTransitionProgress: Optional<RemoteUnfoldTransitionReceiver>
-    val rotationChangeProvider: RotationChangeProvider
+
+    @UnfoldMain fun getRotationChangeProvider(): RotationChangeProvider
 }
 
 /**

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"بند کریں"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"پھیلائیں"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"ترتیبات"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"مینیو"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"تصویر میں تصویر کا مینیو"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> تصویر میں تصویر میں ہے"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"اگر آپ نہیں چاہتے ہیں کہ <xliff:g id="NAME">%s</xliff:g> اس خصوصیت کا استعمال کرے تو ترتیبات کھولنے کے لیے تھپتھپا کر اسے آف کرے۔"</string>
+    <string name="pip_play" msgid="3496151081459417097">"چلائیں"</string>
+    <string name="pip_pause" msgid="690688849510295232">"موقوف کریں"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"نظرانداز کرکے اگلے پر جائیں"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"نظرانداز کرکے پچھلے پر جائیں"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"سائز تبدیل کریں"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Stash"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Unstash"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"ممکن ہے کہ ایپ اسپلٹ اسکرین کے ساتھ کام نہ کرے"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"ایپ اسپلٹ اسکرین کو سپورٹ نہیں کرتی ہے"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"یہ ایپ صرف 1 ونڈو میں کھولی جا سکتی ہے"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"ممکن ہے ایپ ثانوی ڈسپلے پر کام نہ کرے۔"</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"ایپ ثانوی ڈسپلیز پر شروعات کا تعاون نہیں کرتی۔"</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"اسپلٹ اسکرین ڈیوائیڈر"</string>
+    <string name="divider_title" msgid="1963391955593749442">"اسپلٹ اسکرین ڈیوائیڈر"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"بائیں فل اسکرین"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"بائیں %70"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"بائیں %50"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"بائیں %30"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"دائیں فل اسکرین"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"بالائی فل اسکرین"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"اوپر %70"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"اوپر %50"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"اوپر %30"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"نچلی فل اسکرین"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"دائیں طرف تقسیم کریں"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"بائیں طرف تقسیم کریں"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"اوپر کی طرف تقسیم کریں"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"نیچے کی طرف تقسیم کریں"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"ایک ہاتھ کی وضع کا استعمال کرنا"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"باہر نکلنے کیلئے، اسکرین کے نیچے سے اوپر کی طرف سوائپ کریں یا ایپ کے اوپر کہیں بھی تھپتھپائیں"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"ایک ہاتھ کی وضع شروع کریں"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"ایک ہاتھ کی وضع سے باہر نکلیں"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g> بلبلوں کے لیے ترتیبات"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"اوورفلو"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"انبار میں واپس شامل کریں"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="APP_NAME">%2$s</xliff:g> کی جانب سے <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="APP_NAME">%2$s</xliff:g> اور <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> مزید سے <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"اوپر بائیں جانب لے جائیں"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"اوپر دائیں جانب لے جائيں"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"نیچے بائیں جانب لے جائیں"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"نیچے دائیں جانب لے جائیں"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> کو پھیلائیں"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> کو سکیڑیں"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> ترتیبات"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"بلبلہ برخاست کریں"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"گفتگو بلبلہ نہ کریں"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"بلبلے کے ذریعے چیٹ کریں"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"نئی گفتگوئیں فلوٹنگ آئیکن یا بلبلے کے طور پر ظاہر ہوں گی۔ بلبلہ کھولنے کے لیے تھپتھپائیں۔ اسے منتقل کرنے کے لیے گھسیٹیں۔"</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"کسی بھی وقت بلبلے کو کنٹرول کریں"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"اس ایپ سے بلبلوں کو آف کرنے کے لیے نظم کریں پر تھپتھپائیں"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"سمجھ آ گئی"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"کوئی حالیہ بلبلہ نہیں"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"حالیہ بلبلے اور برخاست شدہ بلبلے یہاں ظاہر ہوں گے"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"بلبلے کے ذریعے چیٹ کریں"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"نئی گفتگوئیں آپ کی اسکرین کے نیچے کونے میں آئیکنز کے طور پر ظاہر ہوتی ہیں۔ انہیں پھیلانے کے لیے تھپتھپائیں یا انہیں برخاست کرنے کے لیے گھسیٹیں۔"</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"کسی بھی وقت بلبلے کو کنٹرول کریں"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"یہ نظم کرنے کے لیے یہاں تھپتھپائیں کہ کون سی ایپس اور گفتگوئیں بلبلہ سکتی ہیں"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"بلبلہ"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"نظم کریں"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"بلبلہ برخاست کر دیا گیا۔"</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"بلبلے"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"بلبلے دکھائیں"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"بہتر منظر کے لیے اس ایپ کو ری اسٹارٹ کرنے کی خاطر تھپتھپائیں"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"ترتیبات میں اس ایپ کی تناسبی شرح کو تبدیل کریں"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"تناسبی شرح کو تبدیل کریں"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"کیمرے کے مسائل؟\nدوبارہ فٹ کرنے کیلئے تھپتھپائیں"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"یہ حل نہیں ہوا؟\nلوٹانے کیلئے تھپتھپائیں"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"کوئی کیمرے کا مسئلہ نہیں ہے؟ برخاست کرنے کیلئے تھپتھپائیں۔"</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"دیکھیں اور بہت کچھ کریں"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"اسپلٹ اسکرین کے ليے دوسری ایپ میں گھسیٹیں"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"کسی ایپ کی پوزیشن تبدیل کرنے کے لیے اس ایپ کے باہر دو بار تھپتھپائیں"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"سمجھ آ گئی"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"مزید معلومات کے لیے پھیلائیں۔"</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"بہتر منظر کے لیے ری سٹارٹ کریں؟"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"آپ ایپ کو ری سٹارٹ کر سکتے ہیں تاکہ یہ آپ کی اسکرین پر بہتر نظر آئے، تاہم آپ اپنی پیشرفت سے یا کسی غیر محفوظ شدہ تبدیلیوں سے محروم ہو سکتے ہیں"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"منسوخ کریں"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"ری اسٹارٹ کریں"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"دوبارہ نہ دکھائیں"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"اس ایپ کو منتقل کرنے کیلئے\nدو بار تھپتھپائیں"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"بڑا کریں"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"چھوٹا کریں"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"بند کریں"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"پیچھے"</string>
+    <string name="handle_text" msgid="1766582106752184456">"ہینڈل"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"ایپ کا آئیکن"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"مکمل اسکرین"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"ڈیسک ٹاپ موڈ"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"اسپلٹ اسکرین"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"مزید"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"فلوٹ"</string>
+    <string name="select_text" msgid="5139083974039906583">"منتخب کریں"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"اسکرین شاٹ"</string>
+    <string name="close_text" msgid="4986518933445178928">"بند کریں"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"مینیو بند کریں"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"مینو کھولیں"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"اسکرین کو بڑا کریں"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"اسکرین کا اسناپ شاٹ لیں"</string>
+</resources>

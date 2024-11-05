@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Cerrar"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Expandir"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Configuración"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Menú"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Menú de pantalla en pantalla"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> está en modo de Pantalla en pantalla"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Si no quieres que <xliff:g id="NAME">%s</xliff:g> use esta función, presiona para abrir la configuración y desactivarla."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Reproducir"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Pausar"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Siguiente"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Anterior"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Cambiar el tamaño"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Almacenar de manera segura"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Dejar de almacenar de manera segura"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Es posible que la app no funcione en el modo de pantalla dividida"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"La app no es compatible con la función de pantalla dividida"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Esta app solo puede estar abierta en 1 ventana"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Es posible que la app no funcione en una pantalla secundaria."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"La app no puede iniciarse en pantallas secundarias."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Divisor de pantalla dividida"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Divisor de pantalla dividida"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Pantalla izquierda completa"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Izquierda: 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Izquierda: 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Izquierda: 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Pantalla derecha completa"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Pantalla superior completa"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Superior: 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Superior: 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Superior: 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Pantalla inferior completa"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Dividir a la izquierda"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Dividir a la derecha"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Dividir en la parte superior"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Dividir en la parte inferior"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Cómo usar el modo de una mano"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Para salir, desliza el dedo hacia arriba desde la parte inferior de la pantalla o presiona cualquier parte arriba de la app"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Iniciar el modo de una mano"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Salir del modo de una mano"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Configuración para burbujas de <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Menú ampliado"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Volver a agregar a la pila"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> de <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> de <xliff:g id="APP_NAME">%2$s</xliff:g> y <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> más"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Ubicar arriba a la izquierda"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Ubicar arriba a la derecha"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Ubicar abajo a la izquierda"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Ubicar abajo a la derecha"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"expandir <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"contraer <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"Configuración de <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Descartar burbuja"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"No mostrar la conversación en burbuja"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Chat con burbujas"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Las conversaciones nuevas aparecen como elementos flotantes o burbujas. Presiona para abrir la burbuja. Arrástrala para moverla."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Controla las burbujas"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Presiona Administrar para desactivar las burbujas de esta app"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Entendido"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"No hay burbujas recientes"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Las burbujas recientes y las que se descartaron aparecerán aquí"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Chat con burbujas"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Las conversaciones nuevas aparecen como íconos en la esquina inferior de la pantalla. Presiona para expandirlas, o bien arrastra para descartarlas."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Controla las burbujas"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Presiona para administrar las apps y conversaciones que pueden mostrar burbujas"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Cuadro"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Administrar"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Se descartó el cuadro."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Burbujas"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Mostrar burbujas"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Presiona para reiniciar esta app y tener una mejor vista"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Cambiar la relación de aspecto de esta app en Configuración"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Cambiar relación de aspecto"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"¿Tienes problemas con la cámara?\nPresiona para reajustarla"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"¿No se resolvió?\nPresiona para revertir los cambios"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"¿No tienes problemas con la cámara? Presionar para descartar."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Aprovecha más"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Arrastra otra app para el modo de pantalla dividida"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Presiona dos veces fuera de una app para cambiar su ubicación"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"Entendido"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Expande para obtener más información."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"¿Quieres reiniciar para que se vea mejor?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Puedes reiniciar la app para que se vea mejor en la pantalla, pero podrías perder tu progreso o cualquier cambio que no hayas guardado"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Cancelar"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Reiniciar"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"No volver a mostrar"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Presiona dos veces\npara mover esta app"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Maximizar"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Minimizar"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Cerrar"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Atrás"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Controlador"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Ícono de la app"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Pantalla completa"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Modo de escritorio"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Pantalla dividida"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Más"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Flotante"</string>
+    <string name="select_text" msgid="5139083974039906583">"Seleccionar"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Captura de pantalla"</string>
+    <string name="close_text" msgid="4986518933445178928">"Cerrar"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Cerrar menú"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Abrir el menú"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Maximizar pantalla"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Ajustar pantalla"</string>
+</resources>

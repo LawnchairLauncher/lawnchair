@@ -99,6 +99,6 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
 
     private fun showKeyboard() {
         val editText = launcher.appsView.searchUiManager.editText ?: return
-        editText.showKeyboard(true)
+        editText.showKeyboard()
     }
 }

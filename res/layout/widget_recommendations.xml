@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2024 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto">
+
+    <!--
+    Shown when there are more than one pages
+    Note: on page change, using accessibility live region lets user know that the title has changed.
+    -->
+    <TextView
+        android:id="@+id/recommendations_page_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="16dp"
+        android:accessibilityLiveRegion="polite"
+        android:gravity="center_horizontal"
+        android:layout_gravity="top"
+        android:lineHeight="20sp"
+        android:textColor="?attr/widgetPickerTitleColor"
+        android:textFontWeight="500"
+        android:textSize="16sp"
+        android:maxLines="1"
+        android:paddingHorizontal="8dp"
+        android:ellipsize="end"
+        android:visibility="gone" />
+    <!-- Shown when there are more than one pages -->
+    <com.android.launcher3.pageindicators.PageIndicatorDots
+        android:id="@+id/widget_recommendations_page_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
+        android:elevation="1dp"
+        android:visibility="gone" />
+    <!--
+     Note: importantForAccessibility = yes on this view ensures that with talkback, when user
+     swipes right on the last item in current page, they are taken to the next page. And, doing
+     the same on the last page, takes them to the next section e.g. apps list in single pane
+     picker.
+    -->
+    <com.android.launcher3.widget.picker.WidgetRecommendationsView
+        android:id="@+id/widget_recommendations_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@drawable/widgets_surface_background"
+        android:importantForAccessibility="yes"
+        launcher:pageIndicator="@+id/widget_recommendations_page_indicator" />
+</merge>

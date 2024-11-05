@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.states;
 
+import static com.android.launcher3.Flags.enableScalingRevealHomeAnimation;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 
 import android.content.Context;
@@ -32,6 +33,8 @@ public class SpringLoadedState extends LauncherState {
     private static final int STATE_FLAGS = FLAG_MULTI_PAGE
             | FLAG_WORKSPACE_INACCESSIBLE | FLAG_DISABLE_RESTORE
             | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_WORKSPACE_HAS_BACKGROUNDS;
+
+    public static final float DEPTH_15_PERCENT = 0.15f;
 
     public SpringLoadedState(int id) {
         super(id, LAUNCHER_STATE_HOME, STATE_FLAGS);
@@ -62,7 +65,11 @@ public class SpringLoadedState extends LauncherState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        return 0.5f;
+        if (enableScalingRevealHomeAnimation()) {
+            return DEPTH_15_PERCENT;
+        } else {
+            return 0.5f;
+        }
     }
 
     @Override

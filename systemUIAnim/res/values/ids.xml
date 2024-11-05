@@ -15,7 +15,7 @@
      limitations under the License.
 -->
 <resources>
-    <!-- DialogLaunchAnimator -->
+    <!-- DialogTransitionAnimator -->
     <item type="id" name="tag_dialog_background"/>
 
     <!-- ViewBoundsAnimator -->
