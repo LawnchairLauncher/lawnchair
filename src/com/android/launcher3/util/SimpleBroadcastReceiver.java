@@ -23,6 +23,7 @@ import android.os.PatternMatcher;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import java.util.function.Consumer;
 
@@ -43,14 +44,14 @@ public class SimpleBroadcastReceiver extends BroadcastReceiver {
      * Helper method to register multiple actions
      */
     public void register(Context context, String... actions) {
-        context.registerReceiver(this, getFilter(actions));
+        ContextCompat.registerReceiver(context, this, getFilter(actions), ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     /**
      * Helper method to register multiple actions associated with a paction
      */
     public void registerPkgActions(Context context, @Nullable String pkg, String... actions) {
-        context.registerReceiver(this, getPackageFilter(pkg, actions));
+        ContextCompat.registerReceiver(context, this, getPackageFilter(pkg, actions), ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     /**

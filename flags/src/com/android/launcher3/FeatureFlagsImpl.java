@@ -141,14 +141,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
             useActivityOverlay =
                     properties.getBoolean(Flags.FLAG_USE_ACTIVITY_OVERLAY, true);
         } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace launcher "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
+            // Ignored
         }
         launcher_is_cached = true;
     }

@@ -666,7 +666,12 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
         // work, we must opt-in BEFORE registering back dispatcher. So we need to call
         // setEnableOnBackInvokedCallback() before super.onCreate()
         if (Utilities.ATLEAST_U && enablePredictiveBackGesture()) {
-            getApplicationInfo().setEnableOnBackInvokedCallback(true);
+            try {
+                getApplicationInfo().setEnableOnBackInvokedCallback(true);
+            } catch (NoSuchMethodError e) {
+                // Ignore
+            }
+            
         }
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
