@@ -23,7 +23,7 @@ compileOnlyCommonJars()
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.core:core-animation:1.0.0-alpha02'
+    implementation 'androidx.core:core-animation:1.0.0'
     compileOnly projects.animationlib
     compileOnly projects.wmshell
     compileOnly projects.flags
