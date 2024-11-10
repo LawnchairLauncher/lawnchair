@@ -145,7 +145,7 @@
     <string name="shadow_bg_icons_label">아이콘 뒤에 그림자 표시</string>
     <string name="background_lightness_label">아이콘 배경 밝기</string>
     <string name="adaptive_icon_background_description">배경 밝기를 100%로 설정하면 흰색이 됩니다.</string>
-    <string name="reset_custom_icons">커스텀아이콘 리셋</string>
+    <string name="reset_custom_icons">사용자 정의 아이콘 초기화</string>
     <string name="reset_custom_icons_confirmation">모든 사용자 정의 아이콘이 재설정됩니다. 계속하시겠습니까?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">아이콘</string>
@@ -169,8 +169,8 @@
     <string name="icon_shape_squircle">둥근 사각형</string>
     <string name="icon_shape_teardrop">물방울</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">커스텀아이콘 모양</string>
-    <string name="custom_icon_shape_create">커스텀 아이콘 모양 만들기</string>
+    <string name="custom_icon_shape">아이콘 모양 사용자 정의</string>
+    <string name="custom_icon_shape_create">사용자 정의 아이콘 모양 만들기</string>
     <string name="custom_icon_shape_edit">사용자 정의 아이콘 모양 편집</string>
     <string name="custom_icon_shape_corner">모서리 모양</string>
     <string name="custom_icon_shape_corner_round">원호</string>
@@ -282,7 +282,7 @@
     <string name="open_smartspacer_settings">Smartspacer 설정 열기</string>
     <string name="smartspacer_settings">Smartspacer 설정</string>
     <!-- Setup settings -->
-    <string name="smartspace_requires_setup">탭하여 설정하기</string>
+    <string name="smartspace_requires_setup">여기를 눌러 설정</string>
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>를 사용하려면 알림 점을 활성화하세요.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">홈 화면에 표시</string>
@@ -320,11 +320,11 @@
     <string name="what_to_backup">백업 대상</string>
     <string name="backup_content_layout_and_settings">레이아웃 및 설정</string>
     <string name="backup_content_wallpaper">배경화면</string>
-    <string name="backup_create_success">백업이 생성되었습니다</string>
+    <string name="backup_create_success">백업을 생성했습니다.</string>
     <string name="backup_create_error">백업을 생성하지 못했습니다</string>
     <string name="restore_backup">백업 복원</string>
     <string name="what_to_restore">복원 대상</string>
-    <string name="backup_restore_success">백업 복원되었습니다</string>
+    <string name="backup_restore_success">백업을 복원했습니다.</string>
     <string name="backup_restore_error">백업을 복원하지 못했습니다</string>
     <string name="invalid_backup_file">잘못된 백업 파일입니다</string>
     <!--
@@ -337,7 +337,7 @@
     <string name="gesture_swipe_down">쓸어 내리기</string>
     <string name="gesture_home_tap">홈 버튼</string>
     <string name="gesture_back_tap">뒤로가기 버튼</string>
-    <string name="gesture_handler_no_op">아무것도 안하기</string>
+    <string name="gesture_handler_no_op">아무것도 하지 않음</string>
     <string name="gesture_handler_sleep">절전</string>
     <string name="gesture_handler_recents">최근 앱 화면 열기</string>
     <string name="gesture_handler_open_notifications">알림 패널 열기</string>
@@ -359,7 +359,7 @@
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Lawnchair 버그 신고하기</string>
+    <string name="lawnchair_bug_report">Lawnchair 버그 신고</string>
     <string name="crash_report_notif_title">%1$s가 종료되었습니다</string>
     <string name="action_upload_crash_report">크래시 로그 업로드</string>
     <string name="action_upload_error">업로드 실패</string>
@@ -423,7 +423,7 @@
     <string name="qsb_hotseat_stroke_width">외곽선 너비</string>
     <string name="qsb_hotseat_stroke_color">외곽선 색</string>
     <string name="corner_radius_label">가장자리 둥글기</string>
-    <string name="apply_accent_color_label">강조 색상 적용하기</string>
+    <string name="apply_accent_color_label">강조 색상 적용</string>
     <string name="search_provider">검색 제공자</string>
     <string name="dock_icons">독 아이콘</string>
     <string name="hotseat_bottom_space_label">하단 패딩</string>
@@ -471,7 +471,7 @@
     <string name="recents_clear_all">모두 지우기</string>
     <string name="task_menu_force_stop">강제 종료</string>
     <string name="window_corner_radius_label">가장자리 둥글기</string>
-    <string name="override_window_corner_radius_label">가장자리 둥글기 개인화</string>
+    <string name="override_window_corner_radius_label">화면 가장자리 둥글기 사용자 정의</string>
     <string name="window_corner_radius_description">위로 스와이프하여 최근 앱 화면을 열면, 현재 앱이 손가락을 따라가며 카드로 줄어듭니다. 이 슬라이더를 사용하여 카드가 거의 전체 화면일 때 화면 모서리와 일치하도록 카드의 모서리 반경을 조정할 수 있습니다.</string>
     <string name="taskbar_label">작업 표시줄</string>
     <string name="enable_taskbar_experimental">작업 표시줄 표시 (실험적 기능)</string>
@@ -488,7 +488,7 @@
     <string name="all_apps_search_result_contacts_from_device">기기의 연락처</string>
     <string name="all_apps_search_result_files">기기의 파일</string>
     <string name="all_apps_search_result_settings_entry_from_device">기기의 설정</string>
-    <string name="all_apps_search_market_message">더 많은 앱 검색하기</string>
+    <string name="all_apps_search_market_message">더 많은 앱 검색</string>
     <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>에서 검색</string>
     <string name="error_no_market_or_browser_installed">앱 스토어나 브라우저가 설치되어 있지 않습니다</string>
     <string name="clear_history">검색기록 삭제</string>
