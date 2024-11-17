@@ -127,17 +127,11 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
      * normalization
      */
     public WindowBounds getRealBounds(Context displayInfoContext, CachedDisplayInfo info) {
-        WindowMetrics windowMetrics;
-        if (Utilities.ATLEAST_R) {
-            windowMetrics = displayInfoContext.getSystemService(WindowManager.class)
-                    .getMaximumWindowMetrics();
-        
+        WindowMetrics windowMetrics = displayInfoContext.getSystemService(WindowManager.class)
+                .getMaximumWindowMetrics();
         Rect insets = new Rect();
         normalizeWindowInsets(displayInfoContext, windowMetrics.getWindowInsets(), insets);
         return new WindowBounds(windowMetrics.getBounds(), insets, info.rotation);
-        } else {
-        return new WindowBounds(new Rect(), new Rect(), info.rotation);
-      }
     }
 
     /**
@@ -145,7 +139,7 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
      * overrides like taskbar
      */
     public WindowInsets normalizeWindowInsets(Context context, WindowInsets oldInsets,
-            Rect outInsets) {
+                                              Rect outInsets) {
         if (!Utilities.ATLEAST_R || !mTaskbarDrawnInProcess) {
             outInsets.set(oldInsets.getSystemWindowInsetLeft(), oldInsets.getSystemWindowInsetTop(),
                     oldInsets.getSystemWindowInsetRight(), oldInsets.getSystemWindowInsetBottom());
@@ -165,10 +159,10 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
         int bottomNav = isLargeScreen
                 ? 0
                 : (isPortrait
-                        ? getDimenByName(systemRes, NAVBAR_HEIGHT)
-                        : (isGesture
-                                ? getDimenByName(systemRes, NAVBAR_HEIGHT_LANDSCAPE)
-                                : 0));
+                ? getDimenByName(systemRes, NAVBAR_HEIGHT)
+                : (isGesture
+                ? getDimenByName(systemRes, NAVBAR_HEIGHT_LANDSCAPE)
+                : 0));
         int leftNav = navInsets.left;
         int rightNav = navInsets.right;
         if (!isLargeScreen && !isGesture && !isPortrait) {
@@ -224,7 +218,7 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
      * display cutout's bottom inset to 0, because launcher allows drawing content
      * over that area.
      */
-    private static void applyDisplayCutoutBottomInsetOverrideOnLargeScreen(
+    public void applyDisplayCutoutBottomInsetOverrideOnLargeScreen(
             @NonNull Context context,
             boolean isLargeScreen,
             int screenWidthPx,
@@ -305,7 +299,7 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
      * surface rotations
      */
     protected List<WindowBounds> estimateWindowBounds(Context context,
-            final CachedDisplayInfo displayInfo) {
+                                                      final CachedDisplayInfo displayInfo) {
         int densityDpi = context.getResources().getConfiguration().densityDpi;
         final int rotation = displayInfo.rotation;
 
@@ -337,17 +331,17 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
 
         navBarHeightPortrait = isTablet
                 ? (mTaskbarDrawnInProcess
-                        ? 0
-                        : context.getResources().getDimensionPixelSize(R.dimen.taskbar_size))
+                ? 0
+                : context.getResources().getDimensionPixelSize(R.dimen.taskbar_size))
                 : getDimenByName(systemRes, NAVBAR_HEIGHT);
 
         navBarHeightLandscape = isTablet
                 ? (mTaskbarDrawnInProcess
-                        ? 0
-                        : context.getResources().getDimensionPixelSize(R.dimen.taskbar_size))
+                ? 0
+                : context.getResources().getDimensionPixelSize(R.dimen.taskbar_size))
                 : (isTabletOrGesture
-                        ? getDimenByName(systemRes, NAVBAR_HEIGHT_LANDSCAPE)
-                        : 0);
+                ? getDimenByName(systemRes, NAVBAR_HEIGHT_LANDSCAPE)
+                : 0);
         navbarWidthLandscape = isTabletOrGesture
                 ? 0
                 : getDimenByName(systemRes, NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE);
@@ -374,13 +368,11 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
             DisplayCutout rotatedCutout = rotateCutout(
                     displayInfo.cutout, displayInfo.size.x, displayInfo.size.y, rotation, i);
             Rect insets = getSafeInsets(rotatedCutout);
-            if (Utilities.ATLEAST_Q) {
-                if (areBottomDisplayCutoutsSmallAndAtCorners(
-                        rotatedCutout.getBoundingRectBottom(),
-                        bounds.width(),
-                        context.getResources())) {
-                    insets.bottom = 0;
-                }
+            if (areBottomDisplayCutoutsSmallAndAtCorners(
+                    rotatedCutout.getBoundingRectBottom(),
+                    bounds.width(),
+                    context.getResources())) {
+                insets.bottom = 0;
             }
             insets.top = Math.max(insets.top, statusBarHeight);
             insets.bottom = Math.max(insets.bottom, navBarHeight);
@@ -476,9 +468,7 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
      */
     protected Display getDisplay(Context displayInfoContext) {
         try {
-            if (Utilities.ATLEAST_R) {
-                return displayInfoContext.getDisplay();
-            }
+            return displayInfoContext.getDisplay();
         } catch (UnsupportedOperationException e) {
             // Ignore
         }
@@ -490,10 +480,10 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
      * Returns a DisplayCutout which represents a rotated version of the original
      */
     protected DisplayCutout rotateCutout(DisplayCutout original, int startWidth, int startHeight,
-            int fromRotation, int toRotation) {
+                                         int fromRotation, int toRotation) {
         Rect safeCutout = getSafeInsets(original);
         rotateRect(safeCutout, deltaRotation(fromRotation, toRotation));
-        return Utilities.ATLEAST_Q ? new DisplayCutout(Insets.of(safeCutout), null, null, null, null) : null;
+        return new DisplayCutout(Insets.of(safeCutout), null, null, null, null);
     }
 
     /**
@@ -527,6 +517,6 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
             return new Rect(cutout.getSafeInsetLeft(), cutout.getSafeInsetTop(),
                     cutout.getSafeInsetRight(), cutout.getSafeInsetBottom());
         }
-            return new Rect();
+        return new Rect();
     }
 }
