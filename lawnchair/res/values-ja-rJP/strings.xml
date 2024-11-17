@@ -286,7 +286,7 @@
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">ホーム画面に表示します</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">スナップショットは、Lawnchairウィジェットを配置することでホーム画面に手動で追加できます</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">At a Glance のプロバイダー</string>
     <string name="smartspace_mode_google">Google</string>
@@ -376,7 +376,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">ホーム画面の回転</string>
     <string name="home_screen_rotation_description">デバイスが回転した際にホーム画面も回転します</string>
-    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
+    <string name="wallpaper_blur">ぼやけた壁紙（実験的な機能）</string>
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>

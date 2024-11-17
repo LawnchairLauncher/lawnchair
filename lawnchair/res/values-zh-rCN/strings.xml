@@ -41,7 +41,7 @@
     <string name="managed_by_lawnchair">由 Lawnchair 管理</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">首选项</string>
-    <string name="settings_button_text">主页设置</string>
+    <string name="settings_button_text">启动器设置</string>
     <string name="system_settings">系统设置</string>
     <string name="title_change_settings">更改设置</string>
     <!--

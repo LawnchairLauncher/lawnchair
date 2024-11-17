@@ -116,7 +116,7 @@
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">Kısayollar ve ek özellikler için Lawnchair\'ı varsayılan olarak başlatmayı yapın</string>
+    <string name="set_default_launcher_tip">Kısayollar ve ek özellikler için Lawnchair\'ı varsayılan başlatıcınız yapın</string>
     <string name="notification_dots">Bildirim rozetleri</string>
     <string name="show_notification_count">Bildirim sayımı göster</string>
     <string name="notification_dots_color">Bildirim noktası rengi</string>
