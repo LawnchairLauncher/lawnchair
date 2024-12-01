@@ -271,11 +271,11 @@
     <string name="smartspace_time">時間</string>
     <string name="smartspace_time_format">Time format</string>
     <string name="smartspace_time_follow_system">Follow system</string>
-    <string name="smartspace_time_12_hour_format">12-hour format</string>
-    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <string name="smartspace_time_12_hour_format">12小時制</string>
+    <string name="smartspace_time_24_hour_format">24小時制</string>
     <!-- Available targets -->
     <string name="smartspace_weather">天氣</string>
-    <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_battery_status">電池狀況</string>
     <string name="smartspace_now_playing">聽聲辨曲</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maximum number of targets</string>
@@ -316,16 +316,16 @@
     Backup and restore
 
     -->
-    <string name="create_backup">Create backup</string>
+    <string name="create_backup">創建備份</string>
     <string name="what_to_backup">What to back up</string>
     <string name="backup_content_layout_and_settings">Layout and settings</string>
     <string name="backup_content_wallpaper">桌布</string>
-    <string name="backup_create_success">Backup created</string>
-    <string name="backup_create_error">Failed to create backup</string>
-    <string name="restore_backup">Restore backup</string>
+    <string name="backup_create_success">備份已創建</string>
+    <string name="backup_create_error">創建備份失敗</string>
+    <string name="restore_backup">清除備份</string>
     <string name="what_to_restore">What to restore</string>
-    <string name="backup_restore_success">Backup restored</string>
-    <string name="backup_restore_error">Failed to restore backup</string>
+    <string name="backup_restore_success">備份已清空</string>
+    <string name="backup_restore_error">備份清空失敗</string>
     <string name="invalid_backup_file">Invalid backup file</string>
     <!--
 
@@ -389,9 +389,9 @@
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
     <string name="home_screen_grid">Home screen grid</string>
-    <string name="home_screen_lock">Lock home screen</string>
-    <string name="home_screen_unlock">Unlock home screen</string>
-    <string name="home_screen_locked">Home screen is locked</string>
+    <string name="home_screen_lock">鎖定主螢幕佈局</string>
+    <string name="home_screen_unlock">解鎖主螢幕佈局</string>
+    <string name="home_screen_locked">主螢幕佈局已鎖定</string>
     <string name="home_screen_lock_description">防止主畫面版面更動。</string>
     <string name="show_dot_pagination_label">顯示圓點頁面指示器</string>
     <string name="show_dot_pagination_description">以小圓點取代線條狀的頁面指示器</string>
@@ -448,7 +448,7 @@
     <string name="row_height_label">Row height</string>
     <string name="app_drawer_indent_label">Horizontal padding</string>
     <!-- HiddenAppsPreferences -->
-    <string name="hide_from_drawer">Hide from app drawer</string>
+    <string name="hide_from_drawer">從應用程式抽屜隱藏</string>
     <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="other">%1$d apps</item>
@@ -507,7 +507,7 @@
     <string name="hidden_apps_show_name_typed">If full name is typed</string>
     <string name="app_search_algorithm">Search algorithm</string>
     <string name="search_algorithm_app_search">應用程式搜尋</string>
-    <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
+    <string name="search_algorithm_global_search_on_device">全局搜尋(僅裝置)</string>
     <string name="search_algorithm_global_search_via_asi">Global search (via ASI)</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Show in search results</string>
