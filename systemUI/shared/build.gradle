@@ -27,9 +27,9 @@ compileOnlyCommonJars()
 
 dependencies {
     compileOnly projects.hiddenApi
-    compileOnly projects.systemUnFold
-    compileOnly projects.systemUIPlugin
-    compileOnly projects.systemUIPluginCore
+    compileOnly projects.unfold
+    compileOnly projects.plugin
+    compileOnly projects.plugincore
     compileOnly projects.flags
 
     implementation "com.google.dagger:hilt-android:$daggerVersion"

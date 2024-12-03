@@ -21,7 +21,7 @@ addFrameworkJar('framework-15.jar')
 compileOnlyCommonJars()
 
 dependencies {
-    compileOnly projects.systemUIPluginCore
-    compileOnly projects.systemUICommon
+    compileOnly projects.plugincore
+    compileOnly projects.common
     implementation 'com.google.errorprone:error_prone_annotations:2.36.0'
 }

@@ -56,14 +56,31 @@ include ':animationlib'
 project(':animationlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/animationlib')
 
 include ':hidden-api'
-include ':systemUIShared'
-include ':systemUIPlugin'
-include ':systemUIPluginCore'
-include ':systemUICommon'
-include ':systemUILog'
-include ':systemUIAnim'
-include ':systemUnFold'
-include ':systemUIViewCapture'
+
+include ':shared'
+project(':shared').projectDir = new File(rootDir, 'systemUI/shared')
+
+include ':plugin'
+project(':plugin').projectDir = new File(rootDir, 'systemUI/plugin')
+
+include ':plugincore'
+project(':plugincore').projectDir = new File(rootDir, 'systemUI/plugin_core')
+
+include ':common'
+project(':common').projectDir = new File(rootDir, 'systemUI/common')
+
+include ':log'
+project(':log').projectDir = new File(rootDir, 'systemUI/log')
+
+include ':anim'
+project(':anim').projectDir = new File(rootDir, 'systemUI/anim')
+
+include ':unfold'
+project(':unfold').projectDir = new File(rootDir, 'systemUI/unfold')
+
+include ':viewcapture'
+project(':viewcapture').projectDir = new File(rootDir, 'systemUI/viewcapture')
+
 
 include ':compatLib'
 include ':compatLib:compatLibVQ'
