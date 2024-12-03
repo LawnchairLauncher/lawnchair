@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetDefaults
@@ -28,7 +28,7 @@ import app.lawnchair.util.unsafeLazy
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-class BlankActivity : AppCompatActivity() {
+class BlankActivity : ComponentActivity() {
 
     private val resultReceiver by unsafeLazy { intent.getParcelableExtra<ResultReceiver>("callback")!! }
     private var resultSent = false
@@ -94,7 +94,7 @@ class BlankActivity : AppCompatActivity() {
                         resultReceiver.send(it.resultCode, it.data?.extras)
                         resultSent = true
                         finish()
-                    }.launch(intent.getParcelableExtra("intent"))
+                    }.launch(requireNotNull(intent.getParcelableExtra("intent")))
                 }
             }
             else -> {

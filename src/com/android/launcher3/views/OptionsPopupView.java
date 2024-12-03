@@ -322,11 +322,10 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
         return true;
     }
 
-    private static boolean startSystemSettings(View view) {
-        final Launcher launcher = Launcher.getLauncher(view.getContext());
+    private static boolean startSystemSettings(View v) {
+        final Launcher launcher = Launcher.getLauncher(v.getContext());
         final Intent intent = new Intent(Settings.ACTION_SETTINGS);
-        launcher.startActivity(intent);
-        return true;
+        return launcher.startActivitySafely(v, intent, placeholderInfo(intent)) != null;
     }
 
     static WorkspaceItemInfo placeholderInfo(Intent intent) {

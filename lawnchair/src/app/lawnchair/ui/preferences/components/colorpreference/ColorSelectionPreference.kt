@@ -32,7 +32,6 @@ import app.lawnchair.ui.preferences.components.layout.Chip
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import com.android.launcher3.R
 import com.patrykmichalik.opto.domain.Preference
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
 @Composable
@@ -40,8 +39,8 @@ fun ColorSelection(
     label: String,
     preference: Preference<ColorOption, String, *>,
     modifier: Modifier = Modifier,
-    dynamicEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = dynamicColors,
-    staticEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = staticColors,
+    dynamicEntries: List<ColorPreferenceEntry<ColorOption>> = dynamicColors,
+    staticEntries: List<ColorPreferenceEntry<ColorOption>> = staticColors,
 ) {
     val adapter = preference.getAdapter()
     val appliedColor = adapter.state.value

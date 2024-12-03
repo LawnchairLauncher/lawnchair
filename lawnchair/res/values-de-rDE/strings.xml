@@ -71,9 +71,9 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Was angezeigt werden soll</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Um Dein Gerät mit einer Geste zu sperren, benötigt Lawnchair Bedienungshilfen-Zugriff.\n\nLawnchair beobachtet keine Nutzeraktionen, auch wenn die Bedienungshilfen dies ermöglichen würden. Lawnchair verwirft alle vom System gesendeten Ereignisse.\n\nUm Dein Gerät zu sperren, verwendet Lawnchair den performGlobalAction-Dienst.</string>
+    <string name="accessibility_service_description">Um Ihr Telefon bei der Ausführung einer Geste zu sperren und um zuletzt geöffnete Apps per Geste zu öffnen, benötigt Lawnchair Bedienungshilfen-Zugriff.\n\nLawnchair beobachtet keine Benutzeraktionen, obwohl die Berechtigung dies ermöglicht. Lawnchair verwirft alle vom System gesendeten Ereignisse.\n\nUm Ihr Telefon zu sperren oder zuletzt geöffnete Apps zu öffnen, nutzt Lawnchair den performGlobalAction Accessibility Dienst.</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard
@@ -339,6 +339,7 @@
     <string name="gesture_back_tap">Zurück-Taste</string>
     <string name="gesture_handler_no_op">Nichts tun</string>
     <string name="gesture_handler_sleep">Ruhezustand</string>
+    <string name="gesture_handler_recents">Öffne zuletzt genutzte Apps</string>
     <string name="gesture_handler_open_notifications">Benachrichtigungsleiste öffnen</string>
     <string name="gesture_handler_open_app_option">App öffnen</string>
     <string name="gesture_handler_open_app_config">%1$s öffnen</string>
@@ -349,9 +350,10 @@
     <string name="dt2s_admin_hint_title">Administrator-Berechtigungen erforderlich</string>
     <string name="dt2s_admin_hint">Um Doppeltippen zum Display Ausschalten zu verwenden, aktiviere Lawnchair als App zur Geräteverwaltung. Tippe auf \"Einstellungen öffnen\" und tippe auf „Diese App zur Geräteverwaltung aktivieren“.</string>
     <string name="dt2s_admin_warning">Doppeltes Tippen zum Schlafen wird deaktiviert.</string>
-    <string name="dt2s_a11y_hint_title">Bedienungshilfen aktivieren</string>
+    <string name="d2ts_recents_a11y_hint_title">Bedienungshilfen aktivieren</string>
     <string name="dt2s_a11y_hint">Um Doppeltippen zum Display ausschalten zu verwenden, aktiviere die Bedienungshilfen. Tippe auf \"Einstellungen öffnen\", wähle \"Lawnchair\" aus und aktiviere \"Lawnchair verwenden\"\"\n\nLawnchair verwendet die Bedienungshilfe \'performGlobalAction\', um diese Aktion auszuführen. Dies ist eine sensible Berechtigung, die es ermöglicht, andere Apps zu überwachen. Lawnchair ist jedoch nicht für derartige Funktionen konfiguriert und liest keine Vorgänge aus.</string>
-    <string name="dt2s_warning_open_settings">Einstellungen öffnen</string>
+    <string name="dt2s_recents_warning_open_settings">Einstellungen öffnen</string>
+    <string name="recents_a11y_hint">Um zuletzt geöffnete Apps zu öffnen, aktivieren Sie den Lawnchair Bedienungshilfen Dienst. Tippen Sie auf „Einstellungen“ öffnen, wählen Sie „Lawnchair“ und aktivieren Sie „Lawnchair verwenden“.\n\nLawnchair verwendet die „performGlobalAction“ Funktion des Bedienungshilfe Dienstes um diese Aktion durchzuführen. Dies ist eine sensible Berechtigung, die die Überwachung anderer Apps erlaubt. Lawnchair ist jedoch nicht für diese Funktionalität konfiguriert und erhält keine Ereignisse.</string>
     <!--
 
     Bug reporting

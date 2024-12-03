@@ -19,7 +19,6 @@ import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import kotlinx.collections.immutable.toPersistentList
 
 data class ProviderInfo(
     val name: String,
@@ -49,7 +48,7 @@ fun getEntries(context: Context) = getProviders(context).map {
         },
         label = { it.name },
     )
-}.toPersistentList()
+}.toList()
 
 @Composable
 fun FeedPreference(

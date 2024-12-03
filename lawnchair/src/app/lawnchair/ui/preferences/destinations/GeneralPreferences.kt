@@ -51,7 +51,6 @@ import app.lawnchair.ui.preferences.components.notificationDotsEnabled
 import app.lawnchair.ui.preferences.components.notificationServiceEnabled
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import kotlinx.collections.immutable.toPersistentList
 
 object GeneralRoutes {
     const val ICON_PACK = "iconPack"
@@ -220,7 +219,7 @@ private fun ColorStylePreference(
                 value = mode,
                 label = { stringResource(id = mode.nameResourceId) },
             )
-        }.toPersistentList()
+        }
     }
 
     ListPreference(

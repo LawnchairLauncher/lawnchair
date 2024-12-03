@@ -31,6 +31,8 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.view.IRemoteAnimationFinishedCallback;
 import android.view.RemoteAnimationTarget;
+import android.view.SurfaceControl;
+import android.window.TransitionInfo;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.Nullable;
@@ -100,6 +102,22 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
         } else {
             postAsyncCallback(mHandler, r);
         }
+    }
+
+    // Introduced in NothingOS 2.5.5, needed in 2.6
+    @BinderThread
+    public void onAnimationStartWithSurfaceTransaction(
+            int transit,
+            TransitionInfo transitionInfo,
+            SurfaceControl.Transaction transaction,
+            RemoteAnimationTarget[] appTargets,
+            RemoteAnimationTarget[] wallpaperTargets,
+            RemoteAnimationTarget[] nonAppTargets,
+            Runnable runnable) {
+        if (transaction != null) {
+            transaction.apply();
+        }
+        onAnimationStart(transit, appTargets, wallpaperTargets, nonAppTargets, runnable);
     }
 
     private RemoteAnimationFactory getFactory() {

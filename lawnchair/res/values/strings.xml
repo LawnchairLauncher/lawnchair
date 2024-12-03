@@ -95,7 +95,7 @@
 
     <string name="n_percent" translatable="false">%1$d%%</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%s &amp; %s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard
@@ -567,6 +567,9 @@
     <string name="search_provider_youtube" translatable="false">YouTube</string>
     <string name="search_provider_pixel_search" translatable="false">Pixel Search</string>
     <string name="search_provider_yandex" translatable="false">Yandex</string>
+    <string name="search_provider_firefox" translatable="false">Firefox</string>
+    <string name="search_provider_iceraven" translatable="false">Iceraven</string>
+    <string name="search_provider_mull" translatable="false">Mull</string>
 
     <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
 

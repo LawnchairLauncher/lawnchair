@@ -25,6 +25,8 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import android.graphics.Rect;
 import android.util.ArraySet;
 import android.view.RemoteAnimationTarget;
+import android.view.SurfaceControl;
+import android.window.TransitionInfo;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
@@ -97,6 +99,18 @@ public class RecentsAnimationCallbacks implements
             Rect minimizedHomeBounds) {
         onAnimationStart(controller, appTargets, new RemoteAnimationTarget[0],
                 homeContentInsets, minimizedHomeBounds);
+    }
+
+    // Introduced in NothingOS 2.5.5, needed in 2.6
+    @BinderThread
+    public final void onAnimationStart(RecentsAnimationControllerCompat controller,
+            TransitionInfo transitionInfo, SurfaceControl.Transaction transaction,
+            RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+            Rect homeContentInsets, Rect minimizedHomeBounds) {
+        if (transaction != null) {
+            transaction.apply();
+        }
+        onAnimationStart(controller, apps, wallpapers, homeContentInsets, minimizedHomeBounds);
     }
 
     // Called only in R+ platform
