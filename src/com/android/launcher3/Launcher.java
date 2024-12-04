@@ -165,7 +165,6 @@ import androidx.annotation.StringRes;
 import androidx.annotation.UiThread;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.os.BuildCompat;
-//import androidx.window.embedding.RuleController;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
@@ -718,7 +717,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private void switchOverlay(Supplier<LauncherOverlayManager> overlaySupplier) {
         if (mOverlayManager != null) {
-            mOverlayManager.onActivityDestroyed();
+            mOverlayManager.onActivityDestroyed(this);
         }
         mOverlayManager = overlaySupplier.get();
         if (getRootView().isAttachedToWindow()) {
@@ -1103,7 +1102,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (mDeferOverlayCallbacks) {
             checkIfOverlayStillDeferred();
         } else {
-            mOverlayManager.onActivityStopped();
+            mOverlayManager.onActivityStopped(this);
         }
         hideKeyboard();
         logStopAndResume(false /* isResume */);
@@ -1119,7 +1118,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         TraceHelper.INSTANCE.beginSection(ON_START_EVT);
         super.onStart();
         if (!mDeferOverlayCallbacks) {
-            mOverlayManager.onActivityStarted();
+            mOverlayManager.onActivityStarted(this);
         }
 
         mAppWidgetHolder.setActivityStarted(true);
@@ -1210,15 +1209,15 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         // Move the client to the correct state. Calling the same method twice is no-op.
         if (isStarted()) {
-            mOverlayManager.onActivityStarted();
+            mOverlayManager.onActivityStarted(this);
         }
         if (hasBeenResumed()) {
-            mOverlayManager.onActivityResumed();
+            mOverlayManager.onActivityResumed(this);
         } else {
-            mOverlayManager.onActivityPaused();
+            mOverlayManager.onActivityPaused(this);
         }
         if (!isStarted()) {
-            mOverlayManager.onActivityStopped();
+            mOverlayManager.onActivityStopped(this);
         }
     }
 
@@ -1324,7 +1323,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (mDeferOverlayCallbacks) {
             scheduleDeferredCheck();
         } else {
-            mOverlayManager.onActivityResumed();
+            mOverlayManager.onActivityResumed(this);
         }
 
         DragView.removeAllViews(this);
@@ -1342,7 +1341,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mDropTargetBar.animateToVisibility(false);
 
         if (!mDeferOverlayCallbacks) {
-            mOverlayManager.onActivityPaused();
+            mOverlayManager.onActivityPaused(this);
         }
         mAppWidgetHolder.setActivityResumed(false);
     }
@@ -1868,7 +1867,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         // a color
         // changes while launcher is still loading.
         getRootView().getViewTreeObserver().removeOnPreDrawListener(mOnInitialBindListener);
-        mOverlayManager.onActivityDestroyed();
+        mOverlayManager.onActivityDestroyed(this);
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
