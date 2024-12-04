@@ -21,6 +21,7 @@ import android.util.Size;
 import androidx.annotation.Px;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.widget.picker.util.WidgetPreviewContainerSize;
 
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** An utility class which groups {@link WidgetItem}s into a table. */
 public final class WidgetsTableUtils {
@@ -80,7 +82,12 @@ public final class WidgetsTableUtils {
         List<ArrayList<WidgetItem>> rows = groupWidgetItemsUsingRowPxWithoutReordering(
                 sortedWidgetItems, context, dp, rowPx,
                 cellPadding);
-        return rows.stream().sorted(WIDGETS_TABLE_ROW_SIZE_COMPARATOR).toList();
+        Stream<ArrayList<WidgetItem>> sortedRows = rows.stream().sorted(WIDGETS_TABLE_ROW_SIZE_COMPARATOR);
+        if (Utilities.ATLEAST_U) {
+            return sortedRows.toList();
+        } else {
+            return sortedRows.collect(Collectors.toList());
+        }
     }
 
     /**

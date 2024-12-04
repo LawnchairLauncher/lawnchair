@@ -79,7 +79,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
             enableFocusOutline =
                     properties.getBoolean(Flags.FLAG_ENABLE_FOCUS_OUTLINE, true);
             enableGeneratedPreviews =
-                    properties.getBoolean(Flags.FLAG_ENABLE_GENERATED_PREVIEWS, true);
+                    properties.getBoolean(Flags.FLAG_ENABLE_GENERATED_PREVIEWS, false);
             enableGridOnlyOverview =
                     properties.getBoolean(Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW, false);
             enableHandleDelayedGestureCallbacks =
@@ -109,7 +109,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
             enableSmartspaceRemovalToggle =
                     properties.getBoolean(Flags.FLAG_ENABLE_SMARTSPACE_REMOVAL_TOGGLE, false);
             enableSupportForArchiving =
-                    properties.getBoolean(Flags.FLAG_ENABLE_SUPPORT_FOR_ARCHIVING, false);
+                    properties.getBoolean(Flags.FLAG_ENABLE_SUPPORT_FOR_ARCHIVING, true);
             enableTabletTwoPanePickerV2 =
                     properties.getBoolean(Flags.FLAG_ENABLE_TABLET_TWO_PANE_PICKER_V2, false);
             enableTaskbarCustomization =

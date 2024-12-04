@@ -15,6 +15,9 @@
  */
 package com.android.systemui.plugins.shared;
 
+import android.app.Activity;
+import android.app.Application;
+import android.os.Bundle;
 import android.view.MotionEvent;
 
 import java.io.PrintWriter;
@@ -22,7 +25,7 @@ import java.io.PrintWriter;
 /**
  * Interface to control the overlay on Launcher
  */
-public interface LauncherOverlayManager {
+public interface LauncherOverlayManager extends Application.ActivityLifecycleCallbacks {
 
     default void onDeviceProvideChanged() { }
 
@@ -39,21 +42,32 @@ public interface LauncherOverlayManager {
 
     default void hideOverlay(int duration) { }
 
-    default void onActivityStarted() { }
+    default boolean startSearch(byte[] config, Bundle extras) {
+        return false;
+    }
 
-    default void onActivityResumed() { }
+    @Override
+    default void onActivityCreated(Activity activity, Bundle bundle) { }
 
-    default void onActivityPaused() { }
+    @Override
+    default void onActivityStarted(Activity activity) { }
 
-    default void onActivityStopped() { }
+    @Override
+    default void onActivityResumed(Activity activity) { }
 
-    default void onActivityDestroyed() { }
+    @Override
+    default void onActivityPaused(Activity activity) { }
 
-    /**
-     * @deprecated use LauncherOverlayTouchProxy directly
-     */
-    @Deprecated
-    interface LauncherOverlay extends LauncherOverlayTouchProxy {
+    @Override
+    default void onActivityStopped(Activity activity) { }
+
+    @Override
+    default void onActivitySaveInstanceState(Activity activity, Bundle bundle) { }
+
+    @Override
+    default void onActivityDestroyed(Activity activity) { }
+
+    interface LauncherOverlay extends LauncherOverlayTouchProxy{
 
         /**
          * Touch interaction leading to overscroll has begun

@@ -331,7 +331,7 @@ public final class FeatureFlags {
                                         + "them in launcher process using hinge sensor values.");
 
         public static final BooleanFlag ENABLE_WIDGET_TRANSITION_FOR_RESIZING = getDebugFlag(268553314,
-                        "ENABLE_WIDGET_TRANSITION_FOR_RESIZING", DISABLED,
+                        "ENABLE_WIDGET_TRANSITION_FOR_RESIZING", ENABLED,
                         "Enable widget transition animation when resizing the widgets");
 
         public static final BooleanFlag PREEMPTIVE_UNFOLD_ANIMATION_START = getDebugFlag(270397209,
@@ -347,7 +347,7 @@ public final class FeatureFlags {
 
         // TODO(Block 26): Clean up flags
         public static final BooleanFlag ENABLE_WIDGET_HOST_IN_BACKGROUND = getDebugFlag(270394384,
-                        "ENABLE_WIDGET_HOST_IN_BACKGROUND", ENABLED,
+                        "ENABLE_WIDGET_HOST_IN_BACKGROUND", DISABLED,
                         "Enable background widget updates listening for widget holder");
 
         // TODO(Block 27): Clean up flags
