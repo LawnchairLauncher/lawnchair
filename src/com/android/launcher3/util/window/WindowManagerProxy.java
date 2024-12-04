@@ -368,7 +368,7 @@ public class WindowManagerProxy implements ResourceBasedOverride, SafeCloseable 
             DisplayCutout rotatedCutout = rotateCutout(
                     displayInfo.cutout, displayInfo.size.x, displayInfo.size.y, rotation, i);
             Rect insets = getSafeInsets(rotatedCutout);
-            if (areBottomDisplayCutoutsSmallAndAtCorners(
+            if (rotatedCutout != null && areBottomDisplayCutoutsSmallAndAtCorners(
                     rotatedCutout.getBoundingRectBottom(),
                     bounds.width(),
                     context.getResources())) {

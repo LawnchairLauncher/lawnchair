@@ -123,7 +123,7 @@ class LawnchairWindowManagerProxy(context: Context) : WindowManagerProxy(Utiliti
     }
 
     override fun rotateCutout(
-        original: DisplayCutout,
+        original: DisplayCutout?,
         startWidth: Int,
         startHeight: Int,
         fromRotation: Int,
