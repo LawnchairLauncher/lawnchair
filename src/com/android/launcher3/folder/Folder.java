@@ -69,6 +69,7 @@ import androidx.core.graphics.ColorUtils;
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Alarm;
@@ -472,14 +473,28 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public WindowInsets onApplyWindowInsets(WindowInsets windowInsets) {
         this.setTranslationY(0);
 
-        if (windowInsets.isVisible(WindowInsets.Type.ime())) {
-            Insets keyboardInsets = windowInsets.getInsets(WindowInsets.Type.ime());
-            int folderHeightFromBottom = getHeightFromBottom();
+        if (Utilities.ATLEAST_R) {
+            if (windowInsets.isVisible(WindowInsets.Type.ime())) {
+                Insets keyboardInsets = windowInsets.getInsets(WindowInsets.Type.ime());
+                int folderHeightFromBottom = getHeightFromBottom();
 
-            if (keyboardInsets.bottom > folderHeightFromBottom) {
-                // Translate this folder above the keyboard, then add the folder name's padding
-                this.setTranslationY(folderHeightFromBottom - keyboardInsets.bottom
+                if (keyboardInsets.bottom > folderHeightFromBottom) {
+                    // Translate this folder above the keyboard, then add the folder name's padding
+                    this.setTranslationY(folderHeightFromBottom - keyboardInsets.bottom
                         - mFolderName.getPaddingBottom());
+                }
+            }
+        } else {
+            WindowInsetsCompat insetsCompat = WindowInsetsCompat.toWindowInsetsCompat(windowInsets);
+            if (insetsCompat.isVisible(WindowInsetsCompat.Type.ime())) {
+                androidx.core.graphics.Insets keyboardInsets = insetsCompat.getInsets(WindowInsetsCompat.Type.ime());
+                int folderHeightFromBottom = getHeightFromBottom();
+
+                if (keyboardInsets.bottom > folderHeightFromBottom) {
+                    // Translate this folder above the keyboard, then add the folder name's padding
+                    this.setTranslationY(folderHeightFromBottom - keyboardInsets.bottom
+                        - mFolderName.getPaddingBottom());
+                }
             }
         }
 
@@ -883,13 +898,15 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         a.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                setWindowInsetsAnimationCallback(null);
+                if (Utilities.ATLEAST_R) {
+                    setWindowInsetsAnimationCallback(null);
+                }
                 mIsAnimatingClosed = true;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (mKeyboardInsetAnimationCallback != null) {
+                if (mKeyboardInsetAnimationCallback != null && Utilities.ATLEAST_R) {
                     setWindowInsetsAnimationCallback(mKeyboardInsetAnimationCallback);
                 }
                 closeComplete(true);
