@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import app.lawnchair.preferences2.PreferenceManager2;
 
@@ -90,14 +91,20 @@ public class WidgetsModel {
 
         for (Map.Entry<PackageItemInfo, List<WidgetItem>> entry : mWidgetsList.entrySet()) {
             PackageItemInfo pkgItem = entry.getKey();
-            List<WidgetItem> widgetItems = entry.getValue()
+            Stream<WidgetItem> widgetItems = entry.getValue()
                     .stream()
-                    .filter(widgetItemFilter).toList();
-            if (!widgetItems.isEmpty()) {
+                    .filter(widgetItemFilter);
+            List<WidgetItem> widgetItemsList;
+            if (Utilities.ATLEAST_U) {
+                widgetItemsList = widgetItems.toList();
+            } else {
+                widgetItemsList = widgetItems.collect(toList());
+            };
+            if (!widgetItemsList.isEmpty()) {
                 String sectionName = (pkgItem.title == null) ? "" :
                         indexer.computeSectionName(pkgItem.title);
-                result.add(WidgetsListHeaderEntry.create(pkgItem, sectionName, widgetItems));
-                result.add(new WidgetsListContentEntry(pkgItem, sectionName, widgetItems));
+                result.add(WidgetsListHeaderEntry.create(pkgItem, sectionName, widgetItemsList));
+                result.add(new WidgetsListContentEntry(pkgItem, sectionName, widgetItemsList));
             }
         }
         return result;
