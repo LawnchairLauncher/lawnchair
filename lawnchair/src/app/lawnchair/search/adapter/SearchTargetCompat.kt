@@ -138,7 +138,7 @@ data class SearchTargetCompat(
             from.isHidden(),
             from.getPackageName(),
             from.getUserHandle(),
-            SearchActionCompat.wrap(from.getSearchAction()),
+            from.getSearchAction()?.let { SearchActionCompat.wrap(it) },
             from.getShortcutInfo(),
             from.getSliceUri(),
             from.getAppWidgetProviderInfo(),

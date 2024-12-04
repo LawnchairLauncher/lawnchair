@@ -30,6 +30,11 @@
         <attr name="hoverBorderColor" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="ClearAllButton">
+        <!-- focus border color for overview clear all button views -->
+        <attr name="focusBorderColor" />
+    </declare-styleable>
+
     <!--
          Gesture nav edu specific attributes. These attributes are used to customize Gesture nav edu
          view lottie animation colors in XML files.

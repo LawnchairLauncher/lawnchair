@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Fechar"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Abrir"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Configurações"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Menu"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Menu do picture-in-picture"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> está em picture-in-picture"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Se você não quer que o app <xliff:g id="NAME">%s</xliff:g> use este recurso, toque para abrir as configurações e desativá-lo."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Reproduzir"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Pausar"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Pular para a próxima"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Pular para a anterior"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Redimensionar"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Ocultar"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Exibir"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"É possível que o app não funcione com a tela dividida"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"O app não oferece suporte à divisão de tela"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Esse app só pode ser aberto em uma única janela"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"É possível que o app não funcione em uma tela secundária."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"O app não é compatível com a inicialização em telas secundárias."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Divisor de tela"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Divisor de tela"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Lado esquerdo em tela cheia"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Esquerda a 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Esquerda a 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Esquerda a 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Lado direito em tela cheia"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Parte superior em tela cheia"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Parte superior a 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Parte superior a 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Parte superior a 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Parte inferior em tela cheia"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Dividir para a esquerda"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Dividir para a direita"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Dividir para cima"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Dividir para baixo"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Como usar o modo uma mão"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Para sair, deslize de baixo para cima na tela ou toque em qualquer lugar acima do app"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Iniciar o modo uma mão"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Sair do modo uma mão"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Configurações de balões do <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Menu flutuante"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Devolver à pilha"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> de <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> de <xliff:g id="APP_NAME">%2$s</xliff:g> mais <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Mover para canto superior esquerdo"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Mover para canto superior direito"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Mover para canto inferior esquerdo"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Mover para canto inferior direito"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"abrir <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"fechar <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"Configurações de <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Dispensar balão"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Não criar balões de conversa"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Converse usando balões"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Novas conversas aparecerão como ícones flutuantes, ou balões. Toque para abrir o balão. Arraste para movê-lo."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Controle os balões a qualquer momento"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Toque em \"Gerenciar\" para desativar os balões desse app"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Ok"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Nenhum balão recente"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Os balões recentes e dispensados aparecerão aqui"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Converse usando balões"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Novas conversas aparecem como ícones no canto inferior da tela. Toque neles para abrir ou arraste para dispensar."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Controle os balões a qualquer momento"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Toque aqui para gerenciar quais apps e conversas podem aparecer em balões"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Bolha"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Gerenciar"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Balão dispensado."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Balões"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Mostrar balões"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Toque para reiniciar o app e atualizar a visualização"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Mude o tamanho da janela deste app nas Configurações"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Mudar a proporção"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Problemas com a câmera?\nToque para ajustar o enquadramento"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"O problema não foi corrigido?\nToque para reverter"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Não tem problemas com a câmera? Toque para dispensar."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Veja e faça mais"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Arraste outro app para dividir a tela"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Toque duas vezes fora de um app para reposicionar"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"Entendi"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Abra para ver mais informações."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Reiniciar para melhorar a visualização?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Você pode reiniciar o app para melhorar a visualização dele, mas talvez perca seu progresso ou mudanças não salvas"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Cancelar"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Reiniciar"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Não mostrar novamente"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Toque duas vezes para\nmover o app"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Maximizar"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Minimizar"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Fechar"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Voltar"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Alça"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Ícone do app"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Tela cheia"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Modo área de trabalho"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Tela dividida"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Mais"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Ponto flutuante"</string>
+    <string name="select_text" msgid="5139083974039906583">"Selecionar"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Captura de tela"</string>
+    <string name="close_text" msgid="4986518933445178928">"Fechar"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Fechar menu"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Abrir o menu"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Ampliar tela"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Ajustar tela"</string>
+</resources>

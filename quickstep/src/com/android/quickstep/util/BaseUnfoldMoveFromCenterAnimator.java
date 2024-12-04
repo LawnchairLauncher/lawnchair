@@ -21,8 +21,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import androidx.annotation.MainThread;
+
 import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.dagger.UnfoldMain;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
 
 import java.util.HashMap;
@@ -34,7 +37,7 @@ import java.util.Map;
 public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProgressListener {
 
     private final UnfoldMoveFromCenterAnimator mMoveFromCenterAnimation;
-    private final RotationChangeProvider mRotationChangeProvider;
+    @UnfoldMain private final RotationChangeProvider mRotationChangeProvider;
 
     private final Map<ViewGroup, Boolean> mOriginalClipToPadding = new HashMap<>();
     private final Map<ViewGroup, Boolean> mOriginalClipChildren = new HashMap<>();
@@ -48,7 +51,7 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
     private Float mLastTransitionProgress = null;
 
     public BaseUnfoldMoveFromCenterAnimator(WindowManager windowManager,
-            RotationChangeProvider rotationChangeProvider) {
+            @UnfoldMain RotationChangeProvider rotationChangeProvider) {
         mMoveFromCenterAnimation = new UnfoldMoveFromCenterAnimator(windowManager,
                 new LauncherViewsMoveFromCenterTranslationApplier());
         mRotationChangeProvider = rotationChangeProvider;
@@ -143,8 +146,14 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
     private class UnfoldMoveFromCenterRotationListener implements
             RotationChangeProvider.RotationListener {
 
+        @MainThread
         @Override
         public void onRotationChanged(@Rotation int newRotation) {
+            onRotationChangedInternal(newRotation);
+        }
+
+        @MainThread
+        private void onRotationChangedInternal(@Rotation int newRotation) {
             mMoveFromCenterAnimation.updateDisplayProperties(newRotation);
             updateRegisteredViewsIfNeeded();
         }

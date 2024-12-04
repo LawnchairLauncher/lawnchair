@@ -16,7 +16,7 @@
 
 package com.android.launcher3.icons;
 
-import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
+import static com.android.launcher3.BuildConfigs.WIDGETS_ENABLED;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -80,7 +80,7 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
                     context, info, LauncherAppState.getIDP(context).fillResIconDpi);
             if (unbadgedDrawable == null)
                 return BitmapInfo.LOW_RES_INFO;
-            return li.createBadgedIconBitmap(unbadgedDrawable, Process.myUserHandle(), true);
+            return li.createBadgedIconBitmap(unbadgedDrawable);
         }
     }
 
@@ -104,13 +104,12 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
      * Launcher specific checks
      */
     public static Drawable getIcon(Context context, ShortcutInfo shortcutInfo, int density) {
-        if (GO_DISABLE_WIDGETS) {
+        if (!WIDGETS_ENABLED) {
             return null;
         }
         try {
-            Drawable icon = context.getSystemService(LauncherApps.class)
+            return context.getSystemService(LauncherApps.class)
                     .getShortcutIconDrawable(shortcutInfo, density);
-            return CustomAdaptiveIconDrawable.wrap(icon);
         } catch (SecurityException | IllegalStateException | NullPointerException e) {
             Log.e(TAG, "Failed to get shortcut icon", e);
             return null;

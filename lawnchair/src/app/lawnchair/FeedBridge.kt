@@ -111,12 +111,12 @@ class FeedBridge(private val context: Context) {
                     val info =
                         context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
                     val signingInfo = info.signingInfo
-                    if (signingInfo.hasMultipleSigners()) return false
+                    if (signingInfo!!.hasMultipleSigners()) return false
                     return signingInfo.signingCertificateHistory.any { it.hashCode() == signatureHash }
                 }
                 else -> {
                     val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-                    return if (info.signatures.any { it.hashCode() != signatureHash }) false else info.signatures.isNotEmpty()
+                    return if (info.signatures!!.any { it.hashCode() != signatureHash }) false else info.signatures!!.isNotEmpty()
                 }
             }
         }
@@ -130,7 +130,7 @@ class FeedBridge(private val context: Context) {
                 val info = context.packageManager
                     .getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
                 val signingInfo = info.signingInfo
-                if (signingInfo.hasMultipleSigners()) return false
+                if (signingInfo!!.hasMultipleSigners()) return false
                 signingInfo.signingCertificateHistory.forEach {
                     val hash = Integer.toHexString(it.hashCode())
                     Log.d(TAG, "Feed provider $packageName(0x$hash) isn't whitelisted")

@@ -39,6 +39,11 @@ public abstract class SearchAdapterProvider<T extends ActivityContext> {
     }
 
     /**
+     * Returns the item decorator.
+     */
+    public abstract RecyclerView.ItemDecoration getDecorator();
+
+    /**
      * Handles selection event on search adapter item. Returns false if provider can not handle
      * event
      */
@@ -48,11 +53,6 @@ public abstract class SearchAdapterProvider<T extends ActivityContext> {
      * Returns the current highlighted view
      */
     public abstract View getHighlightedItem();
-
-    /**
-     * Returns the item decorator.
-     */
-    public abstract RecyclerView.ItemDecoration getDecorator();
 
     /**
      * Clear the highlighted view.

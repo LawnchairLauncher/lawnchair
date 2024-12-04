@@ -22,7 +22,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.launcher3.graphics.BitmapCreationCheck;
-import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ResourceBasedOverride;
 
@@ -53,7 +52,6 @@ public class MainProcessInitializer implements ResourceBasedOverride {
 
     protected void init(Context context) {
         FileLog.setDir(context.getApplicationContext().getFilesDir());
-        IconShape.init(context);
 
         if (BitmapCreationCheck.ENABLED) {
             BitmapCreationCheck.startTracking(context);

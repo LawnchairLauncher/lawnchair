@@ -6,7 +6,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import app.lawnchair.preferences.PreferenceManager
-import com.android.launcher3.util.MainThreadInitializedObject
+import app.lawnchair.util.MainThreadInitializedObject
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ipc.RootService
 import kotlin.coroutines.resume

@@ -28,11 +28,18 @@ import android.util.ArrayMap;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.UserBadgeDrawable;
+import com.android.launcher3.util.ApiWrapper;
+import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
+import com.android.launcher3.util.UserIconInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,9 +65,16 @@ public class UserCache implements SafeCloseable {
     public static final String ACTION_PROFILE_LOCKED = ATLEAST_U
             ? Intent.ACTION_PROFILE_INACCESSIBLE
             : Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE;
+    public static final String ACTION_PROFILE_AVAILABLE = "android.intent.action.PROFILE_AVAILABLE";
+    public static final String ACTION_PROFILE_UNAVAILABLE = "android.intent.action.PROFILE_UNAVAILABLE";
 
     public static final MainThreadInitializedObject<UserCache> INSTANCE = new MainThreadInitializedObject<>(
             UserCache::new);
+
+    /** Returns an instance of UserCache bound to the context provided. */
+    public static UserCache getInstance(Context context) {
+        return INSTANCE.get(context);
+    }
 
     private final List<BiConsumer<UserHandle, String>> mUserEventListeners = new ArrayList<>();
     private final SimpleBroadcastReceiver mUserChangeReceiver = new SimpleBroadcastReceiver(this::onUsersChanged);
@@ -68,7 +82,10 @@ public class UserCache implements SafeCloseable {
     private final Context mContext;
 
     @NonNull
-    private Map<UserHandle, Long> mUserToSerialMap;
+    private Map<UserHandle, UserIconInfo> mUserToSerialMap;
+
+    @NonNull
+    private Map<UserHandle, List<String>> mUserToPreInstallAppMap;
 
     private UserCache(Context context) {
         mContext = context;
@@ -86,10 +103,13 @@ public class UserCache implements SafeCloseable {
         mUserChangeReceiver.register(mContext,
                 Intent.ACTION_MANAGED_PROFILE_AVAILABLE,
                 Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
+                Intent.ACTION_MANAGED_PROFILE_REMOVED,
                 ACTION_PROFILE_ADDED,
                 ACTION_PROFILE_REMOVED,
                 ACTION_PROFILE_UNLOCKED,
-                ACTION_PROFILE_LOCKED);
+                ACTION_PROFILE_LOCKED,
+                ACTION_PROFILE_AVAILABLE,
+                ACTION_PROFILE_UNAVAILABLE);
         updateCache();
     }
 
@@ -106,7 +126,21 @@ public class UserCache implements SafeCloseable {
 
     @WorkerThread
     private void updateCache() {
-        mUserToSerialMap = queryAllUsers(mContext.getSystemService(UserManager.class));
+        mUserToSerialMap = ApiWrapper.INSTANCE.get(mContext).queryAllUsers();
+        mUserToPreInstallAppMap = fetchPreInstallApps();
+    }
+
+    @WorkerThread
+    private Map<UserHandle, List<String>> fetchPreInstallApps() {
+        Map<UserHandle, List<String>> userToPreInstallApp = new ArrayMap<>();
+        mUserToSerialMap.forEach((userHandle, userIconInfo) -> {
+            // Fetch only for private profile, as other profiles have no usages yet.
+            List<String> preInstallApp = userIconInfo.isPrivate()
+                    ? ApiWrapper.INSTANCE.get(mContext).getPreInstalledSystemPackages(userHandle)
+                    : new ArrayList<>();
+            userToPreInstallApp.put(userHandle, preInstallApp);
+        });
+        return userToPreInstallApp;
     }
 
     /**
@@ -121,22 +155,34 @@ public class UserCache implements SafeCloseable {
      * @see UserManager#getSerialNumberForUser(UserHandle)
      */
     public long getSerialNumberForUser(UserHandle user) {
-        Long serial = mUserToSerialMap.get(user);
-        return serial == null ? 0 : serial;
+        return getUserInfo(user).userSerial;
+    }
+
+    /**
+     * Returns the user properties for the provided user or default values
+     */
+    @NonNull
+    public UserIconInfo getUserInfo(UserHandle user) {
+        UserIconInfo info = mUserToSerialMap.get(user);
+        return info == null ? new UserIconInfo(user, UserIconInfo.TYPE_MAIN) : info;
     }
 
     /**
      * @see UserManager#getUserForSerialNumber(long)
      */
     public UserHandle getUserForSerialNumber(long serialNumber) {
-        Long value = serialNumber;
         return mUserToSerialMap
                 .entrySet()
                 .stream()
-                .filter(entry -> value.equals(entry.getValue()))
+                .filter(entry -> serialNumber == entry.getValue().userSerial)
                 .findFirst()
                 .map(Map.Entry::getKey)
                 .orElse(Process.myUserHandle());
+    }
+
+    @VisibleForTesting
+    public void putToCache(UserHandle userHandle, UserIconInfo info) {
+        mUserToSerialMap.put(userHandle, info);
     }
 
     /**
@@ -146,15 +192,23 @@ public class UserCache implements SafeCloseable {
         return List.copyOf(mUserToSerialMap.keySet());
     }
 
-    private static Map<UserHandle, Long> queryAllUsers(UserManager userManager) {
-        Map<UserHandle, Long> users = new ArrayMap<>();
-        List<UserHandle> usersActual = userManager.getUserProfiles();
-        if (usersActual != null) {
-            for (UserHandle user : usersActual) {
-                long serial = userManager.getSerialNumberForUser(user);
-                users.put(user, serial);
-            }
-        }
-        return users;
+    /**
+     * Returns the pre-installed apps for a user.
+     */
+    @NonNull
+    public List<String> getPreInstallApps(UserHandle user) {
+        List<String> preInstallApp = mUserToPreInstallAppMap.get(user);
+        return preInstallApp == null ? new ArrayList<>() : preInstallApp;
+    }
+
+    /**
+     * Get a non-themed {@link UserBadgeDrawable} based on the provided
+     * {@link UserHandle}.
+     */
+    @Nullable
+    public static UserBadgeDrawable getBadgeDrawable(Context context, UserHandle userHandle) {
+        return (UserBadgeDrawable) BitmapInfo.LOW_RES_INFO.withFlags(UserCache.getInstance(context)
+                .getUserInfo(userHandle).applyBitmapInfoFlags(FlagOp.NO_OP))
+                .getBadgeDrawable(context, false /* isThemed */);
     }
 }

@@ -47,8 +47,8 @@
 
     <color name="wallpaper_popup_scrim">@android:color/system_neutral1_900</color>
 
-    <color name="folder_pagination_color_light">@android:color/system_accent1_600</color>
-    <color name="folder_pagination_color_dark">@android:color/system_accent1_200</color>
+    <color name="page_indicator_dot_color_light">@android:color/system_accent1_600</color>
+    <color name="page_indicator_dot_color_dark">@android:color/system_accent1_200</color>
 
     <color name="home_settings_header_accent">@android:color/system_accent1_600</color>
     <color name="home_settings_header_collapsed">@android:color/system_neutral1_100</color>
@@ -97,12 +97,17 @@
         @android:color/system_neutral2_700</color>
     <color name="widget_picker_collapse_handle_color_light">
         @android:color/system_neutral2_200</color>
+    <color name="widget_picker_add_button_background_color_light">
+        @android:color/system_accent1_600</color>
+    <color name="widget_picker_add_button_text_color_light">
+        @android:color/system_accent1_0</color>
 
     <color name="work_fab_bg_color">
         @android:color/system_accent1_200</color>
     <color name="work_fab_icon_color">
         @android:color/system_accent1_900</color>
 
+    <color name="overview_foreground_scrim_color">@android:color/system_neutral1_1000</color>
 
     <color name="material_color_on_secondary_fixed_variant">@android:color/system_accent2_700</color>
     <color name="material_color_on_tertiary_fixed_variant">@android:color/system_accent3_700</color>

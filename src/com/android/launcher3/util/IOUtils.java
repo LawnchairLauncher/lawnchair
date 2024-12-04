@@ -53,15 +53,17 @@ public class IOUtils {
     public static long copy(InputStream from, OutputStream to) throws IOException {
         if (Utilities.ATLEAST_Q) {
             return FileUtils.copy(from, to);
+        } else {
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            long totalBytes = 0;
+
+            while ((bytesRead = from.read(buffer)) != -1) {
+                to.write(buffer, 0, bytesRead);
+                totalBytes += bytesRead;
+            }
+            return totalBytes;
         }
-        byte[] buf = new byte[BUF_SIZE];
-        long total = 0;
-        int r;
-        while ((r = from.read(buf)) != -1) {
-            to.write(buf, 0, r);
-            total += r;
-        }
-        return total;
     }
 
     public static void closeSilently(Closeable c) {

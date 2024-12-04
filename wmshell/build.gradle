@@ -1,0 +1,30 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp'
+}
+
+android {
+    namespace "com.android.wm.shell"
+    buildFeatures {
+        aidl true
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['shared/src']
+            aidl.srcDirs = ['shared/src', 'wmshell/shared/aidl']
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['shared']
+        }
+    }
+}
+
+addFrameworkJar('framework-15.jar')
+compileOnlyCommonJars()
+
+dependencies {
+    implementation "com.google.dagger:hilt-android:$daggerVersion"
+    ksp "com.google.dagger:hilt-compiler:$daggerVersion"
+    implementation 'androidx.core:core-animation:1.0.0'
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+}

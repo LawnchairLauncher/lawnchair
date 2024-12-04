@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Закрыть"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Развернуть"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Настройки"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Меню"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Меню \"Картинка в картинке\""</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> находится в режиме \"Картинка в картинке\""</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Чтобы отключить эту функцию для приложения \"<xliff:g id="NAME">%s</xliff:g>\", перейдите в настройки."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Воспроизвести"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Приостановить"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Перейти к следующему"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Перейти к предыдущему"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Изменить размер"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Скрыть"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Показать"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Когда включено разделение экрана, приложение может работать нестабильно."</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Приложение не поддерживает разделение экрана."</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Это приложение можно открыть только в одном окне."</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Приложение может не работать на дополнительном экране"</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Приложение не поддерживает запуск на дополнительных экранах"</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Разделитель экрана"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Разделитель экрана"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Левый во весь экран"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Левый на 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Левый на 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Левый на 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Правый во весь экран"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Верхний во весь экран"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Верхний на 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Верхний на 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Верхний на 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Нижний во весь экран"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Приложение слева"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Приложение справа"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Приложение сверху"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Приложение снизу"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Использование режима управления одной рукой"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Чтобы выйти, проведите по экрану снизу вверх или коснитесь области за пределами приложения."</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Запустить режим управления одной рукой"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Выйти из режима управления одной рукой"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Настройки всплывающих чатов от приложения \"<xliff:g id="APP_NAME">%1$s</xliff:g>\"."</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Дополнительное меню"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Добавить обратно в стек"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> из приложения \"<xliff:g id="APP_NAME">%2$s</xliff:g>\""</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> от приложения \"<xliff:g id="APP_NAME">%2$s</xliff:g>\" и ещё <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Переместить в левый верхний угол"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Переместить в правый верхний угол"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Переместить в левый нижний угол"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Переместить в правый нижний угол"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"Развернуть <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"Свернуть <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>: настройки"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Скрыть всплывающий чат"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Не показывать всплывающий чат для разговора"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Всплывающие чаты"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Новые разговоры будут появляться в виде плавающих значков, или всплывающих чатов. Чтобы открыть чат, нажмите на него, а чтобы переместить – перетащите."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Всплывающие чаты"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Чтобы отключить всплывающие чаты из этого приложения, нажмите \"Настроить\"."</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"ОК"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Нет недавних всплывающих чатов"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Здесь будут появляться недавние и скрытые всплывающие чаты."</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Всплывающие чаты"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Новые чаты появляются в виде значков в нижней части экрана. Коснитесь их, чтобы развернуть. Перетащите их, если хотите закрыть."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Всплывающие чаты"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Укажите приложения и разговоры, для которых разрешены всплывающие чаты."</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Всплывающая подсказка"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Настроить"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Всплывающий чат закрыт."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Чаты"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Всплывающие чаты"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Нажмите, чтобы перезапустить приложение и оптимизировать размер"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Изменить соотношение сторон приложения в настройках"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Изменить соотношение сторон"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Проблемы с камерой?\nНажмите, чтобы исправить."</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Не помогло?\nНажмите, чтобы отменить изменения."</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Нет проблем с камерой? Нажмите, чтобы закрыть."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Выполняйте несколько задач одновременно"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Перетащите сюда другое приложение, чтобы использовать разделение экрана."</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Чтобы переместить приложение, дважды нажмите рядом с ним."</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"ОК"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Развернуть, чтобы узнать больше."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Перезапустить приложение?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Вы можете перезапустить приложение, чтобы оно лучше смотрелось на экране. При этом ваш прогресс или несохраненные изменения могут быть утеряны."</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Отмена"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Перезапустить"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Больше не показывать"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Дважды нажмите, чтобы\nпереместить приложение."</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Развернуть"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Свернуть"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Закрыть"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Назад"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Маркер"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Значок приложения"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Полноэкранный режим"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Режим компьютера"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Разделить экран"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Ещё"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Плавающее окно"</string>
+    <string name="select_text" msgid="5139083974039906583">"Выбрать"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Скриншот"</string>
+    <string name="close_text" msgid="4986518933445178928">"Закрыть"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Закрыть меню"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Открыть меню"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Развернуть на весь экран"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Свернуть"</string>
+</resources>

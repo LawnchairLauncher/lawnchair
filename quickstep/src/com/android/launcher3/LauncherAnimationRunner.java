@@ -24,20 +24,21 @@ import static com.android.systemui.shared.recents.utilities.Utilities.postAtFron
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.view.IRemoteAnimationFinishedCallback;
 import android.view.RemoteAnimationTarget;
+import android.view.SurfaceControl;
+import android.window.TransitionInfo;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.systemui.animation.RemoteAnimationDelegate;
-import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
+import com.android.systemui.animation.RemoteAnimationRunnerCompat;
 
 import java.lang.ref.WeakReference;
 
@@ -57,7 +58,6 @@ import java.lang.ref.WeakReference;
  * the runner implementation.  When this animation manager is destroyed, we remove the Launcher
  * reference to the runner, leaving only the weak ref from the runner.
  */
-@TargetApi(Build.VERSION_CODES.P)
 public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
 
     private static final RemoteAnimationFactory DEFAULT_FACTORY =
@@ -100,6 +100,22 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
         } else {
             postAsyncCallback(mHandler, r);
         }
+    }
+
+    // Introduced in NothingOS 2.5.5, needed in 2.6
+    @BinderThread
+    public void onAnimationStartWithSurfaceTransaction(
+            int transit,
+            TransitionInfo transitionInfo,
+            SurfaceControl.Transaction transaction,
+            RemoteAnimationTarget[] appTargets,
+            RemoteAnimationTarget[] wallpaperTargets,
+            RemoteAnimationTarget[] nonAppTargets,
+            Runnable runnable) {
+        if (transaction != null) {
+            transaction.apply();
+        }
+        onAnimationStart(transit, appTargets, wallpaperTargets, nonAppTargets, runnable);
     }
 
     private RemoteAnimationFactory getFactory() {

@@ -27,8 +27,8 @@
     <string name="action_restore">Восстановить</string>
     <string name="action_delete">Удалить</string>
     <string name="action_reset">Сбросить</string>
-    <string name="action_unlock">Разблок.</string>
-    <string name="action_lock">Заблок.</string>
+    <string name="action_unlock">Разблокировать</string>
+    <string name="action_lock">Заблокировать</string>
     <string name="action_apply">Применить</string>
     <string name="action_customize">Настроить</string>
     <string name="always_choice">Всегда</string>
@@ -42,7 +42,7 @@
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Настройки</string>
     <string name="settings_button_text">Настр. гл. экрана</string>
-    <string name="system_settings">Сист. настройки</string>
+    <string name="system_settings">Системные настройки</string>
     <string name="title_change_settings">Изменить настройки</string>
     <!--
 
@@ -89,7 +89,7 @@
     <string name="app_drawer_label">Меню приложений</string>
     <string name="app_drawer_description">Скрытые приложения, число столбцов, иконки</string>
     <string name="drawer_search_label">Поиск в Меню приложений</string>
-    <string name="drawer_search_description">Веб-подсказки, глобал. поиск</string>
+    <string name="drawer_search_description">Веб-подсказки, глобальный поиск</string>
     <string name="folders_label">Папки</string>
     <string name="folders_description">Кол-во строк и столбцов</string>
     <string name="gestures_label">Жесты</string>
@@ -104,12 +104,12 @@
     <string name="font_picker_label">Настройка шрифта</string>
     <string name="font_picker_description">Некоторый текст останется без изменений</string>
     <string name="smartspace_calendar_label">Настройки календаря секции \"Самое главное\"</string>
-    <string name="smartspace_calendar_description">Разрешить отображение даты календаря не-грегорианского типа</string>
+    <string name="smartspace_calendar_description">Разрешить показ даты из других календарей</string>
     <string name="workspace_increase_max_grid_size_label">Увеличить макс. размер сетки</string>
     <string name="workspace_increase_max_grid_size_description">Увеличить макс. допустимый размер сетки глав. экрана с 10х10 на 20x20</string>
     <string name="always_reload_icons_label">Всегда перезагружать иконки</string>
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
-    <string name="recents_lock_unlock">Блок. / Разблок.</string>
+    <string name="recents_lock_unlock">Блокировка/Разблокировка</string>
     <string name="recents_lock_unlock_description">Запретить закрытие выбран. приложения при нажатии кнопки \"Очистить всё\"</string>
     <!--
 
@@ -141,7 +141,7 @@
     <string name="transparent_background_icons_label">Прозрачные тематические иконки</string>
     <string name="transparent_background_icons_description">Использовать прозрачный фон на тематических значках</string>
     <string name="auto_adaptive_icons_label">Авто-адаптивные иконки</string>
-    <string name="auto_adaptive_icons_description">Для всех не-адаптивных иконок</string>
+    <string name="auto_adaptive_icons_description">Для всех неадаптивных иконок</string>
     <string name="shadow_bg_icons_label">Показывать тень позади иконок</string>
     <string name="background_lightness_label">Яркость подложки</string>
     <string name="adaptive_icon_background_description">Для белой подложки установите 100% значение яркости</string>
@@ -185,13 +185,13 @@
     <string name="icon_shape_clipboard_import_error">Буфер обмена не содержит допустимую форму иконки</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Набор иконок</string>
-    <string name="themed_icon_pack">Источник тематич. иконок</string>
+    <string name="themed_icon_pack">Источник тематических иконок</string>
     <string name="system_icons">Системные иконки</string>
-    <string name="themed_icon_title">Тематич. иконки</string>
+    <string name="themed_icon_title">Тематические иконки</string>
     <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Главный экран</string>
-    <string name="themed_icons_home_and_drawer_label">Глав. экран и Меню прилож.</string>
-    <string name="lawnicons_not_installed_description">Нет поддерж. наборов иконок</string>
+    <string name="themed_icons_home_and_drawer_label">Главный экран &amp; меню приложений</string>
+    <string name="lawnicons_not_installed_description">Нет поддерживаемых наборов значков</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
     <string name="pref_fonts_add_fonts_summary">Поддерживаются OTF и TTF шрифты</string>
@@ -444,7 +444,7 @@
     <string name="pref_all_apps_remember_position_title">Запомнить позицию</string>
     <string name="pref_all_apps_remember_position_description">Запомнить позицию Меню приложений после его закрытия</string>
     <string name="pref_all_apps_show_scrollbar_title">Показать полосу прокрутки</string>
-    <string name="app_drawer_columns">Кол-во столбцов в Меню прилож.</string>
+    <string name="app_drawer_columns">Количество столбцов в меню приложений</string>
     <string name="row_height_label">Высота строки</string>
     <string name="app_drawer_indent_label">Горизонт. отступ</string>
     <!-- HiddenAppsPreferences -->
@@ -510,8 +510,8 @@
     <string name="hidden_apps_show_name_typed">Если указано полное имя</string>
     <string name="app_search_algorithm">Алгоритм поиска</string>
     <string name="search_algorithm_app_search">Поиск приложений</string>
-    <string name="search_algorithm_global_search_on_device">Глобал. поиск (на устройстве)</string>
-    <string name="search_algorithm_global_search_via_asi">Глобал. поиск (с помощью ASI)</string>
+    <string name="search_algorithm_global_search_on_device">Глобальный поиск (на устройстве)</string>
+    <string name="search_algorithm_global_search_via_asi">Глобальный поиск (с помощью ASI)</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Показывать в результатах поиска</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Приложения и Ярлыки</string>

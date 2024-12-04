@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"അവസാനിപ്പിക്കുക"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"വികസിപ്പിക്കുക"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"ക്രമീകരണം"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"മെനു"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"ചിത്രത്തിനുള്ളിൽ ചിത്രം മെനു"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> ചിത്രത്തിനുള്ളിൽ ചിത്രം രീതിയിലാണ്"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"<xliff:g id="NAME">%s</xliff:g> ഈ ഫീച്ചർ ഉപയോഗിക്കേണ്ടെങ്കിൽ, ടാപ്പ് ചെയ്‌ത് ക്രമീകരണം തുറന്ന് അത് ഓഫാക്കുക."</string>
+    <string name="pip_play" msgid="3496151081459417097">"പ്ലേ ചെയ്യുക"</string>
+    <string name="pip_pause" msgid="690688849510295232">"താൽക്കാലികമായി നിർത്തുക"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"അടുത്തതിലേക്ക് പോകുക"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"മുമ്പത്തേതിലേക്ക് പോകുക"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"വലുപ്പം മാറ്റുക"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"സ്റ്റാഷ് ചെയ്യൽ"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"അൺസ്റ്റാഷ് ചെയ്യൽ"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"സ്‌ക്രീൻ വിഭജന മോഡിൽ ആപ്പ് പ്രവർത്തിച്ചേക്കില്ല"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"സ്‌ക്രീൻ വിഭജന മോഡിനെ ആപ്പ് പിന്തുണയ്ക്കുന്നില്ല"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"ഈ ആപ്പ് ഒരു വിൻഡോയിൽ മാത്രമേ തുറക്കാനാകൂ"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"രണ്ടാം ഡിസ്‌പ്ലേയിൽ ആപ്പ് പ്രവർത്തിച്ചേക്കില്ല."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"രണ്ടാം ഡിസ്‌പ്ലേകളിൽ സമാരംഭിക്കുന്നതിനെ ആപ്പ് അനുവദിക്കുന്നില്ല."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"സ്‌ക്രീൻ വിഭജന മോഡ് ഡിവൈഡർ"</string>
+    <string name="divider_title" msgid="1963391955593749442">"സ്‌ക്രീൻ വിഭജന മോഡ് ഡിവൈഡർ"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"ഇടത് പൂർണ്ണ സ്ക്രീൻ"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"ഇടത് 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ഇടത് 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ഇടത് 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"വലത് പൂർണ്ണ സ്ക്രീൻ"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"മുകളിൽ പൂർണ്ണ സ്ക്രീൻ"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"മുകളിൽ 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"മുകളിൽ 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"മുകളിൽ 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"താഴെ പൂർണ്ണ സ്ക്രീൻ"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"ഇടത് ഭാഗത്തേക്ക് വിഭജിക്കുക"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"വലത് ഭാഗത്തേക്ക് വിഭജിക്കുക"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"മുകളിലേക്ക് വിഭജിക്കുക"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"താഴേക്ക് വിഭജിക്കുക"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"ഒറ്റക്കൈ മോഡ് എങ്ങനെ ഉപയോഗിക്കാം"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"പുറത്ത് കടക്കാൻ, സ്ക്രീനിന്റെ ചുവടെ നിന്ന് മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്യുക അല്ലെങ്കിൽ ആപ്പിന് മുകളിലായി എവിടെയെങ്കിലും ടാപ്പ് ചെയ്യുക"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"ഒറ്റക്കൈ മോഡ് ആരംഭിച്ചു"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"ഒറ്റക്കൈ മോഡിൽ നിന്ന് പുറത്തുകടക്കുക"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g> ബബിളുകളുടെ ക്രമീകരണം"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"ഓവർഫ്ലോ"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"അടുക്കുകളിലേക്ക് തിരിച്ച് ചേർക്കുക"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="APP_NAME">%2$s</xliff:g>-ൽ നിന്നുള്ള <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="APP_NAME">%2$s</xliff:g> എന്നതിൽ നിന്നുള്ള <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>, <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> കൂടുതലും"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"മുകളിൽ ഇടതുഭാഗത്തേക്ക് നീക്കുക"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"മുകളിൽ വലതുഭാഗത്തേക്ക് നീക്കുക"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"ചുവടെ ഇടതുഭാഗത്തേക്ക് നീക്കുക"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"ചുവടെ വലതുഭാഗത്തേക്ക് നീക്കുക"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> വികസിപ്പിക്കുക"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> ചുരുക്കുക"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> ക്രമീകരണം"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"ബബിൾ ഡിസ്മിസ് ചെയ്യൂ"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"സംഭാഷണം ബബിൾ ചെയ്യരുത്"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"ബബിളുകൾ ഉപയോഗിച്ച് ചാറ്റ് ചെയ്യുക"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"പുതിയ സംഭാഷണങ്ങൾ ഫ്ലോട്ടിംഗ് ഐക്കണുകളോ ബബിളുകളോ ആയി ദൃശ്യമാവുന്നു. ബബിൾ തുറക്കാൻ ടാപ്പ് ചെയ്യൂ. ഇത് നീക്കാൻ വലിച്ചിടുക."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"ബബിളുകൾ ഏതുസമയത്തും നിയന്ത്രിക്കുക"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"ഈ ആപ്പിൽ നിന്നുള്ള ബബിളുകൾ ഓഫാക്കാൻ മാനേജ് ചെയ്യുക ടാപ്പ് ചെയ്യുക"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"മനസ്സിലായി"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"അടുത്തിടെയുള്ള ബബിളുകൾ ഒന്നുമില്ല"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"അടുത്തിടെയുള്ള ബബിളുകൾ, ഡിസ്മിസ് ചെയ്ത ബബിളുകൾ എന്നിവ ഇവിടെ ദൃശ്യമാവും"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"ബബിളുകൾ ഉപയോഗിച്ച് ചാറ്റ് ചെയ്യുക"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"പുതിയ സംഭാഷണങ്ങൾ, നിങ്ങളുടെ സ്ക്രീനിന്റെ താഴെ മൂലയിൽ ഐക്കണുകളായി ദൃശ്യമാകും. വികസിപ്പിക്കാൻ അവയിൽ ടാപ്പ് ചെയ്യുക അല്ലെങ്കിൽ ഡിസ്‌മിസ് ചെയ്യാൻ വലിച്ചിടുക."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"ബബിളുകൾ ഏതുസമയത്തും നിയന്ത്രിക്കുക"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"ഏതൊക്കെ ആപ്പുകളും സംഭാഷണങ്ങളും ബബിൾ ചെയ്യാനാകുമെന്നത് മാനേജ് ചെയ്യാൻ ഇവിടെ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"ബബിൾ"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"മാനേജ് ചെയ്യുക"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"ബബിൾ ഡിസ്മിസ് ചെയ്തു."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"ബബിൾ"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"ബബിൾ കാണിക്കുക"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"മികച്ച കാഴ്‌ചയ്‌ക്കായി ഈ ആപ്പ് റീസ്‌റ്റാർട്ട് ചെയ്യാൻ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"ഈ ആപ്പിന്റെ വീക്ഷണ അനുപാതം, ക്രമീകരണത്തിൽ മാറ്റുക"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"വീക്ഷണ അനുപാതം മാറ്റുക"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"ക്യാമറ പ്രശ്നങ്ങളുണ്ടോ?\nശരിയാക്കാൻ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"അത് പരിഹരിച്ചില്ലേ?\nപുനഃസ്ഥാപിക്കാൻ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"ക്യാമറാ പ്രശ്നങ്ങളൊന്നുമില്ലേ? നിരസിക്കാൻ ടാപ്പ് ചെയ്യുക."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"കൂടുതൽ കാണുക, ചെയ്യുക"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"സ്‌ക്രീൻ വിഭജന മോഡിന്, മറ്റൊരു ആപ്പ് വലിച്ചിടുക"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"ആപ്പിന്റെ സ്ഥാനം മാറ്റാൻ അതിന് പുറത്ത് ഡബിൾ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"മനസ്സിലായി"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"കൂടുതൽ വിവരങ്ങൾക്ക് വികസിപ്പിക്കുക."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"മെച്ചപ്പെട്ട കാഴ്‌ചയ്‌ക്കായി റീസ്റ്റാർട്ട് ചെയ്യണോ?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"ആപ്പ് റീസ്റ്റാർട്ട് ചെയ്യുകയാണെങ്കിൽ ഇത് നിങ്ങളുടെ സ്‌ക്രീനിൽ മെച്ചപ്പെട്ടതായി കാണും, എന്നാൽ ഇതുവരെയുള്ള പുരോഗതിയും സംരക്ഷിക്കാത്ത മാറ്റങ്ങളും നിങ്ങൾക്ക് നഷ്‌ടമാകും"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"റദ്ദാക്കുക"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"റീസ്റ്റാർട്ട് ചെയ്യൂ"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"വീണ്ടും കാണിക്കരുത്"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"ഈ ആപ്പ് നീക്കാൻ\nഡബിൾ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"വലുതാക്കുക"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"ചെറുതാക്കുക"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"അടയ്ക്കുക"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"മടങ്ങുക"</string>
+    <string name="handle_text" msgid="1766582106752184456">"ഹാൻഡിൽ"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"ആപ്പ് ഐക്കൺ"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"പൂർണ്ണസ്ക്രീൻ"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"ഡെസ്‌ക്ടോപ്പ് മോഡ്"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"സ്‌ക്രീൻ വിഭജനം"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"കൂടുതൽ"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"ഫ്ലോട്ട്"</string>
+    <string name="select_text" msgid="5139083974039906583">"തിരഞ്ഞെടുക്കുക"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"സ്ക്രീൻഷോട്ട്"</string>
+    <string name="close_text" msgid="4986518933445178928">"അടയ്ക്കുക"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"മെനു അടയ്ക്കുക"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"മെനു തുറക്കുക"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"സ്‌ക്രീൻ വലുതാക്കുക"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"സ്‌ക്രീൻ സ്‌നാപ്പ് ചെയ്യുക"</string>
+</resources>

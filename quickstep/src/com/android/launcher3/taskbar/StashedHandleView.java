@@ -15,9 +15,12 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.graphics.Rect;
@@ -110,5 +113,18 @@ public class StashedHandleView extends View {
         } else {
             setBackgroundColor(newColor);
         }
+    }
+
+    /**
+     * Updates the handle scale.
+     *
+     * @param scale target scale to animate towards (starting from current scale)
+     * @param durationMs milliseconds for the animation to take
+     */
+    public void animateScale(float scale, long durationMs) {
+        ObjectAnimator scaleAnim = ObjectAnimator.ofPropertyValuesHolder(this,
+                PropertyValuesHolder.ofFloat(SCALE_PROPERTY, scale));
+        scaleAnim.setDuration(durationMs).setAutoCancel(true);
+        scaleAnim.start();
     }
 }

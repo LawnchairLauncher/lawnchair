@@ -33,7 +33,7 @@
     <string name="action_customize">Personnaliser</string>
     <string name="always_choice">Toujours</string>
     <string name="never_choice">Jamais</string>
-    <string name="clipboard">Presse-papier</string>
+    <string name="clipboard">Presse-papiers</string>
     <string name="action_copy_link">Copier le lien</string>
     <string name="action_copy">Copier</string>
     <string name="action_paste">Coller</string>

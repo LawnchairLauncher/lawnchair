@@ -33,17 +33,17 @@ final class AlphaJumpDetector extends AnomalyDetector {
 
     private static final IgnoreNode IGNORED_NODES_ROOT = buildIgnoreNodesTree(List.of(
             CONTENT
-                    + "AddItemDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
+                    + "SimpleDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
                     + "/add_item_bottom_sheet|LinearLayout:id/add_item_bottom_sheet_content"
                     + "|ScrollView:id/widget_preview_scroll_view|WidgetCell:id/widget_cell"
                     + "|WidgetCellPreview:id/widget_preview_container|ImageView:id/widget_badge",
             CONTENT
-                    + "AddItemDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
+                    + "SimpleDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
                     + "/add_item_bottom_sheet|LinearLayout:id/add_item_bottom_sheet_content"
                     + "|ScrollView:id/widget_preview_scroll_view|WidgetCell:id/widget_cell"
                     + "|WidgetCellPreview:id/widget_preview_container|WidgetCell$1|FrameLayout"
                     + "|ImageView:id/icon",
-            CONTENT + "AddItemDragLayer:id/add_item_drag_layer|View",
+            CONTENT + "SimpleDragLayer:id/add_item_drag_layer|View",
             DRAG_LAYER
                     + "AppWidgetResizeFrame|FrameLayout|ImageButton:id/widget_reconfigure_button",
             DRAG_LAYER
@@ -61,18 +61,6 @@ final class AlphaJumpDetector extends AnomalyDetector {
             DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view|FrameLayout:id"
                     + "/select_mode_buttons|ImageButton:id/close",
-            DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
-                    + "/action_buttons|Button:id/action_screenshot",
-            DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
-                    + "/action_buttons|Button:id/action_select",
-            DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
-                    + "/action_buttons|Button:id/action_split",
-            DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
-                    + "/action_buttons|Space:id/action_split_space",
             DRAG_LAYER
                     + "PopupContainerWithArrow:id/popup_container|LinearLayout:id"
                     + "/deep_shortcuts_container|DeepShortcutView:id/deep_shortcut_material"
@@ -116,23 +104,14 @@ final class AlphaJumpDetector extends AnomalyDetector {
             RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel",
             DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_screenshot",
+                    + "|LinearLayout:id/action_buttons",
             RECENTS_DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_screenshot",
+                    + "|LinearLayout:id/action_buttons",
+            DRAG_LAYER + "IconView",
             DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_select",
-            RECENTS_DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_select",
-            DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_split",
-            RECENTS_DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_split",
-            DRAG_LAYER + "IconView"
+                    + "OptionsPopupView:id/popup_container|DeepShortcutView:id/system_shortcut"
+                    + "|BubbleTextView:id/bubble_text"
     ));
 
     // Minimal increase or decrease of view's alpha between frames that triggers the error.

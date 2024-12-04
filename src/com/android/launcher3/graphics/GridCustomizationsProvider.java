@@ -1,10 +1,24 @@
+/*
+ * Copyright (C) 2023 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.android.launcher3.graphics;
 
 import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.Themes.isThemedIconEnabled;
 
-import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
@@ -12,7 +26,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -21,11 +34,11 @@ import android.os.Message;
 import android.os.Messenger;
 import android.util.ArrayMap;
 import android.util.Log;
+import android.util.Pair;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.GridOption;
 import com.android.launcher3.LauncherPrefs;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Executors;
 
 /**
@@ -70,7 +83,11 @@ public class GridCustomizationsProvider extends ContentProvider {
 
     private static final int MESSAGE_ID_UPDATE_PREVIEW = 1337;
 
-    private final ArrayMap<IBinder, PreviewLifecycleObserver> mActivePreviews = new ArrayMap<>();
+    /**
+     * Here we use the IBinder and the screen ID as the key of the active previews.
+     */
+    private final ArrayMap<Pair<IBinder, Integer>, PreviewLifecycleObserver> mActivePreviews =
+            new ArrayMap<>();
 
     @Override
     public boolean onCreate() {
@@ -164,23 +181,21 @@ public class GridCustomizationsProvider extends ContentProvider {
             return null;
         }
 
-        if (!Utilities.ATLEAST_R || !METHOD_GET_PREVIEW.equals(method)) {
+        if (!METHOD_GET_PREVIEW.equals(method)) {
             return null;
         }
         return getPreview(extras);
     }
 
-    @TargetApi(Build.VERSION_CODES.R)
     private synchronized Bundle getPreview(Bundle request) {
         PreviewLifecycleObserver observer = null;
         try {
             PreviewSurfaceRenderer renderer = new PreviewSurfaceRenderer(getContext(), request);
 
-            // Destroy previous
-            destroyObserver(mActivePreviews.get(renderer.getHostToken()));
-
             observer = new PreviewLifecycleObserver(renderer);
-            mActivePreviews.put(renderer.getHostToken(), observer);
+            // Destroy previous
+            destroyObserver(mActivePreviews.get(observer.getIdentifier()));
+            mActivePreviews.put(observer.getIdentifier(), observer);
 
             renderer.loadAsync();
             renderer.getHostToken().linkToDeath(observer, 0);
@@ -210,9 +225,9 @@ public class GridCustomizationsProvider extends ContentProvider {
         observer.destroyed = true;
         observer.renderer.getHostToken().unlinkToDeath(observer, 0);
         Executors.MAIN_EXECUTOR.execute(observer.renderer::destroy);
-        PreviewLifecycleObserver cached = mActivePreviews.get(observer.renderer.getHostToken());
+        PreviewLifecycleObserver cached = mActivePreviews.get(observer.getIdentifier());
         if (cached == observer) {
-            mActivePreviews.remove(observer.renderer.getHostToken());
+            mActivePreviews.remove(observer.getIdentifier());
         }
     }
 
@@ -241,6 +256,15 @@ public class GridCustomizationsProvider extends ContentProvider {
         @Override
         public void binderDied() {
             destroyObserver(this);
+        }
+
+        /**
+         * Returns a key that should make the PreviewSurfaceRenderer unique and if two of them have
+         * the same key they will be treated as the same PreviewSurfaceRenderer. Primary this is
+         * used to prevent memory leaks by removing the old PreviewSurfaceRenderer.
+         */
+        public Pair<IBinder, Integer> getIdentifier() {
+            return new Pair<>(renderer.getHostToken(), renderer.getDisplayId());
         }
     }
 }

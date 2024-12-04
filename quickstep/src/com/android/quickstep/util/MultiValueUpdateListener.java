@@ -18,6 +18,8 @@ package com.android.quickstep.util;
 import android.animation.ValueAnimator;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.Utilities;
+
 import java.util.ArrayList;
 
 /**
@@ -31,14 +33,11 @@ public abstract class MultiValueUpdateListener implements ValueAnimator.Animator
     @Override
     public final void onAnimationUpdate(ValueAnimator animator) {
         final float percent = animator.getAnimatedFraction();
-        final float currentPlayTime = percent * animator.getDuration();
 
         for (int i = mAllProperties.size() - 1; i >= 0; i--) {
             FloatProp prop = mAllProperties.get(i);
-            float time = Math.max(0, currentPlayTime - prop.mDelay);
-            float newPercent = Math.min(1f, time / prop.mDuration);
-            newPercent = prop.mInterpolator.getInterpolation(newPercent);
-            prop.value = prop.mEnd * newPercent + prop.mStart * (1 - newPercent);
+            float interpolatedPercent = prop.mInterpolator.getInterpolation(percent);
+            prop.value = Utilities.mapRange(interpolatedPercent, prop.mStart, prop.mEnd);
         }
         onUpdate(percent, false /* initOnly */);
     }
@@ -55,17 +54,12 @@ public abstract class MultiValueUpdateListener implements ValueAnimator.Animator
 
         private final float mStart;
         private final float mEnd;
-        private final float mDelay;
-        private final float mDuration;
         private final Interpolator mInterpolator;
 
-        public FloatProp(float start, float end, float delay, float duration, Interpolator i) {
+        public FloatProp(float start, float end, Interpolator i) {
             value = mStart = start;
             mEnd = end;
-            mDelay = delay;
-            mDuration = duration;
             mInterpolator = i;
-
             mAllProperties.add(this);
         }
 

@@ -15,8 +15,7 @@
  */
 package com.android.launcher3.settings;
 
-import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
-import static com.android.launcher3.settings.SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGS;
+import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_HIGHLIGHT_KEY;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 
@@ -51,6 +50,7 @@ public class NotificationDotsPreference extends Preference
 
     /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
+    private static final String EXTRA_SHOW_FRAGMENT_ARGS = ":settings:show_fragment_args";
 
     private final ContentObserver mListenerListObserver =
             new ContentObserver(MAIN_EXECUTOR.getHandler()) {
@@ -88,7 +88,7 @@ public class NotificationDotsPreference extends Preference
 
         // Update intent
         Bundle extras = new Bundle();
-        extras.putString(EXTRA_FRAGMENT_ARG_KEY, "notification_badging");
+        extras.putString(EXTRA_FRAGMENT_HIGHLIGHT_KEY, "notification_badging");
 
         setIntent(new Intent("android.settings.NOTIFICATION_SETTINGS")
                 .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, extras));
@@ -169,11 +169,11 @@ public class NotificationDotsPreference extends Preference
         public void onClick(DialogInterface dialogInterface, int i) {
             ComponentName cn = new ComponentName(getActivity(), NotificationListener.class);
             Bundle showFragmentArgs = new Bundle();
-            showFragmentArgs.putString(EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString());
+            showFragmentArgs.putString(EXTRA_FRAGMENT_HIGHLIGHT_KEY, cn.flattenToString());
 
             Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    .putExtra(EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
+                    .putExtra(EXTRA_FRAGMENT_HIGHLIGHT_KEY, cn.flattenToString())
                     .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs);
             getActivity().startActivity(intent);
         }

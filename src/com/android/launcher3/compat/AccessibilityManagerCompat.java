@@ -74,38 +74,12 @@ public class AccessibilityManagerCompat {
         Log.d(TestProtocol.PERMANENT_DIAG_TAG, "sendStateEventToTest: " + stateOrdinal);
     }
 
-    public static void sendScrollFinishedEventToTest(Context context) {
+    public static void sendTestProtocolEventToTest(Context context, String testProtocolEvent) {
         final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
         if (accessibilityManager == null) return;
 
-        sendEventToTest(accessibilityManager, context, TestProtocol.SCROLL_FINISHED_MESSAGE, null);
+        sendEventToTest(accessibilityManager, context, testProtocolEvent, null);
     }
-
-    public static void sendPauseDetectedEventToTest(Context context) {
-        final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
-        if (accessibilityManager == null) return;
-
-        sendEventToTest(accessibilityManager, context, TestProtocol.PAUSE_DETECTED_MESSAGE, null);
-    }
-
-    public static void sendDismissAnimationEndsEventToTest(Context context) {
-        final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
-        if (accessibilityManager == null) return;
-
-        sendEventToTest(accessibilityManager, context, TestProtocol.DISMISS_ANIMATION_ENDS_MESSAGE,
-                null);
-    }
-
-    /**
-     * Notify running tests of a folder opened.
-     */
-    public static void sendFolderOpenedEventToTest(Context context) {
-        final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
-        if (accessibilityManager == null) return;
-
-        sendEventToTest(accessibilityManager, context, TestProtocol.FOLDER_OPENED_MESSAGE, null);
-    }
-
     private static void sendEventToTest(
             AccessibilityManager accessibilityManager,
             Context context, String eventTag, Bundle data) {
@@ -136,9 +110,6 @@ public class AccessibilityManagerCompat {
     }
 
     public static int getRecommendedTimeoutMillis(Context context, int originalTimeout, int flags) {
-        if (Utilities.ATLEAST_Q) {
-            return getManager(context).getRecommendedTimeoutMillis(originalTimeout, flags);
-        }
-        return originalTimeout;
+        return getManager(context).getRecommendedTimeoutMillis(originalTimeout, flags);
     }
 }

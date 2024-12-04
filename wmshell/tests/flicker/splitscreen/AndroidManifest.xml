@@ -1,0 +1,77 @@
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.android.wm.shell.flicker.splitscreen">
+
+    <uses-sdk android:minSdkVersion="29" android:targetSdkVersion="29"/>
+    <!-- Read and write traces from external storage -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Allow the test to write directly to /sdcard/ -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <!-- Write secure settings -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <!-- Capture screen contents -->
+    <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
+    <!-- Enable / Disable tracing !-->
+    <uses-permission android:name="android.permission.DUMP" />
+    <!-- Run layers trace -->
+    <uses-permission android:name="android.permission.HARDWARE_TEST"/>
+    <!-- Capture screen recording -->
+    <uses-permission android:name="android.permission.CAPTURE_VIDEO_OUTPUT"/>
+    <!-- Workaround grant runtime permission exception from b/152733071 -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <!-- Force-stop test apps -->
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES"/>
+    <!-- Control test app's media session -->
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
+    <!-- ATM.removeRootTasksWithActivityTypes() -->
+    <uses-permission android:name="android.permission.MANAGE_ACTIVITY_TASKS" />
+    <!-- Enable bubble notification-->
+    <uses-permission android:name="android.permission.STATUS_BAR_SERVICE" />
+    <!-- Allow the test to connect to perfetto trace processor -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Allow the test to write directly to /sdcard/ and connect to trace processor -->
+    <application android:requestLegacyExternalStorage="true"
+                 android:networkSecurityConfig="@xml/network_security_config"
+                 android:largeHeap="true">
+        <uses-library android:name="android.test.runner"/>
+
+        <service android:name=".NotificationListener"
+                 android:exported="true"
+                 android:label="WMShellTestsNotificationListenerService"
+                 android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!-- (b/197936012) Remove startup provider due to test timeout issue -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
+    </application>
+
+    <instrumentation android:name="androidx.test.runner.AndroidJUnitRunner"
+                     android:targetPackage="com.android.wm.shell.flicker.splitscreen"
+                     android:label="WindowManager Flicker Tests">
+    </instrumentation>
+</manifest>

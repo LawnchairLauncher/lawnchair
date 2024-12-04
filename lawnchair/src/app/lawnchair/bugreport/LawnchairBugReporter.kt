@@ -6,10 +6,10 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import app.lawnchair.LawnchairApp
+import app.lawnchair.util.MainThreadInitializedObject
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
-import com.android.launcher3.util.MainThreadInitializedObject
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date

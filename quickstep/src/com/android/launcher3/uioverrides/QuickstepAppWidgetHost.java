@@ -25,6 +25,7 @@ import android.os.Looper;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
@@ -55,7 +56,10 @@ final class QuickstepAppWidgetHost extends AppWidgetHost {
 
     @Override
     public void onAppWidgetRemoved(int appWidgetId) {
-        mAppWidgetRemovedCallback.accept(appWidgetId);
+        // Route the call via model thread, in case it comes while a loader-bind is in progress
+        Executors.MODEL_EXECUTOR.execute(
+                () -> Executors.MAIN_EXECUTOR.execute(
+                        () -> mAppWidgetRemovedCallback.accept(appWidgetId)));
     }
 
     @Override

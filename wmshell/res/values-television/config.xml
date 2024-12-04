@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2022 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- These resources are around just to allow their values to be customized
+     for TV products.  Do not translate. -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- The percentage of the screen width to use for the default width or height of
+         picture-in-picture windows. Regardless of the percent set here, calculated size will never
+         be smaller than @dimen/default_minimal_size_pip_resizable_task. -->
+    <item name="config_pictureInPictureDefaultSizePercent" format="float" type="dimen">0.2</item>
+
+    <!-- Default insets [LEFT/RIGHTxTOP/BOTTOM] from the screen edge for picture-in-picture windows.
+         These values are in DPs and will be converted to pixel sizes internally. -->
+    <string translatable="false" name="config_defaultPictureInPictureScreenEdgeInsets">
+        24x24
+    </string>
+
+    <!-- The default gravity for the picture-in-picture window.
+         Currently, this maps to Gravity.BOTTOM | Gravity.RIGHT -->
+    <integer name="config_defaultPictureInPictureGravity">0x55</integer>
+
+    <!-- Fraction of screen width/height restricted keep clear areas can move the PiP. -->
+    <fraction name="config_pipMaxRestrictedMoveDistance">15%</fraction>
+
+    <!-- Duration (in milliseconds) the PiP stays stashed before automatically unstashing. -->
+    <integer name="config_pipStashDuration">5000</integer>
+
+    <!-- Time (duration in milliseconds) that the shell waits for an app to close the PiP by itself
+    if a custom action is present before closing it. -->
+    <integer name="config_pipForceCloseDelay">5000</integer>
+
+    <!-- Animation duration when exit starting window: fade out icon -->
+    <integer name="starting_window_app_reveal_icon_fade_out_duration">200</integer>
+
+    <!-- Animation delay when exit starting window: reveal app -->
+    <integer name="starting_window_app_reveal_anim_delay">200</integer>
+
+    <!-- Animation duration when exit starting window: reveal app -->
+    <integer name="starting_window_app_reveal_anim_duration">300</integer>
+
+    <!-- Default animation type when hiding the starting window. The possible values are:
+          - 0 for radial vanish + slide up
+          - 1 for fade out -->
+    <integer name="starting_window_exit_animation_type">1</integer>
+
+    <!-- Whether this device allows to use the appIcon as a fallback icon for the splash screen
+        window. If false, the splash screen will be a solid color splash screen whenever the
+        app has not provided a windowSplashScreenAnimatedIcon. -->
+    <bool name="config_canUseAppIconForSplashScreen">false</bool>
+</resources>

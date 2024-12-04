@@ -16,8 +16,6 @@
 
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.Utilities.ATLEAST_R;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Insets;
@@ -155,17 +153,10 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
     @SuppressLint("NewApi") // Already added API check.
     @Override
     public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
-        if (ATLEAST_R) {
-            Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars());
-            mInsets.set(insets.left, insets.top, insets.right, insets.bottom);
-        } else {
-            mInsets.set(windowInsets.getSystemWindowInsetLeft(),
-                    windowInsets.getSystemWindowInsetTop(),
-                    windowInsets.getSystemWindowInsetRight(),
-                    windowInsets.getSystemWindowInsetBottom());
-        }
-        mContent.setPadding(mContent.getPaddingStart(),
-                mContent.getPaddingTop(), mContent.getPaddingEnd(), mInsets.bottom);
+        Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars());
+        mInsets.set(insets.left, insets.top, insets.right, insets.bottom);
+        mContent.setPadding(mContent.getPaddingStart(), mContent.getPaddingTop(),
+                mContent.getPaddingEnd(), mInsets.bottom);
 
         int contentHorizontalMarginInPx = getResources().getDimensionPixelSize(
                 R.dimen.widget_list_horizontal_margin);
@@ -183,8 +174,7 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
     }
 
     private static void setContentHorizontalMargin(View view, int contentHorizontalMargin) {
-        ViewGroup.MarginLayoutParams layoutParams =
-                ((ViewGroup.MarginLayoutParams) view.getLayoutParams());
+        ViewGroup.MarginLayoutParams layoutParams = ((ViewGroup.MarginLayoutParams) view.getLayoutParams());
         layoutParams.setMarginStart(contentHorizontalMargin);
         layoutParams.setMarginEnd(contentHorizontalMargin);
     }

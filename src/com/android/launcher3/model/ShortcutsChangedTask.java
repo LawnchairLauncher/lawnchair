@@ -22,6 +22,7 @@ import android.os.UserHandle;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 /**
  * Handles changes due to shortcut manager updates (deep shortcut changes)
  */
-public class ShortcutsChangedTask extends BaseModelUpdateTask {
+public class ShortcutsChangedTask implements ModelUpdateTask {
 
     @NonNull
     private final String mPackageName;
@@ -61,8 +62,9 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
-            @NonNull final AllAppsList apps) {
+    public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
+            @NonNull AllAppsList apps) {
+        final LauncherAppState app = taskController.getApp();
         final Context context = app.getContext();
         // Find WorkspaceItemInfo's that have changed on the workspace.
         ArrayList<WorkspaceItemInfo> matchingWorkspaceItems = new ArrayList<>();
@@ -78,10 +80,12 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
 
         if (!matchingWorkspaceItems.isEmpty()) {
             if (mShortcuts.isEmpty()) {
+                PackageManagerHelper packageManagerHelper =
+                        PackageManagerHelper.INSTANCE.get(context);
                 // Verify that the app is indeed installed.
-                if (!new PackageManagerHelper(app.getContext())
-                        .isAppInstalled(mPackageName, mUser)) {
-                    // App is not installed, ignoring package events
+                if (!packageManagerHelper.isAppInstalled(mPackageName, mUser)
+                        && !packageManagerHelper.isAppArchivedForUser(mPackageName, mUser)) {
+                    // App is not installed or archived, ignoring package events
                     return;
                 }
             }
@@ -113,9 +117,9 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
                         });
             }
 
-            bindUpdatedWorkspaceItems(updatedWorkspaceItemInfos);
+            taskController.bindUpdatedWorkspaceItems(updatedWorkspaceItemInfos);
             if (!nonPinnedIds.isEmpty()) {
-                deleteAndBindComponentsRemoved(ItemInfoMatcher.ofShortcutKeys(
+                taskController.deleteAndBindComponentsRemoved(ItemInfoMatcher.ofShortcutKeys(
                         nonPinnedIds.stream()
                                 .map(id -> new ShortcutKey(mPackageName, mUser, id))
                                 .collect(Collectors.toSet())),
@@ -126,7 +130,7 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
         if (mUpdateIdMap) {
             // Update the deep shortcut map if the list of ids has changed for an activity.
             dataModel.updateDeepShortcutCounts(mPackageName, mUser, mShortcuts);
-            bindDeepShortcuts(dataModel);
+            taskController.bindDeepShortcuts(dataModel);
         }
     }
 }

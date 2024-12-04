@@ -23,6 +23,8 @@
     <string name="recent_task_option_pin">Pin</string>
     <!-- Title for an option to enter freeform mode for a given app -->
     <string name="recent_task_option_freeform">Freeform</string>
+    <!-- Title for an option to enter desktop windowing mode for a given app -->
+    <string name="recent_task_option_desktop">Desktop</string>
 
     <!-- Recents: The empty recents string. [CHAR LIMIT=NONE] -->
     <string name="recents_empty_message">No recent items</string>
@@ -102,6 +104,8 @@
     <string name="back_gesture_feedback_cancelled">Make sure you swipe from the right or left edge to the middle of the screen and let go</string>
     <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_complete_with_overview_follow_up">You learned how to swipe from the right to go back. Next up, learn how to switch apps.</string>
+    <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
+    <string name="back_gesture_feedback_complete_with_follow_up">You completed the go back gesture. Next up, learn how to switch apps.</string>
     <!-- Feedback shown after completing the back gesture step if the user started this tutorial individually. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_complete_without_follow_up">You completed the go back gesture</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial when the gesture is within the nav bar region. [CHAR LIMIT=100] -->
@@ -225,13 +229,18 @@
     <string name="action_screenshot">Screenshot</string>
     <!-- Label for a button that enters split screen selection mode. [CHAR_LIMIT=20] -->
     <string name="action_split">Split</string>
+    <!-- Label for a button that saves a new app pair. [CHAR_LIMIT=20] -->
+    <string name="action_save_app_pair">Save app pair</string>
     <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
     <string name="toast_split_select_app">Tap another app to use split screen</string>
+    <string name="toast_contextual_split_select_app">Choose another app to use split screen</string>
+    <string name="toast_split_select_app_cancel"><b>Cancel</b></string>
     <string name="toast_split_select_cont_desc">Exit split screen selection</string>
     <!-- Label for toast when app selected for split isn't supported. [CHAR_LIMIT=50] -->
     <string name="toast_split_app_unsupported">Choose another app to use split screen</string>
     <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
     <string name="blocked_by_policy">This action isn\'t allowed by the app or your organization</string>
+    <string name="split_widgets_not_supported">Widgets not currently supported, please select another app</string>
 
     <!-- ******* Skip tutorial dialog ******* -->
     <!-- Title for the dialog that allows the user to skip the gesture navigation tutorial. [CHAR_LIMIT=40] -->
@@ -255,10 +264,18 @@
     <string name="taskbar_edu_stashing">Slow-swipe up to show the Taskbar</string>
     <!-- Text in dialog that lets a user know how the Taskbar suggests apps based on their usage. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_suggestions">Get app suggestions based on your routine</string>
-    <!-- Text in dialog that lets a user know that Taskbar will auto-hide, if the user switches to gesture navigation in system settings. [CHAR_LIMIT=90] -->
-    <string name="taskbar_edu_settings_persistent">Turn on gesture navigation in Settings to auto-hide the Taskbar</string>
+    <!-- Title in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 60] -->
+    <string name="taskbar_edu_pinning">Long press on the divider to pin the Taskbar</string>
     <!-- Title in dialog that shows a user what they can do with the Taskbar. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_features">Do more with the Taskbar</string>
+    <!-- Title in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 60] -->
+    <string name="taskbar_edu_pinning_title">Always show the Taskbar</string>
+    <!-- Text in dialog that shows a user how to pin the Taskbar. [CHAR_LIMIT 150] -->
+    <string name="taskbar_edu_pinning_standalone">To always show the Taskbar on the bottom of your screen, touch &amp; hold the divider</string>
+    <!-- Title in dialog that shows a user how to invoke the Search feature. [CHAR_LIMIT 150] -->
+    <string name="taskbar_search_edu_title">Touch &amp; hold the action key to search what\'s on your screen</string>
+    <!-- Message showed to user to disclose privacy information they need to accept in order to access the app. [CHAR LIMIT=200]-->
+    <string name="taskbar_edu_search_disclosure">This product uses the selected part of your screen to search. Google\'s <xliff:g example="https://policies.google.com/privacy/embedded" id="begin_privacy_link">&lt;a href=\"%1$s\"&gt;</xliff:g>Privacy Policy<xliff:g id="end_privacy_link">&lt;/a&gt;</xliff:g> and <xliff:g example="https://policies.google.com/terms" id="begin_tos_link">&lt;a href=\"%2$s\"&gt;</xliff:g>Terms of Service<xliff:g id="end_tos_link">&lt;/a&gt;</xliff:g> apply.</string>
     <!-- Text on button to exit a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_close">Close</string>
     <!-- Text on button to finish a tutorial [CHAR_LIMIT=16] -->
@@ -304,12 +321,22 @@
             other{Show # more apps.}
         }</string>
 
+    <!-- Label for quick switch tile showing how many apps are available in desktop mode [CHAR LIMIT=NONE] -->
+    <string name="quick_switch_desktop">{count, plural,
+            =1{Show # desktop app.}
+            other{Show # desktop apps.}
+        }</string>
+
     <!-- Accessibility label for quick switch tiles showing split tasks [CHAR LIMIT=NONE] -->
     <string name="quick_switch_split_task"><xliff:g id="app_name_1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app_name_2" example="Gmail">%2$s</xliff:g></string>
 
-    <!-- ******* Desktop ******* -->
-    <!-- Text shown in popup to choose a desktop app. [CHAR LIMIT=60] -->
-    <string name="desktop_select_app_toast">Adding app to Desktop</string>
-    <!-- Text shown on a button that closes the popup for choosing a desktop app. [CHAR_LIMIT=40] -->
-    <string name="desktop_button_close_app_toast">Cancel</string>
+    <!-- Strings for bubble bar -->
+    <!-- Fallback name for a bubble if it does have a title [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_bubble_fallback_description">Bubble</string>
+    <!-- content description for the overflow bubble [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_overflow_description">Overflow</string>
+    <!-- Content description for a bubble bar bubble. [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_bubble_description"><xliff:g id="notification_title" example="some title">%1$s</xliff:g> from <xliff:g id="app_name" example="YouTube">%2$s</xliff:g></string>
+    <!-- Content description for bubble bar when it has multiple bubbles. [CHAR_LIMIT=NONE] -->
+    <string name="bubble_bar_description_multiple_bubbles"><xliff:g id="bubble_bar_bubble_description" example="some title from YouTube">%1$s</xliff:g> and <xliff:g id="bubble_count" example="4">%2$d</xliff:g> more</string>
 </resources>

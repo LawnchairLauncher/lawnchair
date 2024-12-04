@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"關閉"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"展開"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"設定"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"選單"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"子母畫面選單"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"「<xliff:g id="NAME">%s</xliff:g>」目前在子母畫面中"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"如果你不想讓「<xliff:g id="NAME">%s</xliff:g>」使用這項功能，請輕觸開啟設定頁面，然後停用此功能。"</string>
+    <string name="pip_play" msgid="3496151081459417097">"播放"</string>
+    <string name="pip_pause" msgid="690688849510295232">"暫停"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"跳到下一個"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"跳到上一個"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"調整大小"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"暫時隱藏"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"取消暫時隱藏"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"應用程式可能無法在分割畫面中運作"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"這個應用程式不支援分割畫面"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"這個應用程式只能在 1 個視窗中開啟"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"應用程式可能無法在次要顯示器上運作。"</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"應用程式無法在次要顯示器上啟動。"</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"分割畫面分隔線"</string>
+    <string name="divider_title" msgid="1963391955593749442">"分割畫面分隔線"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"以全螢幕顯示左側畫面"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"以 70% 的螢幕空間顯示左側畫面"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"以 50% 的螢幕空間顯示左側畫面"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"以 30% 的螢幕空間顯示左側畫面"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"以全螢幕顯示右側畫面"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"以全螢幕顯示頂端畫面"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"以 70% 的螢幕空間顯示頂端畫面"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"以 50% 的螢幕空間顯示頂端畫面"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"以 30% 的螢幕空間顯示頂端畫面"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"以全螢幕顯示底部畫面"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"分割左側區域"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"分割右側區域"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"分割上方區域"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"分割下方區域"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"使用單手模式"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"如要退出，請從螢幕底部向上滑動，或輕觸應用程式上方的任何位置"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"啟動單手模式"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"結束單手模式"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」對話框的設定"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"溢位"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"重新加入堆疊"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="APP_NAME">%2$s</xliff:g>：<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"「<xliff:g id="APP_NAME">%2$s</xliff:g>」和其他 <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> 個應用程式：<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"移至左上方"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"移至右上方"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"移至左下方"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"移至右下方"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"展開「<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>」"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"收合「<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>」"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"「<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>」設定"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"關閉對話框"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"不要以對話框形式顯示對話"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"透過對話框來聊天"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"新的對話會以浮動圖示或對話框形式顯示。輕觸即可開啟對話框，拖曳則可移動對話框。"</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"你隨時可以控管對話框的各項設定"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"輕觸 [管理] 即可關閉來自這個應用程式的對話框"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"我知道了"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"最近沒有任何對話框"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"最近的對話框和已關閉的對話框會顯示在這裡"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"透過對話框進行即時通訊"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"畫面底部的角落會顯示新對話圖示。輕觸可展開圖示，拖曳即可關閉。"</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"你隨時可以控管對話框的各項設定"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"輕觸這裡即可管理哪些應用程式和對話可顯示對話框"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"泡泡"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"管理"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"已關閉泡泡。"</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"對話框"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"顯示對話框"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"輕觸此按鈕重新啟動這個應用程式，即可獲得更良好的觀看體驗"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"前往「設定」變更這個應用程式的顯示比例"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"變更顯示比例"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"相機有問題嗎？\n輕觸即可修正"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"未修正問題嗎？\n輕觸即可還原"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"相機沒問題嗎？輕觸即可關閉。"</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"瀏覽更多內容及執行更多操作"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"拖進另一個應用程式即可使用分割畫面模式"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"在應用程式外輕觸兩下即可調整位置"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"我知道了"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"展開即可查看詳細資訊。"</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"要重新啟動改善檢視畫面嗎？"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"你可以重新啟動應用程式，讓系統更新檢視畫面。不過，系統可能不會儲存目前進度及你所做的任何變更"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"取消"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"重新啟動"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"不要再顯示"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"輕觸兩下即可\n移動這個應用程式"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"最大化"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"最小化"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"關閉"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"返回"</string>
+    <string name="handle_text" msgid="1766582106752184456">"控點"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"應用程式圖示"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"全螢幕"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"電腦模式"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"分割畫面"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"更多"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"浮動"</string>
+    <string name="select_text" msgid="5139083974039906583">"選取"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"螢幕截圖"</string>
+    <string name="close_text" msgid="4986518933445178928">"關閉"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"關閉選單"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"開啟選單"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"畫面最大化"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"貼齊畫面"</string>
+</resources>

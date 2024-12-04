@@ -27,18 +27,31 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"பாதுகாப்புப் பயன்முறையில் விட்ஜெட்கள் முடக்கப்பட்டுள்ளன"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ஷார்ட்கட் இல்லை"</string>
     <string name="home_screen" msgid="5629429142036709174">"முகப்பு"</string>
+    <string name="set_default_home_app" msgid="5808906607627586381">"அமைப்புகளில் <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g> என்பதை இயல்பு முகப்பு ஆப்ஸாக அமையுங்கள்"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"திரைப் பிரிப்பு"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$sக்கான ஆப்ஸ் தகவல்கள்"</string>
+    <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$sக்கான உபயோக அமைப்புகள்"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ஆப்ஸ் ஜோடியைச் சேமி"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"இந்தச் சாதனத்தில் இந்த ஆப்ஸ் ஜோடி ஆதரிக்கப்படவில்லை"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"இந்த ஆப்ஸ் ஜோடியைப் பயன்படுத்த சாதனத்தை விரியுங்கள்"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"ஆப்ஸ் ஜோடி கிடைக்கவில்லை"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"விட்ஜெட்டை நகர்த்தத் தொட்டுப் பிடிக்கவும்."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"விட்ஜெட்டை நகர்த்த இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேகச் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d அகலத்திற்கு %2$d உயரம்"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> விட்ஜெட்"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> விட்ஜெட், %2$d அகலம் மற்றும் %3$d உயரம்"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"முகப்புத் திரையைச் சுற்றி விட்ஜெட்டை நகர்த்த அதைத் தொட்டுப் பிடியுங்கள்"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"முகப்புத் திரையில் சேர்"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> விட்ஜெட் முகப்புத் திரையில் சேர்க்கப்பட்டது"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"பரிந்துரைகள்"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"அத்தியாவசியமானவை"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"செய்திகள் &amp; பத்திரிக்கைகள்"</string>
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"பொழுதுபோக்கு"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"சமூகம்"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"உங்களுக்கான பரிந்துரைகள்"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> விட்ஜெட்கள் வலதுபுறத்தில் உள்ளன, தேடல் மற்றும் விருப்பங்கள் இடதுபுறத்தில் உள்ளன"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# விட்ஜெட்}other{# விட்ஜெட்டுகள்}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ஷார்ட்கட்}other{# ஷார்ட்கட்கள்}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -51,10 +64,9 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"பணி"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"உரையாடல்கள்"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"குறிப்பெடுத்தல்"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"விரல்நுனியில் பயனுள்ள தகவல்களைப் பெறுங்கள்"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"முகப்புத் திரையில் விட்ஜெட்டுகளைச் சேர்த்து ஆப்ஸைத் திறக்காமலேயே தகவல்களைப் பெறலாம்"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"சேர்"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> விட்ஜெட்டைச் சேர்க்கும்"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"விட்ஜெட் அமைப்புகளை மாற்றத் தட்டவும்"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"சரி"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"விட்ஜெட் அமைப்புகளை மாற்றும்"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ஆப்ஸில் தேடுக"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ஆப்ஸை ஏற்றுகிறது…"</string>
@@ -73,9 +85,11 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"அகற்று"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"நிறுவல் நீக்கு"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ஆப்ஸ் தகவல்"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"தனிப்பட்டதில் நிறுவு"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"ஆப்ஸை நிறுவல் நீக்கு"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"நிறுவு"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"பரிந்துரைக்காதே"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"கணிக்கப்பட்ட ஆப்ஸைப் பின் செய்தல்"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"கணிக்கப்பட்டதைப் பின் செய்"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"குறுக்குவழிகளை நிறுவுதல்"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"பயனரின் அனுமதி இல்லாமல் குறுக்குவழிகளைச் சேர்க்கப் ஆப்ஸை அனுமதிக்கிறது."</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"முகப்புத் திரையின் அமைப்புகளையும் ஷார்ட்கட்களையும் படித்தல்"</string>
@@ -99,6 +113,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ஃபோல்டர் <xliff:g id="NAME">%1$s</xliff:g> என மறுபெயரிடப்பட்டது"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ஃபோல்டர்: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ஃபைல்கள்"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ஃபோல்டர்: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> அல்லது அதற்கு அதிகமான ஃபைல்கள்"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"ஆப்ஸ் ஜோடி: <xliff:g id="APP1">%1$s</xliff:g> மற்றும் <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"வால்பேப்பர் &amp; ஸ்டைல்"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"முகப்புத் திரையில் மாற்று"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"முகப்பு அமைப்புகள்"</string>
@@ -113,7 +128,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"அமைப்புகளை மாற்று"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"அறிவிப்புப் புள்ளிகளைக் காட்டு"</string>
     <string name="developer_options_title" msgid="700788437593726194">"டெவெலப்பர் விருப்பங்கள்"</string>
-    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"முகப்புத் திரையில் ஆப்ஸ் ஐகான்களைச் சேர்"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"முகப்புத் திரையில் ஆப்ஸ் ஐகான்களைச் சேர்த்தல்"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"புதிய ஆப்ஸை நிறுவும்போது"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"தெரியாதது"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"அகற்று"</string>
@@ -123,6 +138,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> நிறுவப்படுகிறது, <xliff:g id="PROGRESS">%2$s</xliff:g> முடிந்தது"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g>ஐப் பதிவிறக்குகிறது, <xliff:g id="PROGRESS">%2$s</xliff:g> முடிந்தது"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>ஐ நிறுவுவதற்காகக் காத்திருக்கிறது"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> காப்பிடப்பட்டுள்ளது. அதைப் பதிவிறக்கி மீட்டெடுக்க தட்டுங்கள்."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"ஆப்ஸைப் புதுப்பியுங்கள்"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"இந்த ஐகானுக்கான ஆப்ஸ் புதுப்பிக்கப்படவில்லை. இந்த ஷார்ட்கட்டை மீண்டும் இயக்கவோ ஐகானை அகற்றவோ நீங்களாகவே புதுப்பிக்கலாம்."</string>
     <string name="dialog_update" msgid="2178028071796141234">"புதுப்பி"</string>
@@ -152,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"உயரத்தைக் குறை"</string>
     <string name="widget_resized" msgid="9130327887929620">"அகலம் <xliff:g id="NUMBER_0">%1$s</xliff:g> மற்றும் உயரம் <xliff:g id="NUMBER_1">%2$s</xliff:g>க்கு விட்ஜெட் அளவு மாற்றப்பட்டது"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ஷார்ட்கட்கள்"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ஷார்ட்கட்கள் மற்றும் அறிவிப்புகள்"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"நிராகரி"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"மூடும் பட்டன்"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"அறிவிப்பு நிராகரிக்கப்பட்டது"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"தனிப்பட்டவை"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"பணி"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"பணிக் கணக்கு"</string>
@@ -170,7 +184,15 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"பணி ஆப்ஸை இடைநிறுத்து"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"மீண்டும் இயக்கு"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"வடிப்பான்"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"உங்கள் மொபைலில் தேடுதல்"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"உங்கள் டேப்லெட்டில் தேடுதல்"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"தோல்வி: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"தனிப்பட்ட சேமிப்பிடம்"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"அமைக்கவோ திறக்கவோ தட்டுங்கள்"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"தனிப்பட்டது"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"தனிப்பட்ட சேமிப்பிட அமைப்புகள்"</string>
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"தனிப்பட்டது, அன்லாக் செய்யப்பட்டுள்ளது."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"தனிப்பட்டது, லாக் செய்யப்பட்டுள்ளது."</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"பூட்டு"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"தனிப்பட்ட சேமிப்பிடத்திற்கு மாற்றுகிறது"</string>
+    <string name="ps_add_button_label" msgid="8127988716897128773">"நிறுவுக"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"தனிப்பட்ட சேமிப்பிடத்தில் ஆப்ஸை நிறுவும்"</string>
 </resources>

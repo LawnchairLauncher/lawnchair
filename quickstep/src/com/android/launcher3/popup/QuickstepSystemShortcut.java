@@ -25,7 +25,7 @@ import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 /** {@link SystemShortcut.Factory} implementation to create workspace split shortcuts */
 public interface QuickstepSystemShortcut {
 
-    String TAG = QuickstepSystemShortcut.class.getSimpleName();
+    String TAG = "QuickstepSystemShortcut";
 
     static SystemShortcut.Factory<QuickstepLauncher> getSplitSelectShortcutByPosition(
             SplitPositionOption position) {

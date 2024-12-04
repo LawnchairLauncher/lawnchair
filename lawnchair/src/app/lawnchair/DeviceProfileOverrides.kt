@@ -10,9 +10,10 @@ import com.android.launcher3.InvariantDeviceProfile.INDEX_LANDSCAPE
 import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE
 import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 import com.patrykmichalik.opto.core.firstBlocking
 
-class DeviceProfileOverrides(context: Context) {
+class DeviceProfileOverrides(context: Context) : SafeCloseable {
     private val prefs = PreferenceManager.getInstance(context)
     private val preferenceManager2 = PreferenceManager2.getInstance(context)
 
@@ -56,6 +57,9 @@ class DeviceProfileOverrides(context: Context) {
         )
 
     fun getTextFactors() = TextFactors(preferenceManager2)
+    override fun close() {
+        TODO("Not yet implemented")
+    }
 
     data class DBGridInfo(
         val numHotseatColumns: Int,
@@ -100,8 +104,8 @@ class DeviceProfileOverrides(context: Context) {
             // apply grid size
             idp.numAllAppsColumns = numAllAppsColumns
             idp.numDatabaseAllAppsColumns = numAllAppsColumns
-            idp.numFolderRows = numFolderRows
-            idp.numFolderColumns = numFolderColumns
+            idp.numFolderRows[INDEX_DEFAULT] = numFolderRows
+            idp.numFolderColumns[INDEX_DEFAULT] = numFolderColumns
 
             // apply icon and text size
             idp.iconSize[INDEX_DEFAULT] *= iconSizeFactor

@@ -69,8 +69,8 @@ public class Snackbar extends AbstractFloatingView {
     }
 
     /** Show a snackbar with just a label. */
-    public static <T extends Context & ActivityContext> void show(T activity, String labelString,
-            Runnable onDismissed) {
+    public static void show(
+            ActivityContext activity, CharSequence labelString, Runnable onDismissed) {
         show(activity, labelString, NO_ID, onDismissed, null);
     }
 
@@ -79,25 +79,25 @@ public class Snackbar extends AbstractFloatingView {
             int actionStringResId, Runnable onDismissed, @Nullable Runnable onActionClicked) {
         show(
                 activity,
-                activity.getResources().getString(labelStringResId),
+                activity.getResources().getText(labelStringResId),
                 actionStringResId,
                 onDismissed,
                 onActionClicked);
     }
 
     /** Show a snackbar with a label and action. */
-    public static <T extends Context & ActivityContext> void show(T activity, String labelString,
+    public static void show(ActivityContext activity, CharSequence labelString,
             int actionStringResId, Runnable onDismissed, @Nullable Runnable onActionClicked) {
         closeOpenViews(activity, true, TYPE_SNACKBAR);
-        Snackbar snackbar = new Snackbar(activity, null);
+        Snackbar snackbar = new Snackbar((Context) activity, null);
         // Set some properties here since inflated xml only contains the children.
         snackbar.setOrientation(HORIZONTAL);
         snackbar.setGravity(Gravity.CENTER_VERTICAL);
-        Resources res = activity.getResources();
+        Resources res = snackbar.getResources();
         snackbar.setElevation(res.getDimension(R.dimen.snackbar_elevation));
         int padding = res.getDimensionPixelSize(R.dimen.snackbar_padding);
         snackbar.setPadding(padding, padding, padding, padding);
-        snackbar.setBackground(DrawableTokens.RoundRectPrimary.resolve(activity));
+        snackbar.setBackground(DrawableTokens.RoundRectPrimary.resolve(((Context)activity).getApplicationContext()));
 
         snackbar.mIsOpen = true;
         BaseDragLayer dragLayer = activity.getDragLayer();
@@ -128,8 +128,8 @@ public class Snackbar extends AbstractFloatingView {
         labelView.setText(labelString);
 
         TextView actionView = snackbar.findViewById(R.id.action);
-        labelView.setTextColor(ColorTokens.TextColorPrimary.resolveColor(activity));
-        actionView.setTextColor(ColorTokens.ColorAccent.resolveColor(activity));
+        labelView.setTextColor(ColorTokens.TextColorPrimary.resolveColor(((Context) activity).getApplicationContext()));
+        actionView.setTextColor(ColorTokens.ColorAccent.resolveColor(((Context) activity).getApplicationContext()));
         float actionWidth;
         if (actionStringResId != NO_ID) {
             String actionText = res.getString(actionStringResId);
@@ -148,7 +148,8 @@ public class Snackbar extends AbstractFloatingView {
             actionView.setVisibility(GONE);
         }
 
-        int totalContentWidth = (int) (labelView.getPaint().measureText(labelString) + actionWidth)
+        int totalContentWidth = (int) (labelView.getPaint().measureText(labelString.toString())
+                    + actionWidth)
                 + labelView.getPaddingRight() + labelView.getPaddingLeft()
                 + padding * 2;
         if (totalContentWidth > params.width) {
@@ -182,7 +183,7 @@ public class Snackbar extends AbstractFloatingView {
                 .setDuration(SHOW_DURATION_MS)
                 .setInterpolator(Interpolators.ACCELERATE_DECELERATE)
                 .start();
-        int timeout = AccessibilityManagerCompat.getRecommendedTimeoutMillis(activity,
+        int timeout = AccessibilityManagerCompat.getRecommendedTimeoutMillis(snackbar.getContext(),
                 TIMEOUT_DURATION_MS, FLAG_CONTENT_TEXT | FLAG_CONTENT_CONTROLS);
         snackbar.postDelayed(() -> snackbar.close(true), timeout);
     }

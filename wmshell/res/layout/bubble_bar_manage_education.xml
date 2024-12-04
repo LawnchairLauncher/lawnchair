@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License
+  -->
+<com.android.wm.shell.common.bubbles.BubblePopupView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginHorizontal="@dimen/bubble_popup_margin_horizontal"
+    android:layout_marginTop="@dimen/bubble_popup_margin_top"
+    android:elevation="@dimen/bubble_manage_menu_elevation"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:tint="?android:attr/colorAccent"
+        android:contentDescription="@null"
+        android:src="@drawable/pip_ic_settings"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:maxWidth="@dimen/bubble_popup_content_max_width"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Headline"
+        android:textColor="?android:attr/textColorPrimary"
+        android:text="@string/bubble_bar_education_manage_title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:maxWidth="@dimen/bubble_popup_content_max_width"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textAlignment="center"
+        android:text="@string/bubble_bar_education_manage_text"/>
+
+</com.android.wm.shell.common.bubbles.BubblePopupView>

@@ -20,7 +20,7 @@ import android.os.UserHandle;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -31,7 +31,7 @@ import java.util.HashSet;
 /**
  * Handles changes due to cache updates.
  */
-public class CacheDataUpdatedTask extends BaseModelUpdateTask {
+public class CacheDataUpdatedTask implements ModelUpdateTask {
 
     public static final int OP_CACHE_UPDATE = 1;
     public static final int OP_SESSION_UPDATE = 2;
@@ -52,9 +52,9 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
-            @NonNull final AllAppsList apps) {
-        IconCache iconCache = app.getIconCache();
+    public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
+            @NonNull AllAppsList apps) {
+        IconCache iconCache = taskController.getApp().getIconCache();
         ArrayList<WorkspaceItemInfo> updatedShortcuts = new ArrayList<>();
 
         synchronized (dataModel) {
@@ -69,8 +69,8 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
             });
             apps.updateIconsAndLabels(mPackages, mUser);
         }
-        bindUpdatedWorkspaceItems(updatedShortcuts);
-        bindApplicationsIfNeeded();
+        taskController.bindUpdatedWorkspaceItems(updatedShortcuts);
+        taskController.bindApplicationsIfNeeded();
     }
 
     public boolean isValidShortcut(@NonNull final WorkspaceItemInfo si) {

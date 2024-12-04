@@ -36,41 +36,49 @@ public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
             (context, entry) -> entry.mWidgets.stream()
                     .map(item -> item.label).sorted().collect(Collectors.joining(", "));
 
-    private static final BiFunction<Context, WidgetsListHeaderEntry, String> SUBTITLE_DEFAULT =
-            (context, entry) -> {
-                List<WidgetItem> items = entry.mWidgets;
-                int wc = (int) items.stream().filter(item -> item.widgetInfo != null).count();
-                int sc = Math.max(0, items.size() - wc);
+    @Nullable
+    private static String buildWidgetsCountString(Context context, int wc, int sc) {
+        Resources resources = context.getResources();
+        if (wc == 0 && sc == 0) {
+            return null;
+        }
 
-                Resources resources = context.getResources();
-                if (wc == 0 && sc == 0) {
-                    return null;
-                }
-
-                String subtitle;
-                if (wc > 0 && sc > 0) {
-                    String widgetsCount = PluralMessageFormat.getIcuPluralString(context,
-                            R.string.widgets_count, wc);
-                    String shortcutsCount = PluralMessageFormat.getIcuPluralString(context,
-                            R.string.shortcuts_count, sc);
-                    subtitle = resources.getString(R.string.widgets_and_shortcuts_count,
-                            widgetsCount, shortcutsCount);
-                } else if (wc > 0) {
-                    subtitle = PluralMessageFormat.getIcuPluralString(context,
-                            R.string.widgets_count, wc);
-                } else {
-                    subtitle = PluralMessageFormat.getIcuPluralString(context,
-                            R.string.shortcuts_count, sc);
-                }
-                return subtitle;
-            };
+        String subtitle;
+        if (wc > 0 && sc > 0) {
+            String widgetsCount = PluralMessageFormat.getIcuPluralString(context,
+                    R.string.widgets_count, wc);
+            String shortcutsCount = PluralMessageFormat.getIcuPluralString(context,
+                    R.string.shortcuts_count, sc);
+            subtitle = resources.getString(R.string.widgets_and_shortcuts_count,
+                    widgetsCount, shortcutsCount);
+        } else if (wc > 0) {
+            subtitle = PluralMessageFormat.getIcuPluralString(context,
+                    R.string.widgets_count, wc);
+        } else {
+            subtitle = PluralMessageFormat.getIcuPluralString(context,
+                    R.string.shortcuts_count, sc);
+        }
+        return subtitle;
+    }
 
     private final boolean mIsWidgetListShown;
+    /** Selected widgets displayed */
+    private final int mVisibleWidgetsCount;
     private final boolean mIsSearchEntry;
+
+    private WidgetsListHeaderEntry(PackageItemInfo pkgItem, String titleSectionName,
+            List<WidgetItem> items, int visibleWidgetsCount,
+            boolean isSearchEntry, boolean isWidgetListShown) {
+        super(pkgItem, titleSectionName, items);
+        mVisibleWidgetsCount = visibleWidgetsCount;
+        mIsSearchEntry = isSearchEntry;
+        mIsWidgetListShown = isWidgetListShown;
+    }
 
     private WidgetsListHeaderEntry(PackageItemInfo pkgItem, String titleSectionName,
             List<WidgetItem> items, boolean isSearchEntry, boolean isWidgetListShown) {
         super(pkgItem, titleSectionName, items);
+        mVisibleWidgetsCount = (int) items.stream().filter(w -> w.widgetInfo != null).count();
         mIsSearchEntry = isSearchEntry;
         mIsWidgetListShown = isWidgetListShown;
     }
@@ -91,8 +99,13 @@ public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
 
     @Nullable
     public String getSubtitle(Context context) {
-        return mIsSearchEntry
-                ? SUBTITLE_SEARCH.apply(context, this) : SUBTITLE_DEFAULT.apply(context, this);
+        if (mIsSearchEntry) {
+            return SUBTITLE_SEARCH.apply(context, this);
+        } else {
+            int shortcutsCount = Math.max(0,
+                    (int) mWidgets.stream().filter(WidgetItem::isShortcut).count());
+            return buildWidgetsCountString(context, mVisibleWidgetsCount, shortcutsCount);
+        }
     }
 
     @Override
@@ -102,6 +115,7 @@ public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
         return mWidgets.equals(otherEntry.mWidgets) && mPkgItem.equals(otherEntry.mPkgItem)
                 && mTitleSectionName.equals(otherEntry.mTitleSectionName)
                 && mIsWidgetListShown == otherEntry.mIsWidgetListShown
+                && mVisibleWidgetsCount == otherEntry.mVisibleWidgetsCount
                 && mIsSearchEntry == otherEntry.mIsSearchEntry;
     }
 
@@ -112,6 +126,7 @@ public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
                 mPkgItem,
                 mTitleSectionName,
                 mWidgets,
+                mVisibleWidgetsCount,
                 mIsSearchEntry,
                 /* isWidgetListShown= */ true);
     }
@@ -122,7 +137,28 @@ public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
                 pkgItem,
                 titleSectionName,
                 items,
-                /* forSearch */ false,
+                /* isSearchEntry= */ false,
+                /* isWidgetListShown= */ false);
+    }
+
+    /**
+     * Creates a widget list holder for an header ("app" / "suggestions") which has widgets or/and
+     * shortcuts.
+     *
+     * @param pkgItem             package item info for the header section
+     * @param titleSectionName    title string for the header
+     * @param items               all items for the given header
+     * @param visibleWidgetsCount widgets count when only selected widgets are shown due to
+     *                            limited space.
+     */
+    public static WidgetsListHeaderEntry create(PackageItemInfo pkgItem, String titleSectionName,
+            List<WidgetItem> items, int visibleWidgetsCount) {
+        return new WidgetsListHeaderEntry(
+                pkgItem,
+                titleSectionName,
+                items,
+                visibleWidgetsCount,
+                /* isSearchEntry= */ false,
                 /* isWidgetListShown= */ false);
     }
 
@@ -132,7 +168,7 @@ public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
                 pkgItem,
                 titleSectionName,
                 items,
-                /* forSearch */ true,
+                /* isSearchEntry */ true,
                 /* isWidgetListShown= */ false);
     }
 }

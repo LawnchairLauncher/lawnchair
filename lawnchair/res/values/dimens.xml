@@ -61,6 +61,8 @@
     <dimen name="search_result_text_height">52dp</dimen>
     <dimen name="search_result_subtitle_padding_start">4dp</dimen>
 
+    <dimen name="all_apps_header_top_margin">64dp</dimen>
+
     <!-- smartspace -->
     <dimen name="smartspaceAmbientShadowBlur">1.5dp</dimen>
     <dimen name="smartspaceKeyShadowBlur">2dp</dimen>

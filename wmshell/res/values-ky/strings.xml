@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Жабуу"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Жайып көрсөтүү"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Параметрлер"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Меню"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Сүрөт ичиндеги сүрөт менюсу"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> – сүрөт ичиндеги сүрөт"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Эгер <xliff:g id="NAME">%s</xliff:g> колдонмосу бул функцияны пайдаланбасын десеңиз, параметрлерди ачып туруп, аны өчүрүп коюңуз."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Ойнотуу"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Тындыруу"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Кийинкисине өткөрүп жиберүү"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Мурункусуна өткөрүп жиберүү"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Өлчөмүн өзгөртүү"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Сейфке салуу"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Сейфтен чыгаруу"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Колдонмодо экран бөлүнбөшү мүмкүн"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Колдонмодо экран бөлүнбөйт"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Бул колдонмону 1 терезеде гана ачууга болот"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Колдонмо кошумча экранда иштебей коюшу мүмкүн."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Колдонмону кошумча экрандарда иштетүүгө болбойт."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Экранды бөлгүч"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Экранды бөлгүч"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Сол жактагы экранды толук экран режимине өткөрүү"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Сол жактагы экранды 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Сол жактагы экранды 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Сол жактагы экранды 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Оң жактагы экранды толук экран режимине өткөрүү"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Үстүнкү экранды толук экран режимине өткөрүү"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Үстүнкү экранды 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Үстүнкү экранды 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Үстүнкү экранды 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Ылдыйкы экранды толук экран режимине өткөрүү"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Солго бөлүү"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Оңго бөлүү"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Өйдө бөлүү"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Ылдый бөлүү"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Бир кол режимин колдонуу"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Чыгуу үчүн экранды ылдый жагынан өйдө сүрүңүз же колдонмонун өйдө жагын басыңыз"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Бир кол режимин баштоо"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Бир кол режиминен чыгуу"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g> калкып чыкма билдирмелер параметрлери"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Кошумча меню"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Кайра топтомго кошуу"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="APP_NAME">%2$s</xliff:g> колдонмосунан <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="APP_NAME">%2$s</xliff:g> жана дагы <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> колдонмодон <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Жогорку сол жакка жылдыруу"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Жогорку оң жакка жылдыруу"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Төмөнкү сол жакка жылдыруу"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Төмөнкү оң жакка жылдыруу"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> жайып көрсөтүү"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> жыйыштыруу"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> параметрлери"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Калкып чыкма билдирмени жабуу"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Жазышууда калкып чыкма билдирмелер көрүнбөсүн"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Калкып чыкма билдирмелер аркылуу маектешүү"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Жаңы жазышуулар калкыма сүрөтчөлөр же калкып чыкма билдирмелер түрүндө көрүнөт. Калкып чыкма билдирмелерди ачуу үчүн тийип коюңуз. Жылдыруу үчүн сүйрөңүз."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Калкып чыкма билдирмелерди каалаган убакта көзөмөлдөңүз"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Бул колдонмодогу калкып чыкма билдирмелерди өчүрүү үчүн \"Башкарууну\" басыңыз"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Түшүндүм"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Азырынча эч нерсе жок"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Акыркы жана жабылган калкып чыкма билдирмелер ушул жерде көрүнөт"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Калкып чыкма билдирмелер аркылуу маектешүү"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Жаңы сүйлөшүүлөр экраныңыздын төмөнкү бурчунда сүрөтчөлөр катары көрүнөт. Аларды жайып көрсөтүү үчүн таптап же четке кагуу үчүн сүйрөңүз."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Калкып чыкма билдирмелерди каалаган убакта көзөмөлдөңүз"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Калкып чыкма билдирме түрүндө көрүнө турган колдонмолор менен маектерди тандоо үчүн бул жерди таптаңыз"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Көбүк"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Башкаруу"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Калкып чыкма билдирме жабылды."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Калкып чыкма билдирмелер"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Калкып чыкма билдирмелерди көрсөтүү"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Жакшыраак көрүү үчүн бул колдонмону өчүрүп күйгүзүңүз. Ал үчүн таптап коюңуз"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Бул колдонмонун тараптарынын катнашын параметрлерден өзгөртүү"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Тараптардын катнашын өзгөртүү"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Камерада маселелер келип чыктыбы?\nОңдоо үчүн таптаңыз"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Оңдолгон жокпу?\nАртка кайтаруу үчүн таптаңыз"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Камерада маселе жокпу? Этибарга албоо үчүн таптаңыз."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Көрүп, көбүрөөк нерселерди жасаңыз"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Экранды бөлүү үчүн башка колдонмону сүйрөңүз"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Колдонмону жылдыруу үчүн сырт жагын эки жолу таптаңыз"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"Түшүндүм"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Толук маалымат алуу үчүн жайып көрүңүз."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Жакшыраак көрүү үчүн өчүрүп күйгүзөсүзбү?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Экранда жакшыраак көрүү үчүн колдонмону өчүрүп күйгүзө аласыз, бирок аткарылган иш же сакталбаган өзгөрүүлөр өчүрүлүшү мүмкүн"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Токтотуу"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Өчүрүп күйгүзүү"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Экинчи көрүнбөсүн"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Бул колдонмону жылдыруу үчүн\nэки жолу таптаңыз"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Чоңойтуу"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Кичирейтүү"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Жабуу"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Артка"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Маркер"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Колдонмонун сүрөтчөсү"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Толук экран"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Компьютер режими"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Экранды бөлүү"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Дагы"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Калкыма"</string>
+    <string name="select_text" msgid="5139083974039906583">"Тандоо"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Скриншот"</string>
+    <string name="close_text" msgid="4986518933445178928">"Жабуу"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Менюну жабуу"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Менюну ачуу"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Экранды чоңойтуу"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Экранды сүрөткө тартып алуу"</string>
+</resources>

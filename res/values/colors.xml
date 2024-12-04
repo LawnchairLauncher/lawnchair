@@ -71,10 +71,10 @@
     <color name="folder_background_dark">#1F2020</color>
 
     <color name="folder_preview_light">#7FCFFF</color>
-    <color name="folder_preview_dark">#2A2A2A</color>
+    <color name="folder_preview_dark">#1E1F20</color>
 
-    <color name="folder_pagination_color_light">#0B57D0</color>
-    <color name="folder_pagination_color_dark">#A8C7FA</color>
+    <color name="pagination_indicator_dot_color_light">#0B57D0</color>
+    <color name="pagination_indicator_dot_color_dark">#A8C7FA</color>
 
     <color name="text_color_primary_dark">#FFFFFFFF</color>
     <color name="text_color_secondary_dark">#FFFFFFFF</color>
@@ -89,6 +89,8 @@
     <color name="drop_target_hover_text_color_dark">#D3E3FD</color>
     <color name="drop_target_hover_button_color_light">#D3E3FD</color>
     <color name="drop_target_hover_button_color_dark">#0842A0</color>
+
+    <color name="taskbar_running_app_indicator_color">#000000</color>
 
     <color name="preload_icon_accent_color_light">#00668B</color>
     <color name="preload_icon_background_color_light">#B5CAD7</color>
@@ -113,6 +115,10 @@
     <color name="widget_picker_selected_tab_text_color_light">#FFFFFF</color>
     <color name="widget_picker_unselected_tab_text_color_light">#444746</color>
     <color name="widget_picker_collapse_handle_color_light">#C4C7C5</color>
+    <color name="widget_picker_add_button_background_color_light">#0B57D0</color>
+    <color name="widget_picker_add_button_text_color_light">#0B57D0</color>
+    <color name="widget_cell_title_color_light">@color/material_color_on_surface</color>
+    <color name="widget_cell_subtitle_color_light">@color/material_color_on_surface_variant</color>
 
     <color name="widget_picker_primary_surface_color_dark">#1F2020</color>
     <color name="widget_picker_secondary_surface_color_dark">#393939</color>
@@ -128,6 +134,10 @@
     <color name="widget_picker_selected_tab_text_color_dark">#2D312F</color>
     <color name="widget_picker_unselected_tab_text_color_dark">#C4C7C5</color>
     <color name="widget_picker_collapse_handle_color_dark">#444746</color>
+    <color name="widget_picker_add_button_background_color_dark">#062E6F</color>
+    <color name="widget_picker_add_button_text_color_dark">#FFFFFF</color>
+    <color name="widget_cell_title_color_dark">@color/material_color_on_surface</color>
+    <color name="widget_cell_subtitle_color_dark">@color/material_color_on_surface_variant</color>
 
     <color name="material_color_on_secondary_fixed_variant">#3F4759</color>
     <color name="material_color_on_tertiary_fixed_variant">#583E5B</color>

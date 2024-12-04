@@ -21,6 +21,7 @@
         android:layout_height="match_parent"
         android:gravity="start"
         android:layout_gravity="start"
+        android:clipChildren="false"
         android:layout_alignParentStart="true">
 
         <com.android.launcher3.widget.picker.WidgetsRecyclerView
@@ -45,24 +46,22 @@
                 android:background="?attr/widgetPickerPrimarySurfaceColor"
                 android:clipToPadding="false"
                 android:elevation="0.1dp"
-                android:paddingBottom="8dp"
+                android:paddingBottom="16dp"
                 android:paddingHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
                 launcher:layout_sticky="true">
 
                 <include layout="@layout/widgets_search_bar" />
             </FrameLayout>
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/suggestions_header"
-                android:layout_marginTop="8dp"
                 android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
                 android:paddingBottom="16dp"
-                android:orientation="horizontal"
                 android:background="?attr/widgetPickerPrimarySurfaceColor"
                 launcher:layout_sticky="true">
-            </LinearLayout>
+            </FrameLayout>
         </com.android.launcher3.views.StickyHeaderLayout>
     </FrameLayout>
 </merge>

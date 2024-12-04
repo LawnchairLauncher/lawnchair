@@ -22,7 +22,7 @@ data object Startpage : QsbSearchProvider(
 
         if (useWebSuggestions) {
             launcher.animateToAllApps()
-            launcher.appsView.searchUiManager.editText?.showKeyboard(true)
+            launcher.appsView.searchUiManager.editText?.showKeyboard()
         } else {
             super.launch(launcher, forceWebsite)
         }

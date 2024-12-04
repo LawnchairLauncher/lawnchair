@@ -1,148 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.0.0-dev" type="baseline" dependencies="true" variant="all" version="8.0.0-dev">
+<issues format="6" by="lint 8.4.0-alpha01" type="baseline" client="" dependencies="true" name="" variant="all" version="8.4.0-alpha01">
 
     <issue
         id="NewApi"
-        message="Call requires API level 28 (current min is 26): `android.app.Person#getKey`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/notification/NotificationKeyData.java"
-            line="72"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 29 (current min is 26): `android.content.res.Resources#getFloat`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/util/DynamicResource.java"
-            line="73"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 30 (current min is 26): `android.graphics.Outline#setPath`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/popup/RoundedArrowDrawable.java"
-            line="114"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 30 (current min is 26): `android.view.View#getWindowInsetsController`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/widget/picker/WidgetsFullSheet.java"
-            line="902"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 30 (current min is 26): `android.view.WindowInsets.Type#ime`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/widget/picker/WidgetsFullSheet.java"
-            line="902"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 30 (current min is 26): `android.view.WindowInsetsController#hide`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/widget/picker/WidgetsFullSheet.java"
-            line="902"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 31 (current min is 26): `android.appwidget.AppWidgetHostView#resetColorResources`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/widget/LauncherAppWidgetHostView.java"
-            line="114"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Call requires API level 31 (current min is 30): `android.appwidget.AppWidgetHostView#setColorResources`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/graphics/LauncherPreviewRenderer.java"
-            line="415"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Field requires API level 28 (current min is 26): `android.appwidget.AppWidgetProviderInfo#widgetFeatures`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/widget/WidgetAddFlowHandler.java"
-            line="93"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Field requires API level 29 (current min is 26): `android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction#ACTION_PAGE_LEFT`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/PagedView.java"
-            line="1814"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Field requires API level 29 (current min is 26): `android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction#ACTION_PAGE_LEFT`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/PagedView.java"
-            line="1824"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Field requires API level 29 (current min is 26): `android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction#ACTION_PAGE_RIGHT`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/PagedView.java"
-            line="1815"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Field requires API level 29 (current min is 26): `android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction#ACTION_PAGE_RIGHT`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/PagedView.java"
-            line="1823"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Method reference requires API level 28 (current min is 26): `Person::getKey`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/model/data/WorkspaceItemInfo.java"
-            line="195"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="Method reference requires API level 28 (current min is 26): `Person::getKey`">
-        <location
-            file="packages/apps/Launcher3/src/com/android/launcher3/notification/NotificationKeyData.java"
-            line="73"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="`?android:attr/dialogCornerRadius` requires API level 28 (current min is 26)">
-        <location
-            file="packages/apps/Launcher3/res/drawable/add_item_dialog_background.xml"
-            line="6"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="`?android:attr/dialogCornerRadius` requires API level 28 (current min is 26)">
-        <location
-            file="packages/apps/Launcher3/res/drawable/add_item_dialog_background.xml"
-            line="7"/>
-    </issue>
-
-    <issue
-        id="NewApi"
-        message="`@android:dimen/system_app_widget_background_radius` requires API level 31 (current min is 26)">
+        message="`@android:dimen/system_app_widget_background_radius` requires API level 31 (current min is 26)"
+        errorLine1='    &lt;corners android:radius="@android:dimen/system_app_widget_background_radius" /&gt;'
+        errorLine2="             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="packages/apps/Launcher3/res/drawable/widget_resize_frame.xml"
-            line="20"/>
+            line="20"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 31 (current min is 26): `android.appwidget.AppWidgetHostView#resetColorResources`"
+        errorLine1="            resetColorResources();"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/apps/Launcher3/src/com/android/launcher3/widget/LauncherAppWidgetHostView.java"
+            line="117"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="NewApi"
+        message="Call requires API level 31 (current min is 30): `android.appwidget.AppWidgetHostView#setColorResources`"
+        errorLine1="            view.setColorResources(mWallpaperColorResources);"
+        errorLine2="                 ~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/apps/Launcher3/src/com/android/launcher3/graphics/LauncherPreviewRenderer.java"
+            line="433"
+            column="18"/>
     </issue>
 
 </issues>

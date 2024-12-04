@@ -34,10 +34,12 @@ public class ActiveGestureErrorDetector {
     public enum GestureEvent {
         MOTION_DOWN, MOTION_UP, MOTION_MOVE, SET_END_TARGET, SET_END_TARGET_HOME,
         SET_END_TARGET_NEW_TASK, SET_END_TARGET_ALL_APPS, ON_SETTLED_ON_END_TARGET,
+        ON_START_RECENTS_ANIMATION, ON_FINISH_RECENTS_ANIMATION, ON_CANCEL_RECENTS_ANIMATION,
         START_RECENTS_ANIMATION, FINISH_RECENTS_ANIMATION, CANCEL_RECENTS_ANIMATION,
         SET_ON_PAGE_TRANSITION_END_CALLBACK, CANCEL_CURRENT_ANIMATION, CLEANUP_SCREENSHOT,
         SCROLLER_ANIMATION_ABORTED, TASK_APPEARED, EXPECTING_TASK_APPEARED,
-        FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER, LAUNCHER_DESTROYED,
+        FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER, LAUNCHER_DESTROYED, RECENT_TASKS_MISSING,
+        INVALID_VELOCITY_ON_SWIPE_UP, RECENTS_ANIMATION_START_PENDING,
 
         /**
          * These GestureEvents are specifically associated to state flags that get set in
@@ -65,16 +67,24 @@ public class ActiveGestureErrorDetector {
 
     private ActiveGestureErrorDetector() {}
 
+    private static final long ON_START_RECENT_ANIMATION_TIME_LIMIT = 500;
+
     protected static void analyseAndDump(
             @NonNull String prefix,
             @NonNull PrintWriter writer,
             @NonNull ActiveGestureLog.EventLog eventLog) {
         writer.println(prefix + "Error messages for gesture ID: " + eventLog.logId);
+        if (!eventLog.mIsFullyGesturalNavMode) {
+            writer.println(prefix
+                    + "\tSkipping gesture error detection because gesture navigation not enabled");
+            return;
+        }
 
         boolean errorDetected = false;
         // Use a Set since the order is inherently checked in the loop.
         final Set<GestureEvent> encounteredEvents = new ArraySet<>();
         // Set flags and check order of operations.
+        long lastStartRecentAnimationEventEntryTime = 0;
         for (ActiveGestureLog.EventEntry eventEntry : eventLog.eventEntries) {
             GestureEvent gestureEvent = eventEntry.getGestureEvent();
             if (gestureEvent == null) {
@@ -137,24 +147,15 @@ public class ActiveGestureErrorDetector {
                     break;
                 case TASK_APPEARED:
                     errorDetected |= printErrorIfTrue(
-                            !encounteredEvents.contains(GestureEvent.SET_END_TARGET_NEW_TASK),
-                            prefix,
-                            /* errorMessage= */ "onTasksAppeared called "
-                                    + "before/without setting end target to new task",
-                            writer);
-                    errorDetected |= printErrorIfTrue(
                             !encounteredEvents.contains(GestureEvent.EXPECTING_TASK_APPEARED),
                             prefix,
                             /* errorMessage= */ "onTasksAppeared was not expected to be called",
                             writer);
-                    break;
-                case EXPECTING_TASK_APPEARED:
-                    errorDetected |= printErrorIfTrue(
-                            !encounteredEvents.contains(GestureEvent.SET_END_TARGET_NEW_TASK),
-                            prefix,
-                            /* errorMessage= */ "expecting onTasksAppeared to be called "
-                                    + "before/without setting end target to new task",
-                            writer);
+                    if (encounteredEvents.contains(GestureEvent.EXPECTING_TASK_APPEARED)) {
+                        // Remove both events so that we can properly detect following errors.
+                        encounteredEvents.remove(GestureEvent.EXPECTING_TASK_APPEARED);
+                        encounteredEvents.remove(GestureEvent.TASK_APPEARED);
+                    }
                     break;
                 case LAUNCHER_DESTROYED:
                     errorDetected |= printErrorIfTrue(
@@ -218,12 +219,75 @@ public class ActiveGestureErrorDetector {
                                     + "set before/without startRecentsAnimation.",
                             writer);
                     break;
+                case RECENT_TASKS_MISSING:
+                    errorDetected |= printErrorIfTrue(
+                            true,
+                            prefix,
+                            /* errorMessage= */ "SystemUiProxy.mRecentTasks missing,"
+                                    + " couldn't start the recents activity",
+                            writer);
+                    break;
+                case ON_START_RECENTS_ANIMATION:
+                    errorDetected |= printErrorIfTrue(
+                            !encounteredEvents.contains(GestureEvent.START_RECENTS_ANIMATION),
+                            prefix,
+                            /* errorMessage= */ "ON_START_RECENTS_ANIMATION "
+                                    + "onAnimationStart callback ran before startRecentsAnimation",
+                            writer);
+                    errorDetected |= printErrorIfTrue(
+                            eventEntry.getTime() - lastStartRecentAnimationEventEntryTime
+                                    > ON_START_RECENT_ANIMATION_TIME_LIMIT,
+                            prefix,
+                            /* errorMessage= */"ON_START_RECENTS_ANIMATION "
+                                    + "startRecentsAnimation was never called or onAnimationStart "
+                                    + "callback was called more than 500 ms after "
+                                    + "startRecentsAnimation.",
+                            writer);
+                    lastStartRecentAnimationEventEntryTime = 0;
+                    break;
+                case ON_CANCEL_RECENTS_ANIMATION:
+                    errorDetected |= printErrorIfTrue(
+                            !encounteredEvents.contains(GestureEvent.ON_START_RECENTS_ANIMATION),
+                            prefix,
+                            /* errorMessage= */ "ON_CANCEL_RECENTS_ANIMATION "
+                                    + "onAnimationCanceled callback ran before onAnimationStart "
+                                    + "callback",
+                            writer);
+                    break;
+                case ON_FINISH_RECENTS_ANIMATION:
+                    errorDetected |= printErrorIfTrue(
+                            !encounteredEvents.contains(GestureEvent.ON_START_RECENTS_ANIMATION),
+                            prefix,
+                            /* errorMessage= */ "ON_FINISH_RECENTS_ANIMATION "
+                                    + "onAnimationFinished callback ran before onAnimationStart "
+                                    + "callback",
+                            writer);
+                    break;
+                case INVALID_VELOCITY_ON_SWIPE_UP:
+                    errorDetected |= printErrorIfTrue(
+                            true,
+                            prefix,
+                            /* errorMessage= */ "invalid velocity on swipe up gesture.",
+                            writer);
+                    break;
+                case START_RECENTS_ANIMATION:
+                    lastStartRecentAnimationEventEntryTime = eventEntry.getTime();
+                    break;
+                case RECENTS_ANIMATION_START_PENDING:
+                    errorDetected |= printErrorIfTrue(
+                            true,
+                            prefix,
+                            /* errorMessage= */ (eventEntry.getDuplicateCount() + 1)
+                                    + " gesture(s) attempted while a requested recents"
+                                    + " animation is still pending.",
+                            writer);
+                    break;
+                case EXPECTING_TASK_APPEARED:
                 case MOTION_DOWN:
                 case SET_END_TARGET:
                 case SET_END_TARGET_HOME:
                 case SET_END_TARGET_ALL_APPS:
                 case SET_END_TARGET_NEW_TASK:
-                case START_RECENTS_ANIMATION:
                 case SET_ON_PAGE_TRANSITION_END_CALLBACK:
                 case CANCEL_CURRENT_ANIMATION:
                 case FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER:
@@ -347,6 +411,30 @@ public class ActiveGestureErrorDetector {
                         && !encounteredEvents.contains(GestureEvent.TASK_APPEARED),
                 prefix,
                 /* errorMessage= */ "onTaskAppeared was expected to be called but wasn't.",
+                writer);
+
+        errorDetected |= printErrorIfTrue(
+                /* condition= */ encounteredEvents.contains(GestureEvent.START_RECENTS_ANIMATION)
+                        && !encounteredEvents.contains(GestureEvent.ON_START_RECENTS_ANIMATION),
+                prefix,
+                /* errorMessage= */
+                "startRecentAnimation was called but onAnimationStart callback was not",
+                writer);
+        errorDetected |= printErrorIfTrue(
+                /* condition= */
+                encounteredEvents.contains(GestureEvent.FINISH_RECENTS_ANIMATION)
+                        && !encounteredEvents.contains(GestureEvent.ON_FINISH_RECENTS_ANIMATION),
+                prefix,
+                /* errorMessage= */
+                "finishController was called but onAnimationFinished callback was not",
+                writer);
+        errorDetected |= printErrorIfTrue(
+                /* condition= */
+                encounteredEvents.contains(GestureEvent.CANCEL_RECENTS_ANIMATION)
+                        && !encounteredEvents.contains(GestureEvent.ON_CANCEL_RECENTS_ANIMATION),
+                prefix,
+                /* errorMessage= */
+                "onRecentsAnimationCanceled was called but onAnimationCanceled was not",
                 writer);
 
         if (!errorDetected) {

@@ -27,7 +27,7 @@ import android.view.View;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -75,7 +75,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         }
 
         return (info instanceof LauncherAppWidgetInfo)
-                || (info instanceof FolderInfo);
+                || (info instanceof CollectionInfo);
     }
 
     @Override

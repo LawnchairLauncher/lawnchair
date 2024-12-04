@@ -48,7 +48,10 @@ class CellContentDimensions(
             cellContentHeight = getCellContentHeight()
 
             // Step 3. Decrease label size
-            if (cellContentHeight > cellHeightPx) {
+            if (
+                cellContentHeight > cellHeightPx &&
+                    iconTextSizePx > iconSizeSteps.minimumIconLabelSize
+            ) {
                 iconTextSizePx =
                     max(
                         iconSizeSteps.minimumIconLabelSize,
@@ -56,6 +59,17 @@ class CellContentDimensions(
                     )
                 cellContentHeight = getCellContentHeight()
             }
+        }
+
+        // For some cases, depending on the display size, the content might not fit inside the
+        // cell height after considering the minimum icon and label size allowed.
+        // For these extreme cases, we will allow the icon size to be smaller than
+        // [IconSizeSteps.minimumIconSize] to fit inside the cell height without cropping.
+        while (
+            cellContentHeight > cellHeightPx && iconSizePx > IconSizeSteps.ICON_SIZE_STEP_EXTRA
+        ) {
+            iconSizePx -= IconSizeSteps.ICON_SIZE_STEP_EXTRA
+            cellContentHeight = getCellContentHeight()
         }
 
         return cellContentHeight

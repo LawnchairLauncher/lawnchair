@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import android.graphics.Rect;
+
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
@@ -57,5 +59,8 @@ public class Folder {
             mLauncher.waitUntilLauncherObjectGone(FOLDER_CONTENT_RES_ID);
             return mLauncher.getWorkspace();
         }
+    }
+    Rect getDropLocationBounds() {
+        return mLauncher.getVisibleBounds(mContainer);
     }
 }

@@ -30,13 +30,15 @@ import com.android.launcher3.views.ActivityContext;
  * Provides views for local search results.
  */
 public class DefaultSearchAdapterProvider extends SearchAdapterProvider<ActivityContext> {
-
-    private final RecyclerView.ItemDecoration mDecoration;
     private View mHighlightedView;
 
     public DefaultSearchAdapterProvider(ActivityContext launcher) {
         super(launcher);
-        mDecoration = new RecyclerView.ItemDecoration() { };
+    }
+
+    @Override
+    public RecyclerView.ItemDecoration getDecorator() {
+        return null;
     }
 
     @Override
@@ -71,11 +73,6 @@ public class DefaultSearchAdapterProvider extends SearchAdapterProvider<Activity
     @Override
     public View getHighlightedItem() {
         return mHighlightedView;
-    }
-
-    @Override
-    public RecyclerView.ItemDecoration getDecorator() {
-        return mDecoration;
     }
 
     @Override

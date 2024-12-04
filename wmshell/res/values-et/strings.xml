@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Sule"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Laiendamine"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Seaded"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Menüü"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Menüü Pilt pildis"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> on režiimis Pilt pildis"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Kui te ei soovi, et rakendus <xliff:g id="NAME">%s</xliff:g> seda funktsiooni kasutaks, puudutage seadete avamiseks ja lülitage see välja."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Esita"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Peata"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Järgmise juurde"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Eelmise juurde"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Suuruse muutmine"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Pane hoidlasse"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Eemalda hoidlast"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Rakendus ei pruugi jagatud ekraanikuvaga töötada."</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Rakendus ei toeta jagatud ekraanikuva."</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Selle rakenduse saab avada ainult ühes aknas"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Rakendus ei pruugi teisesel ekraanil töötada."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Rakendus ei toeta teisestel ekraanidel käivitamist."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Jagatud ekraanikuva jaotur"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Jagatud ekraanikuva jaotur"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Vasak täisekraan"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Vasak: 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Vasak: 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Vasak: 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Parem täisekraan"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Ülemine täisekraan"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Ülemine: 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Ülemine: 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Ülemine: 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Alumine täisekraan"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Jaga vasakule"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Jaga paremale"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Jaga üles"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Jaga alla"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Ühekäerežiimi kasutamine"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Väljumiseks pühkige ekraani alaosast üles või puudutage rakenduse kohal olevat ala"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Ühekäerežiimi käivitamine"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Ühekäerežiimist väljumine"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Rakenduse <xliff:g id="APP_NAME">%1$s</xliff:g> mullide seaded"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Ületäide"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Lisa tagasi virna"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> rakendusest <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> rakenduselt <xliff:g id="APP_NAME">%2$s</xliff:g> ja veel <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Teisalda üles vasakule"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Teisalda üles paremale"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Teisalda alla vasakule"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Teisalda alla paremale"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"laienda <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"ahenda <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"Rakenduse <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> seaded"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Sule mull"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Ära kuva vestlust mullina"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Vestelge mullide abil"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Uued vestlused kuvatakse hõljuvate ikoonidena ehk mullidena. Puudutage mulli avamiseks. Lohistage mulli, et seda liigutada."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Juhtige mulle igal ajal"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Selle rakenduse puhul mullide väljalülitamiseks puudutage valikut Halda"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Selge"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Hiljutisi mulle pole"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Siin kuvatakse hiljutised ja suletud mullid."</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Vestelge mullide abil"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Uued vestlused kuvatakse ekraanikuva alanurgas ikoonidena. Puudutage nende laiendamiseks või lohistage neist loobumiseks."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Juhtige mulle igal ajal"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Puudutage siin, et hallata, milliseid rakendusi ja vestlusi saab mullina kuvada"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Mull"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Halda"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Mullist loobuti."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Mullid"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Kuva mullid"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Puudutage, et see rakendus parema vaate jaoks taaskäivitada"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Muutke selle rakenduse kuvasuhet jaotises Seaded"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Muutke kuvasuhet"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Kas teil on kaameraprobleeme?\nPuudutage ümberpaigutamiseks."</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Kas probleemi ei lahendatud?\nPuudutage ennistamiseks."</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Kas kaameraprobleeme pole? Puudutage loobumiseks."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Vaadake ja tehke rohkem"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Lohistage muusse rakendusse, et jagatud ekraanikuva kasutada"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Topeltpuudutage rakendusest väljaspool, et selle asendit muuta"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"Selge"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Laiendage lisateabe saamiseks."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Kas taaskäivitada parema vaate saavutamiseks?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Saate rakenduse taaskäivitada, et see näeks ekraanikuval parem välja, kuid võite kaotada edenemise või salvestamata muudatused."</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Tühista"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Taaskäivita"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Ära kuva uuesti"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Rakenduse teisaldamiseks\ntopeltpuudutage"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Maksimeeri"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Minimeeri"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Sule"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Tagasi"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Käepide"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Rakenduse ikoon"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Täisekraan"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Lauaarvuti režiim"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Jagatud ekraanikuva"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Rohkem"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Hõljuv"</string>
+    <string name="select_text" msgid="5139083974039906583">"Vali"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Ekraanipilt"</string>
+    <string name="close_text" msgid="4986518933445178928">"Sule"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Sule menüü"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Ava menüü"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Kuva täisekraanil"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Kuva poolel ekraanil"</string>
+</resources>

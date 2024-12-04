@@ -23,11 +23,13 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.font.FontCache
 import app.lawnchair.util.isOnePlusStock
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 
-class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context) {
+class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context), SafeCloseable {
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
     private val reloadIcons = { idp.onPreferencesChanged(context) }
     private val reloadGrid: () -> Unit = { idp.onPreferencesChanged(context) }
@@ -48,7 +50,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val workspaceColumns = IntPref("pref_workspaceColumns", 4)
     val workspaceRows = IntPref("pref_workspaceRows", 5)
     val workspaceIncreaseMaxGridSize = BoolPref("pref_workspace_increase_max_grid_size", false)
-    val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
+    val folderRows = IdpIntPref("pref_folderRows", { numFolderRows[INDEX_DEFAULT] }, reloadGrid)
 
     val drawerOpacity = FloatPref("pref_drawerOpacity", 1F, recreate)
     val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 0.9F, recreate)
@@ -110,6 +112,10 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val recentsActionLocked = BoolPref("pref_lockedAsAction", false)
     val recentsTranslucentBackground = BoolPref("pref_recentsTranslucentBackground", false, recreate)
     val recentsTranslucentBackgroundAlpha = FloatPref("pref_recentTranslucentBackgroundAlpha", .8f, recreate)
+
+    override fun close() {
+        TODO("Not yet implemented")
+    }
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

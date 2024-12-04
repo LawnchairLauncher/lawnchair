@@ -14,7 +14,7 @@
     <string name="assistant_not_selected_text" msgid="3244613673884359276">"برای گوش کردن به نوشتار در صفحه‌نمایش‌تان یا ترجمه کردن آن، یکی از برنامه‌های دستیار دیجیتالی را در «تنظیمات» انتخاب کنید"</string>
     <string name="assistant_not_supported_title" msgid="1675788067597484142">"برای استفاده از این ویژگی، دستیارتان را تغییر دهید"</string>
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"برای گوش کردن به نوشتار در صفحه‌نمایش‌تان یا ترجمه کردن آن، برنامه دستیار دیجیتالی‌تان را در «تنظیمات» تغییر دهید"</string>
-    <string name="tooltip_listen" msgid="7634466447860989102">"برای گوش کردن به نوشتار در این صفحه، اینجا ضربه بزنید"</string>
-    <string name="tooltip_translate" msgid="4184845868901542567">"برای ترجمه نوشتار در این صفحه، اینجا ضربه بزنید"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"برای گوش کردن به نوشتار در این صفحه، اینجا تک‌ضرب بزنید"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"برای ترجمه نوشتار در این صفحه، اینجا تک‌ضرب بزنید"</string>
     <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"نمی‌توان این برنامه را هم‌رسانی کرد"</string>
 </resources>

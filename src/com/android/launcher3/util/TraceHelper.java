@@ -22,9 +22,9 @@ import androidx.annotation.MainThread;
 
 import com.android.launcher3.Utilities;
 
-import java.util.function.Supplier;
-
 import kotlin.random.Random;
+
+import java.util.function.Supplier;
 
 /**
  * A wrapper around {@link Trace} to allow better testing.
@@ -67,9 +67,6 @@ public class TraceHelper {
     @SuppressWarnings("NewApi")
     @SuppressLint("NewApi")
     public SafeCloseable beginAsyncSection(String sectionName) {
-        if (!Utilities.ATLEAST_Q) {
-            return () -> { };
-        }
         int cookie = Random.Default.nextInt();
         Trace.beginAsyncSection(sectionName, cookie);
         return () -> Trace.endAsyncSection(sectionName, cookie);
@@ -81,12 +78,12 @@ public class TraceHelper {
     @SuppressWarnings("NewApi")
     @SuppressLint("NewApi")
     public SafeCloseable allowIpcs(String rpcName) {
-        if (!Utilities.ATLEAST_Q) {
-            return () -> { };
-        }
         int cookie = Random.Default.nextInt();
-        Trace.beginAsyncSection(rpcName, cookie);
-        return () -> Trace.endAsyncSection(rpcName, cookie);
+        if (Utilities.ATLEAST_Q) {
+            Trace.beginAsyncSection(rpcName, cookie);
+            return () -> Trace.endAsyncSection(rpcName, cookie);
+        }
+        return () -> {};
     }
 
     /**

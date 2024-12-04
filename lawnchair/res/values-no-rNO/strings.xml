@@ -29,19 +29,19 @@
     <string name="action_reset">Nullstill</string>
     <string name="action_unlock">Lås opp</string>
     <string name="action_lock">Lås</string>
-    <string name="action_apply">Apply</string>
-    <string name="action_customize">Customize</string>
+    <string name="action_apply">Bruk</string>
+    <string name="action_customize">Tilpass</string>
     <string name="always_choice">Alltid</string>
     <string name="never_choice">Aldri</string>
-    <string name="clipboard">Clipboard</string>
+    <string name="clipboard">Utklippstavle</string>
     <string name="action_copy_link">Kopier lenke</string>
     <string name="action_copy">Kopier</string>
     <string name="action_paste">Lim inn</string>
     <string name="loading">Laster…</string>
-    <string name="managed_by_lawnchair">Managed by Lawnchair</string>
+    <string name="managed_by_lawnchair">Styrt av Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferanser</string>
-    <string name="settings_button_text">Home settings</string>
+    <string name="settings_button_text">Hjem-innstillinger</string>
     <string name="system_settings">Systeminnstillinger</string>
     <string name="title_change_settings">Endre innstillinger</string>
     <!--
@@ -51,14 +51,14 @@
     -->
     <!-- Selection options -->
     <string name="dynamic">Dynamisk</string>
-    <string name="presets">Presets</string>
-    <string name="custom">Custom</string>
+    <string name="presets">Forhåndsinstillinger</string>
+    <string name="custom">Tilpasset</string>
     <string name="feed_default">Standard</string>
     <string name="system">System</string>
     <!-- Relating to the Launcher ui -->
     <string name="columns">Kolonner</string>
     <string name="rows">Rader</string>
-    <string name="label">Label</string>
+    <string name="label">Etikett</string>
     <string name="icons">Ikoner</string>
     <string name="grid">Rutenett</string>
     <string name="layout">Oppsett</string>
@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Hva som skal vises</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">For å låse telefonen når du gjør en bevegelse</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -81,50 +81,50 @@
     -->
     <string name="settings">Innstillinger</string>
     <string name="general_label">Generelt</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
+    <string name="general_description">Farger, ikonpakker, prikker for varsling</string>
     <string name="home_screen_label">Hjemmeskjerm</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="home_screen_description">Feed, rutenett, ikoner</string>
     <string name="dock_label">Bunnlinjen</string>
-    <string name="dock_description">Search bar, icon count</string>
+    <string name="dock_description">Søkefelt, antall ikoner</string>
     <string name="app_drawer_label">Appskuff</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="app_drawer_description">Skulte apper, antall kolonner, ikoner</string>
+    <string name="drawer_search_label">Skuffsøk</string>
+    <string name="drawer_search_description">Web forslag, globalt søk</string>
     <string name="folders_label">Mapper</string>
-    <string name="folders_description">Row and column count</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gestures_description">Taps and swipes</string>
+    <string name="folders_description">Rad og kolonneantall</string>
+    <string name="gestures_label">Bevegelser</string>
+    <string name="gestures_description">Tapping og sveiping</string>
     <string name="quickstep_label">Nylige</string>
-    <string name="quickstep_description">Clear All button, corner radius</string>
+    <string name="quickstep_description">Fjern alt knapp, hjørneradius</string>
     <string name="about_label">Om</string>
     <string name="app_info_drop_target_label">App info</string>
     <string name="debug_restart_launcher">Omstart av Lawnchair</string>
     <string name="experimental_features_label">Eksperimentelle funksjoner</string>
     <!-- Experimental features -->
     <string name="font_picker_label">Endre font</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
+    <string name="font_picker_description">Noe tekst er uforandret</string>
+    <string name="smartspace_calendar_label">Hurtig overblikkskalender tilpassing</string>
+    <string name="smartspace_calendar_description">Tillat å vis dato i ikke Gregoriansk kalender systemer</string>
+    <string name="workspace_increase_max_grid_size_label">Endre på maksimal størrelse på rutenett</string>
+    <string name="workspace_increase_max_grid_size_description">Øk maks antall ruter på hjemmeskjerm fra 10 x 10 til 20 x 20</string>
+    <string name="always_reload_icons_label">Alltid last ikoner på nytt</string>
+    <string name="always_reload_icons_description">Unngå å bruk buffrede ikoner fra ikonpakker</string>
     <string name="recents_lock_unlock">Lås/lås opp</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <string name="recents_lock_unlock_description">Forhindre at valgt app lukker seg når man trykker \"Tøm alle\"</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
-    <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
-    <string name="notification_dots_text_color">Notification counter color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
-    <string name="missing_notification_access_label">Notification access needed</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="set_default_launcher_tip">For å få tilgang til snarveier og ytterligere funksjoner sett Lawnchair som standard appvelger</string>
+    <string name="notification_dots">Prikker for varsling</string>
+    <string name="show_notification_count">Vis antall varsler</string>
+    <string name="notification_dots_color">Farge for varselprikk</string>
+    <string name="notification_dots_text_color">Farge for varselteller</string>
+    <string name="notification_dots_color_contrast_warning_always">Advarsel: Varselprikk og teller har ikke nok kontrast mot hverandre</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Advarsel: Varselprikk og teller har kanskje ikke nok kontrast mot hverandre</string>
+    <string name="missing_notification_access_label">Trenger tilgang til varsler</string>
+    <string name="missing_notification_access_desc">For å vise Prikker for varsling, slå på appvarsling for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -134,25 +134,25 @@
     <string name="icon_style_label">Ikonstil</string>
     <string name="icon_shape_label">Ikonform</string>
     <string name="icon_sizes">Ikonstørrelse</string>
-    <string name="show_labels">Show labels</string>
-    <string name="label_size">Label size</string>
+    <string name="show_labels">Vis etiketter</string>
+    <string name="label_size">Etikettstørrelse</string>
     <string name="twoline_label">Bruk flere linjer</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent themed icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
-    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
-    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
-    <string name="background_lightness_label">Background lightness</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
-    <string name="reset_custom_icons">Reset custom icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+    <string name="transparent_background_icons_label">Gjennomsiktige temaikoner</string>
+    <string name="transparent_background_icons_description">Bruk gjennomsiktig bakgrunn på temaikoner</string>
+    <string name="auto_adaptive_icons_label">Automatisk adaptive ikoner</string>
+    <string name="auto_adaptive_icons_description">For alle ikke-adaptive ikoner</string>
+    <string name="shadow_bg_icons_label">Vis skygge bak ikoner</string>
+    <string name="background_lightness_label">Lysere bakgrunn</string>
+    <string name="adaptive_icon_background_description">Bruk 100% lysere bakgrunn som hvit</string>
+    <string name="reset_custom_icons">Tilbakestill egendefinerte ikoner</string>
+    <string name="reset_custom_icons_confirmation">Egendefinerte ikoner til bli tilkabestilt. Vil du fortsette?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Ikoner</string>
-    <string name="icon_picker_reset_to_default">Reset to default</string>
-    <string name="icon_pack_external_picker">Open external picker</string>
-    <string name="pick_icon_from_label">Pick icon from</string>
-    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="icon_picker_reset_to_default">Tilbakestill til standard</string>
+    <string name="icon_pack_external_picker">Åpne ekstern velger</string>
+    <string name="pick_icon_from_label">Plukk ikon fra</string>
+    <string name="icon_picker_load_failed">Kunne ikke laste flere ikoner</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">System</string>
     <string name="icon_shape_circle">Sirkel</string>
@@ -163,16 +163,16 @@
     <string name="icon_shape_octagon">Oktagon</string>
     <string name="icon_shape_hexagon">Heksagon</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="icon_shape_sharp_square">Sharp square</string>
+    <string name="icon_shape_rounded_square">Avrundet firkant</string>
+    <string name="icon_shape_sharp_square">Skarp firkant</string>
     <string name="icon_shape_square">Firkant</string>
     <string name="icon_shape_squircle">Sirkel</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_teardrop">Tåreform</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Custom icon shape</string>
-    <string name="custom_icon_shape_create">Create custom icon shape</string>
-    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
-    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape">Tilpasset ikonform</string>
+    <string name="custom_icon_shape_create">Lag tilpasset ikonform</string>
+    <string name="custom_icon_shape_edit">Rediger tilpasset ikonform</string>
+    <string name="custom_icon_shape_corner">Hjørneform</string>
     <string name="custom_icon_shape_corner_round">Rund</string>
     <string name="custom_icon_shape_corner_squircle">Jevn</string>
     <string name="custom_icon_shape_corner_cut">Kutt</string>
@@ -182,29 +182,29 @@
     <string name="custom_icon_shape_bottom_right">Bunn høyere</string>
     <string name="export_to_clipboard">Eksporter til utklippstavle</string>
     <string name="import_from_clipboard">Importer fra utklippstavle</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <string name="icon_shape_clipboard_import_error">Utklippstavle inneholder ikke en gyldig ikonform</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Ikonpakke</string>
-    <string name="themed_icon_pack">Themed icon source</string>
+    <string name="themed_icon_pack">Ikonkilde med tema</string>
     <string name="system_icons">Systemikoner</string>
-    <string name="themed_icon_title">Themed icons</string>
+    <string name="themed_icon_title">Ikoner med tema</string>
     <string name="themed_icons_off_label">Av</string>
     <string name="themed_icons_home_label">Hjemmeskjerm</string>
     <string name="themed_icons_home_and_drawer_label">Hjemmeskjerm &amp; appskuff</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="lawnicons_not_installed_description">Ikke støttet ikonpakke</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Legg til skrifttype</string>
-    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
-    <string name="font_label">Font (experimental)</string>
+    <string name="pref_fonts_add_fonts_summary">OTF og TTF skrifttyper er støttet</string>
+    <string name="pref_fonts_missing_font">Skrifttype ikke funnet</string>
+    <string name="font_label">Skrifttype (eksperimentiell)</string>
     <string name="fontWorkspace">Generelt</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (medium)</string>
-    <string name="font_variant_italic">Italic</string>
+    <string name="fontHeading">Overskrifter</string>
+    <string name="fontHeadingMedium">Overskrifter (medium)</string>
+    <string name="fontBody">Brødtekst</string>
+    <string name="fontBodyMedium">Brødtekst (middels)</string>
+    <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Tynn</string>
-    <string name="font_weight_extra_light">Extra light</string>
+    <string name="font_weight_extra_light">Ekstra lett</string>
     <string name="font_weight_light">Lyst</string>
     <string name="font_weight_regular">Vanlig</string>
     <string name="font_weight_medium">Medium</string>
@@ -222,31 +222,31 @@
     <string name="theme_light">Lyst</string>
     <string name="theme_dark">Mørkt</string>
     <string name="theme_system_default">System</string>
-    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <string name="theme_follow_wallpaper">Følg bakgrunn</string>
     <!-- Color style -->
-    <string name="color_style_label">Color style</string>
+    <string name="color_style_label">Fargestil</string>
     <string name="color_style_spritz">Spritz</string>
-    <string name="color_style_tonal_spot">Tonal Spot</string>
-    <string name="color_style_vibrant">Vibrant</string>
-    <string name="color_style_expressive">Expressive</string>
-    <string name="color_style_rainbow">Rainbow</string>
-    <string name="color_style_fruit_salad">Fruit Salad</string>
-    <string name="color_style_content">Content</string>
-    <string name="color_style_monochromatic">Monochromatic</string>
+    <string name="color_style_tonal_spot">Tonepunkt</string>
+    <string name="color_style_vibrant">Pulserende</string>
+    <string name="color_style_expressive">Uttrykksfull</string>
+    <string name="color_style_rainbow">Regnbue</string>
+    <string name="color_style_fruit_salad">Fruktsalat</string>
+    <string name="color_style_content">Innehold</string>
+    <string name="color_style_monochromatic">Monokromatisk </string>
     <!-- Accent color and color picker -->
     <string name="colors">Farger</string>
-    <string name="accent_color">Accent color</string>
-    <string name="swatches">Swatches</string>
+    <string name="accent_color">Aksentfarge</string>
+    <string name="swatches">Fargeprøver</string>
     <string name="rgb">RGB</string>
-    <string name="rgb_red">Red</string>
-    <string name="rgb_green">Green</string>
+    <string name="rgb_red">Rød</string>
+    <string name="rgb_green">Grønn</string>
     <string name="rgb_blue">Blå</string>
     <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
+    <string name="hsb_hue">Farge</string>
+    <string name="hsb_saturation">Metning</string>
+    <string name="hsb_brightness">Lysstyrke</string>
     <string name="hex">Hex</string>
-    <string name="color_sliders">Sliders</string>
+    <string name="color_sliders">Glidebrytere</string>
     <string name="invalid_color">Feil farge</string>
     <!--
 
@@ -262,8 +262,8 @@
     <string name="smartspace_battery_full">Ladet</string>
     <string name="smartspace_battery_low">Lavt batteri</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Fullt i løpet av %2$s"</string>
-    <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">What to show</string>
+    <string name="smartspace_widget">Hurtig overblikk</string>
+    <string name="smartspace_widget_description">Hva som skal vises</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalender</string>
     <string name="smartspace_date_and_time">Dato &amp; tid</string>
@@ -278,23 +278,23 @@
     <string name="smartspace_battery_status">Batteristatus</string>
     <string name="smartspace_now_playing">Spilles nå</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="maximum_number_of_targets">Maksimalt antall mål</string>
+    <string name="open_smartspacer_settings">Åpne Smartspacer instillinger</string>
+    <string name="smartspacer_settings">Smartspacer instillinger</string>
     <!-- Setup settings -->
-    <string name="smartspace_requires_setup">Tap to set up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
+    <string name="smartspace_requires_setup">Trykk for å sette opp</string>
+    <string name="event_provider_missing_notification_dots">For å bruke <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, slå på Prikker for varsling. </string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Vis på hjemmeskjerm</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">Hurtig overblikk kan manuelt legges til hjemskjerm ved å placere Lawnchair widgeten</string>
     <!-- List of available providers -->
-    <string name="smartspace_mode_label">At a Glance provider</string>
+    <string name="smartspace_mode_label">Hurtig overblikkstilbyder</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google søk</string>
     <!-- Miscellaneous Smartspace strings -->
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="accessibility_smartspace_page">Side %1$d av %2$d</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
+    <string name="smartspace_widget_placeholder_date">Fredag, 3. Mars</string>
     <!--
 
     About the app
@@ -303,9 +303,9 @@
     <string name="news">Nyheter</string>
     <string name="support">Brukerstøtte</string>
     <string name="product">Produkt</string>
-    <string name="design_and_development">Design &amp; development</string>
+    <string name="design_and_development">Design &amp; utvikling</string>
     <string name="development">Utvikling</string>
-    <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
+    <string name="quickswitch_maintenance">QuickSwitch vedlikehold</string>
     <string name="devops">Utvikler</string>
     <string name="support_and_pr">Brukerstøtte &amp; PR</string>
     <string name="acknowledgements">Anerkjennelser</string>
@@ -318,227 +318,227 @@
     -->
     <string name="create_backup">Lag sikkerhetskopi</string>
     <string name="what_to_backup">Hva som skal kopieres</string>
-    <string name="backup_content_layout_and_settings">Layout and settings</string>
+    <string name="backup_content_layout_and_settings">Utseende og innstillinger</string>
     <string name="backup_content_wallpaper">Bakgrunn</string>
     <string name="backup_create_success">Sikkerhetskopi er opprettet</string>
     <string name="backup_create_error">Klarte ikke å lage sikkerhetskopi</string>
-    <string name="restore_backup">Restore backup</string>
-    <string name="what_to_restore">What to restore</string>
-    <string name="backup_restore_success">Backup restored</string>
-    <string name="backup_restore_error">Failed to restore backup</string>
-    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="restore_backup">Gjenopprett sikkerhetskopi</string>
+    <string name="what_to_restore">Hva som skal gjenopprettes</string>
+    <string name="backup_restore_success">Sikkerhetskopi gjenopprettet</string>
+    <string name="backup_restore_error">Kunne ikke gjenopprette sikkerhetskopi</string>
+    <string name="invalid_backup_file">Ugyldig sikkerhetskopi</string>
     <!--
 
     Gesture settings
 
     -->
-    <string name="gesture_double_tap">Double tap</string>
-    <string name="gesture_swipe_up">Swipe up</string>
-    <string name="gesture_swipe_down">Swipe down</string>
-    <string name="gesture_home_tap">Home button</string>
-    <string name="gesture_back_tap">Back button</string>
-    <string name="gesture_handler_no_op">Do nothing</string>
-    <string name="gesture_handler_sleep">Sleep</string>
-    <string name="gesture_handler_recents">Open Recents</string>
-    <string name="gesture_handler_open_notifications">Open notification panel</string>
-    <string name="gesture_handler_open_app_option">Open app</string>
-    <string name="gesture_handler_open_app_config">Open %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Open app drawer</string>
-    <string name="gesture_handler_open_app_search">Open app search</string>
-    <string name="gesture_handler_open_search">Open search</string>
-    <string name="pick_app_for_gesture">Pick app</string>
-    <string name="dt2s_admin_hint_title">Admin permissions required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="gesture_double_tap">Dobbelttrykk</string>
+    <string name="gesture_swipe_up">Sveip opp</string>
+    <string name="gesture_swipe_down">Sveip ned</string>
+    <string name="gesture_home_tap">Hjemknapp</string>
+    <string name="gesture_back_tap">Tilbaketast</string>
+    <string name="gesture_handler_no_op">Gjør ingenting</string>
+    <string name="gesture_handler_sleep">Sov</string>
+    <string name="gesture_handler_recents">Åpne nylige</string>
+    <string name="gesture_handler_open_notifications">Åpne varslingspanel</string>
+    <string name="gesture_handler_open_app_option">Åpne app</string>
+    <string name="gesture_handler_open_app_config">Åpne %1$s</string>
+    <string name="gesture_handler_open_app_drawer">Åpne appskuff</string>
+    <string name="gesture_handler_open_app_search">Åpne søkeapp</string>
+    <string name="gesture_handler_open_search">Åpne søk</string>
+    <string name="pick_app_for_gesture">Velg app</string>
+    <string name="dt2s_admin_hint_title">Administratortilgang er nødvendig</string>
+    <string name="dt2s_admin_hint">For å bruke dobbelt-tapping for å sove, sett Lawnchair som enhetsadministrator app. Trykk på \"åpne instillinger\", trykk på \"Aktiver denne app som enhetsadministrator\"</string>
     <string name="dt2s_admin_warning">Dobbeltrykk for å slukke vil bli slått av.</string>
-    <string name="d2ts_recents_a11y_hint_title">Turn on accessibility service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_recents_warning_open_settings">Open settings</string>
-    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="d2ts_recents_a11y_hint_title">Slå på tilgjengelighetsservice</string>
+    <string name="dt2s_a11y_hint">For å bruke dobbelt-tapping for å sove, slå på tilgjengelighetstjenesten for Lawnchair. Trykk på \"Åpne innstillinger\", velg \"Lawnchair\" og slå på \"Bruk Lawnchair.\" \n\nLawnchair bruker tilgjengelighets \'performGlobalAction\'-metode for å utføre denne handlingen. Dette er en sensitiv tillatelse som gjør det mulig å overvåke andre apper. Lawnchair er imidlertid ikke konfigurert for denne funksjonaliteten og mottar ingen hendelser.</string>
+    <string name="dt2s_recents_warning_open_settings">Åpne instillinger</string>
+    <string name="recents_a11y_hint">For å bruke Åpne nylige, slå på tilgjengelighetstjenesten Lawnchair. Trykk på \"Åpne innstillinger\", velg \"Lawnchair\" og slå på \"Bruk Lawnchair.\" \n\nLawnchair bruker tilgjengelighets \'performGlobalAction\'-metode for å utføre denne handlingen. Dette er en sensitiv tillatelse som gjør det mulig å overvåke andre apper. Lawnchair er imidlertid ikke konfigurert for denne funksjonaliteten og mottar ingen hendelser.</string>
     <!--
 
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Lawnchair bug report</string>
-    <string name="crash_report_notif_title">%1$s crashed</string>
-    <string name="action_upload_crash_report">Upload crash log</string>
-    <string name="action_upload_error">Upload failed</string>
-    <string name="dogbin_uploading">Uploading…</string>
-    <string name="bugreport_channel_name">Bug reports</string>
-    <string name="status_channel_name">Upload status</string>
-    <string name="bugreport_group_summary">%d new reports</string>
-    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
+    <string name="lawnchair_bug_report">Lawnchair feilrapport</string>
+    <string name="crash_report_notif_title">%1$s krasjet</string>
+    <string name="action_upload_crash_report">Last opp krasjlog</string>
+    <string name="action_upload_error">Opplasting feilet</string>
+    <string name="dogbin_uploading">Laster opp…</string>
+    <string name="bugreport_channel_name">Feilrapporter</string>
+    <string name="status_channel_name">Opplastingsstatus</string>
+    <string name="bugreport_group_summary">%d nye rapporter</string>
+    <string name="bugreport_group_summary_multiple">Flere nye rapporter</string>
     <!--
 
     Preferences (without special screens)
 
     -->
     <!-- General and home screen settings -->
-    <string name="home_screen_rotation_label">Home screen rotation</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
-    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
-    <string name="wallpaper_background_blur">Blur intensity</string>
-    <string name="wallpaper_background_blur_factor">Factor threshold</string>
-    <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
-    <string name="minus_one_enable">Show feed</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
+    <string name="home_screen_rotation_label">Hjemskjermsrotasjon</string>
+    <string name="home_screen_rotation_description">Tillat rotasjon av hjemskjerm når enhet roteres</string>
+    <string name="wallpaper_blur">Uskarp bakgrunn (eksperimentiell)</string>
+    <string name="wallpaper_background_blur">Styrke på uskarphet</string>
+    <string name="wallpaper_background_blur_factor">Faktor terskel</string>
+    <string name="auto_add_shortcuts_label">Legg til nye apper på hjemskjerm</string>
+    <string name="minus_one_enable">Vis feed</string>
+    <string name="minus_one_unavailable">Ingen feed apper er installert</string>
     <string name="minus_one">Feed</string>
-    <string name="feed_provider">Feed provider</string>
-    <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
-    <string name="show_sys_ui_scrim">Top shadow</string>
-    <string name="home_screen_grid">Home screen grid</string>
-    <string name="home_screen_lock">Lock home screen</string>
-    <string name="home_screen_unlock">Unlock home screen</string>
-    <string name="home_screen_locked">Home screen is locked</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use new pop-up style</string>
-    <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
-    <string name="popup_menu">Pop-up menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
-    <string name="show_system_settings_entry">Show system settings button</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
-    <string name="status_bar_label">Status bar</string>
-    <string name="show_status_bar">Show status bar</string>
-    <string name="dark_status_bar_label">Dark status bar</string>
-    <string name="home_screen_text_color">Text color</string>
+    <string name="feed_provider">Feed tilbyder</string>
+    <string name="wallpaper_scrolling_label">Rull bakgrunn</string>
+    <string name="wallpaper_depth_effect_label">Dybdeeffekt bakgrunn</string>
+    <string name="wallpaper_depth_effect_description">Zoom inn og ut av bakgrunnen når du går over mellom områder av startprogrammet</string>
+    <string name="show_sys_ui_scrim">Toppskygge</string>
+    <string name="home_screen_grid">Rutenett hjemmeskjerm</string>
+    <string name="home_screen_lock">Lås hjemskjerm</string>
+    <string name="home_screen_unlock">Lås opp hjemskjerm</string>
+    <string name="home_screen_locked">Hjemskjerm er låst</string>
+    <string name="home_screen_lock_description">Forhindre endringer på hjemmeskjermlayout</string>
+    <string name="show_dot_pagination_label">Vis punktpaginering</string>
+    <string name="show_dot_pagination_description">Bruk prikker i stedet for linjer for å vise sidenummer</string>
+    <string name="show_material_u_popup_label">Bruk ny pop-opp stil</string>
+    <string name="show_material_u_popup_description">Bruk Material You\'s spenstige og litt konsoliderte pop-up-stil</string>
+    <string name="popup_menu">Popp-opp meny</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Vis låseknapp</string>
+    <string name="show_system_settings_entry">Vis systeminstillinger-knapp</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Vis rediger hjemskjerm-knapp</string>
+    <string name="status_bar_label">Statuslinje</string>
+    <string name="show_status_bar">Vis statuslinje</string>
+    <string name="dark_status_bar_label">Mørk statuslinje</string>
+    <string name="home_screen_text_color">Tekstfarge</string>
     <string name="color_light">Lyst</string>
     <string name="color_dark">Mørkt</string>
-    <string name="force_rounded_widgets">Rounded corners</string>
-    <string name="allow_widget_overlap">Allow overlap</string>
-    <string name="force_widget_resize_label">Enforce widget resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove size constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <string name="force_rounded_widgets">Avrundede hjørner</string>
+    <string name="allow_widget_overlap">Tillat overlapping</string>
+    <string name="force_widget_resize_label">Tving størrelsesendring på widget</string>
+    <string name="force_widget_resize_description">Tillat å endre størrelse på widget med låst størrelse</string>
+    <string name="widget_unlimited_size_label">Fjern størrelsesbegrensning</string>
+    <string name="widget_unlimited_size_description">Fjern minimums- og maksimumsstørrelsesbegrensningene for widgets</string>
     <!-- Dock settings -->
-    <string name="show_hotseat_title">Show dock</string>
-    <string name="search_bar_label">Search bar</string>
-    <string name="hotseat_mode_label">Search bar widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
-    <string name="hotseat_mode_google_search">Google Search bar</string>
-    <string name="qsb_hotseat_background_transparency">Background opacity</string>
-    <string name="qsb_hotseat_stroke_width">Outline width</string>
-    <string name="qsb_hotseat_stroke_color">Outline color</string>
-    <string name="corner_radius_label">Corner radius</string>
-    <string name="apply_accent_color_label">Apply accent color</string>
-    <string name="search_provider">Search provider</string>
-    <string name="dock_icons">Dock icons</string>
-    <string name="hotseat_bottom_space_label">Bottom padding</string>
+    <string name="show_hotseat_title">Vis dokk</string>
+    <string name="search_bar_label">Søkefelt</string>
+    <string name="hotseat_mode_label">Søkefelt widget</string>
+    <string name="hotseat_mode_disabled">Deaktivert</string>
+    <string name="hotseat_mode_google_search">Google søkefelt</string>
+    <string name="qsb_hotseat_background_transparency">Gjennomsiktighet bakgrunn</string>
+    <string name="qsb_hotseat_stroke_width">Bredde for omriss</string>
+    <string name="qsb_hotseat_stroke_color">Farge for omriss</string>
+    <string name="corner_radius_label">Hjørneradius</string>
+    <string name="apply_accent_color_label">Bruk uthevingsfarge</string>
+    <string name="search_provider">Søkeleverandør</string>
+    <string name="dock_icons">Dokk-ikoner</string>
+    <string name="hotseat_bottom_space_label">Fyll nederst</string>
     <!-- Search providers -->
-    <string name="search_provider_app_search">App search</string>
-    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_app_search">Appsøk</string>
+    <string name="search_provider_sponsored_description">%1$s og Lawnchair har en inntektsdelingsavtale.\n\nÅ søke med %1$s hjelper til med å støtte Lawnchair.</string>
     <string name="app_label">App</string>
-    <string name="website_label">Website</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="website_label">Nettside</string>
+    <string name="qsb_search_provider_app_required">App påkrevd</string>
     <!-- Dock search bar a11y -->
-    <string name="label_search">Search</string>
+    <string name="label_search">Søk</string>
     <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Voice Search</string>
+    <string name="label_voice_search">Stemmesøk</string>
     <!-- App drawer settings -->
-    <string name="hidden_apps_label">Hidden apps</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load apps in bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
-    <string name="pref_all_apps_remember_position_title">Remember position</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
-    <string name="app_drawer_columns">App drawer columns</string>
-    <string name="row_height_label">Row height</string>
-    <string name="app_drawer_indent_label">Horizontal padding</string>
+    <string name="hidden_apps_label">Skjulte apper</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">Last apper i bulk</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">Last inn og vis ikoner samlet i stedet for individuelt</string>
+    <string name="pref_all_apps_remember_position_title">Husk posisjon</string>
+    <string name="pref_all_apps_remember_position_description">Husk appskuffens posisjon etter at du har forlatt skuffen</string>
+    <string name="pref_all_apps_show_scrollbar_title">Vis rullefelt</string>
+    <string name="app_drawer_columns">Appskuffkolonner</string>
+    <string name="row_height_label">Radhøyde</string>
+    <string name="app_drawer_indent_label">Horisontalt fyll</string>
     <!-- HiddenAppsPreferences -->
-    <string name="hide_from_drawer">Hide from app drawer</string>
-    <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
+    <string name="hide_from_drawer">Skul fra appskuff</string>
+    <string name="hidden_apps_label_with_count">Skjulte apper (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d app</item>
-        <item quantity="other">%1$d apps</item>
+        <item quantity="other">%1$d apper</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
-    <string name="folder_bg_opacity_label">Folder background opacity</string>
-    <string name="folder_preview_bg_color_label">Icon background color</string>
-    <string name="max_folder_columns">Maximum folder columns</string>
-    <string name="max_folder_rows">Maximum folder rows</string>
+    <string name="folder_preview_bg_opacity_label">Bakgrunnsgjennomsiktighet for forhåndsvisning av ikon</string>
+    <string name="folder_bg_opacity_label">Gjennomsiktighet for mappe</string>
+    <string name="folder_preview_bg_color_label">Bakgrunnsfarge for ikon</string>
+    <string name="max_folder_columns">Maksimalt antall mappekolonner</string>
+    <string name="max_folder_rows">Maksimum mapperader</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
-    <string name="quickstep_incompatible">Incompatible system integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
-    <string name="translucent_background">Translucent background</string>
-    <string name="translucent_background_alpha">Background opacity</string>
-    <string name="recents_actions_label">Quick actions</string>
-    <string name="action_share">Share</string>
-    <string name="action_lens">Lens</string>
-    <string name="recents_clear_all">Clear all</string>
-    <string name="task_menu_force_stop">Force close</string>
-    <string name="window_corner_radius_label">Screen corner radius</string>
-    <string name="override_window_corner_radius_label">Custom screen corner radius</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
-    <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <string name="quickswitch_ignored_warning">Disse innstillingene vil bli ignorert ettersom Lawnchair ikke er angitt som Nylige-leverandør</string>
+    <string name="quickstep_incompatible">Ukompatibel systemintegrering</string>
+    <string name="quickstep_incompatible_description">Enheten din er konfigurert til å ha systembevegelser (kjent som Quickstep) levert av %1$s, men denne versjonen av %1$s er ikke kompatibel med Android-versjonen din. Hvis du vil fortsette å bruke enheten, må du avinstallere %1$s-oppdateringer eller deaktivere %1$s som leverandør av systembevegelser.</string>
+    <string name="translucent_background">Gjennomskinn bakgrunn</string>
+    <string name="translucent_background_alpha">Bakgrunnsgjennomsiktighet</string>
+    <string name="recents_actions_label">Raske handlinger</string>
+    <string name="action_share">Del</string>
+    <string name="action_lens">Linse</string>
+    <string name="recents_clear_all">Fjern alle</string>
+    <string name="task_menu_force_stop">Tving avslutning</string>
+    <string name="window_corner_radius_label">Radius for skjermhjørne</string>
+    <string name="override_window_corner_radius_label">Egendefinert skjermhjørneradius</string>
+    <string name="window_corner_radius_description">Når du sveiper opp for å åpne Nylige, følger den gjeldende appen fingeren din og krymper til et kort. Bruk denne glidebryteren til å justere hjørneradiusen på kortet når det er nesten fullskjerm, slik at det samsvarer med hjørnene på skjermen.</string>
+    <string name="taskbar_label">Oppgavelinje</string>
+    <string name="enable_taskbar_experimental">Vis oppgavelinje (eksperimentiell)</string>
     <!--
 
     All Apps search
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search</string>
+    <string name="all_apps_device_search_hint">Søk</string>
     <string name="all_apps_search_bar_hint">Søk Apper</string>
-    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
-    <string name="all_apps_search_result_files">Files from device</string>
-    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
-    <string name="all_apps_search_market_message">Search for more apps</string>
-    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
-    <string name="clear_history">Clear search history</string>
-    <string name="search_input_action_clear_results">Clear search box</string>
+    <string name="all_apps_no_search_results">Finner ingen apper som stemmer med <xliff:g example="Android" id="query">%1$s</xliff:g></string>
+    <string name="all_apps_search_result_suggestions">Fra nettet</string>
+    <string name="all_apps_search_result_contacts_from_device">Kontakter fra enhet</string>
+    <string name="all_apps_search_result_files">Filer fra enhet</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Instillinger fra enhet</string>
+    <string name="all_apps_search_market_message">Søk etter flere apper</string>
+    <string name="all_apps_search_on_web_message">Søk på <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="error_no_market_or_browser_installed">Ingen appbutikk eller nettleser installert</string>
+    <string name="clear_history">Fjern søkehistorikk</string>
+    <string name="search_input_action_clear_results">Tøm søkefelt</string>
     <!-- Search settings -->
-    <string name="pref_category_search">Search</string>
-    <string name="show_app_search_bar">Show search bar</string>
-    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
-    <string name="fuzzy_search_title">Fuzzy search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
-    <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
-    <string name="perform_wide_search_title">Device search</string>
-    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
-    <string name="show_hidden_apps_in_search_results">Show hidden apps in search results</string>
-    <string name="hidden_apps_show_name_typed">If full name is typed</string>
-    <string name="app_search_algorithm">Search algorithm</string>
-    <string name="search_algorithm_app_search">App Search</string>
-    <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global search (via ASI)</string>
+    <string name="pref_category_search">Søk</string>
+    <string name="show_app_search_bar">Vis søkefelt</string>
+    <string name="pref_search_auto_show_keyboard">Vis tastatur automatisk</string>
+    <string name="fuzzy_search_title">Uklart søk</string>
+    <string name="fuzzy_search_desc">Omtrentlig samsvar for appsøk</string>
+    <string name="suggestion_pref_screen_title">Forslag</string>
+    <string name="show_suggested_apps_at_drawer_top">Vis foreslåtte apper på toppen av skuffen</string>
+    <string name="perform_wide_search_title">Enhetssøk</string>
+    <string name="perform_wide_search_description">Søk i telefonkontakter, filer og innstillinger</string>
+    <string name="show_hidden_apps_in_search_results">Vis skjulte apper i søkeresultat</string>
+    <string name="hidden_apps_show_name_typed">Hvis fullt navn er skrevet inn</string>
+    <string name="app_search_algorithm">Søkealgoritme</string>
+    <string name="search_algorithm_app_search">Appsøk</string>
+    <string name="search_algorithm_global_search_on_device">Globalt søk</string>
+    <string name="search_algorithm_global_search_via_asi">Globalt søk (via ASI)</string>
     <!-- Labels of each search result types -->
-    <string name="show_search_result_types">Show in search results</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
-    <string name="search_pref_result_shortcuts_title">App shortcuts</string>
-    <string name="search_pref_result_people_title">People</string>
-    <string name="search_pref_result_tips_title">Pixel tips</string>
-    <string name="search_pref_result_settings_title">Android settings</string>
-    <string name="search_pref_result_files_title">Files</string>
-    <string name="search_pref_result_web_title">Web suggestions</string>
-    <string name="search_pref_result_history_title">Search history</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="show_search_result_types">Vis i søkeresultater</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apper &amp; Snarveier</string>
+    <string name="search_pref_result_shortcuts_title">Appsnarveier</string>
+    <string name="search_pref_result_people_title">Folk</string>
+    <string name="search_pref_result_tips_title">Tips for piksler</string>
+    <string name="search_pref_result_settings_title">Androidinstillinger</string>
+    <string name="search_pref_result_files_title">Filer</string>
+    <string name="search_pref_result_web_title">Web forslag</string>
+    <string name="search_pref_result_history_title">Søkehistorikk</string>
+    <string name="all_apps_search_result_calculator">Kalkulator</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_result_files_description">Media, files, and more</string>
-    <string name="search_pref_result_contacts_description">Contacts and more</string>
+    <string name="search_pref_result_files_description">Media, filer og mer</string>
+    <string name="search_pref_result_contacts_description">Kontaker og mer</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps</string>
-    <string name="max_people_result_count_title">Maximum number of people</string>
-    <string name="max_file_result_count_title">Maximum number of files</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
-    <string name="max_recent_result_count_title">Maximum items for search history</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
-    <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
+    <string name="max_apps_result_count_title">Maksimalt antall apper</string>
+    <string name="max_people_result_count_title">Maksimalt antall folk</string>
+    <string name="max_file_result_count_title">Maksimalt antall filer</string>
+    <string name="max_settings_entry_result_count_title">Maksimalt antall instillinger</string>
+    <string name="max_recent_result_count_title">Maksimalt antall elementer for søkeloggen</string>
+    <string name="max_suggestion_result_count_title">Maksimalt antall forslag</string>
+    <string name="max_web_suggestion_delay">Maksimal forsinkelse for nettforslag</string>
     <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
-    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
-    <string name="grant_requested_permissions">Grant permissions</string>
-    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
-    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
+    <string name="warn_contact_permission_content">For å søke etter kontakter, gi kontakt og telefontilgang til Lawnchair</string>
+    <string name="warn_files_permission_content">For å søke i dine filer, gi lagringstillatelse til Lawnchair</string>
+    <string name="grant_requested_permissions">Gi tillatelser</string>
+    <string name="allapps_web_suggestion_provider_label">Leverandør av nettforslag</string>
+    <string name="allapps_use_web_suggestion_icon_label">Vis ikonet for nettforslagsleverandør i søkefeltet</string>
+    <string name="allapps_match_qsb_style_label">Match handlinger i søkefeltet i dokken</string>
+    <string name="allapps_match_qsb_style_description">Ved å klikke på dokkens søkefelt åpnes nå søkegrensesnittet for appskuffen</string>
 </resources>

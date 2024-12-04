@@ -15,13 +15,15 @@
  */
 package com.android.quickstep;
 
+import static androidx.test.InstrumentationRegistry.getTargetContext;
+
+import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
 import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.PERSISTENT;
 import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.TRANSIENT;
 
 import androidx.test.filters.LargeTest;
 
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +55,7 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
 
     @Override
     public void setUp() throws Exception {
-        mTaskbarWasInTransientMode = isTaskbarInTransientMode(mTargetContext);
+        mTaskbarWasInTransientMode = isTaskbarInTransientMode(getTargetContext());
         setTaskbarMode(mLauncher, isTaskbarTestModeTransient());
         super.setUp();
     }
@@ -89,7 +91,6 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
     }
 
     @Test
-    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchAppInSplitscreen() {
         getTaskbar().getAppIcon(TEST_APP_NAME).dragToSplitscreen(
@@ -103,7 +104,6 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
     }
 
     @Test
-    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchShortcutInSplitscreen() {
         getTaskbar().getAppIcon(TEST_APP_NAME)
@@ -132,7 +132,6 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
     }
 
     @Test
-    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchAppInSplitscreen_fromTaskbarAllApps() {
         getTaskbar().openAllApps()
@@ -141,7 +140,6 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
     }
 
     @Test
-    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchShortcutInSplitscreen_fromTaskbarAllApps() {
         getTaskbar().openAllApps()
@@ -149,6 +147,18 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
                 .openDeepShortcutMenu()
                 .getMenuItem("Shortcut 1")
                 .dragToSplitscreen(TEST_APP_PACKAGE, CALCULATOR_APP_PACKAGE);
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testDismissAllAppsByTappingOutsideSheet() {
+        getTaskbar().openAllApps().dismissByTappingOutsideForTablet(/* tapRight= */ true);
+        getTaskbar().openAllApps().dismissByTappingOutsideForTablet(/* tapRight= */ false);
+    }
+
+    @Test
+    public void testOpenMenuViaRightClick() {
+        getTaskbar().getAppIcon(TEST_APP_NAME).openDeepShortcutMenuWithRightClick();
     }
 
     private boolean isTaskbarTestModeTransient() {

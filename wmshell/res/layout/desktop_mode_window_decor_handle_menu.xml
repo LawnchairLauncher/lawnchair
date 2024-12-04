@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/desktop_mode_handle_menu_width"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/app_info_pill"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/desktop_mode_handle_menu_app_info_pill_height"
+        android:layout_marginTop="@dimen/desktop_mode_handle_menu_margin_top"
+        android:layout_marginStart="1dp"
+        android:elevation="1dp"
+        android:orientation="horizontal"
+        android:background="@drawable/desktop_mode_decor_handle_menu_background"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/application_icon"
+            android:layout_width="@dimen/desktop_mode_caption_icon_radius"
+            android:layout_height="@dimen/desktop_mode_caption_icon_radius"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="@string/app_icon_text"/>
+
+        <TextView
+            android:id="@+id/application_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Gmail"
+            android:textColor="?androidprv:attr/materialColorOnSurface"
+            android:textSize="14sp"
+            android:textFontWeight="500"
+            android:lineHeight="20dp"
+            android:textStyle="normal"
+            android:layout_weight="1"/>
+
+        <com.android.wm.shell.windowdecor.HandleMenuImageButton
+            android:id="@+id/collapse_menu_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="4dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginStart="14dp"
+            android:contentDescription="@string/collapse_menu_text"
+            android:src="@drawable/ic_baseline_expand_more_24"
+            android:rotation="180"
+            android:tint="?androidprv:attr/materialColorOnSurface"
+            android:background="?android:selectableItemBackgroundBorderless"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/windowing_pill"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/desktop_mode_handle_menu_windowing_pill_height"
+        android:layout_marginTop="@dimen/desktop_mode_handle_menu_pill_spacing_margin"
+        android:layout_marginStart="1dp"
+        android:orientation="horizontal"
+        android:elevation="1dp"
+        android:background="@drawable/desktop_mode_decor_handle_menu_background"
+        android:gravity="center_vertical">
+
+        <ImageButton
+            android:id="@+id/fullscreen_button"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="@string/fullscreen_text"
+            android:src="@drawable/desktop_mode_ic_handle_menu_fullscreen"
+            android:tint="?androidprv:attr/materialColorOnSurface"
+            android:layout_weight="1"
+            style="@style/DesktopModeHandleMenuWindowingButton"/>
+
+        <ImageButton
+            android:id="@+id/split_screen_button"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="@string/split_screen_text"
+            android:src="@drawable/desktop_mode_ic_handle_menu_splitscreen"
+            android:tint="?androidprv:attr/materialColorOnSurface"
+            android:layout_weight="1"
+            style="@style/DesktopModeHandleMenuWindowingButton"/>
+
+        <ImageButton
+            android:id="@+id/floating_button"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="@string/float_button_text"
+            android:src="@drawable/desktop_mode_ic_handle_menu_floating"
+            android:tint="?androidprv:attr/materialColorOnSurface"
+            android:layout_weight="1"
+            style="@style/DesktopModeHandleMenuWindowingButton"/>
+
+        <ImageButton
+            android:id="@+id/desktop_button"
+            android:layout_marginStart="4dp"
+            android:contentDescription="@string/desktop_text"
+            android:src="@drawable/desktop_mode_ic_handle_menu_desktop"
+            android:tint="?androidprv:attr/materialColorOnSurface"
+            android:layout_weight="1"
+            style="@style/DesktopModeHandleMenuWindowingButton"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/more_actions_pill"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/desktop_mode_handle_menu_more_actions_pill_height"
+        android:layout_marginTop="@dimen/desktop_mode_handle_menu_pill_spacing_margin"
+        android:layout_marginStart="1dp"
+        android:orientation="vertical"
+        android:elevation="1dp"
+        android:background="@drawable/desktop_mode_decor_handle_menu_background">
+
+        <Button
+            android:id="@+id/screenshot_button"
+            android:contentDescription="@string/screenshot_text"
+            android:text="@string/screenshot_text"
+            android:drawableStart="@drawable/desktop_mode_ic_handle_menu_screenshot"
+            android:drawableTint="?androidprv:attr/materialColorOnSurface"
+            style="@style/DesktopModeHandleMenuActionButton"/>
+    </LinearLayout>
+</LinearLayout>
+

@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <FrameLayout
+    <com.android.launcher3.taskbar.navbutton.NearestTouchFrame
         android:id="@+id/navbuttons_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,9 +45,6 @@
             android:id="@+id/start_contextual_buttons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingStart="@dimen/taskbar_contextual_button_padding"
-            android:paddingEnd="@dimen/taskbar_contextual_button_padding"
-            android:paddingTop="@dimen/taskbar_contextual_padding_top"
             android:gravity="center_vertical"
             android:layout_gravity="start"/>
 
@@ -63,10 +60,9 @@
             android:id="@+id/end_contextual_buttons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingTop="@dimen/taskbar_contextual_padding_top"
             android:gravity="center_vertical"
             android:layout_gravity="end"/>
-    </FrameLayout>
+    </com.android.launcher3.taskbar.navbutton.NearestTouchFrame>
 
     <com.android.launcher3.taskbar.StashedHandleView
         android:id="@+id/stashed_handle"

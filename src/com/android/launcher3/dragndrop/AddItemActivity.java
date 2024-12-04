@@ -67,7 +67,7 @@ import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.pm.PinRequestHelper;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.views.AbstractSlideInView;
@@ -91,7 +91,8 @@ import java.util.function.Supplier;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class AddItemActivity extends BaseActivity
-        implements OnLongClickListener, OnTouchListener, AbstractSlideInView.OnCloseListener {
+        implements OnLongClickListener, OnTouchListener, AbstractSlideInView.OnCloseListener,
+        WidgetCell.PreviewReadyListener {
 
     private static final int SHADOW_SIZE = 10;
 
@@ -142,6 +143,7 @@ public class AddItemActivity extends BaseActivity
         mDragLayer = findViewById(R.id.add_item_drag_layer);
         mDragLayer.recreateControllers();
         mWidgetCell = findViewById(R.id.widget_cell);
+        mWidgetCell.addPreviewReadyListener(this);
         mAccessibilityManager =
                 getApplicationContext().getSystemService(AccessibilityManager.class);
 
@@ -162,7 +164,7 @@ public class AddItemActivity extends BaseActivity
             finish();
             return;
         }
-        ApplicationInfo info = new PackageManagerHelper(this)
+        ApplicationInfo info = PackageManagerHelper.INSTANCE.get(this)
                 .getApplicationInfo(targetApp.packageName, targetApp.user, 0);
         if (info == null) {
             finish();
@@ -258,8 +260,9 @@ public class AddItemActivity extends BaseActivity
                         .addCategory(Intent.CATEGORY_HOME)
                         .setPackage(getPackageName())
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Launcher.ACTIVITY_TRACKER.registerCallback(listener);
-        startActivity(homeIntent, ApiWrapper.createFadeOutAnimOptions(this).toBundle());
+        Launcher.ACTIVITY_TRACKER.registerCallback(listener, "AddItemActivity.onLongClick");
+        startActivity(homeIntent,
+                ApiWrapper.INSTANCE.get(this).createFadeOutAnimOptions().toBundle());
         logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED);
         mFinishOnPause = true;
         return false;
@@ -452,5 +455,12 @@ public class AddItemActivity extends BaseActivity
         getStatsLogManager().logger()
                 .withItemInfo((ItemInfo) mWidgetCell.getWidgetView().getTag())
                 .log(command);
+    }
+
+    @Override
+    public void onPreviewAvailable() {
+        // Set the preview height based on "the only" widget's preview.
+        mWidgetCell.setParentAlignedPreviewHeight(mWidgetCell.getPreviewContentHeight());
+        mWidgetCell.post(mWidgetCell::requestLayout);
     }
 }

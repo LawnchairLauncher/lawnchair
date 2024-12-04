@@ -29,7 +29,9 @@
     <uses-permission android:name="android.permission.REMOVE_TASKS"/>
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
     <uses-permission android:name="android.permission.MANAGE_ACTIVITY_TASKS"/>
+    <uses-permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW"/>
     <uses-permission android:name="android.permission.STATUS_BAR"/>
+    <uses-permission android:name="android.permission.STATUS_BAR_SERVICE"/>
     <uses-permission android:name="android.permission.STOP_APP_SWITCHES"/>
     <uses-permission android:name="android.permission.SET_ORIENTATION"/>
     <uses-permission android:name="android.permission.READ_FRAME_BUFFER"/>
@@ -39,6 +41,16 @@
     <uses-permission android:name="android.permission.ACCESS_SHORTCUTS"/>
 
     <uses-permission android:name="android.permission.SYSTEM_APPLICATION_OVERLAY" />
+
+    <!--
+    Permission required to access profiles which are otherwise hidden
+    from being visible via APIs, e.g. private profile.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_HIDDEN_PROFILES_FULL" />
+
+    <!-- Permission required to start a WidgetPickerActivity. -->
+    <permission android:name="${applicationId}.permission.START_WIDGET_PICKER_ACTIVITY"
+        android:protectionLevel="signature|privileged" />
 
     <application android:backupAgent="com.android.launcher3.LauncherBackupAgent"
          android:fullBackupOnly="true"
@@ -66,15 +78,16 @@
              android:clearTaskOnLaunch="true"
              android:stateNotNeeded="true"
              android:theme="@style/LauncherTheme"
-             android:screenOrientation="unspecified"
+             android:screenOrientation="behind"
              android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
              android:resizeableActivity="true"
              android:resumeWhilePausing="true"
+             android:enableOnBackInvokedCallback="false"
              android:taskAffinity=""/>
 
         <!-- Content provider to settings search. The autority should be same as the packageName -->
         <provider android:name="com.android.quickstep.LauncherSearchIndexablesProvider"
-             android:authorities="${packageName}"
+             android:authorities="${applicationId}"
              android:grantUriPermissions="true"
              android:multiprocess="true"
              android:permission="android.permission.READ_SEARCH_INDEXABLES"
@@ -86,7 +99,7 @@
 
         <!-- FileProvider used for sharing images. -->
         <provider android:name="androidx.core.content.FileProvider"
-             android:authorities="${packageName}.overview.fileprovider"
+             android:authorities="${applicationId}.overview.fileprovider"
              android:exported="false"
              android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
@@ -94,10 +107,11 @@
         </provider>
 
         <activity android:name="com.android.launcher3.proxy.ProxyActivityStarter"
-             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-             android:launchMode="singleTask"
-             android:clearTaskOnLaunch="true"
-             android:exported="false"/>
+            android:theme="@style/ProxyActivityStarterTheme"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:exported="false"
+            />
 
         <activity android:name="com.android.quickstep.interaction.GestureSandboxActivity"
             android:autoRemoveFromRecents="true"
@@ -126,6 +140,20 @@
             <intent-filter>
                 <action android:name="com.android.quickstep.action.GESTURE_ONBOARDING_ALL_SET"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.android.launcher3.WidgetPickerActivity"
+            android:theme="@style/WidgetPickerActivityTheme"
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
+            android:showOnLockScreen="true"
+            android:launchMode="singleTop"
+            android:exported="true"
+            android:permission="android.permission.START_WIDGET_PICKER_ACTIVITY">
+            <intent-filter>
+                <action android:name="android.intent.action.PICK" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

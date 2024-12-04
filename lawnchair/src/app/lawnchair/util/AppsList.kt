@@ -48,12 +48,14 @@ fun appsState(
         Utilities.postAsyncCallback(Handler(MODEL_EXECUTOR.looper)) {
             val launcherApps = context.getSystemService(LauncherApps::class.java)
 
-            appsState.value = UserCache.INSTANCE.get(context).userProfiles.asSequence()
-                .flatMap { launcherApps.getActivityList(null, it) }
-                .filter { filter.shouldShowApp(it.componentName) }
-                .map { App(context, it) }
-                .sortedWith(comparator)
-                .toList()
+            if (launcherApps != null) {
+                appsState.value = UserCache.INSTANCE.get(context).userProfiles.asSequence()
+                    .flatMap { launcherApps.getActivityList(null, it) }
+                    .filter { filter.shouldShowApp(it.componentName) }
+                    .map { App(context, it) }
+                    .sortedWith(comparator)
+                    .toList()
+            }
         }
         onDispose { }
     }

@@ -21,11 +21,14 @@ import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASH
 
 import android.animation.Animator;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.TopTaskTracker;
 import com.android.quickstep.fallback.RecentsState;
+import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.RecentsView;
 
 import java.util.stream.Stream;
@@ -123,5 +126,16 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
         TopTaskTracker.CachedTaskInfo topTask = TopTaskTracker.INSTANCE
                 .get(mControllers.taskbarActivityContext).getCachedTopTask(true);
         return topTask.isHomeTask() || topTask.isRecentsTask();
+    }
+
+    @Nullable
+    @Override
+    protected TISBindHelper getTISBindHelper() {
+        return mRecentsActivity.getTISBindHelper();
+    }
+
+    @Override
+    protected String getTaskbarUIControllerName() {
+        return "FallbackTaskbarUIController";
     }
 }

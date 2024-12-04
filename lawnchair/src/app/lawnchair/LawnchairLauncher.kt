@@ -19,11 +19,14 @@ package app.lawnchair
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Display
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
@@ -53,6 +56,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
+import com.android.launcher3.statemanager.StateManager.StateHandler
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.AllAppsState
 import com.android.launcher3.uioverrides.states.OverviewState
@@ -109,6 +113,14 @@ class LawnchairLauncher : QuickstepLauncher() {
     val gestureController by unsafeLazy { GestureController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (!Utilities.ATLEAST_Q) {
+            enableEdgeToEdge(
+                navigationBarStyle = SystemBarStyle.auto(
+                    Color.TRANSPARENT,
+                    Color.TRANSPARENT,
+                ),
+            )
+        }
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         super.onCreate(savedInstanceState)
 
@@ -121,7 +133,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {
                 try {
-                    RootHelperManager.INSTANCE.get(this@LawnchairLauncher).getService()
+                    RootHelperManager.INSTANCE.get(this@LawnchairLauncher)
                 } catch (_: RootNotAvailableException) {
                 }
             }
@@ -186,7 +198,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         reloadIconsIfNeeded()
     }
 
-    override fun collectStateHandlers(out: MutableList<StateManager.StateHandler<*>>) {
+    override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {
         super.collectStateHandlers(out)
         out.add(SearchBarStateHandler(this))
     }
@@ -264,7 +276,7 @@ class LawnchairLauncher : QuickstepLauncher() {
             ActivityOptions.makeBasic()
         }
         if (Utilities.ATLEAST_T) {
-            options.setSplashScreenStyle(splashScreenStyle)
+            options.splashScreenStyle = splashScreenStyle
         }
 
         Utilities.allowBGLaunch(options)
@@ -275,11 +287,11 @@ class LawnchairLauncher : QuickstepLauncher() {
         return runCatching {
             super.getActivityLaunchOptions(v, item)
         }.getOrElse {
-            getActivityLaunchOptionsDefault(v, item)
+            getActivityLaunchOptionsDefault(v)
         }
     }
 
-    private fun getActivityLaunchOptionsDefault(v: View?, item: ItemInfo?): ActivityOptionsWrapper {
+    private fun getActivityLaunchOptionsDefault(v: View?): ActivityOptionsWrapper {
         var left = 0
         var top = 0
         var width = v!!.measuredWidth
@@ -290,7 +302,7 @@ class LawnchairLauncher : QuickstepLauncher() {
             if (icon != null) {
                 val bounds = icon.bounds
                 left = (width - bounds.width()) / 2
-                top = v.getPaddingTop()
+                top = v.paddingTop
                 width = bounds.width()
                 height = bounds.height()
             }
@@ -304,9 +316,7 @@ class LawnchairLauncher : QuickstepLauncher() {
                 height,
             ),
         )
-        options.setLaunchDisplayId(
-            if (v != null && v.display != null) v.display.displayId else Display.DEFAULT_DISPLAY,
-        )
+        options.launchDisplayId = if (v.display != null) v.display.displayId else Display.DEFAULT_DISPLAY
         val callback = RunnableList()
         return ActivityOptionsWrapper(options, callback)
     }

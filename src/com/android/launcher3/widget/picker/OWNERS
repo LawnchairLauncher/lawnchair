@@ -1,0 +1,16 @@
+set noparent
+
+# Bug component: 1481801
+
+# People who can approve changes for submission
+#
+
+# Widget Picker OWNERS
+zakcohen@google.com
+shamalip@google.com
+wvk@google.com
+
+# Launcher OWNERS
+captaincole@google.com
+sunnygoyal@google.com
+

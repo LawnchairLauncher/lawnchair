@@ -54,7 +54,7 @@ public class SysUiOverlayInputConsumer implements InputConsumer,
         mContext = context;
         mInputMonitor = inputMonitor;
         mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(context, true,
-                deviceState.getNavBarPosition(), this::onInterceptTouch, this);
+                deviceState.getNavBarPosition(), this);
     }
 
     @Override
@@ -72,7 +72,8 @@ public class SysUiOverlayInputConsumer implements InputConsumer,
         mTriggerSwipeUpTracker.onMotionEvent(ev);
     }
 
-    private void onInterceptTouch() {
+    @Override
+    public void onSwipeUpTouchIntercepted() {
         if (mInputMonitor != null) {
             TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
             mInputMonitor.pilferPointers();
@@ -87,10 +88,5 @@ public class SysUiOverlayInputConsumer implements InputConsumer,
         } catch (RemoteException e) {
             Log.e(TAG, "Exception calling closeSystemDialogs " + e.getMessage());
         }
-    }
-
-    @Override
-    public void onSwipeUpCancelled() {
-
     }
 }

@@ -28,9 +28,10 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.icons.GraphicsUtils
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 import com.patrykmichalik.opto.core.firstBlocking
 
-class IconShapeManager(private val context: Context) {
+class IconShapeManager(private val context: Context) : SafeCloseable {
 
     private val systemIconShape = getSystemShape()
 
@@ -82,6 +83,10 @@ class IconShapeManager(private val context: Context) {
 
                 GraphicsUtils.getArea(shapeR)
             }!!
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
     }
 
     companion object {

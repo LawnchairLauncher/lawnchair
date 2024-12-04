@@ -31,6 +31,7 @@
     <color name="taskbar_nav_icon_dark_color_on_home">#99000000</color>
     <color name="taskbar_stashed_handle_light_color">#EBffffff</color>
     <color name="taskbar_stashed_handle_dark_color">#99000000</color>
+    <color name="taskbar_running_app_indicator_color">#646464</color>
 
     <!-- Floating rotation button -->
     <color name="floating_rotation_button_light_color">#ffffff</color>

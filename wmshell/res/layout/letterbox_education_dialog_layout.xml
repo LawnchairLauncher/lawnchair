@@ -1,0 +1,122 @@
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<com.android.wm.shell.compatui.LetterboxEduDialogLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/LetterboxDialog">
+
+    <!-- The background of the top-level layout acts as the background dim. -->
+
+    <!-- Vertical margin will be set dynamically since it depends on task bounds.
+         Setting the alpha of the dialog container to 0, since it shouldn't be visible until the
+         enter animation starts. -->
+    <FrameLayout
+        android:id="@+id/letterbox_education_dialog_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/letterbox_education_dialog_margin"
+        android:background="@drawable/letterbox_education_dialog_background"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_max="@dimen/letterbox_education_dialog_width"
+        app:layout_constrainedHeight="true">
+
+        <!-- The ScrollView should only wrap the content of the dialog, otherwise the background
+             corner radius will be cut off when scrolling to the top/bottom. -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingTop="32dp"
+                android:paddingBottom="32dp"
+                android:paddingLeft="56dp"
+                android:paddingRight="56dp">
+
+                <ImageView
+                    android:layout_width="@dimen/letterbox_education_dialog_title_icon_width"
+                    android:layout_height="@dimen/letterbox_education_dialog_title_icon_height"
+                    android:layout_marginBottom="17dp"
+                    android:src="@drawable/letterbox_education_ic_light_bulb"/>
+
+                <TextView
+                    android:id="@+id/letterbox_education_dialog_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="4sp"
+                    android:text="@string/letterbox_education_dialog_title"
+                    android:textAlignment="center"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:fontFamily="@*android:string/config_bodyFontFamilyMedium"
+                    android:textAppearance="@*android:style/TextAppearance.DeviceDefault.Headline"
+                    android:textSize="24sp"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:orientation="horizontal"
+                    android:paddingTop="48dp">
+
+                    <com.android.wm.shell.compatui.LetterboxEduDialogActionLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:icon="@drawable/letterbox_education_ic_reposition"
+                        app:text="@string/letterbox_education_reposition_text"/>
+
+                    <com.android.wm.shell.compatui.LetterboxEduDialogActionLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart=
+                            "@dimen/letterbox_education_dialog_space_between_actions"
+                        app:icon="@drawable/letterbox_education_ic_split_screen"
+                        app:text="@string/letterbox_education_split_screen_text"/>
+
+                </LinearLayout>
+
+                <Button
+                    android:fontFamily="@*android:string/config_bodyFontFamily"
+                    android:fontWeight="500"
+                    android:lineHeight="20dp"
+                    android:textAppearance="@*android:style/TextAppearance.DeviceDefault.Small"
+                    android:id="@+id/letterbox_education_dialog_dismiss_button"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="40dp"
+                    android:textSize="14sp"
+                    android:background=
+                        "@drawable/letterbox_education_dismiss_button_background_ripple"
+                    android:text="@string/letterbox_education_got_it"
+                    android:textColor="?android:attr/textColorPrimaryInverse"
+                    android:textAlignment="center"
+                    android:contentDescription="@string/letterbox_education_got_it"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+</com.android.wm.shell.compatui.LetterboxEduDialogLayout>

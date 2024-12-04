@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Закрити"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Розгорнути"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Налаштування"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Меню"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Меню \"Картинка в картинці\""</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"У додатку <xliff:g id="NAME">%s</xliff:g> є функція \"Картинка в картинці\""</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Щоб додаток <xliff:g id="NAME">%s</xliff:g> не використовував цю функцію, вимкніть її в налаштуваннях."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Відтворити"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Призупинити"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Перейти далі"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Перейти назад"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Змінити розмір"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Сховати"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Показати"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Додаток може не працювати в режимі розділення екрана"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Додаток не підтримує розділення екрана"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Цей додаток можна відкрити лише в одному вікні"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Додаток може не працювати на додатковому екрані."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Додаток не підтримує запуск на додаткових екранах."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Розділювач екрана"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Розділювач екрана"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Ліве вікно на весь екран"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Ліве вікно на 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Ліве вікно на 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Ліве вікно на 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Праве вікно на весь екран"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Верхнє вікно на весь екран"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Верхнє вікно на 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Верхнє вікно на 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Верхнє вікно на 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Нижнє вікно на весь екран"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Розділити зліва"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Розділити справа"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Розділити вгорі"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Розділити внизу"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Як користуватися режимом керування однією рукою"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Щоб вийти, проведіть пальцем по екрану знизу вгору або торкніться екрана над додатком"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Увімкнути режим керування однією рукою"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Вийти з режиму керування однією рукою"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Налаштування спливаючих чатів від додатка <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Додаткове меню"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Додати в список"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"Cповіщення \"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>\" від додатка <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"Сповіщення \"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>\" від додатка <xliff:g id="APP_NAME">%2$s</xliff:g> (і ще <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g>)"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Перемістити ліворуч угору"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Перемістити праворуч угору"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Перемістити ліворуч униз"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Перемістити праворуч униз"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"розгорнути \"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>\""</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"згорнути \"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>\""</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"Налаштування параметра \"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>\""</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Закрити підказку"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Не показувати спливаючі чати для розмов"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Спливаючий чат"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Нові повідомлення чату з\'являються у вигляді спливаючих значків. Щоб відкрити чат, натисніть його, а щоб перемістити – перетягніть."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Контроль спливаючих чатів"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Натисніть \"Налаштувати\", щоб вимкнути спливаючі чати від цього додатка"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Зрозуміло"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Немає нещодавніх спливаючих чатів"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Тут з\'являтимуться нещодавні й закриті спливаючі чати"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Спливаючий чат"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Нові розмови відображаються у вигляді значків у нижньому куті екрана. Торкніться, щоб розгорнути їх, або перетягніть, щоб закрити."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Контроль спливаючих чатів"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Натисніть тут, щоб вибрати, для яких додатків і розмов дозволити спливаючі чати"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Спливаюче сповіщення"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Налаштувати"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Спливаюче сповіщення закрито."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Спл. чати"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Показувати спливаючі чати"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Натисніть, щоб перезапустити цей додаток для зручнішого перегляду"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Змінити формат для цього додатка в налаштуваннях"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Змінити формат"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Проблеми з камерою?\nНатисніть, щоб пристосувати"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Проблему не вирішено?\nНатисніть, щоб скасувати зміни"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Немає проблем із камерою? Торкніться, щоб закрити."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Більше простору та можливостей"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Щоб перейти в режим розділення екрана, перетягніть сюди інший додаток"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Щоб перемістити додаток, двічі торкніться області поза ним"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"ОK"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Розгорніть, щоб дізнатися більше."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Перезапустити для зручнішого перегляду?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Ви можете перезапустити додаток, щоб покращити його вигляд на екрані, але ваші досягнення або незбережені зміни може бути втрачено"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Скасувати"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Перезапустити"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Більше не показувати"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Двічі торкніться, щоб\nперемістити цей додаток"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Збільшити"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Згорнути"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Закрити"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Назад"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Маркер"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Значок додатка"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"На весь екран"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Режим комп’ютера"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Розділити екран"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Більше"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Плаваюче вікно"</string>
+    <string name="select_text" msgid="5139083974039906583">"Вибрати"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Знімок екрана"</string>
+    <string name="close_text" msgid="4986518933445178928">"Закрити"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Закрити меню"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Відкрити меню"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Розгорнути екран"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Зафіксувати екран"</string>
+</resources>

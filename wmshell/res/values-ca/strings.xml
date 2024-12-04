@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Tanca"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Desplega"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Configuració"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Menú"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Menú d\'imatge sobre imatge"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> està en mode d\'imatge sobre imatge"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Si no vols que <xliff:g id="NAME">%s</xliff:g> utilitzi aquesta funció, toca per obrir la configuració i desactiva-la."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Reprodueix"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Posa en pausa"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Ves al següent"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Ves a l\'anterior"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Canvia la mida"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Amaga"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Deixa d\'amagar"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"És possible que l\'aplicació no funcioni amb la pantalla dividida"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"L\'aplicació no admet la pantalla dividida"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Aquesta aplicació només pot obrir-se en 1 finestra"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"És possible que l\'aplicació no funcioni en una pantalla secundària."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"L\'aplicació no es pot obrir en pantalles secundàries."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Separador de pantalla dividida"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Separador de pantalla dividida"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Pantalla esquerra completa"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Pantalla esquerra al 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Pantalla esquerra al 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Pantalla esquerra al 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Pantalla dreta completa"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Pantalla superior completa"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Pantalla superior al 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Pantalla superior al 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Pantalla superior al 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Pantalla inferior completa"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Divideix a l\'esquerra"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Divideix a la dreta"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Divideix a la part superior"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Divideix a la part inferior"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"S\'està utilitzant el mode d\'una mà"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Per sortir, llisca cap amunt des de la part inferior de la pantalla o toca qualsevol lloc a sobre de l\'aplicació"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Inicia el mode d\'una mà"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Surt del mode d\'una mà"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Configuració de les bombolles: <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Menú de desbordament"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Torna a afegir a la pila"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> de: <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> (<xliff:g id="APP_NAME">%2$s</xliff:g>) i <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> més"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Mou a dalt a l\'esquerra"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Mou a dalt a la dreta"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Mou a baix a l\'esquerra"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Mou a baix a la dreta"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"desplega <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"replega <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"Configuració de l\'aplicació <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Ignora la bombolla"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"No mostris la conversa com a bombolla"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Xateja amb bombolles"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Les converses noves es mostren com a icones flotants o bombolles. Toca per obrir una bombolla. Arrossega-la per moure-la."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Controla les bombolles en qualsevol moment"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Toca Gestiona per desactivar les bombolles d\'aquesta aplicació"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"Entesos"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"No hi ha bombolles recents"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Les bombolles recents i les ignorades es mostraran aquí"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Xateja amb bombolles"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Les converses noves es mostren com a icones en un extrem inferior de la pantalla. Toca per ampliar-les o arrossega per ignorar-les."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Controla les bombolles en qualsevol moment"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Toca aquí per gestionar quines aplicacions i converses poden fer servir bombolles"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Bombolla"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Gestiona"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"La bombolla s\'ha ignorat."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Bombolles"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Mostra les bombolles"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Toca per reiniciar aquesta aplicació i obtenir una millor visualització"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Canvia la relació d\'aspecte d\'aquesta aplicació a Configuració"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Canvia la relació d\'aspecte"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Tens problemes amb la càmera?\nToca per resoldre\'ls"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"El problema no s\'ha resolt?\nToca per desfer els canvis"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"No tens cap problema amb la càmera? Toca per ignorar."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Consulta i fes més coses"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Arrossega una altra aplicació per utilitzar la pantalla dividida"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Fes doble toc fora d\'una aplicació per canviar-ne la posició"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"Entesos"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Desplega per obtenir més informació."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Vols reiniciar per a una millor visualització?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Pots reiniciar l\'aplicació perquè es vegi millor en pantalla, però és possible que perdis el teu progrés o qualsevol canvi que no hagis desat"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Cancel·la"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Reinicia"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"No ho tornis a mostrar"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Fes doble toc per\nmoure aquesta aplicació"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Maximitza"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Minimitza"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Tanca"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Enrere"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Ansa"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Icona de l\'aplicació"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Pantalla completa"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Mode d\'escriptori"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Pantalla dividida"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Més"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Flotant"</string>
+    <string name="select_text" msgid="5139083974039906583">"Selecciona"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Captura de pantalla"</string>
+    <string name="close_text" msgid="4986518933445178928">"Tanca"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Tanca el menú"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Obre el menú"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Maximitza la pantalla"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Ajusta la pantalla"</string>
+</resources>

@@ -16,13 +16,12 @@
 
 package com.android.launcher3.appprediction;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -31,32 +30,35 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.Flags;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.AlphaUpdateListener;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.views.ActivityContext;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import app.lawnchair.preferences2.PreferenceManager2;
-
-@TargetApi(Build.VERSION_CODES.P)
 public class PredictionRowView<T extends Context & ActivityContext>
         extends LinearLayout implements OnDeviceProfileChangeListener, FloatingHeaderRow {
 
     private final T mActivityContext;
     private int mNumPredictedAppsPerRow;
+    // Vertical padding of the icon that contributes to the expected cell height.
+    private final int mVerticalPadding;
+    // Extra padding that is used in the top app rows (prediction and search) that is not used in
+    // the regular A-Z list. This only applies to single line label.
+    private final int mTopRowExtraHeight;
 
     // Helper to drawing the focus indicator.
     private final FocusIndicatorHelper mFocusHelper;
@@ -68,7 +70,7 @@ public class PredictionRowView<T extends Context & ActivityContext>
 
     private boolean mPredictionsEnabled = false;
 
-    private final PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
+    private boolean mPredictionUiUpdatePaused = false;
 
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
@@ -81,6 +83,10 @@ public class PredictionRowView<T extends Context & ActivityContext>
         mFocusHelper = new SimpleFocusIndicatorHelper(this);
         mActivityContext = ActivityContext.lookupContext(context);
         mNumPredictedAppsPerRow = mActivityContext.getDeviceProfile().numShownAllAppsColumns;
+        mTopRowExtraHeight = getResources().getDimensionPixelSize(
+                R.dimen.all_apps_search_top_row_extra_height);
+        mVerticalPadding = getResources().getDimensionPixelSize(
+                R.dimen.all_apps_predicted_icon_vertical_padding);
         updateVisibility();
     }
 
@@ -101,22 +107,12 @@ public class PredictionRowView<T extends Context & ActivityContext>
     }
 
     private void updateVisibility() {
-        boolean enabled = mPredictionsEnabled && PreferenceExtensionsKt.firstBlocking(prefs2.getShowSuggestedAppsInDrawer());
-        setVisibility(enabled ? VISIBLE : GONE);
+        setVisibility(mPredictionsEnabled ? VISIBLE : GONE);
         if (mActivityContext.getAppsView() != null) {
-            if (enabled) {
+            if (mPredictionsEnabled) {
                 mActivityContext.getAppsView().getAppsStore().registerIconContainer(this);
             } else {
                 mActivityContext.getAppsView().getAppsStore().unregisterIconContainer(this);
-            }
-        }
-
-        // Set the predicted row in All Apps' text line to 1.
-        if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()
-                || FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()) {
-            for (int i = 0; i < getChildCount(); i++) {
-                BubbleTextView icon = (BubbleTextView) getChildAt(i);
-                icon.setMaxLines(1);
             }
         }
     }
@@ -125,7 +121,6 @@ public class PredictionRowView<T extends Context & ActivityContext>
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(getExpectedHeight(),
                 MeasureSpec.EXACTLY));
-        updateVisibility();
     }
 
     @Override
@@ -140,9 +135,13 @@ public class PredictionRowView<T extends Context & ActivityContext>
         int iconHeight = deviceProfile.allAppsIconSizePx;
         int iconPadding = deviceProfile.allAppsIconDrawablePaddingPx;
         int textHeight = Utilities.calculateTextHeight(deviceProfile.allAppsIconTextSizePx);
-        int verticalPadding = getResources().getDimensionPixelSize(
-                R.dimen.all_apps_predicted_icon_vertical_padding);
-        int totalHeight = iconHeight + iconPadding + textHeight + verticalPadding * 2;
+        int totalHeight = iconHeight + iconPadding + textHeight + mVerticalPadding * 2;
+        // Prediction row height will be 4dp bigger than the regular apps in A-Z list when two line
+        // is not enabled. Otherwise, the extra height will increase by just the textHeight.
+        int extraHeight = (Flags.enableTwolineToggle() &&
+                LauncherPrefs.ENABLE_TWOLINE_ALLAPPS_TOGGLE.get(getContext()))
+                ? textHeight : mTopRowExtraHeight;
+        totalHeight += extraHeight;
         return getVisibility() == GONE ? 0 : totalHeight + getPaddingTop() + getPaddingBottom();
     }
 
@@ -196,7 +195,18 @@ public class PredictionRowView<T extends Context & ActivityContext>
         applyPredictionApps();
     }
 
+    /** Pause the prediction row UI update */
+    public void setPredictionUiUpdatePaused(boolean predictionUiUpdatePaused) {
+        mPredictionUiUpdatePaused = predictionUiUpdatePaused;
+        if (!mPredictionUiUpdatePaused) {
+            applyPredictionApps();
+        }
+    }
+
     private void applyPredictionApps() {
+        if (mPredictionUiUpdatePaused) {
+            return;
+        }
         if (getChildCount() != mNumPredictedAppsPerRow) {
             while (getChildCount() > mNumPredictedAppsPerRow) {
                 removeViewAt(0);
@@ -211,8 +221,12 @@ public class PredictionRowView<T extends Context & ActivityContext>
                 icon.setOnFocusChangeListener(mFocusHelper);
 
                 LayoutParams lp = (LayoutParams) icon.getLayoutParams();
-                // Ensure the all apps icon height matches the workspace icons in portrait mode.
-                lp.height = mActivityContext.getDeviceProfile().allAppsCellHeightPx;
+                if (Flags.enableFocusOutline()) {
+                    lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                } else {
+                    // Ensure the all apps icon height matches the workspace icons in portrait mode.
+                    lp.height = mActivityContext.getDeviceProfile().allAppsCellHeightPx;
+                }
                 lp.width = 0;
                 lp.weight = 1;
                 addView(icon);
@@ -226,7 +240,11 @@ public class PredictionRowView<T extends Context & ActivityContext>
             icon.reset();
             if (predictionCount > i) {
                 icon.setVisibility(View.VISIBLE);
-                icon.applyFromWorkspaceItem(mPredictedApps.get(i));
+                WorkspaceItemInfo predictedItem = mPredictedApps.get(i);
+                predictedItem.rank = i;
+                predictedItem.cellX = i;
+                predictedItem.cellY = 0;
+                icon.applyFromWorkspaceItem(predictedItem);
             } else {
                 icon.setVisibility(predictionCount == 0 ? GONE : INVISIBLE);
             }
@@ -267,4 +285,11 @@ public class PredictionRowView<T extends Context & ActivityContext>
         return getChildAt(0);
     }
 
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "PredictionRowView");
+        writer.println(prefix + "\tmPredictionsEnabled: " + mPredictionsEnabled);
+        writer.println(prefix + "\tmPredictionUiUpdatePaused: " + mPredictionUiUpdatePaused);
+        writer.println(prefix + "\tmNumPredictedAppsPerRow: " + mNumPredictedAppsPerRow);
+        writer.println(prefix + "\tmPredictedApps: " + mPredictedApps);
+    }
 }

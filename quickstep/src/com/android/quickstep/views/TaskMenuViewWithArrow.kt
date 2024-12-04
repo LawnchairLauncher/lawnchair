@@ -39,24 +39,19 @@ import com.android.launcher3.popup.RoundedArrowDrawable
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.Themes
 import com.android.quickstep.TaskOverlayFactory
-import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
+import com.android.quickstep.views.TaskView.TaskContainer
 
-class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
+class TaskMenuViewWithArrow<T> : ArrowPopup<T> where T : RecentsViewContainer, T : Context {
     companion object {
         const val TAG = "TaskMenuViewWithArrow"
 
-        fun showForTask(
-            taskContainer: TaskIdAttributeContainer,
-            alignedOptionIndex: Int = 0
-        ): Boolean {
-            val activity =
-                BaseDraggingActivity.fromContext<BaseDraggingActivity>(
-                    taskContainer.taskView.context
-                )
+        fun showForTask(taskContainer: TaskContainer, alignedOptionIndex: Int = 0): Boolean {
+            val container: RecentsViewContainer =
+                RecentsViewContainer.containerFromContext(taskContainer.taskView.context)
             val taskMenuViewWithArrow =
-                activity.layoutInflater.inflate(
+                container.layoutInflater.inflate(
                     R.layout.task_menu_with_arrow,
-                    activity.dragLayer,
+                    container.dragLayer,
                     false
                 ) as TaskMenuViewWithArrow<*>
 
@@ -87,11 +82,11 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     private var alignedOptionIndex: Int = 0
     private val extraSpaceForRowAlignment: Int
         get() = optionMeasuredHeight * alignedOptionIndex
-    private val menuWidth = context.resources.getDimensionPixelSize(R.dimen.task_menu_width_grid)
+    private val menuPaddingEnd = context.resources.getDimensionPixelSize(R.dimen.task_card_margin)
 
     private lateinit var taskView: TaskView
     private lateinit var optionLayout: LinearLayout
-    private lateinit var taskContainer: TaskIdAttributeContainer
+    private lateinit var taskContainer: TaskContainer
 
     private var optionMeasuredHeight = 0
     private val arrowHorizontalPadding: Int
@@ -107,7 +102,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     override fun isOfType(type: Int): Boolean = type and TYPE_TASK_MENU != 0
 
     override fun getTargetObjectLocation(outPos: Rect?) {
-        popupContainer.getDescendantRectRelativeToSelf(taskContainer.iconView, outPos)
+        popupContainer.getDescendantRectRelativeToSelf(taskContainer.iconView.asView(), outPos)
     }
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent?): Boolean {
@@ -125,8 +120,27 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         optionLayout = requireViewById(R.id.menu_option_layout)
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val maxMenuHeight: Int = calculateMaxHeight()
+        val newHeightMeasureSpec =
+            if (MeasureSpec.getSize(heightMeasureSpec) > maxMenuHeight) {
+                MeasureSpec.makeMeasureSpec(maxMenuHeight, MeasureSpec.AT_MOST)
+            } else heightMeasureSpec
+        super.onMeasure(widthMeasureSpec, newHeightMeasureSpec)
+    }
+
+    private fun calculateMaxHeight(): Int {
+        val taskInsetMargin = resources.getDimension(R.dimen.task_card_margin)
+        return taskView.pagedOrientationHandler.getTaskMenuHeight(
+            taskInsetMargin,
+            mActivityContext.deviceProfile,
+            translationX,
+            translationY
+        )
+    }
+
     private fun populateAndShowForTask(
-        taskContainer: TaskIdAttributeContainer,
+        taskContainer: TaskContainer,
         alignedOptionIndex: Int
     ): Boolean {
         if (isAttachedToWindow) {
@@ -159,10 +173,10 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     /** @return true if successfully able to populate task view menu, false otherwise */
     private fun populateMenu(): Boolean {
         // Icon may not be loaded
-        if (taskContainer.task.icon == null) return false
+        if (taskContainer.iconView.drawable == null) return false
 
         addMenuOptions()
-        return true
+        return optionLayout.childCount > 0
     }
 
     private fun addMenuOptions() {
@@ -198,7 +212,13 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
             menuOptionView.requireViewById(R.id.text)
         )
         val lp = menuOptionView.layoutParams as LayoutParams
-        lp.width = menuWidth
+        lp.width = LayoutParams.MATCH_PARENT
+        menuOptionView.setPaddingRelative(
+            menuOptionView.paddingStart,
+            menuOptionView.paddingTop,
+            menuPaddingEnd,
+            menuOptionView.paddingBottom
+        )
         menuOptionView.setOnClickListener { view: View? -> menuOption.onClick(view) }
         optionLayout.addView(menuOptionView)
     }
@@ -332,7 +352,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
     override fun updateArrowColor() {
         mArrow.background =
-            RoundedArrowDrawable(
+            RoundedArrowDrawable.createHorizontalRoundedArrow(
                 mArrowWidth.toFloat(),
                 mArrowHeight.toFloat(),
                 mArrowPointRadius.toFloat(),

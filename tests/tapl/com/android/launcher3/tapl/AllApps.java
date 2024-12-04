@@ -16,8 +16,12 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.KeyEvent.KEYCODE_ESCAPE;
+import static android.view.KeyEvent.KEYCODE_META_RIGHT;
+
 import static com.android.launcher3.tapl.LauncherInstrumentation.DEFAULT_POLL_INTERVAL;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -37,16 +41,24 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * Operations on AllApps opened from Home. Also a parent for All Apps opened from Overview.
  */
-public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
+public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
+        implements KeyboardQuickSwitchSource {
     // Defer updates flag used to defer all apps updates by a test's request.
     private static final int DEFER_UPDATES_TEST = 1 << 1;
 
     private static final int MAX_SCROLL_ATTEMPTS = 40;
+
+    private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
+    private static final String FAST_SCROLLER_RES_ID = "fast_scroller";
+    private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
+    private static final String UNLOCK_BUTTON_VIEW_RES_ID = "ps_lock_unlock_button";
 
     private final int mHeight;
     private final int mIconHeight;
@@ -61,6 +73,16 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         verifyNotFrozen("All apps freeze flags upon opening all apps");
         mIconHeight = mLauncher.getTestInfo(TestProtocol.REQUEST_ICON_HEIGHT)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    @Override
+    public LauncherInstrumentation getLauncher() {
+        return mLauncher;
+    }
+
+    @Override
+    public LauncherInstrumentation.ContainerType getStartingContainerType() {
+        return getContainerType();
     }
 
     private boolean hasClickableIcon(UiObject2 allAppsContainer, UiObject2 appListRecycler,
@@ -237,7 +259,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
             int attempts = 0;
             final Rect margins = new Rect(
                     /* left= */ 0,
-                    getTopVisibleIconBounds(allAppsContainer).bottom,
+                    mHeight / 2,
                     /* right= */ 0,
                     /* bottom= */ getAppsListRecyclerBottomPadding());
 
@@ -268,6 +290,10 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
 
     protected UiObject2 getAppListRecycler(UiObject2 allAppsContainer) {
         return mLauncher.waitForObjectInContainer(allAppsContainer, "apps_list_view");
+    }
+
+    protected UiObject2 getAllAppsHeader(UiObject2 allAppsContainer) {
+        return mLauncher.waitForObjectInContainer(allAppsContainer, "all_apps_header");
     }
 
     protected UiObject2 getSearchBox(UiObject2 allAppsContainer) {
@@ -338,7 +364,105 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
     }
 
     /**
+     * Taps outside bottom sheet to dismiss it. Available on tablets only.
+     *
+     * @param tapRight Tap on the right of bottom sheet if true, or left otherwise.
+     */
+    public void dismissByTappingOutsideForTablet(boolean tapRight) {
+        mLauncher.assertTrue("Device must be a tablet", mLauncher.isTablet());
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to tap outside AllApps bottom sheet on the "
+                             + (tapRight ? "right" : "left"))) {
+
+            final UiObject2 container = (tapRight)
+                    ? mLauncher.waitForLauncherObject(FAST_SCROLLER_RES_ID) :
+                    mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
+
+            touchOutside(tapRight, container);
+            try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
+                    "tapped outside AllApps bottom sheet")) {
+                verifyVisibleContainerOnDismiss();
+            }
+        }
+    }
+
+    protected void touchOutside(boolean tapRight, UiObject2 container) {
+        mLauncher.touchOutsideContainer(container, tapRight, false);
+    }
+
+    /** Presses the meta keyboard shortcut to dismiss AllApps. */
+    public void dismissByKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            pressMetaKey();
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed meta key")) {
+                verifyVisibleContainerOnDismiss();
+            }
+        }
+    }
+
+    protected void pressMetaKey() {
+        mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
+    }
+
+    /** Presses the esc key to dismiss AllApps. */
+    public void dismissByEscKey() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE),
+                    NORMAL_STATE_ORDINAL,
+                    "pressing esc key");
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed esc key")) {
+                verifyVisibleContainerOnDismiss();
+            }
+        }
+    }
+
+    /** Returns PredictionRow if present in view. */
+    @NonNull
+    public PredictionRow getPredictionRowView() {
+        final UiObject2 allAppsContainer = verifyActiveContainer();
+        final UiObject2 allAppsHeader = getAllAppsHeader(allAppsContainer);
+        return new PredictionRow(mLauncher, allAppsHeader);
+    }
+
+    /** Returns PrivateSpaceContainer if present in view. */
+    @NonNull
+    public PrivateSpaceContainer getPrivateSpaceUnlockedView() {
+        final UiObject2 allAppsContainer = verifyActiveContainer();
+        final UiObject2 appListRecycler = getAppListRecycler(allAppsContainer);
+        return new PrivateSpaceContainer(mLauncher, appListRecycler, this, true);
+    }
+
+    /** Returns PrivateSpaceContainer in locked state, if present in view. */
+    @NonNull
+    public PrivateSpaceContainer getPrivateSpaceLockedView() {
+        final UiObject2 allAppsContainer = verifyActiveContainer();
+        final UiObject2 appListRecycler = getAppListRecycler(allAppsContainer);
+        return new PrivateSpaceContainer(mLauncher, appListRecycler, this, false);
+    }
+
+    /**
+     * Toggles Lock/Unlock of Private Space, changing the All Apps Ui.
+     */
+    public void togglePrivateSpace() {
+        final UiObject2 allAppsContainer = verifyActiveContainer();
+        final UiObject2 appListRecycler = getAppListRecycler(allAppsContainer);
+        UiObject2 unLockButtonView = mLauncher.waitForObjectInContainer(appListRecycler,
+                UNLOCK_BUTTON_VIEW_RES_ID);
+        mLauncher.waitForObjectEnabled(unLockButtonView, "Private Space Unlock Button");
+        mLauncher.assertTrue("PS Unlock Button is non-clickable", unLockButtonView.isClickable());
+        unLockButtonView.click();
+    }
+
+    protected abstract void verifyVisibleContainerOnDismiss();
+
+    /**
      * Return the QSB UI object on the AllApps screen.
+     *
      * @return the QSB UI object.
      */
     @NonNull

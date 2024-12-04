@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright (C) 2020 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License
+  -->
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/one_handed_tutorial_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal | center_vertical"
+        android:background="@android:color/transparent">
+
+    <ImageView
+        android:id="@+id/one_handed_tutorial_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="center_horizontal"
+        android:src="@drawable/one_handed_tutorial_icon"
+        android:scaleType="centerInside" />
+
+    <TextView
+        android:id="@+id/one_handed_tutorial_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="0dp"
+        android:gravity="center_horizontal"
+        android:textAlignment="center"
+        android:fontFamily="google-sans-medium"
+        android:text="@string/one_handed_tutorial_title"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/one_handed_tutorial_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
+        android:gravity="center_horizontal"
+        android:fontFamily="roboto-regular"
+        android:text="@string/one_handed_tutorial_description"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        android:alpha="0.7"
+        android:textColor="@android:color/white"/>
+</LinearLayout>

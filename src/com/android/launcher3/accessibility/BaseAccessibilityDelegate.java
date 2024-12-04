@@ -28,7 +28,7 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.CollectionInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -45,6 +45,7 @@ public abstract class BaseAccessibilityDelegate<T extends Context & ActivityCont
     public enum DragType {
         ICON,
         FOLDER,
+        APP_PAIR,
         WIDGET
     }
 
@@ -103,7 +104,7 @@ public abstract class BaseAccessibilityDelegate<T extends Context & ActivityCont
                     && item.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
         }
         return (item instanceof LauncherAppWidgetInfo)
-                || (item instanceof FolderInfo);
+                || (item instanceof CollectionInfo);
     }
 
     @Override

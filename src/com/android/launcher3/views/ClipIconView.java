@@ -16,16 +16,15 @@
 package com.android.launcher3.views;
 
 import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.launcher3.Flags.enableAdditionalHomeAnimations;
 import static com.android.launcher3.Utilities.boundToRange;
 import static com.android.launcher3.Utilities.mapToRange;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 
 import static java.lang.Math.max;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -36,13 +35,13 @@ import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.ViewOutlineProvider;
 
 import androidx.annotation.Nullable;
+import androidx.core.util.Consumer;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -55,7 +54,6 @@ import com.android.launcher3.graphics.IconShape;
  * Supports springing just the foreground layer.
  * Supports clipping the icon to/from its icon shape.
  */
-@TargetApi(Build.VERSION_CODES.Q)
 public class ClipIconView extends View implements ClipPathView {
 
     private static final Rect sTmpRect = new Rect();
@@ -78,6 +76,8 @@ public class ClipIconView extends View implements ClipPathView {
     private final Rect mOutline = new Rect();
     private final Rect mFinalDrawableBounds = new Rect();
 
+    @Nullable private TaskViewArtist mTaskViewArtist;
+
     public ClipIconView(Context context) {
         this(context, null);
     }
@@ -94,10 +94,31 @@ public class ClipIconView extends View implements ClipPathView {
     }
 
     /**
+     * Sets a {@link TaskViewArtist} that will draw a {@link com.android.quickstep.views.TaskView}
+     * within the clip bounds of this view.
+     */
+    public void setTaskViewArtist(TaskViewArtist taskViewArtist) {
+        if (!enableAdditionalHomeAnimations()) {
+            return;
+        }
+        mTaskViewArtist = taskViewArtist;
+        invalidate();
+    }
+
+    /**
      * Update the icon UI to match the provided parameters during an animation frame
      */
     public void update(RectF rect, float progress, float shapeProgressStart, float cornerRadius,
             boolean isOpening, View container, DeviceProfile dp) {
+        update(rect, progress, shapeProgressStart, cornerRadius, isOpening, container, dp, 255);
+    }
+
+    /**
+     * Update the icon UI to match the provided parameters during an animation frame, optionally
+     * varying the alpha of the {@link TaskViewArtist}
+     */
+    public void update(RectF rect, float progress, float shapeProgressStart, float cornerRadius,
+            boolean isOpening, View container, DeviceProfile dp, int taskViewDrawAlpha) {
         MarginLayoutParams lp = (MarginLayoutParams) container.getLayoutParams();
 
         float dX = mIsRtl
@@ -111,8 +132,16 @@ public class ClipIconView extends View implements ClipPathView {
         float scaleX = rect.width() / minSize;
         float scaleY = rect.height() / minSize;
         float scale = Math.max(1f, Math.min(scaleX, scaleY));
+        if (mTaskViewArtist != null) {
+            mTaskViewArtist.taskViewDrawWidth = lp.width;
+            mTaskViewArtist.taskViewDrawHeight = lp.height;
+            mTaskViewArtist.taskViewDrawAlpha = taskViewDrawAlpha;
+            mTaskViewArtist.taskViewDrawScale = (mTaskViewArtist.drawForPortraitLayout
+                    ? Math.min(lp.height, lp.width) : Math.max(lp.height, lp.width))
+                    / mTaskViewArtist.taskViewMinSize;
+        }
 
-        if (Float.isNaN(scale)) {
+        if (Float.isNaN(scale) || Float.isInfinite(scale)) {
             // Views are no longer laid out, do not update.
             return;
         }
@@ -145,14 +174,10 @@ public class ClipIconView extends View implements ClipPathView {
         if (mIsAdaptiveIcon) {
             if (!isOpening && progress >= shapeProgressStart) {
                 if (mRevealAnimator == null) {
-                    mRevealAnimator = (ValueAnimator) IconShape.getShape().createRevealAnimator(
-                            this, mStartRevealRect, mOutline, mTaskCornerRadius, !isOpening);
-                    mRevealAnimator.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mRevealAnimator = null;
-                        }
-                    });
+                    mRevealAnimator = IconShape.INSTANCE.get(getContext()).getShape()
+                            .createRevealAnimator(this, mStartRevealRect,
+                                    mOutline, mTaskCornerRadius, !isOpening);
+                    mRevealAnimator.addListener(forEndCallback(() -> mRevealAnimator = null));
                     mRevealAnimator.start();
                     // We pause here so we can set the current fraction ourselves.
                     mRevealAnimator.pause();
@@ -233,7 +258,8 @@ public class ClipIconView extends View implements ClipPathView {
             mStartRevealRect.set(0, 0, originalWidth, originalHeight);
 
             if (!isFolderIcon) {
-                Utilities.scaleRectAboutCenter(mStartRevealRect, IconShape.getNormalizationScale());
+                Utilities.scaleRectAboutCenter(mStartRevealRect,
+                        IconShape.INSTANCE.get(getContext()).getNormalizationScale());
             }
 
             if (dp.isLandscape) {
@@ -294,6 +320,19 @@ public class ClipIconView extends View implements ClipPathView {
         if (mForeground != null) {
             mForeground.draw(canvas);
         }
+        if (mTaskViewArtist != null) {
+            canvas.saveLayerAlpha(
+                    0,
+                    0,
+                    mTaskViewArtist.taskViewDrawWidth,
+                    mTaskViewArtist.taskViewDrawHeight,
+                    mTaskViewArtist.taskViewDrawAlpha);
+            float drawScale = mTaskViewArtist.taskViewDrawScale;
+            canvas.translate(drawScale * mTaskViewArtist.taskViewTranslationX,
+                    drawScale * mTaskViewArtist.taskViewTranslationY);
+            canvas.scale(drawScale, drawScale);
+            mTaskViewArtist.taskViewDrawCallback.accept(canvas);
+        }
         canvas.restoreToCount(count);
     }
 
@@ -310,5 +349,37 @@ public class ClipIconView extends View implements ClipPathView {
         mRevealAnimator = null;
         mTaskCornerRadius = 0;
         mOutline.setEmpty();
+        mTaskViewArtist = null;
+    }
+
+    /**
+     * Utility class to help draw a {@link com.android.quickstep.views.TaskView} within
+     * a {@link ClipIconView} bounds.
+     */
+    public static class TaskViewArtist {
+
+        public final Consumer<Canvas> taskViewDrawCallback;
+        public final float taskViewTranslationX;
+        public final float taskViewTranslationY;
+        public final float taskViewMinSize;
+        public final boolean drawForPortraitLayout;
+
+        public int taskViewDrawAlpha;
+        public float taskViewDrawScale;
+        public int taskViewDrawWidth;
+        public int taskViewDrawHeight;
+
+        public TaskViewArtist(
+                Consumer<Canvas> taskViewDrawCallback,
+                float taskViewTranslationX,
+                float taskViewTranslationY,
+                float taskViewMinSize,
+                boolean drawForPortraitLayout) {
+            this.taskViewDrawCallback = taskViewDrawCallback;
+            this.taskViewTranslationX = taskViewTranslationX;
+            this.taskViewTranslationY = taskViewTranslationY;
+            this.taskViewMinSize = taskViewMinSize;
+            this.drawForPortraitLayout = drawForPortraitLayout;
+        }
     }
 }

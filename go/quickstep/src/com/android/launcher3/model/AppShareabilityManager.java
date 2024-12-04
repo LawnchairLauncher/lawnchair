@@ -35,6 +35,7 @@ import androidx.room.Room;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.launcher3.model.AppShareabilityDatabase.ShareabilityDao;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.SafeCloseable;
 
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ import java.util.function.Consumer;
  * Each app's status is retrieved from the Play Store's API. Statuses are cached in order
  * to limit extraneous calls to that API (which can be time-consuming).
  */
-public class AppShareabilityManager {
+public class AppShareabilityManager implements SafeCloseable {
     @Retention(SOURCE)
     @IntDef({
         ShareabilityStatus.UNKNOWN,
@@ -192,6 +193,11 @@ public class AppShareabilityManager {
             AppShareabilityStatus entry = entries.get(i);
             mDataMap.put(entry.packageName, entry.status);
         }
+    }
+
+    @Override
+    public void close() {
+        mDatabase.close();
     }
 
     /**

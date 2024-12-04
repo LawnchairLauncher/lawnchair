@@ -16,8 +16,7 @@
 
 package com.android.launcher3.tapl;
 
-import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-
+import static com.android.launcher3.tapl.BaseOverview.TASK_RES_ID;
 import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
@@ -39,12 +38,23 @@ import java.util.regex.Pattern;
  * Indicates the base state with a UI other than Overview running as foreground. It can also
  * indicate Launcher as long as Launcher is not in Overview state.
  */
-public abstract class Background extends LauncherInstrumentation.VisibleContainer {
+public abstract class Background extends LauncherInstrumentation.VisibleContainer
+        implements KeyboardQuickSwitchSource {
     private static final int ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION = 500;
     private static final Pattern SQUARE_BUTTON_EVENT = Pattern.compile("onOverviewToggle");
 
     Background(LauncherInstrumentation launcher) {
         super(launcher);
+    }
+
+    @Override
+    public LauncherInstrumentation getLauncher() {
+        return mLauncher;
+    }
+
+    @Override
+    public LauncherInstrumentation.ContainerType getStartingContainerType() {
+        return getContainerType();
     }
 
     /**
@@ -107,10 +117,10 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                         // non-tablet overview, snapshots can be on either side of the swiped
                         // task, but we still check that they become visible after swiping and
                         // pausing.
-                        mLauncher.waitForOverviewObject("snapshot");
+                        mLauncher.waitForOverviewObject(TASK_RES_ID);
                         if (mLauncher.isTablet()) {
                             List<UiObject2> tasks = mLauncher.getDevice().findObjects(
-                                    mLauncher.getOverviewObjectSelector("snapshot"));
+                                    mLauncher.getOverviewObjectSelector(TASK_RES_ID));
                             final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
                             mLauncher.assertTrue(
                                     "All tasks not to the left of the swiped task",
@@ -233,12 +243,11 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                     endY = startY;
                 }
 
-                mLauncher.executeAndWaitForEvent(
+                mLauncher.executeAndWaitForLauncherStop(
                         () -> mLauncher.linearGesture(
                                 startX, startY, endX, endY, 20, false,
                                 LauncherInstrumentation.GestureScope.EXPECT_PILFER),
-                        event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                        () -> "Quick switch gesture didn't change window state", "swiping");
+                        "swiping");
             } else {
                 // Double press the recents button.
                 UiObject2 recentsButton = mLauncher.waitForNavigationUiObject("recent_apps");
@@ -247,10 +256,8 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                         "clicking Recents button for the first time");
                 mLauncher.getOverview();
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
-                mLauncher.executeAndWaitForEvent(
+                mLauncher.executeAndWaitForLauncherStop(
                         () -> recentsButton.click(),
-                        event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                        () -> "Pressing recents button didn't change window state",
                         "clicking Recents button for the second time");
             }
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);

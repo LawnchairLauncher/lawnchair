@@ -78,8 +78,6 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) :
         mClient.hideOverlay(duration)
     }
 
-    override fun startSearch(config: ByteArray?, extras: Bundle?): Boolean = false
-
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) = Unit
 
     override fun onActivityStarted(activity: Activity) {

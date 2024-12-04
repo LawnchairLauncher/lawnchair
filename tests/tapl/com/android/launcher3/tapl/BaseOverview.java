@@ -16,22 +16,43 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.KeyEvent.KEYCODE_ESCAPE;
+
+import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
+import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
+
 import android.graphics.Rect;
+import android.util.Log;
+import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.testing.shared.TestProtocol;
+
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * Common overview panel for both Launcher and fallback recents
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
+    protected static final String TASK_RES_ID = "task";
+    private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ESCAPE.*?metaState=0");
+    private static final Pattern EVENT_ENTER_DOWN = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_ENTER");
+    private static final Pattern EVENT_ENTER_UP = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_ENTER");
+
     private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
 
     BaseOverview(LauncherInstrumentation launcher) {
@@ -124,8 +145,19 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 flingForwardImpl();
             }
 
-            mLauncher.clickLauncherObject(
-                    mLauncher.waitForObjectInContainer(verifyActiveContainer(), clearAllSelector));
+            final Runnable clickClearAll = () -> mLauncher.clickLauncherObject(
+                    mLauncher.waitForObjectInContainer(verifyActiveContainer(),
+                            clearAllSelector));
+            if (mLauncher.is3PLauncher()) {
+                mLauncher.executeAndWaitForLauncherStop(
+                        clickClearAll,
+                        "clicking 'Clear All'");
+            } else {
+                mLauncher.runToState(
+                        clickClearAll,
+                        NORMAL_STATE_ORDINAL,
+                        "clicking 'Clear All'");
+            }
 
             mLauncher.waitUntilLauncherObjectGone(clearAllSelector);
         }
@@ -146,9 +178,12 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
             OverviewTask currentTask = flingToFirstTask();
 
-            mLauncher.touchOutsideContainer(currentTask.getUiObject(),
-                    /* tapRight= */ true,
-                    /* halfwayToEdge= */ false);
+            mLauncher.runToState(
+                    () -> mLauncher.touchOutsideContainer(currentTask.getUiObject(),
+                            /* tapRight= */ true,
+                            /* halfwayToEdge= */ false),
+                    NORMAL_STATE_ORDINAL,
+                    "touching outside of first task");
 
             return new Workspace(mLauncher);
         }
@@ -181,8 +216,19 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     public void touchTaskbarBottomCorner(boolean tapRight) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             Taskbar taskbar = new Taskbar(mLauncher);
-            taskbar.touchBottomCorner(tapRight);
-            verifyActiveContainer();
+            if (mLauncher.isTransientTaskbar()) {
+                mLauncher.runToState(
+                        () -> taskbar.touchBottomCorner(tapRight),
+                        NORMAL_STATE_ORDINAL,
+                        "touching taskbar");
+                // Tapping outside Transient Taskbar returns to Workspace, wait for that state.
+                new Workspace(mLauncher);
+            } else {
+                taskbar.touchBottomCorner(tapRight);
+                // Should stay in Overview.
+                verifyActiveContainer();
+                verifyActionsViewVisibility();
+            }
         }
     }
 
@@ -201,7 +247,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             OverviewTask task = getCurrentTask();
             mLauncher.assertNotNull("current task is null", task);
             mLauncher.scrollLeftByDistance(verifyActiveContainer(),
-                    task.getVisibleWidth() + mLauncher.getOverviewPageSpacing());
+                    mLauncher.getRealDisplaySize().x - task.getUiObject().getVisibleBounds().left
+                            + mLauncher.getOverviewPageSpacing());
 
             try (LauncherInstrumentation.Closable c2 =
                          mLauncher.addContextLayer("scrolled task off screen")) {
@@ -231,14 +278,13 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         final List<UiObject2> taskViews = getTasks();
         mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
 
-        // taskViews contains up to 3 task views: the 'main' (having the widest visible part) one
-        // in the center, and parts of its right and left siblings. Find the main task view by
-        // its width.
-        final UiObject2 widestTask = Collections.max(taskViews,
-                (t1, t2) -> Integer.compare(mLauncher.getVisibleBounds(t1).width(),
-                        mLauncher.getVisibleBounds(t2).width()));
-
-        return new OverviewTask(mLauncher, widestTask, this);
+        // The widest, and most top-right task should be the current task
+        UiObject2 currentTask = Collections.max(taskViews,
+                Comparator.comparingInt((UiObject2 t) -> t.getVisibleBounds().width())
+                        .thenComparingInt((UiObject2 t) -> t.getVisibleCenter().x)
+                        .thenComparing(Comparator.comparing(
+                                (UiObject2 t) -> t.getVisibleCenter().y).reversed()));
+        return new OverviewTask(mLauncher, currentTask, this);
     }
 
     /** Returns an overview task matching TestActivity {@param activityNumber}. */
@@ -282,9 +328,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 "want to get overview tasks")) {
             verifyActiveContainer();
             return mLauncher.getDevice().findObjects(
-                    mLauncher.getOverviewObjectSelector("snapshot"));
+                    mLauncher.getOverviewObjectSelector(TASK_RES_ID));
         }
     }
+
 
     int getTaskCount() {
         return getTasks().size();
@@ -320,33 +367,124 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 mLauncher.getOverviewObjectSelector("clear_all"));
     }
 
+    /**
+     * Returns the taskbar if it's a tablet, or {@code null} otherwise.
+     */
+    @Nullable
+    public Taskbar getTaskbar() {
+        if (!mLauncher.isTablet()) {
+            return null;
+        }
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get the taskbar")) {
+            mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
+
+            return new Taskbar(mLauncher);
+        }
+    }
+
     protected boolean isActionsViewVisible() {
-        if (!hasTasks() || isClearAllVisible()) {
+        boolean hasTasks = hasTasks();
+        if (!hasTasks || isClearAllVisible()) {
+            LauncherInstrumentation.log("Not expecting an actions bar:"
+                    + (!hasTasks ? "no recent tasks" : "clear all button is visible"));
             return false;
         }
         boolean isTablet = mLauncher.isTablet();
         if (isTablet && mLauncher.isGridOnlyOverviewEnabled()) {
+            LauncherInstrumentation.log("Not expecting an actions bar: "
+                    + "device is tablet with grid-only Overview");
             return false;
         }
         OverviewTask task = isTablet ? getFocusedTaskForTablet() : getCurrentTask();
         if (task == null) {
+            LauncherInstrumentation.log("Not expecting an actions bar: no focused task");
             return false;
         }
+        float centerOffset = Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX());
         // In tablets, if focused task is not in center, overview actions aren't visible.
-        if (isTablet && Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX()) >= 1) {
+        if (isTablet && centerOffset >= 1) {
+            LauncherInstrumentation.log("Not expecting an actions bar: "
+                    + "device is tablet and task is not centered; center offset by "
+                    + centerOffset + "px");
             return false;
         }
-        // Overview actions aren't visible for split screen tasks.
-        return !task.isTaskSplit();
+        if (task.isTaskSplit() && (!mLauncher.isAppPairsEnabled() || !isTablet)) {
+            LauncherInstrumentation.log("Not expecting an actions bar: "
+                    + "device is phone and task is split");
+            // Overview actions aren't visible for split screen tasks, except for save app pair
+            // button on tablets.
+            return false;
+        }
+        LauncherInstrumentation.log("Expecting an actions bar");
+        return true;
+    }
+
+    /**
+     * Presses the esc key to dismiss Overview.
+     */
+    public Workspace dismissByEscKey() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
+            mLauncher.runToState(
+                    () -> mLauncher.getDevice().pressKeyCode(KEYCODE_ESCAPE),
+                    NORMAL_STATE_ORDINAL, "pressing esc key");
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed esc key")) {
+                return mLauncher.getWorkspace();
+            }
+        }
+    }
+
+    /**
+     * Presses the enter key to launch the focused task
+     * <p>
+     * If no task is focused, this will fail.
+     */
+    public LaunchedAppState launchFocusedTaskByEnterKey(@NonNull String expectedPackageName) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ENTER_UP);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
+
+            mLauncher.executeAndWaitForLauncherStop(
+                    () -> mLauncher.assertTrue(
+                            "Failed to press enter",
+                            mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_ENTER)),
+                    "pressing enter");
+            mLauncher.assertAppLaunched(expectedPackageName);
+
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed enter")) {
+                return new LaunchedAppState(mLauncher);
+            }
+        }
     }
 
     private void verifyActionsViewVisibility() {
+        // If no running tasks, no need to verify actions view visibility.
+        if (getTasks().isEmpty()) {
+            return;
+        }
+
+        boolean isTablet = mLauncher.isTablet();
+        OverviewTask task = isTablet ? getFocusedTaskForTablet() : getCurrentTask();
+
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to assert overview actions view visibility")) {
+                "want to assert overview actions view visibility="
+                        + isActionsViewVisible()
+                        + ", focused task is "
+                        + (task == null ? "null" : (task.isTaskSplit() ? "split" : "not split"))
+                )) {
+
             if (isActionsViewVisible()) {
-                mLauncher.waitForOverviewObject("action_buttons");
+                if (task.isTaskSplit()) {
+                    mLauncher.waitForOverviewObject("action_save_app_pair");
+                } else {
+                    mLauncher.waitForOverviewObject("action_buttons");
+                }
             } else {
                 mLauncher.waitUntilOverviewObjectGone("action_buttons");
+                mLauncher.waitUntilOverviewObjectGone("action_save_app_pair");
             }
         }
     }
@@ -361,13 +499,20 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             throw new IllegalStateException("Must be run on tablet device.");
         }
         final List<UiObject2> taskViews = getTasks();
-        if (taskViews.size() == 0) {
+        if (!hasTasks()) {
+            LauncherInstrumentation.log("no recent tasks");
             return null;
         }
         int focusedTaskHeight = mLauncher.getFocusedTaskHeightForTablet();
         for (UiObject2 task : taskViews) {
-            if (task.getVisibleBounds().height() == focusedTaskHeight) {
-                return new OverviewTask(mLauncher, task, this);
+            OverviewTask overviewTask = new OverviewTask(mLauncher, task, this);
+
+            LauncherInstrumentation.log("checking task height ("
+                    + overviewTask.getVisibleHeight()
+                    + ") against defined focused task height ("
+                    + focusedTaskHeight + ")");
+            if (overviewTask.getVisibleHeight() == focusedTaskHeight) {
+                return overviewTask;
             }
         }
         return null;

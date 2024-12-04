@@ -27,18 +27,31 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"સુરક્ષિત મોડમાં વિજેટ્સ અક્ષમ કર્યા"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"શૉર્ટકટ ઉપલબ્ધ નથી"</string>
     <string name="home_screen" msgid="5629429142036709174">"હોમ સ્ક્રીન"</string>
+    <string name="set_default_home_app" msgid="5808906607627586381">"સેટિંગમાં <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g>ને ડિફૉલ્ટ હોમ ઍપ તરીકે સેટ કરો"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"સ્ક્રીનને વિભાજિત કરો"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s માટે ઍપ માહિતી"</string>
+    <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$sના વપરાશ સંબંધિત સેટિંગ"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ઍપની જોડી સાચવો"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"આ ડિવાઇસ પર, આ ઍપની જોડીને સપોર્ટ આપવામાં આવતો નથી"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"આ ઍપની જોડીનો ઉપયોગ કરવા માટે, ડિવાઇસને અનફોલ્ડ કરો"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"ઍપની જોડી ઉપલબ્ધ નથી"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"વિજેટ ખસેડવા ટચ કરીને થોડી વાર દબાવી રાખો."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"વિજેટ ખસેડવા બે વાર ટૅપ કરીને દબાવી રાખો અથવા કસ્ટમ ક્રિયાઓનો ઉપયોગ કરો."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d પહોળાઈ X %2$d ઊંચાઈ"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> વિજેટ"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> વિજેટ, %2$d પહોળું x %3$d ઊંચું"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"વિજેટને હોમ સ્ક્રીનની આજુબાજુ ખસેડવા માટે, તેને ટચ કરીને થોડીવાર દબાવી રાખો"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"હોમ સ્ક્રીનમાં ઉમેરો"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"હોમ સ્ક્રીન પર <xliff:g id="WIDGET_NAME">%1$s</xliff:g> વિજેટ ઉમેર્યુ"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"સૂચનો"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"આવશ્યક"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"ન્યૂઝ અને સામાયિકો"</string>
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"મનોરંજન"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"સામાજિક"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"તમારા માટે સૂચવેલી સેવાઓ"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g>ની વિજેટ જમણે, શોધ અને વિકલ્પો ડાબે"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# વિજેટ}one{# વિજેટ}other{# વિજેટ}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# શૉર્ટકટ}one{# શૉર્ટકટ}other{# શૉર્ટકટ}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -51,10 +64,9 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ઑફિસ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"વાતચીતો"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"નોંધ લેવી"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"ઉપયોગી માહિતી તમારી આંગળીના ટેરવે"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"ઍપને ખોલ્યા વિના માહિતી મેળવવા માટે, તમે તમારી હોમ સ્ક્રીનમાં વિજેટ ઉમેરી શકો છો"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"ઉમેરો"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> વિજેટ ઉમેરો"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"વિજેટના સેટિંગ બદલવા માટે ટૅપ કરો"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"સમજાઈ ગયું"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"વિજેટના સેટિંગ બદલો"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ઍપ શોધો"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ઍપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
@@ -73,6 +85,8 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"કાઢી નાખો"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"અનઇન્સ્ટૉલ કરો"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ઍપની માહિતી"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"ખાનગીમાં ઇન્સ્ટૉલ કરો"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"ઍપ અનઇન્સ્ટૉલ કરો"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ઇન્સ્ટૉલ કરો"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ઍપ સૂચવશો નહીં"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"પૂર્વાનુમાનને પિન કરો"</string>
@@ -99,6 +113,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ફોલ્ડરનું નામ બદલીને <xliff:g id="NAME">%1$s</xliff:g> કર્યું"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> આઇટમ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ફોલ્ડર: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> કે વધુ આઇટમ"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"ઍપની જોડી: <xliff:g id="APP1">%1$s</xliff:g> અને <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"વૉલપેપર અને સ્ટાઇલ"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"હોમ સ્ક્રીનમાં ફેરફાર કરો"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ"</string>
@@ -123,6 +138,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ઇન્સ્ટૉલ કરી રહ્યાં છીએ, <xliff:g id="PROGRESS">%2$s</xliff:g> પૂર્ણ થયું"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ડાઉનલોડ કરી રહ્યાં છે, <xliff:g id="PROGRESS">%2$s</xliff:g> પૂર્ણ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>, ઇન્સ્ટૉલ થવાની રાહ જોઈ રહ્યું છે"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g>ને આર્કાઇવ કર્યું છે. ડાઉનલોડ અને રિસ્ટોર કરવા માટે ટૅપ કરો."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"ઍપને અપડેટ કરવી જરૂરી છે"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"આ આઇકન માટે ઍપ અપડેટ કરવામાં આવી નથી. તમે આ શૉર્ટકટ ફરી ચાલુ કરવા અથવા આઇકન કાઢી નાખવા માટે ઍપને મેન્યુઅલી અપડેટ કરી શકો છો."</string>
     <string name="dialog_update" msgid="2178028071796141234">"અપડેટ કરો"</string>
@@ -152,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"ઊંચાઈ ઘટાડો"</string>
     <string name="widget_resized" msgid="9130327887929620">"વિજેટનો આકાર બદલીને <xliff:g id="NUMBER_0">%1$s</xliff:g> પહોળાઈ <xliff:g id="NUMBER_1">%2$s</xliff:g> ઊંચાઈ કર્યો"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"શૉર્ટકટ્સ"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"શૉર્ટકટ અને નોટિફિકેશનો"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"છોડી દો"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"બંધ કરો"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"સૂચના છોડી દીધી"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"વ્યક્તિગત ઍપ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ઑફિસની ઍપ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ઑફિસની પ્રોફાઇલ"</string>
@@ -170,7 +184,15 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ઑફિસની ઍપ થોભાવો"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ફરી ચાલુ કરો"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ફિલ્ટર કરો"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"તમારો ફોન શોધો"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"તમારું ટૅબ્લેટ શોધો"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"નિષ્ફળ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"ખાનગી સ્પેસ"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"સેટઅપ કરવા કે ખોલવા માટે ટૅપ કરો"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"ખાનગી"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"ખાનગી સ્પેસના સેટિંગ"</string>
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"ખાનગી સ્પેસ, અનલૉક કરેલી છે."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"ખાનગી સ્પેસ, લૉક કરેલી છે."</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"લૉક"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"ખાનગી સ્પેસ પર સ્થાનાંતરણ"</string>
+    <string name="ps_add_button_label" msgid="8127988716897128773">"ઇન્સ્ટૉલ કરો"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"ખાનગી સ્પેસમાં ઍપ ઇન્સ્ટૉલ કરો"</string>
 </resources>

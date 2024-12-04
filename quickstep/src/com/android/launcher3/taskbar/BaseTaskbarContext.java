@@ -20,8 +20,6 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
-import com.android.launcher3.LauncherPrefs;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 
@@ -34,12 +32,10 @@ public abstract class BaseTaskbarContext extends ContextThemeWrapper implements 
 
     protected final LayoutInflater mLayoutInflater;
     private final List<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
-    private final OnboardingPrefs<BaseTaskbarContext> mOnboardingPrefs;
 
     public BaseTaskbarContext(Context windowContext) {
         super(windowContext, Themes.getActivityThemeRes(windowContext));
         mLayoutInflater = LayoutInflater.from(this).cloneInContext(this);
-        mOnboardingPrefs = new OnboardingPrefs<>(this, LauncherPrefs.getPrefs(this));
     }
 
     @Override
@@ -50,11 +46,6 @@ public abstract class BaseTaskbarContext extends ContextThemeWrapper implements 
     @Override
     public final List<OnDeviceProfileChangeListener> getOnDeviceProfileChangeListeners() {
         return mDPChangeListeners;
-    }
-
-    @Override
-    public OnboardingPrefs<BaseTaskbarContext> getOnboardingPrefs() {
-        return mOnboardingPrefs;
     }
 
     /** Callback invoked when a drag is initiated within this context. */

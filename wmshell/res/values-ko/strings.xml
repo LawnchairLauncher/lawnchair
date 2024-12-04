@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"닫기"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"펼치기"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"설정"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"메뉴"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"PIP 모드 메뉴"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g>에서 PIP 사용 중"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"<xliff:g id="NAME">%s</xliff:g>에서 이 기능이 사용되는 것을 원하지 않는 경우 탭하여 설정을 열고 기능을 사용 중지하세요."</string>
+    <string name="pip_play" msgid="3496151081459417097">"재생"</string>
+    <string name="pip_pause" msgid="690688849510295232">"일시중지"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"다음으로 건너뛰기"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"이전으로 건너뛰기"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"크기 조절"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"숨기기"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"숨기기 취소"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"앱이 화면 분할 모드로는 작동하지 않을 수 있습니다"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"앱이 화면 분할을 지원하지 않습니다"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"이 앱은 창 1개에서만 열 수 있습니다."</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"앱이 보조 디스플레이에서 작동하지 않을 수도 있습니다."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"앱이 보조 디스플레이에서의 실행을 지원하지 않습니다."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"화면 분할기"</string>
+    <string name="divider_title" msgid="1963391955593749442">"화면 분할기"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"왼쪽 화면 전체화면"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"왼쪽 화면 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"왼쪽 화면 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"왼쪽 화면 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"오른쪽 화면 전체화면"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"위쪽 화면 전체화면"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"위쪽 화면 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"위쪽 화면 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"위쪽 화면 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"아래쪽 화면 전체화면"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"왼쪽으로 분할"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"오른쪽으로 분할"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"위쪽으로 분할"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"아래쪽으로 분할"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"한 손 사용 모드 사용하기"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"화면 하단에서 위로 스와이프하거나 앱 상단을 탭하여 종료합니다."</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"한 손 사용 모드 시작"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"한 손 사용 모드 종료"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g> 대화창 설정"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"더보기"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"스택에 다시 추가"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="APP_NAME">%2$s</xliff:g>의 <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="APP_NAME">%2$s</xliff:g> 외 <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g>개의 <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"왼쪽 상단으로 이동"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"오른쪽 상단으로 이동"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"왼쪽 하단으로 이동"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"오른쪽 하단으로 이동"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> 펼치기"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> 접기"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> 설정"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"대화창 닫기"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"대화를 대화창으로 표시하지 않기"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"대화창으로 채팅하기"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"새로운 대화가 플로팅 아이콘인 대화창으로 표시됩니다. 대화창을 열려면 탭하세요. 드래그하여 이동할 수 있습니다."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"언제든지 대화창을 제어하세요"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"이 앱에서 대화창을 사용 중지하려면 관리를 탭하세요."</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"확인"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"최근 대화창 없음"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"최근 대화창과 내가 닫은 대화창이 여기에 표시됩니다."</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"대화창으로 채팅하기"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"새 대화는 화면 하단에 아이콘으로 표시됩니다. 아이콘을 탭하여 펼치거나 드래그하여 닫습니다."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"언제든지 대화창을 제어하세요"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"대화창을 만들 수 있는 앱과 대화를 관리하려면 여기를 탭하세요."</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"버블"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"관리"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"대화창을 닫았습니다."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"대화창"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"대화창 표시"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"탭하면 앱을 다시 시작하여 보기를 개선합니다."</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"설정에서 앱의 가로세로 비율을 변경합니다."</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"가로세로 비율 변경"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"카메라 문제가 있나요?\n해결하려면 탭하세요."</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"해결되지 않았나요?\n되돌리려면 탭하세요."</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"카메라에 문제가 없나요? 닫으려면 탭하세요."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"더 많은 정보를 보고 더 많은 작업을 처리하세요"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"화면 분할을 사용하려면 다른 앱을 드래그해 가져옵니다."</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"앱 위치를 조정하려면 앱 외부를 두 번 탭합니다."</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"확인"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"추가 정보는 펼쳐서 확인하세요."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"화면에 맞게 보이도록 다시 시작할까요?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"앱을 다시 시작하면 화면에 더 잘 맞게 볼 수는 있지만 진행 상황 또는 저장되지 않은 변경사항을 잃을 수도 있습니다."</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"취소"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"다시 시작"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"다시 표시 안함"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"두 번 탭하여\n이 앱 이동"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"최대화"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"최소화"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"닫기"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"뒤로"</string>
+    <string name="handle_text" msgid="1766582106752184456">"핸들"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"앱 아이콘"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"전체 화면"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"데스크톱 모드"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"화면 분할"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"더보기"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"플로팅"</string>
+    <string name="select_text" msgid="5139083974039906583">"선택"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"스크린샷"</string>
+    <string name="close_text" msgid="4986518933445178928">"닫기"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"메뉴 닫기"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"메뉴 열기"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"화면 최대화"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"화면 분할"</string>
+</resources>

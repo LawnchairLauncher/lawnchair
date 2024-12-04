@@ -15,10 +15,12 @@
   -->
 <!-- missing height spec -->
 <folderSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
-    <folderSpec launcher:specType="width" launcher:maxAvailableSize="800dp">
-        <startPadding launcher:fixedSize="16dp" />
-        <endPadding launcher:fixedSize="16dp" />
-        <gutter launcher:fixedSize="16dp" />
-        <cellSize launcher:matchWorkspace="true" />
-    </folderSpec>
+    <specs launcher:maxAspectRatio="10">
+        <folderSpec launcher:dimensionType="width" launcher:maxAvailableSize="800dp">
+            <startPadding launcher:fixedSize="16dp" />
+            <endPadding launcher:fixedSize="16dp" />
+            <gutter launcher:fixedSize="16dp" />
+            <cellSize launcher:matchWorkspace="true" />
+        </folderSpec>
+    </specs>
 </folderSpecs>

@@ -31,7 +31,7 @@ class ResponsiveCellSpecsProvider(groupOfSpecs: List<ResponsiveSpecGroup<CellSpe
             groupOfSpecs
                 .onEach { group ->
                     check(group.widthSpecs.isEmpty() && group.heightSpecs.isNotEmpty()) {
-                        "${this::class.simpleName} is invalid, only heightSpecs are allowed - " +
+                        "$LOG_TAG is invalid, only heightSpecs are allowed - " +
                             "width list size = ${group.widthSpecs.size}; " +
                             "height list size = ${group.heightSpecs.size}."
                     }
@@ -65,6 +65,7 @@ class ResponsiveCellSpecsProvider(groupOfSpecs: List<ResponsiveSpecGroup<CellSpe
     }
 
     companion object {
+        private const val LOG_TAG = "ResponsiveCellSpecsProvider"
         @JvmStatic
         fun create(resourceHelper: ResourceHelper): ResponsiveCellSpecsProvider {
             val parser = ResponsiveSpecsParser(resourceHelper)
@@ -137,11 +138,11 @@ data class CellSpec(
     }
 
     private fun logError(message: String) {
-        Log.e(LOG_TAG, "${this::class.simpleName}#isValid - $message - $this")
+        Log.e(LOG_TAG, "$LOG_TAG#isValid - $message - $this")
     }
 
     companion object {
-        private const val LOG_TAG = "CellSpec"
+        const val LOG_TAG = "CellSpec"
     }
 }
 
@@ -182,6 +183,7 @@ data class CalculatedCellSpec(
     )
 
     companion object {
+        private const val LOG_TAG = "CalculatedCellSpec"
         private fun getCalculatedValue(
             availableSpace: Int,
             spec: SizeSpec,
@@ -191,10 +193,10 @@ data class CalculatedCellSpec(
     }
 
     override fun toString(): String {
-        return "${this::class.simpleName}(" +
+        return "$LOG_TAG(" +
             "availableSpace=$availableSpace, iconSize=$iconSize, " +
             "iconTextSize=$iconTextSize, iconDrawablePadding=$iconDrawablePadding, " +
-            "${spec::class.simpleName}.maxAvailableSize=${spec.maxAvailableSize}" +
+            "${CellSpec.LOG_TAG}.maxAvailableSize=${spec.maxAvailableSize}" +
             ")"
     }
 }

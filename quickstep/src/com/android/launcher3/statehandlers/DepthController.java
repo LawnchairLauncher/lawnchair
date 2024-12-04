@@ -73,9 +73,14 @@ public class DepthController extends BaseDepthController implements StateHandler
     private void onLauncherDraw() {
         View view = mLauncher.getDragLayer();
         ViewRootImpl viewRootImpl = view.getViewRootImpl();
-        if (Utilities.ATLEAST_Q) {
-            setSurface(viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null);
+        try {
+            if (Utilities.ATLEAST_Q) {
+                setSurface(viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null);
+            }
+        } catch (Throwable t) {
+
         }
+
         view.post(() -> view.getViewTreeObserver().removeOnDrawListener(mOnDrawListener));
     }
 
@@ -85,9 +90,11 @@ public class DepthController extends BaseDepthController implements StateHandler
             mOnAttachListener = new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View view) {
-                    if (LawnchairQuickstepCompat.ATLEAST_S) {
+                    try {
                         CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
                                 mCrossWindowBlurListener);
+                    } catch (Throwable t) {
+                        // Ignore
                     }
 
                     mLauncher.getScrimView().addOpaquenessListener(mOpaquenessListener);
@@ -122,8 +129,12 @@ public class DepthController extends BaseDepthController implements StateHandler
     }
 
     private void removeSecondaryListeners() {
-        if (mCrossWindowBlurListener != null && LawnchairQuickstepCompat.ATLEAST_S) {
-            CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+        if (mCrossWindowBlurListener != null) {
+            try {
+                CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+            } catch (Throwable t) {
+                // Ignore
+            }
         }
         if (mOpaquenessListener != null) {
             mLauncher.getScrimView().removeOpaquenessListener(mOpaquenessListener);
@@ -203,7 +214,7 @@ public class DepthController extends BaseDepthController implements StateHandler
     }
 
     public void dump(String prefix, PrintWriter writer) {
-        writer.println(prefix + this.getClass().getSimpleName());
+        writer.println(prefix + "DepthController");
         writer.println(prefix + "\tmMaxBlurRadius=" + mMaxBlurRadius);
         writer.println(prefix + "\tmCrossWindowBlursEnabled=" + mCrossWindowBlursEnabled);
         writer.println(prefix + "\tmSurface=" + mSurface);

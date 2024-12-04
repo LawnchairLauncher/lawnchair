@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"Tutup"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"Kembangkan"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"Tetapan"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"Menu"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"Menu Gambar dalam Gambar"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> terdapat dalam gambar dalam gambar"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"Jika anda tidak mahu <xliff:g id="NAME">%s</xliff:g> menggunakan ciri ini, ketik untuk membuka tetapan dan matikan ciri."</string>
+    <string name="pip_play" msgid="3496151081459417097">"Main"</string>
+    <string name="pip_pause" msgid="690688849510295232">"Jeda"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"Langkau ke seterusnya"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"Langkau ke sebelumnya"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"Ubah saiz"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"Sembunyikan"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"Tunjukkan"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"Apl mungkin tidak berfungsi dengan skrin pisah"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"Apl tidak menyokong skrin pisah"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"Apl ini hanya boleh dibuka dalam 1 tetingkap"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"Apl mungkin tidak berfungsi pada paparan kedua."</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"Apl tidak menyokong pelancaran pada paparan kedua."</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"Pembahagi skrin pisah"</string>
+    <string name="divider_title" msgid="1963391955593749442">"Pembahagi skrin pisah"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"Skrin penuh kiri"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"Kiri 70%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"Kiri 50%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"Kiri 30%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Skrin penuh kanan"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Skrin penuh atas"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"Atas 70%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"Atas 50%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"Atas 30%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"Skrin penuh bawah"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"Pisah kiri"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"Pisah kanan"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"Pisah atas"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"Pisah bawah"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"Menggunakan mod sebelah tangan"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"Untuk keluar, leret ke atas daripada bahagian bawah skrin atau ketik pada mana-mana di bahagian atas apl"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"Mulakan mod sebelah tangan"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"Keluar daripada mod sebelah tangan"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"Tetapan untuk gelembung <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"Limpahan"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"Tambah kembali pada tindanan"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> daripada <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> daripada <xliff:g id="APP_NAME">%2$s</xliff:g> dan <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> lagi"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"Alihkan ke atas sebelah kiri"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Alihkan ke atas sebelah kanan"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Alihkan ke bawah sebelah kiri"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Alihkan ke bawah sebelah kanan"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"kembangkan <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"kuncupkan <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"Tetapan <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"Ketepikan gelembung"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Jangan jadikan perbualan dalam bentuk gelembung"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"Bersembang menggunakan gelembung"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"Perbualan baharu muncul sebagai ikon terapung atau gelembung. Ketik untuk membuka gelembung. Seret untuk mengalihkan gelembung tersebut."</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"Kawal gelembung pada bila-bila masa"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"Ketik Urus untuk mematikan gelembung daripada apl ini"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"OK"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"Tiada gelembung terbaharu"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"Gelembung baharu dan gelembung yang diketepikan akan dipaparkan di sini"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"Bersembang menggunakan gelembung"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"Perbualan baharu dipaparkan sebagai ikon pada penjuru sebelah bawah skrin anda. Ketik untuk mengembangkan perbualan atau seret untuk mengetepikan perbualan."</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"Kawal gelembung pada bila-bila masa"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"Ketik di sini untuk mengurus apl dan perbualan yang boleh menggunakan gelembung"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"Gelembung"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"Urus"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"Gelembung diketepikan."</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"Gelembung"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"Tunjukkan Gelembung"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"Ketik untuk memulakan semula apl ini untuk mendapatkan paparan yang lebih baik"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"Tukar nisbah bidang apl ini dalam Tetapan"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"Tukar nisbah bidang"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Isu kamera?\nKetik untuk memuatkan semula"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Isu tidak dibetulkan?\nKetik untuk kembali"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Tiada isu kamera? Ketik untuk mengetepikan."</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Lihat dan lakukan lebih"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Seret masuk apl lain untuk menggunakan skrin pisah"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Ketik dua kali di luar apl untuk menempatkan semula apl itu"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"OK"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"Kembangkan untuk mendapatkan maklumat lanjut."</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"Mulakan semula untuk mendapatkan paparan yang lebih baik?"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"Anda boleh memulakan semula apl supaya apl kelihatan lebih baik pada skrin anda tetapi anda mungkin akan hilang kemajuan anda atau apa-apa perubahan yang belum disimpan"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"Batal"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"Mulakan semula"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Jangan tunjukkan lagi"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Ketik dua kali untuk\nalih apl ini"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"Maksimumkan"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"Minimumkan"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"Tutup"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"Kembali"</string>
+    <string name="handle_text" msgid="1766582106752184456">"Pemegang"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"Ikon Apl"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"Skrin penuh"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"Mod Desktop"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"Skrin Pisah"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"Lagi"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"Terapung"</string>
+    <string name="select_text" msgid="5139083974039906583">"Pilih"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"Tangkapan skrin"</string>
+    <string name="close_text" msgid="4986518933445178928">"Tutup"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"Tutup Menu"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"Buka Menu"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Maksimumkan Skrin"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Tangkap Skrin"</string>
+</resources>

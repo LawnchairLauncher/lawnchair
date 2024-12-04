@@ -1,0 +1,39 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp'
+}
+
+android {
+    namespace "com.android.systemui.shared"
+    buildFeatures {
+        aidl true
+    }
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            manifest.srcFile 'AndroidManifest.xml'
+            res.srcDirs = ['res']
+        }
+    }
+    ksp {
+        arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
+    }
+}
+
+addFrameworkJar('framework-15.jar')
+compileOnlyCommonJars()
+
+dependencies {
+    compileOnly projects.hiddenApi
+    compileOnly projects.unfold
+    compileOnly projects.plugin
+    compileOnly projects.plugincore
+    compileOnly projects.flags
+
+    implementation "com.google.dagger:hilt-android:$daggerVersion"
+    ksp "com.google.dagger:hilt-compiler:$daggerVersion"
+
+    implementation "androidx.concurrent:concurrent-futures:1.2.0"
+}

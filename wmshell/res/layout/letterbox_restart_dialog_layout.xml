@@ -1,0 +1,140 @@
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<com.android.wm.shell.compatui.RestartDialogLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/LetterboxDialog">
+
+    <!-- The background of the top-level layout acts as the background dim. -->
+
+    <!-- Vertical margin will be set dynamically since it depends on task bounds.
+         Setting the alpha of the dialog container to 0, since it shouldn't be visible until the
+         enter animation starts. -->
+    <FrameLayout
+        android:id="@+id/letterbox_restart_dialog_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/letterbox_restart_dialog_margin"
+        android:background="@drawable/letterbox_restart_dialog_background"
+        android:alpha="0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_max="@dimen/letterbox_restart_dialog_width">
+
+        <!-- The ScrollView should only wrap the content of the dialog, otherwise the background
+             corner radius will be cut off when scrolling to the top/bottom. -->
+
+        <ScrollView android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:padding="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:importantForAccessibility="no"
+                    android:layout_width="@dimen/letterbox_restart_dialog_title_icon_width"
+                    android:layout_height="@dimen/letterbox_restart_dialog_title_icon_height"
+                    android:src="@drawable/letterbox_restart_header_ic_arrows"/>
+
+                <TextView
+                    android:layout_marginVertical="16dp"
+                    android:id="@+id/letterbox_restart_dialog_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/letterbox_restart_dialog_title"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/RestartDialogTitleText"/>
+
+                <TextView
+                    android:textAppearance="@style/RestartDialogBodyText"
+                    android:id="@+id/letterbox_restart_dialog_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/letterbox_restart_dialog_description"
+                    android:textAlignment="center"/>
+
+                <LinearLayout
+                    android:id="@+id/letterbox_restart_dialog_checkbox_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="14dp"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="18dp">
+
+                    <CheckBox
+                        android:id="@+id/letterbox_restart_dialog_checkbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/letterbox_restart_checkbox_button"/>
+
+                    <TextView
+                        android:textAppearance="@style/RestartDialogCheckboxText"
+                        android:layout_marginStart="12dp"
+                        android:id="@+id/letterbox_restart_dialog_checkbox_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/letterbox_restart_dialog_checkbox_title"
+                        android:textAlignment="textStart"/>
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:minHeight="@dimen/letterbox_restart_dialog_button_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:textAppearance="@style/RestartDialogDismissButton"
+                        android:id="@+id/letterbox_restart_dialog_dismiss_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="@dimen/letterbox_restart_dialog_button_width"
+                        android:minHeight="@dimen/letterbox_restart_dialog_button_height"
+                        android:layout_gravity="start"
+                        android:background=
+                            "@drawable/letterbox_restart_dismiss_button_background_ripple"
+                        android:text="@string/letterbox_restart_cancel"
+                        android:contentDescription="@string/letterbox_restart_cancel"/>
+
+                    <Button
+                        android:textAppearance="@style/RestartDialogConfirmButton"
+                        android:id="@+id/letterbox_restart_dialog_restart_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="@dimen/letterbox_restart_dialog_button_width"
+                        android:minHeight="@dimen/letterbox_restart_dialog_button_height"
+                        android:layout_gravity="end"
+                        android:background=
+                            "@drawable/letterbox_restart_button_background_ripple"
+                        android:text="@string/letterbox_restart_restart"
+                        android:contentDescription="@string/letterbox_restart_restart"/>
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+</com.android.wm.shell.compatui.RestartDialogLayout>

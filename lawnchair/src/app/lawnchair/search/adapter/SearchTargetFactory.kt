@@ -51,9 +51,9 @@ class SearchTargetFactory(
             if (asRow) LayoutType.SMALL_ICON_HORIZONTAL_TEXT else LayoutType.ICON_SINGLE_VERTICAL_TEXT,
             generateHashKey(ComponentKey(componentName, user).toString()),
         ).apply {
-            setPackageName(componentName.packageName)
+            setPackageName(componentName?.packageName ?: "")
             setUserHandle(user)
-            setExtras(bundleOf("class" to componentName.className))
+            setExtras(bundleOf("class" to (componentName?.className ?: "")))
         }.build()
     }
 

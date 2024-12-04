@@ -51,7 +51,7 @@ public interface ComponentWithLabelAndIcon extends ComponentWithLabel {
                 return super.loadIcon(context, object);
             }
             try (LauncherIcons li = LauncherIcons.obtain(context)) {
-                return li.createBadgedIconBitmap(d, Process.myUserHandle (), false);
+                return li.createBadgedIconBitmap(d);
             }
         }
     }

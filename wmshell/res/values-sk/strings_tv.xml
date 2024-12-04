@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="notification_channel_tv_pip" msgid="2576686079160402435">"Obraz v obraze"</string>
+    <string name="pip_notification_unknown_title" msgid="2729870284350772311">"(Program bez názvu)"</string>
+    <string name="pip_close" msgid="2955969519031223530">"Zavrieť"</string>
+    <string name="pip_fullscreen" msgid="7278047353591302554">"Celá obrazovka"</string>
+    <string name="pip_move" msgid="158770205886688553">"Presunúť"</string>
+    <string name="pip_expand" msgid="1051966011679297308">"Rozbaliť"</string>
+    <string name="pip_collapse" msgid="3903295106641385962">"Zbaliť"</string>
+    <string name="pip_edu_text" msgid="7930546669915337998">"Ovládanie zobrazíte dvojitým stlačením "<annotation icon="home_icon">"DOMOV"</annotation></string>
+    <string name="a11y_pip_menu_entered" msgid="5106343214776801614">"Ponuka obrazu v obraze."</string>
+    <string name="a11y_action_pip_move_left" msgid="6612980937817141583">"Posunúť doľava"</string>
+    <string name="a11y_action_pip_move_right" msgid="1119409122645529936">"Posunúť doprava"</string>
+    <string name="a11y_action_pip_move_up" msgid="98502616918621959">"Posunúť nahor"</string>
+    <string name="a11y_action_pip_move_down" msgid="3858802832725159740">"Posunúť nadol"</string>
+    <string name="a11y_action_pip_move_done" msgid="1486845365134416210">"Hotovo"</string>
+</resources>

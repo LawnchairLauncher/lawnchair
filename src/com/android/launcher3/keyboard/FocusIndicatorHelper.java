@@ -20,7 +20,9 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 
 /**
  * A helper class to draw background of a focused view.
@@ -29,7 +31,11 @@ public abstract class FocusIndicatorHelper extends ItemFocusIndicatorHelper<View
         implements OnFocusChangeListener {
 
     public FocusIndicatorHelper(View container) {
-        super(container, container.getResources().getColor(R.color.focused_background));
+        super(container,
+                Flags.enableFocusOutline() ? new int[]{Themes.getAttrColor(container.getContext(),
+                        R.attr.focusOutlineColor), Themes.getAttrColor(container.getContext(),
+                        R.attr.focusInnerOutlineColor)}
+                        : new int[]{container.getResources().getColor(R.color.focused_background)});
     }
 
     @Override

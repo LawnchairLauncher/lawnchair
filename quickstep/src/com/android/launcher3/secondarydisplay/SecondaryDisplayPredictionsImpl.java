@@ -22,7 +22,6 @@ import android.content.Context;
 import com.android.launcher3.appprediction.AppsDividerView;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.model.BgDataModel;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -30,22 +29,21 @@ import com.android.launcher3.views.ActivityContext;
  */
 @SuppressWarnings("unused")
 public final class SecondaryDisplayPredictionsImpl extends SecondaryDisplayPredictions {
+
     private final ActivityContext mActivityContext;
+    private final Context mContext;
 
     public SecondaryDisplayPredictionsImpl(Context context) {
+        mContext = context;
         mActivityContext = ActivityContext.lookupContext(context);
     }
 
     @Override
     void updateAppDivider() {
-        OnboardingPrefs<?> onboardingPrefs = mActivityContext.getOnboardingPrefs();
-        if (onboardingPrefs != null) {
-            mActivityContext.getAppsView().getFloatingHeaderView()
-                    .findFixedRowByType(AppsDividerView.class)
-                    .setShowAllAppsLabel(
-                            !onboardingPrefs.hasReachedMaxCount(ALL_APPS_VISITED_COUNT));
-            onboardingPrefs.incrementEventCount(ALL_APPS_VISITED_COUNT);
-        }
+        mActivityContext.getAppsView().getFloatingHeaderView()
+                .findFixedRowByType(AppsDividerView.class)
+                .setShowAllAppsLabel(!ALL_APPS_VISITED_COUNT.hasReachedMax(mContext));
+        ALL_APPS_VISITED_COUNT.increment(mContext);
     }
 
     @Override

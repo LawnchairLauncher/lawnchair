@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.tapl;
 
-/** Launchable that can serve as a source for dragging and dropping to splitscreen. */
+/** {@link Launchable} that can serve as a source for dragging and dropping to splitscreen. */
 interface SplitscreenDragSource {
 
     /**
@@ -35,5 +35,6 @@ interface SplitscreenDragSource {
         }
     }
 
+    /** This method requires public access, however should not be called in tests. */
     Launchable getLaunchable();
 }

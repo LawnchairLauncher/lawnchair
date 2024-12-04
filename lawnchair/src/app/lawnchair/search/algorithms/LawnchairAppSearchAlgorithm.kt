@@ -8,10 +8,11 @@ import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetFactory
 import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherModel
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.model.AllAppsList
-import com.android.launcher3.model.BaseModelUpdateTask
 import com.android.launcher3.model.BgDataModel
+import com.android.launcher3.model.ModelTaskController
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Executors
@@ -54,8 +55,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     }
 
     override fun doSearch(query: String, callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
-        appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
-            override fun execute(app: LauncherAppState, dataModel: BgDataModel, apps: AllAppsList) {
+        appState.model.enqueueModelUpdateTask(object : LauncherModel.ModelUpdateTask {
+            override fun execute(app: ModelTaskController, dataModel: BgDataModel, apps: AllAppsList) {
                 coroutineScope.launch(Dispatchers.Main) {
                     val results = getResult(apps.data, query)
                     callback.onSearchResult(query, results)

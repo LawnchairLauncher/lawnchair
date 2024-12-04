@@ -23,6 +23,8 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,10 +42,14 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.util.function.Consumer;
 
+import kotlin.Unit;
+
 /**
  * A view that displays a recent task during a keyboard quick switch.
  */
 public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
+
+    private static final float THUMBNAIL_BLUR_RADIUS = 1f;
 
     @ColorInt
     private final int mBorderColor;
@@ -94,26 +100,27 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mThumbnailView1 = findViewById(R.id.thumbnail1);
-        mThumbnailView2 = findViewById(R.id.thumbnail2);
-        mIcon1 = findViewById(R.id.icon1);
-        mIcon2 = findViewById(R.id.icon2);
+        mThumbnailView1 = findViewById(R.id.thumbnail_1);
+        mThumbnailView2 = findViewById(R.id.thumbnail_2);
+        mIcon1 = findViewById(R.id.icon_1);
+        mIcon2 = findViewById(R.id.icon_2);
         mContent = findViewById(R.id.content);
 
         Resources resources = mContext.getResources();
 
         Preconditions.assertNotNull(mContent);
-        mBorderAnimator = new BorderAnimator(
+        mBorderAnimator = BorderAnimator.createScalingBorderAnimator(
                 /* borderRadiusPx= */ resources.getDimensionPixelSize(
                         R.dimen.keyboard_quick_switch_task_view_radius),
-                /* borderColor= */ mBorderColor,
-                /* borderAnimationParams= */ new BorderAnimator.ScalingParams(
-                        /* borderWidthPx= */ resources.getDimensionPixelSize(
-                                R.dimen.keyboard_quick_switch_border_width),
-                        /* boundsBuilder= */ bounds -> bounds.set(
-                                0, 0, getWidth(), getHeight()),
-                        /* targetView= */ this,
-                        /* contentView= */ mContent));
+                /* borderWidthPx= */ resources.getDimensionPixelSize(
+                        R.dimen.keyboard_quick_switch_border_width),
+                /* boundsBuilder= */ bounds -> {
+                    bounds.set(0, 0, getWidth(), getHeight());
+                    return Unit.INSTANCE;
+                },
+                /* targetView= */ this,
+                /* contentView= */ mContent,
+                /* borderColor= */ mBorderColor);
     }
 
     @Nullable
@@ -171,34 +178,44 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
             @Nullable ImageView thumbnailView,
             @Nullable Task task,
             @Nullable ThumbnailUpdateFunction updateFunction) {
-        if (thumbnailView == null) {
-            return;
-        }
-        if (task == null) {
+        if (thumbnailView == null || task == null) {
             return;
         }
         if (updateFunction == null) {
-            applyThumbnail(thumbnailView, task.thumbnail);
+            applyThumbnail(thumbnailView, task.colorBackground, task.thumbnail);
             return;
         }
-        updateFunction.updateThumbnailInBackground(
-                task, thumbnailData -> applyThumbnail(thumbnailView, thumbnailData));
+        updateFunction.updateThumbnailInBackground(task,
+                thumbnailData -> applyThumbnail(thumbnailView, task.colorBackground, thumbnailData));
     }
 
     private void applyThumbnail(
-            @NonNull ImageView thumbnailView, ThumbnailData thumbnailData) {
-        Bitmap bm = thumbnailData == null ? null : thumbnailData.thumbnail;
+            @NonNull ImageView thumbnailView,
+            @ColorInt int backgroundColor,
+            @Nullable ThumbnailData thumbnailData) {
+        Bitmap bm = thumbnailData == null ? null : thumbnailData.getThumbnail();
 
-        thumbnailView.setVisibility(VISIBLE);
-        thumbnailView.setImageBitmap(bm);
+        if (thumbnailView.getVisibility() != VISIBLE) {
+            thumbnailView.setVisibility(VISIBLE);
+        }
+        thumbnailView.getBackground().setTint(bm == null ? backgroundColor : Color.TRANSPARENT);
+        thumbnailView.setImageDrawable(new BlurredBitmapDrawable(bm, THUMBNAIL_BLUR_RADIUS));
     }
 
     private void applyIcon(@Nullable ImageView iconView, @Nullable Task task) {
-        if (iconView == null || task == null) {
+        if (iconView == null || task == null || task.icon == null) {
             return;
         }
-        iconView.setVisibility(VISIBLE);
-        iconView.setImageDrawable(task.icon);
+        Drawable.ConstantState constantState = task.icon.getConstantState();
+        if (constantState == null) {
+            return;
+        }
+        if (iconView.getVisibility() != VISIBLE) {
+            iconView.setVisibility(VISIBLE);
+        }
+        // Use the bitmap directly since the drawable's scale can change
+        iconView.setImageDrawable(
+                constantState.newDrawable(getResources(), getContext().getTheme()));
     }
 
     protected interface ThumbnailUpdateFunction {

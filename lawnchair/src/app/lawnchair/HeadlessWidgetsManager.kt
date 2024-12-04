@@ -11,6 +11,7 @@ import android.widget.RemoteViews
 import androidx.core.content.edit
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.awaitClose
@@ -22,7 +23,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.plus
 
-class HeadlessWidgetsManager(private val context: Context) {
+class HeadlessWidgetsManager(private val context: Context) : SafeCloseable {
 
     private val scope = MainScope() + CoroutineName("HeadlessWidgetsManager")
     private val prefs = Utilities.getDevicePrefs(context)
@@ -48,6 +49,10 @@ class HeadlessWidgetsManager(private val context: Context) {
             return emptyFlow()
         }
         return widget.updates
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
     }
 
     private class HeadlessAppWidgetHost(context: Context) : AppWidgetHost(context, 1028) {

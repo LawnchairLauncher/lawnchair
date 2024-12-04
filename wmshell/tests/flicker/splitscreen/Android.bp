@@ -1,0 +1,82 @@
+//
+// Copyright (C) 2020 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+package {
+    // See: http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // all of the 'license_kinds' from "frameworks_base_license"
+    // to get the below license kinds:
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["frameworks_base_license"],
+}
+
+filegroup {
+    name: "WMShellFlickerTestsSplitScreenBase-src",
+    srcs: [
+        "src/**/benchmark/*.kt",
+    ],
+}
+
+filegroup {
+    name: "WMShellFlickerTestsSplitScreenGroup1-src",
+    srcs: [
+        "src/**/A*.kt",
+        "src/**/B*.kt",
+        "src/**/C*.kt",
+        "src/**/D*.kt",
+        "src/**/E*.kt",
+    ],
+}
+
+filegroup {
+    name: "WMShellFlickerTestsSplitScreenGroup2-src",
+    srcs: [
+        "src/**/*.kt",
+    ],
+}
+
+android_test {
+    name: "WMShellFlickerTestsSplitScreenGroup1",
+    defaults: ["WMShellFlickerTestsDefault"],
+    manifest: "AndroidManifest.xml",
+    package_name: "com.android.wm.shell.flicker.splitscreen",
+    instrumentation_target_package: "com.android.wm.shell.flicker.splitscreen",
+    test_config_template: "AndroidTestTemplate.xml",
+    srcs: [
+        ":WMShellFlickerTestsSplitScreenBase-src",
+        ":WMShellFlickerTestsSplitScreenGroup1-src",
+    ],
+    static_libs: ["WMShellFlickerTestsBase"],
+    data: ["trace_config/*"],
+}
+
+android_test {
+    name: "WMShellFlickerTestsSplitScreenGroup2",
+    defaults: ["WMShellFlickerTestsDefault"],
+    manifest: "AndroidManifest.xml",
+    package_name: "com.android.wm.shell.flicker.splitscreen",
+    instrumentation_target_package: "com.android.wm.shell.flicker.splitscreen",
+    test_config_template: "AndroidTestTemplate.xml",
+    srcs: [
+        ":WMShellFlickerTestsSplitScreenBase-src",
+        ":WMShellFlickerTestsSplitScreenGroup2-src",
+    ],
+    exclude_srcs: [
+        ":WMShellFlickerTestsSplitScreenGroup1-src",
+    ],
+    static_libs: ["WMShellFlickerTestsBase"],
+    data: ["trace_config/*"],
+}

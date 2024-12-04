@@ -14,25 +14,26 @@
   ~ limitations under the License.
   -->
 <allAppsSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
-    <allAppsSpec
-        launcher:specType="height"
-        launcher:maxAvailableSize="9999dp">
-        <startPadding launcher:fixedSize="0dp" />
-        <endPadding launcher:fixedSize="0dp" />
-        <!--  more than 1 value in one tag -->
-        <gutter
-            launcher:matchWorkspace="true"
-            launcher:fixedSize="16dp" />
-        <cellSize launcher:matchWorkspace="true" />
-    </allAppsSpec>
+    <specs launcher:maxAspectRatio="10">
+        <allAppsSpec
+            launcher:dimensionType="height"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:fixedSize="0dp" />
+            <endPadding launcher:fixedSize="0dp" />
+            <!--  more than 1 value in one tag -->
+            <gutter
+                launcher:matchWorkspace="true"
+                launcher:fixedSize="16dp" />
+            <cellSize launcher:matchWorkspace="true" />
+        </allAppsSpec>
 
-    <allAppsSpec
-        launcher:specType="width"
-        launcher:maxAvailableSize="9999dp">
-        <startPadding launcher:matchWorkspace="true" />
-        <endPadding launcher:matchWorkspace="true" />
-        <gutter launcher:matchWorkspace="true" />
-        <cellSize launcher:matchWorkspace="true" />
-    </allAppsSpec>
-
+        <allAppsSpec
+            launcher:dimensionType="width"
+            launcher:maxAvailableSize="9999dp">
+            <startPadding launcher:matchWorkspace="true" />
+            <endPadding launcher:matchWorkspace="true" />
+            <gutter launcher:matchWorkspace="true" />
+            <cellSize launcher:matchWorkspace="true" />
+        </allAppsSpec>
+    </specs>
 </allAppsSpecs>

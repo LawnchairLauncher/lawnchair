@@ -13,9 +13,10 @@ import app.lawnchair.util.lookupLifecycleOwner
 import app.lawnchair.util.runOnMainThread
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.util.SafeCloseable
 import kotlinx.coroutines.launch
 
-class FontManager private constructor(private val context: Context) {
+class FontManager private constructor(private val context: Context) : SafeCloseable {
 
     private val fontCache = FontCache.INSTANCE.get(context)
 
@@ -79,6 +80,10 @@ class FontManager private constructor(private val context: Context) {
                 textView.typeface = typeface
             }
         }
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
     }
 
     class FontSpec(val loader: () -> FontCache.Font, val fallback: Typeface) {

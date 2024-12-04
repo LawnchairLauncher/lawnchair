@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2022 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+        android:width="@dimen/letterbox_education_dialog_title_icon_width"
+        android:height="@dimen/letterbox_education_dialog_title_icon_height"
+        android:viewportWidth="45"
+        android:viewportHeight="44">
+
+    <path
+        android:fillColor="?androidprv:attr/colorAccentPrimaryVariant"
+        android:pathData="M11 40H19C19 42.2 17.2 44 15 44C12.8 44 11 42.2 11 40ZM7 38L23 38V34L7 34L7 38ZM30 19C30 26.64 24.68 30.72 22.46 32L7.54 32C5.32 30.72 0 26.64 0 19C0 10.72 6.72 4 15 4C23.28 4 30 10.72 30 19ZM26 19C26 12.94 21.06 8 15 8C8.94 8 4 12.94 4 19C4 23.94 6.98 26.78 8.7 28L21.3 28C23.02 26.78 26 23.94 26 19ZM39.74 14.74L37 16L39.74 17.26L41 20L42.26 17.26L45 16L42.26 14.74L41 12L39.74 14.74ZM35 12L36.88 7.88L41 6L36.88 4.12L35 0L33.12 4.12L29 6L33.12 7.88L35 12Z" />
+</vector>

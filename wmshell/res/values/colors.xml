@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright 2020, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<resources>
+    <color name="docked_divider_handle">#ffffff</color>
+    <color name="split_divider_background">@color/taskbar_background_dark</color>
+    <drawable name="forced_resizable_background">#59000000</drawable>
+    <color name="minimize_dock_shadow_start">#60000000</color>
+    <color name="minimize_dock_shadow_end">#00000000</color>
+
+    <!-- Background for the various drop targets when handling drag and drop. -->
+    <color name="drop_outline_background">#330000FF</color>
+
+    <!-- Bubbles -->
+    <color name="bubbles_light">#FFFFFF</color>
+    <color name="bubbles_dark">@color/GM2_grey_800</color>
+    <color name="bubbles_icon_tint">@color/GM2_grey_700</color>
+    <color name="bubble_bar_expanded_view_handle_light">#EBffffff</color>
+    <color name="bubble_bar_expanded_view_handle_dark">#99000000</color>
+    <color name="bubble_bar_expanded_view_menu_close">#DC362E</color>
+
+    <!-- PiP -->
+    <color name="pip_custom_close_bg">#D93025</color>
+
+    <!-- Compat controls UI -->
+    <color name="compat_controls_background">@android:color/system_neutral1_800</color>
+    <color name="compat_controls_text">@android:color/system_neutral1_50</color>
+
+    <!-- Letterbox Education -->
+    <color name="letterbox_education_text_secondary">@android:color/system_neutral2_200</color>
+
+    <!-- Letterbox Dialog -->
+    <color name="letterbox_dialog_background">@android:color/system_neutral1_900</color>
+
+    <!-- GM2 colors -->
+    <color name="GM2_grey_200">#E8EAED</color>
+    <color name="GM2_grey_700">#5F6368</color>
+    <color name="GM2_grey_800">#3C4043</color>
+
+    <!-- Splash screen -->
+    <color name="splash_screen_bg_light">#FFFFFF</color>
+    <color name="splash_screen_bg_dark">#000000</color>
+    <color name="splash_window_background_default">@color/splash_screen_bg_light</color>
+
+    <!-- Desktop Mode -->
+    <color name="desktop_mode_caption_handle_bar_light">#EFF1F2</color>
+    <color name="desktop_mode_caption_handle_bar_dark">#1C1C17</color>
+    <color name="desktop_mode_resize_veil_light">#EFF1F2</color>
+    <color name="desktop_mode_resize_veil_dark">#1C1C17</color>
+    <color name="desktop_mode_maximize_menu_progress_light">#33000000</color>
+    <color name="desktop_mode_maximize_menu_progress_dark">#33FFFFFF</color>
+    <color name="desktop_mode_caption_button_on_hover_light">#11000000</color>
+    <color name="desktop_mode_caption_button_on_hover_dark">#11FFFFFF</color>
+    <color name="desktop_mode_caption_button">#00000000</color>
+</resources>

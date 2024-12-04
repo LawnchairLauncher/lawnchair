@@ -18,12 +18,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.preference.PreferenceDataStore;
-
 import com.android.launcher3.LauncherPrefs;
 import com.android.systemui.shared.plugins.PluginEnabler;
 
-public class PluginEnablerImpl extends PreferenceDataStore implements PluginEnabler {
+public class PluginEnablerImpl implements PluginEnabler {
 
     private static final String PREFIX_PLUGIN_ENABLED = "PLUGIN_ENABLED_";
 
@@ -44,12 +42,12 @@ public class PluginEnablerImpl extends PreferenceDataStore implements PluginEnab
     }
 
     private void setState(ComponentName component, boolean enabled) {
-        putBoolean(pluginEnabledKey(component), enabled);
+        mSharedPrefs.edit().putBoolean(pluginEnabledKey(component), enabled).apply();
     }
 
     @Override
     public boolean isEnabled(ComponentName component) {
-        return getBoolean(pluginEnabledKey(component), true);
+        return mSharedPrefs.getBoolean(pluginEnabledKey(component), true);
     }
 
     @Override
@@ -57,17 +55,7 @@ public class PluginEnablerImpl extends PreferenceDataStore implements PluginEnab
         return isEnabled(componentName) ? ENABLED : DISABLED_MANUALLY;
     }
 
-    @Override
-    public void putBoolean(String key, boolean value) {
-        mSharedPrefs.edit().putBoolean(key, value).apply();
-    }
-
-    @Override
-    public boolean getBoolean(String key, boolean defValue) {
-        return mSharedPrefs.getBoolean(key, defValue);
-    }
-
-    static String pluginEnabledKey(ComponentName cn) {
+    private static String pluginEnabledKey(ComponentName cn) {
         return PREFIX_PLUGIN_ENABLED + cn.flattenToString();
     }
 }

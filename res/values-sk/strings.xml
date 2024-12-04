@@ -27,18 +27,31 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Miniaplikácie sú v núdzovom režime zakázané"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Skratky nie sú k dispozícii"</string>
     <string name="home_screen" msgid="5629429142036709174">"Domov"</string>
+    <string name="set_default_home_app" msgid="5808906607627586381">"Nastaviť aplikáciu <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g> ako predvolenú vstupnú aplikáciu v Nastaveniach"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Rozdeliť obrazovku"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informácie o aplikácii pre %1$s"</string>
+    <string name="split_app_usage_settings" msgid="7214375263347964093">"Nastavenia používania pre %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Uložiť pár aplikácií"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"Tento pár aplikácií nie je v tomto zariadení podporovaný"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"Ak chcete používať tento pár aplikácií, rozložte zariadenie"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"Pár aplikácií nie je k dispozícii"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Pridržaním presuňte miniaplikáciu."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dvojitým klepnutím a pridržaním presuňte miniaplikáciu alebo použite vlastné akcie."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"šírka %1$d, výška %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Miniaplikácia <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"Miniaplikácia <xliff:g id="WIDGET_NAME">%1$s</xliff:g>, %2$d na šírku, %3$d na výšku"</string>
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Pridržaním môžete miniaplikáciu posúvať po ploche"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Pridať na plochu"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Na plochu bola pridaná miniaplikácia <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Návrhy"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"Všetko dôležité"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"Noviny a časopisy"</string>
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"Zábava"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"Sociálne siete"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"Navrhnuté pre vás"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"Miniaplikácie <xliff:g id="SELECTED_HEADER">%1$s</xliff:g> vpravo, vyhľadávanie a možnosti vľavo"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# miniaplikácia}few{# miniaplikácie}many{# widgets}other{# miniaplikácií}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# odkaz}few{# odkazy}many{# shortcuts}other{# odkazov}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -51,10 +64,9 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Práca"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Konverzácie"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Zapisovanie poznámok"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Užitočné informácie poruke"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Ak chcete získavať informácie bez otvárania aplikácií, môžete si na plochu pridať miniaplikácie"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"Pridať"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"Pridať miniaplikáciu <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Klepnutím zmeňte nastavenia miniaplikácie"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"Dobre"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Zmena nastavení miniaplikácie"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Hľadať aplikácie"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Načítavajú sa aplikácie…"</string>
@@ -73,6 +85,8 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Odstrániť"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Odinštalovať"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Info o aplikácii"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"Inštalovať v súkromí"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"Odinštalovať aplikáciu"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Inštalovať"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Nenavrhovať aplikáciu"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Pripnúť predpoveď"</string>
@@ -99,6 +113,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Priečinok bol premenovaný na <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Priečinok: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> položky"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Priečinok: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> alebo viac položiek"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"Pár aplikácií: <xliff:g id="APP1">%1$s</xliff:g> a <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Tapeta a štýl"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Upraviť plochu"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Nastavenia plochy"</string>
@@ -123,6 +138,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Inštaluje sa <xliff:g id="NAME">%1$s</xliff:g>. Dokončené: <xliff:g id="PROGRESS">%2$s</xliff:g>."</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Sťahuje sa aplikácia <xliff:g id="NAME">%1$s</xliff:g>. Stiahnuté: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Aplikácia <xliff:g id="NAME">%1$s</xliff:g> čaká na inštaláciu"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"Aplikácia <xliff:g id="NAME">%1$s</xliff:g> je archivovaná. Klepnutím ju stiahnite a obnovte."</string>
     <string name="dialog_update_title" msgid="114234265740994042">"Vyžaduje sa aktualizácia aplikácie"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"Aplikácia, ktorú zastupuje táto ikona, nie je aktualizovaná. Môžete ju ručne aktualizovať, aby odkaz znova fungoval, prípadne môžete ikonu odstrániť."</string>
     <string name="dialog_update" msgid="2178028071796141234">"Aktualizovať"</string>
@@ -152,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Znížiť výšku"</string>
     <string name="widget_resized" msgid="9130327887929620">"Veľkosť miniaplikácie bola zmenená na <xliff:g id="NUMBER_0">%1$s</xliff:g> x <xliff:g id="NUMBER_1">%2$s</xliff:g> (šírka x výška)"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Skratky"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Odkazy a upozornenia"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Zavrieť"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Zavrieť"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"Upozornenie bolo zavreté"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Osobné"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Pracovné"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Pracovný profil"</string>
@@ -170,7 +184,15 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pozastaviť pracovné aplikácie"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Zrušiť pozastavenie"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrujte"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Vyhľadávanie v telefóne"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Vyhľadávanie v tablete"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Zlyhalo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"Súkromný priestor"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"Klepnutím nastavte alebo otvorte"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"Súkromné"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"Nastavenia súkromného priestoru"</string>
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"Súkromné, odomknuté."</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"Súkromné, uzamknuté."</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"Uzamknúť"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"Prechod súkromného priestoru"</string>
+    <string name="ps_add_button_label" msgid="8127988716897128773">"Inštalovať"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"Inštalácia aplikácií v súkromnom priestore"</string>
 </resources>

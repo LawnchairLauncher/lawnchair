@@ -57,16 +57,16 @@ public class ActivityInitListener<T extends BaseActivity> implements
      * Registers the activity-created listener. If the activity is already created, then the
      * callback provided in the constructor will be called synchronously.
      */
-    public void register() {
+    public void register(String reasonString) {
         mIsRegistered = true;
-        mActivityTracker.registerCallback(this);
+        mActivityTracker.registerCallback(this, reasonString);
     }
 
     /**
      * After calling this, we won't {@link #init} even when the activity is ready.
      */
-    public void unregister() {
-        mActivityTracker.unregisterCallback(this);
+    public void unregister(String reasonString) {
+        mActivityTracker.unregisterCallback(this, reasonString);
         mIsRegistered = false;
         mOnInitListener = null;
     }

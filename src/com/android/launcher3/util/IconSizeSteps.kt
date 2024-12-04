@@ -49,5 +49,9 @@ class IconSizeSteps(res: Resources) {
 
     companion object {
         internal const val TEXT_STEP = 1
+
+        // This icon extra step is used for stepping down logic in extreme cases when it's
+        // necessary to reduce the icon size below minimum size available in [icon_size_steps].
+        internal const val ICON_SIZE_STEP_EXTRA = 2
     }
 }

@@ -65,7 +65,7 @@ public abstract class ItemInfoMatcher {
      * Returns a matcher for items within folders.
      */
     public static Predicate<ItemInfo> forFolderMatch(Predicate<ItemInfo> childOperator) {
-        return info -> info instanceof FolderInfo && ((FolderInfo) info).contents.stream()
+        return info -> info instanceof FolderInfo && ((FolderInfo) info).getContents().stream()
                 .anyMatch(childOperator);
     }
 

@@ -27,18 +27,31 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"လုံခြုံရေး မုဒ်ထဲမှာ ဝီဂျက်များကို ပိတ်ထား"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ဖြတ်လမ်း မရနိုင်ပါ"</string>
     <string name="home_screen" msgid="5629429142036709174">"ပင်မစာမျက်နှာ"</string>
+    <string name="set_default_home_app" msgid="5808906607627586381">"ဆက်တင်များတွင် <xliff:g id="LAUNCHER_NAME">%1$s</xliff:g> ကို မူရင်းပင်မစာမျက်နှာအက်ပ်အဖြစ် သတ်မှတ်ရန်"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"မျက်နှာပြင် ခွဲ၍ပြသခြင်း"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s အတွက် အက်ပ်အချက်အလက်"</string>
+    <string name="split_app_usage_settings" msgid="7214375263347964093">"%1$s အတွက် အသုံးပြုမှုဆက်တင်များ"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"အက်ပ်တွဲချိတ်ခြင်း သိမ်းရန်"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
+    <string name="app_pair_unlaunchable_at_screen_size" msgid="3446551575502685376">"ဤအက်ပ်တွဲချိတ်ခြင်းကို ဤစက်တွင် ပံ့ပိုးမထားပါ"</string>
+    <string name="app_pair_needs_unfold" msgid="4588897528143807002">"ဤအက်ပ်တွဲချိတ်ခြင်းကို သုံးရန် စက်ကိုဖြန့်ပါ"</string>
+    <string name="app_pair_not_available" msgid="3556767440808032031">"အက်ပ်တွဲချိတ်ခြင်းကို မရနိုင်ပါ"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ဝိဂျက်ကို ရွှေ့ရန် တို့ပြီး ဖိထားပါ။"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ဝိဂျက်ကို ရွှေ့ရန် (သို့) စိတ်ကြိုက်လုပ်ဆောင်ချက်များကို သုံးရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"အလျား %1$d နှင့် အမြင့် %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ဝိဂျက်"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"ပင်မစာမျက်နှာတွင်ရွှေ့ရန် ဝိဂျက်ကို တို့ထိ၍ ဖိထားပါ"</string>
+    <string name="widget_preview_name_and_dims_content_description" msgid="8489038126122831595">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ဝိဂျက်၊ အကျယ် %2$d နှင့် အမြင့် %3$d"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"ဝိဂျက်ကို တို့ထိ၍ ဖိထားပြီး ပင်မစာမျက်နှာပေါ်တွင် နေရာအမျိုးမျိုးသို့ ရွှေ့နိုင်သည်"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"ပင်မစာမျက်နှာတွင် ထည့်ရန်"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ဝိဂျက်ကို ပင်မစာမျက်နှာတွင် ထည့်လိုက်ပြီ"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"အကြံပြုချက်"</string>
+    <string name="productivity_widget_recommendation_category_label" msgid="3811812719618323750">"မရှိမဖြစ်များ"</string>
+    <string name="news_widget_recommendation_category_label" msgid="6756167867113741310">"သတင်းနှင့် မဂ္ဂဇင်း"</string>
+    <string name="entertainment_widget_recommendation_category_label" msgid="3973107268630717874">"ဖျော်ဖြေရေး"</string>
+    <string name="social_widget_recommendation_category_label" msgid="689147679536384717">"လူမှုရေး"</string>
+    <string name="others_widget_recommendation_category_label" msgid="5555987036267226245">"သင့်အတွက် အကြံပြုထားသည်များ"</string>
+    <string name="widget_picker_right_pane_accessibility_title" msgid="1673313931455067502">"<xliff:g id="SELECTED_HEADER">%1$s</xliff:g> ဝိဂျက်များသည် ညာဘက်တွင်ရှိပြီး ရှာဖွေမှုနှင့် ရွေးစရာများသည် ဘယ်ဘက်တွင်ရှိသည်"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{ဝိဂျက် # ခု}other{ဝိဂျက် # ခု}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{ဖြတ်လမ်းလင့်ခ် # ခု}other{ဖြတ်လမ်းလင့်ခ် # ခု}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>၊ <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -51,10 +64,9 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"အလုပ်"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"စကားဝိုင်းများ"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"မှတ်စုလိုက်ခြင်း"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"အသုံးဝင်သော အချက်အလက်များကို အလွယ်တကူ ရယူလိုက်ပါ"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"အက်ပ်မဖွင့်ဘဲ အချက်အလက်များရယူရန် ပင်မစာမျက်နှာတွင် ဝိဂျက်များ ထည့်နိုင်သည်"</string>
+    <string name="widget_add_button_label" msgid="2761267068711937179">"ထည့်ရန်"</string>
+    <string name="widget_add_button_content_description" msgid="1810530016360039643">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ဝိဂျက်ထည့်ရန်"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ဝိဂျက် ဆက်တင်များကို ပြောင်းရန် တို့ပါ"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"နားလည်ပြီ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ဝိဂျက် ဆက်တင်များကို ပြောင်းပါ"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ရှာဖွေမှု အက်ပ်များ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"အက်ပ်များကို ဖွင့်နေသည်…"</string>
@@ -73,6 +85,8 @@
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ဖယ်ရှားမည်"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ဖယ်ရှားရန်"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"အက်ပ်အချက်အလက်"</string>
+    <string name="install_private_system_shortcut_label" msgid="1616889277073184841">"သီးသန့်တွင် ထည့်သွင်းရန်"</string>
+    <string name="uninstall_private_system_shortcut_label" msgid="8423460530441627982">"အက်ပ်ကို ဖယ်ရှားရန်"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ထည့်သွင်းရန်"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"အက်ပ်အကြံမပြုပါနှင့်"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"ခန့်မှန်းချက်ကို ပင်ထိုးရန်"</string>
@@ -99,6 +113,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ပြောင်းလဲလိုက်သော အကန့်အမည် <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ဖိုင်တွဲ - <xliff:g id="NAME">%1$s</xliff:g>၊ <xliff:g id="SIZE">%2$d</xliff:g> ဖိုင်များ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ဖိုင်တွဲ - <xliff:g id="NAME">%1$s</xliff:g>၊ <xliff:g id="SIZE">%2$d</xliff:g> သို့မဟုတ် နောက်ထပ်ဖိုင်များ"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"အက်ပ်တွဲချိတ်ခြင်း- <xliff:g id="APP1">%1$s</xliff:g> နှင့် <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"နောက်ခံနှင့် ပုံစံ"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"ပင်မစာမျက်နှာ တည်းဖြတ်ရန်"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ပင်မဆက်တင်များ"</string>
@@ -123,6 +138,7 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ကို ထည့်သွင်းနေသည်၊ <xliff:g id="PROGRESS">%2$s</xliff:g> ပြီးပါပြီ"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ဒေါင်းလုဒ်လုပ်နေသည်၊ <xliff:g id="PROGRESS">%2$s</xliff:g> ပြီးပါပြီ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ကိုထည့်သွင်းရန်စောင့်နေသည်"</string>
+    <string name="app_archived_title" msgid="7717956158562544081">"<xliff:g id="NAME">%1$s</xliff:g> ကို သိမ်းထားသည်။ ဒေါင်းလုဒ်လုပ်ပြီး ပြန်ယူရန် တို့ပါ။"</string>
     <string name="dialog_update_title" msgid="114234265740994042">"အက်ပ်ကို အပ်ဒိတ်လုပ်ရန် လိုအပ်သည်"</string>
     <string name="dialog_update_message" msgid="4176784553982226114">"ဤသင်္ကေတအတွက် အက်ပ်ကို အပ်ဒိတ်လုပ်မထားပါ။ ဤဖြတ်လမ်းလင့်ခ်ကို ပြန်ဖွင့်ရန် ကိုယ်တိုင်အပ်ဒိတ်လုပ်နိုင်သည် (သို့) သင်္ကေတကို ဖယ်ရှားနိုင်သည်။"</string>
     <string name="dialog_update" msgid="2178028071796141234">"အပ်ဒိတ်လုပ်ရန်"</string>
@@ -152,10 +168,8 @@
     <string name="action_decrease_height" msgid="282377193880900022">"အမြင့်အား လျှော့ပါ"</string>
     <string name="widget_resized" msgid="9130327887929620">"Widget အား အကျယ် <xliff:g id="NUMBER_0">%1$s</xliff:g> အမြင့် <xliff:g id="NUMBER_1">%2$s</xliff:g> အရွယ်အစားပြန်လည်ချိန်ညှိပြီး၏"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ဖြတ်လမ်းများ"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ဖြတ်လမ်းလင့်ခ်နှင့် အကြောင်းကြားချက်များ"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ပယ်ရန်"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"ပိတ်ရန်"</string>
-    <string name="notification_dismissed" msgid="6002233469409822874">"အသိပေးချက်ကို ဖယ်ထုတ်ပြီးပါပြီ"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ကိုယ်ပိုင်"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"အလုပ်"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"အလုပ်ပရိုဖိုင်"</string>
@@ -170,7 +184,15 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"အလုပ်သုံးအက်ပ်များကို ခဏရပ်ရန်"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ပြန်ဖွင့်ရန်"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"စစ်ထုတ်ရန်"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"သင့်ဖုန်းတွင် ရှာခြင်း"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"သင့်တက်ဘလက်ကို ရှာခြင်း"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"မအောင်မြင်ပါ− <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <string name="private_space_label" msgid="2359721649407947001">"သီးသန့်ချတ်ခန်း"</string>
+    <string name="private_space_secondary_label" msgid="9203933341714508907">"စနစ်ထည့်သွင်းရန် (သို့) ဖွင့်ရန် တို့ပါ"</string>
+    <string name="ps_container_title" msgid="4391796149519594205">"သီးသန့်"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"သီးသန့်ချတ်ခန်း ဆက်တင်များ"</string>
+    <string name="ps_container_unlock_button_content_description" msgid="9181551784092204234">"သီးသန့် လော့ခ်ဖွင့်ထားသည်။"</string>
+    <string name="ps_container_lock_button_content_description" msgid="5961993384382649530">"သီးသန့် လော့ခ်ချထားသည်။"</string>
+    <string name="ps_container_lock_title" msgid="2640257399982364682">"လော့ခ်ချခြင်း"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"သီးသန့်ချတ်ခန်း အပြောင်းအလဲ"</string>
+    <string name="ps_add_button_label" msgid="8127988716897128773">"ထည့်သွင်းရန်"</string>
+    <string name="ps_add_button_content_description" msgid="3254274107740952556">"‘သီးသန့်နေရာ’ တွင် အက်ပ်များ ထည့်သွင်းနိုင်သည်"</string>
 </resources>

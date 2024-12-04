@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Picture-in-Picture (PIP) notification -->
+    <!-- Title for the notification channel for TV PIP controls. [CHAR LIMIT=NONE] -->
+    <string name="notification_channel_tv_pip">Picture-in-Picture</string>
+
+    <!-- Title of the picture-in-picture (PIP) notification title
+         when the media doesn't have title [CHAR LIMIT=NONE] -->
+    <string name="pip_notification_unknown_title">(No title program)</string>
+
+    <!-- Picture-in-Picture (PIP) menu -->
+    <eat-comment />
+    <!-- Button to close picture-in-picture (PIP) in PIP menu [CHAR LIMIT=30] -->
+    <string name="pip_close">Close</string>
+
+    <!-- Button to move picture-in-picture (PIP) screen to the fullscreen in PIP menu [CHAR LIMIT=30] -->
+    <string name="pip_fullscreen">Full screen</string>
+
+    <!-- Button to move picture-in-picture (PIP) via DPAD in the PIP menu [CHAR LIMIT=30] -->
+    <string name="pip_move">Move</string>
+
+    <!-- Button to expand the picture-in-picture (PIP) window [CHAR LIMIT=30] -->
+    <string name="pip_expand">Expand</string>
+
+    <!-- Button to collapse/shrink the picture-in-picture (PIP) window [CHAR LIMIT=30] -->
+    <string name="pip_collapse">Collapse</string>
+
+    <!-- Educative text instructing the user to double press the HOME button to access the pip
+        controls menu [CHAR LIMIT=50] -->
+    <string name="pip_edu_text">Double press <annotation icon="home_icon">HOME</annotation> for
+        controls</string>
+
+    <!-- Accessibility announcement when opening the PiP menu. [CHAR LIMIT=NONE] -->
+    <string name="a11y_pip_menu_entered">Picture-in-Picture menu.</string>
+
+    <!-- Accessibility action: move the PiP window to the left [CHAR LIMIT=30] -->
+    <string name="a11y_action_pip_move_left">Move left</string>
+    <!-- Accessibility action: move the PiP window to the right [CHAR LIMIT=30] -->
+    <string name="a11y_action_pip_move_right">Move right</string>
+    <!-- Accessibility action: move the PiP window up [CHAR LIMIT=30] -->
+    <string name="a11y_action_pip_move_up">Move up</string>
+    <!-- Accessibility action: move the PiP window down [CHAR LIMIT=30] -->
+    <string name="a11y_action_pip_move_down">Move down</string>
+    <!-- Accessibility action: done with moving the PiP [CHAR LIMIT=30] -->
+    <string name="a11y_action_pip_move_done">Done</string>
+
+</resources>
+

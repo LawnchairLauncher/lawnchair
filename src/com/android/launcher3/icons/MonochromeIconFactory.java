@@ -35,10 +35,9 @@ import android.os.Build;
 
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.icons.BaseIconFactory.ClippedMonoDrawable;
 
 import java.nio.ByteBuffer;
-
-import app.lawnchair.icons.CustomAdaptiveIconDrawable;
 
 /**
  * Utility class to generate monochrome icons version for a given drawable.
@@ -101,20 +100,12 @@ public class MonochromeIconFactory extends Drawable {
      * Creates a monochrome version of the provided drawable
      */
     @WorkerThread
-    public Drawable wrap(Drawable icon) {
-        if (icon instanceof CustomAdaptiveIconDrawable) {
-            CustomAdaptiveIconDrawable aid = (CustomAdaptiveIconDrawable) icon;
-            mFlatCanvas.drawColor(Color.BLACK);
-            drawDrawable(aid.getBackground());
-            drawDrawable(aid.getForeground());
-            generateMono();
-            return this;
-        } else {
-            mFlatCanvas.drawColor(Color.WHITE);
-            drawDrawable(icon);
-            generateMono();
-            return this;
-        }
+    public Drawable wrap(AdaptiveIconDrawable icon) {
+        mFlatCanvas.drawColor(Color.BLACK);
+        drawDrawable(icon.getBackground());
+        drawDrawable(icon.getForeground());
+        generateMono();
+        return new ClippedMonoDrawable(this);
     }
 
     @WorkerThread

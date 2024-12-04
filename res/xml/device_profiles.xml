@@ -168,7 +168,6 @@
         launcher:numFolderRows="3"
         launcher:numFolderColumns="3"
         launcher:numHotseatIcons="6"
-        launcher:hotseatColumnSpanLandscape="4"
         launcher:numAllAppsColumns="6"
         launcher:isScalable="true"
         launcher:inlineNavButtonsEndSpacing="@dimen/taskbar_button_margin_6_5"

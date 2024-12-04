@@ -22,13 +22,9 @@ import android.content.Context;
 import android.os.Handler;
 
 import androidx.annotation.AnyThread;
-import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
-import com.android.launcher3.model.AllAppsList;
-import com.android.launcher3.model.BaseModelUpdateTask;
-import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.search.SearchCallback;
@@ -67,16 +63,12 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
 
     @Override
     public void doSearch(String query, SearchCallback<AdapterItem> callback) {
-        mAppState.getModel().enqueueModelUpdateTask(new BaseModelUpdateTask() {
-            @Override
-            public void execute(@NonNull final LauncherAppState app,
-                    @NonNull final BgDataModel dataModel, @NonNull final AllAppsList apps) {
-                ArrayList<AdapterItem> result = getTitleMatchResult(apps.data, query);
-                if (mAddNoResultsMessage && result.isEmpty()) {
-                    result.add(getEmptyMessageAdapterItem(query));
-                }
-                mResultHandler.post(() -> callback.onSearchResult(query, result));
+        mAppState.getModel().enqueueModelUpdateTask((taskController, dataModel, apps) ->  {
+            ArrayList<AdapterItem> result = getTitleMatchResult(apps.data, query);
+            if (mAddNoResultsMessage && result.isEmpty()) {
+                result.add(getEmptyMessageAdapterItem(query));
             }
+            mResultHandler.post(() -> callback.onSearchResult(query, result));
         });
     }
 

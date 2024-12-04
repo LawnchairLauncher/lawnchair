@@ -67,7 +67,7 @@ object TaskUtilLockState {
             .getTaskLockState(componentName.toShortString(), taskKey.userId)
         Log.d(TAG, "updateSpecifiedTaskLockState: Checking if the task is locked: $taskLockState")
         if (taskLockState) {
-            setTaskLockState(context, taskKey.baseIntent.component, taskLockState, taskKey)
+            taskKey.baseIntent.component?.let { setTaskLockState(context, it, taskLockState, taskKey) }
             Log.i(TAG, "updateSpecifiedTaskLockState: Task is locked, clearing the lock state.")
         }
         return taskLockState

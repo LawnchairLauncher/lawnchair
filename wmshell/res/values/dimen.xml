@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<resources>
+    <dimen name="dismiss_circle_size">96dp</dimen>
+    <dimen name="dismiss_circle_small">60dp</dimen>
+
+    <!-- The height of the gradient indicating the dismiss edge when moving a PIP or bubble. -->
+    <dimen name="floating_dismiss_gradient_height">548dp</dimen>
+
+    <!-- The padding around a PiP actions. -->
+    <dimen name="pip_action_padding">16dp</dimen>
+
+    <!-- The height of the PiP actions container in which the actions are vertically centered. -->
+    <dimen name="pip_action_size">48dp</dimen>
+
+    <!-- The width and height of the PiP action asset drawn within the container. -->
+    <dimen name="pip_action_inner_size">20dp</dimen>
+
+    <!-- The width and height of the PiP expand action container. -->
+    <dimen name="pip_expand_action_size">60dp</dimen>
+
+    <!-- The width and height of the PiP expand action asset drawn within the container. -->
+    <dimen name="pip_expand_action_inner_size">28dp</dimen>
+
+    <!-- The padding between actions in the PiP in landscape  Note that the PiP does not reflect
+         the configuration of the device, so we can't use -land resources. -->
+    <dimen name="pip_between_action_padding_land">8dp</dimen>
+
+    <!-- The buffer to use when calculating whether the pip is in an adjust zone. -->
+    <dimen name="pip_bottom_offset_buffer">1dp</dimen>
+
+    <!-- The corner radius for PiP window. -->
+    <dimen name="pip_corner_radius">16dp</dimen>
+
+    <!-- The bottom margin of the PIP drag to dismiss info text shown when moving a PIP. -->
+    <dimen name="pip_dismiss_text_bottom_margin">24dp</dimen>
+
+    <!-- The bottom margin of the expand container when there are actions.
+         Equal to pip_action_size - pip_action_padding. -->
+    <dimen name="pip_expand_container_edge_margin">30dp</dimen>
+
+    <!-- The shortest-edge size of the expanded PiP. -->
+    <dimen name="pip_expanded_shortest_edge_size">160dp</dimen>
+
+    <!-- The additional offset to apply to the IME animation to account for the input field. -->
+    <dimen name="pip_ime_offset">48dp</dimen>
+
+    <!-- The touchable/draggable edge size for PIP resize. -->
+    <dimen name="pip_resize_edge_size">48dp</dimen>
+
+    <!-- PIP Resize handle size, margin and padding. -->
+    <dimen name="pip_resize_handle_size">12dp</dimen>
+    <dimen name="pip_resize_handle_margin">4dp</dimen>
+    <dimen name="pip_resize_handle_padding">0dp</dimen>
+
+    <!-- PIP stash offset size, which is the width of visible PIP region when stashed. -->
+    <dimen name="pip_stash_offset">32dp</dimen>
+
+    <!-- PIP shadow radius, originally as
+         WindowConfiguration#PINNED_WINDOWING_MODE_ELEVATION_IN_DIP -->
+    <dimen name="pip_shadow_radius">5dp</dimen>
+
+    <!-- The width and height of the background for custom action in PiP menu. -->
+    <dimen name="pip_custom_close_bg_size">32dp</dimen>
+
+    <!-- Extra padding between picture-in-picture windows and any registered keep clear areas. -->
+    <dimen name="pip_keep_clear_areas_padding">16dp</dimen>
+
+    <dimen name="dismiss_target_x_size">24dp</dimen>
+    <dimen name="floating_dismiss_bottom_margin">50dp</dimen>
+
+    <!-- How high we lift the divider when touching -->
+    <dimen name="docked_stack_divider_lift_elevation">4dp</dimen>
+
+    <!-- Icon size for split screen -->
+    <dimen name="split_icon_size">72dp</dimen>
+    <!-- Divider handle size for legacy split screen -->
+    <dimen name="docked_divider_handle_width">16dp</dimen>
+    <dimen name="docked_divider_handle_height">2dp</dimen>
+    <!-- Divider handle size for split screen -->
+    <dimen name="split_divider_handle_region_width">96dp</dimen>
+    <dimen name="split_divider_handle_region_height">48dp</dimen>
+
+    <dimen name="split_divider_handle_width">72dp</dimen>
+    <dimen name="split_divider_handle_height">3dp</dimen>
+
+    <dimen name="split_divider_bar_width">10dp</dimen>
+    <dimen name="split_divider_corner_size">42dp</dimen>
+
+    <!-- The distance from the edge of the screen to invoke splitscreen when the user is dragging
+         an intent that can be launched into split. -->
+    <dimen name="drag_launchable_intent_edge_margin">48dp</dimen>
+
+    <!-- One-Handed Mode -->
+    <!-- Threshold for dragging distance to enable one-handed mode -->
+    <dimen name="gestures_onehanded_drag_threshold">20dp</dimen>
+
+    <!-- The amount to inset the drop target regions from the edge of the display -->
+    <dimen name="drop_layout_display_margin">16dp</dimen>
+
+    <!-- How much each bubble is elevated. -->
+    <dimen name="bubble_elevation">1dp</dimen>
+    <!-- How much the bubble flyout text container is elevated. -->
+    <dimen name="bubble_flyout_elevation">4dp</dimen>
+    <!-- How much padding is around the left and right sides of the flyout text. -->
+    <dimen name="bubble_flyout_padding_x">14dp</dimen>
+    <!-- How much padding is around the top and bottom of the flyout text. -->
+    <dimen name="bubble_flyout_padding_y">10dp</dimen>
+    <!-- Size of the triangle that points from the flyout to the bubble stack. -->
+    <dimen name="bubble_flyout_pointer_size">6dp</dimen>
+    <!-- How much space to leave between the flyout (tip of the arrow) and the bubble stack. -->
+    <dimen name="bubble_flyout_space_from_bubble">8dp</dimen>
+    <!-- How much space to leave between the flyout text and the avatar displayed in the flyout. -->
+    <dimen name="bubble_flyout_avatar_message_space">6dp</dimen>
+    <!-- If the screen percentage is smaller than this, we'll use this value instead.  -->
+    <dimen name="bubbles_flyout_min_width_large_screen">200dp</dimen>
+    <!-- Padding between status bar and bubbles when displayed in expanded state -->
+    <dimen name="bubble_padding_top">16dp</dimen>
+    <!-- Space between bubbles when expanded. -->
+    <dimen name="bubble_spacing">3dp</dimen>
+    <!-- Size of the bubble. -->
+    <dimen name="bubble_size">60dp</dimen>
+    <!-- Width of bubble name view -->
+    <dimen name="bubble_name_width">90dp</dimen>
+    <!-- Size of the badge shown on the bubble. -->
+    <dimen name="bubble_badge_size">24dp</dimen>
+    <!-- Extra padding added to the touchable rect for bubbles so they are easier to grab. -->
+    <dimen name="bubble_touch_padding">12dp</dimen>
+    <!-- Size of the circle around the bubbles when they're in the dismiss target. -->
+    <dimen name="bubble_dismiss_encircle_size">52dp</dimen>
+    <!-- Padding around the view displayed when the bubble is expanded -->
+    <dimen name="bubble_expanded_view_padding">16dp</dimen>
+    <!-- Padding for the edge of the expanded view that is closest to the edge of the screen used
+         when displaying in landscape on a large screen. -->
+    <dimen name="bubble_expanded_view_largescreen_landscape_padding">102dp</dimen>
+    <!-- The width of the expanded view on large screens. -->
+    <dimen name="bubble_expanded_view_largescreen_width">540dp</dimen>
+    <!-- This should be at least the size of bubble_expanded_view_padding; it is used to include
+         a slight touch slop around the expanded view. -->
+    <dimen name="bubble_expanded_view_slop">8dp</dimen>
+    <!-- Default (and minimum) height of the expanded view shown when the bubble is expanded.
+         If this value changes then R.dimen.bubble_expanded_view_min_height in CtsVerifier
+         should also be updated. -->
+    <dimen name="bubble_expanded_default_height">180dp</dimen>
+    <!-- The width of the overflow view on large screens or in landscape on phone. -->
+    <dimen name="bubble_expanded_view_overflow_width">380dp</dimen>
+    <!-- Inset to apply to the icon in the overflow button. -->
+    <dimen name="bubble_overflow_icon_inset">30dp</dimen>
+    <!-- Default (and minimum) height of bubble overflow -->
+    <dimen name="bubble_overflow_height">480dp</dimen>
+    <!-- Bubble overflow padding when there are no bubbles  -->
+    <dimen name="bubble_overflow_empty_state_padding">16dp</dimen>
+    <!-- Horizontal padding of the overflow container. Total desired padding is 16dp but the items
+         already have 5dp added to each side. -->
+    <dimen name="bubble_overflow_container_padding_horizontal">11dp</dimen>
+    <!-- Horizontal padding between items in the overflow view, half of the desired amount. -->
+    <dimen name="bubble_overflow_item_padding_horizontal">5dp</dimen>
+    <!-- Vertical padding between items in the overflow view, half the desired amount. -->
+    <dimen name="bubble_overflow_item_padding_vertical">16dp</dimen>
+    <!-- Padding of label for bubble overflow view -->
+    <dimen name="bubble_overflow_text_padding">7dp</dimen>
+    <!-- Height of bubble overflow empty state illustration -->
+    <dimen name="bubble_empty_overflow_image_height">200dp</dimen>
+    <!-- Padding of bubble overflow empty state subtitle -->
+    <dimen name="bubble_empty_overflow_subtitle_padding">50dp</dimen>
+    <!-- Height of the triangle that points to the expanded bubble. -->
+    <dimen name="bubble_pointer_height">10dp</dimen>
+    <!-- Width of the triangle that points to the expanded bubble. -->
+    <dimen name="bubble_pointer_width">12dp</dimen>
+    <!-- Radius of the pointer -->
+    <dimen name="bubble_pointer_radius">2dp</dimen>
+    <!-- The amount the pointer overlaps with the expanded view to be flush on an edge with
+         a radius. -->
+    <dimen name="bubble_pointer_overlap">1dp</dimen>
+    <!-- Extra padding around the dismiss target for bubbles -->
+    <dimen name="bubble_dismiss_slop">16dp</dimen>
+    <!-- Height of button allowing users to adjust settings for bubbles. We use sp so that the
+         button can scale with the font size. -->
+    <dimen name="bubble_manage_button_height">36sp</dimen>
+    <!-- Touch area height of the manage button. -->
+    <dimen name="bubble_manage_button_touch_area_height">48dp</dimen>
+    <!-- The margin around the outside of the manage button. -->
+    <dimen name="bubble_manage_button_margin">16dp</dimen>
+    <!-- Height of an item in the bubble manage menu. -->
+    <dimen name="bubble_menu_item_height">60dp</dimen>
+    <!-- Padding applied to the bubble manage menu. -->
+    <dimen name="bubble_menu_padding">16dp</dimen>
+    <!-- Size of the icons in the manage menu. -->
+    <dimen name="bubble_menu_icon_size">24dp</dimen>
+    <!-- Max width of the message bubble-->
+    <dimen name="bubble_message_max_width">144dp</dimen>
+    <!-- Min width of the message bubble -->
+    <dimen name="bubble_message_min_width">32dp</dimen>
+    <!-- Interior padding of the message bubble -->
+    <dimen name="bubble_message_padding">4dp</dimen>
+    <!-- Offset between bubbles in their stacked position. -->
+    <dimen name="bubble_stack_offset">12dp</dimen>
+    <!-- Offset between stack y and animation y for bubble swap. -->
+    <dimen name="bubble_swap_animation_offset">15dp</dimen>
+    <!-- How far offscreen the bubble stack rests. There's some padding around the bubble so
+         add 3dp to the desired overhang. -->
+    <dimen name="bubble_stack_offscreen">2.5dp</dimen>
+    <!-- How far down the screen the stack starts. -->
+    <dimen name="bubble_stack_starting_offset_y">120dp</dimen>
+    <!-- Space between the pointer triangle and the bubble expanded view -->
+    <dimen name="bubble_pointer_margin">5dp</dimen>
+    <!-- Padding applied to the bubble dismiss target. Touches in this padding cause the bubbles to
+         snap to the dismiss target. -->
+    <dimen name="bubble_dismiss_target_padding_x">40dp</dimen>
+    <dimen name="bubble_dismiss_target_padding_y">20dp</dimen>
+    <dimen name="bubble_manage_menu_elevation">4dp</dimen>
+    <!-- Size of manage user education views on large screens or in landscape. -->
+    <dimen name="bubbles_user_education_width">480dp</dimen>
+    <!-- Margin applied to the end of the user education views (really only matters for phone
+         since the width is match parent). -->
+    <dimen name="bubble_user_education_margin_horizontal">24dp</dimen>
+    <!-- Padding applied to the end of the user education view. -->
+    <dimen name="bubble_user_education_padding_horizontal">58dp</dimen>
+    <!-- Padding between the bubble and the user education text. -->
+    <dimen name="bubble_user_education_stack_padding">16dp</dimen>
+    <!-- Max width for the bubble popup view. -->
+    <dimen name="bubble_popup_content_max_width">300dp</dimen>
+    <!-- Horizontal margin for the bubble popup view. -->
+    <dimen name="bubble_popup_margin_horizontal">32dp</dimen>
+    <!-- Top margin for the bubble popup view. -->
+    <dimen name="bubble_popup_margin_top">16dp</dimen>
+    <!-- Width for the bubble popup view arrow. -->
+    <dimen name="bubble_popup_arrow_width">12dp</dimen>
+    <!-- Height for the bubble popup view arrow. -->
+    <dimen name="bubble_popup_arrow_height">10dp</dimen>
+    <!-- Corner radius for the bubble popup view arrow. -->
+    <dimen name="bubble_popup_arrow_corner_radius">2dp</dimen>
+    <!-- Padding for the bubble popup view contents. -->
+    <dimen name="bubble_popup_padding">24dp</dimen>
+    <!-- The size of the caption bar inset at the top of bubble bar expanded view. -->
+    <dimen name="bubble_bar_expanded_view_caption_height">36dp</dimen>
+    <!-- The width of the caption bar at the top of bubble bar expanded view. -->
+    <dimen name="bubble_bar_expanded_view_caption_width">80dp</dimen>
+    <!-- The height of the handle shown for the caption menu in the bubble bar expanded view. -->
+    <dimen name="bubble_bar_expanded_view_handle_height">4dp</dimen>
+    <!-- Width of the expanded bubble bar view shown when the bubble is expanded. -->
+    <dimen name="bubble_bar_expanded_view_width">412dp</dimen>
+    <!-- Minimum width of the bubble bar manage menu. -->
+    <dimen name="bubble_bar_manage_menu_min_width">200dp</dimen>
+    <!-- Size of the dismiss icon in the bubble bar manage menu. -->
+    <dimen name="bubble_bar_manage_menu_dismiss_icon_size">16dp</dimen>
+    <!-- Padding of the bubble bar manage menu, provides space for menu shadows -->
+    <dimen name="bubble_bar_manage_menu_padding">8dp</dimen>
+    <!-- Top padding of the bubble bar manage menu -->
+    <dimen name="bubble_bar_manage_menu_padding_top">2dp</dimen>
+    <!-- Spacing between sections of the bubble bar manage menu -->
+    <dimen name="bubble_bar_manage_menu_section_spacing">2dp</dimen>
+    <!-- Height of an item in the bubble bar manage menu. -->
+    <dimen name="bubble_bar_manage_menu_item_height">52dp</dimen>
+    <!-- Size of the icons in the bubble bar manage menu. -->
+    <dimen name="bubble_bar_manage_menu_item_icon_size">20dp</dimen>
+    <!-- Corner radius for expanded view when bubble bar is used -->
+    <dimen name="bubble_bar_expanded_view_corner_radius">16dp</dimen>
+    <!-- Corner radius for expanded view while it is being dragged -->
+    <dimen name="bubble_bar_expanded_view_corner_radius_dragged">28dp</dimen>
+    <!-- Corner radius for expanded view drop target -->
+    <dimen name="bubble_bar_expanded_view_drop_target_corner">28dp</dimen>
+    <dimen name="bubble_bar_expanded_view_drop_target_padding">24dp</dimen>
+    <!-- Width of the box around bottom center of the screen where drag only leads to dismiss -->
+    <dimen name="bubble_bar_dismiss_zone_width">192dp</dimen>
+    <!-- Height of the box around bottom center of the screen where drag only leads to dismiss -->
+    <dimen name="bubble_bar_dismiss_zone_height">242dp</dimen>
+
+    <!-- Bottom and end margin for compat buttons. -->
+    <dimen name="compat_button_margin">24dp</dimen>
+
+    <!-- The radius of the corners of the compat hint bubble. -->
+    <dimen name="compat_hint_corner_radius">28dp</dimen>
+
+    <!-- The width of the compat hint point. -->
+    <dimen name="compat_hint_point_width">10dp</dimen>
+
+    <!-- The end padding for the compat hint. Computed as (compat button width (=48) / 2
+        + compat_button_margin - compat_hint_corner_radius - compat_hint_point_width / 2). -->
+    <dimen name="compat_hint_padding_end">7dp</dimen>
+
+    <!-- The width of the compat hint. -->
+    <dimen name="compat_hint_width">188dp</dimen>
+
+    <!-- The width of the camera compat hint. -->
+    <dimen name="camera_compat_hint_width">143dp</dimen>
+
+    <!-- The corner radius of the letterbox education dialog. -->
+    <dimen name="letterbox_education_dialog_corner_radius">28dp</dimen>
+
+    <!-- The width of the top icon in the letterbox education dialog. -->
+    <dimen name="letterbox_education_dialog_title_icon_width">45dp</dimen>
+
+    <!-- The height of the top icon in the letterbox education dialog. -->
+    <dimen name="letterbox_education_dialog_title_icon_height">44dp</dimen>
+
+    <!-- The width of an icon in the letterbox education dialog. -->
+    <dimen name="letterbox_education_dialog_icon_width">40dp</dimen>
+
+    <!-- The height of an icon in the letterbox education dialog. -->
+    <dimen name="letterbox_education_dialog_icon_height">32dp</dimen>
+
+    <!-- The fixed width of the dialog if there is enough space in the parent. -->
+    <dimen name="letterbox_education_dialog_width">472dp</dimen>
+
+    <!-- The margin between the dialog container and its parent. -->
+    <dimen name="letterbox_education_dialog_margin">16dp</dimen>
+
+    <!-- The width of each action container in the letterbox education dialog -->
+    <dimen name="letterbox_education_dialog_action_width">140dp</dimen>
+
+    <!-- The space between two actions in the letterbox education dialog -->
+    <dimen name="letterbox_education_dialog_space_between_actions">24dp</dimen>
+
+    <!-- The corner radius of the buttons in the letterbox education dialog -->
+    <dimen name="letterbox_education_dialog_button_radius">12dp</dimen>
+
+    <!-- The horizontal padding for the buttons in the letterbox education dialog -->
+    <dimen name="letterbox_education_dialog_horizontal_padding">16dp</dimen>
+
+    <!-- The vertical padding for the buttons in the letterbox education dialog -->
+    <dimen name="letterbox_education_dialog_vertical_padding">8dp</dimen>
+
+    <!-- The insets for the buttons in the letterbox education dialog -->
+    <dimen name="letterbox_education_dialog_vertical_inset">6dp</dimen>
+
+    <!-- The margin between the dialog container and its parent. -->
+    <dimen name="letterbox_restart_dialog_margin">24dp</dimen>
+
+    <!-- The corner radius of the restart confirmation dialog. -->
+    <dimen name="letterbox_restart_dialog_corner_radius">28dp</dimen>
+
+    <!-- The fixed width of the dialog if there is enough space in the parent. -->
+    <dimen name="letterbox_restart_dialog_width">348dp</dimen>
+
+    <!-- The width of the top icon in the restart confirmation dialog. -->
+    <dimen name="letterbox_restart_dialog_title_icon_width">32dp</dimen>
+
+    <!-- The height of the top icon in the restart confirmation dialog. -->
+    <dimen name="letterbox_restart_dialog_title_icon_height">32dp</dimen>
+
+    <!-- The width of an icon in the restart confirmation dialog. -->
+    <dimen name="letterbox_restart_dialog_icon_width">40dp</dimen>
+
+    <!-- The height of an icon in the restart confirmation dialog. -->
+    <dimen name="letterbox_restart_dialog_icon_height">32dp</dimen>
+
+    <!-- The space between two actions in the restart confirmation dialog -->
+    <dimen name="letterbox_restart_dialog_space_between_actions">24dp</dimen>
+
+    <!-- The width of the buttons in the restart dialog -->
+    <dimen name="letterbox_restart_dialog_button_width">82dp</dimen>
+
+    <!-- The width of the buttons in the restart dialog -->
+    <dimen name="letterbox_restart_dialog_button_height">36dp</dimen>
+
+    <!-- The corner radius of the buttons in the restart dialog -->
+    <dimen name="letterbox_restart_dialog_button_radius">18dp</dimen>
+
+    <!-- The insets for the buttons in the letterbox restart dialog -->
+    <dimen name="letterbox_restart_dialog_vertical_inset">6dp</dimen>
+
+    <!-- The horizontal padding for the buttons in the letterbox restart dialog -->
+    <dimen name="letterbox_restart_dialog_horizontal_padding">16dp</dimen>
+
+    <!-- The vertical padding for the buttons in the letterbox restart dialog -->
+    <dimen name="letterbox_restart_dialog_vertical_padding">8dp</dimen>
+
+    <!-- The margin between the reachability dialog container and its parent. -->
+    <dimen name="letterbox_reachability_education_dialog_margin">16dp</dimen>
+
+    <!-- The size of the icon in the item of reachability education -->
+    <dimen name="letterbox_reachability_education_item_image_size">24dp</dimen>
+
+    <!-- The width of the brand image on staring surface. -->
+    <dimen name="starting_surface_brand_image_width">200dp</dimen>
+
+    <!-- The height of the brand image on staring surface. -->
+    <dimen name="starting_surface_brand_image_height">80dp</dimen>
+
+    <!-- The length of the shift of main window when exit starting window. -->
+    <dimen name="starting_surface_exit_animation_window_shift_length">20dp</dimen>
+
+    <!-- The distance of the shift icon when normal exit starting window. -->
+    <dimen name="starting_surface_normal_exit_icon_distance">120dp</dimen>
+
+    <!-- The distance of the shift icon when early exit starting window. -->
+    <dimen name="starting_surface_early_exit_icon_distance">32dp</dimen>
+
+    <!-- The default minimal size of a PiP task, in both dimensions. -->
+    <dimen name="default_minimal_size_pip_resizable_task">108dp</dimen>
+
+    <!--
+      The overridable minimal size of a PiP task, in both dimensions.
+      Different from default_minimal_size_pip_resizable_task, this is to limit the dimension
+      when the pinned stack size is overridden by app via minWidth/minHeight.
+    -->
+    <dimen name="overridable_minimal_size_pip_resizable_task">48dp</dimen>
+
+    <!-- The thickness of shadows of a window that has focus in DIP. -->
+    <dimen name="freeform_decor_shadow_focused_thickness">20dp</dimen>
+
+    <!-- The thickness of shadows of a window that doesn't have focus in DIP. -->
+    <dimen name="freeform_decor_shadow_unfocused_thickness">5dp</dimen>
+
+    <!-- Height of button (32dp)  + 2 * margin (5dp each). -->
+    <dimen name="freeform_decor_caption_height">42dp</dimen>
+
+    <!-- Height of desktop mode caption for freeform tasks. -->
+    <dimen name="desktop_mode_freeform_decor_caption_height">40dp</dimen>
+
+    <!-- Height of desktop mode caption for fullscreen tasks. -->
+    <dimen name="desktop_mode_fullscreen_decor_caption_height">36dp</dimen>
+
+    <!-- Width of desktop mode caption for fullscreen tasks.
+        80 dp for handle + 20 dp for room to grow on the sides when hovered. -->
+    <dimen name="desktop_mode_fullscreen_decor_caption_width">100dp</dimen>
+
+    <!-- Required empty space to be visible for partially offscreen tasks. -->
+    <dimen name="freeform_required_visible_empty_space_in_header">48dp</dimen>
+
+    <!-- Required empty space to be visible for partially offscreen tasks on a smaller screen. -->
+    <dimen name="small_screen_required_visible_empty_space_in_header">12dp</dimen>
+
+    <!-- 32dp width back button + 10dp margin -->
+    <dimen name="caption_left_buttons_width">32dp</dimen>
+
+    <!-- (32 dp buttons + 10dp margins) * 3 buttons-->
+    <dimen name="caption_right_buttons_width">126dp</dimen>
+
+    <!-- 2 buttons * 44dp button size + 16dp total margins. -->
+    <dimen name="desktop_mode_right_edge_buttons_width">104dp</dimen>
+
+    <!-- 22dp padding + 24dp app icon + 16dp expand button.
+         Text varies in size, we will calculate that width separately. -->
+    <dimen name="desktop_mode_app_details_width_minus_text">62dp</dimen>
+
+    <!-- When custom headers are requested, this is the width of the left-aligned region that is
+         taken up by caption elements and extra margins. The customizable region starts at the
+         end of this area. -->
+    <dimen name="desktop_mode_customizable_caption_margin_start">84dp</dimen>
+
+    <!-- When custom headers are requested, this is the width of the right-aligned region that is
+         taken up by caption elements and extra margins. The customizable region ends at the
+         start of this area. -->
+    <dimen name="desktop_mode_customizable_caption_margin_end">152dp</dimen>
+
+    <!-- The default minimum allowed window width when resizing a window in desktop mode. -->
+    <dimen name="desktop_mode_minimum_window_width">386dp</dimen>
+
+    <!-- The default minimum allowed window height when resizing a window in desktop mode. -->
+    <dimen name="desktop_mode_minimum_window_height">352dp</dimen>
+
+    <!-- The width of the maximize menu in desktop mode. -->
+    <dimen name="desktop_mode_maximize_menu_width">228dp</dimen>
+
+    <!-- The height of the maximize menu in desktop mode. -->
+    <dimen name="desktop_mode_maximize_menu_height">114dp</dimen>
+
+    <!-- The padding of the maximize menu in desktop mode. -->
+    <dimen name="desktop_mode_menu_padding">16dp</dimen>
+
+    <!-- The height of the buttons in the maximize menu. -->
+    <dimen name="desktop_mode_maximize_menu_button_height">52dp</dimen>
+
+    <!-- The radius of the maximize menu buttons. -->
+    <dimen name="desktop_mode_maximize_menu_buttons_radius">4dp</dimen>
+
+    <!-- The radius of the layout outline around the maximize menu buttons. -->
+    <dimen name="desktop_mode_maximize_menu_buttons_outline_radius">6dp</dimen>
+    <!-- The stroke width of the outline around the maximize menu buttons. -->
+    <dimen name="desktop_mode_maximize_menu_buttons_outline_stroke">1dp</dimen>
+    <!-- The radius of the inner fill of the maximize menu buttons. -->
+    <dimen name="desktop_mode_maximize_menu_buttons_fill_radius">4dp</dimen>
+    <!-- The padding between the outline and fill of the maximize menu buttons. -->
+    <dimen name="desktop_mode_maximize_menu_buttons_fill_padding">4dp</dimen>
+
+    <!-- The corner radius of the maximize menu. -->
+    <dimen name="desktop_mode_maximize_menu_corner_radius">8dp</dimen>
+
+    <!-- The radius of the Maximize menu shadow. -->
+    <dimen name="desktop_mode_maximize_menu_shadow_radius">8dp</dimen>
+
+    <!-- The width of the handle menu in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_width">216dp</dimen>
+
+    <!-- The height of the handle menu's "App Info" pill in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_app_info_pill_height">52dp</dimen>
+
+    <!-- The height of the handle menu's "Windowing" pill in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_windowing_pill_height">52dp</dimen>
+
+    <!-- The height of the handle menu's "More Actions" pill in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_more_actions_pill_height">52dp</dimen>
+
+    <!-- The height of the handle menu in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_height">328dp</dimen>
+
+    <!-- The top margin of the handle menu in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_margin_top">4dp</dimen>
+
+    <!-- The start margin of the handle menu in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_margin_start">6dp</dimen>
+
+    <!-- The margin between pills of the handle menu in desktop mode. -->
+    <dimen name="desktop_mode_handle_menu_pill_spacing_margin">2dp</dimen>
+
+    <!-- The radius of the caption menu corners. -->
+    <dimen name="desktop_mode_handle_menu_corner_radius">26dp</dimen>
+
+    <!-- The radius of the caption menu icon. -->
+    <dimen name="desktop_mode_caption_icon_radius">24dp</dimen>
+
+    <!-- The radius of the caption menu shadow. -->
+    <dimen name="desktop_mode_handle_menu_shadow_radius">2dp</dimen>
+
+    <!-- The size of the icon shown in the resize veil. -->
+    <dimen name="desktop_mode_resize_veil_icon_size">96dp</dimen>
+
+    <!-- The with of the border around the app task for edge resizing, when
+         enable_windowing_edge_drag_resize is enabled. -->
+    <dimen name="desktop_mode_edge_handle">12dp</dimen>
+
+    <!-- The original width of the border around the app task for edge resizing, when
+         enable_windowing_edge_drag_resize is disabled. -->
+    <dimen name="freeform_resize_handle">15dp</dimen>
+
+    <!-- The size of the corner region for drag resizing with touch, when a larger touch region is
+         appropriate. Applied when enable_windowing_edge_drag_resize is enabled. -->
+    <dimen name="desktop_mode_corner_resize_large">48dp</dimen>
+
+    <!-- The original size of the corner region for darg resizing, when
+         enable_windowing_edge_drag_resize is disabled. -->
+    <dimen name="freeform_resize_corner">44dp</dimen>
+
+    <!-- The width of the area at the sides of the screen where a freeform task will transition to
+    split select if dragged until the touch input is within the range. -->
+    <dimen name="desktop_mode_transition_area_width">32dp</dimen>
+
+    <!-- The width of the area where a desktop task will transition to fullscreen. -->
+    <dimen name="desktop_mode_fullscreen_from_desktop_width">80dp</dimen>
+
+    <!-- The height of the area where a desktop task will transition to fullscreen. -->
+    <dimen name="desktop_mode_fullscreen_from_desktop_height">40dp</dimen>
+
+    <!-- The height on the screen where drag to the left or right edge will result in a
+    desktop task snapping to split size. The empty space between this and the top is to allow
+    for corner drags without transition. -->
+    <dimen name="desktop_mode_split_from_desktop_height">100dp</dimen>
+
+    <!-- The corner radius of a task that was dragged from fullscreen. -->
+    <dimen name="desktop_mode_dragged_task_radius">28dp</dimen>
+
+    <!-- The corner radius of the app chip, maximize and close button's ripple drawable -->
+    <dimen name="desktop_mode_header_buttons_ripple_radius">16dp</dimen>
+    <!-- The vertical inset to apply to the app chip's ripple drawable -->
+    <dimen name="desktop_mode_header_app_chip_ripple_inset_vertical">4dp</dimen>
+
+    <!-- The corner radius of the maximize button's ripple drawable -->
+    <dimen name="desktop_mode_header_maximize_ripple_radius">18dp</dimen>
+    <!-- The vertical inset to apply to the maximize button's ripple drawable -->
+    <dimen name="desktop_mode_header_maximize_ripple_inset_vertical">4dp</dimen>
+    <!-- The horizontal inset to apply to the maximize button's ripple drawable -->
+    <dimen name="desktop_mode_header_maximize_ripple_inset_horizontal">6dp</dimen>
+
+    <!-- The corner radius of the close button's ripple drawable -->
+    <dimen name="desktop_mode_header_close_ripple_radius">18dp</dimen>
+    <!-- The vertical inset to apply to the close button's ripple drawable -->
+    <dimen name="desktop_mode_header_close_ripple_inset_vertical">4dp</dimen>
+    <!-- The horizontal inset to apply to the close button's ripple drawable -->
+    <dimen name="desktop_mode_header_close_ripple_inset_horizontal">6dp</dimen>
+
+    <!-- The acceptable area ratio of fg icon area/bg icon area, i.e. (72 x 72) / (108 x 108) -->
+    <item type="dimen" format="float" name="splash_icon_enlarge_foreground_threshold">0.44</item>
+    <!-- Scaling factor applied to splash icons without provided background i.e. (192 / 160) -->
+    <item type="dimen" format="float" name="splash_icon_no_background_scale_factor">1.2</item>
+
+    <!-- The margin between the entering window and the exiting window during cross task back -->
+    <dimen name="cross_task_back_inter_window_margin">14dp</dimen>
+    <!-- The vertical margin that needs to be preserved between the scaled window bounds and the
+    original window bounds (once the surface is scaled enough to do so) -->
+    <dimen name="cross_task_back_vertical_margin">8dp</dimen>
+    <!-- The offset from the left edge of the entering page for the cross-activity animation -->
+    <dimen name="cross_activity_back_entering_start_offset">96dp</dimen>
+
+</resources>

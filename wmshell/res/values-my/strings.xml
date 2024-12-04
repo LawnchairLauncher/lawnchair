@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="pip_phone_close" msgid="5783752637260411309">"ပိတ်ရန်"</string>
+    <string name="pip_phone_expand" msgid="2579292903468287504">"ချဲ့ရန်"</string>
+    <string name="pip_phone_settings" msgid="5468987116750491918">"ဆက်တင်များ"</string>
+    <string name="pip_menu_title" msgid="5393619322111827096">"မီနူး"</string>
+    <string name="pip_menu_accessibility_title" msgid="8129016817688656249">"နှစ်ခုထပ်၍ ကြည့်ခြင်းမီနူး"</string>
+    <string name="pip_notification_title" msgid="1347104727641353453">"<xliff:g id="NAME">%s</xliff:g> သည် နှစ်ခုထပ်၍ကြည့်ခြင်း ဖွင့်ထားသည်"</string>
+    <string name="pip_notification_message" msgid="8854051911700302620">"<xliff:g id="NAME">%s</xliff:g> အား ဤဝန်ဆောင်မှုကို အသုံးမပြုစေလိုလျှင် ဆက်တင်ကိုဖွင့်ရန် တို့ပြီး ၎င်းဝန်ဆောင်မှုကို ပိတ်လိုက်ပါ။"</string>
+    <string name="pip_play" msgid="3496151081459417097">"ဖွင့်ရန်"</string>
+    <string name="pip_pause" msgid="690688849510295232">"ခေတ္တရပ်ရန်"</string>
+    <string name="pip_skip_to_next" msgid="8403429188794867653">"နောက်တစ်ခုသို့ ကျော်ရန်"</string>
+    <string name="pip_skip_to_prev" msgid="7172158111196394092">"ယခင်တစ်ခုသို့ ပြန်သွားရန်"</string>
+    <string name="accessibility_action_pip_resize" msgid="4623966104749543182">"အရွယ်အစားပြောင်းရန်"</string>
+    <string name="accessibility_action_pip_stash" msgid="4060775037619702641">"သိုဝှက်ရန်"</string>
+    <string name="accessibility_action_pip_unstash" msgid="7467499339610437646">"မသိုဝှက်ရန်"</string>
+    <string name="dock_forced_resizable" msgid="7429086980048964687">"မျက်နှာပြင် ခွဲ၍ပြသခြင်းဖြင့် အက်ပ်သည် အလုပ်မလုပ်ပါ"</string>
+    <string name="dock_non_resizeble_failed_to_dock_text" msgid="2733543750291266047">"အက်ပ်တွင် မျက်နှာပြင် ခွဲ၍ပြသခြင်းကို မပံ့ပိုးပါ"</string>
+    <string name="dock_multi_instances_not_supported_text" msgid="5011042177901502928">"ဤအက်ပ်ကို ဝင်းဒိုး ၁ ခုတွင်သာ ဖွင့်နိုင်သည်"</string>
+    <string name="forced_resizable_secondary_display" msgid="1768046938673582671">"ဤအက်ပ်အနေဖြင့် ဒုတိယဖန်သားပြင်ပေါ်တွင် အလုပ်လုပ်မည် မဟုတ်ပါ။"</string>
+    <string name="activity_launch_on_secondary_display_failed_text" msgid="4226485344988071769">"ဤအက်ပ်အနေဖြင့် ဖွင့်ရန်စနစ်ကို ဒုတိယဖန်သားပြင်မှ အသုံးပြုရန် ပံ့ပိုးမထားပါ။"</string>
+    <string name="accessibility_divider" msgid="6407584574218956849">"မျက်နှာပြင် ခွဲ၍ပြသခြင်း ပိုင်းခြားစနစ်"</string>
+    <string name="divider_title" msgid="1963391955593749442">"မျက်နှာပြင် ခွဲ၍ပြသခြင်း ပိုင်းခြားစနစ်"</string>
+    <string name="accessibility_action_divider_left_full" msgid="1792313656305328536">"ဘယ်ဘက် မျက်နှာပြင်အပြည့်"</string>
+    <string name="accessibility_action_divider_left_70" msgid="8859845045360659250">"ဘယ်ဘက်မျက်နှာပြင် ၇၀%"</string>
+    <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ဘယ်ဘက် မျက်နှာပြင် ၅၀%"</string>
+    <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ဘယ်ဘက် မျက်နှာပြင် ၃၀%"</string>
+    <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"ညာဘက် မျက်နှာပြင်အပြည့်"</string>
+    <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"အပေါ်ဘက် မျက်နှာပြင်အပြည့်"</string>
+    <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"အပေါ်ဘက် မျက်နှာပြင် ၇၀%"</string>
+    <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"အပေါ်ဘက် မျက်နှာပြင် ၅၀%"</string>
+    <string name="accessibility_action_divider_top_30" msgid="3572788224908570257">"အပေါ်ဘက် မျက်နှာပြင် ၃၀%"</string>
+    <string name="accessibility_action_divider_bottom_full" msgid="2831868345092314060">"အောက်ခြေ မျက်နှာပြင်အပြည့်"</string>
+    <string name="accessibility_split_left" msgid="1713683765575562458">"ဘယ်ဘက်ကို ခွဲရန်"</string>
+    <string name="accessibility_split_right" msgid="8441001008181296837">"ညာဘက်ကို ခွဲရန်"</string>
+    <string name="accessibility_split_top" msgid="2789329702027147146">"ထိပ်ပိုင်းကို ခွဲရန်"</string>
+    <string name="accessibility_split_bottom" msgid="8694551025220868191">"အောက်ခြေကို ခွဲရန်"</string>
+    <string name="one_handed_tutorial_title" msgid="4583241688067426350">"လက်တစ်ဖက်သုံးမုဒ် အသုံးပြုခြင်း"</string>
+    <string name="one_handed_tutorial_description" msgid="3486582858591353067">"ထွက်ရန် ဖန်သားပြင်၏အောက်ခြေမှ အပေါ်သို့ပွတ်ဆွဲပါ သို့မဟုတ် အက်ပ်အပေါ်ဘက် မည်သည့်နေရာတွင်မဆို တို့ပါ"</string>
+    <string name="accessibility_action_start_one_handed" msgid="5070337354072861426">"လက်တစ်ဖက်သုံးမုဒ်ကို စတင်လိုက်သည်"</string>
+    <string name="accessibility_action_stop_one_handed" msgid="1369940261782179442">"လက်တစ်ဖက်သုံးမုဒ်မှ ထွက်လိုက်သည်"</string>
+    <string name="bubbles_settings_button_description" msgid="1301286017420516912">"<xliff:g id="APP_NAME">%1$s</xliff:g> ပူဖောင်းကွက်အတွက် ဆက်တင်များ"</string>
+    <string name="bubble_overflow_button_content_description" msgid="8160974472718594382">"အပိုများပြရန်"</string>
+    <string name="bubble_accessibility_action_add_back" msgid="1830101076853540953">"ပူဖေါင်းတန်းသို့ ပြန်ထည့်ရန်"</string>
+    <string name="bubble_content_description_single" msgid="8495748092720065813">"<xliff:g id="APP_NAME">%2$s</xliff:g> မှ <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_content_description_stack" msgid="8071515017164630429">"<xliff:g id="APP_NAME">%2$s</xliff:g> နှင့် နောက်ထပ် <xliff:g id="BUBBLE_COUNT">%3$d</xliff:g> ခုမှ <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
+    <string name="bubble_accessibility_action_move_top_left" msgid="2644118920500782758">"ဘယ်ဘက်ထိပ်သို့ ရွှေ့ရန်"</string>
+    <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"ညာဘက်ထိပ်သို့ ရွှေ့ပါ"</string>
+    <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"ဘယ်အောက်ခြေသို့ ရွှေ့ရန်"</string>
+    <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"ညာအောက်ခြေသို့ ရွှေ့ပါ"</string>
+    <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> ကို ချဲ့ရန်"</string>
+    <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"<xliff:g id="BUBBLE_TITLE">%1$s</xliff:g> ကို ချုံ့ရန်"</string>
+    <string name="bubbles_app_settings" msgid="3617224938701566416">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g> ဆက်တင်များ"</string>
+    <string name="bubble_dismiss_text" msgid="8816558050659478158">"ပူဖောင်းကွက် ပယ်ရန်"</string>
+    <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"စကားဝိုင်းကို ပူဖောင်းကွက် မပြုလုပ်ပါနှင့်"</string>
+    <string name="bubbles_user_education_title" msgid="2112319053732691899">"ပူဖောင်းကွက် သုံး၍ ချတ်လုပ်ခြင်း"</string>
+    <string name="bubbles_user_education_description" msgid="4215862563054175407">"စကားဝိုင်းအသစ်များကို မျောနေသည့် သင်္ကေတများ သို့မဟုတ် ပူဖောင်းကွက်များအဖြစ် မြင်ရပါမည်။ ပူဖောင်းကွက်ကိုဖွင့်ရန် တို့ပါ။ ရွှေ့ရန် ၎င်းကို ဖိဆွဲပါ။"</string>
+    <string name="bubbles_user_education_manage_title" msgid="7042699946735628035">"ပူဖောင်းကွက်ကို အချိန်မရွေး ထိန်းချုပ်ရန်"</string>
+    <string name="bubbles_user_education_manage" msgid="3460756219946517198">"ဤအက်ပ်မှနေ၍ ပူဖောင်းများကို ပိတ်ရန်အတွက် \'စီမံရန်\' ကို တို့ပါ"</string>
+    <string name="bubbles_user_education_got_it" msgid="3382046149225428296">"နားလည်ပြီ"</string>
+    <string name="bubble_overflow_empty_title" msgid="2397251267073294968">"လတ်တလော ပူဖောင်းကွက်များ မရှိပါ"</string>
+    <string name="bubble_overflow_empty_subtitle" msgid="2627417924958633713">"လတ်တလော ပူဖောင်းကွက်များနှင့် ပိတ်လိုက်သော ပူဖောင်းကွက်များကို ဤနေရာတွင် မြင်ရပါမည်"</string>
+    <string name="bubble_bar_education_stack_title" msgid="2486903590422497245">"ပူဖောင်းကွက်သုံး၍ ချတ်လုပ်ခြင်း"</string>
+    <string name="bubble_bar_education_stack_text" msgid="2446934610817409820">"စကားဝိုင်းအသစ်များကို သင့်ဖန်သားပြင် အောက်ခြေထောင့်တွင် သင်္ကေတများအဖြစ် မြင်ရပါမည်။ ၎င်းတို့ကို ဖြန့်ရန်တို့ပါ (သို့) ပယ်ရန်ဖိဆွဲပါ။"</string>
+    <string name="bubble_bar_education_manage_title" msgid="6148404487810835924">"ပူဖောင်းကွက်ကို အချိန်မရွေး ထိန်းချုပ်ရန်"</string>
+    <string name="bubble_bar_education_manage_text" msgid="3199732148641842038">"ပူဖောင်းကွက်သုံးနိုင်သည့် အက်ပ်နှင့် စကားဝိုင်းများ စီမံရန် ဤနေရာကို တို့ပါ"</string>
+    <string name="notification_bubble_title" msgid="6082910224488253378">"ပူဖောင်းဖောက်သံ"</string>
+    <string name="manage_bubbles_text" msgid="7730624269650594419">"စီမံရန်"</string>
+    <string name="accessibility_bubble_dismissed" msgid="8367471990421247357">"ပူဖောင်းကွက် ဖယ်လိုက်သည်။"</string>
+    <string name="bubble_shortcut_label" msgid="666269077944378311">"ပူဖောင်းကွက်"</string>
+    <string name="bubble_shortcut_long_label" msgid="6088437544312894043">"ပူဖောင်းကွက်များ ပြပါ"</string>
+    <string name="restart_button_description" msgid="4564728020654658478">"ပိုကောင်းသောမြင်ကွင်းအတွက် ဤအက်ပ်ပြန်စရန် တို့ပါ"</string>
+    <string name="user_aspect_ratio_settings_button_hint" msgid="734835849600713016">"ဆက်တင်များတွင် ဤအက်ပ်၏အချိုးအစားကို ပြောင်းရန်"</string>
+    <string name="user_aspect_ratio_settings_button_description" msgid="4315566801697411684">"အချိုးစား ပြောင်းရန်"</string>
+    <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"ကင်မရာပြဿနာလား။\nပြင်ဆင်ရန် တို့ပါ"</string>
+    <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"ကောင်းမသွားဘူးလား။\nပြန်ပြောင်းရန် တို့ပါ"</string>
+    <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"ကင်မရာပြဿနာ မရှိဘူးလား။ ပယ်ရန် တို့ပါ။"</string>
+    <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"ကြည့်ပြီး ပိုမိုလုပ်ဆောင်ပါ"</string>
+    <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"မျက်နှာပြင် ခွဲ၍ပြသခြင်းအတွက် အက်ပ်နောက်တစ်ခုကို ဖိဆွဲပါ"</string>
+    <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"နေရာပြန်ချရန် အက်ပ်အပြင်ဘက်ကို နှစ်ချက်တို့ပါ"</string>
+    <string name="letterbox_education_got_it" msgid="4057634570866051177">"နားလည်ပြီ"</string>
+    <string name="letterbox_education_expand_button_description" msgid="1729796567101129834">"နောက်ထပ်အချက်အလက်များအတွက် ချဲ့နိုင်သည်။"</string>
+    <string name="letterbox_restart_dialog_title" msgid="8543049527871033505">"ပိုကောင်းသောမြင်ကွင်းအတွက် ပြန်စမလား။"</string>
+    <string name="letterbox_restart_dialog_description" msgid="6096946078246557848">"အက်ပ်ကို ပြန်စပါက ၎င်းသည် စခရင်ပေါ်တွင် ပိုကြည့်ကောင်းသွားသော်လည်း သင်၏ လုပ်ငန်းစဉ် (သို့) မသိမ်းရသေးသော အပြောင်းအလဲများကို ဆုံးရှုံးနိုင်သည်"</string>
+    <string name="letterbox_restart_cancel" msgid="1342209132692537805">"မလုပ်တော့"</string>
+    <string name="letterbox_restart_restart" msgid="8529976234412442973">"ပြန်စရန်"</string>
+    <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"နောက်ထပ်မပြပါနှင့်"</string>
+    <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"ဤအက်ပ်ကို ရွှေ့ရန်\nနှစ်ချက်တို့ပါ"</string>
+    <string name="maximize_button_text" msgid="1650859196290301963">"ချဲ့ရန်"</string>
+    <string name="minimize_button_text" msgid="271592547935841753">"ချုံ့ရန်"</string>
+    <string name="close_button_text" msgid="2913281996024033299">"ပိတ်ရန်"</string>
+    <string name="back_button_text" msgid="1469718707134137085">"နောက်သို့"</string>
+    <string name="handle_text" msgid="1766582106752184456">"သုံးသူအမည်"</string>
+    <string name="app_icon_text" msgid="2823268023931811747">"အက်ပ်သင်္ကေတ"</string>
+    <string name="fullscreen_text" msgid="1162316685217676079">"ဖန်သားပြင်အပြည့်"</string>
+    <string name="desktop_text" msgid="1077633567027630454">"ဒက်စ်တော့မုဒ်"</string>
+    <string name="split_screen_text" msgid="1396336058129570886">"မျက်နှာပြင် ခွဲ၍ပြသရန်"</string>
+    <string name="more_button_text" msgid="3655388105592893530">"ပိုပြပါ"</string>
+    <string name="float_button_text" msgid="9221657008391364581">"မျှောရန်"</string>
+    <string name="select_text" msgid="5139083974039906583">"ရွေးရန်"</string>
+    <string name="screenshot_text" msgid="1477704010087786671">"ဖန်သားပြင်ဓာတ်ပုံ"</string>
+    <string name="close_text" msgid="4986518933445178928">"ပိတ်ရန်"</string>
+    <string name="collapse_menu_text" msgid="7515008122450342029">"မီနူး ပိတ်ရန်"</string>
+    <string name="expand_menu_text" msgid="3847736164494181168">"မီနူး ဖွင့်ရန်"</string>
+    <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"စခရင်ကို ချဲ့မည်"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"စခရင်ကို ချုံ့မည်"</string>
+</resources>

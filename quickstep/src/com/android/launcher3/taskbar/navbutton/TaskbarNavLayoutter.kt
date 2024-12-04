@@ -19,38 +19,58 @@ package com.android.launcher3.taskbar.navbutton
 import android.content.res.Resources
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
-import com.android.launcher3.DeviceProfile
+import android.widget.Space
 import com.android.launcher3.R
+import com.android.launcher3.taskbar.TaskbarActivityContext
 
-/** Layoutter for showing 3 button navigation on large screen */
+/** Layoutter for rendering task bar in large screen, both in 3-button and gesture nav mode. */
 class TaskbarNavLayoutter(
     resources: Resources,
     navBarContainer: LinearLayout,
     endContextualContainer: ViewGroup,
-    startContextualContainer: ViewGroup
+    startContextualContainer: ViewGroup,
+    imeSwitcher: ImageView?,
+    a11yButton: ImageView?,
+    space: Space?
 ) :
     AbstractNavButtonLayoutter(
         resources,
         navBarContainer,
         endContextualContainer,
-        startContextualContainer
+        startContextualContainer,
+        imeSwitcher,
+        a11yButton,
+        space
     ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
+    override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
         // Add spacing after the end of the last nav button
-        var navMarginEnd = resources.getDimension(dp.inv.inlineNavButtonsEndSpacing).toInt()
+        var navMarginEnd =
+            resources.getDimension(context.deviceProfile.inv.inlineNavButtonsEndSpacing).toInt()
+
+        val cutout = context.display.cutout
+        val bottomRect = cutout?.boundingRectBottom
+        if (bottomRect != null && !bottomRect.isEmpty) {
+            navMarginEnd = bottomRect.width()
+        }
+
         val contextualWidth = endContextualContainer.width
         // If contextual buttons are showing, we check if the end margin is enough for the
         // contextual button to be showing - if not, move the nav buttons over a smidge
-        if (isContextualButtonShowing && navMarginEnd < contextualWidth) {
+        if (isA11yButtonPersistent && navMarginEnd < contextualWidth) {
             // Additional spacing, eat up half of space between last icon and nav button
             navMarginEnd += resources.getDimensionPixelSize(R.dimen.taskbar_hotseat_nav_spacing) / 2
         }
 
-        val navButtonParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        val navButtonParams =
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
         navButtonParams.apply {
             gravity = Gravity.END or Gravity.CENTER_VERTICAL
             marginEnd = navMarginEnd
@@ -75,6 +95,44 @@ class TaskbarNavLayoutter(
                     buttonLayoutParams.marginStart = spaceInBetween / 2
                     buttonLayoutParams.marginEnd = spaceInBetween / 2
                 }
+            }
+        }
+
+        endContextualContainer.removeAllViews()
+        startContextualContainer.removeAllViews()
+
+        if (!context.deviceProfile.isGestureMode) {
+            val contextualMargin =
+                resources.getDimensionPixelSize(R.dimen.taskbar_contextual_button_padding)
+            repositionContextualContainer(endContextualContainer, WRAP_CONTENT, 0, 0, Gravity.END)
+            repositionContextualContainer(
+                startContextualContainer,
+                WRAP_CONTENT,
+                contextualMargin,
+                contextualMargin,
+                Gravity.START
+            )
+
+            if (imeSwitcher != null) {
+                val imeStartMargin =
+                    resources.getDimensionPixelSize(
+                        R.dimen.taskbar_ime_switcher_button_margin_start
+                    )
+                startContextualContainer.addView(imeSwitcher)
+                val imeSwitcherButtonParams =
+                    FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                imeSwitcherButtonParams.apply {
+                    marginStart = imeStartMargin
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+                imeSwitcher.layoutParams = imeSwitcherButtonParams
+            }
+            if (a11yButton != null) {
+                endContextualContainer.addView(a11yButton)
+                a11yButton.layoutParams = getParamsToCenterView()
             }
         }
     }

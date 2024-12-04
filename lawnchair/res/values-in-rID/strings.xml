@@ -71,7 +71,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Yang ditampilkan</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Untuk mengunci layar dan membuka aplikasi Terbaru dengan gerakan, Lawnchair perlu izin aksesibilitas.\n\nLawnchair tidak melacak apa yang Anda lakukan di ponsel. Izin ini hanya digunakan untuk mengaktifkan gerakan-gerakan tersebut.\n\nLawnchair menggunakan fitur aksesibilitas performGlobalAction untuk mengunci layar atau membuka aplikasi Terbaru.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -351,7 +351,7 @@
     <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai apli admin perangkat. Ketuk \"Buka pengaturan\", lalu ketuk \"Aktifkan apli admin perangkat ini.\"</string>
     <string name="dt2s_admin_warning">Tap Dua Kali untuk Tidur akan dimatikan.</string>
     <string name="d2ts_recents_a11y_hint_title">Aktifkan layanan aksesibilitas</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk-Ganda untuk Tidur, aktifkan layanan aksesibilitas Lawnchair. Ketuk \"Buka pengaturan\", pilih \"Lawnchair\" dan aktifkan \"Gunakan Lawnchair\".\n\nLawnchair menggunakan metode performGlobalAction dari Aksesibilitas untuk melakukan tindakan ini. Ini adalah izin sensitif yang memungkinkan pemantauan aplikasi lain. Namun, Lawnchair tidak dikonfigurasi untuk fungsi tersebut dan tidak menerima acara apa pun.</string>
     <string name="dt2s_recents_warning_open_settings">Buka pengaturan</string>
     <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
