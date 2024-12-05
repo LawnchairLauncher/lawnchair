@@ -28,6 +28,8 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.window.OnBackInvokedDispatcher;
 
@@ -390,6 +392,15 @@ public abstract class BaseActivity extends ComponentActivity implements Activity
      */
     public void addEventCallback(@ActivityEvent int event, Runnable callback) {
         mEventCallbacks[event].add(callback);
+    }
+
+    @Override
+    public Handler getMainThreadHandler() {
+        try {
+            return new Handler(Looper.getMainLooper());
+        } catch (Throwable t) {
+            return super.getMainThreadHandler();
+        }
     }
 
     /** Removes a previously added callback */

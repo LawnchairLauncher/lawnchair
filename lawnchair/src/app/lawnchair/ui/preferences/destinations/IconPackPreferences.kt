@@ -124,6 +124,7 @@ fun IconPackPreferences(
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val scrollState = rememberScrollState()
     val drawerThemedIconsEnabled = drawerThemedIconsAdapter.state.value
+    val tintIconpack = prefs.tintIconPackBackgrounds.getAdapter()
 
     PreferenceLayout(
         label = stringResource(id = R.string.icon_style_label),
@@ -145,7 +146,7 @@ fun IconPackPreferences(
                         .clip(MaterialTheme.shapes.large),
                 ) {
                     WallpaperPreview(modifier = Modifier.fillMaxSize())
-                    key(iconPackAdapter.state.value, themedIconPackAdapter.state.value, themedIconsAdapter.state.value) {
+                    key(iconPackAdapter.state.value, themedIconPackAdapter.state.value, themedIconsAdapter.state.value, tintIconpack.state.value) {
                         DummyLauncherLayout(
                             idp = invariantDeviceProfile(),
                             modifier = Modifier.fillMaxSize(),

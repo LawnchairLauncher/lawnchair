@@ -1055,19 +1055,12 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer 
     /** Receives animation progress from sysui process. */
     private void initRemotelyCalculatedUnfoldAnimation(UnfoldTransitionConfig config) {
 
-        Handler handler;
-        try {
-            handler = getMainThreadHandler();
-        } catch (Throwable t) {
-            handler = new Handler(Looper.getMainLooper());
-        }
-
         RemoteUnfoldSharedComponent unfoldComponent =
                 UnfoldTransitionFactory.createRemoteUnfoldSharedComponent(
                         /* context= */ this,
                         config,
                         getMainExecutor(),
-                        handler,
+                        getMainThreadHandler(),
                         /* backgroundExecutor= */ UI_HELPER_EXECUTOR,
                         /* bgHandler= */ UI_HELPER_EXECUTOR.getHandler(),
                         /* tracingTagPrefix= */ "launcher",

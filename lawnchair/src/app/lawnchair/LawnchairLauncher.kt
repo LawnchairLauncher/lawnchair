@@ -16,12 +16,14 @@
 
 package app.lawnchair
 
+import android.animation.AnimatorSet
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Pair
 import android.view.Display
 import android.view.View
 import android.view.ViewTreeObserver
@@ -227,6 +229,19 @@ class LawnchairLauncher : QuickstepLauncher() {
         if (LawnchairApp.isAtleastT) {
             super.registerBackDispatcher()
         }
+    }
+
+    override fun bindItems(items: List<ItemInfo>, forceAnimateIcons: Boolean) {
+        val inflatedItems = items.map { i ->
+            Pair.create(
+                i,
+                itemInflater?.inflateItem(
+                    i,
+                    modelWriter,
+                ),
+            )
+        }.toList()
+        bindInflatedItems(inflatedItems, if (forceAnimateIcons) AnimatorSet() else null)
     }
 
     override fun handleGestureContract(intent: Intent?) {

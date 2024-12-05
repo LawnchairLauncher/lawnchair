@@ -162,7 +162,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
         var defaultIcon =
             super.getIconWithOverrides(packageName, component, user, iconDpi, fallback)
 
-        if (context.shouldTintIconPackBackgrounds() && defaultIcon is AdaptiveIconDrawable) {
+        if ((context.shouldTintIconPackBackgrounds() && defaultIcon is AdaptiveIconDrawable) || (context.isThemedIconsEnabled() && defaultIcon is AdaptiveIconDrawable)) {
             if (Utilities.ATLEAST_T && defaultIcon.monochrome != null) {
                 defaultIcon = defaultIcon.monochrome
                 return if (td != null) {
