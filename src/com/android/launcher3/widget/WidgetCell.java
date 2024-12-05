@@ -162,6 +162,8 @@ public class WidgetCell extends LinearLayout {
         mWidgetName = findViewById(R.id.widget_name);
         mWidgetDims = findViewById(R.id.widget_dims);
         mWidgetDescription = findViewById(R.id.widget_description);
+        mWidgetAddButton = findViewById(R.id.widget_add_button);
+        mWidgetTextContainer = findViewById(R.id.widget_text_container);
 
         FontManager fontManager = FontManager.INSTANCE.get(getContext());
         fontManager.setCustomFont(mWidgetName, R.id.font_body_medium);
