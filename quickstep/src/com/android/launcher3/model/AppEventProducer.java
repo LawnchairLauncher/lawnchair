@@ -268,9 +268,13 @@ public class AppEventProducer implements StatsLogConsumer {
 
 
     private AppTarget createTempFolderTarget() {
-        return new AppTarget.Builder(new AppTargetId("folder:" + SystemClock.uptimeMillis()),
+        try {
+            return new AppTarget.Builder(new AppTargetId("folder:" + SystemClock.uptimeMillis()),
                 mContext.getPackageName(), Process.myUserHandle())
                 .build();
+        } catch (NoClassDefFoundError e) {
+            return null;
+        }
     }
 
     private String getContainer(LauncherAtom.ItemInfo info) {
