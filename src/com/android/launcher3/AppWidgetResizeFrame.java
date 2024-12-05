@@ -4,6 +4,7 @@ import static com.android.launcher3.CellLayout.SPRING_LOADED_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
 import static com.android.launcher3.LauncherPrefs.RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN;
+import static com.android.launcher3.Utilities.ATLEAST_Q;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RESIZE_COMPLETED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RESIZE_STARTED;
 import static com.android.launcher3.views.BaseDragLayer.LAYOUT_X;
@@ -211,6 +212,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             mSystemGestureExclusionRects.get(i).set(dragHandle.getLeft(), dragHandle.getTop(),
                     dragHandle.getRight(), dragHandle.getBottom());
         }
+        if (!ATLEAST_Q) return;
         setSystemGestureExclusionRects(mSystemGestureExclusionRects);
     }
 
