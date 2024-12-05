@@ -123,10 +123,12 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     @Override
     public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
         super.setAppWidget(appWidgetId, info);
-        if (!mTrackingWidgetUpdate && ATLEAST_Q) {
+        if (!mTrackingWidgetUpdate) {
             mTrackingWidgetUpdate = true;
-            Trace.beginAsyncSection(TRACE_METHOD_NAME + info.provider, appWidgetId);
             Log.i(TAG, "App widget created with id: " + appWidgetId);
+            if (ATLEAST_Q) {
+                Trace.beginAsyncSection(TRACE_METHOD_NAME + info.provider, appWidgetId);
+            }
         }
     }
 
