@@ -163,12 +163,12 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
             if (mWidgetCellWithAddButton != wc) {
                 // If click is on a cell not showing an add button, show it now.
                 final PendingAddItemInfo info = (PendingAddItemInfo) wc.getTag();
-                if (mActivityContext instanceof Launcher) {
-                    wc.showAddButton((view) -> addWidget(info));
-                } else {
-                    wc.showAddButton((view) -> mActivityContext.getItemOnClickListener()
-                            .onClick(wc));
-                }
+//                if (mActivityContext instanceof Launcher) {
+//                    wc.showAddButton((view) -> addWidget(info));
+//                } else {
+//                    wc.showAddButton((view) -> mActivityContext.getItemOnClickListener()
+//                            .onClick(wc));
+//                }
             }
 
             mWidgetCellWithAddButton = mWidgetCellWithAddButton != wc ? wc : null;
