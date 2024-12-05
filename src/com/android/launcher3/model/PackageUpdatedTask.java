@@ -337,14 +337,19 @@ public class PackageUpdatedTask implements ModelUpdateTask {
                                     PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING);
                             // In case an app is archived, we need to make sure that archived state
                             // in WorkspaceItemInfo is refreshed.
-                            if (Flags.enableSupportForArchiving() && !activities.isEmpty()) {
-                                boolean newArchivalState = activities.get(
-                                        0).getActivityInfo().isArchived;
-                                if (newArchivalState != si.isArchived()) {
-                                    si.runtimeStatusFlags ^= FLAG_ARCHIVED;
-                                    infoUpdated = true;
+                            try {
+                                if (Flags.enableSupportForArchiving() && !activities.isEmpty()) {
+                                    boolean newArchivalState = activities.get(
+                                            0).getActivityInfo().isArchived;
+                                    if (newArchivalState != si.isArchived()) {
+                                        si.runtimeStatusFlags ^= FLAG_ARCHIVED;
+                                        infoUpdated = true;
+                                    }
                                 }
+                            } catch (Throwable t) {
+                                // ignore
                             }
+
                             if (si.itemType == Favorites.ITEM_TYPE_APPLICATION) {
                                 if (activities != null && !activities.isEmpty()) {
                                     si.setNonResizeable(ApiWrapper.INSTANCE.get(context)

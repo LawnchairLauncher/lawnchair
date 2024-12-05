@@ -320,8 +320,9 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     /**
      * Returns a FastBitmapDrawable with the icon and context theme applied
      */
-    public FastBitmapDrawable newIcon(Context context, @BitmapInfo.DrawableCreationFlags int creationFlags) {
-        FastBitmapDrawable drawable = bitmap.newIcon(context, creationFlags);
+    public FastBitmapDrawable newIcon(Context context, boolean applyTheme) {
+        FastBitmapDrawable drawable = applyTheme
+                ? bitmap.newThemedIcon(context) : bitmap.newIcon(context, BitmapInfo.FLAG_NO_BADGE);
         drawable.setIsDisabled(isDisabled());
         return drawable;
     }
@@ -329,8 +330,8 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     /**
      * Returns a FastBitmapDrawable with the icon and context theme applied
      */
-    public FastBitmapDrawable newIcon(Context context, boolean applyTheme) {
-        FastBitmapDrawable drawable = bitmap.newIcon(context);
+    public FastBitmapDrawable newIcon(Context context, @BitmapInfo.DrawableCreationFlags int creationFlags) {
+        FastBitmapDrawable drawable = bitmap.newIcon(context, creationFlags);
         drawable.setIsDisabled(isDisabled());
         return drawable;
     }

@@ -74,6 +74,12 @@ fun FontSelection(
         list.add(FontCache.Family(FontCache.SystemFont("sans-serif")))
         list.add(FontCache.Family(FontCache.SystemFont("sans-serif-medium")))
         list.add(FontCache.Family(FontCache.SystemFont("sans-serif-condensed")))
+        val interVariants = HashMap<String, FontCache.Font>()
+        interVariants["regular"] = FontCache.ResourceFont(context, R.font.inter_regular, "Inter v3 " + context.getString(R.string.font_weight_regular))
+        interVariants["500"] = FontCache.ResourceFont(context, R.font.inter_medium, "Inter v3 " + context.getString(R.string.font_weight_medium))
+        interVariants["600"] = FontCache.ResourceFont(context, R.font.inter_semi_bold, "Inter v3 " + context.getString(R.string.font_weight_semi_bold))
+        interVariants["700"] = FontCache.ResourceFont(context, R.font.inter_bold, "Inter v3 " + context.getString(R.string.font_weight_bold))
+        list.add(FontCache.Family("Inter v3", interVariants))
         GoogleFontsListing.INSTANCE.get(context).getFonts().mapTo(list) { font ->
             val variantsMap = HashMap<String, FontCache.Font>()
             val variants = font.variants.toTypedArray()
@@ -260,6 +266,13 @@ private val VariantButtonContentPadding = PaddingValues(
     bottom = 8.dp,
 )
 
+private fun removeFamilyPrefix(
+    familyName: CharSequence,
+    fontName: CharSequence,
+): String {
+    return fontName.removePrefix(familyName).trim().toString()
+}
+
 @Composable
 private fun VariantDropdown(
     adapter: PreferenceAdapter<FontCache.Font>,
@@ -291,7 +304,7 @@ private fun VariantDropdown(
             AndroidText(
                 modifier = Modifier.wrapContentWidth(),
                 update = {
-                    it.text = selectedFont.displayName
+                    it.text = removeFamilyPrefix(family.displayName, selectedFont.displayName)
                     it.setFont(selectedFont)
                 },
             )
@@ -312,7 +325,7 @@ private fun VariantDropdown(
                     },
                     text = {
                         Text(
-                            text = font.displayName,
+                            text = removeFamilyPrefix(family.displayName, font.displayName),
                             fontFamily = font.composeFontFamily,
                         )
                     },

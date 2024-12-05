@@ -304,9 +304,13 @@ public class ItemInstallQueue implements SafeCloseable {
                     } else {
                         lai = laiList.get(0);
                         si.intent = makeLaunchIntent(lai);
-                        if (Flags.enableSupportForArchiving()
-                                && lai.getActivityInfo().isArchived) {
-                            si.runtimeStatusFlags |= FLAG_ARCHIVED;
+                        try {
+                            if (Flags.enableSupportForArchiving()
+                                    && lai.getActivityInfo().isArchived) {
+                                si.runtimeStatusFlags |= FLAG_ARCHIVED;
+                            }
+                        } catch (Throwable t) {
+                            // ignore
                         }
                     }
                     LauncherAppState.getInstance(context).getIconCache()

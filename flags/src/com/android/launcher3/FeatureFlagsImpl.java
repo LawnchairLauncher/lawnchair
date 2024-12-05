@@ -79,7 +79,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
             enableFocusOutline =
                     properties.getBoolean(Flags.FLAG_ENABLE_FOCUS_OUTLINE, true);
             enableGeneratedPreviews =
-                    properties.getBoolean(Flags.FLAG_ENABLE_GENERATED_PREVIEWS, false);
+                    properties.getBoolean(Flags.FLAG_ENABLE_GENERATED_PREVIEWS, true);
             enableGridOnlyOverview =
                     properties.getBoolean(Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW, false);
             enableHandleDelayedGestureCallbacks =

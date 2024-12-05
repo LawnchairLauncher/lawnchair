@@ -736,7 +736,13 @@ public class LoaderTask implements Runnable {
                 LauncherActivityInfo app = apps.get(i);
                 AppInfo appInfo = new AppInfo(app, mUserCache.getUserInfo(user),
                         ApiWrapper.INSTANCE.get(mApp.getContext()), mPmHelper, quietMode);
-                if (Flags.enableSupportForArchiving() && app.getApplicationInfo().isArchived) {
+                boolean isArchived;
+                try {
+                    isArchived = app.getApplicationInfo().isArchived;
+                } catch (NoSuchFieldError e) {
+                    isArchived = false;
+                }
+                if (Flags.enableSupportForArchiving() && isArchived) {
                     // For archived apps, include progress info in case there is a pending
                     // install session post restart of device.
                     String appPackageName = app.getApplicationInfo().packageName;
