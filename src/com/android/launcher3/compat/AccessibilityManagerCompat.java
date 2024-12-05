@@ -16,6 +16,8 @@
 
 package com.android.launcher3.compat;
 
+import static com.android.launcher3.Utilities.ATLEAST_Q;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -110,6 +112,9 @@ public class AccessibilityManagerCompat {
     }
 
     public static int getRecommendedTimeoutMillis(Context context, int originalTimeout, int flags) {
-        return getManager(context).getRecommendedTimeoutMillis(originalTimeout, flags);
+        if (ATLEAST_Q) {
+            return getManager(context).getRecommendedTimeoutMillis(originalTimeout, flags);
+        }
+        return originalTimeout;
     }
 }

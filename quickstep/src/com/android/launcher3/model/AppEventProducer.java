@@ -253,11 +253,11 @@ public class AppEventProducer implements StatsLogConsumer {
                 return createTempFolderTarget();
         }
         if (id != null && cn != null) {
-            if (shortcutInfo != null) {
-                return new AppTarget.Builder(new AppTargetId(id), shortcutInfo).build();
-            }
             if (!Utilities.ATLEAST_Q) {
                 return null;
+            }
+            if (shortcutInfo != null) {
+                return new AppTarget.Builder(new AppTargetId(id), shortcutInfo).build();
             }
             return new AppTarget.Builder(new AppTargetId(id), cn.getPackageName(), userHandle)
                     .setClassName(cn.getClassName())

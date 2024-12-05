@@ -136,8 +136,10 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     public void updateAppWidget(RemoteViews remoteViews) {
         if (mTrackingWidgetUpdate && remoteViews != null) {
             Log.i(TAG, "App widget with id: " + getAppWidgetId() + " loaded");
-            Trace.endAsyncSection(
+            if (ATLEAST_Q) {
+                Trace.endAsyncSection(
                     TRACE_METHOD_NAME + getAppWidgetInfo().provider, getAppWidgetId());
+            }
             mTrackingWidgetUpdate = false;
         }
         if (isDeferringUpdates()) {
