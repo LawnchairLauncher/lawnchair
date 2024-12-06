@@ -262,6 +262,6 @@ public class InstallSessionHelper implements SafeCloseable {
     }
 
     public static UserHandle getUserHandle(@NonNull final SessionInfo info) {
-        return Utilities.ATLEAST_Q ? info.getUser() : UserHandle.getUserHandleForUid(info.getInstallerUid());
+        return Utilities.ATLEAST_Q ? info.getUser() : UserHandle.getUserHandleForUid(info.getSessionId());
     }
 }
