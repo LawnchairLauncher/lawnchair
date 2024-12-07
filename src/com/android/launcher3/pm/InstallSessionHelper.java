@@ -22,6 +22,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
+import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 
@@ -262,6 +263,6 @@ public class InstallSessionHelper implements SafeCloseable {
     }
 
     public static UserHandle getUserHandle(@NonNull final SessionInfo info) {
-        return Utilities.ATLEAST_Q ? info.getUser() : UserHandle.getUserHandleForUid(info.getSessionId());
+        return Utilities.ATLEAST_Q ? info.getUser() : Process.myUserHandle();
     }
 }
