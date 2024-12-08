@@ -67,6 +67,7 @@
     <string name="background_opacity">Fono skaidrumas</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Nukopijuota į iškarpinę</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">Elementas pašalintas</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Ką rodyti</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Icon pack</string>
     <string name="themed_icon_pack">Themed icon source</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">System icons</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">Išjungtos</string>

@@ -67,6 +67,7 @@
     <string name="background_opacity">ব্যাকগ্রাউন্ডের অস্বচ্ছতা</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">ক্লিপবোর্ডের অস্বচ্ছতা</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">আইটেম রিমুভ করা হয়েছে</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">যা দেখাবে</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Icon pack</string>
     <string name="themed_icon_pack">Themed icon source</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">System icons</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">বন্ধ</string>

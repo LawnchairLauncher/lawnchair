@@ -67,6 +67,7 @@
     <string name="background_opacity">Achtergronddekking</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Gekopieerd naar klembord</string>
+    <string name="calculator_search_result_copied_toast">Resultaat gekopieerd naar klembord</string>
     <string name="item_removed">Item verwijderd</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Weergeven</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Pictogrampakket</string>
     <string name="themed_icon_pack">Bron van themapictogrammen</string>
+    <string name="themed_icon_pack_tint">Tint met accentkleur</string>
     <string name="system_icons">Systeempictogrammen</string>
     <string name="themed_icon_title">Themapictogrammen</string>
     <string name="themed_icons_off_label">Uitgeschakeld</string>

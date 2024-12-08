@@ -67,6 +67,7 @@
     <string name="background_opacity">Arka plan opaklığı</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Panoya kaydedildi</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">Öğe kaldırıldı</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Ne gösterilsin</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Simge paketi</string>
     <string name="themed_icon_pack">Temalı simge kaynağı</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">Sistem simgeleri</string>
     <string name="themed_icon_title">Temalı simgeler</string>
     <string name="themed_icons_off_label">Kapat</string>

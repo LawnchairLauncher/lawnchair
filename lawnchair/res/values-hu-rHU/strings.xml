@@ -67,6 +67,7 @@
     <string name="background_opacity">Háttér átlátszósága</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Vágólapra másolva</string>
+    <string name="calculator_search_result_copied_toast">Az eredmény a vágólapra másolva</string>
     <string name="item_removed">Elem eltávolítva</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Mi jelenjen meg</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Ikoncsomag</string>
     <string name="themed_icon_pack">Témázott ikonforrás</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">Rendszerikonok</string>
     <string name="themed_icon_title">Témázott ikonok</string>
     <string name="themed_icons_off_label">Kikapcsolás</string>

@@ -67,6 +67,7 @@
     <string name="background_opacity">배경 투명도</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">클립보드에 복사했습니다.</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">항목을 삭제했습니다.</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">표시할 항목</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">아이콘 팩</string>
     <string name="themed_icon_pack">테마 아이콘 소스</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="themed_icon_title">테마 아이콘</string>
     <string name="themed_icons_off_label">사용 안함</string>

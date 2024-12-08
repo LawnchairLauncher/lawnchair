@@ -67,6 +67,7 @@
     <string name="background_opacity">ความทึบของพื้นหลัง</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">คัดลอกไปยังคลิปบอร์ดแล้ว</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">นำรายการออกแล้ว</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">สิ่งที่อยากให้แสดง</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">ชุดไอคอน</string>
     <string name="themed_icon_pack">แหล่งที่มาของธีมไอคอน</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">ไอคอนระบบ</string>
     <string name="themed_icon_title">ธีมไอคอน</string>
     <string name="themed_icons_off_label">ปิด</string>
