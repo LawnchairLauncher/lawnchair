@@ -67,6 +67,7 @@
     <string name="background_opacity">Tingkat transparan latar belakang</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Disalin ke papan klip</string>
+    <string name="calculator_search_result_copied_toast">Hasil disalin ke papan klip</string>
     <string name="item_removed">Butir dihapus</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Yang ditampilkan</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Paket ikon</string>
     <string name="themed_icon_pack">Sumber ikon bertema</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">Ikon sistem</string>
     <string name="themed_icon_title">Ikon bertema</string>
     <string name="themed_icons_off_label">Mati</string>
@@ -376,7 +378,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Rotasi layar beranda</string>
     <string name="home_screen_rotation_description">Izinkan rotasi layar beranda ketika perangkat diputar</string>
-    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
+    <string name="wallpaper_blur">Wallpaper samar (eksperimental)</string>
     <string name="wallpaper_background_blur">Intensitas blur</string>
     <string name="wallpaper_background_blur_factor">Ambang batas faktor</string>
     <string name="auto_add_shortcuts_label">Tambahkan apli baru ke layar beranda</string>
@@ -400,7 +402,7 @@
     <string name="popup_menu">Gaya pop-up</string>
     <string name="home_screen_lock_toggle_from_home_popup">Tampilkan tombol kunci</string>
     <string name="show_system_settings_entry">Tampilkan tombol pengaturan sistem</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
+    <string name="home_screen_edit_toggle_from_home_popup">Tampilkan tombol ubah tampilan utama</string>
     <string name="status_bar_label">Bar status</string>
     <string name="show_status_bar">Tampilkan bar status</string>
     <string name="dark_status_bar_label">Bar status gelap</string>

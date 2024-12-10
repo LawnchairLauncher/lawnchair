@@ -239,6 +239,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Icon pack</string>
     <string name="themed_icon_pack">Themed icon source</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">System icons</string>
 
     <string name="themed_icon_title">Themed icons</string>

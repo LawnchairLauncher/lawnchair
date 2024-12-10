@@ -67,6 +67,7 @@
     <string name="background_opacity">Priehľadnosť pozadia</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopírovať do schránky</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">Odstránená položka</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Čo ukázať</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Balíček ikon</string>
     <string name="themed_icon_pack">Zdroj tematických ikon</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">Systémové ikony</string>
     <string name="themed_icon_title">Tematické ikony</string>
     <string name="themed_icons_off_label">Vypnuté</string>

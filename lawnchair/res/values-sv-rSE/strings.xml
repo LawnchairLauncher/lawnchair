@@ -67,6 +67,7 @@
     <string name="background_opacity">Bakgrundens opacitet</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopierad till urklipp</string>
+    <string name="calculator_search_result_copied_toast">Resultat kopierat till urklipp</string>
     <string name="item_removed">Objekt borttaget</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Vad ska visas</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Ikonpaket</string>
     <string name="themed_icon_pack">Källa till tematiserade ikoner</string>
+    <string name="themed_icon_pack_tint">Tona med accentfärg</string>
     <string name="system_icons">Systemikoner</string>
     <string name="themed_icon_title">Tematiserade ikoner</string>
     <string name="themed_icons_off_label">Av</string>

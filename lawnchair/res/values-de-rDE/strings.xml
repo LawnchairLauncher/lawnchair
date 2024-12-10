@@ -67,6 +67,7 @@
     <string name="background_opacity">Hintergrundtransparenz</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">In Zwischenablage kopiert</string>
+    <string name="calculator_search_result_copied_toast">Ergebnis in Zwischenablage kopiert</string>
     <string name="item_removed">Element entfernt</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Was angezeigt werden soll</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Symbol-Paket</string>
     <string name="themed_icon_pack">Symboldesign-Quelle</string>
+    <string name="themed_icon_pack_tint">In Akzentfarbe einfärben</string>
     <string name="system_icons">System-Symbole</string>
     <string name="themed_icon_title">Symboldesigns</string>
     <string name="themed_icons_off_label">Aus</string>

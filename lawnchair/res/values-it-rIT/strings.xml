@@ -67,6 +67,7 @@
     <string name="background_opacity">Opacità sfondo</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiato negli appunti</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">Elemento rimosso</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Cosa mostrare</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Pacchetto icone</string>
     <string name="themed_icon_pack">Fonte delle icone a tema</string>
+    <string name="themed_icon_pack_tint">Tinta con colore in evidenza</string>
     <string name="system_icons">Icone di sistema</string>
     <string name="themed_icon_title">Icone a tema</string>
     <string name="themed_icons_off_label">Disattivate</string>

@@ -67,6 +67,7 @@
     <string name="background_opacity">Opacidade do fundo</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiado para a área de transferência</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">Item removido</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">O que mostrar</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Pacotes de ícones</string>
     <string name="themed_icon_pack">Fonte dos Ícones Temáticos</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">Ícones do Sistema</string>
     <string name="themed_icon_title">Ícones Temáticos</string>
     <string name="themed_icons_off_label">Desligado</string>

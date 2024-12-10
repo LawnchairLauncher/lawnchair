@@ -1745,7 +1745,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
             Log.d(TAG, "applyLoadPlan - taskGroups is null");
         } else {
             Log.d(TAG, "applyLoadPlan - taskGroups: " + taskGroups.stream().map(
-                    GroupTask::toString).toList());
+                    GroupTask::toString).collect(Collectors.toList()));
         }
         mLoadPlanEverApplied = true;
         if (taskGroups == null || taskGroups.isEmpty()) {
@@ -2404,7 +2404,7 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
                         .collect(Collectors.toCollection(ArrayList::new));
                 if (enableRefactorTaskThumbnail()) {
                     visibleTaskIds.addAll(
-                            tasksToUpdate.stream().map((task) -> task.key.id).toList());
+                            tasksToUpdate.stream().map((task) -> task.key.id).collect(Collectors.toList()));
                 }
                 if (mTmpRunningTasks != null) {
                     for (Task t : mTmpRunningTasks) {
