@@ -16,6 +16,8 @@
 
 package com.android.launcher3.pm;
 
+import static com.android.launcher3.Utilities.ATLEAST_V;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherApps;
@@ -241,7 +243,9 @@ public class InstallSessionHelper implements SafeCloseable {
 
     public boolean verifySessionInfo(@Nullable final PackageInstaller.SessionInfo sessionInfo) {
         // For archived apps we always want to show promise icons and the checks below don't apply.
-        if (Flags.enableSupportForArchiving() && sessionInfo != null
+        if (Flags.enableSupportForArchiving()
+                && sessionInfo != null
+                && ATLEAST_V
                 && sessionInfo.isUnarchival()) {
             return true;
         }
