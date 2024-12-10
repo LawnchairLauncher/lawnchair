@@ -391,7 +391,10 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 Log.e(TAG, "Unable to parse icon map.", e)
             }
         }
-
+        updateMapFromResources(
+            resources = context.resources,
+            packageName = context.packageName,
+        )
         if (context.packageManager.isPackageInstalled(packageName = themeMapName)) {
             iconPackVersion = context.packageManager.getPackageVersionCode(themeMapName)
             updateMapFromResources(

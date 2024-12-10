@@ -67,6 +67,7 @@
     <string name="background_opacity">பின்னணி ஒளிபுகாநிலை</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">நகலகத்தில் நகலெடுக்கப்பட்டது</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">பொருள் நீக்கப்பட்டது</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">எதைக் காட்ட</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">சின்ன பேக்</string>
     <string name="themed_icon_pack">கருப்பொருள் ஐகான் மூல</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">இயங்குதளச் சின்னங்கள்</string>
     <string name="themed_icon_title">தோற்றக்கருமிகுச் சின்னங்கள்</string>
     <string name="themed_icons_off_label">அணை</string>

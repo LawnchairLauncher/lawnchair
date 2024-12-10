@@ -67,13 +67,14 @@
     <string name="background_opacity">Непрозирност позадине</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Копирано у привремену меморију</string>
+    <string name="calculator_search_result_copied_toast">Резултат је копиран у привремену меморију</string>
     <string name="item_removed">Ставка је уклоњена</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Информације за приказ</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="x_and_y">%1$s и %2$s</string>
     <!--
 
     Preference Dashboard
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Пакет икона</string>
     <string name="themed_icon_pack">Извор тематских икона</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">Системске иконе</string>
     <string name="themed_icon_title">Тематске иконе</string>
     <string name="themed_icons_off_label">Искључено</string>
@@ -339,7 +341,7 @@
     <string name="gesture_back_tap">Дугме Назад</string>
     <string name="gesture_handler_no_op">Не ради ништа</string>
     <string name="gesture_handler_sleep">Пређи у стање спавања</string>
-    <string name="gesture_handler_recents">Open Recents</string>
+    <string name="gesture_handler_recents">Отвори недавно</string>
     <string name="gesture_handler_open_notifications">Отвори траку са обавештењима</string>
     <string name="gesture_handler_open_app_option">Отвори апликацију</string>
     <string name="gesture_handler_open_app_config">Отвори %1$s</string>

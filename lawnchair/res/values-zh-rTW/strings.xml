@@ -67,6 +67,7 @@
     <string name="background_opacity">背景不透明度</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">已複製至剪貼板</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">已移除物件</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">選擇需要顯示的項目</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Icon pack</string>
     <string name="themed_icon_pack">Themed icon source</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">系統圖示</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">關閉</string>

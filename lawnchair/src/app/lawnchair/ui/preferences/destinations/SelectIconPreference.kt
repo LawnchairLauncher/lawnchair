@@ -22,6 +22,7 @@ import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
 import app.lawnchair.ui.preferences.navigation.Routes
 import app.lawnchair.ui.util.OnResult
 import app.lawnchair.util.requireSystemService
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import kotlinx.coroutines.launch
@@ -38,6 +39,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
+    val model = LauncherAppState.getInstance(context).model
 
     val repo = IconOverrideRepository.INSTANCE.get(context)
     OnResult<IconPickerItem> { item ->
@@ -46,6 +48,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
             (context as Activity).let {
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
+                model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
             }
         }
     }
@@ -64,6 +67,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                             (context as Activity).let {
                                 it.setResult(Activity.RESULT_OK)
                                 it.finish()
+                                model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
                             }
                         }
                     },

@@ -67,11 +67,12 @@
     <string name="background_opacity">Độ mờ nền</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Đã sao chép</string>
+    <string name="calculator_search_result_copied_toast">Kết quả đã sao chép vào bảng nhớ tạm</string>
     <string name="item_removed">Đã xoá mục</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Những gì để hiển thị</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Để mở khoá màn hình </string>
+    <string name="accessibility_service_description">Để khóa điện thoại khi thực hiện cử chỉ và để mở mục Gần đây bằng cử chỉ, Lawnchair yêu cầu quyền truy cập trợ năng.\n\nLawnchair không theo dõi bất kỳ hành động nào của người dùng, mặc dù quyền theo dõi là bắt buộc đối với tất cả các dịch vụ trợ năng. Lawnchair loại bỏ mọi sự kiện được hệ thống gửi đi.\n\nĐể khóa điện thoại hoặc mở mục Gần đây, Lawnchair sử dụng dịch vụ Trợ năng performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -102,47 +103,47 @@
     <string name="experimental_features_label">Chức năng thử nghiệm</string>
     <!-- Experimental features -->
     <string name="font_picker_label">Đổi phông chữ</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
+    <string name="font_picker_description">Một số văn bản vẫn không thay đổi</string>
     <string name="smartspace_calendar_label">Tuỳ chỉnh lịch của xem nhanh</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
+    <string name="smartspace_calendar_description">Cho phép hiển thị ngày trong hệ thống lịch không phải lịch tây</string>
     <string name="workspace_increase_max_grid_size_label">Tăng độ lớn tối đa của lưới</string>
     <string name="workspace_increase_max_grid_size_description">Cho phép tăng kích thước từ 10x10 lên 20x20 trên màn hình chính</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="always_reload_icons_label">Luôn tải lại biểu tượng</string>
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <string name="recents_lock_unlock">Khóa/mở</string>
+    <string name="recents_lock_unlock_description">Ngăn ứng dụng đã chọn đóng khi nhấn \"Xóa tất cả\"</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
-    <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
-    <string name="notification_dots_text_color">Notification counter color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="set_default_launcher_tip">Để truy cập các phím tắt và tính năng bổ sung, hãy đặt Lawnchair làm trình khởi chạy mặc định của bạn</string>
+    <string name="notification_dots">Dấu chấm thông náo</string>
+    <string name="show_notification_count">Hiển thị số thông báo</string>
+    <string name="notification_dots_color">Màu chấm thông báo</string>
+    <string name="notification_dots_text_color">Màu số thông báo</string>
+    <string name="notification_dots_color_contrast_warning_always">Cảnh báo: Màu sắc của chấm thông báo và số không đủ độ tương phản với nhau</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Cảnh báo: Màu sắc của chấm thông báo và số có thể không phải lúc nào cũng đủ độ tương phản với nhau</string>
     <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="missing_notification_access_desc">Để hiển thị Dấu chấm thông báo, hãy bật thông báo ứng dụng cho <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">Icon style</string>
-    <string name="icon_shape_label">Icon shape</string>
-    <string name="icon_sizes">Icon size</string>
-    <string name="show_labels">Show labels</string>
-    <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="icon_style_label">Phong cách biểu tượng</string>
+    <string name="icon_shape_label">Hình dạng biểu tượng</string>
+    <string name="icon_sizes">Kích thước biểu tượng</string>
+    <string name="show_labels">Hiển thị nhãn</string>
+    <string name="label_size">Kích thước nhãn</string>
+    <string name="twoline_label">Sử dụng nhiều dòng</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent themed icons</string>
+    <string name="transparent_background_icons_label">Biểu tượng theo chủ đề trong suốt</string>
     <string name="transparent_background_icons_description">Dùng nền trong suốt cho biểu tượng theo chủ đề</string>
-    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
-    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
+    <string name="auto_adaptive_icons_label">Biểu tượng tự động thích ứng</string>
+    <string name="auto_adaptive_icons_description">Đối với tất cả các biểu tượng không thích ứng</string>
+    <string name="shadow_bg_icons_label">Hiển thị bóng đổ phía sau biểu tượng</string>
     <string name="background_lightness_label">Background lightness</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
     <string name="reset_custom_icons">Reset custom icons</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Gói biểu tượng</string>
     <string name="themed_icon_pack">Themed icon source</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">Biểu tượng từ hệ thống</string>
     <string name="themed_icon_title">Themed icons</string>
     <string name="themed_icons_off_label">Tắt</string>

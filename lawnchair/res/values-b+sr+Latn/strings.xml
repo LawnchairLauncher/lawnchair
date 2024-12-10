@@ -67,6 +67,7 @@
     <string name="background_opacity">Neprozirnost pozadine</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopirano u privremenu memoriju</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">Stavka je uklonjena</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Informacije za prikaz</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Paket ikona</string>
     <string name="themed_icon_pack">Izvor tematskih ikona</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">Sistemske ikone</string>
     <string name="themed_icon_title">Tematske ikone</string>
     <string name="themed_icons_off_label">Isključeno</string>

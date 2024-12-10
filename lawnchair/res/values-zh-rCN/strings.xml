@@ -67,6 +67,7 @@
     <string name="background_opacity">背景不透明度</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">已复制到剪贴板</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">项目已移除</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">选择要显示的项目</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">图标包</string>
     <string name="themed_icon_pack">主题图标来源</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">系统图标</string>
     <string name="themed_icon_title">主题图标</string>
     <string name="themed_icons_off_label">关</string>

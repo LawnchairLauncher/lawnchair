@@ -67,6 +67,7 @@
     <string name="background_opacity">پس منظر کا دھندلاپن</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">کلپ بورڈ پر کاپی ہو گیا</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">آئٹم ہٹا دیا گیا</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">کیا دکھانا ہے</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">آئکن پیک</string>
     <string name="themed_icon_pack">تھیم آئیکن کا ماخذ</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">سسٹم آیکنز</string>
     <string name="themed_icon_title">تھیمڈ آیکنز</string>
     <string name="themed_icons_off_label">آف</string>

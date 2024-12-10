@@ -67,6 +67,7 @@
     <string name="background_opacity">背景の透明度</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">クリップボードにコピーしました</string>
+    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
     <string name="item_removed">アイテムを削除しました</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">表示する項目</string>
@@ -186,6 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">アイコンパック</string>
     <string name="themed_icon_pack">テーマアイコンのソース</string>
+    <string name="themed_icon_pack_tint">Tint with accent color</string>
     <string name="system_icons">システムアイコン</string>
     <string name="themed_icon_title">テーマアイコン</string>
     <string name="themed_icons_off_label">オフ</string>

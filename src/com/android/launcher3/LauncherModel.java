@@ -86,6 +86,7 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should
@@ -516,7 +517,7 @@ public class LauncherModel implements InstallSessionTracker.Callback {
             }
             if (!archivedWorkspaceItemsToCacheRefresh.isEmpty()) {
                 taskController.bindUpdatedWorkspaceItems(
-                        archivedWorkspaceItemsToCacheRefresh.stream().toList());
+                        new ArrayList<>(archivedWorkspaceItemsToCacheRefresh));
             }
             if (isAppArchived) {
                 taskController.bindApplicationsIfNeeded();
