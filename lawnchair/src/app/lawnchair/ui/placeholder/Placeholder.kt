@@ -104,7 +104,6 @@ object PlaceholderDefaults {
  * on/off screen. The boolean parameter defined for the transition is [visible].
  */
 // TODO: need to migrate to Modifier.Node, see https://mrmans0n.github.io/compose-rules/rules/#avoid-modifier-extension-factory-functions
-@Suppress("ktlint:compose:modifier-composable-check", "ktlint:compose:modifier-composed-check")
 @Composable
 fun Modifier.placeholder(
     visible: Boolean,
