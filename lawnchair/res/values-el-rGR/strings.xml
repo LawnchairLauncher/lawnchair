@@ -67,7 +67,7 @@
     <string name="background_opacity">Αδιαφάνεια φόντου</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Αντιγράφηκε στο πρόχειρο</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Το αποτέλεσμα αντιγράφηκε στο πρόχειρο</string>
     <string name="item_removed">Το στοιχείο αφαιρέθηκε</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Τι να εμφανίζεται</string>
@@ -187,7 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Πακέτο εικονιδίων</string>
     <string name="themed_icon_pack">Πηγή θεματοποιημένων εικονιδίων</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">Απόχρωση με χρώμα έμφασης</string>
     <string name="system_icons">Εικονίδια συστήματος</string>
     <string name="themed_icon_title">Θεματοποιημένα εικονίδια</string>
     <string name="themed_icons_off_label">Ανενεργό</string>

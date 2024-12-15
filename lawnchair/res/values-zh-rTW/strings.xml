@@ -67,13 +67,13 @@
     <string name="background_opacity">背景不透明度</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">已複製至剪貼板</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">結果已複製至剪貼簿</string>
     <string name="item_removed">已移除物件</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">選擇需要顯示的項目</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
-    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
@@ -92,9 +92,9 @@
     <string name="drawer_search_label">Drawer search</string>
     <string name="drawer_search_description">Web suggestions, global search</string>
     <string name="folders_label">資料夾</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">行列數</string>
     <string name="gestures_label">手勢</string>
-    <string name="gestures_description">Taps and swipes</string>
+    <string name="gestures_description">點擊並滑動</string>
     <string name="quickstep_label">最近使用的應用程式</string>
     <string name="quickstep_description">Clear All button, corner radius</string>
     <string name="about_label">關於</string>
@@ -118,12 +118,12 @@
 
     -->
     <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
+    <string name="notification_dots">通知圓點</string>
     <string name="show_notification_count">顯示通知圖示數字</string>
-    <string name="notification_dots_color">Notification dot color</string>
-    <string name="notification_dots_text_color">Notification counter color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color">通知圓點顏色</string>
+    <string name="notification_dots_text_color">通知數量顏色</string>
+    <string name="notification_dots_color_contrast_warning_always">警告：通知圓點與通知數量的顏色對比不夠明顯</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">警告：通知圓點與通知數量的顏色對比在某些情況下可能不夠明顯</string>
     <string name="missing_notification_access_label">需要通知存取權</string>
     <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
@@ -135,9 +135,9 @@
     <string name="icon_style_label">Icon style</string>
     <string name="icon_shape_label">Icon shape</string>
     <string name="icon_sizes">Icon size</string>
-    <string name="show_labels">Show labels</string>
-    <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="show_labels">顯示名稱</string>
+    <string name="label_size">名稱長度</string>
+    <string name="twoline_label">啟用換行</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent themed icons</string>
     <string name="transparent_background_icons_description">在套用主題色的圖示上使用透明背景</string>
@@ -162,9 +162,9 @@
     <string name="icon_shape_egg">蛋形</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">八角形</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">六邊形</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="icon_shape_rounded_square">圓角方形</string>
     <string name="icon_shape_sharp_square">Sharp square</string>
     <string name="icon_shape_square">方形</string>
     <string name="icon_shape_squircle">方圓形</string>

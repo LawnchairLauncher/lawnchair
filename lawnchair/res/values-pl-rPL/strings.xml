@@ -67,7 +67,7 @@
     <string name="background_opacity">Przezroczystość tła</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Skopiowano do schowka</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Wynik został skopiowany do schowka</string>
     <string name="item_removed">Element usunięty</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Co wyświetlić</string>

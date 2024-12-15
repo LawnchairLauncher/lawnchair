@@ -21,9 +21,9 @@
     Actions and Verbs
 
     -->
-    <string name="preview_label">Preview</string>
+    <string name="preview_label">Solanvip1</string>
     <string name="action_create">Create</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_backup"></string>
     <string name="action_restore">Restore</string>
     <string name="action_delete">Delete</string>
     <string name="action_reset">Reset</string>
