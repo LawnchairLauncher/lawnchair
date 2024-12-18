@@ -210,6 +210,16 @@ android {
     buildTypes {
         all {
             signingConfig releaseSigning
+
+            applicationVariants.configureEach { variant ->
+                variant.outputs.configureEach {
+                    def channel = variant.productFlavors.last().name
+                    // Override signingConfig to debug if the "nightly" flavor is selected
+                    if (channel.any { it == "nightly" }) {
+                        signingConfig = signingConfigs.debug
+                    }
+                }
+            }
             pseudoLocalesEnabled true
         }
 
@@ -253,6 +263,11 @@ android {
             dimension "channel"
         }
 
+        nightly {
+            applicationId 'app.lawnchair.nightly'
+            dimension "channel"
+        }
+
         play {
             applicationId "app.lawnchair.play"
             dimension "channel"
@@ -288,6 +303,10 @@ android {
         }
 
         lawnWithQuickstepGithub {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
+        lawnWithQuickstepNightly {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
