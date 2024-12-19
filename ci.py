@@ -38,14 +38,34 @@ def send_document_to_telegram_chat(chat_id, document):
 def send_artifact_to_telegram_chat(chat_id):
     subdirectories = os.listdir(artifact_directory)
     if "beta" in github_ref:
-        with open(f"{artifact_directory}/{os.listdir(artifact_directory)[0]}", "rb") as artifact:
-            send_document_to_telegram_chat(chat_id=chat_id, document=artifact)
-            return
-    
+        beta_path = f"{artifact_directory}/{os.listdir(artifact_directory)[0]}"
+        if os.path.exists(beta_path) and os.path.isfile(beta_path):
+            with open(beta_path, "rb") as artifact:
+                send_document_to_telegram_chat(chat_id=chat_id, document=artifact)
+        else:
+            print(f"Error: Beta artifact not found at {beta_path}")
+        return
+
     for each_directory in subdirectories:
         full_path = f"{artifact_directory}/{each_directory}/debug"
-        with open(f"{full_path}/{os.listdir(full_path)[0]}", "rb") as artifact:
-            send_document_to_telegram_chat(chat_id=chat_id, document=artifact)
+        if not os.path.exists(full_path) or not os.path.isdir(full_path):
+            print(f"Warning: Directory does not exist or is not valid: {full_path}")
+            continue
+
+        try:
+            files = os.listdir(full_path)
+            if not files:
+                print(f"Warning: No files found in {full_path}")
+                continue
+
+            file_path = f"{full_path}/{files[0]}"
+            if os.path.isfile(file_path):
+                with open(file_path, "rb") as artifact:
+                    send_document_to_telegram_chat(chat_id=chat_id, document=artifact)
+            else:
+                print(f"Warning: Not a file: {file_path}")
+        except Exception as e:
+            print(f"Error processing directory {full_path}: {e}")
 
 def send_internal_notifications():
     repository = git.Repo(".")
