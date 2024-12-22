@@ -15,16 +15,8 @@
  */
 package com.android.launcher3.views;
 
-import static androidx.core.content.ContextCompat.getColorStateList;
-
-import static com.android.launcher3.BuildConfigs.WIDGETS_ENABLED;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
-import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -57,13 +49,13 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
-import com.patrykmichalik.opto.domain.Preference;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.ui.popup.LauncherOptionsPopup;
 
 /**
  * Popup shown on long pressing an empty space in launcher
@@ -204,56 +196,15 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
      * Returns the list of supported actions
      */
     public static ArrayList<OptionItem> getOptions(Launcher launcher) {
-        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(launcher);
-        boolean lockHomeScreen = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreen());
-        boolean showLockToggle = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getLockHomeScreenButtonOnPopUp());
-        boolean showSystemSettings = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getShowSystemSettingsEntryOnPopUp());
-        boolean showEditMode = PreferenceExtensionsKt
-                .firstBlocking(preferenceManager2.getEditHomeScreenButtonOnPopUp());
-
-        ArrayList<OptionItem> options = new ArrayList<>();
-        if (showLockToggle) {
-            options.add(new OptionItem(launcher,
-                    lockHomeScreen ? R.string.home_screen_unlock : R.string.home_screen_lock,
-                    lockHomeScreen ? R.drawable.ic_lock_open : R.drawable.ic_lock,
-                    IGNORE,
-                    OptionsPopupView::toggleHomeScreenLock));
-        }
-        if (showSystemSettings) {
-            options.add(new OptionItem(launcher,
-                    R.string.system_settings,
-                    R.drawable.ic_setting,
-                    IGNORE,
-                    OptionsPopupView::startSystemSettings));
-        }
-
-        options.add(new OptionItem(launcher,
-                R.string.styles_wallpaper_button_text,
-                R.drawable.ic_palette,
-                IGNORE,
-                OptionsPopupView::startWallpaperPicker));
-        if (!lockHomeScreen) {
-            options.add(new OptionItem(launcher,
-                    R.string.widget_button_text,
-                    R.drawable.ic_widget,
-                    LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
-                    OptionsPopupView::onWidgetsClicked));
-        }
-        if (!lockHomeScreen && showEditMode) {
-            options.add(new OptionItem(launcher,
-                    R.string.edit_home_screen,
-                    R.drawable.enter_home_gardening_icon,
-                    LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
-                    OptionsPopupView::enterHomeGardening));
-        }
-        options.add(new OptionItem(launcher,
-                R.string.settings_button_text,
-                R.drawable.ic_home_screen,
-                LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
-                OptionsPopupView::startSettings));
-        return options;
+        return LauncherOptionsPopup.INSTANCE.getLauncherOptions(
+            launcher,
+            OptionsPopupView::toggleHomeScreenLock,
+            OptionsPopupView::startSystemSettings,
+            OptionsPopupView::enterHomeGardening,
+            OptionsPopupView::startWallpaperPicker,
+            OptionsPopupView::onWidgetsClicked,
+            OptionsPopupView::startSettings
+        );
     }
 
     private static boolean enterHomeGardening(View view) {

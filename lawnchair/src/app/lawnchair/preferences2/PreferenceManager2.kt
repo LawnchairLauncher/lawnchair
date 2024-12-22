@@ -49,6 +49,7 @@ import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShape as L3IconShape
+import app.lawnchair.ui.popup.LauncherOptionsPopup
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.util.SafeCloseable
@@ -254,6 +255,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val lockHomeScreen = preference(
         key = booleanPreferencesKey(name = "lock_home_screen"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen),
+    )
+
+    val launcherPopupOrder = preference(
+        key = stringPreferencesKey(name = "launcher_popup_order"),
+        defaultValue = LauncherOptionsPopup.DEFAULT_ORDER,
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val lockHomeScreenButtonOnPopUp = preference(
