@@ -21,58 +21,58 @@
     Actions and Verbs
 
     -->
-    <string name="preview_label">Preview</string>
-    <string name="action_create">Create</string>
-    <string name="action_backup">Backup</string>
-    <string name="action_restore">Restore</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_reset">Reset</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="action_apply">Apply</string>
-    <string name="action_customize">Customize</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="action_copy_link">Copy link</string>
-    <string name="action_copy">Copy</string>
-    <string name="action_paste">Paste</string>
-    <string name="loading">Loading…</string>
-    <string name="managed_by_lawnchair">Managed by Lawnchair</string>
+    <string name="preview_label">Pregled</string>
+    <string name="action_create">Kreiraj</string>
+    <string name="action_backup">Sigurnosna kopija</string>
+    <string name="action_restore">Vrati</string>
+    <string name="action_delete">Izbrisati</string>
+    <string name="action_reset">Resetirati</string>
+    <string name="action_unlock">Otključati</string>
+    <string name="action_lock">Zaključati</string>
+    <string name="action_apply">Primjeni</string>
+    <string name="action_customize">Urediti</string>
+    <string name="always_choice">Uvijek</string>
+    <string name="never_choice">Nikada</string>
+    <string name="clipboard">Međuspremnik</string>
+    <string name="action_copy_link">Kopiraj poveznicu</string>
+    <string name="action_copy">Kopirati</string>
+    <string name="action_paste">Zalijepi</string>
+    <string name="loading">Učitavanje…</string>
+    <string name="managed_by_lawnchair">Ovime upravlja Lawnchair</string>
     <!-- When mentioning settings UI -->
-    <string name="smartspace_preferences">Preferences</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="smartspace_preferences">Postavke</string>
+    <string name="settings_button_text">Postavke pokretača</string>
+    <string name="system_settings">Postavke sustava</string>
+    <string name="title_change_settings">Promijeni postavke</string>
     <!--
 
     General "words" used throughout Lawnchair
 
     -->
     <!-- Selection options -->
-    <string name="dynamic">Dynamic</string>
-    <string name="presets">Presets</string>
-    <string name="custom">Custom</string>
-    <string name="feed_default">Default</string>
-    <string name="system">System</string>
+    <string name="dynamic">Dinamično</string>
+    <string name="presets">Predlošci</string>
+    <string name="custom">Prilagođeno</string>
+    <string name="feed_default">Osnovno</string>
+    <string name="system">Sustav</string>
     <!-- Relating to the Launcher ui -->
-    <string name="columns">Columns</string>
-    <string name="rows">Rows</string>
-    <string name="label">Label</string>
-    <string name="icons">Icons</string>
-    <string name="grid">Grid</string>
-    <string name="layout">Layout</string>
+    <string name="columns">Stupci</string>
+    <string name="rows">Redovi</string>
+    <string name="label">Oznaka</string>
+    <string name="icons">Ikone</string>
+    <string name="grid">Rešetka</string>
+    <string name="layout">Raspored</string>
     <!-- Generic styling options -->
-    <string name="wallpaper">Wallpaper</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="wallpaper">Pozadina</string>
+    <string name="background_opacity">Prozirnost pozadine</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
-    <string name="item_removed">Item removed</string>
+    <string name="copied_toast">Kopirano u međuspremnik</string>
+    <string name="calculator_search_result_copied_toast">Odabir kopiran u međuspremnik</string>
+    <string name="item_removed">Stavka uklonjena</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
+    <string name="what_to_show">Što prikazati</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Kako biste otključali telefon ili otvorili Nedavno putem pokreta, Lawnchair zahtijeva pristup značajkama pristupačnosti.\n\nLawnchair ne prati nikakvu radnju korisnika, iako je odobrenje za to potrebno za sve usluge pristupačnosti. Lawnchair odbacuje svaki događaj koji šalje sustav.\n\nKako bi zaključao vaš telefon ili otvorio Nedavno, Lawnchair koristi uslugu pristupačnosti performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -80,47 +80,47 @@
     Preference Dashboard
 
     -->
-    <string name="settings">Settings</string>
-    <string name="general_label">General</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="settings">Postavke</string>
+    <string name="general_label">Opće</string>
+    <string name="general_description">Boje, paketi ikona, točke obavijesti</string>
+    <string name="home_screen_label">Početni zaslon</string>
+    <string name="home_screen_description">Feed, rešetka, ikone</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
-    <string name="folders_label">Folders</string>
-    <string name="folders_description">Row and column count</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gestures_description">Taps and swipes</string>
-    <string name="quickstep_label">Recents</string>
-    <string name="quickstep_description">Clear All button, corner radius</string>
-    <string name="about_label">About</string>
-    <string name="app_info_drop_target_label">App info</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="dock_description">Traka za pretragu, broj ikona</string>
+    <string name="app_drawer_label">Ladica sa aplikacijama</string>
+    <string name="app_drawer_description">Skrivene aplikacije, broj stupaca, ikone</string>
+    <string name="drawer_search_label">Pretraga ladice</string>
+    <string name="drawer_search_description">Web prijedlozi, globalna pretraga</string>
+    <string name="folders_label">Mape</string>
+    <string name="folders_description">Broj redova i stupaca</string>
+    <string name="gestures_label">Pokreti</string>
+    <string name="gestures_description">Dodiri i prijelazi prstom</string>
+    <string name="quickstep_label">Nedavno</string>
+    <string name="quickstep_description">Izbriši sve gumb, promjer kutova</string>
+    <string name="about_label">O</string>
+    <string name="app_info_drop_target_label">Informacije o aplikaciji</string>
+    <string name="debug_restart_launcher">Ponovno pokreni Lawnchair</string>
+    <string name="experimental_features_label">Eksperimentalne značajke</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">Font customization</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <string name="font_picker_label">Uređivanje fontova</string>
+    <string name="font_picker_description">Neki tekst će ostati nepromijenjen</string>
+    <string name="smartspace_calendar_label">At a Glance postavke kalendara</string>
+    <string name="smartspace_calendar_description">Dopusti prikaz datuma na ne-gregorijanskim kalendarima</string>
+    <string name="workspace_increase_max_grid_size_label">Povećava limit maksimalne veličine rešetke</string>
+    <string name="workspace_increase_max_grid_size_description">Povećaj maksimalnu dozvoljenu veličinu rešetke početnog zaslona sa 10 x 10 na 20 x 20</string>
+    <string name="always_reload_icons_label">Uvijek ponovno učitaj ikone</string>
+    <string name="always_reload_icons_description">Izbjegni korištenje predmemoriranih ikona iz paketa sa ikonama</string>
+    <string name="recents_lock_unlock">Zaključaj/otključaj</string>
+    <string name="recents_lock_unlock_description">Spriječi zatvaranje odabrane aplikacije prilikom odabira \"Clear all\"</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
-    <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
+    <string name="set_default_launcher_tip">Za pristup prečacima i dodatnim značajkama, postavite Lawnchair kao zadani pokretač</string>
+    <string name="notification_dots">Točke obavijesti</string>
+    <string name="show_notification_count">Prikaži broj obavijesti</string>
+    <string name="notification_dots_color">Boja točke obavijesti</string>
     <string name="notification_dots_text_color">Notification counter color</string>
     <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
@@ -406,6 +406,8 @@
     <string name="status_bar_label">Status bar</string>
     <string name="show_status_bar">Show status bar</string>
     <string name="dark_status_bar_label">Dark status bar</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Text color</string>
     <string name="color_light">Light</string>
     <string name="color_dark">Dark</string>

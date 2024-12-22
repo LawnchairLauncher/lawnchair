@@ -406,6 +406,8 @@
     <string name="status_bar_label">நிலைப்பட்டி</string>
     <string name="show_status_bar">நிலைப்பலகையை காட்டு</string>
     <string name="dark_status_bar_label">இருண்ட நிலைப்பட்டி</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">எழுத்து நிறம்</string>
     <string name="color_light">இலேசான</string>
     <string name="color_dark">இருண்ட</string>

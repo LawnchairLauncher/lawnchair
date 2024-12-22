@@ -72,7 +72,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Информације за приказ</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Да бисте закључали уређај покретом или отворили мени са недавним апликацијама, Lawnchair-у је потребан приступ услузи приступачности.\n\nПомоћу ње се могу надгледати корисничке радње, али је Lawnchair не користи у те сврхе.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s и %2$s</string>
     <!--
@@ -187,7 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Пакет икона</string>
     <string name="themed_icon_pack">Извор тематских икона</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">Користи боју за наглашавање</string>
     <string name="system_icons">Системске иконе</string>
     <string name="themed_icon_title">Тематске иконе</string>
     <string name="themed_icons_off_label">Искључено</string>
@@ -353,9 +353,9 @@
     <string name="dt2s_admin_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, подесите Lawnchair као администратор уређаја. У подешавањима додирните „Активирај ову апликацију за администратора уређаја”.</string>
     <string name="dt2s_admin_warning">Функција „Додирните двапут за стање спавања” ће бити искључена</string>
     <string name="d2ts_recents_a11y_hint_title">Укључи услугу приступачности</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, укључите Lawnchair-ову услугу приступачности. Додирните „Отвори подешавања”, изаберите „Lawnchair” и укључите „Користи Lawnchair”.\n\nОва дозвола је осетљива јер омогућава надгледање других апликација, али је Lawnchair не користи у те сврхе.</string>
     <string name="dt2s_recents_warning_open_settings">Отвори подешавања</string>
-    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">Да бисте користили функцију „Отвори недавне апликације”, укључите Lawnchair-ову услугу приступачности. Додирните „Отвори подешавања”, изаберите „Lawnchair” и укључите „Користи Lawnchair”.\n\nОва дозвола је осетљива јер омогућава надгледање других апликација, али је Lawnchair не користи у те сврхе.</string>
     <!--
 
     Bug reporting
@@ -406,6 +406,8 @@
     <string name="status_bar_label">Статусна трака</string>
     <string name="show_status_bar">Прикажи статусну траку</string>
     <string name="dark_status_bar_label">Тамна статусна трака</string>
+    <string name="status_bar_clock_label">Сат на статусној траци</string>
+    <string name="status_bar_clock_description">Динамички сакриј сат са статусне траке на првом екрану</string>
     <string name="home_screen_text_color">Боја текста</string>
     <string name="color_light">Светла</string>
     <string name="color_dark">Тамна</string>

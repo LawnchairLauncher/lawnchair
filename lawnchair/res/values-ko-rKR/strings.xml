@@ -406,6 +406,8 @@
     <string name="status_bar_label">상태 표시줄</string>
     <string name="show_status_bar">상태 표시줄 표시</string>
     <string name="dark_status_bar_label">어두운 상태 표시줄</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">텍스트 색상</string>
     <string name="color_light">라이트</string>
     <string name="color_dark">다크</string>

@@ -406,6 +406,8 @@
     <string name="status_bar_label">شريط الحالة</string>
     <string name="show_status_bar">إظهار شريط الحالة</string>
     <string name="dark_status_bar_label">شريط الحالة الداكن</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">لون النص</string>
     <string name="color_light">الوضع الفاتح</string>
     <string name="color_dark">الوضع الداكن</string>

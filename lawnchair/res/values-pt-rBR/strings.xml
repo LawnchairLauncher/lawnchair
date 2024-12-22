@@ -406,6 +406,8 @@
     <string name="status_bar_label">Barra de status</string>
     <string name="show_status_bar">Mostrar barra de status</string>
     <string name="dark_status_bar_label">Barra de status escura</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Cor do texto</string>
     <string name="color_light">Claro</string>
     <string name="color_dark">Escuro</string>

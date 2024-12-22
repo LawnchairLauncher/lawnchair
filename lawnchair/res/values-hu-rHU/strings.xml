@@ -187,7 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Ikoncsomag</string>
     <string name="themed_icon_pack">Témázott ikonforrás</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">Kitöltés a kiemelőszínnel</string>
     <string name="system_icons">Rendszerikonok</string>
     <string name="themed_icon_title">Témázott ikonok</string>
     <string name="themed_icons_off_label">Kikapcsolás</string>
@@ -406,6 +406,8 @@
     <string name="status_bar_label">Állapotsor</string>
     <string name="show_status_bar">Látható \'Állapotsor\'</string>
     <string name="dark_status_bar_label">Sötét \'Állapotsor\'</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Szövegszín</string>
     <string name="color_light">Világos</string>
     <string name="color_dark">Sötét</string>

@@ -406,6 +406,8 @@
     <string name="status_bar_label">Γραμμή κατάστασης</string>
     <string name="show_status_bar">Εμφάνιση γραμμής κατάστασης</string>
     <string name="dark_status_bar_label">Σκοτεινή γραμμή κατάστασης</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Χρώμα κειμένου</string>
     <string name="color_light">Ελαφριά γραμματοσειρά</string>
     <string name="color_dark">Σκοτεινό</string>

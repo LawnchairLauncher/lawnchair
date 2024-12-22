@@ -80,7 +80,7 @@
     Preference Dashboard
 
     -->
-    <string name="settings">Settings</string>
+    <string name="settings">Parametrlər</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, icon packs, notification dots</string>
     <string name="home_screen_label">Home screen</string>
@@ -406,6 +406,8 @@
     <string name="status_bar_label">Status bar</string>
     <string name="show_status_bar">Show status bar</string>
     <string name="dark_status_bar_label">Dark status bar</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Text color</string>
     <string name="color_light">Light</string>
     <string name="color_dark">Dark</string>

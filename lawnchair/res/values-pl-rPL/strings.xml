@@ -406,6 +406,8 @@
     <string name="status_bar_label">Pasek stanu</string>
     <string name="show_status_bar">Pokaż pasek stanu</string>
     <string name="dark_status_bar_label">Ciemny pasek stanu</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Kolor tekstu</string>
     <string name="color_light">Jasny</string>
     <string name="color_dark">Ciemny</string>

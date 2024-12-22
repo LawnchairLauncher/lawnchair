@@ -67,7 +67,7 @@
     <string name="background_opacity">Opacità sfondo</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiato negli appunti</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Risultato copiato negli appunti</string>
     <string name="item_removed">Elemento rimosso</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Cosa mostrare</string>
@@ -406,6 +406,8 @@
     <string name="status_bar_label">Barra di stato</string>
     <string name="show_status_bar">Mostra la barra di stato</string>
     <string name="dark_status_bar_label">Barra di stato a tema scuro</string>
+    <string name="status_bar_clock_label">Orologio barra di stato</string>
+    <string name="status_bar_clock_description">Nascondi dinamicamente l\'orologio della barra di stato nella prima schermata</string>
     <string name="home_screen_text_color">Colore del testo</string>
     <string name="color_light">Chiaro</string>
     <string name="color_dark">Scuro</string>

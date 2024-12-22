@@ -406,6 +406,8 @@
     <string name="status_bar_label">Рядок стану</string>
     <string name="show_status_bar">Показати рядок стану</string>
     <string name="dark_status_bar_label">Темний рядок стану</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Колір тексту</string>
     <string name="color_light">Світла</string>
     <string name="color_dark">Темна</string>

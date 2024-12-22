@@ -406,6 +406,8 @@
     <string name="status_bar_label">Barre d\'état</string>
     <string name="show_status_bar">Afficher la barre d\'état</string>
     <string name="dark_status_bar_label">Barre d\'état sombre</string>
+    <string name="status_bar_clock_label">Horloge de la barre d\'état</string>
+    <string name="status_bar_clock_description">Masquer dynamiquement l\'horloge de la barre d\'état sur le premier écran</string>
     <string name="home_screen_text_color">Couleur du texte</string>
     <string name="color_light">Clair</string>
     <string name="color_dark">Sombre</string>

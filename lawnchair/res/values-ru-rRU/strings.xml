@@ -41,7 +41,7 @@
     <string name="managed_by_lawnchair">Управляется Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Настройки</string>
-    <string name="settings_button_text">Настр. гл. экрана</string>
+    <string name="settings_button_text">Настр. глав. экрана</string>
     <string name="system_settings">Системные настройки</string>
     <string name="title_change_settings">Изменить настройки</string>
     <!--
@@ -67,7 +67,7 @@
     <string name="background_opacity">Прозрачность фона</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Скопировано в буфер обмена</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Результат скопирован в буфер обмена</string>
     <string name="item_removed">Элемент удален</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Что показывать</string>
@@ -187,7 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Набор иконок</string>
     <string name="themed_icon_pack">Источник тематических иконок</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">Тонировка в цвет акцента</string>
     <string name="system_icons">Системные иконки</string>
     <string name="themed_icon_title">Тематические иконки</string>
     <string name="themed_icons_off_label">Выкл</string>
@@ -406,6 +406,8 @@
     <string name="status_bar_label">Строка состояния</string>
     <string name="show_status_bar">Показывать строку состояния</string>
     <string name="dark_status_bar_label">Темная строка состояния</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Цвет текста</string>
     <string name="color_light">Светлая</string>
     <string name="color_dark">Тёмная</string>

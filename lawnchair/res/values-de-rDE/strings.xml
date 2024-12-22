@@ -406,6 +406,8 @@
     <string name="status_bar_label">Statusleiste</string>
     <string name="show_status_bar">Statusleiste anzeigen</string>
     <string name="dark_status_bar_label">Dunkle Statusleiste</string>
+    <string name="status_bar_clock_label">Statusleisten-Uhr</string>
+    <string name="status_bar_clock_description">Statusleistenuhr auf dem ersten Bildschirm dynamisch ausblenden</string>
     <string name="home_screen_text_color">Textfarbe</string>
     <string name="color_light">Hell</string>
     <string name="color_dark">Dunkel</string>

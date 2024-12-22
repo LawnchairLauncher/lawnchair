@@ -85,7 +85,7 @@
     <string name="general_description">สี, ชุดไอคอน, จุดแจ้งเตือน</string>
     <string name="home_screen_label">หน้าโฮม</string>
     <string name="home_screen_description">ฟีด, กริด, ไอคอน</string>
-    <string name="dock_label">Dock</string>
+    <string name="dock_label">แถบรายการโปรด</string>
     <string name="dock_description">แถบค้นหา, จำนวนไอคอน</string>
     <string name="app_drawer_label">รายการแอป</string>
     <string name="app_drawer_description">แอปที่ซ่อนอยู่, จำนวนคอลัมน์, ไอคอน</string>
@@ -117,7 +117,7 @@
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
+    <string name="set_default_launcher_tip">หากต้องการเข้าถึงทางลัดและคุณสมบัติเพิ่มเติม ให้ตั้งค่า Lawnchair เป็นแอปหน้าแรกเริ่มต้น</string>
     <string name="notification_dots">จุดแสดงการแจ้งเตือน</string>
     <string name="show_notification_count">แสดงตัวเลขจากการแจ้งเตือน</string>
     <string name="notification_dots_color">สีจุดการแจ้งเตือน</string>
@@ -125,7 +125,7 @@
     <string name="notification_dots_color_contrast_warning_always">คำเตือน: จุดการแจ้งเตือนและสีของตัวนับมีความต่างไม่เพียงพอ</string>
     <string name="notification_dots_color_contrast_warning_sometimes">คำเตือน: จุดการแจ้งเตือนและสีตัวนับอาจไม่มีความต่างเพียงพอในบางครั้ง</string>
     <string name="missing_notification_access_label">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="missing_notification_access_desc">หากต้องการแสดงจุดแสดงการแจ้งเตือน ให้เปิดการเข้าถึงการแจ้งเตือนสำหรับ <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -137,13 +137,13 @@
     <string name="icon_sizes">ขนาดไอคอน</string>
     <string name="show_labels">แสดงชื่อแอป</string>
     <string name="label_size">ขนาดตัวอักษร</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="twoline_label">ใช้หลายบรรทัด</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">ไอคอนธีมโปร่งใส</string>
     <string name="transparent_background_icons_description">ใช้พื้นหลังโปร่งใสบนไอคอนที่มีธีม</string>
     <string name="auto_adaptive_icons_label">ไอคอนปรับใช้อัตโนมัติ</string>
     <string name="auto_adaptive_icons_description">สำหรับไอคอนธรรมดา</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
+    <string name="shadow_bg_icons_label">แสดงเงาหลังไอคอน</string>
     <string name="background_lightness_label">ความสว่างของพื้นหลัง</string>
     <string name="adaptive_icon_background_description">ใช้ความสว่าง 100% สำหรับสีขาว</string>
     <string name="reset_custom_icons">คืนค่าไอคอนที่กำหนดเอง</string>
@@ -187,7 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">ชุดไอคอน</string>
     <string name="themed_icon_pack">แหล่งที่มาของธีมไอคอน</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">ย้อมด้วยสีเน้น</string>
     <string name="system_icons">ไอคอนระบบ</string>
     <string name="themed_icon_title">ธีมไอคอน</string>
     <string name="themed_icons_off_label">ปิด</string>
@@ -226,15 +226,15 @@
     <string name="theme_system_default">ระบบ</string>
     <string name="theme_follow_wallpaper">ตรงกับพื้นหลัง</string>
     <!-- Color style -->
-    <string name="color_style_label">Color style</string>
-    <string name="color_style_spritz">Spritz</string>
-    <string name="color_style_tonal_spot">Tonal Spot</string>
+    <string name="color_style_label">สไตล์สี</string>
+    <string name="color_style_spritz">ละอองสี</string>
+    <string name="color_style_tonal_spot">เฉดสีเด่น</string>
     <string name="color_style_vibrant">สดใส</string>
     <string name="color_style_expressive">แสดงออก</string>
     <string name="color_style_rainbow">สีรุ้ง</string>
-    <string name="color_style_fruit_salad">Fruit Salad</string>
-    <string name="color_style_content">Content</string>
-    <string name="color_style_monochromatic">Monochromatic</string>
+    <string name="color_style_fruit_salad">ผลไม้หลากสี</string>
+    <string name="color_style_content">สีเน้นความหมาย</string>
+    <string name="color_style_monochromatic">สีเดียว</string>
     <!-- Accent color and color picker -->
     <string name="colors">สี</string>
     <string name="accent_color">สีที่ใช้เน้น</string>
@@ -280,12 +280,12 @@
     <string name="smartspace_battery_status">สถานะแบตเตอรี่</string>
     <string name="smartspace_now_playing">กำลังเล่น</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="maximum_number_of_targets">จำนวนผลลัพธ์สูงสุดของทาร์เก็ต</string>
     <string name="open_smartspacer_settings">เปิดการตั้งค่าของ Smartspacer</string>
     <string name="smartspacer_settings">การตั้งค่าของ Smartspacer</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">แตะเพื่อตั้งค่า</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">หากต้องการใช้ <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> ให้เปิดจุดแสดงการแจ้งเตือน</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">แสดงบนหน้าจอหลัก</string>
     <string name="smartspace_widget_toggle_description">สามารถเพิ่มข้อมูลโดยย่อในหน้าหลักได้ด้วยตนเองโดยวางวิดเจ็ต Lawnchair</string>
@@ -350,7 +350,7 @@
     <string name="gesture_handler_open_search">เปิดการค้นหา</string>
     <string name="pick_app_for_gesture">เลือกแอป</string>
     <string name="dt2s_admin_hint_title">จำเป็นต้องมีสิทธิ์ผู้ดูแลอุปกรณ์</string>
-    <string name="dt2s_admin_hint">หากต้องการแตะ 2 ครั้งเพี่อปิดจอ ให้ตั้งค่า Lawnchair เป็นแอปผู้ดูแลอุปกรณ์ แตะเปิดการตั้งค่า จากนั้นแตะ “เปิดใช้งานแอปผู้ดูแลระบบอุปกรณ์นี้”</string>
+    <string name="dt2s_admin_hint">หากต้องการแตะสองครั้งเพี่อปิดจอ ให้ตั้งค่า Lawnchair เป็นแอปผู้ดูแลอุปกรณ์ แตะเปิดการตั้งค่า จากนั้นแตะ “เปิดใช้งานแอปผู้ดูแลระบบอุปกรณ์นี้”</string>
     <string name="dt2s_admin_warning">แตะสองครั้งเพื่อเข้าสู่โหมดสลีป หน้าจอจะถูกปิด</string>
     <string name="d2ts_recents_a11y_hint_title">เปิดบริการการช่วยการเข้าถึง</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
@@ -406,6 +406,8 @@
     <string name="status_bar_label">แถบสถานะ</string>
     <string name="show_status_bar">แสดงแถบสถานะ</string>
     <string name="dark_status_bar_label">แถบสถานะสีดำ</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">สีของข้อความ</string>
     <string name="color_light">สว่าง</string>
     <string name="color_dark">มืด</string>
@@ -416,7 +418,7 @@
     <string name="widget_unlimited_size_label">ลบข้อจำกัดด้านขนาด</string>
     <string name="widget_unlimited_size_description">ลบข้อจำกัดขนาดขั้นต่ำและสูงสุดของวิดเจ็ต</string>
     <!-- Dock settings -->
-    <string name="show_hotseat_title">แสดง Dock</string>
+    <string name="show_hotseat_title">แสดงแถบรายการโปรด</string>
     <string name="search_bar_label">แถบค้นหา</string>
     <string name="hotseat_mode_label">วิดเจ็ตแถบค้นหา</string>
     <string name="hotseat_mode_disabled">ปิด</string>

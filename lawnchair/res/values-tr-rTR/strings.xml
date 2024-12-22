@@ -406,6 +406,8 @@
     <string name="status_bar_label">Durum çubuğu</string>
     <string name="show_status_bar">Durum çubuğunu göster</string>
     <string name="dark_status_bar_label">Karanlık durum çubuğu</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Metin rengi</string>
     <string name="color_light">Aydınlık</string>
     <string name="color_dark">Karanlık</string>

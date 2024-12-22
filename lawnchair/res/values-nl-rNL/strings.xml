@@ -406,6 +406,8 @@
     <string name="status_bar_label">Statusbalk</string>
     <string name="show_status_bar">Statusbalk weergeven</string>
     <string name="dark_status_bar_label">Donkere statusbalk</string>
+    <string name="status_bar_clock_label">Statusbalk klok</string>
+    <string name="status_bar_clock_description">Klok op de statusbalk dynamisch verbergen in het eerste scherm</string>
     <string name="home_screen_text_color">Tekstkleur</string>
     <string name="color_light">Licht</string>
     <string name="color_dark">Donker</string>

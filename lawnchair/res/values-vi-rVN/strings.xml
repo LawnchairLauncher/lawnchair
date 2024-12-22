@@ -406,6 +406,8 @@
     <string name="status_bar_label">Thanh trạng thái</string>
     <string name="show_status_bar">Hiển thị thanh trạng thái</string>
     <string name="dark_status_bar_label">Thanh trạng thái màu tối</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Màu chữ</string>
     <string name="color_light">Sáng</string>
     <string name="color_dark">Tối</string>
