@@ -15,11 +15,7 @@ import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.graphics.LauncherPreviewRenderer
-import com.android.launcher3.model.BaseLauncherBinder
 import com.android.launcher3.model.BgDataModel
-import com.android.launcher3.model.GridSizeMigrationUtil
-import com.android.launcher3.model.LoaderTask
-import com.android.launcher3.model.ModelDelegate
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
@@ -80,57 +76,17 @@ class LauncherPreviewView(
 
     @WorkerThread
     private fun loadModelData() {
-        val migrated = doGridMigrationIfNecessary()
-
         val inflationContext = ContextThemeWrapper(appContext, Themes.getActivityThemeRes(context))
-        if (migrated) {
-            val previewContext = LauncherPreviewRenderer.PreviewContext(inflationContext, idp)
-            object : LoaderTask(
-                LauncherAppState.getInstance(previewContext),
-                null,
-                BgDataModel(),
-                ModelDelegate(context),
-                BaseLauncherBinder(
-                    LauncherAppState.getInstance(previewContext),
-                    BgDataModel(),
-                    null,
-                    arrayOfNulls<BgDataModel.Callbacks>(0),
-                ),
-            ) {
-                override fun run() {
-                    loadWorkspace(
-                        emptyList(),
-                        "",
-                        null,
-                        null,
-                    )
-                    MAIN_EXECUTOR.execute {
-                        renderView(previewContext, mBgDataModel, mWidgetProvidersMap)
-                        onDestroyCallbacks.add { previewContext.onDestroy() }
-                    }
+        LauncherAppState.getInstance(inflationContext).model.loadAsync { dataModel ->
+            if (dataModel != null) {
+                MAIN_EXECUTOR.execute {
+                    renderView(inflationContext, dataModel, null)
                 }
-            }.run()
-        } else {
-            LauncherAppState.getInstance(inflationContext).model.loadAsync { dataModel ->
-                if (dataModel != null) {
-                    MAIN_EXECUTOR.execute {
-                        renderView(inflationContext, dataModel, null)
-                    }
-                } else {
-                    onReadyCallbacks.executeAllAndDestroy()
-                    Log.e("LauncherPreviewView", "Model loading failed")
-                }
+            } else {
+                onReadyCallbacks.executeAllAndDestroy()
+                Log.e("LauncherPreviewView", "Model loading failed")
             }
         }
-    }
-
-    @WorkerThread
-    private fun doGridMigrationIfNecessary(): Boolean {
-        val needsToMigrate = GridSizeMigrationUtil.needsToMigrate(context, idp)
-        if (!needsToMigrate) {
-            return false
-        }
-        return GridSizeMigrationUtil.needsToMigrate(context, idp)
     }
 
     @UiThread

@@ -399,7 +399,8 @@ public class InvariantDeviceProfile implements SafeCloseable {
                 closestProfile = displayOption.grid;
                 numRows = dbGridInfo.getNumRows();
                 numColumns = dbGridInfo.getNumColumns();
-                numSearchContainerColumns = closestProfile.numSearchContainerColumns;
+                numSearchContainerColumns = deviceType == TYPE_MULTI_DISPLAY
+                        ? closestProfile.numSearchContainerColumns : dbGridInfo.getNumHotseatColumns();
                 dbFile = dbGridInfo.getDbFile();
                 defaultLayoutId = closestProfile.defaultLayoutId;
                 demoModeLayoutId = closestProfile.demoModeLayoutId;
@@ -452,7 +453,7 @@ public class InvariantDeviceProfile implements SafeCloseable {
                 horizontalMargin = displayOption.horizontalMargin;
 
                 numShownHotseatIcons = deviceType == TYPE_MULTI_DISPLAY 
-                        ? closestProfile.numHotseatIcons : dbGridInfo.getNumHotseatColumns();
+                        ? closestProfile.numDatabaseHotseatIcons : dbGridInfo.getNumHotseatColumns();
                 numDatabaseHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
                         ? closestProfile.numDatabaseHotseatIcons : numShownHotseatIcons;
                 hotseatBarBottomSpace = displayOption.hotseatBarBottomSpace;
@@ -463,7 +464,7 @@ public class InvariantDeviceProfile implements SafeCloseable {
                 numAllAppsColumns = closestProfile.numAllAppsColumns;
 
                 numDatabaseAllAppsColumns = deviceType == TYPE_MULTI_DISPLAY
-                        ? closestProfile.numDatabaseAllAppsColumns : closestProfile.numAllAppsColumns;
+                        ? closestProfile.numDatabaseAllAppsColumns : numAllAppsColumns;
 
                 allAppsCellSize = displayOption.allAppsCellSize;
                 allAppsBorderSpaces = displayOption.allAppsBorderSpaces;

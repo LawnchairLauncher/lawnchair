@@ -303,7 +303,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
     @Override
     public boolean enableGridMigrationFix() {
-        return true;
+        return false;
 
     }
 
@@ -360,7 +360,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
     @Override
     public boolean enableNarrowGridRestore() {
-        return true;
+        return false;
 
     }
 
