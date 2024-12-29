@@ -429,6 +429,11 @@
     <string name="corner_radius_label">Zaobljenost uglova</string>
     <string name="apply_accent_color_label">Primeni boju za naglašavanje</string>
     <string name="search_provider">Pretraživač</string>
+    <string name="hotseat_background">Prikaži pozadinu</string>
+    <string name="hotseat_bg_horizontal_inset_left">Horizontalni pomak (levo)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Horizontalni pomak (desno)</string>
+    <string name="hotseat_bg_vertical_inset_top">Vertikalni pomak (gore)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Vertikalni pomak (dole)</string>
     <string name="dock_icons">Ikone na doku</string>
     <string name="hotseat_bottom_space_label">Donji razmak</string>
     <!-- Search providers -->

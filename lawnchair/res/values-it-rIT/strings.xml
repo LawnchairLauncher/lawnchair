@@ -429,6 +429,11 @@
     <string name="corner_radius_label">Raggio dell\'angolo</string>
     <string name="apply_accent_color_label">Applica il colore primario</string>
     <string name="search_provider">Fornitore di ricerca</string>
+    <string name="hotseat_background">Mostra sfondo</string>
+    <string name="hotseat_bg_horizontal_inset_left">Inset orizzontale (sinistra)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Inset orizzontale (destra)</string>
+    <string name="hotseat_bg_vertical_inset_top">Inset verticale (Sopra)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Inset verticale (Sotto)</string>
     <string name="dock_icons">Icone della dock</string>
     <string name="hotseat_bottom_space_label">Margine inferiore</string>
     <!-- Search providers -->

@@ -67,7 +67,7 @@
     <string name="background_opacity">Opacidad del fondo</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiado al portapapeles</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Resultado copiado al portapapeles</string>
     <string name="item_removed">Se ha borrado el elemento</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Qué mostrar</string>
@@ -188,7 +188,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Paquete de iconos</string>
     <string name="themed_icon_pack">Fuente de iconos temáticos</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">Tinte con color de acento</string>
     <string name="system_icons">Iconos del sistema</string>
     <string name="themed_icon_title">Iconos temáticos</string>
     <string name="themed_icons_off_label">Desactivados</string>
@@ -407,8 +407,8 @@
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_status_bar">Mostrar la barra de estado</string>
     <string name="dark_status_bar_label">Barra de estado oscura</string>
-    <string name="status_bar_clock_label">Status bar clock</string>
-    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
+    <string name="status_bar_clock_label">Reloj de la barra de estado</string>
+    <string name="status_bar_clock_description">Ocultar dinámicamente el reloj de la barra de estado en la primera pantalla</string>
     <string name="home_screen_text_color">Color del texto</string>
     <string name="color_light">Claro</string>
     <string name="color_dark">Oscuro</string>
@@ -430,6 +430,11 @@
     <string name="corner_radius_label">Radio de esquina</string>
     <string name="apply_accent_color_label">Aplicar acento de color</string>
     <string name="search_provider">Proveedor de búsqueda</string>
+    <string name="hotseat_background">Show background</string>
+    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
+    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
     <string name="dock_icons">Iconos del dock</string>
     <string name="hotseat_bottom_space_label">Relleno inferior</string>
     <!-- Search providers -->

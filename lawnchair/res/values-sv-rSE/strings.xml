@@ -406,8 +406,8 @@
     <string name="status_bar_label">Statusfält</string>
     <string name="show_status_bar">Visa statusfält</string>
     <string name="dark_status_bar_label">Mörkt statusfält</string>
-    <string name="status_bar_clock_label">Status bar clock</string>
-    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
+    <string name="status_bar_clock_label">Klocka i statusfältet</string>
+    <string name="status_bar_clock_description">Dölj klockan i statusfältet dynamiskt på första skärmen</string>
     <string name="home_screen_text_color">Textfärg</string>
     <string name="color_light">Ljust</string>
     <string name="color_dark">Mörkt</string>
@@ -429,6 +429,11 @@
     <string name="corner_radius_label">Hörnradie</string>
     <string name="apply_accent_color_label">Använd accentfärg</string>
     <string name="search_provider">Sökleverantör</string>
+    <string name="hotseat_background">Visa bakgrund</string>
+    <string name="hotseat_bg_horizontal_inset_left">Horisontell infällning (vänster)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Horisontell infällning (höger)</string>
+    <string name="hotseat_bg_vertical_inset_top">Vertikal infällning (överkant)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Vertikal infällning (nederkant)</string>
     <string name="dock_icons">Favoritfältsikoner</string>
     <string name="hotseat_bottom_space_label">Avstånd nederkant</string>
     <!-- Search providers -->

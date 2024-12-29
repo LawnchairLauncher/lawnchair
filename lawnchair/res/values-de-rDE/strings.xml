@@ -429,6 +429,11 @@
     <string name="corner_radius_label">Ecken radius</string>
     <string name="apply_accent_color_label">Akzentfarbe verwenden</string>
     <string name="search_provider">Suchanbieter</string>
+    <string name="hotseat_background">Hintergrund anzeigen</string>
+    <string name="hotseat_bg_horizontal_inset_left">Horizontale Einrückung (links)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Horizontale Einrückung (rechts)</string>
+    <string name="hotseat_bg_vertical_inset_top">Vertikale Einrückung (oben)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Vertikale Einrückung (unten)</string>
     <string name="dock_icons">Dock-Symbole</string>
     <string name="hotseat_bottom_space_label">Unterer Abstand</string>
     <!-- Search providers -->

@@ -67,13 +67,13 @@
     <string name="background_opacity">شفافية الخلفية</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">تم النسخ إلى الحافظة</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">النتائج نسخت إلي الحافظة</string>
     <string name="item_removed">تم إزالة العنصر</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">ماذا يُعرض</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">لقفل هاتفك عند تنفيذ إيماءة، ولفتح التطبيقات الحديثة عبر الإيماءة، يحتاج Lawnchair إلى الوصول إلى خدمات الوصول. لا يراقب Lawnchair أي إجراء من المستخدم، على الرغم من أن هذه الصلاحية مطلوبة لجميع خدمات الوصول. يتجاهل Lawnchair أي حدث يتم إرساله من النظام. لقفل هاتفك، أو لفتح التطبيقات الحديثة، يستخدم Lawnchair خدمة الوصول performGlobalAction.</string>
-    <string name="x_by_y">18. %1$d x %2$d</string>
+    <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
@@ -187,7 +187,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">حزمة الأيقونات</string>
     <string name="themed_icon_pack">مصدر الأيقونات المخصصة</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">الدرجة بلون تمييزي</string>
     <string name="system_icons">أيقونات النظام</string>
     <string name="themed_icon_title">الأيقونات المخصصة</string>
     <string name="themed_icons_off_label">معطل</string>
@@ -406,8 +406,8 @@
     <string name="status_bar_label">شريط الحالة</string>
     <string name="show_status_bar">إظهار شريط الحالة</string>
     <string name="dark_status_bar_label">شريط الحالة الداكن</string>
-    <string name="status_bar_clock_label">Status bar clock</string>
-    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
+    <string name="status_bar_clock_label">الساعة لشريط الحالة</string>
+    <string name="status_bar_clock_description">تلقائيًا أخفي ساعة شريط الحالة في الشاشة الأولي</string>
     <string name="home_screen_text_color">لون النص</string>
     <string name="color_light">الوضع الفاتح</string>
     <string name="color_dark">الوضع الداكن</string>
@@ -429,6 +429,11 @@
     <string name="corner_radius_label">نصف قطر الزاوية</string>
     <string name="apply_accent_color_label">تطبيق لون التمييز</string>
     <string name="search_provider">مزود البحث</string>
+    <string name="hotseat_background">أظهر الخلفية</string>
+    <string name="hotseat_bg_horizontal_inset_left">المساحة البينية الأفقية (جهة اليسار)</string>
+    <string name="hotseat_bg_horizontal_inset_right">المساحة البينية الأفقية (جهة اليمين)</string>
+    <string name="hotseat_bg_vertical_inset_top">المساحة البينية العمودية (جهة الأعلى)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">المساحة البينية العمودية (جهة الأسفل)</string>
     <string name="dock_icons">أيقونات شريط Dock</string>
     <string name="hotseat_bottom_space_label">المساحة السفلية</string>
     <!-- Search providers -->

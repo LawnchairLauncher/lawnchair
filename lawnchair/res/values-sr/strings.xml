@@ -429,6 +429,11 @@
     <string name="corner_radius_label">Заобљеност углова</string>
     <string name="apply_accent_color_label">Примени боју за наглашавање</string>
     <string name="search_provider">Претраживач</string>
+    <string name="hotseat_background">Прикажи позадину</string>
+    <string name="hotseat_bg_horizontal_inset_left">Хоризонтални помак (лево)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Хоризонтални помак (десно)</string>
+    <string name="hotseat_bg_vertical_inset_top">Вертикални помак (горе)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Вертикални помак (доле)</string>
     <string name="dock_icons">Иконе на доку</string>
     <string name="hotseat_bottom_space_label">Доњи размак</string>
     <!-- Search providers -->

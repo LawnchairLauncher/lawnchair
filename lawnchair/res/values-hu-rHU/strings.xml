@@ -406,8 +406,8 @@
     <string name="status_bar_label">Állapotsor</string>
     <string name="show_status_bar">Látható \'Állapotsor\'</string>
     <string name="dark_status_bar_label">Sötét \'Állapotsor\'</string>
-    <string name="status_bar_clock_label">Status bar clock</string>
-    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
+    <string name="status_bar_clock_label">Az óra láthatósága</string>
+    <string name="status_bar_clock_description">Az Állapotsor órájának dinamikus elrejtése a főképernyőn</string>
     <string name="home_screen_text_color">Szövegszín</string>
     <string name="color_light">Világos</string>
     <string name="color_dark">Sötét</string>
@@ -429,6 +429,11 @@
     <string name="corner_radius_label">Saroksugár</string>
     <string name="apply_accent_color_label">A kiemelőszín alkalmazása</string>
     <string name="search_provider">Keresési szolgáltató</string>
+    <string name="hotseat_background">Háttér-megjelenítés</string>
+    <string name="hotseat_bg_horizontal_inset_left">Vízszintes szegély (Bal)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Vízszintes szegély (Jobb)</string>
+    <string name="hotseat_bg_vertical_inset_top">Függőleges szegély (Felső)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Függőleges szegély (Alsó)</string>
     <string name="dock_icons">A Dokk ikonjai</string>
     <string name="hotseat_bottom_space_label">Alsó kitöltés</string>
     <!-- Search providers -->

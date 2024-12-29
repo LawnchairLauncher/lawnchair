@@ -429,6 +429,11 @@
     <string name="corner_radius_label">가장자리 둥글기</string>
     <string name="apply_accent_color_label">강조 색상 적용</string>
     <string name="search_provider">검색 제공자</string>
+    <string name="hotseat_background">Show background</string>
+    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
+    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
     <string name="dock_icons">독 아이콘</string>
     <string name="hotseat_bottom_space_label">하단 패딩</string>
     <!-- Search providers -->

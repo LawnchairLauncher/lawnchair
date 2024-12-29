@@ -429,6 +429,11 @@
     <string name="corner_radius_label">Hoek radius</string>
     <string name="apply_accent_color_label">Accentkleur toepassen</string>
     <string name="search_provider">Zoekmachine</string>
+    <string name="hotseat_background">Achtergrond weergeven</string>
+    <string name="hotseat_bg_horizontal_inset_left">Horizontale inset (links)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Horizontale inset (rechts)</string>
+    <string name="hotseat_bg_vertical_inset_top">Verticale inset (boven)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Verticale inset (onder)</string>
     <string name="dock_icons">Dokpictogrammen</string>
     <string name="hotseat_bottom_space_label">Opvulling aan onderkant</string>
     <!-- Search providers -->

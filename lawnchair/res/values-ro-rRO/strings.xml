@@ -429,6 +429,11 @@
     <string name="corner_radius_label">Raza colțurilor</string>
     <string name="apply_accent_color_label">Apply accent color</string>
     <string name="search_provider">Search provider</string>
+    <string name="hotseat_background">Show background</string>
+    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
+    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
     <string name="dock_icons">Dock icons</string>
     <string name="hotseat_bottom_space_label">Bottom padding</string>
     <!-- Search providers -->
