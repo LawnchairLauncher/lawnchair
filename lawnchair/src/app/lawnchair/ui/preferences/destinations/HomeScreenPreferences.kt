@@ -33,7 +33,6 @@ import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.FeedPreference
 import app.lawnchair.ui.preferences.components.GestureHandlerPreference
-import app.lawnchair.ui.preferences.components.LauncherOptionsPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
@@ -50,6 +49,7 @@ import kotlinx.coroutines.launch
 
 object HomeScreenRoutes {
     const val GRID = "grid"
+    const val POPUP_EDITOR = "popup_editor"
 }
 
 @Composable
@@ -137,7 +137,7 @@ fun HomeScreenPreferences(
                 label = stringResource(id = R.string.show_material_u_popup_label),
                 description = stringResource(id = R.string.show_material_u_popup_description),
             )
-            LauncherOptionsPreference()
+            LauncherPopupPreferenceItem()
         }
         PreferenceGroup(heading = stringResource(id = R.string.status_bar_label)) {
             val showStatusBarAdapter = prefs2.showStatusBar.getAdapter()

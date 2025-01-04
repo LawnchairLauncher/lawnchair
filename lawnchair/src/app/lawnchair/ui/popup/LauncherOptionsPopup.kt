@@ -40,7 +40,7 @@ object LauncherOptionsPopup {
                             "+widgets" -> "-widgets"
                             else -> item
                         }
-                    }
+                    },
             )
         }
 
@@ -122,8 +122,8 @@ object LauncherOptionsPopup {
                 icon = R.drawable.ic_setting,
             )
             "edit_mode" -> LauncherOptionMetadata(
-                    label = R.string.edit_home_screen,
-                    icon = R.drawable.enter_home_gardening_icon,
+                label = R.string.edit_home_screen,
+                icon = R.drawable.enter_home_gardening_icon,
             )
             "wallpaper" -> LauncherOptionMetadata(
                 label = R.string.styles_wallpaper_button_text,

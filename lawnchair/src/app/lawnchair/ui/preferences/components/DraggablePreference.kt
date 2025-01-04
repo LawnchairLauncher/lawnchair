@@ -93,23 +93,25 @@ fun <T> DraggablePreferenceGroup(
                 },
             ) { index, item, isDragging ->
                 key(item) {
-                    DraggablePreferenceContainer(
-                        index = index,
-                        items = localItems,
-                        isDragging = isDragging,
-                        onMoveUp = {
-                            localItems = it
-                        },
-                        onMoveDown = {
-                            localItems = it
-                        },
-                    ) {
-                        itemContent(item, index, isDragging) {
-                            isAnyDragging = it
+                    Column {
+                        DraggablePreferenceContainer(
+                            index = index,
+                            items = localItems,
+                            isDragging = isDragging,
+                            onMoveUp = {
+                                localItems = it
+                            },
+                            onMoveDown = {
+                                localItems = it
+                            },
+                        ) {
+                            itemContent(item, index, isDragging) {
+                                isAnyDragging = it
+                            }
                         }
-                    }
-                    AnimatedVisibility(!isDragging && index != localItems.lastIndex) {
-                        HorizontalDivider()
+                        AnimatedVisibility(!isAnyDragging && index != localItems.lastIndex) {
+                            HorizontalDivider()
+                        }
                     }
                 }
             }

@@ -1,8 +1,6 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -60,7 +58,7 @@ fun QuickActionsPreferences(
             )
         },
         modifier = modifier,
-    ) { item, index, isDragging, onDraggingChange ->
+    ) { item, _, _, onDraggingChange ->
         val interactionSource = remember { MutableInteractionSource() }
         val scope = this
 

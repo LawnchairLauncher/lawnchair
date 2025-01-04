@@ -290,7 +290,7 @@
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
     <string name="styles_wallpaper_button_text">Wallpaper &amp; style</string>
     <!-- Text for edit home screen button [CHAR LIMIT=30]-->
-    <string name="edit_home_screen">Edit Home Screen</string>
+    <string name="edit_home_screen">Edit home screen</string>
     <!-- Text for settings button [CHAR LIMIT=20]-->
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->
