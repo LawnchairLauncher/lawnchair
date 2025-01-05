@@ -434,8 +434,16 @@
     <string name="hotseat_bg_horizontal_inset_right">Horisontell infällning (höger)</string>
     <string name="hotseat_bg_vertical_inset_top">Vertikal infällning (överkant)</string>
     <string name="hotseat_bg_vertical_inset_bottom">Vertikal infällning (nederkant)</string>
+    <!-- Pause apps shortcut -->
+    <string name="pause">Pausa</string>
+    <string name="pause_apps_dialog_title">Pausa %1$s?</string>
+    <string name="pause_apps_dialog_message">Aviseringar för %1$s kommer att pausas</string>
+    <string name="paused_apps_dialog_title">App pausad</string>
+    <string name="paused_apps_dialog_message">%1$s pausades direkt från startskärmsappen</string>
+    <string name="paused_apps_drop_target_label">Pausa app</string>
     <string name="dock_icons">Favoritfältsikoner</string>
     <string name="hotseat_bottom_space_label">Avstånd nederkant</string>
+    <string name="page_indicator_height">Sidindikatorns höjd</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Appsökning</string>
     <string name="search_provider_sponsored_description">%1$s och Lawnchair har ett avtal om intäktsdelning.\n\nSökning med %1$s hjälper till att stödja Lawnchair.</string>

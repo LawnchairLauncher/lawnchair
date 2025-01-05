@@ -434,8 +434,16 @@
     <string name="hotseat_bg_horizontal_inset_right">Horizontale Einrückung (rechts)</string>
     <string name="hotseat_bg_vertical_inset_top">Vertikale Einrückung (oben)</string>
     <string name="hotseat_bg_vertical_inset_bottom">Vertikale Einrückung (unten)</string>
+    <!-- Pause apps shortcut -->
+    <string name="pause">Anhalten</string>
+    <string name="pause_apps_dialog_title">%1$s anhalten?</string>
+    <string name="pause_apps_dialog_message">Benachrichtigungen für %1$s werden pausiert</string>
+    <string name="paused_apps_dialog_title">App angehalten</string>
+    <string name="paused_apps_dialog_message">%1$s wurde direkt vom Launcher angehalten</string>
+    <string name="paused_apps_drop_target_label">App anhalten</string>
     <string name="dock_icons">Dock-Symbole</string>
     <string name="hotseat_bottom_space_label">Unterer Abstand</string>
+    <string name="page_indicator_height">Page indicator height</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">App-Suche</string>
     <string name="search_provider_sponsored_description">%1$s und Lawnchair haben eine Umsatzbeteiligungsvereinbarung.\n\nSuchen mit %1$s unterstützt Lawnchair.</string>

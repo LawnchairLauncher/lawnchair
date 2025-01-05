@@ -434,8 +434,16 @@
     <string name="hotseat_bg_horizontal_inset_right">Vízszintes szegély (Jobb)</string>
     <string name="hotseat_bg_vertical_inset_top">Függőleges szegély (Felső)</string>
     <string name="hotseat_bg_vertical_inset_bottom">Függőleges szegély (Alsó)</string>
+    <!-- Pause apps shortcut -->
+    <string name="pause">Pause</string>
+    <string name="pause_apps_dialog_title">Pause %1$s?</string>
+    <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
+    <string name="paused_apps_dialog_title">App paused</string>
+    <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
+    <string name="paused_apps_drop_target_label">Pause app</string>
     <string name="dock_icons">A Dokk ikonjai</string>
     <string name="hotseat_bottom_space_label">Alsó kitöltés</string>
+    <string name="page_indicator_height">Page indicator height</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Alkalmazáskereső</string>
     <string name="search_provider_sponsored_description">%1$s és a Lawnchair bevételmegosztási megállapodást kötött.\n\nHa %1$s végzi a keresést, azzal segít a Lawnchair-nek is.</string>

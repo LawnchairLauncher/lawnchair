@@ -68,7 +68,7 @@
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiado para a área de transferência</string>
     <string name="calculator_search_result_copied_toast">Resultado copiado para a área de transferência</string>
-    <string name="item_removed">Item removido</string>
+    <string name="item_removed">Itens removidos</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">O que mostrar</string>
     <!-- A11y description -->
@@ -430,12 +430,20 @@
     <string name="apply_accent_color_label">Aplicar cor de destaque</string>
     <string name="search_provider">Provedor de pesquisa</string>
     <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Inserção horizontal (esquerda)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Inserção horizontal (direita)</string>
+    <string name="hotseat_bg_vertical_inset_top">Inserção vertical (em cima)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Inserção vertical (em baixo)</string>
+    <!-- Pause apps shortcut -->
+    <string name="pause">Pausar</string>
+    <string name="pause_apps_dialog_title">Pausar por %1$s?</string>
+    <string name="pause_apps_dialog_message">Notificações por %1$s vão ser pausadas</string>
+    <string name="paused_apps_dialog_title">Aplicativo foi pausado</string>
+    <string name="paused_apps_dialog_message">Aplicativo foi pausado</string>
+    <string name="paused_apps_drop_target_label">Pausar aplicativo</string>
     <string name="dock_icons">Ícones do dock</string>
     <string name="hotseat_bottom_space_label">Preenchimento inferior</string>
+    <string name="page_indicator_height">Altura do indicador de página</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Pesquisa de aplicativos</string>
     <string name="search_provider_sponsored_description">%1$s e Lawnchair têm um acordo de participação na receita.\n\nPesquisar usando %1$s ajuda a apoiar o Lawnchair.</string>

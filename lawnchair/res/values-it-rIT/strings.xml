@@ -83,7 +83,7 @@
     <string name="settings">Impostazioni</string>
     <string name="general_label">Generale</string>
     <string name="general_description">Colori, Pacchetti Icone, Punti di notifica</string>
-    <string name="home_screen_label">Schermata Home</string>
+    <string name="home_screen_label">Schermata principale</string>
     <string name="home_screen_description">Feed, griglia, icone</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Barra di ricerca, numero d\'icone</string>
@@ -434,8 +434,16 @@
     <string name="hotseat_bg_horizontal_inset_right">Inset orizzontale (destra)</string>
     <string name="hotseat_bg_vertical_inset_top">Inset verticale (Sopra)</string>
     <string name="hotseat_bg_vertical_inset_bottom">Inset verticale (Sotto)</string>
+    <!-- Pause apps shortcut -->
+    <string name="pause">Sospendi</string>
+    <string name="pause_apps_dialog_title">Sospendere %1$s?</string>
+    <string name="pause_apps_dialog_message">Le notifiche di %1$s verranno sospese</string>
+    <string name="paused_apps_dialog_title">App sospesa</string>
+    <string name="paused_apps_dialog_message">%1$s è stata sospesa direttamente dal launcher</string>
+    <string name="paused_apps_drop_target_label">Sospendi app</string>
     <string name="dock_icons">Icone della dock</string>
     <string name="hotseat_bottom_space_label">Margine inferiore</string>
+    <string name="page_indicator_height">Page indicator height</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Ricerca delle app</string>
     <string name="search_provider_sponsored_description">%1$s e Lawnchair hanno un accordo di condivisione delle entrate.\n\nLa ricerca tramite %1$s aiuta a supportare Lawnchair.</string>

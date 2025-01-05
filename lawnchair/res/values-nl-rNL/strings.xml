@@ -434,8 +434,16 @@
     <string name="hotseat_bg_horizontal_inset_right">Horizontale inset (rechts)</string>
     <string name="hotseat_bg_vertical_inset_top">Verticale inset (boven)</string>
     <string name="hotseat_bg_vertical_inset_bottom">Verticale inset (onder)</string>
+    <!-- Pause apps shortcut -->
+    <string name="pause">Pauzeren</string>
+    <string name="pause_apps_dialog_title">%1$s pauzeren?</string>
+    <string name="pause_apps_dialog_message">Meldingen van %1$s zullen worden gepauzeerd</string>
+    <string name="paused_apps_dialog_title">App gepauzeerd</string>
+    <string name="paused_apps_dialog_message">%1$s is direct gepauzeerd vanuit de Launcher</string>
+    <string name="paused_apps_drop_target_label">App pauzeren</string>
     <string name="dock_icons">Dokpictogrammen</string>
     <string name="hotseat_bottom_space_label">Opvulling aan onderkant</string>
+    <string name="page_indicator_height">Hoogte pagina-indicator</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">App zoeken</string>
     <string name="search_provider_sponsored_description">%1$s en Lawnchair hebben een overeenkomst a.g. het delen van inkomsten.\n\nZoeken met %1$s helpt Lawnchair te ondersteunen.</string>

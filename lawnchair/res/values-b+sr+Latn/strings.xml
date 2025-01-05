@@ -434,8 +434,16 @@
     <string name="hotseat_bg_horizontal_inset_right">Horizontalni pomak (desno)</string>
     <string name="hotseat_bg_vertical_inset_top">Vertikalni pomak (gore)</string>
     <string name="hotseat_bg_vertical_inset_bottom">Vertikalni pomak (dole)</string>
+    <!-- Pause apps shortcut -->
+    <string name="pause">Pause</string>
+    <string name="pause_apps_dialog_title">Pause %1$s?</string>
+    <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
+    <string name="paused_apps_dialog_title">App paused</string>
+    <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
+    <string name="paused_apps_drop_target_label">Pause app</string>
     <string name="dock_icons">Ikone na doku</string>
     <string name="hotseat_bottom_space_label">Donji razmak</string>
+    <string name="page_indicator_height">Page indicator height</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Pretraga aplikacija</string>
     <string name="search_provider_sponsored_description">%1$s i Lawnchair imaju ugovor o podeli prihoda.\n\nPretraživanjem pomoću usluge %1$s podržavate Lawnchair.</string>
