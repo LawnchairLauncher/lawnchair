@@ -78,6 +78,9 @@
     <string name="config_default_notification_dot_text_color" translatable="false">default</string>
     <string name="config_default_folder_color" translatable="false">default</string>
 
+    <!-- which hotseat bg color to use by default -->
+    <string name="config_default_hotseat_bg_color" translatable="false">default</string>
+
     <!-- which smartspace mode to use by default -->
     <string name="config_default_smartspace_mode" translatable="false">lawnchair</string>
 

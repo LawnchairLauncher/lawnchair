@@ -27,8 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
@@ -36,6 +38,7 @@ import app.lawnchair.ui.preferences.components.DummyLauncherLayout
 import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.components.clipToPercentage
 import app.lawnchair.ui.preferences.components.clipToVisiblePercentage
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
@@ -51,9 +54,7 @@ object DockRoutes {
 }
 
 @Composable
-fun DockPreferences(
-    modifier: Modifier = Modifier,
-) {
+fun DockPreferences(modifier: Modifier = Modifier) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
 
@@ -63,53 +64,19 @@ fun DockPreferences(
         modifier = modifier,
     ) {
         val isHotseatEnabled = prefs2.isHotseatEnabled.getAdapter()
-        val hotseatColumnAdapter = prefs.hotseatColumns.getAdapter()
-        val hotseatBottomFactorAdapter = prefs2.hotseatBottomFactor.getAdapter()
-        val hotseatBgAdapter = prefs.hotseatBG.getAdapter()
-        val hotseatBgHorizontalInsetLeftAdapter = prefs.hotseatBGHorizontalInsetLeft.getAdapter()
-        val hotseatBgVerticalInsetTopAdapter = prefs.hotseatBGVerticalInsetTop.getAdapter()
-        val hotseatBgHorizontalInsetRightAdapter = prefs.hotseatBGHorizontalInsetRight.getAdapter()
-        val hotseatBgVerticalInsetBottomAdapter = prefs.hotseatBGVerticalInsetBottom.getAdapter()
-        val pageIndicatorHeightFactorAdapter = prefs2.pageIndicatorHeightFactor.getAdapter()
+        val isHotseatBgEnabled = prefs.hotseatBG.getAdapter().state.value
 
         MainSwitchPreference(adapter = isHotseatEnabled, label = stringResource(id = R.string.show_hotseat_title)) {
             DockPreferencesPreview()
 
             PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
-                SwitchPreference(
-                    adapter = hotseatBgAdapter,
-                    label = stringResource(id = R.string.hotseat_background),
-                )
-                ExpandAndShrink(visible = hotseatBgAdapter.state.value) {
-                    DividerColumn {
-                        SliderPreference(
-                            label = stringResource(id = R.string.hotseat_bg_horizontal_inset_left),
-                            adapter = hotseatBgHorizontalInsetLeftAdapter,
-                            step = 5,
-                            valueRange = 0..100,
-                            showUnit = "px",
-                        )
-                        SliderPreference(
-                            label = stringResource(id = R.string.hotseat_bg_horizontal_inset_right),
-                            adapter = hotseatBgHorizontalInsetRightAdapter,
-                            step = 5,
-                            valueRange = 0..100,
-                            showUnit = "px",
-                        )
-                        SliderPreference(
-                            label = stringResource(id = R.string.hotseat_bg_vertical_inset_top),
-                            adapter = hotseatBgVerticalInsetTopAdapter,
-                            step = 5,
-                            valueRange = 0..100,
-                            showUnit = "px",
-                        )
-                        SliderPreference(
-                            label = stringResource(id = R.string.hotseat_bg_vertical_inset_bottom),
-                            adapter = hotseatBgVerticalInsetBottomAdapter,
-                            step = 5,
-                            valueRange = 0..100,
-                            showUnit = "px",
-                        )
+                DividerColumn {
+                    SwitchPreference(
+                        adapter = prefs.hotseatBG.getAdapter(),
+                        label = stringResource(id = R.string.hotseat_background),
+                    )
+                    ExpandAndShrink(visible = isHotseatBgEnabled) {
+                        HotseatBackgroundSettings(prefs, prefs2)
                     }
                 }
             }
@@ -117,61 +84,109 @@ fun DockPreferences(
             SearchBarPreference(0)
 
             PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-                SliderPreference(
-                    label = stringResource(id = R.string.dock_icons),
-                    adapter = hotseatColumnAdapter,
-                    step = 1,
-                    valueRange = 3..10,
-                )
-                SliderPreference(
-                    adapter = hotseatBottomFactorAdapter,
-                    label = stringResource(id = R.string.hotseat_bottom_space_label),
-                    valueRange = 0.0F..1.7F,
-                    step = 0.1F,
-                    showAsPercentage = true,
-                )
-                SliderPreference(
-                    adapter = pageIndicatorHeightFactorAdapter,
-                    label = stringResource(id = R.string.page_indicator_height),
-                    valueRange = 0.0F..1.0F,
-                    step = 0.1F,
-                    showAsPercentage = true,
-                )
+                GridSettings(prefs, prefs2)
             }
         }
     }
 }
 
 @Composable
-fun ColumnScope.DockPreferencesPreview(
-    modifier: Modifier = Modifier,
-) {
-    val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+fun HotseatBackgroundSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
+    DividerColumn {
+        ColorPreference(preference = prefs2.hotseatBackgroundColor)
+        SliderPreference(
+            label = stringResource(id = R.string.hotseat_bg_alpha),
+            adapter = prefs.hotseatBGAlpha.getAdapter(),
+            step = 5,
+            valueRange = 5..100,
+            showUnit = "%",
+        )
+        SliderPreference(
+            label = stringResource(id = R.string.hotseat_bg_horizontal_inset_left),
+            adapter = prefs.hotseatBGHorizontalInsetLeft.getAdapter(),
+            step = 5,
+            valueRange = 0..100,
+            showUnit = "px",
+        )
+        SliderPreference(
+            label = stringResource(id = R.string.hotseat_bg_horizontal_inset_right),
+            adapter = prefs.hotseatBGHorizontalInsetRight.getAdapter(),
+            step = 5,
+            valueRange = 0..100,
+            showUnit = "px",
+        )
+        SliderPreference(
+            label = stringResource(id = R.string.hotseat_bg_vertical_inset_top),
+            adapter = prefs.hotseatBGVerticalInsetTop.getAdapter(),
+            step = 5,
+            valueRange = 0..100,
+            showUnit = "px",
+        )
+        SliderPreference(
+            label = stringResource(id = R.string.hotseat_bg_vertical_inset_bottom),
+            adapter = prefs.hotseatBGVerticalInsetBottom.getAdapter(),
+            step = 5,
+            valueRange = 0..100,
+            showUnit = "px",
+        )
+    }
+}
 
-    if (isPortrait) {
+@Composable
+fun GridSettings(prefs: PreferenceManager, prefs2: PreferenceManager2) {
+    SliderPreference(
+        label = stringResource(id = R.string.dock_icons),
+        adapter = prefs.hotseatColumns.getAdapter(),
+        step = 1,
+        valueRange = 3..10,
+    )
+    SliderPreference(
+        adapter = prefs2.hotseatBottomFactor.getAdapter(),
+        label = stringResource(id = R.string.hotseat_bottom_space_label),
+        valueRange = 0.0F..1.7F,
+        step = 0.1F,
+        showAsPercentage = true,
+    )
+    SliderPreference(
+        adapter = prefs2.pageIndicatorHeightFactor.getAdapter(),
+        label = stringResource(id = R.string.page_indicator_height),
+        valueRange = 0.0F..1.0F,
+        step = 0.1F,
+        showAsPercentage = true,
+    )
+}
+
+@Composable
+fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
         val prefs = preferenceManager()
         val prefs2 = preferenceManager2()
-        val hotseatModeAdapter = prefs2.hotseatMode.getAdapter()
-        val hotseatColumnAdapter = prefs.hotseatColumns.getAdapter()
-        val themeQsbAdapter = prefs2.themedHotseatQsb.getAdapter()
-        val qsbCornerAdapter = prefs.hotseatQsbCornerRadius.getAdapter()
-        val qsbAlphaAdapter = prefs.hotseatQsbAlpha.getAdapter()
-        val qsbHotseatStrokeWidth = prefs.hotseatQsbStrokeWidth.getAdapter()
-        val hotseatBottomFactorAdapter = prefs2.hotseatBottomFactor.getAdapter()
-        val strokeColorStyleAdapter = prefs2.strokeColorStyle.getAdapter()
-        val hotseatBgAdapter = prefs.hotseatBG.getAdapter()
-        val hotseatBgHorizontalInsetLeftAdapter = prefs.hotseatBGHorizontalInsetLeft.getAdapter()
-        val hotseatBgVerticalInsetTopAdapter = prefs.hotseatBGVerticalInsetTop.getAdapter()
-        val hotseatBgHorizontalInsetRightAdapter = prefs.hotseatBGHorizontalInsetRight.getAdapter()
-        val hotseatBgVerticalInsetBottomAdapter = prefs.hotseatBGVerticalInsetBottom.getAdapter()
-        val pageIndicatorHeightFactorAdapter = prefs2.pageIndicatorHeightFactor.getAdapter()
+
+        val adapters = listOf(
+            prefs2.hotseatMode.getAdapter(),
+            prefs.hotseatColumns.getAdapter(),
+            prefs2.themedHotseatQsb.getAdapter(),
+            prefs.hotseatQsbCornerRadius.getAdapter(),
+            prefs.hotseatQsbAlpha.getAdapter(),
+            prefs.hotseatQsbStrokeWidth.getAdapter(),
+            prefs2.hotseatBottomFactor.getAdapter(),
+            prefs2.strokeColorStyle.getAdapter(),
+            prefs.hotseatBG.getAdapter(),
+            prefs.hotseatBGHorizontalInsetLeft.getAdapter(),
+            prefs.hotseatBGVerticalInsetTop.getAdapter(),
+            prefs.hotseatBGHorizontalInsetRight.getAdapter(),
+            prefs.hotseatBGVerticalInsetBottom.getAdapter(),
+            prefs2.pageIndicatorHeightFactor.getAdapter(),
+            prefs2.hotseatBackgroundColor.getAdapter(),
+            prefs.hotseatBGAlpha.getAdapter(),
+        )
 
         PreferenceGroup(
             heading = stringResource(id = R.string.preview_label),
             modifier = modifier,
         ) {
             DummyLauncherBox(
-                modifier = Modifier.Companion
+                modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterHorizontally)
                     .clip(MaterialTheme.shapes.large)
@@ -179,22 +194,7 @@ fun ColumnScope.DockPreferencesPreview(
                     .clipToPercentage(1.0f),
             ) {
                 WallpaperPreview(modifier = Modifier.fillMaxSize())
-                key(
-                    hotseatModeAdapter.state.value,
-                    hotseatColumnAdapter.state.value,
-                    themeQsbAdapter.state.value,
-                    qsbCornerAdapter.state.value,
-                    qsbAlphaAdapter.state.value,
-                    qsbHotseatStrokeWidth.state.value,
-                    strokeColorStyleAdapter.state.value,
-                    hotseatBgAdapter.state.value,
-                    hotseatBgHorizontalInsetLeftAdapter.state.value,
-                    hotseatBgVerticalInsetTopAdapter.state.value,
-                    hotseatBgHorizontalInsetRightAdapter.state.value,
-                    hotseatBgVerticalInsetBottomAdapter.state.value,
-                    hotseatBottomFactorAdapter.state.value,
-                    pageIndicatorHeightFactorAdapter.state.value,
-                ) {
+                key(adapters.map { it.state.value }.toTypedArray()) {
                     DummyLauncherLayout(
                         idp = createPreviewIdp { copy(numHotseatColumns = prefs.hotseatColumns.get()) },
                         modifier = Modifier.fillMaxSize(),

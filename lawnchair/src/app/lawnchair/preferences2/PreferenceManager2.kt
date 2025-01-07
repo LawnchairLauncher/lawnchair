@@ -131,6 +131,14 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_accent_color)),
     )
 
+    val hotseatBackgroundColor = preference(
+        key = stringPreferencesKey(name = "hotseat_bg_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.reloadGrid() },
+        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_hotseat_bg_color)),
+    )
+
     val notificationDotColor = preference(
         key = stringPreferencesKey(name = "notification_dot_color"),
         parse = ColorOption::fromString,

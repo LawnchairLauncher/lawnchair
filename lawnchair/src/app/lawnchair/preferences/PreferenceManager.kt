@@ -107,6 +107,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val hotseatBGHorizontalInsetRight = IntPref("pref_hotseatBGHRinsetRight", 0, recreate)
     val hotseatBGVerticalInsetBottom = IntPref("pref_hotseatBGVRinsetBottom", 0, recreate)
 
+    val hotseatBGAlpha = IntPref("pref_hotseatBGTransparency", 100, recreate)
+
     val enableWallpaperBlur = BoolPref("pref_enableWallpaperBlur", false, recreate)
     val wallpaperBlur = IntPref("pref_wallpaperBlur", 25, recreate)
     val wallpaperBlurFactorThreshold = FloatPref("pref_wallpaperBlurFactor", 3.0F, recreate)

@@ -25,7 +25,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -36,6 +40,8 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.taskbar.BlurredBitmapDrawable;
+import com.hoko.blur.HokoBlur;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import app.lawnchair.hotseat.DisabledHotseat;
@@ -48,6 +54,7 @@ import app.lawnchair.theme.drawable.DrawableTokens;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.views.ActivityContext;
+import android.graphics.drawable.Drawable;
 
 /**
  * View class that represents the bottom row of the home screen.
@@ -104,13 +111,19 @@ public class Hotseat extends CellLayout implements Insettable {
 
     private void setUpBackground() {
         if(!preferenceManager.getHotseatBG().get()) return;
-
+        
+        var bgColor = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatBackgroundColor());
+        var transparency = preferenceManager.getHotseatBGAlpha().get();
+        var alphaValue = (transparency * 255) / 100;
+        var baseColor = bgColor.getColorPreferenceEntry().getLightColor().invoke(mContext);
+        var finalColor = Color.argb(alphaValue, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor));
         int insetHorizontalLeft = preferenceManager.getHotseatBGHorizontalInsetLeft().get();
         int insetHorizontalRight = preferenceManager.getHotseatBGHorizontalInsetRight().get();
         int insetVerticalTop = preferenceManager.getHotseatBGVerticalInsetTop().get();
         int insetVerticalBottom = preferenceManager.getHotseatBGVerticalInsetBottom().get();
         InsetDrawable bg = new InsetDrawable(DrawableTokens.BgCellLayout.resolve(getContext()),
                 insetHorizontalLeft, insetVerticalTop, insetHorizontalRight, insetVerticalBottom);
+        bg.setTint(finalColor);
         setBackground(bg);
     }
 
