@@ -56,6 +56,7 @@ internal class Scanner(
             -> {
                 // Ignore whitespace.
             }
+
             '+' -> addToken(PLUS)
             '-' -> addToken(MINUS)
             '*' -> addToken(STAR)
@@ -86,12 +87,13 @@ internal class Scanner(
         char: Char,
         previousChar: Char = '\u0000',
         nextChar: Char = '\u0000',
-    ): Boolean = char.isDigit() || when (char) {
-        '.' -> true
-        'e', 'E' -> previousChar.isDigit() && (nextChar.isDigit() || nextChar == '+' || nextChar == '-')
-        '+', '-' -> (previousChar == 'e' || previousChar == 'E') && nextChar.isDigit()
-        else -> false
-    }
+    ): Boolean = char.isDigit() ||
+        when (char) {
+            '.' -> true
+            'e', 'E' -> previousChar.isDigit() && (nextChar.isDigit() || nextChar == '+' || nextChar == '-')
+            '+', '-' -> (previousChar == 'e' || previousChar == 'E') && nextChar.isDigit()
+            else -> false
+        }
 
     private fun number() {
         while (peek().isDigit()) advance()
