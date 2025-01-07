@@ -38,9 +38,7 @@ fun requestContactPermissionGranted(context: Context, prefs: PreferenceManager):
     return isGranted
 }
 
-fun contactPermissionGranted(context: Context): Boolean {
-    return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
-}
+fun contactPermissionGranted(context: Context): Boolean = context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
 
 fun checkAndRequestFilesPermission(context: Context, prefs: PreferenceManager): Boolean {
     when {
@@ -73,13 +71,11 @@ fun checkAndRequestFilesPermission(context: Context, prefs: PreferenceManager): 
     return true
 }
 
-fun filesAndStorageGranted(context: Context): Boolean {
-    return when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
-            Environment.isExternalStorageManager() && hasReadMediaImagesPermission(context)
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Environment.isExternalStorageManager()
-        else -> hasReadExternalStoragePermission(context)
-    }
+fun filesAndStorageGranted(context: Context): Boolean = when {
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
+        Environment.isExternalStorageManager() && hasReadMediaImagesPermission(context)
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Environment.isExternalStorageManager()
+    else -> hasReadExternalStoragePermission(context)
 }
 
 @RequiresApi(Build.VERSION_CODES.R)
@@ -89,12 +85,10 @@ private fun requestManageAllFilesAccessPermission(context: Context) {
     context.startActivity(intent)
 }
 
-private fun hasReadExternalStoragePermission(context: Context): Boolean {
-    return ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-    ) == PackageManager.PERMISSION_GRANTED
-}
+private fun hasReadExternalStoragePermission(context: Context): Boolean = ContextCompat.checkSelfPermission(
+    context,
+    Manifest.permission.READ_EXTERNAL_STORAGE,
+) == PackageManager.PERMISSION_GRANTED
 
 private fun requestReadExternalStoragePermission(context: Context) {
     ActivityCompat.requestPermissions(
@@ -105,12 +99,10 @@ private fun requestReadExternalStoragePermission(context: Context) {
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private fun hasReadMediaImagesPermission(context: Context): Boolean {
-    return ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.READ_MEDIA_IMAGES,
-    ) == PackageManager.PERMISSION_GRANTED
-}
+private fun hasReadMediaImagesPermission(context: Context): Boolean = ContextCompat.checkSelfPermission(
+    context,
+    Manifest.permission.READ_MEDIA_IMAGES,
+) == PackageManager.PERMISSION_GRANTED
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun requestReadMediaImagesPermission(context: Context) {

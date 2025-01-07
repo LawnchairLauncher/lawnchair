@@ -78,15 +78,13 @@ private fun Modifier.drawDividers(
     thickness: Float,
     startIndentPx: Float,
     endIndentPx: Float,
-): Modifier {
-    return drawBehind {
-        state.dividerPositions.forEach { yPos ->
-            drawRect(
-                color = color,
-                topLeft = Offset(startIndentPx, yPos.toFloat()),
-                size = Size(size.width - startIndentPx - endIndentPx, thickness),
-            )
-        }
+): Modifier = drawBehind {
+    state.dividerPositions.forEach { yPos ->
+        drawRect(
+            color = color,
+            topLeft = Offset(startIndentPx, yPos.toFloat()),
+            size = Size(size.width - startIndentPx - endIndentPx, thickness),
+        )
     }
 }
 

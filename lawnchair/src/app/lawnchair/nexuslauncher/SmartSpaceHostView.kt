@@ -21,15 +21,16 @@ import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener
 import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.views.OptionsPopupView.OptionItem
 
-sealed class SmartSpaceHostView(context: Context) : QsbWidgetHostView(context), OnLongClickListener, TouchCompleteListener {
+sealed class SmartSpaceHostView(context: Context) :
+    QsbWidgetHostView(context),
+    OnLongClickListener,
+    TouchCompleteListener {
     private val mLauncher: Launcher by unsafeLazy { Launcher.getLauncher(context) }
 
     @Suppress("LeakingThis")
     private val mLongPressHelper: CheckLongPressHelper = CheckLongPressHelper(this, this)
 
-    override fun getErrorView(): View {
-        return SmartspaceQsb.getDateView(this)
-    }
+    override fun getErrorView(): View = SmartspaceQsb.getDateView(this)
 
     override fun onLongClick(view: View): Boolean {
         if (!hasSettings(view.context)) {
@@ -106,16 +107,14 @@ sealed class SmartSpaceHostView(context: Context) : QsbWidgetHostView(context), 
             return info != null
         }
 
-        fun createSettingsIntent(): Intent {
-            return Intent(SETTINGS_INTENT_ACTION)
-                .setPackage(SmartspaceQsb.WIDGET_PACKAGE_NAME)
-                .setFlags(
-                    Intent.FLAG_RECEIVER_FOREGROUND
-                        or Intent.FLAG_ACTIVITY_NO_HISTORY
-                        or Intent.FLAG_ACTIVITY_NEW_TASK
-                        or Intent.FLAG_ACTIVITY_NEW_DOCUMENT,
-                )
-        }
+        fun createSettingsIntent(): Intent = Intent(SETTINGS_INTENT_ACTION)
+            .setPackage(SmartspaceQsb.WIDGET_PACKAGE_NAME)
+            .setFlags(
+                Intent.FLAG_RECEIVER_FOREGROUND
+                    or Intent.FLAG_ACTIVITY_NO_HISTORY
+                    or Intent.FLAG_ACTIVITY_NEW_TASK
+                    or Intent.FLAG_ACTIVITY_NEW_DOCUMENT,
+            )
     }
 }
 
@@ -123,7 +122,5 @@ enum class NexusLauncherEnum(private val mId: Int) : EventEnum {
     SMARTSPACE_TAP_OR_LONGPRESS(520),
     ;
 
-    override fun getId(): Int {
-        return mId
-    }
+    override fun getId(): Int = mId
 }

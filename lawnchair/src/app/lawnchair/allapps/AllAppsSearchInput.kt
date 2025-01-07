@@ -229,7 +229,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         val inputLowerCase = inputString.lowercase(Locale.getDefault())
         val focusedLowerCase = focusedResultTitle.lowercase(Locale.getDefault())
         if (canShowHint &&
-            inputLowerCase.isNotEmpty() && focusedLowerCase.isNotEmpty() &&
+            inputLowerCase.isNotEmpty() &&
+            focusedLowerCase.isNotEmpty() &&
             focusedLowerCase.matches(Regex("^[\\x00-\\x7F]*$")) &&
             focusedLowerCase.startsWith(inputLowerCase)
         ) {
@@ -285,7 +286,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         if (!searchBarController.isSearchFieldFocused && event.action == KeyEvent.ACTION_DOWN) {
             val unicodeChar = event.unicodeChar
             val isKeyNotWhitespace = unicodeChar > 0 &&
-                !Character.isWhitespace(unicodeChar) && !Character.isSpaceChar(unicodeChar)
+                !Character.isWhitespace(unicodeChar) &&
+                !Character.isSpaceChar(unicodeChar)
             if (isKeyNotWhitespace) {
                 val gotKey = TextKeyListener.getInstance().onKeyDown(input, searchQueryBuilder, event.keyCode, event)
                 if (gotKey && searchQueryBuilder.isNotEmpty()) {
@@ -357,9 +359,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         }
     }
 
-    override fun getBackgroundVisibility(): Boolean {
-        return bgVisible
-    }
+    override fun getBackgroundVisibility(): Boolean = bgVisible
 
     private fun updateBgAlpha() {
         val fraction = bgAlphaAnimator.animatedFraction

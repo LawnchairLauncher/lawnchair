@@ -54,9 +54,7 @@ fun AndroidText(
 }
 
 @Composable
-fun toIntColor(color: Color): Int {
-    return remember(color) {
-        val (r, g, b, a) = color.convert(ColorSpaces.Srgb)
-        android.graphics.Color.argb((a * 255).toInt(), (r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt())
-    }
+fun toIntColor(color: Color): Int = remember(color) {
+    val (r, g, b, a) = color.convert(ColorSpaces.Srgb)
+    android.graphics.Color.argb((a * 255).toInt(), (r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt())
 }

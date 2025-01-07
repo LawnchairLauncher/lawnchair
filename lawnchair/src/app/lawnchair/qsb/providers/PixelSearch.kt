@@ -16,6 +16,5 @@ data object PixelSearch : QsbSearchProvider(
     supportVoiceIntent = true,
 ) {
 
-    override fun handleCreateVoiceIntent(): Intent =
-        Intent(Intent.ACTION_VOICE_COMMAND)
+    override fun handleCreateVoiceIntent(): Intent = Intent(Intent.ACTION_VOICE_COMMAND)
 }

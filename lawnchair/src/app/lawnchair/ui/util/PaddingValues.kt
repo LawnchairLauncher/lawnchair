@@ -27,15 +27,11 @@ fun rememberExtendPadding(
 }
 
 private class CombinePaddingValues(private val a: PaddingValues, private val b: PaddingValues) : PaddingValues {
-    override fun calculateLeftPadding(layoutDirection: LayoutDirection) =
-        a.calculateLeftPadding(layoutDirection) + b.calculateLeftPadding(layoutDirection)
+    override fun calculateLeftPadding(layoutDirection: LayoutDirection) = a.calculateLeftPadding(layoutDirection) + b.calculateLeftPadding(layoutDirection)
 
-    override fun calculateTopPadding() =
-        a.calculateTopPadding() + b.calculateTopPadding()
+    override fun calculateTopPadding() = a.calculateTopPadding() + b.calculateTopPadding()
 
-    override fun calculateRightPadding(layoutDirection: LayoutDirection) =
-        a.calculateRightPadding(layoutDirection) + b.calculateRightPadding(layoutDirection)
+    override fun calculateRightPadding(layoutDirection: LayoutDirection) = a.calculateRightPadding(layoutDirection) + b.calculateRightPadding(layoutDirection)
 
-    override fun calculateBottomPadding() =
-        a.calculateBottomPadding() + b.calculateBottomPadding()
+    override fun calculateBottomPadding() = a.calculateBottomPadding() + b.calculateBottomPadding()
 }

@@ -178,11 +178,9 @@ private fun AnnouncementItemContent(
     }
 }
 
-private fun calculateAlpha(progress: Float): Float {
-    return when {
-        progress < 0.5f -> 1f // Fully opaque until halfway
-        else -> 1f - (progress - 0.5f) * 2 // Fade out linearly from halfway to the end
-    }
+private fun calculateAlpha(progress: Float): Float = when {
+    progress < 0.5f -> 1f // Fully opaque until halfway
+    else -> 1f - (progress - 0.5f) * 2 // Fade out linearly from halfway to the end
 }
 
 @Composable

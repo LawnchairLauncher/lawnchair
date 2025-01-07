@@ -73,9 +73,7 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
     val uiText = ResourceFont(context, R.font.inter_regular, "Inter v3 " + context.getString(R.string.font_weight_regular))
     val uiTextMedium = ResourceFont(context, R.font.inter_medium, "Inter v3 " + context.getString(R.string.font_weight_medium))
 
-    suspend fun getTypeface(font: Font): Typeface? {
-        return loadFontAsync(font).await()?.typeface
-    }
+    suspend fun getTypeface(font: Font): Typeface? = loadFontAsync(font).await()?.typeface
 
     fun preloadFont(font: Font) {
         @Suppress("DeferredResultUnused")
@@ -89,11 +87,9 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
         return deferredFont.getCompleted()
     }
 
-    private fun loadFontAsync(font: Font): Deferred<LoadedFont?> {
-        return deferredFonts.getOrPut(font) {
-            scope.async {
-                font.load()?.let { LoadedFont(it) }
-            }
+    private fun loadFontAsync(font: Font): Deferred<LoadedFont?> = deferredFonts.getOrPut(font) {
+        scope.async {
+            font.load()?.let { LoadedFont(it) }
         }
     }
 
@@ -154,9 +150,7 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
             obj.put(KEY_CLASS_NAME, this::class.java.name)
         }
 
-        open fun createWithWeight(weight: Int): Font {
-            return this
-        }
+        open fun createWithWeight(weight: Int): Font = this
 
         fun toJsonString(): String {
             val obj = JSONObject()
@@ -182,17 +176,11 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
         override val fullDisplayName = typeface.toString()
         override val displayName get() = fullDisplayName
 
-        override suspend fun load(): Typeface? {
-            return typeface
-        }
+        override suspend fun load(): Typeface? = typeface
 
-        override fun equals(other: Any?): Boolean {
-            return other is TypefaceFont && typeface == other.typeface
-        }
+        override fun equals(other: Any?): Boolean = other is TypefaceFont && typeface == other.typeface
 
-        override fun hashCode(): Int {
-            return fullDisplayName.hashCode()
-        }
+        override fun hashCode(): Int = fullDisplayName.hashCode()
     }
 
     class DummyFont : TypefaceFont(null) {
@@ -201,26 +189,19 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
 
         override val composeFontFamily = FontFamily(Typeface.DEFAULT)
 
-        override fun equals(other: Any?): Boolean {
-            return other is DummyFont
-        }
+        override fun equals(other: Any?): Boolean = other is DummyFont
 
-        override fun hashCode(): Int {
-            return hashCode
-        }
+        override fun hashCode(): Int = hashCode
 
         companion object {
 
             @Keep
             @JvmStatic
-            fun fromJson(context: Context, obj: JSONObject): Font {
-                return DummyFont()
-            }
+            fun fromJson(context: Context, obj: JSONObject): Font = DummyFont()
         }
     }
 
-    class TTFFont(context: Context, private val file: File) :
-        TypefaceFont(createTypeface(file)) {
+    class TTFFont(context: Context, private val file: File) : TypefaceFont(createTypeface(file)) {
 
         private val actualName: String = Uri.decode(file.name)
         override val isAvailable = typeface != null
@@ -239,24 +220,17 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
             obj.put(KEY_FONT_NAME, fullDisplayName)
         }
 
-        override fun equals(other: Any?): Boolean {
-            return other is TTFFont && actualName == other.actualName
-        }
+        override fun equals(other: Any?): Boolean = other is TTFFont && actualName == other.actualName
 
         override fun hashCode() = actualName.hashCode()
 
         companion object {
 
-            fun createTypeface(file: File): Typeface? =
-                runCatching { Typeface.createFromFile(file) }.getOrNull()
+            fun createTypeface(file: File): Typeface? = runCatching { Typeface.createFromFile(file) }.getOrNull()
 
-            fun getFontsDir(context: Context): File {
-                return File(context.filesDir, "customFonts").apply { mkdirs() }
-            }
+            fun getFontsDir(context: Context): File = File(context.filesDir, "customFonts").apply { mkdirs() }
 
-            fun getFile(context: Context, name: String): File {
-                return File(getFontsDir(context), Uri.encode(name))
-            }
+            fun getFile(context: Context, name: String): File = File(getFontsDir(context), Uri.encode(name))
 
             @Keep
             @JvmStatic
@@ -283,13 +257,9 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
             obj.put(KEY_STYLE, style)
         }
 
-        override fun equals(other: Any?): Boolean {
-            return other is SystemFont && family == other.family && style == other.style
-        }
+        override fun equals(other: Any?): Boolean = other is SystemFont && family == other.family && style == other.style
 
-        override fun hashCode(): Int {
-            return hashCode
-        }
+        override fun hashCode(): Int = hashCode
 
         override fun createWithWeight(weight: Int): Font {
             if (weight >= 700) {
@@ -325,13 +295,9 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
             obj.put(KEY_FAMILY_NAME, name)
         }
 
-        override fun equals(other: Any?): Boolean {
-            return other is AssetFont && name == other.name
-        }
+        override fun equals(other: Any?): Boolean = other is AssetFont && name == other.name
 
-        override fun hashCode(): Int {
-            return hashCode
-        }
+        override fun hashCode(): Int = hashCode
 
         companion object {
 
@@ -362,13 +328,9 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
             obj.put(KEY_FAMILY_NAME, name)
         }
 
-        override fun equals(other: Any?): Boolean {
-            return other is ResourceFont && name == other.name
-        }
+        override fun equals(other: Any?): Boolean = other is ResourceFont && name == other.name
 
-        override fun hashCode(): Int {
-            return hashCode
-        }
+        override fun hashCode(): Int = hashCode
 
         companion object {
 
@@ -454,13 +416,9 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
             obj.put(KEY_VARIANTS, variantsArray)
         }
 
-        override fun equals(other: Any?): Boolean {
-            return other is GoogleFont && family == other.family && variant == other.variant
-        }
+        override fun equals(other: Any?): Boolean = other is GoogleFont && family == other.family && variant == other.variant
 
-        override fun hashCode(): Int {
-            return hashCode
-        }
+        override fun hashCode(): Int = hashCode
 
         override fun createWithWeight(weight: Int): Font {
             if (weight == -1) return this

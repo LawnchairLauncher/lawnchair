@@ -45,12 +45,10 @@ object BcSmartSpaceUtil {
         }
     }
 
-    fun getOpenCalendarIntent(): Intent {
-        return Intent(Intent.ACTION_VIEW).setData(
-            ContentUris.appendId(
-                CalendarContract.CONTENT_URI.buildUpon().appendPath("time"),
-                System.currentTimeMillis(),
-            ).build(),
-        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-    }
+    fun getOpenCalendarIntent(): Intent = Intent(Intent.ACTION_VIEW).setData(
+        ContentUris.appendId(
+            CalendarContract.CONTENT_URI.buildUpon().appendPath("time"),
+            System.currentTimeMillis(),
+        ).build(),
+    ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
 }

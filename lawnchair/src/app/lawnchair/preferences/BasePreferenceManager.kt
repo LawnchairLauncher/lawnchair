@@ -233,9 +233,7 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
             error("unsupported")
         }
 
-        fun defaultValue(defaultGrid: InvariantDeviceProfile.GridOption): Int {
-            return selectDefaultValue(defaultGrid)
-        }
+        fun defaultValue(defaultGrid: InvariantDeviceProfile.GridOption): Int = selectDefaultValue(defaultGrid)
 
         fun get(defaultGrid: InvariantDeviceProfile.GridOption): Int {
             val value = super.get()
@@ -350,9 +348,7 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
 
         override fun get() = HashMap(valueMap)
 
-        override fun set(newValue: Map<K, V>) {
-            throw NotImplementedError()
-        }
+        override fun set(newValue: Map<K, V>): Unit = throw NotImplementedError()
 
         open fun flattenKey(key: K) = key.toString()
         abstract fun unflattenKey(key: String): K
@@ -375,9 +371,7 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
             editSp { putString(key, obj.toString()) }
         }
 
-        operator fun get(key: K): V? {
-            return valueMap[key]
-        }
+        operator fun get(key: K): V? = valueMap[key]
 
         fun clear() {
             valueMap.clear()

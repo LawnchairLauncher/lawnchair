@@ -60,24 +60,18 @@ internal interface Hue {
 }
 
 internal class HueSource : Hue {
-    override fun get(sourceColor: Cam): Double {
-        return sourceColor.hue.toDouble()
-    }
+    override fun get(sourceColor: Cam): Double = sourceColor.hue.toDouble()
 }
 
 internal class HueAdd(val amountDegrees: Double) : Hue {
-    override fun get(sourceColor: Cam): Double {
-        return ColorScheme.wrapDegreesDouble(sourceColor.hue.toDouble() + amountDegrees)
-    }
+    override fun get(sourceColor: Cam): Double = ColorScheme.wrapDegreesDouble(sourceColor.hue.toDouble() + amountDegrees)
 }
 
 internal class HueSubtract(val amountDegrees: Double) : Hue {
-    override fun get(sourceColor: Cam): Double {
-        return ColorScheme.wrapDegreesDouble(sourceColor.hue.toDouble() - amountDegrees)
-    }
+    override fun get(sourceColor: Cam): Double = ColorScheme.wrapDegreesDouble(sourceColor.hue.toDouble() - amountDegrees)
 }
 
-internal class HueVibrantSecondary() : Hue {
+internal class HueVibrantSecondary : Hue {
     val hueToRotations =
         listOf(
             Pair(0, 18),
@@ -91,12 +85,10 @@ internal class HueVibrantSecondary() : Hue {
             Pair(360, 12),
         )
 
-    override fun get(sourceColor: Cam): Double {
-        return getHueRotation(sourceColor.hue, hueToRotations)
-    }
+    override fun get(sourceColor: Cam): Double = getHueRotation(sourceColor.hue, hueToRotations)
 }
 
-internal class HueVibrantTertiary() : Hue {
+internal class HueVibrantTertiary : Hue {
     val hueToRotations =
         listOf(
             Pair(0, 35),
@@ -110,12 +102,10 @@ internal class HueVibrantTertiary() : Hue {
             Pair(360, 25),
         )
 
-    override fun get(sourceColor: Cam): Double {
-        return getHueRotation(sourceColor.hue, hueToRotations)
-    }
+    override fun get(sourceColor: Cam): Double = getHueRotation(sourceColor.hue, hueToRotations)
 }
 
-internal class HueExpressiveSecondary() : Hue {
+internal class HueExpressiveSecondary : Hue {
     val hueToRotations =
         listOf(
             Pair(0, 45),
@@ -129,12 +119,10 @@ internal class HueExpressiveSecondary() : Hue {
             Pair(360, 45),
         )
 
-    override fun get(sourceColor: Cam): Double {
-        return getHueRotation(sourceColor.hue, hueToRotations)
-    }
+    override fun get(sourceColor: Cam): Double = getHueRotation(sourceColor.hue, hueToRotations)
 }
 
-internal class HueExpressiveTertiary() : Hue {
+internal class HueExpressiveTertiary : Hue {
     val hueToRotations =
         listOf(
             Pair(0, 120),
@@ -148,9 +136,7 @@ internal class HueExpressiveTertiary() : Hue {
             Pair(360, 120),
         )
 
-    override fun get(sourceColor: Cam): Double {
-        return getHueRotation(sourceColor.hue, hueToRotations)
-    }
+    override fun get(sourceColor: Cam): Double = getHueRotation(sourceColor.hue, hueToRotations)
 }
 
 internal interface Chroma {
@@ -171,15 +157,11 @@ internal class ChromaMaxOut : Chroma {
 }
 
 internal class ChromaMultiple(val multiple: Double) : Chroma {
-    override fun get(sourceColor: Cam): Double {
-        return sourceColor.chroma * multiple
-    }
+    override fun get(sourceColor: Cam): Double = sourceColor.chroma * multiple
 }
 
 internal class ChromaAdd(val amount: Double) : Chroma {
-    override fun get(sourceColor: Cam): Double {
-        return sourceColor.chroma + amount
-    }
+    override fun get(sourceColor: Cam): Double = sourceColor.chroma + amount
 }
 
 internal class ChromaBound(
@@ -194,15 +176,11 @@ internal class ChromaBound(
 }
 
 internal class ChromaConstant(val chroma: Double) : Chroma {
-    override fun get(sourceColor: Cam): Double {
-        return chroma
-    }
+    override fun get(sourceColor: Cam): Double = chroma
 }
 
 internal class ChromaSource : Chroma {
-    override fun get(sourceColor: Cam): Double {
-        return sourceColor.chroma.toDouble()
-    }
+    override fun get(sourceColor: Cam): Double = sourceColor.chroma.toDouble()
 }
 
 internal class TonalSpec(val hue: Hue = HueSource(), val chroma: Chroma) {
@@ -426,53 +404,45 @@ class ColorScheme(
     val seedTone: Float
         get() = 1000f - CamUtils.lstarFromInt(seed) * 10f
 
-    override fun toString(): String {
-        return "ColorScheme {\n" +
-            "  seed color: ${stringForColor(seed)}\n" +
-            "  style: $style\n" +
-            "  palettes: \n" +
-            "  ${humanReadable("PRIMARY", accent1.allShades)}\n" +
-            "  ${humanReadable("SECONDARY", accent2.allShades)}\n" +
-            "  ${humanReadable("TERTIARY", accent3.allShades)}\n" +
-            "  ${humanReadable("NEUTRAL", neutral1.allShades)}\n" +
-            "  ${humanReadable("NEUTRAL VARIANT", neutral2.allShades)}\n" +
-            "}"
-    }
+    override fun toString(): String = "ColorScheme {\n" +
+        "  seed color: ${stringForColor(seed)}\n" +
+        "  style: $style\n" +
+        "  palettes: \n" +
+        "  ${humanReadable("PRIMARY", accent1.allShades)}\n" +
+        "  ${humanReadable("SECONDARY", accent2.allShades)}\n" +
+        "  ${humanReadable("TERTIARY", accent3.allShades)}\n" +
+        "  ${humanReadable("NEUTRAL", neutral1.allShades)}\n" +
+        "  ${humanReadable("NEUTRAL VARIANT", neutral2.allShades)}\n" +
+        "}"
 
     companion object {
-        private fun wrapDegrees(degrees: Int): Int {
-            return when {
-                degrees < 0 -> {
-                    (degrees % 360) + 360
-                }
-                degrees >= 360 -> {
-                    degrees % 360
-                }
-                else -> {
-                    degrees
-                }
+        private fun wrapDegrees(degrees: Int): Int = when {
+            degrees < 0 -> {
+                (degrees % 360) + 360
+            }
+            degrees >= 360 -> {
+                degrees % 360
+            }
+            else -> {
+                degrees
             }
         }
 
-        public fun wrapDegreesDouble(degrees: Double): Double {
-            return when {
-                degrees < 0 -> {
-                    (degrees % 360) + 360
-                }
+        public fun wrapDegreesDouble(degrees: Double): Double = when {
+            degrees < 0 -> {
+                (degrees % 360) + 360
+            }
 
-                degrees >= 360 -> {
-                    degrees % 360
-                }
+            degrees >= 360 -> {
+                degrees % 360
+            }
 
-                else -> {
-                    degrees
-                }
+            else -> {
+                degrees
             }
         }
 
-        private fun hueDiff(a: Float, b: Float): Float {
-            return 180f - ((a - b).absoluteValue - 180f).absoluteValue
-        }
+        private fun hueDiff(a: Float, b: Float): Float = 180f - ((a - b).absoluteValue - 180f).absoluteValue
 
         private fun stringForColor(color: Int): String {
             val width = 4
@@ -484,10 +454,8 @@ class ColorScheme(
             return "$h$c$t = #$hex"
         }
 
-        private fun humanReadable(paletteName: String, colors: List<Int>): String {
-            return "$paletteName\n" +
-                colors.map { stringForColor(it) }.joinToString(separator = "\n") { it }
-        }
+        private fun humanReadable(paletteName: String, colors: List<Int>): String = "$paletteName\n" +
+            colors.map { stringForColor(it) }.joinToString(separator = "\n") { it }
 
         private fun score(cam: Cam, proportion: Double): Double {
             val proportionScore = 0.7 * 100.0 * proportion

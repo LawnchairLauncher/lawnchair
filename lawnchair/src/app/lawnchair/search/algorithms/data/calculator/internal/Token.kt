@@ -6,7 +6,5 @@ internal class Token(
     val literal: Any?,
 ) {
 
-    override fun toString(): String {
-        return "$type $lexeme $literal"
-    }
+    override fun toString(): String = "$type $lexeme $literal"
 }

@@ -17,11 +17,12 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 
-class NowPlayingProvider(context: Context) : SmartspaceDataSource(
-    context,
-    R.string.smartspace_now_playing,
-    { smartspaceNowPlaying },
-) {
+class NowPlayingProvider(context: Context) :
+    SmartspaceDataSource(
+        context,
+        R.string.smartspace_now_playing,
+        { smartspaceNowPlaying },
+    ) {
 
     private val defaultIcon = Icon.createWithResource(context, R.drawable.ic_music_note)
 
@@ -60,9 +61,8 @@ class NowPlayingProvider(context: Context) : SmartspaceDataSource(
         )
     }
 
-    override suspend fun requiresSetup(): Boolean =
-        isNotificationServiceEnabled(context = context).not() ||
-            notificationDotsEnabled(context = context).first().not()
+    override suspend fun requiresSetup(): Boolean = isNotificationServiceEnabled(context = context).not() ||
+        notificationDotsEnabled(context = context).first().not()
 
     override suspend fun startSetup(activity: Activity) {
         val intent = PreferenceActivity.createIntent(activity, Routes.GENERAL)

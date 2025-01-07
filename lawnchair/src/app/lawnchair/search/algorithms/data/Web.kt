@@ -99,40 +99,39 @@ data object Google : WebSearchProvider() {
     override val service: GoogleService
         get() = retrofit.create()
 
-    override suspend fun getSuggestions(query: String, maxSuggestions: Int): List<String> =
-        withContext(Dispatchers.IO) {
-            if (query.isBlank() || maxSuggestions <= 0) {
-                return@withContext emptyList()
-            }
-
-            try {
-                val response: Response<ResponseBody> = service.getSuggestions(query = query)
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()?.string() ?: return@withContext emptyList()
-
-                    val jsonPayload = Regex("\\((.*)\\)").find(responseBody)?.groupValues?.get(1)
-
-                    // Manual JSON parsing
-                    val jsonArray = JSONArray(jsonPayload)
-                    val suggestionsArray = jsonArray.getJSONArray(1) // Get the suggestions array
-                    val suggestionsList = mutableListOf<String>()
-                    for (i in 0 until suggestionsArray.length().coerceAtMost(maxSuggestions)) {
-                        suggestionsList.add(suggestionsArray.getString(i))
-                    }
-                    return@withContext suggestionsList
-                } else {
-                    Log.w(
-                        "GoogleSearchProvider",
-                        "Failed to retrieve suggestions: ${response.code()}",
-                    )
-                    return@withContext emptyList()
-                }
-            } catch (e: Exception) {
-                Log.e("GoogleSearchProvider", "Error during suggestion retrieval: ${e.message}")
-                return@withContext emptyList()
-            }
+    override suspend fun getSuggestions(query: String, maxSuggestions: Int): List<String> = withContext(Dispatchers.IO) {
+        if (query.isBlank() || maxSuggestions <= 0) {
+            return@withContext emptyList()
         }
+
+        try {
+            val response: Response<ResponseBody> = service.getSuggestions(query = query)
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()?.string() ?: return@withContext emptyList()
+
+                val jsonPayload = Regex("\\((.*)\\)").find(responseBody)?.groupValues?.get(1)
+
+                // Manual JSON parsing
+                val jsonArray = JSONArray(jsonPayload)
+                val suggestionsArray = jsonArray.getJSONArray(1) // Get the suggestions array
+                val suggestionsList = mutableListOf<String>()
+                for (i in 0 until suggestionsArray.length().coerceAtMost(maxSuggestions)) {
+                    suggestionsList.add(suggestionsArray.getString(i))
+                }
+                return@withContext suggestionsList
+            } else {
+                Log.w(
+                    "GoogleSearchProvider",
+                    "Failed to retrieve suggestions: ${response.code()}",
+                )
+                return@withContext emptyList()
+            }
+        } catch (e: Exception) {
+            Log.e("GoogleSearchProvider", "Error during suggestion retrieval: ${e.message}")
+            return@withContext emptyList()
+        }
+    }
 
     override fun getSearchUrl(query: String) = "https://google.com/search?q=$query"
 
@@ -151,37 +150,36 @@ data object StartPage : WebSearchProvider() {
 
     override val service: StartPageService = retrofit.create()
 
-    override suspend fun getSuggestions(query: String, maxSuggestions: Int): List<String> =
-        withContext(Dispatchers.IO) {
-            if (query.isBlank() || maxSuggestions <= 0) {
-                return@withContext emptyList()
-            }
-
-            try {
-                val response: Response<ResponseBody> = service.getSuggestions(
-                    query = query,
-                    segment = "startpage.lawnchair",
-                    partner = "lawnchair",
-                    format = "opensearch",
-                )
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()?.string()
-                    return@withContext JSONArray(responseBody).optJSONArray(1)?.let { array ->
-                        (0 until array.length()).take(maxSuggestions).map { array.getString(it) }
-                    } ?: emptyList()
-                } else {
-                    Log.w(
-                        "StartPageSearchProvidr",
-                        "Failed to retrieve suggestions: ${response.code()}",
-                    )
-                    return@withContext emptyList()
-                }
-            } catch (e: Exception) {
-                Log.e("StartPageSearchProvider", "Error during suggestion retrieval: ${e.message}")
-                return@withContext emptyList()
-            }
+    override suspend fun getSuggestions(query: String, maxSuggestions: Int): List<String> = withContext(Dispatchers.IO) {
+        if (query.isBlank() || maxSuggestions <= 0) {
+            return@withContext emptyList()
         }
+
+        try {
+            val response: Response<ResponseBody> = service.getSuggestions(
+                query = query,
+                segment = "startpage.lawnchair",
+                partner = "lawnchair",
+                format = "opensearch",
+            )
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()?.string()
+                return@withContext JSONArray(responseBody).optJSONArray(1)?.let { array ->
+                    (0 until array.length()).take(maxSuggestions).map { array.getString(it) }
+                } ?: emptyList()
+            } else {
+                Log.w(
+                    "StartPageSearchProvidr",
+                    "Failed to retrieve suggestions: ${response.code()}",
+                )
+                return@withContext emptyList()
+            }
+        } catch (e: Exception) {
+            Log.e("StartPageSearchProvider", "Error during suggestion retrieval: ${e.message}")
+            return@withContext emptyList()
+        }
+    }
 
     override fun getSearchUrl(query: String) = "https://www.startpage.com/do/search?segment=startpage.lawnchair&query=$query&cat=web"
 
@@ -200,39 +198,38 @@ data object DuckDuckGo : WebSearchProvider() {
 
     override val service: DuckDuckGoService by lazy { retrofit.create() }
 
-    override suspend fun getSuggestions(query: String, maxSuggestions: Int): List<String> =
-        withContext(Dispatchers.IO) {
-            if (query.isBlank() || maxSuggestions <= 0) {
-                return@withContext emptyList()
-            }
-
-            try {
-                val response: Response<ResponseBody> = service.getSuggestions(query = query)
-
-                if (response.isSuccessful) {
-                    val responseBody = response.body()?.string() ?: return@withContext emptyList()
-
-                    val jsonArray = JSONArray(responseBody)
-                    val suggestionsArray =
-                        jsonArray.optJSONArray(1) ?: return@withContext emptyList()
-
-                    return@withContext (
-                        0 until suggestionsArray.length()
-                            .coerceAtMost(maxSuggestions)
-                        )
-                        .map { suggestionsArray.getString(it) }
-                } else {
-                    Log.w(
-                        "DuckDuckGoSearchProvider",
-                        "Failed to retrieve suggestions: ${response.code()}",
-                    )
-                    return@withContext emptyList()
-                }
-            } catch (e: Exception) {
-                Log.e("DuckDuckGoSearchProvider", "Error during suggestion retrieval", e)
-                return@withContext emptyList()
-            }
+    override suspend fun getSuggestions(query: String, maxSuggestions: Int): List<String> = withContext(Dispatchers.IO) {
+        if (query.isBlank() || maxSuggestions <= 0) {
+            return@withContext emptyList()
         }
+
+        try {
+            val response: Response<ResponseBody> = service.getSuggestions(query = query)
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()?.string() ?: return@withContext emptyList()
+
+                val jsonArray = JSONArray(responseBody)
+                val suggestionsArray =
+                    jsonArray.optJSONArray(1) ?: return@withContext emptyList()
+
+                return@withContext (
+                    0 until suggestionsArray.length()
+                        .coerceAtMost(maxSuggestions)
+                    )
+                    .map { suggestionsArray.getString(it) }
+            } else {
+                Log.w(
+                    "DuckDuckGoSearchProvider",
+                    "Failed to retrieve suggestions: ${response.code()}",
+                )
+                return@withContext emptyList()
+            }
+        } catch (e: Exception) {
+            Log.e("DuckDuckGoSearchProvider", "Error during suggestion retrieval", e)
+            return@withContext emptyList()
+        }
+    }
 
     override fun getSearchUrl(query: String) = "https://duckduckgo.com/$query&cat=web"
 

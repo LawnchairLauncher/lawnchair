@@ -15,9 +15,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.util.Themes
 
 @JvmOverloads
-fun Context.getAccentColor(darkTheme: Boolean = Themes.getAttrBoolean(this, R.attr.isMainColorDark)): Int {
-    return ColorTokens.ColorAccent.resolveColor(this, if (darkTheme) UiColorMode.Dark else UiColorMode.Light)
-}
+fun Context.getAccentColor(darkTheme: Boolean = Themes.getAttrBoolean(this, R.attr.isMainColorDark)): Int = ColorTokens.ColorAccent.resolveColor(this, if (darkTheme) UiColorMode.Dark else UiColorMode.Light)
 
 @ColorInt
 fun lightenColor(@ColorInt color: Int): Int {

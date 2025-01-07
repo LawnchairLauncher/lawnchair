@@ -80,11 +80,9 @@ sealed class SmartspaceDataSource(
         val targets: List<SmartspaceTarget> = emptyList(),
         val requiresSetup: List<SmartspaceDataSource> = emptyList(),
     ) {
-        operator fun plus(other: State): State {
-            return State(
-                targets = this.targets + other.targets,
-                requiresSetup = this.requiresSetup + other.requiresSetup,
-            )
-        }
+        operator fun plus(other: State): State = State(
+            targets = this.targets + other.targets,
+            requiresSetup = this.requiresSetup + other.requiresSetup,
+        )
     }
 }

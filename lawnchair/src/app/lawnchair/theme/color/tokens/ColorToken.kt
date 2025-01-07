@@ -20,13 +20,11 @@ sealed interface ColorToken : ResourceToken<Color> {
         val themeProvider = ThemeProvider.INSTANCE.get(context)
         return resolveColor(context, themeProvider.colorScheme, uiColorMode)
     }
-    fun resolveColor(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Int {
-        return try {
-            resolve(context, scheme, uiColorMode).toAndroidColor()
-        } catch (t: Throwable) {
-            Log.e("ColorToken", "failed to resolve color", t)
-            android.graphics.Color.WHITE
-        }
+    fun resolveColor(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Int = try {
+        resolve(context, scheme, uiColorMode).toAndroidColor()
+    } catch (t: Throwable) {
+        Log.e("ColorToken", "failed to resolve color", t)
+        android.graphics.Color.WHITE
     }
 }
 
@@ -52,17 +50,13 @@ data class DayNightColorToken(
     private val darkToken: ColorToken,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
-        return if (uiColorMode.isDarkTheme) {
-            darkToken.resolve(context, scheme, uiColorMode)
-        } else {
-            lightToken.resolve(context, scheme, uiColorMode)
-        }
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color = if (uiColorMode.isDarkTheme) {
+        darkToken.resolve(context, scheme, uiColorMode)
+    } else {
+        lightToken.resolve(context, scheme, uiColorMode)
     }
 
-    fun inverse(): DayNightColorToken {
-        return DayNightColorToken(darkToken, lightToken)
-    }
+    fun inverse(): DayNightColorToken = DayNightColorToken(darkToken, lightToken)
 }
 
 data class DarkTextColorToken(
@@ -70,12 +64,10 @@ data class DarkTextColorToken(
     private val darkToken: ColorToken,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
-        return if (uiColorMode.isDarkText) {
-            darkToken.resolve(context, scheme, uiColorMode)
-        } else {
-            lightToken.resolve(context, scheme, uiColorMode)
-        }
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color = if (uiColorMode.isDarkText) {
+        darkToken.resolve(context, scheme, uiColorMode)
+    } else {
+        lightToken.resolve(context, scheme, uiColorMode)
     }
 }
 
@@ -83,9 +75,7 @@ data class StaticColorToken(
     private val color: Long,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
-        return AndroidColor(color.toInt())
-    }
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color = AndroidColor(color.toInt())
 }
 
 data class SetAlphaColorToken(
@@ -116,9 +106,7 @@ class WithContextColorToken(
     private val transform: ColorToken.(Context) -> ColorToken,
 ) : ColorToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
-        return transform(token, context).resolve(context, scheme, uiColorMode)
-    }
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color = transform(token, context).resolve(context, scheme, uiColorMode)
 }
 
 enum class Swatch { Neutral1, Neutral2, Accent1, Accent2, Accent3 }

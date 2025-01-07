@@ -54,9 +54,7 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
         return super.getErrorView()
     }
 
-    private fun getEmptyView(): View {
-        return View(context)
-    }
+    private fun getEmptyView(): View = View(context)
 
     companion object {
 

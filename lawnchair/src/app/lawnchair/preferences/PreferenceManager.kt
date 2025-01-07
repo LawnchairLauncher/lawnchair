@@ -29,7 +29,9 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.util.SafeCloseable
 
-class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context), SafeCloseable {
+class PreferenceManager private constructor(private val context: Context) :
+    BasePreferenceManager(context),
+    SafeCloseable {
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
     private val reloadIcons = { idp.onPreferencesChanged(context) }
     private val reloadGrid: () -> Unit = { idp.onPreferencesChanged(context) }

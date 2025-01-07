@@ -25,9 +25,7 @@ import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.SQUARE
 import app.lawnchair.search.algorithms.data.calculator.internal.TokenType.STAR
 import java.math.MathContext
 
-private fun invalidToken(c: Char) {
-    throw ExpressionException("Invalid token '$c'")
-}
+private fun invalidToken(c: Char): Unit = throw ExpressionException("Invalid token '$c'")
 
 internal class Scanner(
     private val source: String,
@@ -47,9 +45,7 @@ internal class Scanner(
         return tokens
     }
 
-    private fun isAtEnd(): Boolean {
-        return current >= source.length
-    }
+    private fun isAtEnd(): Boolean = current >= source.length
 
     private fun scanToken() {
         start = current
@@ -90,13 +86,11 @@ internal class Scanner(
         char: Char,
         previousChar: Char = '\u0000',
         nextChar: Char = '\u0000',
-    ): Boolean {
-        return char.isDigit() || when (char) {
-            '.' -> true
-            'e', 'E' -> previousChar.isDigit() && (nextChar.isDigit() || nextChar == '+' || nextChar == '-')
-            '+', '-' -> (previousChar == 'e' || previousChar == 'E') && nextChar.isDigit()
-            else -> false
-        }
+    ): Boolean = char.isDigit() || when (char) {
+        '.' -> true
+        'e', 'E' -> previousChar.isDigit() && (nextChar.isDigit() || nextChar == '+' || nextChar == '-')
+        '+', '-' -> (previousChar == 'e' || previousChar == 'E') && nextChar.isDigit()
+        else -> false
     }
 
     private fun number() {
@@ -122,22 +116,18 @@ internal class Scanner(
 
     private fun advance() = source[current++]
 
-    private fun peek(): Char {
-        return if (isAtEnd()) {
-            '\u0000'
-        } else {
-            source[current]
-        }
+    private fun peek(): Char = if (isAtEnd()) {
+        '\u0000'
+    } else {
+        source[current]
     }
 
     private fun peekPrevious(): Char = if (current > 0) source[current - 1] else '\u0000'
 
-    private fun peekNext(): Char {
-        return if (current + 1 >= source.length) {
-            '\u0000'
-        } else {
-            source[current + 1]
-        }
+    private fun peekNext(): Char = if (current + 1 >= source.length) {
+        '\u0000'
+    } else {
+        source[current + 1]
     }
 
     private fun match(expected: Char): Boolean {

@@ -136,10 +136,8 @@ class ThemeProvider(private val context: Context) : SafeCloseable {
     }
 }
 
-fun Color.toAndroidColor(): Int {
-    return when (this) {
-        is AndroidColor -> color
-        is Srgb -> ColorUtils.setAlphaComponent(toRgb8(), 255)
-        else -> convert<Srgb>().toAndroidColor()
-    }
+fun Color.toAndroidColor(): Int = when (this) {
+    is AndroidColor -> color
+    is Srgb -> ColorUtils.setAlphaComponent(toRgb8(), 255)
+    else -> convert<Srgb>().toAndroidColor()
 }

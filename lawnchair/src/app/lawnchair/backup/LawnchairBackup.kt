@@ -132,14 +132,12 @@ class LawnchairBackup(
             return "$fileName.lawnchairbackup"
         }
 
-        fun getFiles(context: Context, forRestore: Boolean): Map<String, File> {
-            return mapOf(
-                LAUNCHER_DB_FILE_NAME to launcherDbFile(context, forRestore),
-                PREFS_FILE_NAME to prefsFile(context),
-                PREFS_DB_FILE_NAME to prefsDbFile(context),
-                PREFS_DATASTORE_FILE_NAME to prefsDataStoreFile(context),
-            )
-        }
+        fun getFiles(context: Context, forRestore: Boolean): Map<String, File> = mapOf(
+            LAUNCHER_DB_FILE_NAME to launcherDbFile(context, forRestore),
+            PREFS_FILE_NAME to prefsFile(context),
+            PREFS_DB_FILE_NAME to prefsDbFile(context),
+            PREFS_DATASTORE_FILE_NAME to prefsDataStoreFile(context),
+        )
 
         @SuppressLint("MissingPermission")
         suspend fun create(context: Context, contents: Int, screenshotBitmap: Bitmap, fileUri: Uri) {
@@ -200,12 +198,8 @@ class LawnchairBackup(
             return File(dir, "shared_prefs/$PREFS_FILE_NAME")
         }
 
-        private fun prefsDbFile(context: Context): File {
-            return context.getDatabasePath(PREFS_DB_FILE_NAME)
-        }
+        private fun prefsDbFile(context: Context): File = context.getDatabasePath(PREFS_DB_FILE_NAME)
 
-        private fun prefsDataStoreFile(context: Context): File {
-            return File(context.filesDir, "datastore/${PREFS_DATASTORE_FILE_NAME}")
-        }
+        private fun prefsDataStoreFile(context: Context): File = File(context.filesDir, "datastore/${PREFS_DATASTORE_FILE_NAME}")
     }
 }

@@ -19,9 +19,7 @@ interface DrawableToken<T : Drawable> : ResourceToken<T>
 data class ResourceDrawableToken<T : Drawable>(@DrawableRes private val resId: Int) : DrawableToken<T> {
 
     @Suppress("UNCHECKED_CAST")
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T {
-        return AppCompatResources.getDrawable(context, resId) as T
-    }
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T = AppCompatResources.getDrawable(context, resId) as T
 }
 
 data class AttributeDrawableToken<T : Drawable>(@AttrRes private val attr: Int) : DrawableToken<T> {
@@ -48,9 +46,7 @@ data class NewDrawable<T : Drawable>(
     private val factory: (context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> T,
 ) : DrawableToken<T> {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T {
-        return factory(context, scheme, uiColorMode)
-    }
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T = factory(context, scheme, uiColorMode)
 }
 
 fun <T : Drawable> DrawableToken<T>.mutate(

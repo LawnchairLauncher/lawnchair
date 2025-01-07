@@ -29,16 +29,14 @@ object ThemedIconCompat {
         return drawable
     }
 
-    private fun resolveActivityInfo(context: Context, componentName: ComponentName): ActivityInfo? {
-        return try {
-            context.packageManager.getActivityInfo(
-                componentName,
-                0,
-            )
-        } catch (e: PackageManager.NameNotFoundException) {
-            // Handle the case where the activity is not found
-            null
-        }
+    private fun resolveActivityInfo(context: Context, componentName: ComponentName): ActivityInfo? = try {
+        context.packageManager.getActivityInfo(
+            componentName,
+            0,
+        )
+    } catch (e: PackageManager.NameNotFoundException) {
+        // Handle the case where the activity is not found
+        null
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")

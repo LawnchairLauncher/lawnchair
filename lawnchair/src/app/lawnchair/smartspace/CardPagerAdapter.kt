@@ -76,9 +76,7 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
 
     override fun getCount() = smartspaceTargets.size
 
-    override fun isViewFromObject(view: View, obj: Any): Boolean {
-        return view === (obj as ViewHolder).card
-    }
+    override fun isViewFromObject(view: View, obj: Any): Boolean = view === (obj as ViewHolder).card
 
     private fun createBaseCard(
         container: ViewGroup,

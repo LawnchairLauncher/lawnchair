@@ -12,32 +12,25 @@ internal fun Path.list(
     fileSystem: FileSystem = FileSystem.SYSTEM,
     isShowHidden: Boolean = false,
     isRecursively: Boolean = false,
-): Sequence<Path> {
-    return runCatching {
-        if (isRecursively) {
-            fileSystem.listRecursively(this)
-        } else {
-            fileSystem.list(this).asSequence()
-        }
-    }.getOrDefault(emptySequence()).filter {
-        if (isShowHidden) true else !it.isHidden
+): Sequence<Path> = runCatching {
+    if (isRecursively) {
+        fileSystem.listRecursively(this)
+    } else {
+        fileSystem.list(this).asSequence()
     }
+}.getOrDefault(emptySequence()).filter {
+    if (isShowHidden) true else !it.isHidden
 }
 
-internal fun Path.getMetadata(fileSystem: FileSystem = FileSystem.SYSTEM): FileMetadata? =
-    fileSystem.metadataOrNull(this)
+internal fun Path.getMetadata(fileSystem: FileSystem = FileSystem.SYSTEM): FileMetadata? = fileSystem.metadataOrNull(this)
 
-internal fun Path.isDirectory(fileSystem: FileSystem = FileSystem.SYSTEM): Boolean =
-    getMetadata(fileSystem)?.isDirectory == true
+internal fun Path.isDirectory(fileSystem: FileSystem = FileSystem.SYSTEM): Boolean = getMetadata(fileSystem)?.isDirectory == true
 
-internal fun Path.isFile(fileSystem: FileSystem = FileSystem.SYSTEM): Boolean =
-    !isDirectory(fileSystem)
+internal fun Path.isFile(fileSystem: FileSystem = FileSystem.SYSTEM): Boolean = !isDirectory(fileSystem)
 
-internal fun Path.sizeOrEmpty(fileSystem: FileSystem = FileSystem.SYSTEM): Long =
-    getMetadata(fileSystem)?.size ?: 0
+internal fun Path.sizeOrEmpty(fileSystem: FileSystem = FileSystem.SYSTEM): Long = getMetadata(fileSystem)?.size ?: 0
 
-internal fun Path.isRegularFile(fileSystem: FileSystem = FileSystem.SYSTEM): Boolean =
-    getMetadata(fileSystem)?.isRegularFile == true
+internal fun Path.isRegularFile(fileSystem: FileSystem = FileSystem.SYSTEM): Boolean = getMetadata(fileSystem)?.isRegularFile == true
 
 internal val Path.isHidden: Boolean get() = toString().contains("/.")
 

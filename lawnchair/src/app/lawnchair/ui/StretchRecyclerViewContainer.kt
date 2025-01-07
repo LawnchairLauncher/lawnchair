@@ -38,12 +38,10 @@ open class StretchRecyclerViewContainer @JvmOverloads constructor(
     override fun createEdgeEffectFactory(): RecyclerView.EdgeEffectFactory {
         if (Utilities.ATLEAST_S) return super.createEdgeEffectFactory()
         return object : RecyclerView.EdgeEffectFactory() {
-            override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
-                return when (direction) {
-                    DIRECTION_TOP -> edgeEffectTop
-                    DIRECTION_BOTTOM -> childEffect
-                    else -> super.createEdgeEffect(view, direction)
-                }
+            override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect = when (direction) {
+                DIRECTION_TOP -> edgeEffectTop
+                DIRECTION_BOTTOM -> childEffect
+                else -> super.createEdgeEffect(view, direction)
             }
         }
     }

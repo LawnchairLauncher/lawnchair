@@ -135,34 +135,28 @@ class BlankActivity : ComponentActivity() {
             )
         }
 
-        suspend fun startBlankActivityForResult(activity: Activity, targetIntent: Intent): ActivityResult {
-            return start(activity, targetIntent, Bundle.EMPTY)
-        }
+        suspend fun startBlankActivityForResult(activity: Activity, targetIntent: Intent): ActivityResult = start(activity, targetIntent, Bundle.EMPTY)
 
-        private suspend fun start(activity: Activity, targetIntent: Intent, extras: Bundle): ActivityResult {
-            return suspendCancellableCoroutine { continuation ->
-                val intent = Intent(activity, BlankActivity::class.java)
-                    .putExtras(extras)
-                    .putExtra("intent", targetIntent)
-                val resultReceiver = createResultReceiver {
-                    if (continuation.isActive) {
-                        continuation.resume(it)
-                    }
+        private suspend fun start(activity: Activity, targetIntent: Intent, extras: Bundle): ActivityResult = suspendCancellableCoroutine { continuation ->
+            val intent = Intent(activity, BlankActivity::class.java)
+                .putExtras(extras)
+                .putExtra("intent", targetIntent)
+            val resultReceiver = createResultReceiver {
+                if (continuation.isActive) {
+                    continuation.resume(it)
                 }
-                activity.startActivity(intent.putExtra("callback", resultReceiver))
             }
+            activity.startActivity(intent.putExtra("callback", resultReceiver))
         }
 
-        private fun createResultReceiver(callback: (ActivityResult) -> Unit): ResultReceiver {
-            return object : ResultReceiver(Handler(Looper.myLooper()!!)) {
+        private fun createResultReceiver(callback: (ActivityResult) -> Unit): ResultReceiver = object : ResultReceiver(Handler(Looper.myLooper()!!)) {
 
-                override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
-                    val data = Intent()
-                    if (resultData != null) {
-                        data.putExtras(resultData)
-                    }
-                    callback(ActivityResult(resultCode, data))
+            override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                val data = Intent()
+                if (resultData != null) {
+                    data.putExtras(resultData)
                 }
+                callback(ActivityResult(resultCode, data))
             }
         }
     }

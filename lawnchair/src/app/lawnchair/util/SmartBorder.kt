@@ -48,11 +48,9 @@ private val HairlineBorderStroke = Stroke(Stroke.HairlineWidth)
 inline val Float.half: Float
     get() = this / 2
 
-fun Modifier.smartBorder(border: BorderStroke, shape: Shape = RectangleShape) =
-    smartBorder(width = border.width, brush = border.brush, shape = shape)
+fun Modifier.smartBorder(border: BorderStroke, shape: Shape = RectangleShape) = smartBorder(width = border.width, brush = border.brush, shape = shape)
 
-fun Modifier.smartBorder(width: Dp, color: Color, shape: Shape = RectangleShape) =
-    smartBorder(width, SolidColor(color), shape)
+fun Modifier.smartBorder(width: Dp, color: Color, shape: Shape = RectangleShape) = smartBorder(width, SolidColor(color), shape)
 
 // TODO: https://mrmans0n.github.io/compose-rules/rules/#avoid-modifier-extension-factory-functions
 @Suppress("ktlint:compose:modifier-composed-check")

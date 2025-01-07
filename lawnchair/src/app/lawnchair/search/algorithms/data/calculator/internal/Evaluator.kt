@@ -44,9 +44,7 @@ internal class Evaluator : ExprVisitor<BigDecimal> {
         return this
     }
 
-    fun eval(expr: Expr): BigDecimal {
-        return expr.accept(this)
-    }
+    fun eval(expr: Expr): BigDecimal = expr.accept(this)
 
     override fun visitAssignExpr(expr: AssignExpr): BigDecimal {
         val value = eval(expr.value)
@@ -114,9 +112,7 @@ internal class Evaluator : ExprVisitor<BigDecimal> {
         return function.call(expr.arguments.map { eval(it) })
     }
 
-    override fun visitLiteralExpr(expr: LiteralExpr): BigDecimal {
-        return expr.value
-    }
+    override fun visitLiteralExpr(expr: LiteralExpr): BigDecimal = expr.value
 
     override fun visitVariableExpr(expr: VariableExpr): BigDecimal {
         val name = expr.name.lexeme
@@ -125,9 +121,7 @@ internal class Evaluator : ExprVisitor<BigDecimal> {
             ?: throw ExpressionException("Undefined variable '$name'")
     }
 
-    override fun visitGroupingExpr(expr: GroupingExpr): BigDecimal {
-        return eval(expr.expression)
-    }
+    override fun visitGroupingExpr(expr: GroupingExpr): BigDecimal = eval(expr.expression)
 
     private infix fun Expr.or(right: Expr): BigDecimal {
         val left = eval(this)
@@ -147,13 +141,9 @@ internal class Evaluator : ExprVisitor<BigDecimal> {
         return eval(right).isTruthy().toBigDecimal()
     }
 
-    private fun BigDecimal.isTruthy(): Boolean {
-        return this != BigDecimal.ZERO
-    }
+    private fun BigDecimal.isTruthy(): Boolean = this != BigDecimal.ZERO
 
-    private fun Boolean.toBigDecimal(): BigDecimal {
-        return if (this) BigDecimal.ONE else BigDecimal.ZERO
-    }
+    private fun Boolean.toBigDecimal(): BigDecimal = if (this) BigDecimal.ONE else BigDecimal.ZERO
 
     private infix fun BigDecimal.pow(n: BigDecimal): BigDecimal {
         var right = n

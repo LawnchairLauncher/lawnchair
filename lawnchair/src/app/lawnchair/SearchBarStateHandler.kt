@@ -17,8 +17,7 @@ import com.patrykmichalik.opto.core.onEach
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
-    StateManager.StateHandler<LauncherState> {
+class SearchBarStateHandler(private val launcher: LawnchairLauncher) : StateManager.StateHandler<LauncherState> {
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val preferenceManager2 = PreferenceManager2.getInstance(launcher)

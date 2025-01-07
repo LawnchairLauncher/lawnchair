@@ -12,9 +12,7 @@ import kotlinx.coroutines.withContext
 data class RecentKeyword(
     val data: Map<String, String>,
 ) {
-    fun getValueByKey(key: String): String? {
-        return data[key]
-    }
+    fun getValueByKey(key: String): String? = data[key]
 }
 
 suspend fun getRecentKeyword(context: Context, query: String, max: Int, callback: SearchCallback) {

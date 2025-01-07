@@ -181,20 +181,18 @@ class LawnchairWindowManagerProxy(context: Context) : WindowManagerProxy(Utiliti
         return 0
     }
 
-    override fun getDisplay(displayInfoContext: Context): Display? {
-        return try {
-            if (Utilities.ATLEAST_R) {
-                displayInfoContext.display
-            } else {
-                displayInfoContext.getSystemService(DisplayManager::class.java)?.getDisplay(
-                    DEFAULT_DISPLAY,
-                )
-            }
-        } catch (e: UnsupportedOperationException) {
+    override fun getDisplay(displayInfoContext: Context): Display? = try {
+        if (Utilities.ATLEAST_R) {
+            displayInfoContext.display
+        } else {
             displayInfoContext.getSystemService(DisplayManager::class.java)?.getDisplay(
                 DEFAULT_DISPLAY,
             )
         }
+    } catch (e: UnsupportedOperationException) {
+        displayInfoContext.getSystemService(DisplayManager::class.java)?.getDisplay(
+            DEFAULT_DISPLAY,
+        )
     }
 
     override fun getRotation(context: Context): Int {
@@ -202,7 +200,5 @@ class LawnchairWindowManagerProxy(context: Context) : WindowManagerProxy(Utiliti
         return display?.rotation ?: Surface.ROTATION_0
     }
 
-    private fun dpToPx(resources: Resources, dp: Int): Int {
-        return (dp * resources.displayMetrics.density).toInt()
-    }
+    private fun dpToPx(resources: Resources, dp: Int): Int = (dp * resources.displayMetrics.density).toInt()
 }

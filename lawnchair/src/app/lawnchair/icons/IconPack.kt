@@ -32,9 +32,7 @@ sealed class IconPack(
         }
     }
 
-    suspend fun load() {
-        return deferredLoad.await()
-    }
+    suspend fun load() = deferredLoad.await()
 
     fun loadBlocking() {
         waiter?.run {
@@ -68,17 +66,15 @@ sealed class IconPack(
         return filtered
     }
 
-    protected fun categorize(allItems: List<IconPickerItem>): List<IconPickerCategory> {
-        return allItems
-            .groupBy { alphabeticIndexCompat.computeSectionName(it.label) }
-            .map { (sectionName, items) ->
-                IconPickerCategory(
-                    title = sectionName,
-                    items = items,
-                )
-            }
-            .sortedBy { it.title }
-    }
+    protected fun categorize(allItems: List<IconPickerItem>): List<IconPickerCategory> = allItems
+        .groupBy { alphabeticIndexCompat.computeSectionName(it.label) }
+        .map { (sectionName, items) ->
+            IconPickerCategory(
+                title = sectionName,
+                items = items,
+            )
+        }
+        .sortedBy { it.title }
 
     companion object {
         private val scope = CoroutineScope(Dispatchers.IO) + CoroutineName("IconPack")

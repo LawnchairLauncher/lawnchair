@@ -54,19 +54,17 @@ fun Sequence<AppInfo>.filterHiddenApps(
     query: String,
     hiddenApps: Set<String>,
     hiddenAppsInSearch: String,
-): Sequence<AppInfo> {
-    return when (hiddenAppsInSearch) {
-        HiddenAppsInSearch.ALWAYS -> {
-            this
+): Sequence<AppInfo> = when (hiddenAppsInSearch) {
+    HiddenAppsInSearch.ALWAYS -> {
+        this
+    }
+    HiddenAppsInSearch.IF_NAME_TYPED -> {
+        filter {
+            it.toComponentKey().toString() !in hiddenApps ||
+                it.title.toString().lowercase(Locale.getDefault()) == query
         }
-        HiddenAppsInSearch.IF_NAME_TYPED -> {
-            filter {
-                it.toComponentKey().toString() !in hiddenApps ||
-                    it.title.toString().lowercase(Locale.getDefault()) == query
-            }
-        }
-        else -> {
-            filter { it.toComponentKey().toString() !in hiddenApps }
-        }
+    }
+    else -> {
+        filter { it.toComponentKey().toString() !in hiddenApps }
     }
 }

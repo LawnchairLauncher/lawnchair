@@ -28,31 +28,27 @@ class Temperature(val value: Int, val unit: Unit) {
 
         // TODO: Use Unit directly after https://github.com/pinterest/ktlint/issues/2353 is fixed.
         @Suppress("RemoveRedundantQualifierName")
-        fun unitFromString(unit: String): Temperature.Unit {
-            return when (unit) {
-                "metric" -> Unit.Celsius
-                "imperial" -> Unit.Fahrenheit
-                "kelvin" -> Unit.Kelvin
-                "rakine" -> Unit.Rakine
-                "delisle" -> Unit.Delisle
-                "newton" -> Unit.Newton
-                "reaumur" -> Unit.Reaumur
-                "romer" -> Unit.Romer
-                else -> throw IllegalArgumentException("unknown unit $unit")
-            }
+        fun unitFromString(unit: String): Temperature.Unit = when (unit) {
+            "metric" -> Unit.Celsius
+            "imperial" -> Unit.Fahrenheit
+            "kelvin" -> Unit.Kelvin
+            "rakine" -> Unit.Rakine
+            "delisle" -> Unit.Delisle
+            "newton" -> Unit.Newton
+            "reaumur" -> Unit.Reaumur
+            "romer" -> Unit.Romer
+            else -> throw IllegalArgumentException("unknown unit $unit")
         }
 
-        fun unitToString(unit: Unit): String {
-            return when (unit) {
-                Unit.Celsius -> "metric"
-                Unit.Fahrenheit -> "imperial"
-                Unit.Kelvin -> "kelvin"
-                Unit.Rakine -> "rakine"
-                Unit.Delisle -> "delisle"
-                Unit.Newton -> "newton"
-                Unit.Reaumur -> "reaumur"
-                Unit.Romer -> "romer"
-            }
+        fun unitToString(unit: Unit): String = when (unit) {
+            Unit.Celsius -> "metric"
+            Unit.Fahrenheit -> "imperial"
+            Unit.Kelvin -> "kelvin"
+            Unit.Rakine -> "rakine"
+            Unit.Delisle -> "delisle"
+            Unit.Newton -> "newton"
+            Unit.Reaumur -> "reaumur"
+            Unit.Romer -> "romer"
         }
     }
 }

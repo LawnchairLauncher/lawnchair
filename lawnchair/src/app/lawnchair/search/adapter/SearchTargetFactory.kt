@@ -57,17 +57,15 @@ class SearchTargetFactory(
         }.build()
     }
 
-    fun createShortcutTarget(shortcutInfo: ShortcutInfo): SearchTargetCompat {
-        return SearchTargetCompat.Builder(
-            SearchTargetCompat.RESULT_TYPE_SHORTCUT,
-            LayoutType.SMALL_ICON_HORIZONTAL_TEXT,
-            "shortcut_" + generateHashKey("${shortcutInfo.`package`}|${shortcutInfo.userHandle}|${shortcutInfo.id}"),
-        ).apply {
-            setShortcutInfo(shortcutInfo)
-            setUserHandle(shortcutInfo.userHandle)
-            setExtras(Bundle())
-        }.build()
-    }
+    fun createShortcutTarget(shortcutInfo: ShortcutInfo): SearchTargetCompat = SearchTargetCompat.Builder(
+        SearchTargetCompat.RESULT_TYPE_SHORTCUT,
+        LayoutType.SMALL_ICON_HORIZONTAL_TEXT,
+        "shortcut_" + generateHashKey("${shortcutInfo.`package`}|${shortcutInfo.userHandle}|${shortcutInfo.id}"),
+    ).apply {
+        setShortcutInfo(shortcutInfo)
+        setUserHandle(shortcutInfo.userHandle)
+        setExtras(Bundle())
+    }.build()
 
     fun createWebSuggestionsTarget(suggestion: String, suggestionProvider: String): SearchTargetCompat {
         val url = WebSearchProvider.fromString(suggestionProvider).getSearchUrl(suggestion)
@@ -198,18 +196,16 @@ class SearchTargetFactory(
         action: SearchActionCompat,
         pkg: String,
         extras: Bundle = Bundle(),
-    ): SearchTargetCompat {
-        return SearchTargetCompat.Builder(
-            SearchTargetCompat.RESULT_TYPE_REDIRECTION,
-            LayoutType.ICON_HORIZONTAL_TEXT,
-            generateHashKey(id),
-        )
-            .setPackageName(pkg)
-            .setUserHandle(Process.myUserHandle())
-            .setSearchAction(action)
-            .setExtras(extras)
-            .build()
-    }
+    ): SearchTargetCompat = SearchTargetCompat.Builder(
+        SearchTargetCompat.RESULT_TYPE_REDIRECTION,
+        LayoutType.ICON_HORIZONTAL_TEXT,
+        generateHashKey(id),
+    )
+        .setPackageName(pkg)
+        .setUserHandle(Process.myUserHandle())
+        .setSearchAction(action)
+        .setExtras(extras)
+        .build()
 
     internal fun createMarketSearchTarget(query: String): SearchTargetCompat? {
         val marketSearchComponent = SearchLinksTarget.resolveMarketSearchActivity(context) ?: return null
@@ -315,8 +311,7 @@ class SearchTargetFactory(
         // TODO find a way to properly provide tag/provide ids to search target
         private val messageDigest by lazy { MessageDigest.getInstance(HASH_ALGORITHM) }
 
-        private fun generateHashKey(input: String): String =
-            ByteString.of(*messageDigest.digest(input.toByteArray())).hex()
+        private fun generateHashKey(input: String): String = ByteString.of(*messageDigest.digest(input.toByteArray())).hex()
 
         fun createSearchTarget(
             id: String,
@@ -325,18 +320,16 @@ class SearchTargetFactory(
             targetCompat: Int,
             pkg: String,
             extras: Bundle = Bundle(),
-        ): SearchTargetCompat {
-            return SearchTargetCompat.Builder(
-                targetCompat,
-                layoutType,
-                generateHashKey(id),
-            ).apply {
-                setPackageName(pkg)
-                setUserHandle(Process.myUserHandle())
-                setSearchAction(action)
-                setExtras(extras)
-            }.build()
-        }
+        ): SearchTargetCompat = SearchTargetCompat.Builder(
+            targetCompat,
+            layoutType,
+            generateHashKey(id),
+        ).apply {
+            setPackageName(pkg)
+            setUserHandle(Process.myUserHandle())
+            setSearchAction(action)
+            setExtras(extras)
+        }.build()
     }
 }
 
@@ -393,15 +386,13 @@ object SettingsTarget {
         return resolveInfo?.activityInfo?.exported == true
     }
 
-    fun formatSettingTitle(rawTitle: String?): String {
-        return rawTitle?.replace('_', ' ')
-            ?.replace("ACTION", "")
-            ?.lowercase()
-            ?.split(' ')
-            ?.joinToString(" ") {
-                it.replaceFirstChar { char -> char.uppercase(Locale.ROOT) }
-            }.orEmpty()
-    }
+    fun formatSettingTitle(rawTitle: String?): String = rawTitle?.replace('_', ' ')
+        ?.replace("ACTION", "")
+        ?.lowercase()
+        ?.split(' ')
+        ?.joinToString(" ") {
+            it.replaceFirstChar { char -> char.uppercase(Locale.ROOT) }
+        }.orEmpty()
 }
 
 // keys used in `pkg` param

@@ -79,9 +79,7 @@ class LawnchairBugReporter(private val context: Context) {
             return BugReport(id, error, getDescription(throwable ?: return null), contentsWithHeader, reportFile)
         }
 
-        private fun getDescription(throwable: Throwable): String {
-            return "${throwable::class.java.name}: ${throwable.message}"
-        }
+        private fun getDescription(throwable: Throwable): String = "${throwable::class.java.name}: ${throwable.message}"
 
         private fun save(contents: String, id: Int): File? {
             val dest = File(logsFolder, String.format("%x", id))

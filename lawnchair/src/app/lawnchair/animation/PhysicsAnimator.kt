@@ -202,15 +202,13 @@ class PhysicsAnimator<T> private constructor(target: T) {
         toPosition: Float,
         startVelocity: Float,
         config: SpringConfig = defaultSpring,
-    ): PhysicsAnimator<T> {
-        return spring(
-            property,
-            toPosition,
-            startVelocity,
-            config.stiffness,
-            config.dampingRatio,
-        )
-    }
+    ): PhysicsAnimator<T> = spring(
+        property,
+        toPosition,
+        startVelocity,
+        config.stiffness,
+        config.dampingRatio,
+    )
 
     /**
      * Springs a property to a given value using the provided configuration options, and a start
@@ -222,9 +220,7 @@ class PhysicsAnimator<T> private constructor(target: T) {
         property: FloatPropertyCompat<in T>,
         toPosition: Float,
         config: SpringConfig = defaultSpring,
-    ): PhysicsAnimator<T> {
-        return spring(property, toPosition, 0f, config)
-    }
+    ): PhysicsAnimator<T> = spring(property, toPosition, 0f, config)
 
     /**
      * Springs a property to a given value using the provided configuration options, and a start
@@ -235,9 +231,7 @@ class PhysicsAnimator<T> private constructor(target: T) {
     fun spring(
         property: FloatPropertyCompat<in T>,
         toPosition: Float,
-    ): PhysicsAnimator<T> {
-        return spring(property, toPosition, 0f)
-    }
+    ): PhysicsAnimator<T> = spring(property, toPosition, 0f)
 
     /**
      * Flings a property using the given start velocity, using a [FlingAnimation] configured using
@@ -289,9 +283,7 @@ class PhysicsAnimator<T> private constructor(target: T) {
         property: FloatPropertyCompat<in T>,
         startVelocity: Float,
         config: FlingConfig = defaultFling,
-    ): PhysicsAnimator<T> {
-        return fling(property, startVelocity, config.friction, config.min, config.max)
-    }
+    ): PhysicsAnimator<T> = fling(property, startVelocity, config.friction, config.min, config.max)
 
     /**
      * Flings a property using the given start velocity. If the fling animation reaches the min/max
@@ -626,19 +618,15 @@ class PhysicsAnimator<T> private constructor(target: T) {
     private fun getSpringAnimation(
         property: FloatPropertyCompat<in T>,
         target: T,
-    ): SpringAnimation {
-        return springAnimations.getOrPut(property) {
-            configureDynamicAnimation(SpringAnimation(target, property), property)
-                as SpringAnimation
-        }
+    ): SpringAnimation = springAnimations.getOrPut(property) {
+        configureDynamicAnimation(SpringAnimation(target, property), property)
+            as SpringAnimation
     }
 
     /** Retrieves a fling animation for the given property, building one if needed. */
-    private fun getFlingAnimation(property: FloatPropertyCompat<in T>, target: T): FlingAnimation {
-        return flingAnimations.getOrPut(property) {
-            configureDynamicAnimation(FlingAnimation(target, property), property)
-                as FlingAnimation
-        }
+    private fun getFlingAnimation(property: FloatPropertyCompat<in T>, target: T): FlingAnimation = flingAnimations.getOrPut(property) {
+        configureDynamicAnimation(FlingAnimation(target, property), property)
+            as FlingAnimation
     }
 
     /**
@@ -794,25 +782,17 @@ class PhysicsAnimator<T> private constructor(target: T) {
     }
 
     /** Return true if any animations are running on the object.  */
-    fun isRunning(): Boolean {
-        return arePropertiesAnimating(springAnimations.keys.union(flingAnimations.keys))
-    }
+    fun isRunning(): Boolean = arePropertiesAnimating(springAnimations.keys.union(flingAnimations.keys))
 
     /** Returns whether the given property is animating.  */
-    fun isPropertyAnimating(property: FloatPropertyCompat<in T>): Boolean {
-        return springAnimations[property]?.isRunning ?: false ||
-            flingAnimations[property]?.isRunning ?: false
-    }
+    fun isPropertyAnimating(property: FloatPropertyCompat<in T>): Boolean = springAnimations[property]?.isRunning ?: false ||
+        flingAnimations[property]?.isRunning ?: false
 
     /** Returns whether any of the given properties are animating.  */
-    fun arePropertiesAnimating(properties: Set<FloatPropertyCompat<in T>>): Boolean {
-        return properties.any { isPropertyAnimating(it) }
-    }
+    fun arePropertiesAnimating(properties: Set<FloatPropertyCompat<in T>>): Boolean = properties.any { isPropertyAnimating(it) }
 
     /** Return the set of properties that will begin animating upon calling [start]. */
-    internal fun getAnimatedProperties(): Set<FloatPropertyCompat<in T>> {
-        return springConfigs.keys.union(flingConfigs.keys)
-    }
+    internal fun getAnimatedProperties(): Set<FloatPropertyCompat<in T>> = springConfigs.keys.union(flingConfigs.keys)
 
     /**
      * Cancels the given properties. This is typically called immediately by [cancel], unless this
@@ -1045,21 +1025,19 @@ class PhysicsAnimator<T> private constructor(target: T) {
         }
 
         @JvmStatic
-        fun getReadablePropertyName(property: FloatPropertyCompat<*>): String {
-            return when (property) {
-                DynamicAnimation.TRANSLATION_X -> "translationX"
-                DynamicAnimation.TRANSLATION_Y -> "translationY"
-                DynamicAnimation.TRANSLATION_Z -> "translationZ"
-                DynamicAnimation.SCALE_X -> "scaleX"
-                DynamicAnimation.SCALE_Y -> "scaleY"
-                DynamicAnimation.ROTATION -> "rotation"
-                DynamicAnimation.ROTATION_X -> "rotationX"
-                DynamicAnimation.ROTATION_Y -> "rotationY"
-                DynamicAnimation.SCROLL_X -> "scrollX"
-                DynamicAnimation.SCROLL_Y -> "scrollY"
-                DynamicAnimation.ALPHA -> "alpha"
-                else -> "Custom FloatPropertyCompat instance"
-            }
+        fun getReadablePropertyName(property: FloatPropertyCompat<*>): String = when (property) {
+            DynamicAnimation.TRANSLATION_X -> "translationX"
+            DynamicAnimation.TRANSLATION_Y -> "translationY"
+            DynamicAnimation.TRANSLATION_Z -> "translationZ"
+            DynamicAnimation.SCALE_X -> "scaleX"
+            DynamicAnimation.SCALE_Y -> "scaleY"
+            DynamicAnimation.ROTATION -> "rotation"
+            DynamicAnimation.ROTATION_X -> "rotationX"
+            DynamicAnimation.ROTATION_Y -> "rotationY"
+            DynamicAnimation.SCROLL_X -> "scrollX"
+            DynamicAnimation.SCROLL_Y -> "scrollY"
+            DynamicAnimation.ALPHA -> "alpha"
+            else -> "Custom FloatPropertyCompat instance"
         }
     }
 }

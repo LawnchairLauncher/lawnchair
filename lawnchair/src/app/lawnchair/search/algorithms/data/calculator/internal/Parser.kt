@@ -39,9 +39,7 @@ internal class Parser(private val tokens: List<Token>) {
         return expr
     }
 
-    private fun expression(): Expr {
-        return assignment()
-    }
+    private fun expression(): Expr = assignment()
 
     private fun assignment(): Expr {
         val expr = or()
@@ -237,12 +235,10 @@ internal class Parser(private val tokens: List<Token>) {
         return false
     }
 
-    private fun check(tokenType: TokenType): Boolean {
-        return if (isAtEnd()) {
-            false
-        } else {
-            peek().type === tokenType
-        }
+    private fun check(tokenType: TokenType): Boolean = if (isAtEnd()) {
+        false
+    } else {
+        peek().type === tokenType
     }
 
     private fun consume(type: TokenType, message: String): Token {

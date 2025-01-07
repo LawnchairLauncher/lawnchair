@@ -15,11 +15,12 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import kotlinx.coroutines.flow.map
 
-class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
-    context,
-    R.string.smartspace_battery_status,
-    { smartspaceBatteryStatus },
-) {
+class BatteryStatusProvider(context: Context) :
+    SmartspaceDataSource(
+        context,
+        R.string.smartspace_battery_status,
+        { smartspaceBatteryStatus },
+    ) {
     private val batteryManager = context.getSystemService<BatteryManager>()
 
     override val internalTargets = broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED))

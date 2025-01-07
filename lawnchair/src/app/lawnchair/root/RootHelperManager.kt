@@ -45,21 +45,19 @@ class RootHelperManager(private val context: Context) {
         return rootHelperDeferred!!.await()
     }
 
-    private suspend fun bindImpl(onDisconnected: () -> Unit): IRootHelper {
-        return withContext(Dispatchers.IO) {
-            val intent = Intent(context, RootHelper::class.java)
-            suspendCoroutine {
-                val connection = object : ServiceConnection {
-                    override fun onServiceConnected(name: ComponentName, service: IBinder) {
-                        it.resume(IRootHelper.Stub.asInterface(service))
-                    }
-
-                    override fun onServiceDisconnected(name: ComponentName) {
-                        onDisconnected()
-                    }
+    private suspend fun bindImpl(onDisconnected: () -> Unit): IRootHelper = withContext(Dispatchers.IO) {
+        val intent = Intent(context, RootHelper::class.java)
+        suspendCoroutine {
+            val connection = object : ServiceConnection {
+                override fun onServiceConnected(name: ComponentName, service: IBinder) {
+                    it.resume(IRootHelper.Stub.asInterface(service))
                 }
-                RootService.bind(intent, connection)
+
+                override fun onServiceDisconnected(name: ComponentName) {
+                    onDisconnected()
+                }
             }
+            RootService.bind(intent, connection)
         }
     }
 

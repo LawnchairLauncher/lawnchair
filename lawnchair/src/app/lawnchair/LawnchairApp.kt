@@ -139,8 +139,7 @@ class LawnchairApp : Application() {
         }
     }
 
-    private fun getJournalFile(file: File): File =
-        File(file.parentFile, "${file.name}-journal")
+    private fun getJournalFile(file: File): File = File(file.parentFile, "${file.name}-journal")
 
     private fun getSystemUiBoolean(resName: String, fallback: Boolean): Boolean {
         val systemUiPackage = "com.android.systemui"
@@ -210,13 +209,11 @@ class LawnchairApp : Application() {
 
     fun isAccessibilityServiceBound(): Boolean = accessibilityService != null
 
-    fun performGlobalAction(action: Int): Boolean {
-        return accessibilityService?.performGlobalAction(action) ?: run {
-            Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .let(::startActivity)
-            false
-        }
+    fun performGlobalAction(action: Int): Boolean = accessibilityService?.performGlobalAction(action) ?: run {
+        Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .let(::startActivity)
+        false
     }
 
     companion object {
@@ -266,9 +263,7 @@ class LawnchairApp : Application() {
             }
         }
 
-        fun getUriForFile(context: Context, file: File): Uri {
-            return FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.fileprovider", file)
-        }
+        fun getUriForFile(context: Context, file: File): Uri = FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.fileprovider", file)
     }
 }
 

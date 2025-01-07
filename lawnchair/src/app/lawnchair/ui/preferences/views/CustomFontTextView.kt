@@ -10,7 +10,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class CustomFontTextView(context: Context) : AppCompatTextView(context), ViewPool.Recyclable {
+class CustomFontTextView(context: Context) :
+    AppCompatTextView(context),
+    ViewPool.Recyclable {
 
     private var job: Job? = null
 

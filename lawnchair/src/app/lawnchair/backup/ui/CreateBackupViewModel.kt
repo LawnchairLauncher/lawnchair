@@ -40,42 +40,40 @@ class CreateBackupViewModel(
         }
     }
 
-    private suspend fun captureScreenshot(): Bitmap? {
-        return suspendCancellableCoroutine { continuation ->
-            val app = getApplication<Application>()
+    private suspend fun captureScreenshot(): Bitmap? = suspendCancellableCoroutine { continuation ->
+        val app = getApplication<Application>()
 
-            val config = Configuration(app.resources.configuration).apply {
-                orientation = Configuration.ORIENTATION_PORTRAIT
-                val width = screenWidthDp
-                val height = screenHeightDp
-                screenWidthDp = min(width, height)
-                screenHeightDp = max(width, height)
-            }
-            val context = app.createConfigurationContext(config)
+        val config = Configuration(app.resources.configuration).apply {
+            orientation = Configuration.ORIENTATION_PORTRAIT
+            val width = screenWidthDp
+            val height = screenHeightDp
+            screenWidthDp = min(width, height)
+            screenHeightDp = max(width, height)
+        }
+        val context = app.createConfigurationContext(config)
 
-            val idp = LauncherAppState.getIDP(context)
-            val themedContext = ContextThemeWrapper(context, R.style.Theme_Lawnchair)
-            val previewView = LauncherPreviewView(
-                context = themedContext,
-                idp = idp,
-                dummyInsets = true,
-                dummySmartspace = true,
-                appContext = themedContext,
+        val idp = LauncherAppState.getIDP(context)
+        val themedContext = ContextThemeWrapper(context, R.style.Theme_Lawnchair)
+        val previewView = LauncherPreviewView(
+            context = themedContext,
+            idp = idp,
+            dummyInsets = true,
+            dummySmartspace = true,
+            appContext = themedContext,
+        )
+        continuation.invokeOnCancellation { previewView.destroy() }
+        previewView.addOnReadyCallback {
+            val dp = idp.getDeviceProfile(context)
+            val width = dp.widthPx
+            val height = dp.heightPx
+            previewView.measure(
+                MeasureSpec.makeMeasureSpec(width, EXACTLY),
+                MeasureSpec.makeMeasureSpec(height, EXACTLY),
             )
-            continuation.invokeOnCancellation { previewView.destroy() }
-            previewView.addOnReadyCallback {
-                val dp = idp.getDeviceProfile(context)
-                val width = dp.widthPx
-                val height = dp.heightPx
-                previewView.measure(
-                    MeasureSpec.makeMeasureSpec(width, EXACTLY),
-                    MeasureSpec.makeMeasureSpec(height, EXACTLY),
-                )
-                previewView.layout(0, 0, width, height)
-                val bitmap = BitmapRenderer.createHardwareBitmap(width, height, previewView::draw)
-                continuation.resume(bitmap)
-                previewView.destroy()
-            }
+            previewView.layout(0, 0, width, height)
+            val bitmap = BitmapRenderer.createHardwareBitmap(width, height, previewView::draw)
+            continuation.resume(bitmap)
+            previewView.destroy()
         }
     }
 

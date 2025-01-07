@@ -123,9 +123,7 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
 
     class SleepDeviceAdmin : DeviceAdminReceiver() {
 
-        override fun onDisableRequested(context: Context, intent: Intent): CharSequence {
-            return context.getString(R.string.dt2s_admin_warning)
-        }
+        override fun onDisableRequested(context: Context, intent: Intent): CharSequence = context.getString(R.string.dt2s_admin_warning)
     }
 }
 

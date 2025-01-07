@@ -57,7 +57,8 @@ private class MutableStatePreferenceAdapter<T>(
 class PreferenceAdapterImpl<T>(
     private val get: () -> T,
     private val set: (T) -> Unit,
-) : PreferenceAdapter<T>, PreferenceChangeListener {
+) : PreferenceAdapter<T>,
+    PreferenceChangeListener {
     private val stateInternal = mutableStateOf(get())
     override val state: State<T> get() = stateInternal
 
@@ -117,9 +118,7 @@ private fun <P, T> getAdapter(
 }
 
 @Composable
-fun <T> Preference<T, *, *>.getAdapter(): PreferenceAdapter<T> {
-    return createStateAdapter(state = asState(), set = this::set)
-}
+fun <T> Preference<T, *, *>.getAdapter(): PreferenceAdapter<T> = createStateAdapter(state = asState(), set = this::set)
 
 @Composable
 fun IdpPreference.getAdapter(): PreferenceAdapter<Int> {
@@ -153,9 +152,7 @@ fun <T, R> rememberTransformAdapter(
 }
 
 @Composable
-fun <T> MutableState<T>.asPreferenceAdapter(): PreferenceAdapter<T> {
-    return remember(this) { MutableStatePreferenceAdapter(this) }
-}
+fun <T> MutableState<T>.asPreferenceAdapter(): PreferenceAdapter<T> = remember(this) { MutableStatePreferenceAdapter(this) }
 
 private class TransformPreferenceAdapter<T, R>(
     private val parent: PreferenceAdapter<T>,
@@ -182,6 +179,4 @@ fun <T> customPreferenceAdapter(value: T, onValueChange: (T) -> Unit): Preferenc
 }
 
 @Composable
-operator fun PreferenceAdapter<Boolean>.not(): PreferenceAdapter<Boolean> {
-    return rememberTransformAdapter(adapter = this, transformGet = { !it }, transformSet = { !it })
-}
+operator fun PreferenceAdapter<Boolean>.not(): PreferenceAdapter<Boolean> = rememberTransformAdapter(adapter = this, transformGet = { !it }, transformSet = { !it })
