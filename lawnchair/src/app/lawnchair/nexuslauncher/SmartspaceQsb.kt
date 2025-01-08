@@ -15,10 +15,12 @@ import com.android.launcher3.qsb.QsbContainerView
 
 class SmartspaceQsb @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : QsbContainerView(context, attrs, defStyleAttr) {
     class SmartSpaceFragment : QsbFragment() {
-        override fun createHost(): QsbWidgetHost = QsbWidgetHost(
-            context,
-            SMART_SPACE_WIDGET_HOST_ID,
-        ) { c: Context -> ThemedSmartSpaceHostView(c) }
+        override fun createHost(): QsbWidgetHost {
+            return QsbWidgetHost(
+                context,
+                SMART_SPACE_WIDGET_HOST_ID,
+            ) { c: Context -> ThemedSmartSpaceHostView(c) }
+        }
 
         @SuppressLint("NewApi")
         override fun getSearchWidgetProvider(): AppWidgetProviderInfo? {
@@ -31,7 +33,9 @@ class SmartspaceQsb @JvmOverloads constructor(context: Context, attrs: Attribute
             return null
         }
 
-        override fun getDefaultView(container: ViewGroup, showSetupIcon: Boolean): View = getDateView(container)
+        override fun getDefaultView(container: ViewGroup, showSetupIcon: Boolean): View {
+            return getDateView(container)
+        }
 
         override fun createBindOptions(): Bundle {
             val opts = super.createBindOptions()
@@ -54,7 +58,9 @@ class SmartspaceQsb @JvmOverloads constructor(context: Context, attrs: Attribute
         private const val WIDGET_CLASS_NAME =
             "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
 
-        fun getDateView(parent: ViewGroup): View = LayoutInflater.from(parent.context)
-            .inflate(R.layout.smart_space_date_view, parent, false)
+        fun getDateView(parent: ViewGroup): View {
+            return LayoutInflater.from(parent.context)
+                .inflate(R.layout.smart_space_date_view, parent, false)
+        }
     }
 }

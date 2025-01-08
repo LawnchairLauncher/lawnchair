@@ -335,10 +335,12 @@ class LawnchairLauncher : QuickstepLauncher() {
         return ActivityOptionsWrapper(options, callbacks)
     }
 
-    override fun getActivityLaunchOptions(v: View?, item: ItemInfo?): ActivityOptionsWrapper = runCatching {
-        super.getActivityLaunchOptions(v, item)
-    }.getOrElse {
-        getActivityLaunchOptionsDefault(v)
+    override fun getActivityLaunchOptions(v: View?, item: ItemInfo?): ActivityOptionsWrapper {
+        return runCatching {
+            super.getActivityLaunchOptions(v, item)
+        }.getOrElse {
+            getActivityLaunchOptionsDefault(v)
+        }
     }
 
     private fun getActivityLaunchOptionsDefault(v: View?): ActivityOptionsWrapper {

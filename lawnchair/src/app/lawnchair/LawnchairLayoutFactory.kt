@@ -36,7 +36,9 @@ class LawnchairLayoutFactory(context: Context) :
         return view
     }
 
-    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? = onCreateView(null, name, context, attrs)
+    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        return onCreateView(null, name, context, attrs)
+    }
 
     override fun close() {
         TODO("Not yet implemented")

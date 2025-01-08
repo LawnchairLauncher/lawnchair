@@ -12,7 +12,9 @@ data class NewColorStateList(
     private val factory: (context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> ColorStateList,
 ) : ColorStateListToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): ColorStateList = factory(context, scheme, uiColorMode)
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): ColorStateList {
+        return factory(context, scheme, uiColorMode)
+    }
 }
 
 class DayNightColorStateList(
@@ -20,9 +22,11 @@ class DayNightColorStateList(
     private val darkToken: ColorStateListToken,
 ) : ColorStateListToken {
 
-    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): ColorStateList = if (uiColorMode.isDarkTheme) {
-        darkToken.resolve(context, scheme, uiColorMode)
-    } else {
-        lightToken.resolve(context, scheme, uiColorMode)
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): ColorStateList {
+        return if (uiColorMode.isDarkTheme) {
+            darkToken.resolve(context, scheme, uiColorMode)
+        } else {
+            lightToken.resolve(context, scheme, uiColorMode)
+        }
     }
 }

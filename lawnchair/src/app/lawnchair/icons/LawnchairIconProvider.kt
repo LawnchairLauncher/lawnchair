@@ -197,7 +197,9 @@ class LawnchairIconProvider @JvmOverloads constructor(
         return defaultIcon
     }
 
-    override fun isThemeEnabled(): Boolean = _themeMap != DISABLED_MAP
+    override fun isThemeEnabled(): Boolean {
+        return _themeMap != DISABLED_MAP
+    }
 
     override fun getThemeData(componentName: ComponentName): ThemedIconDrawable.ThemeData? {
         val td = getDynamicIconsFromMap(context, themeMap, componentName)
@@ -207,23 +209,35 @@ class LawnchairIconProvider @JvmOverloads constructor(
         return themeMap[componentName] ?: themeMap[ComponentName(componentName.packageName, "")]
     }
 
-    override fun getIcon(info: ActivityInfo?): Drawable = CustomAdaptiveIconDrawable.wrapNonNull(super.getIcon(info))
+    override fun getIcon(info: ActivityInfo?): Drawable {
+        return CustomAdaptiveIconDrawable.wrapNonNull(super.getIcon(info))
+    }
 
-    override fun getIcon(info: ActivityInfo?, iconDpi: Int): Drawable = CustomAdaptiveIconDrawable.wrapNonNull(super.getIcon(info, iconDpi))
+    override fun getIcon(info: ActivityInfo?, iconDpi: Int): Drawable {
+        return CustomAdaptiveIconDrawable.wrapNonNull(super.getIcon(info, iconDpi))
+    }
 
-    override fun getIcon(info: LauncherActivityInfo?, iconDpi: Int): Drawable = CustomAdaptiveIconDrawable.wrapNonNull(super.getIcon(info, iconDpi))
+    override fun getIcon(info: LauncherActivityInfo?, iconDpi: Int): Drawable {
+        return CustomAdaptiveIconDrawable.wrapNonNull(super.getIcon(info, iconDpi))
+    }
 
-    override fun getSystemStateForPackage(systemState: String, packageName: String): String = super.getSystemStateForPackage(systemState, packageName) + ",$isThemeEnabled"
+    override fun getSystemStateForPackage(systemState: String, packageName: String): String {
+        return super.getSystemStateForPackage(systemState, packageName) + ",$isThemeEnabled"
+    }
 
-    override fun getSystemIconState(): String = super.getSystemIconState() + ",pack:${iconPackPref.get()}/${themedIconPackPref.get()},ver:$iconPackVersion"
+    override fun getSystemIconState(): String {
+        return super.getSystemIconState() + ",pack:${iconPackPref.get()}/${themedIconPackPref.get()},ver:$iconPackVersion"
+    }
 
     override fun registerIconChangeListener(
         callback: IconChangeListener,
         handler: Handler,
-    ): SafeCloseable = MultiSafeCloseable().apply {
-        add(super.registerIconChangeListener(callback, handler))
-        add(IconPackChangeReceiver(context, handler, callback))
-        add(LawniconsChangeReceiver(context, handler, callback))
+    ): SafeCloseable {
+        return MultiSafeCloseable().apply {
+            add(super.registerIconChangeListener(callback, handler))
+            add(IconPackChangeReceiver(context, handler, callback))
+            add(LawniconsChangeReceiver(context, handler, callback))
+        }
     }
 
     private inner class IconPackChangeReceiver(

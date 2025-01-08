@@ -61,7 +61,9 @@ class HeadlessWidgetsManager(private val context: Context) : SafeCloseable {
             context: Context,
             appWidgetId: Int,
             appWidget: AppWidgetProviderInfo?,
-        ): AppWidgetHostView = HeadlessAppWidgetHostView(context)
+        ): AppWidgetHostView {
+            return HeadlessAppWidgetHostView(context)
+        }
     }
 
     @SuppressLint("ViewConstructor")

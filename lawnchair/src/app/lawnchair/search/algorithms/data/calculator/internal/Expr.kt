@@ -12,7 +12,9 @@ internal class AssignExpr(
     val value: Expr,
 ) : Expr() {
 
-    override fun <R> accept(visitor: ExprVisitor<R>): R = visitor.visitAssignExpr(this)
+    override fun <R> accept(visitor: ExprVisitor<R>): R {
+        return visitor.visitAssignExpr(this)
+    }
 }
 
 internal class LogicalExpr(
@@ -21,7 +23,9 @@ internal class LogicalExpr(
     val right: Expr,
 ) : Expr() {
 
-    override fun <R> accept(visitor: ExprVisitor<R>): R = visitor.visitLogicalExpr(this)
+    override fun <R> accept(visitor: ExprVisitor<R>): R {
+        return visitor.visitLogicalExpr(this)
+    }
 }
 
 internal class BinaryExpr(
@@ -30,7 +34,9 @@ internal class BinaryExpr(
     val right: Expr,
 ) : Expr() {
 
-    override fun <R> accept(visitor: ExprVisitor<R>): R = visitor.visitBinaryExpr(this)
+    override fun <R> accept(visitor: ExprVisitor<R>): R {
+        return visitor.visitBinaryExpr(this)
+    }
 }
 
 internal class UnaryExpr(
@@ -38,7 +44,9 @@ internal class UnaryExpr(
     val right: Expr,
 ) : Expr() {
 
-    override fun <R> accept(visitor: ExprVisitor<R>): R = visitor.visitUnaryExpr(this)
+    override fun <R> accept(visitor: ExprVisitor<R>): R {
+        return visitor.visitUnaryExpr(this)
+    }
 }
 
 internal class CallExpr(
@@ -46,22 +54,30 @@ internal class CallExpr(
     val arguments: List<Expr>,
 ) : Expr() {
 
-    override fun <R> accept(visitor: ExprVisitor<R>): R = visitor.visitCallExpr(this)
+    override fun <R> accept(visitor: ExprVisitor<R>): R {
+        return visitor.visitCallExpr(this)
+    }
 }
 
 internal class LiteralExpr(val value: BigDecimal) : Expr() {
 
-    override fun <R> accept(visitor: ExprVisitor<R>): R = visitor.visitLiteralExpr(this)
+    override fun <R> accept(visitor: ExprVisitor<R>): R {
+        return visitor.visitLiteralExpr(this)
+    }
 }
 
 internal class VariableExpr(val name: Token) : Expr() {
 
-    override fun <R> accept(visitor: ExprVisitor<R>): R = visitor.visitVariableExpr(this)
+    override fun <R> accept(visitor: ExprVisitor<R>): R {
+        return visitor.visitVariableExpr(this)
+    }
 }
 
 internal class GroupingExpr(val expression: Expr) : Expr() {
 
-    override fun <R> accept(visitor: ExprVisitor<R>): R = visitor.visitGroupingExpr(this)
+    override fun <R> accept(visitor: ExprVisitor<R>): R {
+        return visitor.visitGroupingExpr(this)
+    }
 }
 
 internal interface ExprVisitor<out R> {

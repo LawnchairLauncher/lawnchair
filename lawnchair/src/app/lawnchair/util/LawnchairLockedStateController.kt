@@ -124,7 +124,9 @@ object LawnchairLockedStateController {
         }
     }
 
-    fun getTaskLockState(taskIdentifier: String, userId: Int): Boolean = lockedListWithUserId.contains(appendUserWithBrace(taskIdentifier, userId.toString()))
+    fun getTaskLockState(taskIdentifier: String, userId: Int): Boolean {
+        return lockedListWithUserId.contains(appendUserWithBrace(taskIdentifier, userId.toString()))
+    }
 
     // TODO Implement this, when the app is uninstalled
     fun removeTaskLockState(taskIdentifier: String, userId: Int) {
@@ -145,13 +147,21 @@ object LawnchairLockedStateController {
         }
     }
 
-    fun isTaskLocked(taskIdentifier: String): Boolean = lockedPackageNameListWithUserId.contains(taskIdentifier)
+    fun isTaskLocked(taskIdentifier: String): Boolean {
+        return lockedPackageNameListWithUserId.contains(taskIdentifier)
+    }
 
-    private fun appendUserWithoutBrace(input: String, userId: String): String = input.replace("{", "") + "#$userId"
+    private fun appendUserWithoutBrace(input: String, userId: String): String {
+        return input.replace("{", "") + "#$userId"
+    }
 
-    private fun appendUserWithBrace(input: String, userId: String): String = input.replace("}", "") + "#$userId}"
+    private fun appendUserWithBrace(input: String, userId: String): String {
+        return input.replace("}", "") + "#$userId}"
+    }
 
-    private fun removeUserWithBrace(input: String): String = input.substring(0, input.lastIndexOf("#")) + "}"
+    private fun removeUserWithBrace(input: String): String {
+        return input.substring(0, input.lastIndexOf("#")) + "}"
+    }
 
     private fun writeToProvider() {
         val sb = StringBuilder()

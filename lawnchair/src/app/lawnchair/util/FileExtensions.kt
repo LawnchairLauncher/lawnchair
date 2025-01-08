@@ -12,14 +12,16 @@ internal fun Path.list(
     fileSystem: FileSystem = FileSystem.SYSTEM,
     isShowHidden: Boolean = false,
     isRecursively: Boolean = false,
-): Sequence<Path> = runCatching {
-    if (isRecursively) {
-        fileSystem.listRecursively(this)
-    } else {
-        fileSystem.list(this).asSequence()
+): Sequence<Path> {
+    return runCatching {
+        if (isRecursively) {
+            fileSystem.listRecursively(this)
+        } else {
+            fileSystem.list(this).asSequence()
+        }
+    }.getOrDefault(emptySequence()).filter {
+        if (isShowHidden) true else !it.isHidden
     }
-}.getOrDefault(emptySequence()).filter {
-    if (isShowHidden) true else !it.isHidden
 }
 
 internal fun Path.getMetadata(fileSystem: FileSystem = FileSystem.SYSTEM): FileMetadata? = fileSystem.metadataOrNull(this)

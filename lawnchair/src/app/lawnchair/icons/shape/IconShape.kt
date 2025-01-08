@@ -80,7 +80,9 @@ open class IconShape(
     private val tmpPoint = PointF()
     open val windowTransitionRadius = 1f
 
-    open fun getMaskPath(): Path = Path().also { addToPath(it, 0f, 0f, 100f, 100f, 50f) }
+    open fun getMaskPath(): Path {
+        return Path().also { addToPath(it, 0f, 0f, 100f, 100f, 50f) }
+    }
 
     open fun addShape(path: Path, x: Float, y: Float, radius: Float) {
         if (isCircle) {
@@ -193,7 +195,9 @@ open class IconShape(
         path.lineTo(x2, y2)
     }
 
-    override fun toString(): String = "v1|$topLeft|$topRight|$bottomLeft|$bottomRight"
+    override fun toString(): String {
+        return "v1|$topLeft|$topRight|$bottomLeft|$bottomRight"
+    }
 
     open fun getHashString() = toString()
 
@@ -221,7 +225,9 @@ open class IconShape(
 
         constructor(shape: IconCornerShape, scale: Float) : this(shape, PointF(scale, scale))
 
-        override fun toString(): String = "$shape,${scale.x},${scale.y}"
+        override fun toString(): String {
+            return "$shape,${scale.x},${scale.y}"
+        }
 
         companion object {
 
@@ -249,7 +255,9 @@ open class IconShape(
         1f,
     ) {
 
-        override fun toString(): String = "circle"
+        override fun toString(): String {
+            return "circle"
+        }
     }
 
     object Square : IconShape(
@@ -265,7 +273,9 @@ open class IconShape(
 
         override val windowTransitionRadius = .16f
 
-        override fun toString(): String = "square"
+        override fun toString(): String {
+            return "square"
+        }
     }
 
     object SharpSquare : IconShape(
@@ -281,7 +291,9 @@ open class IconShape(
 
         override val windowTransitionRadius = 0f
 
-        override fun toString(): String = "sharpSquare"
+        override fun toString(): String {
+            return "sharpSquare"
+        }
     }
 
     object RoundedSquare : IconShape(
@@ -297,7 +309,9 @@ open class IconShape(
 
         override val windowTransitionRadius = .6f
 
-        override fun toString(): String = "roundedSquare"
+        override fun toString(): String {
+            return "roundedSquare"
+        }
     }
 
     object Squircle : IconShape(
@@ -311,7 +325,9 @@ open class IconShape(
         1f,
     ) {
 
-        override fun toString(): String = "squircle"
+        override fun toString(): String {
+            return "squircle"
+        }
     }
 
     object Sammy : IconShape(
@@ -325,7 +341,9 @@ open class IconShape(
         1f,
     ) {
 
-        override fun toString(): String = "sammy"
+        override fun toString(): String {
+            return "sammy"
+        }
     }
 
     object Teardrop : IconShape(
@@ -339,7 +357,9 @@ open class IconShape(
         .3f,
     ) {
 
-        override fun toString(): String = "teardrop"
+        override fun toString(): String {
+            return "teardrop"
+        }
     }
 
     object Cylinder : IconShape(
@@ -353,7 +373,9 @@ open class IconShape(
         PointF(1f, .6f),
     ) {
 
-        override fun toString(): String = "cylinder"
+        override fun toString(): String {
+            return "cylinder"
+        }
     }
 
     object Cupertino : IconShape(
@@ -369,7 +391,9 @@ open class IconShape(
 
         override val windowTransitionRadius = .45f
 
-        override fun toString(): String = "cupertino"
+        override fun toString(): String {
+            return "cupertino"
+        }
     }
 
     object Octagon : IconShape(
@@ -383,7 +407,9 @@ open class IconShape(
         .5f,
     ) {
 
-        override fun toString(): String = "octagon"
+        override fun toString(): String {
+            return "octagon"
+        }
     }
 
     object Hexagon : IconShape(
@@ -397,7 +423,9 @@ open class IconShape(
         PointF(1f, .5f),
     ) {
 
-        override fun toString(): String = "hexagon"
+        override fun toString(): String {
+            return "hexagon"
+        }
     }
 
     object Diamond : IconShape(
@@ -413,7 +441,9 @@ open class IconShape(
 
         override val windowTransitionRadius = 0f
 
-        override fun toString(): String = "diamond"
+        override fun toString(): String {
+            return "diamond"
+        }
     }
 
     object Egg : IconShape(
@@ -429,7 +459,9 @@ open class IconShape(
 
         override val windowTransitionRadius = 0.85f
 
-        override fun toString(): String = "egg"
+        override fun toString(): String {
+            return "egg"
+        }
     }
 
     companion object {
@@ -473,12 +505,14 @@ open class IconShape(
             )
         }
 
-        fun isCustomShape(iconShape: IconShape): Boolean = try {
-            parseCustomShape(iconShape.toString())
-            true
-        } catch (e: Exception) {
-            Log.e("IconShape", "Error creating shape $iconShape", e)
-            false
+        fun isCustomShape(iconShape: IconShape): Boolean {
+            return try {
+                parseCustomShape(iconShape.toString())
+                true
+            } catch (e: Exception) {
+                Log.e("IconShape", "Error creating shape $iconShape", e)
+                false
+            }
         }
     }
 }

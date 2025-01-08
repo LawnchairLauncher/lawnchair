@@ -126,8 +126,10 @@ sealed class LawnchairSearchAlgorithm(
         }
     }
 
-    private fun findIndices(filtered: List<SearchTargetCompat>, layoutType: String): List<Int> = filtered.indices.filter {
-        filtered[it].layoutType == layoutType && !filtered[it].isApp
+    private fun findIndices(filtered: List<SearchTargetCompat>, layoutType: String): List<Int> {
+        return filtered.indices.filter {
+            filtered[it].layoutType == layoutType && !filtered[it].isApp
+        }
     }
 
     private fun findAppAndShorcutIndices(filtered: List<SearchTargetCompat>): List<Int> {

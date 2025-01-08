@@ -422,5 +422,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         results
     }
 
-    private fun filterByType(results: List<SearchResult>, type: String): List<SearchResult> = results.filter { it.resultType == type }
+    private fun filterByType(results: List<SearchResult>, type: String): List<SearchResult> {
+        return results.filter { it.resultType == type }
+    }
 }

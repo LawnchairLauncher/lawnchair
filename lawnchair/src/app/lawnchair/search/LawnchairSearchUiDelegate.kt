@@ -7,5 +7,7 @@ import com.android.launcher3.views.ActivityContext
 
 class LawnchairSearchUiDelegate(private val appsView: ActivityAllAppsContainerView<*>) : AllAppsSearchUiDelegate(appsView) {
 
-    override fun createMainAdapterProvider(): SearchAdapterProvider<*> = LawnchairSearchAdapterProvider(ActivityContext.lookupContext(appsView.context), appsView)
+    override fun createMainAdapterProvider(): SearchAdapterProvider<*> {
+        return LawnchairSearchAdapterProvider(ActivityContext.lookupContext(appsView.context), appsView)
+    }
 }

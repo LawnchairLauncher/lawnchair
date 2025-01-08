@@ -19,10 +19,12 @@ class LawnchairWidgetHolder(context: Context, intConsumer: IntConsumer?) : Launc
         override fun newInstance(
             context: Context,
             appWidgetRemovedCallback: IntConsumer?,
-        ): LauncherWidgetHolder = try {
-            newInstance(context, appWidgetRemovedCallback, null)
-        } catch (t: Throwable) {
-            super.newInstance(context, appWidgetRemovedCallback)
+        ): LauncherWidgetHolder {
+            return try {
+                newInstance(context, appWidgetRemovedCallback, null)
+            } catch (t: Throwable) {
+                super.newInstance(context, appWidgetRemovedCallback)
+            }
         }
 
         /**

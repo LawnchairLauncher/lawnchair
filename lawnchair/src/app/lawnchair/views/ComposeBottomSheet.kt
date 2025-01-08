@@ -109,9 +109,13 @@ class ComposeBottomSheet<T>(context: Context) : AbstractSlideInView<T>(context, 
         setSystemUiFlags(0)
     }
 
-    override fun isOfType(type: Int): Boolean = type and TYPE_COMPOSE_VIEW != 0
+    override fun isOfType(type: Int): Boolean {
+        return type and TYPE_COMPOSE_VIEW != 0
+    }
 
-    override fun getScrimColor(context: Context): Int = ColorTokens.WidgetsPickerScrim.resolveColor(context)
+    override fun getScrimColor(context: Context): Int {
+        return ColorTokens.WidgetsPickerScrim.resolveColor(context)
+    }
 
     override fun setTranslationShift(translationShift: Float) {
         mTranslationShift = translationShift

@@ -141,7 +141,9 @@ class SmartspaceWidgetReader(context: Context) :
         )
     }
 
-    private fun extractBitmap(imageView: ImageView?): Bitmap? = (imageView?.drawable as? BitmapDrawable)?.bitmap
+    private fun extractBitmap(imageView: ImageView?): Bitmap? {
+        return (imageView?.drawable as? BitmapDrawable)?.bitmap
+    }
 
     data class WeatherData(
         val icon: Bitmap,
@@ -151,7 +153,9 @@ class SmartspaceWidgetReader(context: Context) :
         val pendingIntent: PendingIntent? = null,
     ) {
 
-        fun getTitle(unit: Temperature.Unit = temperature.unit): String = "${temperature.inUnit(unit)}${unit.suffix}"
+        fun getTitle(unit: Temperature.Unit = temperature.unit): String {
+            return "${temperature.inUnit(unit)}${unit.suffix}"
+        }
     }
 
     companion object {
@@ -165,29 +169,31 @@ class SmartspaceWidgetReader(context: Context) :
             featureType = SmartspaceTarget.FeatureType.FEATURE_WEATHER,
         )
 
-        fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?, intent: PendingIntent? = null): WeatherData? = if (weatherIcon != null && temperature != null) {
-            try {
-                val value = temperature.substring(0, temperature.indexOfFirst { (it < '0' || it > '9') && it != '-' }).toInt()
-                WeatherData(
-                    weatherIcon,
-                    Temperature(
-                        value,
-                        when {
-                            temperature.contains("C") -> Temperature.Unit.Celsius
-                            temperature.contains("F") -> Temperature.Unit.Fahrenheit
-                            temperature.contains("K") -> Temperature.Unit.Kelvin
-                            else -> throw IllegalArgumentException("only supports C, F and K")
-                        },
-                    ),
-                    pendingIntent = intent,
-                )
-            } catch (_: NumberFormatException) {
-                null
-            } catch (_: IllegalArgumentException) {
+        fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?, intent: PendingIntent? = null): WeatherData? {
+            return if (weatherIcon != null && temperature != null) {
+                try {
+                    val value = temperature.substring(0, temperature.indexOfFirst { (it < '0' || it > '9') && it != '-' }).toInt()
+                    WeatherData(
+                        weatherIcon,
+                        Temperature(
+                            value,
+                            when {
+                                temperature.contains("C") -> Temperature.Unit.Celsius
+                                temperature.contains("F") -> Temperature.Unit.Fahrenheit
+                                temperature.contains("K") -> Temperature.Unit.Kelvin
+                                else -> throw IllegalArgumentException("only supports C, F and K")
+                            },
+                        ),
+                        pendingIntent = intent,
+                    )
+                } catch (_: NumberFormatException) {
+                    null
+                } catch (_: IllegalArgumentException) {
+                    null
+                }
+            } else {
                 null
             }
-        } else {
-            null
         }
     }
 }

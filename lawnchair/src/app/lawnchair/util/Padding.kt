@@ -29,19 +29,27 @@ fun Modifier.navigationBarsOrDisplayCutoutPadding(): Modifier = composed {
 @Composable
 fun max(a: PaddingValues, b: PaddingValues) = remember(a, b) {
     object : PaddingValues {
-        override fun calculateLeftPadding(layoutDirection: LayoutDirection): Dp = max(
-            a.calculateLeftPadding(layoutDirection),
-            b.calculateLeftPadding(layoutDirection),
-        )
+        override fun calculateLeftPadding(layoutDirection: LayoutDirection): Dp {
+            return max(
+                a.calculateLeftPadding(layoutDirection),
+                b.calculateLeftPadding(layoutDirection),
+            )
+        }
 
-        override fun calculateTopPadding(): Dp = max(a.calculateTopPadding(), b.calculateTopPadding())
+        override fun calculateTopPadding(): Dp {
+            return max(a.calculateTopPadding(), b.calculateTopPadding())
+        }
 
-        override fun calculateRightPadding(layoutDirection: LayoutDirection): Dp = max(
-            a.calculateRightPadding(layoutDirection),
-            b.calculateRightPadding(layoutDirection),
-        )
+        override fun calculateRightPadding(layoutDirection: LayoutDirection): Dp {
+            return max(
+                a.calculateRightPadding(layoutDirection),
+                b.calculateRightPadding(layoutDirection),
+            )
+        }
 
-        override fun calculateBottomPadding(): Dp = max(a.calculateBottomPadding(), b.calculateBottomPadding())
+        override fun calculateBottomPadding(): Dp {
+            return max(a.calculateBottomPadding(), b.calculateBottomPadding())
+        }
     }
 }
 

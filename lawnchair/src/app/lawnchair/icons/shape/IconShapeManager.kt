@@ -42,7 +42,9 @@ class IconShapeManager(private val context: Context) : SafeCloseable {
         val systemShape = findNearestShape(iconMask)
         return object : IconShape(systemShape) {
 
-            override fun getMaskPath(): Path = Path(iconMask)
+            override fun getMaskPath(): Path {
+                return Path(iconMask)
+            }
 
             override fun toString() = "system"
 

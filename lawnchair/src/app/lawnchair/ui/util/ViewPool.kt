@@ -13,7 +13,9 @@ class ViewPool<T>(
     private val factory: (Context) -> T,
 ) : RecyclerView.RecycledViewPool() where T : View, T : ViewPool.Recyclable {
 
-    private fun getOrCreateHolder(): RecyclerView.ViewHolder = getRecycledView(RecyclerView.INVALID_TYPE) ?: ViewHolder(factory(context))
+    private fun getOrCreateHolder(): RecyclerView.ViewHolder {
+        return getRecycledView(RecyclerView.INVALID_TYPE) ?: ViewHolder(factory(context))
+    }
 
     @Composable
     fun rememberView(): T {

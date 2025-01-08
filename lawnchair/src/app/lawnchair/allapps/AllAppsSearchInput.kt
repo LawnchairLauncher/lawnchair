@@ -359,7 +359,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         }
     }
 
-    override fun getBackgroundVisibility(): Boolean = bgVisible
+    override fun getBackgroundVisibility(): Boolean {
+        return bgVisible
+    }
 
     private fun updateBgAlpha() {
         val fraction = bgAlphaAnimator.animatedFraction

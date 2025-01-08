@@ -269,7 +269,9 @@ private val VariantButtonContentPadding = PaddingValues(
 private fun removeFamilyPrefix(
     familyName: CharSequence,
     fontName: CharSequence,
-): String = fontName.removePrefix(familyName).trim().toString()
+): String {
+    return fontName.removePrefix(familyName).trim().toString()
+}
 
 @Composable
 private fun VariantDropdown(

@@ -86,8 +86,10 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
         return lensIntent != null
     }
 
-    private fun createSpace(): View = Space(context).apply {
-        layoutParams = LinearLayout.LayoutParams(0, 1).apply { weight = 1f }
+    private fun createSpace(): View {
+        return Space(context).apply {
+            layoutParams = LinearLayout.LayoutParams(0, 1).apply { weight = 1f }
+        }
     }
 
     override fun setClearAllClickListener(clearAllClickListener: OnClickListener?) {

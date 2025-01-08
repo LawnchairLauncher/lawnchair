@@ -60,7 +60,9 @@ class VerticalSwipeTouchController(
         return detector.isDraggingOrSettling
     }
 
-    override fun onControllerTouchEvent(ev: MotionEvent): Boolean = detector.onTouchEvent(ev)
+    override fun onControllerTouchEvent(ev: MotionEvent): Boolean {
+        return detector.onTouchEvent(ev)
+    }
 
     private fun canInterceptTouch(ev: MotionEvent): Boolean {
         if ((ev.edgeFlags and Utilities.EDGE_NAV_BAR) != 0) {
@@ -121,7 +123,9 @@ class VerticalSwipeTouchController(
     /**
      * Returns a time-dependent dampening factor using delta time.
      */
-    private fun computeDampeningFactor(deltaTime: Float): Float = deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime)
+    private fun computeDampeningFactor(deltaTime: Float): Float {
+        return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime)
+    }
 
     companion object {
         private const val SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * Math.PI.toFloat() * 10f)
