@@ -19,8 +19,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
 
-class CustomIconPack(context: Context, packPackageName: String) :
-    IconPack(context, packPackageName) {
+class CustomIconPack(context: Context, packPackageName: String) : IconPack(context, packPackageName) {
 
     private val packResources = context.packageManager.getResourcesForApplication(packPackageName)
     private val componentMap = mutableMapOf<ComponentName, IconEntry>()

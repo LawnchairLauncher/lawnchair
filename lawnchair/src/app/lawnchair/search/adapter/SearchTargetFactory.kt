@@ -315,8 +315,7 @@ class SearchTargetFactory(
         // TODO find a way to properly provide tag/provide ids to search target
         private val messageDigest by lazy { MessageDigest.getInstance(HASH_ALGORITHM) }
 
-        private fun generateHashKey(input: String): String =
-            ByteString.of(*messageDigest.digest(input.toByteArray())).hex()
+        private fun generateHashKey(input: String): String = ByteString.of(*messageDigest.digest(input.toByteArray())).hex()
 
         fun createSearchTarget(
             id: String,

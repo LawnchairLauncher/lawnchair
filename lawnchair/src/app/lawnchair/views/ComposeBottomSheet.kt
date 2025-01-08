@@ -43,8 +43,7 @@ import com.android.launcher3.views.AbstractSlideInView
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer
 
-class ComposeBottomSheet<T>(context: Context) :
-    AbstractSlideInView<T>(context, null, 0) where T : Context, T : ActivityContext {
+class ComposeBottomSheet<T>(context: Context) : AbstractSlideInView<T>(context, null, 0) where T : Context, T : ActivityContext {
 
     private val container = ComposeView(context)
     private var imeShift = 0f

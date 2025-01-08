@@ -49,12 +49,11 @@ class DeviceProfileOverrides(context: Context) : SafeCloseable {
         prefs.hotseatColumns.set(gridInfo.numHotseatColumns)
     }
 
-    fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) =
-        Options(
-            prefs = prefs,
-            prefs2 = preferenceManager2,
-            defaultGrid = defaultGrid,
-        )
+    fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) = Options(
+        prefs = prefs,
+        prefs2 = preferenceManager2,
+        defaultGrid = defaultGrid,
+    )
 
     fun getTextFactors() = TextFactors(preferenceManager2)
     override fun close() {

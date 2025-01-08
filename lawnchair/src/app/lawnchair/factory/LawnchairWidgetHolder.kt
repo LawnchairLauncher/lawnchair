@@ -13,8 +13,9 @@ class LawnchairWidgetHolder(context: Context, intConsumer: IntConsumer?) : Launc
     @Keep
     class LawnchairHolderFactory
     @Suppress("unused")
-    constructor(@Suppress("UNUSED_PARAMETER") context: Context) :
-        HolderFactory() {
+    constructor(
+        @Suppress("UNUSED_PARAMETER") context: Context,
+    ) : HolderFactory() {
         override fun newInstance(
             context: Context,
             appWidgetRemovedCallback: IntConsumer?,

@@ -53,7 +53,8 @@ object LawnchairLockedStateController {
             sharedPreferences.getStringSet(TASK_LOCK_LIST_KEY_WITH_USERID, emptySet()) ?: HashSet()
         lockedPackageNameListWithUserId = ArrayList()
 
-        if (lockedListWithUserId.isEmpty() && getLockedListFromProvider(
+        if (lockedListWithUserId.isEmpty() &&
+            getLockedListFromProvider(
                 ActivityManagerWrapper.getInstance().currentUserId,
             )
         ) {

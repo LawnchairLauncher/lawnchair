@@ -47,8 +47,7 @@ object GoogleSearchSmartspace : SmartspaceMode(
 ) {
     override fun toString(): String = "google_search"
 
-    override fun isAvailable(context: Context): Boolean =
-        context.packageManager.isPackageInstalledAndEnabled("com.google.android.googlequicksearchbox")
+    override fun isAvailable(context: Context): Boolean = context.packageManager.isPackageInstalledAndEnabled("com.google.android.googlequicksearchbox")
 }
 
 object GoogleSmartspace : SmartspaceMode(
@@ -57,8 +56,7 @@ object GoogleSmartspace : SmartspaceMode(
 ) {
     override fun toString(): String = "google"
 
-    override fun isAvailable(context: Context): Boolean =
-        context.packageManager.isPackageInstalledAndEnabled("com.google.android.googlequicksearchbox")
+    override fun isAvailable(context: Context): Boolean = context.packageManager.isPackageInstalledAndEnabled("com.google.android.googlequicksearchbox")
 }
 
 object Smartspacer : SmartspaceMode(

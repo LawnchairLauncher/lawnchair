@@ -253,8 +253,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             }
         }
 
-        fun resolveIntent(context: Context, intent: Intent): Boolean =
-            context.packageManager.resolveActivity(intent, 0) != null
+        fun resolveIntent(context: Context, intent: Intent): Boolean = context.packageManager.resolveActivity(intent, 0) != null
 
         private fun getCornerRadius(
             context: Context,

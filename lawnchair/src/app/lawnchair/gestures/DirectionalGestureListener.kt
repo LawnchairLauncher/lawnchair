@@ -23,8 +23,7 @@ open class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
             return true
         }
 
-        private fun shouldReactToSwipe(diff: Float, velocity: Float): Boolean =
-            abs(diff) > SWIPE_THRESHOLD && abs(velocity) > SWIPE_VELOCITY_THRESHOLD
+        private fun shouldReactToSwipe(diff: Float, velocity: Float): Boolean = abs(diff) > SWIPE_THRESHOLD && abs(velocity) > SWIPE_VELOCITY_THRESHOLD
 
         override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
             return try {

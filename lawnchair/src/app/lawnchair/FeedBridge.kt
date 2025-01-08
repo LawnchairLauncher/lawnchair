@@ -141,8 +141,7 @@ class FeedBridge(private val context: Context) {
         }
     }
 
-    private inner class PixelBridgeInfo(packageName: String, signatureHashRes: Int) :
-        BridgeInfo(packageName, signatureHashRes) {
+    private inner class PixelBridgeInfo(packageName: String, signatureHashRes: Int) : BridgeInfo(packageName, signatureHashRes) {
         override val supportsSmartspace get() = isAvailable()
     }
 

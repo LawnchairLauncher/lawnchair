@@ -26,11 +26,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
-class SmartspaceWidgetReader(context: Context) : SmartspaceDataSource(
-    context,
-    R.string.smartspace_weather,
-    { smartspaceAagWidget },
-) {
+class SmartspaceWidgetReader(context: Context) :
+    SmartspaceDataSource(
+        context,
+        R.string.smartspace_weather,
+        { smartspaceAagWidget },
+    ) {
     override val isAvailable: Boolean
 
     override val disabledTargets = listOf(dummyTarget)

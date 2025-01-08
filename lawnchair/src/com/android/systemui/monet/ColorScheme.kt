@@ -77,7 +77,7 @@ internal class HueSubtract(val amountDegrees: Double) : Hue {
     }
 }
 
-internal class HueVibrantSecondary() : Hue {
+internal class HueVibrantSecondary : Hue {
     val hueToRotations =
         listOf(
             Pair(0, 18),
@@ -96,7 +96,7 @@ internal class HueVibrantSecondary() : Hue {
     }
 }
 
-internal class HueVibrantTertiary() : Hue {
+internal class HueVibrantTertiary : Hue {
     val hueToRotations =
         listOf(
             Pair(0, 35),
@@ -115,7 +115,7 @@ internal class HueVibrantTertiary() : Hue {
     }
 }
 
-internal class HueExpressiveSecondary() : Hue {
+internal class HueExpressiveSecondary : Hue {
     val hueToRotations =
         listOf(
             Pair(0, 45),
@@ -134,7 +134,7 @@ internal class HueExpressiveSecondary() : Hue {
     }
 }
 
-internal class HueExpressiveTertiary() : Hue {
+internal class HueExpressiveTertiary : Hue {
     val hueToRotations =
         listOf(
             Pair(0, 120),

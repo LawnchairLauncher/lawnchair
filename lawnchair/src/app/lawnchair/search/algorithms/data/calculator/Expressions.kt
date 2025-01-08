@@ -10,8 +10,7 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 
-class ExpressionException(message: String) :
-    RuntimeException(message)
+class ExpressionException(message: String) : RuntimeException(message)
 
 @Suppress("unused")
 class Expressions {

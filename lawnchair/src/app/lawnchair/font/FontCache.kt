@@ -219,8 +219,7 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
         }
     }
 
-    class TTFFont(context: Context, private val file: File) :
-        TypefaceFont(createTypeface(file)) {
+    class TTFFont(context: Context, private val file: File) : TypefaceFont(createTypeface(file)) {
 
         private val actualName: String = Uri.decode(file.name)
         override val isAvailable = typeface != null
@@ -247,8 +246,7 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
 
         companion object {
 
-            fun createTypeface(file: File): Typeface? =
-                runCatching { Typeface.createFromFile(file) }.getOrNull()
+            fun createTypeface(file: File): Typeface? = runCatching { Typeface.createFromFile(file) }.getOrNull()
 
             fun getFontsDir(context: Context): File {
                 return File(context.filesDir, "customFonts").apply { mkdirs() }

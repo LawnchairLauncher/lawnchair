@@ -67,8 +67,7 @@ class HeadlessWidgetsManager(private val context: Context) : SafeCloseable {
     }
 
     @SuppressLint("ViewConstructor")
-    private class HeadlessAppWidgetHostView(context: Context) :
-        AppWidgetHostView(context) {
+    private class HeadlessAppWidgetHostView(context: Context) : AppWidgetHostView(context) {
 
         var updateCallback: ((view: AppWidgetHostView) -> Unit)? = null
 

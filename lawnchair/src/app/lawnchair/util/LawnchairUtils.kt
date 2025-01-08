@@ -256,8 +256,7 @@ fun Size.scaleDownTo(maxSize: Int): Size {
 
 fun Context.isDefaultLauncher(): Boolean = getDefaultLauncherPackageName() == packageName
 
-fun Context.getDefaultLauncherPackageName(): String? =
-    runCatching { getDefaultResolveInfo()?.activityInfo?.packageName }.getOrNull()
+fun Context.getDefaultLauncherPackageName(): String? = runCatching { getDefaultResolveInfo()?.activityInfo?.packageName }.getOrNull()
 
 fun Context.getDefaultResolveInfo(): ResolveInfo? {
     val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)

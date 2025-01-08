@@ -57,7 +57,8 @@ private class MutableStatePreferenceAdapter<T>(
 class PreferenceAdapterImpl<T>(
     private val get: () -> T,
     private val set: (T) -> Unit,
-) : PreferenceAdapter<T>, PreferenceChangeListener {
+) : PreferenceAdapter<T>,
+    PreferenceChangeListener {
     private val stateInternal = mutableStateOf(get())
     override val state: State<T> get() = stateInternal
 

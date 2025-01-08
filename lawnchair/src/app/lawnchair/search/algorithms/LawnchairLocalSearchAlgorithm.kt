@@ -325,101 +325,102 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     private suspend fun performDeviceLocalSearch(
         query: String,
         prefs: PreferenceManager,
-    ): MutableList<SearchResult> =
-        withContext(Dispatchers.IO) {
-            val results = ArrayList<SearchResult>()
+    ): MutableList<SearchResult> = withContext(Dispatchers.IO) {
+        val results = ArrayList<SearchResult>()
 
-            if (prefs.searchResultCalculator.get()) {
-                val calculations = calculateEquationFromString(query)
-                results.add(SearchResult(CALCULATOR, calculations))
-            }
-
-            val contactDeferred = async {
-                if (prefs.searchResultPeople.get() && requestContactPermissionGranted(
-                        context,
-                        prefs,
-                    )
-                ) {
-                    findContactsByName(context, query, maxPeopleCount)
-                        .map { SearchResult(CONTACT, it) }
-                } else {
-                    emptyList()
-                }
-            }
-
-            val filesDeferred = async {
-                if (prefs.searchResultFiles.get() && checkAndRequestFilesPermission(
-                        context,
-                        prefs,
-                    )
-                ) {
-                    queryFilesInMediaStore(context, keyword = query, maxResult = maxFilesCount)
-                        .toList()
-                        .map { SearchResult(FILES, it) }
-                } else {
-                    emptyList()
-                }
-            }
-
-            val settingsDeferred = async {
-                if (prefs.searchResultSettingsEntry.get()) {
-                    findSettingsByNameAndAction(query, maxSettingsEntryCount)
-                        .map { SearchResult(SETTINGS, it) }
-                } else {
-                    emptyList()
-                }
-            }
-
-            val startPageSuggestionsDeferred = async {
-                try {
-                    val timeout = maxWebSuggestionDelay.toLong()
-                    val result = withTimeoutOrNull(timeout) {
-                        if (prefs.searchResultStartPageSuggestion.get()) {
-                            WebSearchProvider.fromString(webSuggestionsProvider)
-                                .getSuggestions(query, maxWebSuggestionsCount).map {
-                                    SearchResult(
-                                        WEB_SUGGESTION,
-                                        it,
-                                    )
-                                }
-                        } else {
-                            emptyList()
-                        }
-                    }
-                    result ?: emptyList()
-                } catch (e: TimeoutCancellationException) {
-                    emptyList()
-                }
-            }
-
-            if (prefs.searchResulRecentSuggestion.get()) {
-                getRecentKeyword(
-                    context,
-                    query,
-                    maxRecentResultCount,
-                    object : app.lawnchair.search.algorithms.data.SearchCallback {
-                        override fun onSearchLoaded(items: List<Any>) {
-                            results.addAll(items.map { SearchResult(HISTORY, it) })
-                        }
-
-                        override fun onSearchFailed(error: String) {
-                            results.add(SearchResult(ERROR, error))
-                        }
-
-                        override fun onLoading() {
-                            results.add(SearchResult(LOADING, "Loading"))
-                        }
-                    },
-                )
-            }
-
-            results.addAll(contactDeferred.await())
-            results.addAll(filesDeferred.await())
-            results.addAll(settingsDeferred.await())
-            results.addAll(startPageSuggestionsDeferred.await())
-
-            results
+        if (prefs.searchResultCalculator.get()) {
+            val calculations = calculateEquationFromString(query)
+            results.add(SearchResult(CALCULATOR, calculations))
         }
+
+        val contactDeferred = async {
+            if (prefs.searchResultPeople.get() &&
+                requestContactPermissionGranted(
+                    context,
+                    prefs,
+                )
+            ) {
+                findContactsByName(context, query, maxPeopleCount)
+                    .map { SearchResult(CONTACT, it) }
+            } else {
+                emptyList()
+            }
+        }
+
+        val filesDeferred = async {
+            if (prefs.searchResultFiles.get() &&
+                checkAndRequestFilesPermission(
+                    context,
+                    prefs,
+                )
+            ) {
+                queryFilesInMediaStore(context, keyword = query, maxResult = maxFilesCount)
+                    .toList()
+                    .map { SearchResult(FILES, it) }
+            } else {
+                emptyList()
+            }
+        }
+
+        val settingsDeferred = async {
+            if (prefs.searchResultSettingsEntry.get()) {
+                findSettingsByNameAndAction(query, maxSettingsEntryCount)
+                    .map { SearchResult(SETTINGS, it) }
+            } else {
+                emptyList()
+            }
+        }
+
+        val startPageSuggestionsDeferred = async {
+            try {
+                val timeout = maxWebSuggestionDelay.toLong()
+                val result = withTimeoutOrNull(timeout) {
+                    if (prefs.searchResultStartPageSuggestion.get()) {
+                        WebSearchProvider.fromString(webSuggestionsProvider)
+                            .getSuggestions(query, maxWebSuggestionsCount).map {
+                                SearchResult(
+                                    WEB_SUGGESTION,
+                                    it,
+                                )
+                            }
+                    } else {
+                        emptyList()
+                    }
+                }
+                result ?: emptyList()
+            } catch (e: TimeoutCancellationException) {
+                emptyList()
+            }
+        }
+
+        if (prefs.searchResulRecentSuggestion.get()) {
+            getRecentKeyword(
+                context,
+                query,
+                maxRecentResultCount,
+                object : app.lawnchair.search.algorithms.data.SearchCallback {
+                    override fun onSearchLoaded(items: List<Any>) {
+                        results.addAll(items.map { SearchResult(HISTORY, it) })
+                    }
+
+                    override fun onSearchFailed(error: String) {
+                        results.add(SearchResult(ERROR, error))
+                    }
+
+                    override fun onLoading() {
+                        results.add(SearchResult(LOADING, "Loading"))
+                    }
+                },
+            )
+        }
+
+        results.addAll(contactDeferred.await())
+        results.addAll(filesDeferred.await())
+        results.addAll(settingsDeferred.await())
+        results.addAll(startPageSuggestionsDeferred.await())
+
+        results
+    }
 
     private fun filterByType(results: List<SearchResult>, type: String): List<SearchResult> {
         return results.filter { it.resultType == type }

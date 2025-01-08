@@ -71,10 +71,9 @@ sealed class QsbSearchProvider(
     fun createWebsiteIntent() = Intent(Intent.ACTION_VIEW, Uri.parse(website))
         .addFlags(INTENT_FLAGS)
 
-    open fun handleCreateVoiceIntent(): Intent =
-        Intent(Intent.ACTION_VOICE_COMMAND)
-            .addFlags(INTENT_FLAGS)
-            .setPackage(packageName)
+    open fun handleCreateVoiceIntent(): Intent = Intent(Intent.ACTION_VOICE_COMMAND)
+        .addFlags(INTENT_FLAGS)
+        .setPackage(packageName)
 
     /**
      * Checks if the search provider is downloaded.
@@ -142,8 +141,7 @@ sealed class QsbSearchProvider(
         /**
          * Resolve the search provider using its ID, or use Google as a fallback.
          */
-        fun fromId(id: String): QsbSearchProvider =
-            values().firstOrNull { it.id == id } ?: AppSearch
+        fun fromId(id: String): QsbSearchProvider = values().firstOrNull { it.id == id } ?: AppSearch
 
         /**
          * Resolve the default search provider.

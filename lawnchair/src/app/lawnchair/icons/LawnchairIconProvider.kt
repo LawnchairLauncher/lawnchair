@@ -297,7 +297,8 @@ class LawnchairIconProvider @JvmOverloads constructor(
         handler: Handler,
         private val iconPack: IconPack,
         private val callback: IconChangeListener,
-    ) : BroadcastReceiver(), SafeCloseable {
+    ) : BroadcastReceiver(),
+        SafeCloseable {
 
         init {
             val filter = IntentFilter(ACTION_TIMEZONE_CHANGED)
@@ -338,7 +339,8 @@ class LawnchairIconProvider @JvmOverloads constructor(
         private val context: Context,
         handler: Handler,
         private val callback: IconChangeListener,
-    ) : BroadcastReceiver(), SafeCloseable {
+    ) : BroadcastReceiver(),
+        SafeCloseable {
 
         init {
             val filter = IntentFilter(ACTION_PACKAGE_ADDED)

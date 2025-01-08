@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 class VerticalSwipeTouchController(
     private val launcher: LawnchairLauncher,
     private val gestureController: GestureController,
-) : TouchController, BothAxesSwipeDetector.Listener {
+) : TouchController,
+    BothAxesSwipeDetector.Listener {
 
     private val prefs = PreferenceManager2.getInstance(launcher)
     private val detector = BothAxesSwipeDetector(launcher, this)

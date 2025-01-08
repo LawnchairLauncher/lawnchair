@@ -42,7 +42,9 @@ private val iconPackIntents = listOf(
     Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"),
 )
 
-class PreferenceViewModel(private val app: Application) : AndroidViewModel(app), PreferenceInteractor {
+class PreferenceViewModel(private val app: Application) :
+    AndroidViewModel(app),
+    PreferenceInteractor {
 
     private val themedIconPackIntents = listOf(Intent(app.getString(R.string.icon_packs_intent_name)))
     override val iconPacks = flow {

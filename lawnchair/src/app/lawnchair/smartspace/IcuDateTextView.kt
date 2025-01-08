@@ -161,13 +161,12 @@ data class DateTimeOptions(
     val timeFormat: SmartspaceTimeFormat,
 ) {
     companion object {
-        fun fromPrefs(prefs: PreferenceManager2) =
-            combine(
-                prefs.smartspaceShowDate.get(),
-                prefs.smartspaceShowTime.get(),
-                prefs.smartspaceTimeFormat.get(),
-            ) { showDate, showTime, timeFormat ->
-                DateTimeOptions(showDate, showTime, timeFormat)
-            }
+        fun fromPrefs(prefs: PreferenceManager2) = combine(
+            prefs.smartspaceShowDate.get(),
+            prefs.smartspaceShowTime.get(),
+            prefs.smartspaceTimeFormat.get(),
+        ) { showDate, showTime, timeFormat ->
+            DateTimeOptions(showDate, showTime, timeFormat)
+        }
     }
 }

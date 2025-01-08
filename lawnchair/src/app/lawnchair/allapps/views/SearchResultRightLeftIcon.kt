@@ -21,7 +21,8 @@ import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 
 class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
-    LinearLayout(context, attrs), SearchResultView {
+    LinearLayout(context, attrs),
+    SearchResultView {
 
     private val launcher = context.launcher
     private var grid: DeviceProfile = launcher.deviceProfile

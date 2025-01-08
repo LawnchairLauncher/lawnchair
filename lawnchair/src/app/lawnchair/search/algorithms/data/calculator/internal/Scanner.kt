@@ -91,12 +91,13 @@ internal class Scanner(
         previousChar: Char = '\u0000',
         nextChar: Char = '\u0000',
     ): Boolean {
-        return char.isDigit() || when (char) {
-            '.' -> true
-            'e', 'E' -> previousChar.isDigit() && (nextChar.isDigit() || nextChar == '+' || nextChar == '-')
-            '+', '-' -> (previousChar == 'e' || previousChar == 'E') && nextChar.isDigit()
-            else -> false
-        }
+        return char.isDigit() ||
+            when (char) {
+                '.' -> true
+                'e', 'E' -> previousChar.isDigit() && (nextChar.isDigit() || nextChar == '+' || nextChar == '-')
+                '+', '-' -> (previousChar == 'e' || previousChar == 'E') && nextChar.isDigit()
+                else -> false
+            }
     }
 
     private fun number() {

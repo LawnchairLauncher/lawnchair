@@ -63,27 +63,26 @@ class SharedPreferencesMigration(private val context: Context) {
         keys.values.any { it !in allKeys }
     }
 
-    private fun produceMigrationFunction(): suspend (SharedPreferencesView, Preferences) -> Preferences =
-        { sharedPreferences: SharedPreferencesView, currentData: Preferences ->
-            val currentKeys = currentData.asMap().keys.map { it.name }
-            val migratedKeys = currentKeys.mapNotNull { currentKey -> keys.entries.find { entry -> entry.value == currentKey }?.key }
-            val filteredSharedPreferences = sharedPreferences.getAll().filter { (key, _) -> key !in migratedKeys }
-            val mutablePreferences = currentData.toMutablePreferences()
+    private fun produceMigrationFunction(): suspend (SharedPreferencesView, Preferences) -> Preferences = { sharedPreferences: SharedPreferencesView, currentData: Preferences ->
+        val currentKeys = currentData.asMap().keys.map { it.name }
+        val migratedKeys = currentKeys.mapNotNull { currentKey -> keys.entries.find { entry -> entry.value == currentKey }?.key }
+        val filteredSharedPreferences = sharedPreferences.getAll().filter { (key, _) -> key !in migratedKeys }
+        val mutablePreferences = currentData.toMutablePreferences()
 
-            for ((key, value) in filteredSharedPreferences) {
-                val newKey = keys[key] ?: key
-                when (value) {
-                    is Boolean -> mutablePreferences[booleanPreferencesKey(newKey)] = value
-                    is Float -> mutablePreferences[floatPreferencesKey(newKey)] = value
-                    is Int -> mutablePreferences[intPreferencesKey(newKey)] = value
-                    is Long -> mutablePreferences[longPreferencesKey(newKey)] = value
-                    is String -> mutablePreferences[stringPreferencesKey(newKey)] = value
-                    is Set<*> -> {
-                        mutablePreferences[stringSetPreferencesKey(newKey)] = value as Set<String>
-                    }
+        for ((key, value) in filteredSharedPreferences) {
+            val newKey = keys[key] ?: key
+            when (value) {
+                is Boolean -> mutablePreferences[booleanPreferencesKey(newKey)] = value
+                is Float -> mutablePreferences[floatPreferencesKey(newKey)] = value
+                is Int -> mutablePreferences[intPreferencesKey(newKey)] = value
+                is Long -> mutablePreferences[longPreferencesKey(newKey)] = value
+                is String -> mutablePreferences[stringPreferencesKey(newKey)] = value
+                is Set<*> -> {
+                    mutablePreferences[stringSetPreferencesKey(newKey)] = value as Set<String>
                 }
             }
-
-            mutablePreferences.toPreferences()
         }
+
+        mutablePreferences.toPreferences()
+    }
 }

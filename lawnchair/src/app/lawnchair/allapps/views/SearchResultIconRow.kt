@@ -21,7 +21,9 @@ import com.android.launcher3.R
 import com.android.launcher3.views.BubbleTextHolder
 
 class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
-    LinearLayout(context, attrs), SearchResultView, BubbleTextHolder {
+    LinearLayout(context, attrs),
+    SearchResultView,
+    BubbleTextHolder {
 
     private var isSmall = false
     private lateinit var icon: SearchResultIcon

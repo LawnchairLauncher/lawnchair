@@ -63,7 +63,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.encodeToString
 
-class PreferenceManager2 private constructor(private val context: Context) : PreferenceManager, SafeCloseable {
+class PreferenceManager2 private constructor(private val context: Context) :
+    PreferenceManager,
+    SafeCloseable {
 
     private val scope = MainScope()
     private val resourceProvider = DynamicResource.provider(context)

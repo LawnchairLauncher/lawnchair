@@ -139,8 +139,7 @@ class LawnchairApp : Application() {
         }
     }
 
-    private fun getJournalFile(file: File): File =
-        File(file.parentFile, "${file.name}-journal")
+    private fun getJournalFile(file: File): File = File(file.parentFile, "${file.name}-journal")
 
     private fun getSystemUiBoolean(resName: String, fallback: Boolean): Boolean {
         val systemUiPackage = "com.android.systemui"
