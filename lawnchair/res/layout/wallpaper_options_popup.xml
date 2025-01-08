@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<view xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/popup_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    class="app.lawnchair.ui.popup.LawnchairPopupDialog$LawnchairOptionsPopUp">
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/wallpaper_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="2dp">
+        <app.lawnchair.ui.popup.WallpaperCarouselView
+            android:orientation="horizontal"
+            android:id="@+id/wallpaper_carousel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/wallpaper_carousel_height"
+            android:layout_margin="@dimen/system_shortcut_margin_start"/>
+    </LinearLayout>
+</view>

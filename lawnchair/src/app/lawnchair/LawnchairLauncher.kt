@@ -47,6 +47,7 @@ import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.unsafeLazy
+import app.lawnchair.wallpaper.service.WallpaperDatabase
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.BubbleTextView
@@ -227,6 +228,8 @@ class LawnchairLauncher : QuickstepLauncher() {
         showQuickstepWarningIfNecessary()
 
         reloadIconsIfNeeded()
+
+        WallpaperDatabase.INSTANCE.get(this).checkpointSync()
     }
 
     override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {

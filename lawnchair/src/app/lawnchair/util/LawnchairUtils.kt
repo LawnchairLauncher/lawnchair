@@ -53,6 +53,7 @@ import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
 import com.patrykmichalik.opto.core.firstBlocking
+import java.io.ByteArrayOutputStream
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.math.max
@@ -250,6 +251,12 @@ fun Size.scaleDownTo(maxSize: Int): Size {
 
         else -> this
     }
+}
+
+fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+    val stream = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+    return stream.toByteArray()
 }
 
 fun Context.isDefaultLauncher(): Boolean = getDefaultLauncherPackageName() == packageName

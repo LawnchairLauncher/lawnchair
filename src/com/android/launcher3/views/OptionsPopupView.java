@@ -56,6 +56,7 @@ import java.util.List;
 
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.ui.popup.LauncherOptionsPopup;
+import app.lawnchair.wallpaper.service.WallpaperService;
 
 /**
  * Popup shown on long pressing an empty space in launcher
@@ -171,13 +172,19 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
         if (activityContext == null) {
             return null;
         }
+        
+        final Context context = activityContext.getDragLayer().mActivity;
+        final boolean isEmpty = WallpaperService.INSTANCE.get(context).getTopWallpapers().isEmpty();
+         
+        var layout = isEmpty ? R.layout.longpress_options_menu : R.layout.wallpaper_options_popup;
         OptionsPopupView<T> popup = (OptionsPopupView<T>) activityContext.getLayoutInflater()
-                .inflate(R.layout.longpress_options_menu, activityContext.getDragLayer(), false);
+                .inflate(layout, activityContext.getDragLayer(), false);
         popup.mTargetRect = targetRect;
         popup.setShouldAddArrow(shouldAddArrow);
 
         for (OptionItem item : items) {
-            DeepShortcutView view = popup.inflateAndAdd(R.layout.system_shortcut, popup);
+            var deepLayout = isEmpty ? R.layout.system_shortcut : R.layout.wallpaper_options_popup_item;
+            DeepShortcutView view = popup.inflateAndAdd(deepLayout, popup);
             if (width > 0) {
                 view.getLayoutParams().width = width;
             }

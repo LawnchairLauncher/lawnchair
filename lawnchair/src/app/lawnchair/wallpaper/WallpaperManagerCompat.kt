@@ -5,7 +5,11 @@ import android.content.Context
 import app.lawnchair.util.MainThreadInitializedObject
 import app.lawnchair.util.requireSystemService
 import app.lawnchair.wallpaper.WallpaperColorsCompat.Companion.HINT_SUPPORTS_DARK_THEME
+import app.lawnchair.wallpaper.service.WallpaperService
 import com.android.launcher3.Utilities
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 sealed class WallpaperManagerCompat(val context: Context) {
 
@@ -28,6 +32,10 @@ sealed class WallpaperManagerCompat(val context: Context) {
     protected fun notifyChange() {
         listeners.toTypedArray().forEach {
             it.onColorsChanged()
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            WallpaperService(context).saveWallpaper(wallpaperManager)
         }
     }
 

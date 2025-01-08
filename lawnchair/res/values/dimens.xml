@@ -105,4 +105,6 @@
     <dimen name="search_row_files_preview_height">64dp</dimen>
     <dimen name="search_row_preview_radius">18dp</dimen>
 
+    <dimen name="wallpaper_carousel_height">120dp</dimen>
+
 </resources>
