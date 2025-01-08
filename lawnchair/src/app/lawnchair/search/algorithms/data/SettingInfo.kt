@@ -28,9 +28,7 @@ suspend fun findSettingsByNameAndAction(query: String, max: Int): List<SettingIn
                 .filter {
                     it.type == String::class.java &&
                         Modifier.isStatic(it.modifiers) &&
-                        it.name.startsWith(
-                            "ACTION_",
-                        )
+                        it.name.startsWith("ACTION_")
                 }
                 .map { it.name to it.get(null) as String }
                 .filter { (name, action) ->
