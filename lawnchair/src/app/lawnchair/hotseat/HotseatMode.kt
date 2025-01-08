@@ -44,7 +44,8 @@ object GoogleSearchHotseat : HotseatMode(
 ) {
     override fun toString(): String = "google_search"
 
-    override fun isAvailable(context: Context): Boolean = context.packageManager.isPackageInstalledAndEnabled("com.google.android.googlequicksearchbox")
+    override fun isAvailable(context: Context): Boolean =
+        context.packageManager.isPackageInstalledAndEnabled("com.google.android.googlequicksearchbox")
 }
 
 object DisabledHotseat : HotseatMode(

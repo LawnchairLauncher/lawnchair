@@ -42,7 +42,9 @@ class IconShapeManager(private val context: Context) : SafeCloseable {
         val systemShape = findNearestShape(iconMask)
         return object : IconShape(systemShape) {
 
-            override fun getMaskPath(): Path = Path(iconMask)
+            override fun getMaskPath(): Path {
+                return Path(iconMask)
+            }
 
             override fun toString() = "system"
 
@@ -94,6 +96,7 @@ class IconShapeManager(private val context: Context) : SafeCloseable {
         fun getSystemIconShape(context: Context) = INSTANCE.get(context).systemIconShape
 
         @JvmStatic
-        fun getWindowTransitionRadius(context: Context) = PreferenceManager2.getInstance(context).iconShape.firstBlocking().windowTransitionRadius
+        fun getWindowTransitionRadius(context: Context) =
+            PreferenceManager2.getInstance(context).iconShape.firstBlocking().windowTransitionRadius
     }
 }

@@ -14,7 +14,8 @@ data object Yandex : QsbSearchProvider(
     website = "https://ya.ru/",
 ) {
 
-    override fun handleCreateVoiceIntent(): Intent = Intent(action)
-        .addFlags(INTENT_FLAGS)
-        .setClassName(packageName, "ru.yandex.searchplugin.AssistantActivityAlias")
+    override fun handleCreateVoiceIntent(): Intent =
+        Intent(action)
+            .addFlags(INTENT_FLAGS)
+            .setClassName(packageName, "ru.yandex.searchplugin.AssistantActivityAlias")
 }

@@ -63,7 +63,9 @@ class GoogleFontsListing private constructor(private val context: Context) : Saf
         return fonts
     }
 
-    suspend fun getFonts(): List<GoogleFontInfo> = fonts.await()
+    suspend fun getFonts(): List<GoogleFontInfo> {
+        return fonts.await()
+    }
 
     override fun close() {
         TODO("Not yet implemented")
@@ -84,7 +86,9 @@ class GoogleFontsListing private constructor(private val context: Context) : Saf
 
     class GoogleFontInfo(val family: String, val variants: List<String>) : Comparable<GoogleFontInfo> {
 
-        override fun compareTo(other: GoogleFontInfo): Int = family.compareTo(other.family)
+        override fun compareTo(other: GoogleFontInfo): Int {
+            return family.compareTo(other.family)
+        }
     }
 
     companion object {
@@ -101,7 +105,9 @@ class GoogleFontsListing private constructor(private val context: Context) : Saf
             return variant.replace("italic", "").replace("regular", "400")
         }
 
-        fun isItalic(variant: String): Boolean = variant.contains("italic")
+        fun isItalic(variant: String): Boolean {
+            return variant.contains("italic")
+        }
 
         fun buildQuery(family: String, variant: String): String {
             val weight = getWeight(variant)

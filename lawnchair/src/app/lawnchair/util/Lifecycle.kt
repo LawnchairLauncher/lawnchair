@@ -45,8 +45,10 @@ private fun observeLifecycleState(): Lifecycle.State {
     return state
 }
 
-fun Context.lookupLifecycleOwner(): LifecycleOwner? = when (this) {
-    is LifecycleOwner -> this
-    is ContextWrapper -> baseContext.lookupLifecycleOwner()
-    else -> null
+fun Context.lookupLifecycleOwner(): LifecycleOwner? {
+    return when (this) {
+        is LifecycleOwner -> this
+        is ContextWrapper -> baseContext.lookupLifecycleOwner()
+        else -> null
+    }
 }

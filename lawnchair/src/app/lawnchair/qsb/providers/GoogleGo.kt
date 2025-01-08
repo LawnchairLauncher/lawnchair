@@ -16,5 +16,6 @@ data object GoogleGo : QsbSearchProvider(
     type = QsbSearchProviderType.APP,
 ) {
 
-    override fun handleCreateVoiceIntent(): Intent = createSearchIntent().putExtra("openMic", true)
+    override fun handleCreateVoiceIntent(): Intent =
+        createSearchIntent().putExtra("openMic", true)
 }

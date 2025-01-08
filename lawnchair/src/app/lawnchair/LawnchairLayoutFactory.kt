@@ -11,9 +11,7 @@ import com.android.launcher3.BubbleTextView
 import com.android.launcher3.util.SafeCloseable
 import com.android.launcher3.views.DoubleShadowBubbleTextView
 
-class LawnchairLayoutFactory(context: Context) :
-    LayoutInflater.Factory2,
-    SafeCloseable {
+class LawnchairLayoutFactory(context: Context) : LayoutInflater.Factory2, SafeCloseable {
 
     private val fontManager by lazy { FontManager.INSTANCE.get(context) }
     private val constructorMap = mapOf<String, (Context, AttributeSet) -> View>(
@@ -36,7 +34,9 @@ class LawnchairLayoutFactory(context: Context) :
         return view
     }
 
-    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? = onCreateView(null, name, context, attrs)
+    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        return onCreateView(null, name, context, attrs)
+    }
 
     override fun close() {
         TODO("Not yet implemented")

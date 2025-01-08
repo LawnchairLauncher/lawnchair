@@ -55,10 +55,14 @@ class InterceptingViewPager @JvmOverloads constructor(
         }
     }
 
-    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean = handleTouchOverride(ev, superOnIntercept)
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        return handleTouchOverride(ev, superOnIntercept)
+    }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(ev: MotionEvent): Boolean = handleTouchOverride(ev, superOnTouch)
+    override fun onTouchEvent(ev: MotionEvent): Boolean {
+        return handleTouchOverride(ev, superOnTouch)
+    }
 
     private fun cancelScheduledLongPress() {
         if (hasPostedLongPress) {

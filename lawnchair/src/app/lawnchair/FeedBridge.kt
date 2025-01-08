@@ -56,19 +56,25 @@ class FeedBridge(private val context: Context) {
         }
     }
 
-    private fun customBridgeOrNull(customPackage: String = prefs.feedProvider.get()): CustomBridgeInfo? = if (customPackage.isNotBlank()) {
-        val bridge = CustomBridgeInfo(customPackage)
-        if (bridge.isAvailable()) bridge else null
-    } else {
-        null
+    private fun customBridgeOrNull(customPackage: String = prefs.feedProvider.get()): CustomBridgeInfo? {
+        return if (customPackage.isNotBlank()) {
+            val bridge = CustomBridgeInfo(customPackage)
+            if (bridge.isAvailable()) bridge else null
+        } else {
+            null
+        }
     }
 
     private fun customBridgeAvailable() = customBridgeOrNull()?.isAvailable() == true
 
-    fun isInstalled(): Boolean = customBridgeAvailable() || !shouldUseFeed || bridgePackages.any { it.isAvailable() }
+    fun isInstalled(): Boolean {
+        return customBridgeAvailable() || !shouldUseFeed || bridgePackages.any { it.isAvailable() }
+    }
 
-    fun resolveSmartspace(): String = bridgePackages.firstOrNull { it.supportsSmartspace }?.packageName
-        ?: "com.google.android.googlequicksearchbox"
+    fun resolveSmartspace(): String {
+        return bridgePackages.firstOrNull { it.supportsSmartspace }?.packageName
+            ?: "com.google.android.googlequicksearchbox"
+    }
 
     open inner class BridgeInfo(val packageName: String, signatureHashRes: Int) {
         protected open val signatureHash =
@@ -135,7 +141,8 @@ class FeedBridge(private val context: Context) {
         }
     }
 
-    private inner class PixelBridgeInfo(packageName: String, signatureHashRes: Int) : BridgeInfo(packageName, signatureHashRes) {
+    private inner class PixelBridgeInfo(packageName: String, signatureHashRes: Int) :
+        BridgeInfo(packageName, signatureHashRes) {
         override val supportsSmartspace get() = isAvailable()
     }
 

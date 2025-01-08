@@ -27,7 +27,9 @@ object TaskUtilLockState {
         }
     }
 
-    private fun toFormatLockedAppStr(packageName: String, userId: Int): String = "$packageName$SEPARATOR$userId"
+    private fun toFormatLockedAppStr(packageName: String, userId: Int): String {
+        return "$packageName$SEPARATOR$userId"
+    }
 
     private fun saveLockedApps(lockedApps: List<String>?) {
         lockedApps?.let {
@@ -56,7 +58,9 @@ object TaskUtilLockState {
         }
     }
 
-    fun getTaskLockState(context: Context, componentName: ComponentName, taskKey: Task.TaskKey): Boolean = updateSpecifiedTaskLockState(context, componentName, taskKey)
+    fun getTaskLockState(context: Context, componentName: ComponentName, taskKey: Task.TaskKey): Boolean {
+        return updateSpecifiedTaskLockState(context, componentName, taskKey)
+    }
 
     private fun updateSpecifiedTaskLockState(context: Context, componentName: ComponentName, taskKey: Task.TaskKey): Boolean {
         val taskLockState = LawnchairLockedStateController.initialize(context)

@@ -43,7 +43,8 @@ import com.android.launcher3.views.AbstractSlideInView
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer
 
-class ComposeBottomSheet<T>(context: Context) : AbstractSlideInView<T>(context, null, 0) where T : Context, T : ActivityContext {
+class ComposeBottomSheet<T>(context: Context) :
+    AbstractSlideInView<T>(context, null, 0) where T : Context, T : ActivityContext {
 
     private val container = ComposeView(context)
     private var imeShift = 0f
@@ -109,9 +110,13 @@ class ComposeBottomSheet<T>(context: Context) : AbstractSlideInView<T>(context, 
         setSystemUiFlags(0)
     }
 
-    override fun isOfType(type: Int): Boolean = type and TYPE_COMPOSE_VIEW != 0
+    override fun isOfType(type: Int): Boolean {
+        return type and TYPE_COMPOSE_VIEW != 0
+    }
 
-    override fun getScrimColor(context: Context): Int = ColorTokens.WidgetsPickerScrim.resolveColor(context)
+    override fun getScrimColor(context: Context): Int {
+        return ColorTokens.WidgetsPickerScrim.resolveColor(context)
+    }
 
     override fun setTranslationShift(translationShift: Float) {
         mTranslationShift = translationShift

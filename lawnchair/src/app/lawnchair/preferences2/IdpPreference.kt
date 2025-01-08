@@ -39,7 +39,8 @@ class IdpPreference(
     }
 }
 
-fun IdpPreference.firstBlocking(gridOption: InvariantDeviceProfile.GridOption) = runBlocking { get(gridOption = gridOption).first() }
+fun IdpPreference.firstBlocking(gridOption: InvariantDeviceProfile.GridOption) =
+    runBlocking { get(gridOption = gridOption).first() }
 
 @Composable
 fun IdpPreference.state(

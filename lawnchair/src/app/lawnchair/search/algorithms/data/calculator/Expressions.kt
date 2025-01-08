@@ -10,7 +10,8 @@ import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
 
-class ExpressionException(message: String) : RuntimeException(message)
+class ExpressionException(message: String) :
+    RuntimeException(message)
 
 @Suppress("unused")
 class Expressions {
@@ -163,7 +164,9 @@ class Expressions {
         return this
     }
 
-    fun eval(expression: String): BigDecimal = evaluator.eval(parse(expression))
+    fun eval(expression: String): BigDecimal {
+        return evaluator.eval(parse(expression))
+    }
 
     /**
      * eval an expression then round it with {@link Evaluator#mathContext} and call toEngineeringString <br>
@@ -171,16 +174,24 @@ class Expressions {
      * @param expression String
      * @return String
      */
-    fun evalToString(expression: String): String = try {
-        evaluator.eval(parse(expression)).round(evaluator.mathContext).stripTrailingZeros()
-            .toEngineeringString()
-    } catch (e: Throwable) {
-        e.cause?.message ?: e.message ?: "unknown error"
+    fun evalToString(expression: String): String {
+        return try {
+            evaluator.eval(parse(expression)).round(evaluator.mathContext).stripTrailingZeros()
+                .toEngineeringString()
+        } catch (e: Throwable) {
+            e.cause?.message ?: e.message ?: "unknown error"
+        }
     }
 
-    private fun parse(expression: String): Expr = parse(scan(expression))
+    private fun parse(expression: String): Expr {
+        return parse(scan(expression))
+    }
 
-    private fun parse(tokens: List<Token>): Expr = Parser(tokens).parse()
+    private fun parse(tokens: List<Token>): Expr {
+        return Parser(tokens).parse()
+    }
 
-    private fun scan(expression: String): List<Token> = Scanner(expression, evaluator.mathContext).scanTokens()
+    private fun scan(expression: String): List<Token> {
+        return Scanner(expression, evaluator.mathContext).scanTokens()
+    }
 }

@@ -12,28 +12,30 @@ data class Calculation(
 
 fun calculateEquationFromString(
     query: String,
-): Calculation = try {
-    val evaluatedValue = Expressions().eval(query)
-    val roundedValue = evaluatedValue.round(MathContext.DECIMAL64)
-    val formattedValue = roundedValue.stripTrailingZeros()
-    val absoluteValue = formattedValue.abs()
-    val threshold = BigDecimal("9999999999999999")
+): Calculation {
+    return try {
+        val evaluatedValue = Expressions().eval(query)
+        val roundedValue = evaluatedValue.round(MathContext.DECIMAL64)
+        val formattedValue = roundedValue.stripTrailingZeros()
+        val absoluteValue = formattedValue.abs()
+        val threshold = BigDecimal("9999999999999999")
 
-    val result = if (absoluteValue > threshold) {
-        formattedValue.toString()
-    } else {
-        formattedValue.toPlainString()
+        val result = if (absoluteValue > threshold) {
+            formattedValue.toString()
+        } else {
+            formattedValue.toPlainString()
+        }
+
+        Calculation(
+            equation = query,
+            result = result,
+            isValid = true,
+        )
+    } catch (_: Exception) {
+        Calculation(
+            equation = "",
+            result = "",
+            isValid = false,
+        )
     }
-
-    Calculation(
-        equation = query,
-        result = result,
-        isValid = true,
-    )
-} catch (_: Exception) {
-    Calculation(
-        equation = "",
-        result = "",
-        isValid = false,
-    )
 }

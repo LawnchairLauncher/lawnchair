@@ -19,8 +19,7 @@ import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
 
 class SearchResultText(context: Context, attrs: AttributeSet?) :
-    LinearLayout(context, attrs),
-    SearchResultView {
+    LinearLayout(context, attrs), SearchResultView {
 
     private val launcher = context.launcher
     private lateinit var title: TextView

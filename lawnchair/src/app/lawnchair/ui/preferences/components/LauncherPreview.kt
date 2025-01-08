@@ -90,25 +90,29 @@ fun createPreviewView(idp: InvariantDeviceProfile = invariantDeviceProfile()): V
     return remember(idp) { previewManager.createPreviewView(idp) }
 }
 
-fun Modifier.clipToPercentage(percentage: Float): Modifier = this.then(
-    Modifier.layout { measurable, constraints ->
-        val placeable = measurable.measure(constraints)
-        val height = (placeable.height * percentage).toInt()
-        layout(placeable.width, height) {
-            placeable.place(0, 0)
-        }
-    },
-)
+fun Modifier.clipToPercentage(percentage: Float): Modifier {
+    return this.then(
+        Modifier.layout { measurable, constraints ->
+            val placeable = measurable.measure(constraints)
+            val height = (placeable.height * percentage).toInt()
+            layout(placeable.width, height) {
+                placeable.place(0, 0)
+            }
+        },
+    )
+}
 
-fun Modifier.clipToVisiblePercentage(percentage: Float): Modifier = this.then(
-    Modifier.layout { measurable, constraints ->
-        val placeable = measurable.measure(constraints)
-        val totalHeight = placeable.height
-        val visibleHeight = (totalHeight * percentage).toInt()
-        val offsetY = totalHeight - visibleHeight
+fun Modifier.clipToVisiblePercentage(percentage: Float): Modifier {
+    return this.then(
+        Modifier.layout { measurable, constraints ->
+            val placeable = measurable.measure(constraints)
+            val totalHeight = placeable.height
+            val visibleHeight = (totalHeight * percentage).toInt()
+            val offsetY = totalHeight - visibleHeight
 
-        layout(placeable.width, visibleHeight) {
-            placeable.place(0, -offsetY)
-        }
-    },
-)
+            layout(placeable.width, visibleHeight) {
+                placeable.place(0, -offsetY)
+            }
+        },
+    )
+}

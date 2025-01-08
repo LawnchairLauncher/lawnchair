@@ -36,13 +36,21 @@ sealed class IconCornerShape {
         protected open val controlDistanceX: Float get() = controlDistance
         protected open val controlDistanceY: Float get() = controlDistance
 
-        private fun getControl1X(position: Position, controlDistance: Float): Float = Utilities.mapRange(controlDistance, position.controlX, position.startX)
+        private fun getControl1X(position: Position, controlDistance: Float): Float {
+            return Utilities.mapRange(controlDistance, position.controlX, position.startX)
+        }
 
-        private fun getControl1Y(position: Position, controlDistance: Float): Float = Utilities.mapRange(controlDistance, position.controlY, position.startY)
+        private fun getControl1Y(position: Position, controlDistance: Float): Float {
+            return Utilities.mapRange(controlDistance, position.controlY, position.startY)
+        }
 
-        private fun getControl2X(position: Position, controlDistance: Float): Float = Utilities.mapRange(controlDistance, position.controlX, position.endX)
+        private fun getControl2X(position: Position, controlDistance: Float): Float {
+            return Utilities.mapRange(controlDistance, position.controlX, position.endX)
+        }
 
-        private fun getControl2Y(position: Position, controlDistance: Float): Float = Utilities.mapRange(controlDistance, position.controlY, position.endY)
+        private fun getControl2Y(position: Position, controlDistance: Float): Float {
+            return Utilities.mapRange(controlDistance, position.controlY, position.endY)
+        }
 
         override fun addCorner(
             path: Path,
@@ -120,7 +128,9 @@ sealed class IconCornerShape {
             }
         }
 
-        override fun toString(): String = "cuthex"
+        override fun toString(): String {
+            return "cuthex"
+        }
     }
 
     object LightSquircle : BaseBezierPath() {
@@ -299,17 +309,19 @@ sealed class IconCornerShape {
 
         val arc = Arc()
 
-        fun fromString(value: String): IconCornerShape = when (value) {
-            "cut" -> Cut
-            "cuthex" -> CutHex
-            "lightsquircle" -> LightSquircle
-            "cubic", "squircle" -> Squircle
-            "strongsquircle" -> StrongSquircle
-            "ultrasquircle" -> UltraSquircle
-            "sammy" -> Sammy
-            "arc" -> arc
-            "cupertino" -> Cupertino
-            else -> error("invalid corner shape $value")
+        fun fromString(value: String): IconCornerShape {
+            return when (value) {
+                "cut" -> Cut
+                "cuthex" -> CutHex
+                "lightsquircle" -> LightSquircle
+                "cubic", "squircle" -> Squircle
+                "strongsquircle" -> StrongSquircle
+                "ultrasquircle" -> UltraSquircle
+                "sammy" -> Sammy
+                "arc" -> arc
+                "cupertino" -> Cupertino
+                else -> error("invalid corner shape $value")
+            }
         }
     }
 }

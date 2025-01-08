@@ -36,7 +36,9 @@ sealed interface SearchResultView {
         return flags
     }
 
-    fun hasFlag(flags: Int, flag: Int): Boolean = (flags and flag) != 0
+    fun hasFlag(flags: Int, flag: Int): Boolean {
+        return (flags and flag) != 0
+    }
 
     fun shouldHandleClick(targetCompat: SearchTargetCompat): Boolean {
         val packageName = targetCompat.packageName

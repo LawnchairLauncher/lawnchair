@@ -111,32 +111,34 @@ object LauncherOptionsPopup {
         return options
     }
 
-    fun getMetadataForOption(identifier: String): LauncherOptionMetadata = when (identifier) {
-        "lock" -> LauncherOptionMetadata(
-            label = R.string.home_screen_lock,
-            icon = R.drawable.ic_lock,
-        )
-        "sys_settings" -> LauncherOptionMetadata(
-            label = R.string.system_settings,
-            icon = R.drawable.ic_setting,
-        )
-        "edit_mode" -> LauncherOptionMetadata(
-            label = R.string.edit_home_screen,
-            icon = R.drawable.enter_home_gardening_icon,
-        )
-        "wallpaper" -> LauncherOptionMetadata(
-            label = R.string.styles_wallpaper_button_text,
-            icon = R.drawable.ic_palette,
-        )
-        "widgets" -> LauncherOptionMetadata(
-            label = R.string.widget_button_text,
-            icon = R.drawable.ic_widget,
-        )
-        "home_settings" -> LauncherOptionMetadata(
-            label = R.string.settings_button_text,
-            icon = R.drawable.ic_home_screen,
-        )
-        else -> throw IllegalArgumentException("invalid popup option")
+    fun getMetadataForOption(identifier: String): LauncherOptionMetadata {
+        return when (identifier) {
+            "lock" -> LauncherOptionMetadata(
+                label = R.string.home_screen_lock,
+                icon = R.drawable.ic_lock,
+            )
+            "sys_settings" -> LauncherOptionMetadata(
+                label = R.string.system_settings,
+                icon = R.drawable.ic_setting,
+            )
+            "edit_mode" -> LauncherOptionMetadata(
+                label = R.string.edit_home_screen,
+                icon = R.drawable.enter_home_gardening_icon,
+            )
+            "wallpaper" -> LauncherOptionMetadata(
+                label = R.string.styles_wallpaper_button_text,
+                icon = R.drawable.ic_palette,
+            )
+            "widgets" -> LauncherOptionMetadata(
+                label = R.string.widget_button_text,
+                icon = R.drawable.ic_widget,
+            )
+            "home_settings" -> LauncherOptionMetadata(
+                label = R.string.settings_button_text,
+                icon = R.drawable.ic_home_screen,
+            )
+            else -> throw IllegalArgumentException("invalid popup option")
+        }
     }
 }
 
@@ -150,15 +152,19 @@ data class LauncherOptionMetadata(
     @DrawableRes val icon: Int,
 )
 
-fun String.toLauncherOptions(): List<LauncherOptionPopupItem> = this.split("|").map { item ->
-    val (identifier, isEnabled) = when {
-        item.startsWith("+") -> item.drop(1) to true
-        item.startsWith("-") -> item.drop(1) to false
-        else -> item to true // Default to enabled if no prefix
+fun String.toLauncherOptions(): List<LauncherOptionPopupItem> {
+    return this.split("|").map { item ->
+        val (identifier, isEnabled) = when {
+            item.startsWith("+") -> item.drop(1) to true
+            item.startsWith("-") -> item.drop(1) to false
+            else -> item to true // Default to enabled if no prefix
+        }
+        LauncherOptionPopupItem(identifier, isEnabled)
     }
-    LauncherOptionPopupItem(identifier, isEnabled)
 }
 
-fun List<LauncherOptionPopupItem>.toOptionOrderString(): String = this.joinToString("|") {
-    if (it.isEnabled) "+${it.identifier}" else "-${it.identifier}"
+fun List<LauncherOptionPopupItem>.toOptionOrderString(): String {
+    return this.joinToString("|") {
+        if (it.isEnabled) "+${it.identifier}" else "-${it.identifier}"
+    }
 }

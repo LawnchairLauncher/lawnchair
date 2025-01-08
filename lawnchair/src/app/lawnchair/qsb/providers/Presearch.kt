@@ -16,7 +16,8 @@ data object Presearch : QsbSearchProvider(
     website = "https://presearch.com/",
 ) {
 
-    override fun handleCreateVoiceIntent(): Intent = Intent(action)
-        .addFlags(INTENT_FLAGS)
-        .setClassName(packageName, "org.chromium.chrome.browser.VoiceSearchActivity")
+    override fun handleCreateVoiceIntent(): Intent =
+        Intent(action)
+            .addFlags(INTENT_FLAGS)
+            .setClassName(packageName, "org.chromium.chrome.browser.VoiceSearchActivity")
 }

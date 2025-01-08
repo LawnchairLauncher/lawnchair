@@ -51,17 +51,19 @@ class DynamicColorScheme(
         swatch: ColorSwatch,
         seed: Zcam,
         referenceSwatch: ColorSwatch,
-    ): ColorSwatch = swatch.map { (shade, color) ->
-        val target = color as? Zcam
-            ?: color.convert<CieXyz>().toAbs(cond.referenceWhite.y).toZcam(cond, include2D = false)
-        val reference = referenceSwatch[shade]!! as? Zcam
-            ?: color.convert<CieXyz>().toAbs(cond.referenceWhite.y).toZcam(cond, include2D = false)
-        val newLch = transformColor(target, seed, reference)
-        val newSrgb = newLch.convert<Srgb>()
+    ): ColorSwatch {
+        return swatch.map { (shade, color) ->
+            val target = color as? Zcam
+                ?: color.convert<CieXyz>().toAbs(cond.referenceWhite.y).toZcam(cond, include2D = false)
+            val reference = referenceSwatch[shade]!! as? Zcam
+                ?: color.convert<CieXyz>().toAbs(cond.referenceWhite.y).toZcam(cond, include2D = false)
+            val newLch = transformColor(target, seed, reference)
+            val newSrgb = newLch.convert<Srgb>()
 
-        Log.d(TAG, "Transform: [$shade] $target => $newLch => ${newSrgb.toHex()}")
-        shade to newSrgb
-    }.toMap()
+            Log.d(TAG, "Transform: [$shade] $target => $newLch => ${newSrgb.toHex()}")
+            shade to newSrgb
+        }.toMap()
+    }
 
     private fun transformColor(target: Zcam, seed: Zcam, reference: Zcam): Color {
         // Keep target lightness.
@@ -92,11 +94,13 @@ class DynamicColorScheme(
         }
     }
 
-    override fun equals(other: Any?): Boolean = other is DynamicColorScheme &&
-        other.seedColor == seedColor &&
-        other.chromaFactor == chromaFactor &&
-        other.cond == cond &&
-        other.accurateShades == accurateShades
+    override fun equals(other: Any?): Boolean {
+        return other is DynamicColorScheme &&
+            other.seedColor == seedColor &&
+            other.chromaFactor == chromaFactor &&
+            other.cond == cond &&
+            other.accurateShades == accurateShades
+    }
 
     override fun hashCode() = Objects.hash(seedColor, chromaFactor, cond, accurateShades)
 

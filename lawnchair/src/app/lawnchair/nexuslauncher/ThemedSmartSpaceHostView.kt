@@ -27,7 +27,9 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
     private val templateTextView = LayoutInflater.from(context)
         .inflate(R.layout.smartspace_text_template, this, false) as DoubleShadowBubbleTextView
 
-    override fun getErrorView(): View = super.getErrorView().also { overrideStyles(it as ViewGroup) }
+    override fun getErrorView(): View {
+        return super.getErrorView().also { overrideStyles(it as ViewGroup) }
+    }
 
     override fun updateAppWidget(remoteViews: RemoteViews?) {
         super.updateAppWidget(remoteViews)
@@ -83,12 +85,14 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
         }
     }
 
-    private fun addShadowToBitmap(bitmap: Bitmap): Bitmap = if (!bitmap.isRecycled) {
-        val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(newBitmap)
-        shadowGenerator.recreateIcon(bitmap, canvas)
-        newBitmap
-    } else {
-        bitmap
+    private fun addShadowToBitmap(bitmap: Bitmap): Bitmap {
+        return if (!bitmap.isRecycled) {
+            val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(newBitmap)
+            shadowGenerator.recreateIcon(bitmap, canvas)
+            newBitmap
+        } else {
+            bitmap
+        }
     }
 }

@@ -15,7 +15,8 @@ data object Bing : QsbSearchProvider(
     website = "https://bing.com/",
 ) {
 
-    override fun handleCreateVoiceIntent(): Intent = Intent(action)
-        .addFlags(INTENT_FLAGS)
-        .setClassName(packageName, "com.microsoft.clients.bing.voice.VoiceActivity")
+    override fun handleCreateVoiceIntent(): Intent =
+        Intent(action)
+            .addFlags(INTENT_FLAGS)
+            .setClassName(packageName, "com.microsoft.clients.bing.voice.VoiceActivity")
 }
