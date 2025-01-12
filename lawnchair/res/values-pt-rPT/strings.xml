@@ -71,6 +71,7 @@
     <string name="item_removed">Item removido</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">O que mostrar</string>
+    <string name="wallpapers">Wallpapers</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Para bloquear o smartphone ao executar um gesto e abrir Recentes por gesto, o Lawnchair requer acesso de acessibilidade. O Lawnchair não monitora nenhuma ação do usuário, embora o privilégio para fazer isso seja necessário para todos os serviços de acessibilidade. O Lawnchair descarta qualquer evento enviado pelo sistema. Para bloquear seu telefone ou abrir Recentes, o Lawnchair usa o serviço performGlobalAction Accessibility.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -401,9 +402,9 @@ Transparentes</string>
     <string name="show_material_u_popup_label">Use new pop-up style</string>
     <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
     <string name="popup_menu">Pop-up menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show lock button</string>
-    <string name="show_system_settings_entry">Show system settings button</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
+    <string name="popup_menu_items">Pop-up menu items</string>
+    <string name="edit_menu_items">Edit pop-up menu items</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">Status bar</string>
     <string name="show_status_bar">Show status bar</string>
     <string name="dark_status_bar_label">Dark status bar</string>
@@ -420,7 +421,9 @@ Transparentes</string>
     <string name="widget_unlimited_size_description">Remover as restrições de tamanho mínimo e máximo de widgets</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Show dock</string>
+    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
     <string name="search_bar_label">Search bar</string>
+    <string name="search_bar_settings">Search bar settings</string>
     <string name="hotseat_mode_label">Search bar widget</string>
     <string name="hotseat_mode_disabled">Desativado</string>
     <string name="hotseat_mode_google_search">Google Search bar</string>
@@ -431,10 +434,12 @@ Transparentes</string>
     <string name="apply_accent_color_label">Apply accent color</string>
     <string name="search_provider">Search provider</string>
     <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
+    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
+    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
+    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_bg_alpha">Opacidade De Fundo</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pause</string>
     <string name="pause_apps_dialog_title">Pause %1$s?</string>
@@ -465,6 +470,7 @@ Transparentes</string>
     <string name="app_drawer_columns">App drawer columns</string>
     <string name="row_height_label">Row height</string>
     <string name="app_drawer_indent_label">Horizontal padding</string>
+    <string name="app_drawer_bg_color_label">Background color</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Hide from app drawer</string>
     <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>

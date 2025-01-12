@@ -71,6 +71,7 @@
     <string name="item_removed">பொருள் நீக்கப்பட்டது</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">எதைக் காட்ட</string>
+    <string name="wallpapers">Wallpapers</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">புதிய பாப்அப் பாணியைப் பயன்படுத்து</string>
     <string name="show_material_u_popup_description">மெட்டீரியல் யூ துள்ளல் மற்றும் சற்று ஒருங்கிணைக்கப்பட்ட பாப்-அப் பாணியைப் பயன்படுத்தவும்</string>
     <string name="popup_menu">பாப்அப் மெனு</string>
-    <string name="home_screen_lock_toggle_from_home_popup">பூட்டு பொத்தானைக் காட்டு</string>
-    <string name="show_system_settings_entry">Show system settings button</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Show edit home screen button</string>
+    <string name="popup_menu_items">Pop-up menu items</string>
+    <string name="edit_menu_items">Edit pop-up menu items</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">நிலைப்பட்டி</string>
     <string name="show_status_bar">நிலைப்பலகையை காட்டு</string>
     <string name="dark_status_bar_label">இருண்ட நிலைப்பட்டி</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">விட்ஜெட்களின் குறைந்தபட்ச மற்றும் அதிகபட்ச அளவுக் கட்டுப்பாடுகளை அகற்றவும்</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">டாக்கை காட்டு</string>
+    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
     <string name="search_bar_label">தேடல் பட்டை</string>
+    <string name="search_bar_settings">Search bar settings</string>
     <string name="hotseat_mode_label">தேடல் பட்டி விட்ஜெட்</string>
     <string name="hotseat_mode_disabled">முடக்கப்பட்டுள்ளது</string>
     <string name="hotseat_mode_google_search">கூகிள் தேடல்</string>
@@ -430,10 +433,12 @@
     <string name="apply_accent_color_label">உரப்பு நிறத்தைச் செயற்படுத்து</string>
     <string name="search_provider">தேடல் வழங்கி</string>
     <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
+    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
+    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
+    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_bg_alpha">பின்னணி ஒளிபுகாநிலை</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pause</string>
     <string name="pause_apps_dialog_title">Pause %1$s?</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">செயலி டிராயர் நெடுவரிசைகள்</string>
     <string name="row_height_label">வரிசை உயரம்</string>
     <string name="app_drawer_indent_label">கிடைமட்ட திணிப்பு</string>
+    <string name="app_drawer_bg_color_label">Background color</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">செயலி இழுப்பறையிலிருந்து மறை</string>
     <string name="hidden_apps_label_with_count">மறைக்கப்பட்ட செயலிகள்(%1$d)</string>

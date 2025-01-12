@@ -71,6 +71,7 @@
     <string name="item_removed">项目已移除</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">选择要显示的项目</string>
+    <string name="wallpapers">Wallpapers</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">要通过手势锁定手机和打开最近任务界面, Lawnchair 需要获取无障碍功能访问权限。\n\nLawnchair 不会监视任何用户操作, 即使此权限允许。Lawnchair 会忽略系统发送的任何事件。\n\n为了锁定手机或打开最近任务界面, Lawnchair 使用 performGlobalAction 无障碍服务。</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">使用新的弹出样式</string>
     <string name="show_material_u_popup_description">使用 Material You 的弹性和略微缩小的弹出样式</string>
     <string name="popup_menu">弹出菜单</string>
-    <string name="home_screen_lock_toggle_from_home_popup">显示锁定按钮</string>
-    <string name="show_system_settings_entry">显示系统设置按钮</string>
-    <string name="home_screen_edit_toggle_from_home_popup">显示编辑主屏幕按钮</string>
+    <string name="popup_menu_items">Pop-up menu items</string>
+    <string name="edit_menu_items">Edit pop-up menu items</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">状态栏</string>
     <string name="show_status_bar">显示状态栏</string>
     <string name="dark_status_bar_label">深色状态栏</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">删除小部件的最小和最大大小限制</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">显示 Dock 栏</string>
+    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
     <string name="search_bar_label">搜索栏</string>
+    <string name="search_bar_settings">Search bar settings</string>
     <string name="hotseat_mode_label">搜索栏小部件</string>
     <string name="hotseat_mode_disabled">已禁用</string>
     <string name="hotseat_mode_google_search">Google 搜索栏</string>
@@ -430,10 +433,12 @@
     <string name="apply_accent_color_label">应用强调色</string>
     <string name="search_provider">搜索提供程序</string>
     <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
+    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
+    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
+    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_bg_alpha">背景不透明度</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pause</string>
     <string name="pause_apps_dialog_title">Pause %1$s?</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">应用程序抽屉列数</string>
     <string name="row_height_label">行高</string>
     <string name="app_drawer_indent_label">水平边距</string>
+    <string name="app_drawer_bg_color_label">Background color</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">从应用抽屉中隐藏</string>
     <string name="hidden_apps_label_with_count">隐藏的应用（%1$d）</string>

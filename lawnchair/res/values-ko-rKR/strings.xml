@@ -71,6 +71,7 @@
     <string name="item_removed">항목을 삭제했습니다.</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">표시할 항목</string>
+    <string name="wallpapers">Wallpapers</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Lawnchair에서 제스처로 기기를 잠그거나 최근 앱 화면을 열기 위해서는 접근성 권한이 필요합니다.\n\n모든 접근성 서비스에는 대화 상자에 나오는 권한이 필요합니다. Lawnchair는 사용자의 동작을 전혀 감시하지 않으며, 시스템에서 보내는 이벤트를 모두 무시합니다.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">새로운 팝업 스타일 사용</string>
     <string name="show_material_u_popup_description">Material You의 탄력 있고 통합된 팝업 스타일 사용</string>
     <string name="popup_menu">팝업 메뉴</string>
-    <string name="home_screen_lock_toggle_from_home_popup">잠그기 버튼 표시</string>
-    <string name="show_system_settings_entry">시스템 설정 버튼 표시</string>
-    <string name="home_screen_edit_toggle_from_home_popup">홈 화면 편집 버튼 표시</string>
+    <string name="popup_menu_items">Pop-up menu items</string>
+    <string name="edit_menu_items">Edit pop-up menu items</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">상태 표시줄</string>
     <string name="show_status_bar">상태 표시줄 표시</string>
     <string name="dark_status_bar_label">어두운 상태 표시줄</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">위젯의 최소 및 최대 크기 제한 제거</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">독 표시</string>
+    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
     <string name="search_bar_label">검색 표시줄</string>
+    <string name="search_bar_settings">Search bar settings</string>
     <string name="hotseat_mode_label">검색 표시줄 위젯</string>
     <string name="hotseat_mode_disabled">비활성화됨</string>
     <string name="hotseat_mode_google_search">Google 검색 표시줄</string>
@@ -430,10 +433,12 @@
     <string name="apply_accent_color_label">강조 색상 적용</string>
     <string name="search_provider">검색 제공자</string>
     <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
+    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
+    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
+    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_bg_alpha">배경 투명도</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pause</string>
     <string name="pause_apps_dialog_title">Pause %1$s?</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">앱 서랍 아이콘 가로 배치 수</string>
     <string name="row_height_label">가로 행 높이</string>
     <string name="app_drawer_indent_label">가로 패딩</string>
+    <string name="app_drawer_bg_color_label">Background color</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">앱 서랍에서 숨기기</string>
     <string name="hidden_apps_label_with_count">숨겨진 앱 (%1$d)</string>

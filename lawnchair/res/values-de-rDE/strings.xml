@@ -71,6 +71,7 @@
     <string name="item_removed">Element entfernt</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Was angezeigt werden soll</string>
+    <string name="wallpapers">Hintergrundbilder</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Um Ihr Telefon bei der Ausführung einer Geste zu sperren und um zuletzt geöffnete Apps per Geste zu öffnen, benötigt Lawnchair Bedienungshilfen-Zugriff.\n\nLawnchair beobachtet keine Benutzeraktionen, obwohl die Berechtigung dies ermöglicht. Lawnchair verwirft alle vom System gesendeten Ereignisse.\n\nUm Ihr Telefon zu sperren oder zuletzt geöffnete Apps zu öffnen, nutzt Lawnchair den performGlobalAction Accessibility Dienst.</string>
     <string name="x_by_y">%1$d × %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">Neuen Popup-Stil verwenden</string>
     <string name="show_material_u_popup_description">Benutze den hüpfenden und etwas kompakteren Popup-Stil von Material You</string>
     <string name="popup_menu">Pop-up-Menü</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Sperrschaltfläche anzeigen</string>
-    <string name="show_system_settings_entry">Systemeinstellungstaste anzeigen</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Startbildschirm-Bearbeiten-Taste anzeigen</string>
+    <string name="popup_menu_items">Pop-up-Menü-Einträge</string>
+    <string name="edit_menu_items">Pop-up-Menü-Einträge bearbeiten</string>
+    <string name="wallpaper_quick_picker">Hintergrundbild-Schnellwahl</string>
     <string name="status_bar_label">Statusleiste</string>
     <string name="show_status_bar">Statusleiste anzeigen</string>
     <string name="dark_status_bar_label">Dunkle Statusleiste</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">Entfernt die minimale und maximale Größenvorgabe von Widgets</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Dock anzeigen</string>
+    <string name="enable_dock_to_access_qsb_settings">Einstellungen für die Suchleiste sind verfügbar, wenn das Dock sichtbar ist. Tippe, um das Dock anzuzeigen.</string>
     <string name="search_bar_label">Suchleiste</string>
+    <string name="search_bar_settings">Suchleisten-Einstellungen</string>
     <string name="hotseat_mode_label">Suchleisten-Widget</string>
     <string name="hotseat_mode_disabled">Deaktiviert</string>
     <string name="hotseat_mode_google_search">Google-Suchleiste</string>
@@ -430,10 +433,12 @@
     <string name="apply_accent_color_label">Akzentfarbe verwenden</string>
     <string name="search_provider">Suchanbieter</string>
     <string name="hotseat_background">Hintergrund anzeigen</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontale Einrückung (links)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontale Einrückung (rechts)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertikale Einrückung (oben)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertikale Einrückung (unten)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Linker Rand</string>
+    <string name="hotseat_bg_horizontal_inset_right">Rechter Rand</string>
+    <string name="hotseat_bg_vertical_inset_top">Oberer Abstand</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Unterer Abstand</string>
+    <string name="hotseat_bg_color_label">Hintergrundfarbe</string>
+    <string name="hotseat_bg_alpha">Hintergrunddeckkraft</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Anhalten</string>
     <string name="pause_apps_dialog_title">%1$s anhalten?</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">Spalten in der Anwendungsübersicht</string>
     <string name="row_height_label">Zeilenhöhe</string>
     <string name="app_drawer_indent_label">Horizontaler Abstand</string>
+    <string name="app_drawer_bg_color_label">Hintergrundfarbe</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Aus der Anwendungsübersicht ausblenden</string>
     <string name="hidden_apps_label_with_count">Versteckte Apps (%1$d)</string>

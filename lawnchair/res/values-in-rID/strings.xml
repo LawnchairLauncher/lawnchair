@@ -71,6 +71,7 @@
     <string name="item_removed">Butir dihapus</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Yang ditampilkan</string>
+    <string name="wallpapers">Wallpaper</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Untuk mengunci layar dan membuka aplikasi Terbaru dengan gerakan, Lawnchair perlu izin aksesibilitas.\n\nLawnchair tidak melacak apa yang Anda lakukan di ponsel. Izin ini hanya digunakan untuk mengaktifkan gerakan-gerakan tersebut.\n\nLawnchair menggunakan fitur aksesibilitas performGlobalAction untuk mengunci layar atau membuka aplikasi Terbaru.</string>
     <string name="x_by_y">%1$d × %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">Gunakan gaya pop-up baru</string>
     <string name="show_material_u_popup_description">Gunakan gaya pop-up Material You yang bulat dan sedikit terkonsolidasi</string>
     <string name="popup_menu">Gaya pop-up</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Tampilkan tombol kunci</string>
-    <string name="show_system_settings_entry">Tampilkan tombol pengaturan sistem</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Tampilkan tombol ubah tampilan utama</string>
+    <string name="popup_menu_items">Pop-up menu items</string>
+    <string name="edit_menu_items">Edit pop-up menu items</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">Bar status</string>
     <string name="show_status_bar">Tampilkan bar status</string>
     <string name="dark_status_bar_label">Bar status gelap</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">Menghapus batasan ukuran minimum dan maksimum widget</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Tampilkan dok</string>
+    <string name="enable_dock_to_access_qsb_settings">Pengaturan bilah pencarian hanya tersedia bila Dok ditampilkan. Ketuk untuk menampilkan Dok.</string>
     <string name="search_bar_label">Bilah pencarian</string>
+    <string name="search_bar_settings">Pengaturan bilah pencarian</string>
     <string name="hotseat_mode_label">Widget bilah pencarian</string>
     <string name="hotseat_mode_disabled">Dimatikan</string>
     <string name="hotseat_mode_google_search">Bilah Penelusuran Google</string>
@@ -430,10 +433,12 @@
     <string name="apply_accent_color_label">Terapkan warna aksen</string>
     <string name="search_provider">Penyedia pencarian</string>
     <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Margin kiri</string>
+    <string name="hotseat_bg_horizontal_inset_right">Margin kanan</string>
+    <string name="hotseat_bg_vertical_inset_top">Margin atas</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Margin bawah</string>
+    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_bg_alpha">Tingkat transparan latar belakang</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Jeda</string>
     <string name="pause_apps_dialog_title">Jeda %1$s?</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">Kolom laci apli</string>
     <string name="row_height_label">Tinggi baris</string>
     <string name="app_drawer_indent_label">Padding horizontal</string>
+    <string name="app_drawer_bg_color_label">Background color</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Sembunyikan dari laci apli</string>
     <string name="hidden_apps_label_with_count">Apli tersembunyi (%1$d)</string>
