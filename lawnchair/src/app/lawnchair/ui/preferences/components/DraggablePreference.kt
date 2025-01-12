@@ -41,6 +41,7 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.util.addIf
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import sh.calvin.reorderable.ReorderableColumn
@@ -53,7 +54,12 @@ fun <T> DraggablePreferenceGroup(
     defaultList: List<T>,
     onOrderChange: (List<T>) -> Unit,
     modifier: Modifier = Modifier,
-    itemContent: @Composable ReorderableScope.(item: T, index: Int, isDragging: Boolean, onDraggingChange: (Boolean) -> Unit) -> Unit,
+    itemContent: @Composable ReorderableScope.(
+        item: T,
+        index: Int,
+        isDragging: Boolean,
+        onDraggingChange: (Boolean) -> Unit,
+    ) -> Unit,
 ) {
     var localItems = items
     var isAnyDragging by remember { mutableStateOf(false) }
@@ -95,17 +101,20 @@ fun <T> DraggablePreferenceGroup(
                 key(item) {
                     Column {
                         DraggablePreferenceContainer(
-                            index = index,
-                            items = localItems,
                             isDragging = isDragging,
-                            onMoveUp = {
-                                localItems = it
-                            },
-                            onMoveDown = {
-                                localItems = it
-                            },
+                            modifier = Modifier
+                                .a11yDrag(
+                                    index = index,
+                                    items = items,
+                                    onMoveUp = { localItems = it },
+                                    onMoveDown = { localItems = it },
+                                ),
                         ) {
-                            itemContent(item, index, isDragging) {
+                            itemContent(
+                                item,
+                                index,
+                                isDragging,
+                            ) {
                                 isAnyDragging = it
                             }
                         }
@@ -128,12 +137,8 @@ fun <T> DraggablePreferenceGroup(
 }
 
 @Composable
-fun <T> DraggablePreferenceContainer(
-    index: Int,
-    items: List<T>,
+fun DraggablePreferenceContainer(
     isDragging: Boolean,
-    onMoveUp: (List<T>) -> Unit,
-    onMoveDown: (List<T>) -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
@@ -152,13 +157,7 @@ fun <T> DraggablePreferenceContainer(
                 Color.Transparent,
             )
         },
-        modifier = modifier
-            .a11yDrag(
-                index = index,
-                items = items,
-                onMoveUp = onMoveUp,
-                onMoveDown = onMoveDown,
-            ),
+        modifier = modifier,
     ) {
         content()
     }
@@ -213,25 +212,29 @@ fun DragHandle(
     scope: ReorderableScope,
     interactionSource: MutableInteractionSource,
     modifier: Modifier = Modifier,
+    isDraggable: Boolean = true,
     onDragStop: () -> Unit = {},
 ) {
     val view = LocalView.current
     IconButton(
         modifier = with(scope) {
-            modifier.longPressDraggableHandle(
-                onDragStarted = {
-                    if (Utilities.ATLEAST_U) {
-                        view.performHapticFeedback(HapticFeedbackConstants.DRAG_START)
-                    }
-                },
-                onDragStopped = {
-                    if (Utilities.ATLEAST_R) {
-                        view.performHapticFeedback(HapticFeedbackConstants.GESTURE_END)
-                    }
-                    onDragStop()
-                },
-            )
+            modifier.addIf(isDraggable) {
+                longPressDraggableHandle(
+                    onDragStarted = {
+                        if (Utilities.ATLEAST_U) {
+                            view.performHapticFeedback(HapticFeedbackConstants.DRAG_START)
+                        }
+                    },
+                    onDragStopped = {
+                        if (Utilities.ATLEAST_R) {
+                            view.performHapticFeedback(HapticFeedbackConstants.GESTURE_END)
+                        }
+                        onDragStop()
+                    },
+                )
+            }
         },
+        enabled = isDraggable,
         onClick = {},
         interactionSource = interactionSource,
     ) {

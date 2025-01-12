@@ -1,7 +1,9 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -90,7 +92,7 @@ fun LauncherPopupPreference(
                 optionsPref.onChange(it.toOptionOrderString())
             },
         ) { item, index, _, onDraggingChange ->
-            val label = LauncherOptionsPopup.getMetadataForOption(item.identifier).label
+            val metadata = LauncherOptionsPopup.getMetadataForOption(item.identifier)
 
             val enabled = when (item.identifier) {
                 "edit_mode", "widgets" -> (!isHomeScreenLocked)
@@ -101,7 +103,7 @@ fun LauncherPopupPreference(
             val interactionSource = remember { MutableInteractionSource() }
 
             DraggableSwitchPreference(
-                label = stringResource(label),
+                label = stringResource(metadata.label),
                 description = if (!enabled && item.identifier != "home_settings") stringResource(R.string.home_screen_locked) else null,
                 checked = item.isEnabled,
                 onCheckedChange = {
@@ -111,7 +113,8 @@ fun LauncherPopupPreference(
                 dragIndicator = {
                     DragHandle(
                         scope = this,
-                        interactionSource = interactionSource,
+                        interactionSource = if (!metadata.isCarousel) interactionSource else remember { MutableInteractionSource() },
+                        isDraggable = !metadata.isCarousel,
                         onDragStop = {
                             onDraggingChange(false)
                         },
@@ -175,10 +178,14 @@ private fun LauncherPopupPreview(optionsList: List<LauncherOptionPopupItem>) {
                             modifier = Modifier
                                 .widthIn(max = 240.dp),
                         ) {
-                            OptionsItemRow(
-                                icon = painterResource(metadata.icon),
-                                label = stringResource(metadata.label),
-                            )
+                            if (metadata.isCarousel) {
+                                WallpaperCarouselPreview()
+                            } else {
+                                OptionsItemRow(
+                                    icon = painterResource(metadata.icon),
+                                    label = stringResource(metadata.label),
+                                )
+                            }
                         }
                     }
                     if (!isLast && enabledItems.indexOf(it) != -1) {
@@ -187,6 +194,42 @@ private fun LauncherPopupPreview(optionsList: List<LauncherOptionPopupItem>) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun WallpaperCarouselPreview(modifier: Modifier = Modifier) {
+    val height = 100.dp
+    val width = 50.dp
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
+    ) {
+        Box(
+            Modifier
+                .clip(MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .size(height),
+        ) {}
+        Spacer(Modifier.width(8.dp))
+        Box(
+            Modifier
+                .clip(MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .height(height)
+                .width(width),
+        ) {}
+        Spacer(Modifier.width(8.dp))
+        Box(
+            Modifier
+                .clip(MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .height(height)
+                .width(width),
+        ) {}
     }
 }
 

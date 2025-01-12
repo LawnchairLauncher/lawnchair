@@ -71,6 +71,7 @@
     <string name="item_removed">Objekt borttaget</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Vad ska visas</string>
+    <string name="wallpapers">Bakgrundsbilder</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">För att kunna låsa din telefon när en gest görs och för att kunna öppna Senaste med en gest kräver Lawnchair tillgänglighetsåtkomst.\n\nLawnchair övervakar inte några användaraktiviteter, men behörigheten att kunna göra detta krävs för alla tillgänglighetstjänster. Lawnchair förkastar alla händelser som skickas av systemet.\n\nFör att kunna låsa din telefon och för att kunna öppna Senaste använder Lawnchair tillgänglighetstjänsten performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">Använd ny popup-stil</string>
     <string name="show_material_u_popup_description">Använd Material Yous studsiga och något tätare popup-stil</string>
     <string name="popup_menu">Snabbmeny</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Visa låsknapp</string>
-    <string name="show_system_settings_entry">Visa systeminställningar-knapp</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Visa redigera startskärm-knapp</string>
+    <string name="popup_menu_items">Objekt i snabbmenyn</string>
+    <string name="edit_menu_items">Redigera objekt i snabbmenyn</string>
+    <string name="wallpaper_quick_picker">Snabbväljare för bakgrundsbild</string>
     <string name="status_bar_label">Statusfält</string>
     <string name="show_status_bar">Visa statusfält</string>
     <string name="dark_status_bar_label">Mörkt statusfält</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">Ta bort begränsningarna av minimi- och maximistorlek på widgetar</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Visa favoritfält</string>
+    <string name="enable_dock_to_access_qsb_settings">Sökfältsinställningar är tillgängliga när favoritfältet är synligt. Tryck för att visa favoritfältet.</string>
     <string name="search_bar_label">Sökfält</string>
+    <string name="search_bar_settings">Sökfältsinställningar</string>
     <string name="hotseat_mode_label">Sökfältswidget</string>
     <string name="hotseat_mode_disabled">Inaktiverad</string>
     <string name="hotseat_mode_google_search">Google Sök-fält</string>
@@ -430,10 +433,12 @@
     <string name="apply_accent_color_label">Använd accentfärg</string>
     <string name="search_provider">Sökleverantör</string>
     <string name="hotseat_background">Visa bakgrund</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horisontell infällning (vänster)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horisontell infällning (höger)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertikal infällning (överkant)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertikal infällning (nederkant)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Vänsterkant</string>
+    <string name="hotseat_bg_horizontal_inset_right">Högerkant</string>
+    <string name="hotseat_bg_vertical_inset_top">Överkant</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Nederkant</string>
+    <string name="hotseat_bg_color_label">Bakgrundsfärg</string>
+    <string name="hotseat_bg_alpha">Bakgrundens opacitet</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pausa</string>
     <string name="pause_apps_dialog_title">Pausa %1$s?</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">Kolumner i applådan</string>
     <string name="row_height_label">Radhöjd</string>
     <string name="app_drawer_indent_label">Vågrätt avstånd</string>
+    <string name="app_drawer_bg_color_label">Bakgrundsfärg</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Dölj från applådan</string>
     <string name="hidden_apps_label_with_count">Dolda appar (%1$d)</string>

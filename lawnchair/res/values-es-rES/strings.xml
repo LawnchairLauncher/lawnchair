@@ -71,6 +71,7 @@
     <string name="item_removed">Se ha borrado el elemento</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Qué mostrar</string>
+    <string name="wallpapers">Fondos de pantalla</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Para bloquear el teléfono al realizar un gesto, y para abrir Recientes mediante un gesto, Lawnchair requiere permiso de accesibilidad. \n\nLawnchair no observa ninguna acción del usuario, aunque el privilegio de hacerlo es necesario para todos los servicios de accesibilidad. Lawnchair descarta cualquier evento enviado por el sistema. \n\nPara bloquear el teléfono, o para abrir recientes, Lawnchair utiliza el servicio de accesibilidad performGlobalAction.</string>
     <string name="x_by_y"></string>
@@ -125,7 +126,7 @@
     <string name="notification_dots_color_contrast_warning_always">Cuidado: Los colores de las burbujas de notificación y contadores no tienen suficiente contraste para ser legibles</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Cuidado: Puede que los colores de las burbujas de notificación y contadores no se lean del todo bien al ser tan parecidos</string>
     <string name="missing_notification_access_label">Se necesita acceso a las notificaciones</string>
-    <string name="missing_notification_access_desc">Para poder ver las burbujas de notificación tienes que concedernos permiso
+    <string name="missing_notification_access_desc">Para poder ver las burbujas de notificación tienes que conceder permiso a
 <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
@@ -265,7 +266,7 @@
     <string name="smartspace_battery_full">Cargado</string>
     <string name="smartspace_battery_low">Batería baja</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Cargado en %2$s"</string>
-    <string name="smartspace_widget">De un Vistazo</string>
+    <string name="smartspace_widget">De un vistazo</string>
     <string name="smartspace_widget_description">Qué mostrar</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Calendario</string>
@@ -325,7 +326,7 @@
     <string name="backup_content_wallpaper">Fondo de pantalla</string>
     <string name="backup_create_success">Copia de seguridad creada</string>
     <string name="backup_create_error">No se pudo crear la copia de seguridad</string>
-    <string name="restore_backup">Restaurar respaldo</string>
+    <string name="restore_backup">Restaurar copia de seguridad</string>
     <string name="what_to_restore">Qué restaurar</string>
     <string name="backup_restore_success">Copia de seguridad restaurada</string>
     <string name="backup_restore_error">No se pudo restaurar la copia de seguridad</string>
@@ -335,7 +336,7 @@
     Gesture settings
 
     -->
-    <string name="gesture_double_tap">Doble pulsación</string>
+    <string name="gesture_double_tap">Doble toque</string>
     <string name="gesture_swipe_up">Deslizar hacia arriba</string>
     <string name="gesture_swipe_down">Deslizar hacia abajo</string>
     <string name="gesture_home_tap">Botón de inicio</string>
@@ -351,12 +352,12 @@
     <string name="gesture_handler_open_search">Abrir búsqueda</string>
     <string name="pick_app_for_gesture">Elegir aplicación</string>
     <string name="dt2s_admin_hint_title">Se necesitan permisos de administrador</string>
-    <string name="dt2s_admin_hint">Para usar el doble toque para apagar la pantalla, establece Lawnchair como una app de administrador de dispositivos. Pulsa en \"Abrir Configuración\", luego en \"Activar esta aplicación de administrador de dispositivos.\"</string>
+    <string name="dt2s_admin_hint">Para hacer que funcione el doble toque para apagar pantalla, establece Lawnchair como aplicación del administrador de dispositivos. Pulsa en «Abrir ajustes», luego en «Activar esta aplicación de administrador de dispositivos».</string>
     <string name="dt2s_admin_warning">Se desactivará el doble toque para apagar la pantalla.</string>
     <string name="d2ts_recents_a11y_hint_title">Activar el servicio de accesibilidad</string>
-    <string name="dt2s_a11y_hint">Para utilizar el doble toque para apagar pantalla, Active el servicio de accesibilidad para Lawnchair. Presione \"abrir ajustes\", Seleccione \"Lawnchair\" y active \"Usar Lawnchair\". \n\nLawnchair utiliza el método de Accesibilidad para realizar esta acción. Este es un permiso sensible que permite supervisar otras apps. Sin embargo, Lawnchair no está configurada para esa funcionalidad y no recibe eventos.</string>
+    <string name="dt2s_a11y_hint">Para hacer que funcione el doble toque para apagar pantalla activa el servicio de accesibilidad de Lawnchair. Pulsa en «Abrir ajustes», elige «Lawnchair» y activa «Usar Lawnchair». \n\nLawnchair solo utiliza el método `performGlobalAction` de la función de accesibilidad para realizar esta acción. Este es un permiso muy amplio que permite controlar otras aplicaciones, pero Lawnchair no hace nada más, ni recibe eventos.</string>
     <string name="dt2s_recents_warning_open_settings">Abrir ajustes</string>
-    <string name="recents_a11y_hint">Para utilizar el doble toque para apagar pantalla, Active el servicio de accesibilidad para Lawnchair. Presione \"abrir ajustes\", Seleccione \"Lawnchair\" y active \"Usar Lawnchair\". \n\nLawnchair utiliza el método de Accesibilidad para realizar esta acción. Este es un permiso sensible que permite supervisar otras apps. Sin embargo, Lawnchair no está configurada para esa funcionalidad y no recibe eventos.</string>
+    <string name="recents_a11y_hint">Para hacer que funcione «Aplicaciones recientes» activa el servicio de accesibilidad de Lawnchair. Pulsa en «Abrir ajustes», elige «Lawnchair» y activa «Usar Lawnchair». \n\nLawnchair solo utiliza el método `performGlobalAction` de la función de accesibilidad para realizar esta acción. Este es un permiso muy amplio que permite controlar otras aplicaciones, pero Lawnchair no hace nada más, ni recibe eventos.</string>
     <!--
 
     Bug reporting
@@ -377,7 +378,7 @@
 
     -->
     <!-- General and home screen settings -->
-    <string name="home_screen_rotation_label">Rotación de la pantalla de inicio</string>
+    <string name="home_screen_rotation_label">Girar pantalla de inicio</string>
     <string name="home_screen_rotation_description">Permitir que la pantalla de inicio gire al hacerlo el dispositivo</string>
     <string name="wallpaper_blur">Desenfocar fondo de pantalla (experimental)</string>
     <string name="wallpaper_background_blur">Intensidad del desenfoque</string>
@@ -399,11 +400,11 @@
     <string name="show_dot_pagination_label">Mostrar paginación de puntos</string>
     <string name="show_dot_pagination_description">Usar puntos en vez de líneas para mostrar el número de página</string>
     <string name="show_material_u_popup_label">Usar el nuevo estilo del menú emergente</string>
-    <string name="show_material_u_popup_description">Usar el estilo de Material You animado y minimalista para los menús emergentes</string>
+    <string name="show_material_u_popup_description">Usar el estilo de «Material You» animado y minimalista para los menús emergentes</string>
     <string name="popup_menu">Menú emergente</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo</string>
-    <string name="show_system_settings_entry">Mostrar botón de configuración del sistema</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Mostrar el botón de edición de la pantalla de inicio</string>
+    <string name="popup_menu_items">Elementos del menú emergente</string>
+    <string name="edit_menu_items">Editar los elementos del menú emergente</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_status_bar">Mostrar la barra de estado</string>
     <string name="dark_status_bar_label">Barra de estado oscura</string>
@@ -420,7 +421,9 @@
     <string name="widget_unlimited_size_description">Ignora las restricciones de tamaño mínimo y máximo de los widgets</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Mostrar dock</string>
+    <string name="enable_dock_to_access_qsb_settings">Los ajustes de la barra de búsqueda aparecen cuando lo hace el Dock, toca aquí para activarlo.</string>
     <string name="search_bar_label">Barra de búsqueda</string>
+    <string name="search_bar_settings">Ajustes de la barra de búsqueda</string>
     <string name="hotseat_mode_label">Widget de barra de búsqueda</string>
     <string name="hotseat_mode_disabled">Desactivado</string>
     <string name="hotseat_mode_google_search">Barra de búsqueda de Google</string>
@@ -430,21 +433,23 @@
     <string name="corner_radius_label">Radio de esquina</string>
     <string name="apply_accent_color_label">Aplicar acento de color</string>
     <string name="search_provider">Proveedor de búsqueda</string>
-    <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
+    <string name="hotseat_background">Mostrar fondo</string>
+    <string name="hotseat_bg_horizontal_inset_left">Margen izquierdo</string>
+    <string name="hotseat_bg_horizontal_inset_right">Margen derecho</string>
+    <string name="hotseat_bg_vertical_inset_top">Margen superior</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Margen inferior</string>
+    <string name="hotseat_bg_color_label">Color de fondo</string>
+    <string name="hotseat_bg_alpha">Opacidad del fondo</string>
     <!-- Pause apps shortcut -->
-    <string name="pause">Pause</string>
-    <string name="pause_apps_dialog_title">Pause %1$s?</string>
-    <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
-    <string name="paused_apps_dialog_title">App paused</string>
-    <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
-    <string name="paused_apps_drop_target_label">Pause app</string>
+    <string name="pause">Pausar</string>
+    <string name="pause_apps_dialog_title">¿Quieres pausar %1$s?</string>
+    <string name="pause_apps_dialog_message">Se pausarán las notificaciones de %1$s</string>
+    <string name="paused_apps_dialog_title">Aplicación en pausa</string>
+    <string name="paused_apps_dialog_message">%1$s se ha pausado directamente desde el lanzador</string>
+    <string name="paused_apps_drop_target_label">Pausar aplicación</string>
     <string name="dock_icons">Iconos del dock</string>
     <string name="hotseat_bottom_space_label">Relleno inferior</string>
-    <string name="page_indicator_height">Page indicator height</string>
+    <string name="page_indicator_height">Altura del indicador de página</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Búsqueda de aplicaciones</string>
     <string name="search_provider_sponsored_description">%1$s y Lawnchair tienen un acuerdo de reparto de ingresos.\n\nPor lo que al buscar con %1$s nos ayudas económicamente.</string>
@@ -465,6 +470,7 @@
     <string name="app_drawer_columns">Columnas del cajón de aplicaciones</string>
     <string name="row_height_label">Altura de fila</string>
     <string name="app_drawer_indent_label">Relleno horizontal</string>
+    <string name="app_drawer_bg_color_label">Color de fondo</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Ocultar del cajón de aplicaciones</string>
     <string name="hidden_apps_label_with_count">Aplicaciones ocultas (%1$d)</string>
@@ -519,10 +525,10 @@
     <string name="fuzzy_search_title">Búsqueda aproximada</string>
     <string name="fuzzy_search_desc">Muestra nombres parecidos e ignora errores de escritura al buscar aplicaciones</string>
     <string name="suggestion_pref_screen_title">Sugerencias</string>
-    <string name="show_suggested_apps_at_drawer_top">Muestra las aplicaciones sugeridas siempre al principio del cajón de aplicaciones</string>
+    <string name="show_suggested_apps_at_drawer_top">Mostrar las aplicaciones sugeridas siempre al principio del cajón de aplicaciones</string>
     <string name="perform_wide_search_title">Buscar en el dispositivo</string>
     <string name="perform_wide_search_description">Busca entre tus contactos, tus archivos y en ajustes</string>
-    <string name="show_hidden_apps_in_search_results">Muestra aplicaciones ocultas entre los resultados de búsqueda</string>
+    <string name="show_hidden_apps_in_search_results">Mostrar aplicaciones ocultas entre los resultados de búsqueda</string>
     <string name="hidden_apps_show_name_typed">Si se escribe el nombre entero</string>
     <string name="app_search_algorithm">Algoritmo de búsqueda</string>
     <string name="search_algorithm_app_search">Búsqueda de aplicaciones</string>

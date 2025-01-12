@@ -71,6 +71,7 @@
     <string name="item_removed">Élément supprimé</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Informations à afficher</string>
+    <string name="wallpapers">Fonds d\'écran</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Pour pouvoir verrouiller votre téléphone et ouvrir Récents en un seul geste, Lawnchair a besoin des droits d\'accessibilité.\n\nLawnchair n\'observe aucune action utilisateur, mais ce privilège est accordé à tous les services d\'accessibilité. Lawnchair rejette tout événement envoyé par le système.\n\nAfin de verrouiller votre téléphone ou ouvrir Récents, Lawnchair utilise le service d\'accessibilité performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">Utiliser le nouveau style de pop-up</string>
     <string name="show_material_u_popup_description">Utiliser le style de pop-up Material You</string>
     <string name="popup_menu">Menu pop-up</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Afficher le bouton Verrouiller</string>
-    <string name="show_system_settings_entry">Afficher le bouton Paramètres du système</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Afficher le bouton Modifier l\'écran d\'accueil</string>
+    <string name="popup_menu_items">Éléments du menu pop-up</string>
+    <string name="edit_menu_items">Modifier les éléments du menu pop-up</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">Barre d\'état</string>
     <string name="show_status_bar">Afficher la barre d\'état</string>
     <string name="dark_status_bar_label">Barre d\'état sombre</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">Supprimer les restrictions de taille minimale et maximale des widgets</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Afficher le dock</string>
+    <string name="enable_dock_to_access_qsb_settings">Les paramètres de la barre de recherche sont disponibles lorsque le dock est visible. Appuyez pour afficher le dock.</string>
     <string name="search_bar_label">Barre de recherche</string>
+    <string name="search_bar_settings">Paramètres de la barre de recherche</string>
     <string name="hotseat_mode_label">Widget Barre de recherche</string>
     <string name="hotseat_mode_disabled">Désactivé</string>
     <string name="hotseat_mode_google_search">Barre de recherche Google</string>
@@ -430,20 +433,22 @@
     <string name="apply_accent_color_label">Appliquer la couleur d\'accentuation</string>
     <string name="search_provider">Fournisseur des résultats de recherche</string>
     <string name="hotseat_background">Afficher l\'arrière-plan</string>
-    <string name="hotseat_bg_horizontal_inset_left">Marge horizontale (gauche)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Marge horizontale (droite)</string>
-    <string name="hotseat_bg_vertical_inset_top">Marge verticale (haut)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Marge verticale (bas)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Marge gauche</string>
+    <string name="hotseat_bg_horizontal_inset_right">Marge droite</string>
+    <string name="hotseat_bg_vertical_inset_top">Marge haut</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Marge bas</string>
+    <string name="hotseat_bg_color_label">Couleur d\'arrière-plan</string>
+    <string name="hotseat_bg_alpha">Opacité de l\'arrière-plan</string>
     <!-- Pause apps shortcut -->
-    <string name="pause">Pause</string>
-    <string name="pause_apps_dialog_title">Pause %1$s?</string>
-    <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
-    <string name="paused_apps_dialog_title">App paused</string>
-    <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
-    <string name="paused_apps_drop_target_label">Pause app</string>
+    <string name="pause">Suspendre</string>
+    <string name="pause_apps_dialog_title">Suspendre %1$s ?</string>
+    <string name="pause_apps_dialog_message">Les notifications de %1$s seront suspendues</string>
+    <string name="paused_apps_dialog_title">Appli suspendue</string>
+    <string name="paused_apps_dialog_message">%1$s a été suspendu à partir du lanceur d\'applications</string>
+    <string name="paused_apps_drop_target_label">Suspendre l\'appli</string>
     <string name="dock_icons">Icônes dans le dock</string>
     <string name="hotseat_bottom_space_label">Décalage vers le haut</string>
-    <string name="page_indicator_height">Page indicator height</string>
+    <string name="page_indicator_height">Hauteur de l\'indicateur de page</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Recherche d\'applications</string>
     <string name="search_provider_sponsored_description">Lawnchair a un accord de partage des revenus avec %1$s.\n\nEn effectuant vos recherches avec %1$s, vous soutenez Lawnchair.</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">Colonnes du tiroir d\'applications</string>
     <string name="row_height_label">Hauteur de ligne</string>
     <string name="app_drawer_indent_label">Décalage vers le centre</string>
+    <string name="app_drawer_bg_color_label">Couleur d\'arrière-plan</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Masquer dans le tiroir d\'applications</string>
     <string name="hidden_apps_label_with_count">Applications masquées (%1$d)</string>

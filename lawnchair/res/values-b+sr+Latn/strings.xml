@@ -71,6 +71,7 @@
     <string name="item_removed">Stavka je uklonjena</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Informacije za prikaz</string>
+    <string name="wallpapers">Wallpapers</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Da biste zaključali uređaj pokretom ili otvorili meni sa nedavnim aplikacijama, Lawnchairu je potreban pristup usluzi pristupačnosti.\n\nPomoću nje se mogu nadgledati korisničke radnje, ali je Lawnchair ne koristi u te svrhe.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">Novi stil iskačućeg prozora</string>
     <string name="show_material_u_popup_description">Koristite animirane i kompaktnije iskačuće prozore u skladu sa dizajnom Material You</string>
     <string name="popup_menu">Iskačući meni</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Prikaži dugme za zaključavanje</string>
-    <string name="show_system_settings_entry">Prikaži dugme za sistemska podešavanja</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Prikaži dugme za uređivanje početnog ekrana</string>
+    <string name="popup_menu_items">Pop-up menu items</string>
+    <string name="edit_menu_items">Edit pop-up menu items</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">Statusna traka</string>
     <string name="show_status_bar">Prikaži statusnu traku</string>
     <string name="dark_status_bar_label">Tamna statusna traka</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">Uklonite ograničenje minimalne i maksimalne veličine vidžeta</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Prikaži dok</string>
+    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
     <string name="search_bar_label">Traka za pretragu</string>
+    <string name="search_bar_settings">Search bar settings</string>
     <string name="hotseat_mode_label">Vidžet trake za pretragu</string>
     <string name="hotseat_mode_disabled">Onemogućeno</string>
     <string name="hotseat_mode_google_search">Google traka za pretragu</string>
@@ -430,10 +433,12 @@
     <string name="apply_accent_color_label">Primeni boju za naglašavanje</string>
     <string name="search_provider">Pretraživač</string>
     <string name="hotseat_background">Prikaži pozadinu</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontalni pomak (levo)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontalni pomak (desno)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertikalni pomak (gore)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertikalni pomak (dole)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
+    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
+    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
+    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_bg_alpha">Neprozirnost pozadine</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pause</string>
     <string name="pause_apps_dialog_title">Pause %1$s?</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">Broj kolona na listi aplikacija</string>
     <string name="row_height_label">Visina reda</string>
     <string name="app_drawer_indent_label">Horizontalni razmak</string>
+    <string name="app_drawer_bg_color_label">Background color</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Sakrij sa liste aplikacija</string>
     <string name="hidden_apps_label_with_count">Skrivene aplikacije (%1$d)</string>

@@ -347,7 +347,7 @@ public final class FeatureFlags {
 
         // TODO(Block 26): Clean up flags
         public static final BooleanFlag ENABLE_WIDGET_HOST_IN_BACKGROUND = getDebugFlag(270394384,
-                        "ENABLE_WIDGET_HOST_IN_BACKGROUND", DISABLED,
+                        "ENABLE_WIDGET_HOST_IN_BACKGROUND", ENABLED,
                         "Enable background widget updates listening for widget holder");
 
         // TODO(Block 27): Clean up flags

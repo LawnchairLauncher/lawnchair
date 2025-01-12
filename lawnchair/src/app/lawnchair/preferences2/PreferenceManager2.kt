@@ -273,6 +273,16 @@ class PreferenceManager2 private constructor(private val context: Context) :
     val lockHomeScreen = preference(
         key = booleanPreferencesKey(name = "lock_home_screen"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen),
+        onSet = {
+            if (it) {
+                LauncherOptionsPopup.disableUnavailableItems(context)
+            }
+        },
+    )
+
+    val legacyPopupOptionsMigrated = preference(
+        key = booleanPreferencesKey(name = "legacy_popup_options_migrated"),
+        defaultValue = false,
     )
 
     val launcherPopupOrder = preference(

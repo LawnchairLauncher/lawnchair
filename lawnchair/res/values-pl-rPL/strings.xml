@@ -71,6 +71,7 @@
     <string name="item_removed">Element usunięty</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Co wyświetlić</string>
+    <string name="wallpapers">Wallpapers</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">Używaj nowego stylu wyskakującego menu</string>
     <string name="show_material_u_popup_description">Używaj sprężystego i bardziej kompaktowego stylu wyskakującego menu Material You</string>
     <string name="popup_menu">Wyskakujące menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Pokazuj przycisk blokady</string>
-    <string name="show_system_settings_entry">Pokaż przycisk ustawień systemu</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Pokaż przycisk edycji ekranu głównego</string>
+    <string name="popup_menu_items">Pop-up menu items</string>
+    <string name="edit_menu_items">Edit pop-up menu items</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">Pasek stanu</string>
     <string name="show_status_bar">Pokaż pasek stanu</string>
     <string name="dark_status_bar_label">Ciemny pasek stanu</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">Usuwa ograniczenia minimalnego i maksymalnego rozmiaru widżetów</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Pokaż dock</string>
+    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
     <string name="search_bar_label">Pasek wyszukiwania</string>
+    <string name="search_bar_settings">Search bar settings</string>
     <string name="hotseat_mode_label">Widżet paska wyszukiwania</string>
     <string name="hotseat_mode_disabled">Wyłączono</string>
     <string name="hotseat_mode_google_search">Pasek wyszukiwania Google</string>
@@ -430,10 +433,12 @@
     <string name="apply_accent_color_label">Zastosuj kolor akcentu</string>
     <string name="search_provider">Silnik wyszukiwania</string>
     <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
-    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
+    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
+    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
+    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_bg_alpha">Przezroczystość tła</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pause</string>
     <string name="pause_apps_dialog_title">Pause %1$s?</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">Kolumny szuflady aplikacji</string>
     <string name="row_height_label">Wysokość wiersza</string>
     <string name="app_drawer_indent_label">Odstęp poziomy</string>
+    <string name="app_drawer_bg_color_label">Background color</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Ukryj z szuflady aplikacji</string>
     <string name="hidden_apps_label_with_count">Ukryte aplikacje (%1$d)</string>

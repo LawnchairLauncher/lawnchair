@@ -71,6 +71,7 @@
     <string name="item_removed">Item verwijderd</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Weergeven</string>
+    <string name="wallpapers">Achtergrond</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Om je telefoon te vergrendelen tijdens het uitvoeren van een gebaar en om Recente apps via een gebaar te openen, heeft Lawnchair toegankelijkheidsrechten nodig.\n\nLawnchair kijkt niet naar gebruikersacties, hoewel het recht om dit te doen vereist is voor alle toegankelijkheidsservices. Lawnchair verwijdert elke gebeurtenis die door het systeem wordt verzonden.\n\nOm je telefoon te kunnen vergrendelen of Recente apps te openen, maakt Lawnchair gebruik van de toegankelijkheidsservice performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">Nieuwe pop-upstijl gebruiken</string>
     <string name="show_material_u_popup_description">Material You\'s stuiterende en enigszins geconsolideerde pop-upstijl gebruiken</string>
     <string name="popup_menu">Pop-upmenu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Knop Vergrendelen weergeven</string>
-    <string name="show_system_settings_entry">Knop Systeeminstellingen weergeven</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Knop voor bewerken startscherm weergeven</string>
+    <string name="popup_menu_items">Pop-up menu-items</string>
+    <string name="edit_menu_items">Pop-up menu-items bewerken</string>
+    <string name="wallpaper_quick_picker">Achtergrond-snelkiezer</string>
     <string name="status_bar_label">Statusbalk</string>
     <string name="show_status_bar">Statusbalk weergeven</string>
     <string name="dark_status_bar_label">Donkere statusbalk</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">Beperkingen van min/max grootte van widgets verwijderen</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Dok weergeven</string>
+    <string name="enable_dock_to_access_qsb_settings">Zoekbalkinstellingen zijn beschikbaar wanneer het dok zichtbaar is. Tik om het dok te tonen.</string>
     <string name="search_bar_label">Zoekbalk</string>
+    <string name="search_bar_settings">Zoekbalkinstellingen</string>
     <string name="hotseat_mode_label">Zoekbalkwidget</string>
     <string name="hotseat_mode_disabled">Uitgeschakeld</string>
     <string name="hotseat_mode_google_search">Google Zoekbalk</string>
@@ -430,10 +433,12 @@
     <string name="apply_accent_color_label">Accentkleur toepassen</string>
     <string name="search_provider">Zoekmachine</string>
     <string name="hotseat_background">Achtergrond weergeven</string>
-    <string name="hotseat_bg_horizontal_inset_left">Horizontale inset (links)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Horizontale inset (rechts)</string>
-    <string name="hotseat_bg_vertical_inset_top">Verticale inset (boven)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Verticale inset (onder)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Afstand links</string>
+    <string name="hotseat_bg_horizontal_inset_right">Afstand rechts</string>
+    <string name="hotseat_bg_vertical_inset_top">Afstand boven</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Afstand onder</string>
+    <string name="hotseat_bg_color_label">Achtergrondkleur</string>
+    <string name="hotseat_bg_alpha">Achtergronddekking</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pauzeren</string>
     <string name="pause_apps_dialog_title">%1$s pauzeren?</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">App-lade kolommen</string>
     <string name="row_height_label">Rijhoogte</string>
     <string name="app_drawer_indent_label">Horizontale tussenruimte</string>
+    <string name="app_drawer_bg_color_label">Achtergrondkleur</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Verbergen in app-lade</string>
     <string name="hidden_apps_label_with_count">Verborgen apps (%1$d)</string>

@@ -71,6 +71,7 @@
     <string name="item_removed">تم إزالة العنصر</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">ماذا يُعرض</string>
+    <string name="wallpapers">Wallpapers</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">لقفل هاتفك عند تنفيذ إيماءة، ولفتح التطبيقات الحديثة عبر الإيماءة، يحتاج Lawnchair إلى الوصول إلى خدمات الوصول. لا يراقب Lawnchair أي إجراء من المستخدم، على الرغم من أن هذه الصلاحية مطلوبة لجميع خدمات الوصول. يتجاهل Lawnchair أي حدث يتم إرساله من النظام. لقفل هاتفك، أو لفتح التطبيقات الحديثة، يستخدم Lawnchair خدمة الوصول performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">استخدام نمط النافذة المنبثقة الجديد</string>
     <string name="show_material_u_popup_description">استخدام نمط النافذة المنبثقة النابض والمجدد في Material You</string>
     <string name="popup_menu">القائمة المنبثقة</string>
-    <string name="home_screen_lock_toggle_from_home_popup">إظهار زر القفل</string>
-    <string name="show_system_settings_entry">إظهار زر إعدادات النظام</string>
-    <string name="home_screen_edit_toggle_from_home_popup">إظهار زر تعديل الشاشة الرئيسية</string>
+    <string name="popup_menu_items">Pop-up menu items</string>
+    <string name="edit_menu_items">Edit pop-up menu items</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">شريط الحالة</string>
     <string name="show_status_bar">إظهار شريط الحالة</string>
     <string name="dark_status_bar_label">شريط الحالة الداكن</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">إزالة قيود الحد الأدنى والحد الأقصى لحجم التطبيقات المصغرة</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">إظهار شريط Dock</string>
+    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
     <string name="search_bar_label">شريط البحث</string>
+    <string name="search_bar_settings">Search bar settings</string>
     <string name="hotseat_mode_label">أداة شريط البحث</string>
     <string name="hotseat_mode_disabled">معطل</string>
     <string name="hotseat_mode_google_search">شريط بحث Google</string>
@@ -430,10 +433,12 @@
     <string name="apply_accent_color_label">تطبيق لون التمييز</string>
     <string name="search_provider">مزود البحث</string>
     <string name="hotseat_background">أظهر الخلفية</string>
-    <string name="hotseat_bg_horizontal_inset_left">المساحة البينية الأفقية (جهة اليسار)</string>
-    <string name="hotseat_bg_horizontal_inset_right">المساحة البينية الأفقية (جهة اليمين)</string>
-    <string name="hotseat_bg_vertical_inset_top">المساحة البينية العمودية (جهة الأعلى)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">المساحة البينية العمودية (جهة الأسفل)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
+    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
+    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
+    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_bg_alpha">شفافية الخلفية</string>
     <!-- Pause apps shortcut -->
     <string name="pause">Pause</string>
     <string name="pause_apps_dialog_title">Pause %1$s?</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">أعمدة درج التطبيقات</string>
     <string name="row_height_label">ارتفاع الصف</string>
     <string name="app_drawer_indent_label">التوسيع الأفقي</string>
+    <string name="app_drawer_bg_color_label">Background color</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">إخفاء من درج التطبيقات</string>
     <string name="hidden_apps_label_with_count">التطبيقات المخفية (%1$d)</string>

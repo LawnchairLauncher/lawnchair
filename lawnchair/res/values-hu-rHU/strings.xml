@@ -71,6 +71,7 @@
     <string name="item_removed">Elem eltávolítva</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Mi jelenjen meg</string>
+    <string name="wallpapers">Háttérképek</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">A telefon zárolásához kézmozdulat végrehajtása közben, illetve az Előzmények gesztussal történő megnyitásához a Lawnchair kisegítő hozzáférést igényel.\n\nA Lawnchair nem figyel semmilyen felhasználói műveletet, bár az ehhez szükséges jogosultság minden kisegítő lehetőséghez szükséges. A Lawnchair nem rögzít rendszer által küldött eseményeket.\n\nA telefon zárolásához vagy az Előzmények megnyitásához a Lawnchair a performGlobalAction akadálymentesítési szolgáltatást használja.</string>
     <string name="x_by_y">%1$d × %2$d</string>
@@ -400,9 +401,9 @@
     <string name="show_material_u_popup_label">Az új felugró ablakstílus használata</string>
     <string name="show_material_u_popup_description">Egy lendületes és konszolidált pop-up stílus (Material You)</string>
     <string name="popup_menu">Felugró menü</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Látható \'Lezárás\' gomb</string>
-    <string name="show_system_settings_entry">Látható \'Rendszerbeállítások\' gomb</string>
-    <string name="home_screen_edit_toggle_from_home_popup">Látható \'Kezdőképernyő szerkesztő\' gomb</string>
+    <string name="popup_menu_items">Felugrómenü-elemek</string>
+    <string name="edit_menu_items">A felugrómenü-elemek szerkesztése</string>
+    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
     <string name="status_bar_label">Állapotsor</string>
     <string name="show_status_bar">Látható \'Állapotsor\'</string>
     <string name="dark_status_bar_label">Sötét \'Állapotsor\'</string>
@@ -419,7 +420,9 @@
     <string name="widget_unlimited_size_description">Eltávolítja a kisalkalmazások minimális és maximális méretkorlátozását</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Látható dokk</string>
+    <string name="enable_dock_to_access_qsb_settings">A keresősáv beállításai akkor érhetők el, ha a Dokk látható. Érintse meg a Dokk megjelenítéséhez.</string>
     <string name="search_bar_label">Keresősor</string>
+    <string name="search_bar_settings">A keresősáv beállításai</string>
     <string name="hotseat_mode_label">Kisalkalmazás a kereséshez</string>
     <string name="hotseat_mode_disabled">Letiltva</string>
     <string name="hotseat_mode_google_search">Google Keresősor</string>
@@ -430,20 +433,22 @@
     <string name="apply_accent_color_label">A kiemelőszín alkalmazása</string>
     <string name="search_provider">Keresési szolgáltató</string>
     <string name="hotseat_background">Háttér-megjelenítés</string>
-    <string name="hotseat_bg_horizontal_inset_left">Vízszintes szegély (Bal)</string>
-    <string name="hotseat_bg_horizontal_inset_right">Vízszintes szegély (Jobb)</string>
-    <string name="hotseat_bg_vertical_inset_top">Függőleges szegély (Felső)</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Függőleges szegély (Alsó)</string>
+    <string name="hotseat_bg_horizontal_inset_left">Bal margó</string>
+    <string name="hotseat_bg_horizontal_inset_right">Jobb margó</string>
+    <string name="hotseat_bg_vertical_inset_top">Felső margó</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Alsó margó</string>
+    <string name="hotseat_bg_color_label">Háttérszín</string>
+    <string name="hotseat_bg_alpha">A háttér átlátszósága</string>
     <!-- Pause apps shortcut -->
-    <string name="pause">Pause</string>
-    <string name="pause_apps_dialog_title">Pause %1$s?</string>
-    <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
-    <string name="paused_apps_dialog_title">App paused</string>
-    <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
-    <string name="paused_apps_drop_target_label">Pause app</string>
+    <string name="pause">Szüneteltetés</string>
+    <string name="pause_apps_dialog_title">%1$s szüneteltetése?</string>
+    <string name="pause_apps_dialog_message">%1$s-értesítések felfüggesztésre kerülnek</string>
+    <string name="paused_apps_dialog_title">Az alkalmazás felfüggesztve</string>
+    <string name="paused_apps_dialog_message">%1$s közvetlenül szüneteltetve a Launcherből</string>
+    <string name="paused_apps_drop_target_label">Alkalmazás-szüneteltetés</string>
     <string name="dock_icons">A Dokk ikonjai</string>
     <string name="hotseat_bottom_space_label">Alsó kitöltés</string>
-    <string name="page_indicator_height">Page indicator height</string>
+    <string name="page_indicator_height">Az oldaljelzés magassága</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Alkalmazáskereső</string>
     <string name="search_provider_sponsored_description">%1$s és a Lawnchair bevételmegosztási megállapodást kötött.\n\nHa %1$s végzi a keresést, azzal segít a Lawnchair-nek is.</string>
@@ -464,6 +469,7 @@
     <string name="app_drawer_columns">Az Alkalmazástár oszlopai</string>
     <string name="row_height_label">Sormagasság</string>
     <string name="app_drawer_indent_label">Vízszintes kitöltés</string>
+    <string name="app_drawer_bg_color_label">Háttérszín</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Elrejtés az Alkalmazástárban</string>
     <string name="hidden_apps_label_with_count">Rejtett alkalmazások (%1$d)</string>

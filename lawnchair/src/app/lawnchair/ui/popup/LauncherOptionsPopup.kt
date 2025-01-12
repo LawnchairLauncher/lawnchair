@@ -1,5 +1,6 @@
 package app.lawnchair.ui.popup
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -10,9 +11,28 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent
 import com.android.launcher3.views.OptionsPopupView.OptionItem
 import com.patrykmichalik.opto.core.firstBlocking
+import com.patrykmichalik.opto.core.setBlocking
 
 object LauncherOptionsPopup {
-    const val DEFAULT_ORDER = "-lock|-edit_mode|+wallpaper|+widgets|+home_settings|-sys_settings"
+    const val DEFAULT_ORDER = "+carousel|-lock|-edit_mode|+wallpaper|+widgets|+home_settings|-sys_settings"
+
+    fun disableUnavailableItems(
+        context: Context,
+    ) {
+        val prefs2 = getInstance(context)
+        val optionOrder = prefs2.launcherPopupOrder.firstBlocking()
+
+        prefs2.launcherPopupOrder.setBlocking(
+            optionOrder.split("|")
+                .joinToString("|") { item ->
+                    when (item) {
+                        "+edit_mode" -> "-edit_mode"
+                        "+widgets" -> "-widgets"
+                        else -> item
+                    }
+                },
+        )
+    }
 
     /**
      * Returns the list of supported actions
@@ -29,6 +49,8 @@ object LauncherOptionsPopup {
         val prefs2 = getInstance(launcher!!)
         val lockHomeScreen = prefs2.lockHomeScreen.firstBlocking()
         val optionOrder = prefs2.launcherPopupOrder.firstBlocking()
+
+        migrateLegacyPreferences(launcher)
 
         val wallpaperResString =
             if (Utilities.existsStyleWallpapers(launcher)) R.string.styles_wallpaper_button_text else R.string.wallpapers
@@ -87,7 +109,7 @@ object LauncherOptionsPopup {
                 item.startsWith("-") -> item.drop(1) to false
                 else -> item to true // Default to enabled if no prefix
             }
-            if (isEnabled) {
+            if (isEnabled && identifier != "carousel") {
                 optionsList[identifier]?.let { option ->
                     options.add(option)
                 }
@@ -99,6 +121,11 @@ object LauncherOptionsPopup {
 
     fun getMetadataForOption(identifier: String): LauncherOptionMetadata {
         return when (identifier) {
+            "carousel" -> LauncherOptionMetadata(
+                label = R.string.wallpaper_quick_picker,
+                icon = R.drawable.ic_wallpaper,
+                isCarousel = true,
+            )
             "lock" -> LauncherOptionMetadata(
                 label = R.string.home_screen_lock,
                 icon = R.drawable.ic_lock,
@@ -126,6 +153,39 @@ object LauncherOptionsPopup {
             else -> throw IllegalArgumentException("invalid popup option")
         }
     }
+
+    private fun migrateLegacyPreferences(
+        launcher: Launcher,
+    ) {
+        val prefs2 = getInstance(launcher)
+
+        val lockHomeScreenButtonOnPopUp = prefs2.lockHomeScreenButtonOnPopUp.firstBlocking()
+        val editHomeScreenButtonOnPopUp = prefs2.editHomeScreenButtonOnPopUp.firstBlocking()
+        val showSystemSettingsEntryOnPopUp = prefs2.showSystemSettingsEntryOnPopUp.firstBlocking()
+
+        val optionOrder = prefs2.launcherPopupOrder
+        val legacyPopupOptionsMigrated = prefs2.legacyPopupOptionsMigrated.firstBlocking()
+
+        if (!legacyPopupOptionsMigrated) {
+            prefs2.legacyPopupOptionsMigrated.setBlocking(true)
+
+            val options = optionOrder.firstBlocking().toLauncherOptions()
+
+            options.forEachIndexed { index, item ->
+                if (item.identifier == "lock") {
+                    options[index].isEnabled = lockHomeScreenButtonOnPopUp
+                }
+                if (item.identifier == "edit_mode") {
+                    options[index].isEnabled = editHomeScreenButtonOnPopUp
+                }
+                if (item.identifier == "sys_settings") {
+                    options[index].isEnabled = showSystemSettingsEntryOnPopUp
+                }
+            }
+
+            optionOrder.setBlocking(options.toOptionOrderString())
+        }
+    }
 }
 
 data class LauncherOptionPopupItem(
@@ -136,6 +196,7 @@ data class LauncherOptionPopupItem(
 data class LauncherOptionMetadata(
     @StringRes val label: Int,
     @DrawableRes val icon: Int,
+    val isCarousel: Boolean = false,
 )
 
 fun String.toLauncherOptions(): List<LauncherOptionPopupItem> {
