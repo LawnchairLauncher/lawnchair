@@ -37,6 +37,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Item;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
@@ -46,6 +47,7 @@ import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
@@ -225,8 +227,13 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             icon = AppPairIcon.inflateIcon(R.layout.folder_app_pair, ActivityContext.lookupContext(
                     getContext()), null , api, BubbleTextView.DISPLAY_FOLDER);
         } else {
-            icon = mViewCache.getView(R.layout.folder_application, getContext(), null);
-            ((BubbleTextView) icon).applyFromWorkspaceItem((WorkspaceItemInfo) item);
+            if (mFolder.isInAppDrawer()) {
+                icon = mViewCache.getView(R.layout.all_apps_folder_application, getContext(), null);
+                ((BubbleTextView) icon).applyFromItemInfoWithIcon((ItemInfoWithIcon) item);
+            } else {
+                icon = mViewCache.getView(R.layout.folder_application, getContext(), null);
+                ((BubbleTextView) icon).applyFromWorkspaceItem((WorkspaceItemInfo) item);
+            }
         }
 
         icon.setOnClickListener(mFolder.mActivityContext.getItemOnClickListener());

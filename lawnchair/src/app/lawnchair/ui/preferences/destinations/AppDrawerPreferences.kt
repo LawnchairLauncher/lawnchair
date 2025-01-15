@@ -53,6 +53,7 @@ fun AppDrawerPreferences(
         backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
+        AppDrawerSettings()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             ColorPreference(preference = prefs2.appDrawerBackgroundColor)
             SliderPreference(

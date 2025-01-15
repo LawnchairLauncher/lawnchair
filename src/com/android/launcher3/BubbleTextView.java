@@ -116,6 +116,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     public static final int DISPLAY_PREDICTION_ROW = 8;
     public static final int DISPLAY_SEARCH_RESULT_APP_ROW = 9;
 
+    private static final int DISPLAY_DRAWER_FOLDER = 10;
+
     private static final float MIN_LETTER_SPACING = -0.05f;
     private static final int MAX_SEARCH_LOOP_COUNT = 20;
     private static final Character NEW_LINE = '\n';
@@ -250,7 +252,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             defaultIconSize = mDeviceProfile.iconSizePx;
             setCenterVertically(mDeviceProfile.iconCenterVertically);
         } else if (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_PREDICTION_ROW
-                || mDisplay == DISPLAY_SEARCH_RESULT_APP_ROW) {
+                || mDisplay == DISPLAY_SEARCH_RESULT_APP_ROW || mDisplay == DISPLAY_DRAWER_FOLDER) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, mDeviceProfile.allAppsIconTextSizePx);
             setCompoundDrawablePadding(mDeviceProfile.allAppsIconDrawablePaddingPx);
             defaultIconSize = mDeviceProfile.allAppsIconSizePx;

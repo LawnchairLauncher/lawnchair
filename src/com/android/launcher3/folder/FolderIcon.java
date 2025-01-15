@@ -207,7 +207,12 @@ public class FolderIcon extends FrameLayout implements FolderListener, FloatingI
         icon.mFolderName.setText(folderInfo.title);
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
-        lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+        if (folderInfo.container == ItemInfo.NO_ID) {
+            lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
+            icon.mBackground = new PreviewBackground(activity.getDragLayer().getContext());
+        } else {
+            lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+        }
 
         icon.setTag(folderInfo);
         icon.setOnClickListener(activity.getItemOnClickListener());
@@ -344,7 +349,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, FloatingI
             final Launcher launcher = (Launcher) mActivity;
             DragLayer dragLayer = launcher.getDragLayer();
             Rect to = finalRect;
-            if (to == null) {
+            if (to == null && !isInAppDrawer()) {
                 to = new Rect();
                 Workspace<?> workspace = launcher.getWorkspace();
                 // Set cellLayout and this to it's final state to compute final animation locations
@@ -433,6 +438,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, FloatingI
         } else {
             addItem(item);
         }
+    }
+    
+    public boolean isInAppDrawer() {
+        return mInfo.container == ItemInfo.NO_ID;
     }
 
     /**
@@ -772,12 +781,14 @@ public class FolderIcon extends FrameLayout implements FolderListener, FloatingI
     }
 
     public void clearLeaveBehindIfExists() {
+        if (isInAppDrawer()) return;
         if (getParent() instanceof FolderIconParent) {
             ((FolderIconParent) getParent()).clearFolderLeaveBehind(this);
         }
     }
 
     public void drawLeaveBehindIfExists() {
+        if (isInAppDrawer()) return;
         if (getParent() instanceof FolderIconParent) {
             ((FolderIconParent) getParent()).drawFolderLeaveBehindForIcon(this);
         }

@@ -35,6 +35,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -47,6 +48,7 @@ import com.android.launcher3.apppairs.AppPairIconDrawingParams;
 import com.android.launcher3.apppairs.AppPairIconGraphic;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.data.AppPairInfo;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -462,6 +464,10 @@ public class PreviewItemManager {
         } else if (item instanceof AppPairInfo api) {
             AppPairIconDrawingParams appPairParams = new AppPairIconDrawingParams(mContext, DISPLAY_FOLDER);
             p.drawable = AppPairIconGraphic.composeDrawable(api, appPairParams);
+            p.drawable.setBounds(0, 0, mIconSize, mIconSize);
+        } else if (item instanceof ItemInfoWithIcon withIcon){
+            p.drawable = withIcon.newIcon(mContext,
+                Themes.isThemedIconEnabled(mContext) ? FLAG_THEMED : 0);
             p.drawable.setBounds(0, 0, mIconSize, mIconSize);
         }
 

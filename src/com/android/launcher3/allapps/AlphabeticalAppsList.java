@@ -92,7 +92,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     // The number of results in current adapter
     private int mAccessibilityResultsCount = 0;
     // The current set of adapter items
-    private final ArrayList<AdapterItem> mAdapterItems = new ArrayList<>();
+    protected final ArrayList<AdapterItem> mAdapterItems = new ArrayList<>();
     // The set of sections that we allow fast-scrolling to (includes non-merged
     // sections)
     private final List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
@@ -399,7 +399,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         return position;
     }
 
-    private int addAppsWithSections(List<AppInfo> appList, int startPosition) {
+    protected int addAppsWithSections(List<AppInfo> appList, int startPosition) {
         String lastSectionName = null;
         boolean hasPrivateApps = false;
         int position = startPosition;

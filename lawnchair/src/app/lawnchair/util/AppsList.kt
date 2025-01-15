@@ -17,6 +17,7 @@
 package app.lawnchair.util
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.graphics.Bitmap
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.android.launcher3.AppFilter
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.pm.UserCache
@@ -76,3 +78,22 @@ class App(context: Context, private val info: LauncherActivityInfo) {
 }
 
 val appComparator: Comparator<App> = comparing { it.label.lowercase(Locale.getDefault()) }
+val packageInfoCache = mutableMapOf<String, ApplicationInfo>()
+
+fun categorizeApps(context: Context, appList: List<AppInfo?>?): Map<String, List<AppInfo>> {
+    val categories = mutableMapOf<String, MutableList<AppInfo>>()
+    val validAppList = appList?.filterNotNull() ?: emptyList()
+    for (appInfo in validAppList) {
+        val packageName = appInfo.targetPackage!!
+        val applicationInfo = packageInfoCache.getOrPut(packageName) {
+            context.packageManager.getApplicationInfo(packageName, 0)
+        }
+        val categoryTitle = ApplicationInfo.getCategoryTitle(context, applicationInfo.category) ?: context.resources.getString(R.string.others_category_label)
+        val categoryList = categories.getOrPut(categoryTitle.toString()) { mutableListOf() }
+        if (!categoryList.contains(appInfo)) {
+            categoryList.add(appInfo)
+        }
+    }
+
+    return categories.toSortedMap().mapValues { it.value }
+}

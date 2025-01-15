@@ -32,6 +32,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -44,7 +45,9 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 
@@ -74,11 +77,13 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     public static final int VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER = 1 << 7;
     public static final int VIEW_TYPE_WORK_EDU_CARD = 1 << 8;
 
-    public static final int NEXT_ID = 8;
+    public static final int VIEW_TYPE_FOLDER = 1 << 9;
+
+    public static final int NEXT_ID = 10;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
-    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
+    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON | VIEW_TYPE_FOLDER;
 
     public static final int VIEW_TYPE_MASK_PRIVATE_SPACE_HEADER = VIEW_TYPE_PRIVATE_SPACE_HEADER;
     public static final int VIEW_TYPE_MASK_PRIVATE_SPACE_SYS_APPS_DIVIDER = VIEW_TYPE_PRIVATE_SPACE_SYS_APPS_DIVIDER;
@@ -115,6 +120,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         public int rowAppIndex;
         // The associated ItemInfoWithIcon for the item
         public AppInfo itemInfo = new AppInfo();
+        
+        public FolderInfo folderInfo = new FolderInfo();
 
         // Private App Decorator
         public SectionDecorationInfo decorationInfo = null;
@@ -131,6 +138,12 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             item.itemInfo = appInfo;
             return item;
         }
+        
+        public static AdapterItem asFolder(FolderInfo folderInfo) {
+            AdapterItem item = new AdapterItem(VIEW_TYPE_FOLDER);
+            item.folderInfo = folderInfo;
+            return item;
+        }
 
         public static AdapterItem asAppWithDecorationInfo(AppInfo appInfo,
                 SectionDecorationInfo decorationInfo) {
@@ -140,7 +153,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         }
 
         protected boolean isCountedForAccessibility() {
-            return viewType == VIEW_TYPE_ICON;
+            return viewType == VIEW_TYPE_ICON || viewType == VIEW_TYPE_FOLDER;
         }
 
         /**
@@ -257,6 +270,12 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_PRIVATE_SPACE_HEADER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.private_space_header, parent, false));
+            case VIEW_TYPE_FOLDER:
+                FrameLayout fl = new FrameLayout(mActivityContext);
+                ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+                return new ViewHolder(fl);
             default:
                 if (mAdapterProvider.isViewSupported(viewType)) {
                     return mAdapterProvider.onCreateViewHolder(mLayoutInflater, parent, viewType);
@@ -332,6 +351,13 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 break;
             case VIEW_TYPE_WORK_EDU_CARD:
                 ((WorkEduCard) holder.itemView).setPosition(position);
+                break;
+            case VIEW_TYPE_FOLDER:
+                FolderInfo folderInfo = mApps.getAdapterItems().get(position).folderInfo;
+                ViewGroup container = (ViewGroup) holder.itemView;
+                container.removeAllViews();
+                container.addView(FolderIcon.inflateFolderAndIcon(R.layout.all_apps_folder_icon, mActivityContext,
+                    container, folderInfo));
                 break;
             default:
                 if (mAdapterProvider.isViewSupported(holder.getItemViewType())) {
