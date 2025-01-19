@@ -49,6 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
+    <string name="others_category_label">Andere</string>
     <!-- Selection options -->
     <string name="dynamic">Dynamisch</string>
     <string name="presets">Voreinstellungen</string>
@@ -72,6 +73,8 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Was angezeigt werden soll</string>
     <string name="wallpapers">Hintergrundbilder</string>
+    <string name="caddy_beta">Caddy (Beta)</string>
+    <string name="caddy">Caddy</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Um Ihr Telefon bei der Ausführung einer Geste zu sperren und um zuletzt geöffnete Apps per Geste zu öffnen, benötigt Lawnchair Bedienungshilfen-Zugriff.\n\nLawnchair beobachtet keine Benutzeraktionen, obwohl die Berechtigung dies ermöglicht. Lawnchair verwirft alle vom System gesendeten Ereignisse.\n\nUm Ihr Telefon zu sperren oder zuletzt geöffnete Apps zu öffnen, nutzt Lawnchair den performGlobalAction Accessibility Dienst.</string>
     <string name="x_by_y">%1$d × %2$d</string>

@@ -49,6 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
+    <string name="others_category_label">其他</string>
     <!-- Selection options -->
     <string name="dynamic">动态的</string>
     <string name="presets">预设</string>
@@ -67,11 +68,13 @@
     <string name="background_opacity">背景不透明度</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">已复制到剪贴板</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">内容已经复制到粘贴板</string>
     <string name="item_removed">项目已移除</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">选择要显示的项目</string>
-    <string name="wallpapers">Wallpapers</string>
+    <string name="wallpapers">背景</string>
+    <string name="caddy_beta">Caddy (测试版)</string>
+    <string name="caddy">Caddy</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">要通过手势锁定手机和打开最近任务界面, Lawnchair 需要获取无障碍功能访问权限。\n\nLawnchair 不会监视任何用户操作, 即使此权限允许。Lawnchair 会忽略系统发送的任何事件。\n\n为了锁定手机或打开最近任务界面, Lawnchair 使用 performGlobalAction 无障碍服务。</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -188,7 +191,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">图标包</string>
     <string name="themed_icon_pack">主题图标来源</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">用强调色进行着色</string>
     <string name="system_icons">系统图标</string>
     <string name="themed_icon_title">主题图标</string>
     <string name="themed_icons_off_label">关</string>
@@ -401,14 +404,14 @@
     <string name="show_material_u_popup_label">使用新的弹出样式</string>
     <string name="show_material_u_popup_description">使用 Material You 的弹性和略微缩小的弹出样式</string>
     <string name="popup_menu">弹出菜单</string>
-    <string name="popup_menu_items">Pop-up menu items</string>
-    <string name="edit_menu_items">Edit pop-up menu items</string>
-    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
+    <string name="popup_menu_items">弹窗目录项目</string>
+    <string name="edit_menu_items">编辑弹窗目录项目</string>
+    <string name="wallpaper_quick_picker">壁纸快速选择器</string>
     <string name="status_bar_label">状态栏</string>
     <string name="show_status_bar">显示状态栏</string>
     <string name="dark_status_bar_label">深色状态栏</string>
-    <string name="status_bar_clock_label">Status bar clock</string>
-    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
+    <string name="status_bar_clock_label">状态栏时钟</string>
+    <string name="status_bar_clock_description">在第一个屏幕中动态隐藏状态栏时钟</string>
     <string name="home_screen_text_color">文本颜色</string>
     <string name="color_light">浅色</string>
     <string name="color_dark">深色</string>
@@ -420,9 +423,9 @@
     <string name="widget_unlimited_size_description">删除小部件的最小和最大大小限制</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">显示 Dock 栏</string>
-    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
+    <string name="enable_dock_to_access_qsb_settings">当 Dock 可见时，搜索栏设置可用。点击可显示 Dock。</string>
     <string name="search_bar_label">搜索栏</string>
-    <string name="search_bar_settings">Search bar settings</string>
+    <string name="search_bar_settings">搜索栏设置</string>
     <string name="hotseat_mode_label">搜索栏小部件</string>
     <string name="hotseat_mode_disabled">已禁用</string>
     <string name="hotseat_mode_google_search">Google 搜索栏</string>
@@ -432,23 +435,23 @@
     <string name="corner_radius_label">圆角半径</string>
     <string name="apply_accent_color_label">应用强调色</string>
     <string name="search_provider">搜索提供程序</string>
-    <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
-    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
-    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
-    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_background">现实背景</string>
+    <string name="hotseat_bg_horizontal_inset_left">左距</string>
+    <string name="hotseat_bg_horizontal_inset_right">右距</string>
+    <string name="hotseat_bg_vertical_inset_top">上距</string>
+    <string name="hotseat_bg_vertical_inset_bottom">下距</string>
+    <string name="hotseat_bg_color_label">背景颜色</string>
     <string name="hotseat_bg_alpha">背景不透明度</string>
     <!-- Pause apps shortcut -->
-    <string name="pause">Pause</string>
-    <string name="pause_apps_dialog_title">Pause %1$s?</string>
-    <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
-    <string name="paused_apps_dialog_title">App paused</string>
-    <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
-    <string name="paused_apps_drop_target_label">Pause app</string>
+    <string name="pause">暂停</string>
+    <string name="pause_apps_dialog_title">暂停 %1$s？</string>
+    <string name="pause_apps_dialog_message">%1$s 的通知将暂停</string>
+    <string name="paused_apps_dialog_title">应用已暂停</string>
+    <string name="paused_apps_dialog_message">%1$s 直接从启动器暂停</string>
+    <string name="paused_apps_drop_target_label">暂停应用</string>
     <string name="dock_icons">Dock 栏图标</string>
     <string name="hotseat_bottom_space_label">底部边距</string>
-    <string name="page_indicator_height">Page indicator height</string>
+    <string name="page_indicator_height">页面指​​示器高度</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">应用搜索</string>
     <string name="search_provider_sponsored_description">%1$s 和 Lawnchair 有收益分成协议。\n\n使用 %1$s 进行搜索有助于支持 Lawnchair。</string>
@@ -469,7 +472,7 @@
     <string name="app_drawer_columns">应用程序抽屉列数</string>
     <string name="row_height_label">行高</string>
     <string name="app_drawer_indent_label">水平边距</string>
-    <string name="app_drawer_bg_color_label">Background color</string>
+    <string name="app_drawer_bg_color_label">背景颜色</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">从应用抽屉中隐藏</string>
     <string name="hidden_apps_label_with_count">隐藏的应用（%1$d）</string>

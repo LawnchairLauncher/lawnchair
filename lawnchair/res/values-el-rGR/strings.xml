@@ -49,6 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
+    <string name="others_category_label">Άλλα</string>
     <!-- Selection options -->
     <string name="dynamic">Δυναμικό</string>
     <string name="presets">Προεπιλογές</string>
@@ -72,6 +73,8 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Τι να εμφανίζεται</string>
     <string name="wallpapers">Ταπετσαρίες &amp; στιλ</string>
+    <string name="caddy_beta">Κατηγορίες (Δοκιμαστική λειτουργία)</string>
+    <string name="caddy">Κατηγορίες</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Για να κλειδώσετε το τηλέφωνό σας όταν εκτελείτε μια χειρονομία, όπως και για να ανοίξετε τα Πρόσφατα μέσω χειρονομίας, ο εκκινητής Lawnchair χρειάζεται δικαιώματα Προσβασιμότητας.\n\nΟ εκκινητής Lawnchair δεν παρακολουθεί καμία ενέργεια του χρήστη, αν και το δικαίωμα να το κάνει απαιτείται για όλες τις υπηρεσίες προσβασιμότητας. Ο εκκινητής Lawnchair απορρίπτει οποιοδήποτε συμβάν που αποστέλλεται από το σύστημα.\n\nΓια να κλειδώσει το τηλέφωνό σας ή να ανοίξει τις Πρόσφατες εφαρμογές, ο εκκινητής Lawnchair χρησιμοποιεί την υπηρεσία προσβασιμότητας `performanceGlobalAction`.</string>
     <string name="x_by_y">%1$d × %2$d</string>
@@ -403,7 +406,7 @@
     <string name="popup_menu">Αναδυόμενο μενού</string>
     <string name="popup_menu_items">Στοιχεία αναδυόμενου μενού</string>
     <string name="edit_menu_items">Επεξεργασία στοιχείων αναδυόμενου μενού</string>
-    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
+    <string name="wallpaper_quick_picker">Καρουζέλ ταπετσαρίας</string>
     <string name="status_bar_label">Γραμμή κατάστασης</string>
     <string name="show_status_bar">Εμφάνιση γραμμής κατάστασης</string>
     <string name="dark_status_bar_label">Σκοτεινή γραμμή κατάστασης</string>

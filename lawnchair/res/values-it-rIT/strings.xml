@@ -49,6 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
+    <string name="others_category_label">Others</string>
     <!-- Selection options -->
     <string name="dynamic">Dinamico</string>
     <string name="presets">Preset</string>
@@ -72,6 +73,8 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Cosa mostrare</string>
     <string name="wallpapers">Sfondi</string>
+    <string name="caddy_beta">Caddy (Beta)</string>
+    <string name="caddy">Caddy</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Per bloccare il telefono quando si esegue un gesto e per aprire Recenti tramite gesto, Lawnchair richiede l\'accesso all\'accessibilità.\n\nLawnchair non monitora alcuna azione dell\'utente, sebbene il privilegio per farlo sia richiesto per tutti i servizi di accessibilità. Lawnchair ignora qualsiasi evento inviato dal sistema.\n\nPer bloccare il telefono o per aprire Recenti, Lawnchair utilizza il servizio di accessibilità performGlobalAction.</string>
     <string name="x_by_y">%1$d × %2$d</string>
@@ -420,9 +423,9 @@
     <string name="widget_unlimited_size_description">Rimuovi le restrizioni di dimensione minima e massima dei widget</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Mostra la dock</string>
-    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
+    <string name="enable_dock_to_access_qsb_settings">Le impostazioni della barra di ricerca sono disponibili quando la dock è visibile. Tocca per mostrare la dock.</string>
     <string name="search_bar_label">Barra di ricerca</string>
-    <string name="search_bar_settings">Search bar settings</string>
+    <string name="search_bar_settings">Impostazioni barra di ricerca</string>
     <string name="hotseat_mode_label">Widget della barra di ricerca</string>
     <string name="hotseat_mode_disabled">Disabilitato</string>
     <string name="hotseat_mode_google_search">Barra di ricerca Google</string>
@@ -433,10 +436,10 @@
     <string name="apply_accent_color_label">Applica il colore primario</string>
     <string name="search_provider">Fornitore di ricerca</string>
     <string name="hotseat_background">Mostra sfondo</string>
-    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
-    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
-    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
+    <string name="hotseat_bg_horizontal_inset_left">Margine sinistro</string>
+    <string name="hotseat_bg_horizontal_inset_right">Margine destro</string>
+    <string name="hotseat_bg_vertical_inset_top">Margine superiore</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Margine inferiore</string>
     <string name="hotseat_bg_color_label">Colore di sfondo</string>
     <string name="hotseat_bg_alpha">Opacità dello sfondo</string>
     <!-- Pause apps shortcut -->
@@ -448,7 +451,7 @@
     <string name="paused_apps_drop_target_label">Sospendi app</string>
     <string name="dock_icons">Icone della dock</string>
     <string name="hotseat_bottom_space_label">Margine inferiore</string>
-    <string name="page_indicator_height">Page indicator height</string>
+    <string name="page_indicator_height">Altezza indicatore pagina</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Ricerca delle app</string>
     <string name="search_provider_sponsored_description">%1$s e Lawnchair hanno un accordo di condivisione delle entrate.\n\nLa ricerca tramite %1$s aiuta a supportare Lawnchair.</string>

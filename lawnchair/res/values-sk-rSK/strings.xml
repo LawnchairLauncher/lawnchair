@@ -49,6 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
+    <string name="others_category_label">Others</string>
     <!-- Selection options -->
     <string name="dynamic">Dynamické</string>
     <string name="presets">Predvoľby</string>
@@ -72,6 +73,8 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Čo ukázať</string>
     <string name="wallpapers">Wallpapers</string>
+    <string name="caddy_beta">Caddy (Beta)</string>
+    <string name="caddy">Caddy</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Na uzamknutie telefónu pri vykonávaní gesta vyžaduje aplikácia Lawnchair prístup k funkciám prístupnosti.\n\nLawnchair nesleduje žiadnu činnosť používateľa, hoci oprávnenie na to sa vyžaduje pre všetky služby prístupnosti. Služba Lawnchair zahodí akúkoľvek udalosť odoslanú systémom.\n\nNa uzamknutie telefónu používa služba sprístupnenia performGlobalAction.</string>
     <string name="x_by_y">%1$d × %2$d</string>

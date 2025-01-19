@@ -21,7 +21,7 @@
     Actions and Verbs
 
     -->
-    <string name="preview_label">Förhandsgranska</string>
+    <string name="preview_label">Förhandsgranskning</string>
     <string name="action_create">Skapa</string>
     <string name="action_backup">Säkerhetskopiera</string>
     <string name="action_restore">Återställ</string>
@@ -49,6 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
+    <string name="others_category_label">Övriga</string>
     <!-- Selection options -->
     <string name="dynamic">Dynamisk</string>
     <string name="presets">Förval</string>
@@ -72,6 +73,8 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Vad ska visas</string>
     <string name="wallpapers">Bakgrundsbilder</string>
+    <string name="caddy_beta">Caddy (Beta)</string>
+    <string name="caddy">Caddy</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">För att kunna låsa din telefon när en gest görs och för att kunna öppna Senaste med en gest kräver Lawnchair tillgänglighetsåtkomst.\n\nLawnchair övervakar inte några användaraktiviteter, men behörigheten att kunna göra detta krävs för alla tillgänglighetstjänster. Lawnchair förkastar alla händelser som skickas av systemet.\n\nFör att kunna låsa din telefon och för att kunna öppna Senaste använder Lawnchair tillgänglighetstjänsten performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>

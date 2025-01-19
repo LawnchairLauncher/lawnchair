@@ -49,6 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
+    <string name="others_category_label">Others</string>
     <!-- Selection options -->
     <string name="dynamic">Dinamis</string>
     <string name="presets">Preset</string>
@@ -72,6 +73,8 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Yang ditampilkan</string>
     <string name="wallpapers">Wallpaper</string>
+    <string name="caddy_beta">Caddy (Beta)</string>
+    <string name="caddy">Caddy</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Untuk mengunci layar dan membuka aplikasi Terbaru dengan gerakan, Lawnchair perlu izin aksesibilitas.\n\nLawnchair tidak melacak apa yang Anda lakukan di ponsel. Izin ini hanya digunakan untuk mengaktifkan gerakan-gerakan tersebut.\n\nLawnchair menggunakan fitur aksesibilitas performGlobalAction untuk mengunci layar atau membuka aplikasi Terbaru.</string>
     <string name="x_by_y">%1$d × %2$d</string>

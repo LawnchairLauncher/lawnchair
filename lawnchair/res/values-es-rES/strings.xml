@@ -49,6 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
+    <string name="others_category_label">Others</string>
     <!-- Selection options -->
     <string name="dynamic">Dinámico</string>
     <string name="presets">Configuraciones</string>
@@ -72,6 +73,8 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Qué mostrar</string>
     <string name="wallpapers">Fondos de pantalla</string>
+    <string name="caddy_beta">Caddy (Beta)</string>
+    <string name="caddy">Caddy</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Para bloquear el teléfono al realizar un gesto, y para abrir Recientes mediante un gesto, Lawnchair requiere permiso de accesibilidad. \n\nLawnchair no observa ninguna acción del usuario, aunque el privilegio de hacerlo es necesario para todos los servicios de accesibilidad. Lawnchair descarta cualquier evento enviado por el sistema. \n\nPara bloquear el teléfono, o para abrir recientes, Lawnchair utiliza el servicio de accesibilidad performGlobalAction.</string>
     <string name="x_by_y"></string>
