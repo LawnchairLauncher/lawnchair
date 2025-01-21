@@ -19,12 +19,14 @@ import app.lawnchair.ui.preferences.about.AboutRoutes
 import app.lawnchair.ui.preferences.about.acknowledgements.Acknowledgements
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceModelList
 import app.lawnchair.ui.preferences.components.colorpreference.ColorSelection
+import app.lawnchair.ui.preferences.components.folder.AppListToFolderPreferences
 import app.lawnchair.ui.preferences.destinations.AppDrawerPreferences
 import app.lawnchair.ui.preferences.destinations.AppDrawerRoutes
 import app.lawnchair.ui.preferences.destinations.CustomIconShapePreference
 import app.lawnchair.ui.preferences.destinations.DebugMenuPreferences
 import app.lawnchair.ui.preferences.destinations.DockPreferences
 import app.lawnchair.ui.preferences.destinations.DockRoutes
+import app.lawnchair.ui.preferences.destinations.DrawerFolderPreferences
 import app.lawnchair.ui.preferences.destinations.DummyPreference
 import app.lawnchair.ui.preferences.destinations.ExperimentalFeaturesPreferences
 import app.lawnchair.ui.preferences.destinations.FolderPreferences
@@ -119,6 +121,7 @@ fun InnerNavigation(
             composable(route = "main") { AppDrawerPreferences() }
             composable(route = AppDrawerRoutes.HIDDEN_APPS) { HiddenAppsPreferences() }
         }
+        composable(route = Routes.APP_DRAWER_FOLDER) { DrawerFolderPreferences() }
 
         composable(
             route = "${Routes.SEARCH}/{selectedId}",
@@ -166,6 +169,16 @@ fun InnerNavigation(
             val packageName = args.getString("packageName")!!
             IconPickerPreference(packageName)
         }
+        composable(
+            route = "${Routes.APP_LIST_TO_FOLDER}/{id}",
+            arguments = listOf(
+                navArgument("id") { type = NavType.IntType },
+            ),
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val folderInfoId = args.getInt("id")
+            AppListToFolderPreferences(folderInfoId)
+        }
 
         composable(route = Routes.EXPERIMENTAL_FEATURES) { ExperimentalFeaturesPreferences() }
         composable(
@@ -211,4 +224,6 @@ object Routes {
     const val PICK_APP_FOR_GESTURE = "pickAppForGesture"
     const val GESTURES = "gestures"
     const val SEARCH = "search"
+    const val APP_DRAWER_FOLDER = "appDrawerFolder"
+    const val APP_LIST_TO_FOLDER = "appListToFolder"
 }

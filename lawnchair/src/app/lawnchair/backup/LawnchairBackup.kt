@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.core.graphics.drawable.toBitmap
 import app.lawnchair.LawnchairProto.BackupInfo
-import app.lawnchair.data.AppDatabase
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.scaleDownTo
 import app.lawnchair.util.scaleDownToDisplaySize
@@ -159,7 +158,6 @@ class LawnchairBackup(
                 .setPreviewDarkText(wallpaperSupportsDarkText)
                 .build()
 
-            AppDatabase.INSTANCE.get(context).checkpoint()
             val pfd = context.contentResolver.openFileDescriptor(fileUri, "w")!!
             withContext(Dispatchers.IO) {
                 pfd.use {

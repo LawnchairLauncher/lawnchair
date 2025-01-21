@@ -13,6 +13,7 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.preferences.components.layout.BottomSpacer
 
 @Composable
 fun ModalBottomSheetContent(
@@ -57,6 +58,7 @@ fun ModalBottomSheetContent(
                 .fillMaxWidth(),
         ) {
             buttons()
+            BottomSpacer()
         }
     }
 }

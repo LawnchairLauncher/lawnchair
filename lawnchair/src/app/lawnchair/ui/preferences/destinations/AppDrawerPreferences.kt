@@ -17,6 +17,10 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -48,12 +52,19 @@ fun AppDrawerPreferences(
     val context = LocalContext.current
     val resources = context.resources
 
+    var selectedOption by remember { mutableStateOf(prefs.drawerList.get()) }
+
     PreferenceLayout(
         label = stringResource(id = R.string.app_drawer_label),
         backArrowVisible = !LocalIsExpandedScreen.current,
         modifier = modifier,
     ) {
-        AppDrawerLayoutSettings()
+        AppDrawerLayoutSettings(onOptionSelect = { isSelected -> selectedOption = isSelected })
+        ExpandAndShrink(visible = selectedOption) {
+            DividerColumn {
+                AppDrawerFolderPreferences()
+            }
+        }
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             ColorPreference(preference = prefs2.appDrawerBackgroundColor)
             SliderPreference(

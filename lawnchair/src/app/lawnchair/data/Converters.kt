@@ -1,6 +1,8 @@
 package app.lawnchair.data
 
 import androidx.room.TypeConverter
+import app.lawnchair.data.folder.FolderItemEntity
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
 
 class Converters {
@@ -10,4 +12,11 @@ class Converters {
 
     @TypeConverter
     fun toComponentKey(value: String?) = value?.let { ComponentKey.fromString(it) }
+}
+
+fun AppInfo.toEntity(folderId: Int): FolderItemEntity {
+    return FolderItemEntity(
+        folderId = folderId,
+        componentKey = Converters().fromComponentKey(this.toComponentKey()),
+    )
 }

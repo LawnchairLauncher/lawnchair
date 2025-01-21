@@ -56,7 +56,6 @@ import java.util.List;
 
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.ui.popup.LauncherOptionsPopup;
-import app.lawnchair.wallpaper.service.WallpaperService;
 
 /**
  * Popup shown on long pressing an empty space in launcher

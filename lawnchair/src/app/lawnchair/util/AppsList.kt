@@ -35,6 +35,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.model.data.AppInfo
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
@@ -81,6 +82,16 @@ class App(context: Context, private val info: LauncherActivityInfo) {
 
 val appComparator: Comparator<App> = comparing { it.label.lowercase(Locale.getDefault()) }
 val packageInfoCache = mutableMapOf<String, ApplicationInfo>()
+
+fun List<AppInfo>.sortedBySelection(selectedAppsState: Set<ItemInfo>): List<AppInfo> {
+    return sortedWith(
+        compareBy<AppInfo> { app ->
+            selectedAppsState.none { it is AppInfo && it.targetPackage == app.targetPackage }
+        }.thenBy { app ->
+            app.title.toString().lowercase(Locale.getDefault())
+        },
+    )
+}
 
 fun categorizeApps(context: Context, appList: List<AppInfo?>?): Map<String, List<AppInfo>> {
     val categories = mutableMapOf<String, MutableList<AppInfo>>()

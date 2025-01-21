@@ -35,6 +35,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.compat.LawnchairQuickstepCompat
+import app.lawnchair.data.AppDatabase
+import app.lawnchair.data.wallpaper.service.WallpaperService
 import app.lawnchair.factory.LawnchairWidgetHolder
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
@@ -49,8 +51,6 @@ import app.lawnchair.ui.popup.LauncherOptionsPopup
 import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.unsafeLazy
-import app.lawnchair.wallpaper.service.WallpaperDatabase
-import app.lawnchair.wallpaper.service.WallpaperService
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.BubbleTextView
@@ -239,7 +239,7 @@ class LawnchairLauncher : QuickstepLauncher() {
 
         reloadIconsIfNeeded()
 
-        WallpaperDatabase.INSTANCE.get(this).checkpointSync()
+        AppDatabase.INSTANCE.get(this).checkpointSync()
     }
 
     override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {

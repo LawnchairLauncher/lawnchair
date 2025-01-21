@@ -1,9 +1,9 @@
-package app.lawnchair.wallpaper.service
+﻿package app.lawnchair.data.wallpaper
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "wallpapers")
+@Entity(tableName = "Wallpapers")
 data class Wallpaper(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val imagePath: String,

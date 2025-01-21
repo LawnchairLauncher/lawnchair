@@ -1,4 +1,4 @@
-package app.lawnchair.wallpaper.model
+package app.lawnchair.data.wallpaper.model
 
 import android.app.WallpaperManager
 import android.content.Context
@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.lawnchair.data.wallpaper.Wallpaper
 import app.lawnchair.wallpaper.WallpaperManagerCompat
-import app.lawnchair.wallpaper.service.Wallpaper
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

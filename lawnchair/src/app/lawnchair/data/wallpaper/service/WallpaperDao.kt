@@ -1,10 +1,11 @@
-package app.lawnchair.wallpaper.service
+package app.lawnchair.data.wallpaper.service
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import app.lawnchair.data.wallpaper.Wallpaper
 
 @Dao
 interface WallpaperDao {

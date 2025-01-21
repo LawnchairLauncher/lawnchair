@@ -34,6 +34,7 @@ import app.lawnchair.ui.placeholder.fade
 import app.lawnchair.ui.placeholder.placeholder
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.util.App
+import com.android.launcher3.model.data.AppInfo
 
 @Composable
 fun AppItem(
@@ -45,6 +46,20 @@ fun AppItem(
         label = app.label,
         icon = app.icon,
         onClick = { onClick(app) },
+        widget = widget,
+    )
+}
+
+@Composable
+fun AppItem(
+    appInfo: AppInfo,
+    onClick: (appInfo: AppInfo) -> Unit,
+    widget: (@Composable () -> Unit)? = null,
+) {
+    AppItem(
+        label = appInfo.title.toString(),
+        icon = appInfo.bitmap.icon,
+        onClick = { onClick(appInfo) },
         widget = widget,
     )
 }

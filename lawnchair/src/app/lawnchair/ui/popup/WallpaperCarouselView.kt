@@ -20,10 +20,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.data.factory.ViewModelFactory
+import app.lawnchair.data.wallpaper.Wallpaper
+import app.lawnchair.data.wallpaper.model.WallpaperViewModel
 import app.lawnchair.views.component.IconFrame
-import app.lawnchair.wallpaper.model.WallpaperViewModel
-import app.lawnchair.wallpaper.model.WallpaperViewModelFactory
-import app.lawnchair.wallpaper.service.Wallpaper
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
@@ -51,9 +51,10 @@ class WallpaperCarouselView @JvmOverloads constructor(
     init {
         orientation = HORIZONTAL
         addView(loadingView)
+        val factory = ViewModelFactory(context) { WallpaperViewModel(it) }
         viewModel = ViewModelProvider(
             context as ViewModelStoreOwner,
-            WallpaperViewModelFactory(context),
+            factory,
         )[WallpaperViewModel::class.java]
 
         observeWallpapers()

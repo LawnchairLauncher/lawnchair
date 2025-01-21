@@ -1,10 +1,12 @@
-package app.lawnchair.wallpaper.service
+﻿package app.lawnchair.data.wallpaper.service
 
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.util.Log
 import androidx.core.graphics.drawable.toBitmap
+import app.lawnchair.data.AppDatabase
+import app.lawnchair.data.wallpaper.Wallpaper
 import app.lawnchair.util.bitmapToByteArray
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.util.SafeCloseable
@@ -15,7 +17,7 @@ import kotlinx.coroutines.runBlocking
 
 class WallpaperService(val context: Context) : SafeCloseable {
 
-    val dao = WallpaperDatabase.INSTANCE.get(context).wallpaperDao()
+    val dao = AppDatabase.Companion.INSTANCE.get(context).wallpaperDao()
 
     suspend fun saveWallpaper(wallpaperManager: WallpaperManager) {
         try {
@@ -49,7 +51,12 @@ class WallpaperService(val context: Context) : SafeCloseable {
         }
         val imagePath = saveImageToAppStorage(imageData)
         if (existingWallpapers.size < 4) {
-            val wallpaper = Wallpaper(imagePath = imagePath, rank = existingWallpapers.size, timestamp = timestamp, checksum = checksum)
+            val wallpaper = Wallpaper(
+                imagePath = imagePath,
+                rank = existingWallpapers.size,
+                timestamp = timestamp,
+                checksum = checksum,
+            )
             dao.insert(wallpaper)
         } else {
             val lowestRankedWallpaper = existingWallpapers.minByOrNull { it.timestamp }
@@ -65,7 +72,12 @@ class WallpaperService(val context: Context) : SafeCloseable {
                 }
             }
 
-            val wallpaper = Wallpaper(imagePath = imagePath, rank = 0, timestamp = timestamp, checksum = checksum)
+            val wallpaper = Wallpaper(
+                imagePath = imagePath,
+                rank = 0,
+                timestamp = timestamp,
+                checksum = checksum,
+            )
             dao.insert(wallpaper)
         }
     }

@@ -40,6 +40,7 @@ import com.android.launcher3.R
 @Composable
 fun AppDrawerLayoutSettings(
     modifier: Modifier = Modifier,
+    onOptionSelect: (Boolean) -> Unit = {},
 ) {
     val prefs = preferenceManager()
     val context = LocalContext.current
@@ -63,6 +64,7 @@ fun AppDrawerLayoutSettings(
             onClick = {
                 selectedOption = true
                 prefs.drawerList.set(true)
+                onOptionSelect(true)
             },
             gridLayout = {
                 Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -94,6 +96,7 @@ fun AppDrawerLayoutSettings(
             onClick = {
                 selectedOption = false
                 prefs.drawerList.set(false)
+                onOptionSelect(false)
             },
             gridLayout = {
                 Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {

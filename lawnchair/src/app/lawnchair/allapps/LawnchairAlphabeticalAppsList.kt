@@ -2,11 +2,17 @@ package app.lawnchair.allapps
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
+import app.lawnchair.data.factory.ViewModelFactory
+import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.categorizeApps
+import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
 import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.AlphabeticalAppsList
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
@@ -19,33 +25,51 @@ import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.opto.core.onEach
 import java.util.function.Predicate
 
+@Suppress("SYNTHETIC_PROPERTY_WITHOUT_JAVA_ORIGIN")
 class LawnchairAlphabeticalAppsList<T>(
     private val context: T,
-    appsStore: AllAppsStore<T>,
+    private val appsStore: AllAppsStore<T>,
     workProfileManager: WorkProfileManager?,
     privateProfileManager: PrivateProfileManager?,
-) : AlphabeticalAppsList<T>(context, appsStore, workProfileManager, privateProfileManager)
+) : AlphabeticalAppsList<T>(context, appsStore, workProfileManager, privateProfileManager),
+    OnIDPChangeListener
     where T : Context, T : ActivityContext {
 
     private var hiddenApps: Set<String> = setOf()
     private val prefs2 = PreferenceManager2.getInstance(context)
     private val prefs = PreferenceManager.getInstance(context)
+
+    private var viewModel: FolderViewModel
+    private var folderList = mutableListOf<FolderInfo>()
+
     init {
+        context.launcher.deviceProfile.inv.addOnChangeListener(this)
         try {
             prefs2.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
                 hiddenApps = it
                 onAppsUpdated()
             }
         } catch (t: Throwable) {
-            Log.w(TAG, "Failed initialize ignore: ", t)
+            Log.w(TAG, "Failed to initialize hidden apps", t)
+        }
+
+        val factory = ViewModelFactory(context) { FolderViewModel(it) }
+        viewModel = ViewModelProvider(context as ViewModelStoreOwner, factory)[FolderViewModel::class.java]
+        observeFolders()
+    }
+
+    private fun observeFolders() {
+        viewModel.foldersMutable.observe(context as LifecycleOwner) { folders ->
+            folderList = folders.toMutableList()
+            updateAdapterItems()
         }
     }
 
     override fun updateItemFilter(itemFilter: Predicate<ItemInfo>?) {
-        this.mItemFilter = Predicate { info ->
+        mItemFilter = Predicate { info ->
             require(info is AppInfo) { "`info` must be an instance of `AppInfo`." }
             val componentKey = info.toComponentKey().toString()
-            itemFilter?.test(info) != false && !hiddenApps.contains(componentKey)
+            (itemFilter?.test(info) != false) && !hiddenApps.contains(componentKey)
         }
         onAppsUpdated()
     }
@@ -57,27 +81,40 @@ class LawnchairAlphabeticalAppsList<T>(
 
         if (!drawerListDefault) {
             val categorizedApps = categorizeApps(context, appList)
-
-            if (categorizedApps.isNotEmpty()) {
-                for ((category, apps) in categorizedApps) {
-                    if (apps.size <= 1) {
-                        val app = apps[0]
-                        mAdapterItems.add(AdapterItem.asApp(app))
-                    } else {
-                        val folderInfo = FolderInfo()
-                        folderInfo.title = category
-                        for (app in apps) {
-                            folderInfo.add(app)
-                        }
-                        mAdapterItems.add(AdapterItem.asFolder(folderInfo))
+            categorizedApps.forEach { (category, apps) ->
+                if (apps.size == 1) {
+                    mAdapterItems.add(AdapterItem.asApp(apps.first()))
+                } else {
+                    val folderInfo = FolderInfo().apply {
+                        title = category
+                        apps.forEach { add(it) }
                     }
-                    position++
+                    mAdapterItems.add(AdapterItem.asFolder(folderInfo))
                 }
+                position++
             }
         } else {
-            position = super.addAppsWithSections(appList, startPosition)
+            folderList.forEach { folder ->
+                if (folder.contents.size > 1) {
+                    val folderInfo = FolderInfo()
+                    folderInfo.title = folder.title
+                    mAdapterItems.add(AdapterItem.asFolder(folderInfo))
+                    folder.contents.forEach { app ->
+                        (appsStore.getApp(app.componentKey) as? AppInfo)?.let {
+                            folderInfo.add(it)
+                        }
+                    }
+                }
+                position++
+            }
+            position = super.addAppsWithSections(appList, position)
         }
 
         return position
+    }
+
+    override fun onIdpChanged(modelPropertiesChanged: Boolean) {
+        onAppsUpdated()
+        viewModel.refreshFolders()
     }
 }

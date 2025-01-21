@@ -19,6 +19,7 @@ package app.lawnchair.preferences2
 import android.content.Context
 import app.lawnchair.LawnchairLauncher
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.LauncherAppState
 import com.android.quickstep.TouchInteractionService
 import com.android.quickstep.util.TISBindHelper
 
@@ -43,7 +44,7 @@ class ReloadHelper(private val context: Context) {
     }
 
     fun reloadIcons() {
-        idp.onPreferencesChanged(context)
+        LauncherAppState.INSTANCE.get(context).reloadIcons()
     }
 
     fun reloadTaskbar() {
