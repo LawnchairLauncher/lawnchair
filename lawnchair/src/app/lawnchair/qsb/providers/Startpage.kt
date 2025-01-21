@@ -14,7 +14,7 @@ data object Startpage : QsbSearchProvider(
     packageName = "",
     website = "https://startpage.com/?segment=startpage.lawnchair",
     type = QsbSearchProviderType.LOCAL,
-    sponsored = true,
+    sponsored = false,
 ) {
     override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
         val prefs = PreferenceManager.getInstance(launcher)
