@@ -80,8 +80,8 @@ sealed class WebSearchProvider {
          */
         fun values() = listOf(
             Google,
-            StartPage,
             DuckDuckGo,
+            StartPage,
         )
     }
 }
