@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import androidx.viewpager.widget.ViewPager
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
@@ -16,7 +17,6 @@ import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.views.OptionsPopupView
 import com.kieronquinn.app.smartspacer.sdk.client.R as SmartspacerR
-import androidx.viewpager.widget.ViewPager
 import com.kieronquinn.app.smartspacer.sdk.client.views.BcSmartspaceView
 import com.kieronquinn.app.smartspacer.sdk.client.views.popup.Popup
 import com.kieronquinn.app.smartspacer.sdk.client.views.popup.PopupFactory
