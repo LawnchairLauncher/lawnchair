@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:layout_marginStart="@dimen/enhanced_smartspace_margin_start_launcher">
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingStart="@dimen/enhanced_smartspace_padding_start">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/smartspace_card_pager"
