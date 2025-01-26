@@ -54,7 +54,7 @@
     <string name="dynamic">Dynamisk</string>
     <string name="presets">Förval</string>
     <string name="custom">Anpassad</string>
-    <string name="feed_default">Förvald</string>
+    <string name="feed_default">Standard</string>
     <string name="system">System</string>
     <!-- Relating to the Launcher ui -->
     <string name="columns">Kolumner</string>
@@ -73,8 +73,20 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Vad ska visas</string>
     <string name="wallpapers">Bakgrundsbilder</string>
-    <string name="caddy_beta">Caddy (Beta)</string>
-    <string name="caddy">Caddy</string>
+    <string name="caddy_beta">Skrin (beta)</string>
+    <string name="caddy">Skrin</string>
+    <string name="app_drawer_folder">Mapp i applådan</string>
+    <string name="app_drawer_folder_settings">Applådemapp</string>
+    <string name="add_folder">Lägg till mapp</string>
+    <string name="edit_folder">Redigera mapp</string>
+    <string name="add_label">Lägg till</string>
+    <string name="edit_label">Redigera</string>
+    <string name="apply_label">Verkställ</string>
+    <string name="delete_label">Radera</string>
+    <string name="folder_list_note">Svep åt vänster för att redigera, svep åt höger för att radera, eller tryck för att uppdatera objekt</string>
+    <string name="apps_in_folder_label">Dölj mapp-appar</string>
+    <string name="apps_in_folder_description">Appar som har tilldelats mappar exkluderas från applistor</string>
+    <string name="my_folder_label">Min mapp</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">För att kunna låsa din telefon när en gest görs och för att kunna öppna Senaste med en gest kräver Lawnchair tillgänglighetsåtkomst.\n\nLawnchair övervakar inte några användaraktiviteter, men behörigheten att kunna göra detta krävs för alla tillgänglighetstjänster. Lawnchair förkastar alla händelser som skickas av systemet.\n\nFör att kunna låsa din telefon och för att kunna öppna Senaste använder Lawnchair tillgänglighetstjänsten performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>

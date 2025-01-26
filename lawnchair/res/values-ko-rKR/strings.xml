@@ -75,6 +75,18 @@
     <string name="wallpapers">Wallpapers</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
+    <string name="app_drawer_folder">App drawer folder</string>
+    <string name="app_drawer_folder_settings">Drawer folder</string>
+    <string name="add_folder">Add folder</string>
+    <string name="edit_folder">Edit folder</string>
+    <string name="add_label">Add</string>
+    <string name="edit_label">Edit</string>
+    <string name="apply_label">적용</string>
+    <string name="delete_label">삭제</string>
+    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
+    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="my_folder_label">My folder</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Lawnchair에서 제스처로 기기를 잠그거나 최근 앱 화면을 열기 위해서는 접근성 권한이 필요합니다.\n\n모든 접근성 서비스에는 대화 상자에 나오는 권한이 필요합니다. Lawnchair는 사용자의 동작을 전혀 감시하지 않으며, 시스템에서 보내는 이벤트를 모두 무시합니다.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다.</string>
     <string name="x_by_y">%1$d x %2$d</string>

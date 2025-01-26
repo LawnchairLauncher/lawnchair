@@ -75,6 +75,18 @@
     <string name="wallpapers">Wallpapers</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
+    <string name="app_drawer_folder">App drawer folder</string>
+    <string name="app_drawer_folder_settings">Drawer folder</string>
+    <string name="add_folder">Add folder</string>
+    <string name="edit_folder">Edit folder</string>
+    <string name="add_label">Add</string>
+    <string name="edit_label">Edit</string>
+    <string name="apply_label">Primeni</string>
+    <string name="delete_label">Izbriši</string>
+    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
+    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="my_folder_label">My folder</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Da biste zaključali uređaj pokretom ili otvorili meni sa nedavnim aplikacijama, Lawnchairu je potreban pristup usluzi pristupačnosti.\n\nPomoću nje se mogu nadgledati korisničke radnje, ali je Lawnchair ne koristi u te svrhe.</string>
     <string name="x_by_y">%1$d x %2$d</string>

@@ -49,7 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">Lainnya</string>
     <!-- Selection options -->
     <string name="dynamic">Dinamis</string>
     <string name="presets">Preset</string>
@@ -75,6 +75,18 @@
     <string name="wallpapers">Wallpaper</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
+    <string name="app_drawer_folder">App drawer folder</string>
+    <string name="app_drawer_folder_settings">Drawer folder</string>
+    <string name="add_folder">Tambah folder</string>
+    <string name="edit_folder">Ubah folder</string>
+    <string name="add_label">Tambah</string>
+    <string name="edit_label">Ubah</string>
+    <string name="apply_label">Terapkan</string>
+    <string name="delete_label">Hapus</string>
+    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
+    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="my_folder_label">My folder</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Untuk mengunci layar dan membuka aplikasi Terbaru dengan gerakan, Lawnchair perlu izin aksesibilitas.\n\nLawnchair tidak melacak apa yang Anda lakukan di ponsel. Izin ini hanya digunakan untuk mengaktifkan gerakan-gerakan tersebut.\n\nLawnchair menggunakan fitur aksesibilitas performGlobalAction untuk mengunci layar atau membuka aplikasi Terbaru.</string>
     <string name="x_by_y">%1$d × %2$d</string>
@@ -553,8 +565,8 @@
     <!-- Maximum xyz for each search result type -->
     <string name="max_apps_result_count_title">Jumlah maksimal aplikasi</string>
     <string name="max_people_result_count_title">Jumlah maksimal orang</string>
-    <string name="max_file_result_count_title">Maximum number of files</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
+    <string name="max_file_result_count_title">Jumlah maksimal file</string>
+    <string name="max_settings_entry_result_count_title">Jumlah maksimal pengaturan</string>
     <string name="max_recent_result_count_title">Maximum items for search history</string>
     <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">Penundaan saran web maksimum</string>

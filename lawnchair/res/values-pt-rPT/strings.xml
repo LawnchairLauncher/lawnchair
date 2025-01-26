@@ -75,6 +75,18 @@
     <string name="wallpapers">Wallpapers</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
+    <string name="app_drawer_folder">App drawer folder</string>
+    <string name="app_drawer_folder_settings">Drawer folder</string>
+    <string name="add_folder">Add folder</string>
+    <string name="edit_folder">Edit folder</string>
+    <string name="add_label">Add</string>
+    <string name="edit_label">Edit</string>
+    <string name="apply_label">Aplicar</string>
+    <string name="delete_label">Eliminar</string>
+    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
+    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="my_folder_label">My folder</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Para bloquear o smartphone ao executar um gesto e abrir Recentes por gesto, o Lawnchair requer acesso de acessibilidade. O Lawnchair não monitora nenhuma ação do usuário, embora o privilégio para fazer isso seja necessário para todos os serviços de acessibilidade. O Lawnchair descarta qualquer evento enviado pelo sistema. Para bloquear seu telefone ou abrir Recentes, o Lawnchair usa o serviço performGlobalAction Accessibility.</string>
     <string name="x_by_y">%1$d x %2$d</string>

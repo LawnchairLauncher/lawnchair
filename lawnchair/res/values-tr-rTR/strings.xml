@@ -49,7 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">Diğerleri</string>
     <!-- Selection options -->
     <string name="dynamic">Dinamik</string>
     <string name="presets">Ön Ayarlar</string>
@@ -75,6 +75,18 @@
     <string name="wallpapers">Wallpapers</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
+    <string name="app_drawer_folder">App drawer folder</string>
+    <string name="app_drawer_folder_settings">Drawer folder</string>
+    <string name="add_folder">Add folder</string>
+    <string name="edit_folder">Edit folder</string>
+    <string name="add_label">Add</string>
+    <string name="edit_label">Edit</string>
+    <string name="apply_label">Uygula</string>
+    <string name="delete_label">Sil</string>
+    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
+    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="my_folder_label">Benim klasörüm</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Telefonunuzu hareketle kilitlemek ve son kullanılanları hareketle açmak için Lawnchair\'a erişilebilirlik izni vermeniz gerekir.\n\nLawnchair, tüm erişilebilirlik hizmetlerinin sahip olduğu izinlere sahip olmasına rağmen, hiçbir zaman kullanıcı eylemlerini izlemez. Lawnchair sistem tarafından gönderilen herhangi bir olayı görmezden gelir.\n\n Telefonunuzu kilitlemek veya Son uygulamaları açmak için Lawnchair, performGlobalAction erişilebilirllik hizmetini kullanır.</string>
     <string name="x_by_y">%1$d x %2$d</string>

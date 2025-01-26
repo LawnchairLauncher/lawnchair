@@ -75,6 +75,18 @@
     <string name="wallpapers">Achtergrond</string>
     <string name="caddy_beta">Caddy (beta)</string>
     <string name="caddy">Caddy</string>
+    <string name="app_drawer_folder">Map app-lade</string>
+    <string name="app_drawer_folder_settings">Map app-lade</string>
+    <string name="add_folder">Map toevoegen</string>
+    <string name="edit_folder">Map bewerken</string>
+    <string name="add_label">Toevoegen</string>
+    <string name="edit_label">Bewerken</string>
+    <string name="apply_label">Toepassen</string>
+    <string name="delete_label">Verwijderen</string>
+    <string name="folder_list_note">Veeg naar links om te bewerken, veeg naar rechts om te verwijderen of tik om items bij te werken</string>
+    <string name="apps_in_folder_label">Map-apps verbergen</string>
+    <string name="apps_in_folder_description">Apps toegewezen aan mappen worden uitgesloten van app lijsten</string>
+    <string name="my_folder_label">Mijn map</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Om je telefoon te vergrendelen tijdens het uitvoeren van een gebaar en om Recente apps via een gebaar te openen, heeft Lawnchair toegankelijkheidsrechten nodig.\n\nLawnchair kijkt niet naar gebruikersacties, hoewel het recht om dit te doen vereist is voor alle toegankelijkheidsservices. Lawnchair verwijdert elke gebeurtenis die door het systeem wordt verzonden.\n\nOm je telefoon te kunnen vergrendelen of Recente apps te openen, maakt Lawnchair gebruik van de toegankelijkheidsservice performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>

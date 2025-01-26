@@ -41,7 +41,7 @@
     <string name="managed_by_lawnchair">Διαχειριζόμενο από τον εκκινητή Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Προτιμήσεις</string>
-    <string name="settings_button_text">Ρυθμίσεις εκκινητή</string>
+    <string name="settings_button_text">Ρυθμίσεις Αρχ. Οθ.</string>
     <string name="system_settings">Ρυθμίσεις συστήματος</string>
     <string name="title_change_settings">Αλλαγή ρυθμίσεων</string>
     <!--
@@ -72,9 +72,21 @@
     <string name="item_removed">Το στοιχείο αφαιρέθηκε</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Τι να εμφανίζεται</string>
-    <string name="wallpapers">Ταπετσαρίες &amp; στιλ</string>
-    <string name="caddy_beta">Κατηγορίες (Δοκιμαστική λειτουργία)</string>
+    <string name="wallpapers">Ταπετσαρία &amp; στιλ</string>
+    <string name="caddy_beta">Κατηγορίες (Beta)</string>
     <string name="caddy">Κατηγορίες</string>
+    <string name="app_drawer_folder">Φάκελος συρταριού εφαρμογών</string>
+    <string name="app_drawer_folder_settings">Φάκελος συρταριού</string>
+    <string name="add_folder">Προσθήκη φακέλου</string>
+    <string name="edit_folder">Επεξεργασία φακέλου</string>
+    <string name="add_label">Προσθήκη</string>
+    <string name="edit_label">Επεξεργασία</string>
+    <string name="apply_label">Εφαρμογή</string>
+    <string name="delete_label">Διαγραφή</string>
+    <string name="folder_list_note">Σύρετε προς τα αριστερά για επεξεργασία, σύρετε προς τα δεξιά για διαγραφή ή πατήστε για ενημέρωση στοιχείων</string>
+    <string name="apps_in_folder_label">Απόκρυψη εφαρμογών φακέλων</string>
+    <string name="apps_in_folder_description">Οι εφαρμογές που έχουν εκχωρηθεί σε φακέλους εξαιρούνται από τις λίστες εφαρμογών</string>
+    <string name="my_folder_label">Ο φάκελός μου</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Για να κλειδώσετε το τηλέφωνό σας όταν εκτελείτε μια χειρονομία, όπως και για να ανοίξετε τα Πρόσφατα μέσω χειρονομίας, ο εκκινητής Lawnchair χρειάζεται δικαιώματα Προσβασιμότητας.\n\nΟ εκκινητής Lawnchair δεν παρακολουθεί καμία ενέργεια του χρήστη, αν και το δικαίωμα να το κάνει απαιτείται για όλες τις υπηρεσίες προσβασιμότητας. Ο εκκινητής Lawnchair απορρίπτει οποιοδήποτε συμβάν που αποστέλλεται από το σύστημα.\n\nΓια να κλειδώσει το τηλέφωνό σας ή να ανοίξει τις Πρόσφατες εφαρμογές, ο εκκινητής Lawnchair χρησιμοποιεί την υπηρεσία προσβασιμότητας `performanceGlobalAction`.</string>
     <string name="x_by_y">%1$d × %2$d</string>
@@ -189,8 +201,8 @@
     <string name="import_from_clipboard">Εισαγωγή από το πρόχειρο</string>
     <string name="icon_shape_clipboard_import_error">Το πρόχειρο δεν περιέχει ένα έγκυρο σχήμα εικονιδίων</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">Πακέτο εικονιδίων</string>
-    <string name="themed_icon_pack">Πηγή θεματοποιημένων εικονιδίων</string>
+    <string name="icon_pack">Πακέτα εικονιδίων</string>
+    <string name="themed_icon_pack">Πηγή εικονιδίων</string>
     <string name="themed_icon_pack_tint">Απόχρωση με χρώμα έμφασης</string>
     <string name="system_icons">Εικονίδια συστήματος</string>
     <string name="themed_icon_title">Θεματοποιημένα εικονίδια</string>

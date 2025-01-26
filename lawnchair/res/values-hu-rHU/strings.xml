@@ -75,6 +75,18 @@
     <string name="wallpapers">Háttérképek</string>
     <string name="caddy_beta">Caddy (teszt)</string>
     <string name="caddy">Caddy</string>
+    <string name="app_drawer_folder">Alkalmazásfiók-mappa</string>
+    <string name="app_drawer_folder_settings">Fiókmappa</string>
+    <string name="add_folder">Mappahozzáadás</string>
+    <string name="edit_folder">Mappaszerkesztés</string>
+    <string name="add_label">Hozzáadás</string>
+    <string name="edit_label">Szerkesztés</string>
+    <string name="apply_label">Alkalmazás</string>
+    <string name="delete_label">Törlés</string>
+    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
+    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="my_folder_label">My folder</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">A telefon zárolásához kézmozdulat végrehajtása közben, illetve az Előzmények gesztussal történő megnyitásához a Lawnchair kisegítő hozzáférést igényel.\n\nA Lawnchair nem figyel semmilyen felhasználói műveletet, bár az ehhez szükséges jogosultság minden kisegítő lehetőséghez szükséges. A Lawnchair nem rögzít rendszer által küldött eseményeket.\n\nA telefon zárolásához vagy az Előzmények megnyitásához a Lawnchair a performGlobalAction akadálymentesítési szolgáltatást használja.</string>
     <string name="x_by_y">%1$d × %2$d</string>

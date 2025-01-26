@@ -49,7 +49,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">Otros</string>
     <!-- Selection options -->
     <string name="dynamic">Dinámico</string>
     <string name="presets">Configuraciones</string>
@@ -75,10 +75,22 @@
     <string name="wallpapers">Fondos de pantalla</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
+    <string name="app_drawer_folder">App drawer folder</string>
+    <string name="app_drawer_folder_settings">Drawer folder</string>
+    <string name="add_folder">Add folder</string>
+    <string name="edit_folder">Edit folder</string>
+    <string name="add_label">Add</string>
+    <string name="edit_label">Edit</string>
+    <string name="apply_label">Aplicar</string>
+    <string name="delete_label">Eliminar</string>
+    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
+    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="my_folder_label">My folder</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Para bloquear el teléfono al realizar un gesto, y para abrir Recientes mediante un gesto, Lawnchair requiere permiso de accesibilidad. \n\nLawnchair no observa ninguna acción del usuario, aunque el privilegio de hacerlo es necesario para todos los servicios de accesibilidad. Lawnchair descarta cualquier evento enviado por el sistema. \n\nPara bloquear el teléfono, o para abrir recientes, Lawnchair utiliza el servicio de accesibilidad performGlobalAction.</string>
-    <string name="x_by_y"></string>
-    <string name="x_and_y">%1$s y %2$s</string>
+    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
 
     Preference Dashboard
@@ -407,7 +419,7 @@
     <string name="popup_menu">Menú emergente</string>
     <string name="popup_menu_items">Elementos del menú emergente</string>
     <string name="edit_menu_items">Editar los elementos del menú emergente</string>
-    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
+    <string name="wallpaper_quick_picker">Selector rápido de fondos de pantalla</string>
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_status_bar">Mostrar la barra de estado</string>
     <string name="dark_status_bar_label">Barra de estado oscura</string>

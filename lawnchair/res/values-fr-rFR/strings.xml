@@ -75,6 +75,18 @@
     <string name="wallpapers">Fonds d\'écran</string>
     <string name="caddy_beta">Catégorisé (bêta)</string>
     <string name="caddy">Catégorisé</string>
+    <string name="app_drawer_folder">Dossier du tiroir d\'applis</string>
+    <string name="app_drawer_folder_settings">Dossier du tiroir d\'applis</string>
+    <string name="add_folder">Ajouter un dossier</string>
+    <string name="edit_folder">Modifier le dossier</string>
+    <string name="add_label">Ajouter</string>
+    <string name="edit_label">Modifier</string>
+    <string name="apply_label">Appliquer</string>
+    <string name="delete_label">Supprimer</string>
+    <string name="folder_list_note">Balayez vers la gauche pour modifier, balayez vers la droite pour supprimer, ou appuyez pour ajouter des éléments</string>
+    <string name="apps_in_folder_label">Masquer les applis rangées dans des dossiers</string>
+    <string name="apps_in_folder_description">Les applis assignées à un dossier sont exclues des listes d\'applis</string>
+    <string name="my_folder_label">Mon dossier</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Pour pouvoir verrouiller votre téléphone et ouvrir Récents en un seul geste, Lawnchair a besoin des droits d\'accessibilité.\n\nLawnchair n\'observe aucune action utilisateur, mais ce privilège est accordé à tous les services d\'accessibilité. Lawnchair rejette tout événement envoyé par le système.\n\nAfin de verrouiller votre téléphone ou ouvrir Récents, Lawnchair utilise le service d\'accessibilité performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>

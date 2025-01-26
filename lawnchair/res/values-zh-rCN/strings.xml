@@ -75,6 +75,18 @@
     <string name="wallpapers">背景</string>
     <string name="caddy_beta">Caddy (测试版)</string>
     <string name="caddy">Caddy</string>
+    <string name="app_drawer_folder">应用抽屉文件夹</string>
+    <string name="app_drawer_folder_settings">抽屉文件夹</string>
+    <string name="add_folder">添加文件夹</string>
+    <string name="edit_folder">编辑文件夹</string>
+    <string name="add_label">添加</string>
+    <string name="edit_label">编辑</string>
+    <string name="apply_label">应用</string>
+    <string name="delete_label">删除</string>
+    <string name="folder_list_note">向左滑动用来编辑, 向右滑动用来删除, 或点击用来更新内容</string>
+    <string name="apps_in_folder_label">隐藏应用文件夹</string>
+    <string name="apps_in_folder_description">分配给文件夹的应用程序被排除在应用程序列表之外</string>
+    <string name="my_folder_label">我的文件夹</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">要通过手势锁定手机和打开最近任务界面, Lawnchair 需要获取无障碍功能访问权限。\n\nLawnchair 不会监视任何用户操作, 即使此权限允许。Lawnchair 会忽略系统发送的任何事件。\n\n为了锁定手机或打开最近任务界面, Lawnchair 使用 performGlobalAction 无障碍服务。</string>
     <string name="x_by_y">%1$d x %2$d</string>
@@ -196,7 +208,7 @@
     <string name="themed_icon_title">主题图标</string>
     <string name="themed_icons_off_label">关</string>
     <string name="themed_icons_home_label">主屏幕</string>
-    <string name="themed_icons_home_and_drawer_label">主屏幕与应用抽屉</string>
+    <string name="themed_icons_home_and_drawer_label">主屏幕&amp;应用抽屉</string>
     <string name="lawnicons_not_installed_description">没有支持的图标包</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">添加字体</string>
@@ -207,7 +219,7 @@
     <string name="fontHeading">标题</string>
     <string name="fontHeadingMedium">标题(中)</string>
     <string name="fontBody">正文</string>
-    <string name="fontBodyMedium">正文（中）</string>
+    <string name="fontBodyMedium">正文 (中)</string>
     <string name="font_variant_italic">斜体</string>
     <string name="font_weight_thin">细体</string>
     <string name="font_weight_extra_light">超细</string>
@@ -272,7 +284,7 @@
     <string name="smartspace_widget_description">显示什么</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">日历</string>
-    <string name="smartspace_date_and_time">日期与时间</string>
+    <string name="smartspace_date_and_time">日期&amp;时间</string>
     <string name="smartspace_date">日期</string>
     <string name="smartspace_time">时间</string>
     <string name="smartspace_time_format">时间格式</string>
@@ -309,7 +321,7 @@
     <string name="news">新闻</string>
     <string name="support">支持</string>
     <string name="product">产品</string>
-    <string name="design_and_development">设计与开发</string>
+    <string name="design_and_development">设计&amp;开发</string>
     <string name="development">开发</string>
     <string name="quickswitch_maintenance">QuickSwitch 维护</string>
     <string name="devops">运维</string>
@@ -382,7 +394,7 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotation_description">允许在设备旋转时旋转主屏幕</string>
-    <string name="wallpaper_blur">壁纸模糊（实验性）</string>
+    <string name="wallpaper_blur">壁纸模糊 (实验性)</string>
     <string name="wallpaper_background_blur">模糊强度</string>
     <string name="wallpaper_background_blur_factor">因素阈值</string>
     <string name="auto_add_shortcuts_label">添加新应用到主屏</string>
@@ -435,7 +447,7 @@
     <string name="corner_radius_label">圆角半径</string>
     <string name="apply_accent_color_label">应用强调色</string>
     <string name="search_provider">搜索提供程序</string>
-    <string name="hotseat_background">现实背景</string>
+    <string name="hotseat_background">显示背景</string>
     <string name="hotseat_bg_horizontal_inset_left">左距</string>
     <string name="hotseat_bg_horizontal_inset_right">右距</string>
     <string name="hotseat_bg_vertical_inset_top">上距</string>
@@ -475,7 +487,7 @@
     <string name="app_drawer_bg_color_label">背景颜色</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">从应用抽屉中隐藏</string>
-    <string name="hidden_apps_label_with_count">隐藏的应用（%1$d）</string>
+    <string name="hidden_apps_label_with_count">隐藏的应用 (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="other">%1$d 个应用</item>
     </plurals>
@@ -488,7 +500,7 @@
     <!-- Quickstep settings -->
     <string name="quickswitch_ignored_warning">由于 Lawnchair 未设置为“最近应用”提供程序，因此这些设置将被忽略</string>
     <string name="quickstep_incompatible">不兼容的系统集成</string>
-    <string name="quickstep_incompatible_description">您的设备已配置为使用 %1$s 提供的系统手势（称为 Quickstep），但此版本的 %1$s 与您的 Android 版本不兼容。要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 作为系统手势提供程序。</string>
+    <string name="quickstep_incompatible_description">您的设备已配置为使用 %1$s 提供的系统手势 (称为 Quickstep)，但此版本的 %1$s 与您的 Android 版本不兼容。要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 作为系统手势提供程序。</string>
     <string name="translucent_background">半透明背景</string>
     <string name="translucent_background_alpha">背景不透明度</string>
     <string name="recents_actions_label">快捷操作</string>
@@ -533,11 +545,11 @@
     <string name="hidden_apps_show_name_typed">如果输入全名</string>
     <string name="app_search_algorithm">搜索算法</string>
     <string name="search_algorithm_app_search">应用搜索</string>
-    <string name="search_algorithm_global_search_on_device">全局搜索（设备上）</string>
-    <string name="search_algorithm_global_search_via_asi">全局搜索（通过 ASI）</string>
+    <string name="search_algorithm_global_search_on_device">全局搜索 (设备上)</string>
+    <string name="search_algorithm_global_search_via_asi">全局搜索 (通过 ASI)</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">在搜索结果中显示</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">应用与快捷方式</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">应用&amp;快捷方式</string>
     <string name="search_pref_result_shortcuts_title">应用快捷方式</string>
     <string name="search_pref_result_people_title">联系人</string>
     <string name="search_pref_result_tips_title">Pixel 提示</string>
