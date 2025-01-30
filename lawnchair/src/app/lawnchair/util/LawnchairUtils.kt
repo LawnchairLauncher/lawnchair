@@ -42,6 +42,7 @@ import android.util.Size
 import android.view.View
 import android.widget.TextView
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.createBitmap
 import androidx.core.os.UserManagerCompat
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -54,6 +55,7 @@ import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
 import com.patrykmichalik.opto.core.firstBlocking
 import java.io.ByteArrayOutputStream
+import java.util.Locale
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.math.max
@@ -275,11 +277,8 @@ fun Drawable.toBitmap(): Bitmap {
         return bitmap
     }
 
-    val bitmap = Bitmap.createBitmap(
-        intrinsicWidth.takeIf { it > 0 } ?: 1,
-        intrinsicHeight.takeIf { it > 0 } ?: 1,
-        Bitmap.Config.ARGB_8888,
-    )
+    val bitmap =
+        createBitmap(intrinsicWidth.takeIf { it > 0 } ?: 1, intrinsicHeight.takeIf { it > 0 } ?: 1)
     val canvas = Canvas(bitmap)
     setBounds(0, 0, canvas.width, canvas.height)
     draw(canvas)
@@ -316,3 +315,11 @@ fun getSignatureHash(context: Context, packageName: String): Long? {
         null
     }
 }
+
+inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>().apply {
+    while (true) {
+        add(generator() ?: break)
+    }
+}
+
+fun String.toTitleCase(): String = splitToSequence(" ").map { replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } }.joinToString(" ")

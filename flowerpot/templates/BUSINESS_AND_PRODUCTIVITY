@@ -1,0 +1,8 @@
+&category|productivity
+;android.intent.category.SECONDARY_HOME
+;android.intent.category.APP_CALENDAR
+;android.intent.category.APP_EMAIL
+;android.intent.category.APP_FILES
+:android.intent.action.OPEN_DOCUMENT_TREE
+:android.intent.action.OPEN_DOCUMENT
+:android.intent.action.CREATE_DOCUMENT
