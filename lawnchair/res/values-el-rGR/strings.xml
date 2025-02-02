@@ -72,11 +72,11 @@
     <string name="item_removed">Το στοιχείο αφαιρέθηκε</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Τι να εμφανίζεται</string>
-    <string name="wallpapers">Ταπετσαρία &amp; στιλ</string>
+    <string name="wallpapers">Ταπετσαρία και στιλ</string>
     <string name="caddy_beta">Κατηγορίες (Beta)</string>
     <string name="caddy">Κατηγορίες</string>
-    <string name="app_drawer_folder">Φάκελος συρταριού εφαρμογών</string>
-    <string name="app_drawer_folder_settings">Φάκελος συρταριού</string>
+    <string name="app_drawer_folder">Φάκελοι συρταριού εφαρμογών</string>
+    <string name="app_drawer_folder_settings">Δημιουργία, διαγραφή ή επεξεργασία φακέλων</string>
     <string name="add_folder">Προσθήκη φακέλου</string>
     <string name="edit_folder">Επεξεργασία φακέλου</string>
     <string name="add_label">Προσθήκη</string>
@@ -407,9 +407,9 @@
     <string name="wallpaper_depth_effect_description">Μεγέθυνση και σμίκρυνση της ταπετσαρίας κατά τη μετάβαση μεταξύ περιοχών του εκκινητή</string>
     <string name="show_sys_ui_scrim">Σκιά κορυφής</string>
     <string name="home_screen_grid">Πλέγμα αρχικής οθόνης</string>
-    <string name="home_screen_lock">Κλείδωμα αρχικής οθόνης</string>
-    <string name="home_screen_unlock">Ξεκλείδωμα αρχικής οθόνης</string>
-    <string name="home_screen_locked">Η αρχική οθόνη είναι κλειδωμένη</string>
+    <string name="home_screen_lock">Κλείδωμα Αρχ. Οθ.</string>
+    <string name="home_screen_unlock">Ξεκλείδωμα Αρχ. Οθ.</string>
+    <string name="home_screen_locked">Η Αρχ. Οθ. είναι κλειδωμένη</string>
     <string name="home_screen_lock_description">Αποτροπή αλλαγών στη διάταξη της αρχικής οθόνης</string>
     <string name="show_dot_pagination_label">Εμφάνιση διαχωριστικών κουκκίδων επιφανειών εργασίας</string>
     <string name="show_dot_pagination_description">Χρήση κουκκίδων αντί γραμμών για εμφάνιση αριθμού σελίδας</string>
