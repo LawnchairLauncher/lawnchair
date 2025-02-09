@@ -65,18 +65,18 @@
     <string name="layout">Bố cục</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Hình nền</string>
-    <string name="background_opacity">Độ mờ nền</string>
+    <string name="background_opacity">Độ mờ của nền</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Đã sao chép</string>
     <string name="calculator_search_result_copied_toast">Kết quả đã sao chép vào bảng nhớ tạm</string>
-    <string name="item_removed">Đã xoá mục</string>
+    <string name="item_removed">Đã xóa mục</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">Những gì để hiển thị</string>
+    <string name="what_to_show">Hiển thị những gì</string>
     <string name="wallpapers">Hình nền</string>
-    <string name="caddy_beta">Caddy (Beta)</string>
-    <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">Thư mục trong kho ứng dụng</string>
-    <string name="app_drawer_folder_settings">Kho thư mục</string>
+    <string name="caddy_beta">Tự sắp đặt (Thử nghiệm)</string>
+    <string name="caddy">Tự sắp đặt</string>
+    <string name="app_drawer_folder">Thư mục trong ngăn chứa</string>
+    <string name="app_drawer_folder_settings">Thư mục ngăn chứa</string>
     <string name="add_folder">Thêm thư mục</string>
     <string name="edit_folder">Chỉnh sửa thư mục</string>
     <string name="add_label">Ứng dụng</string>
@@ -88,7 +88,7 @@
     <string name="apps_in_folder_description">Các ứng dụng được gán vào thư mục sẽ bị loại khỏi danh sách ứng dụng</string>
     <string name="my_folder_label">Thư mục của tôi</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Để khóa điện thoại khi thực hiện cử chỉ và để mở mục Gần đây bằng cử chỉ, Lawnchair yêu cầu quyền truy cập trợ năng.\n\nLawnchair không theo dõi bất kỳ hành động nào của người dùng, mặc dù quyền theo dõi là bắt buộc đối với tất cả các dịch vụ trợ năng. Lawnchair loại bỏ mọi sự kiện được hệ thống gửi đi.\n\nĐể khóa điện thoại hoặc mở mục Gần đây, Lawnchair sử dụng dịch vụ Trợ năng performGlobalAction.</string>
+    <string name="accessibility_service_description">Để khóa điện thoại khi thực hiện cử chỉ và để mở mục Ứng dụng gàần đây bằng cử chỉ, Lawnchair yêu cầu quyền truy cập trợ năng.\n\nLawnchair không theo dõi bất kỳ hành động nào của người dùng, mặc dù quyền theo dõi là bắt buộc đối với tất cả các dịch vụ trợ năng. Lawnchair loại bỏ mọi sự kiện được hệ thống gửi đi.\n\nĐể khóa điện thoại hoặc mở mục Ứng dụng gần đây, Lawnchair sử dụng dịch vụ Trợ năng thực performGlobalAction.</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
     <!--
@@ -98,15 +98,15 @@
     -->
     <string name="settings">Cài đặt</string>
     <string name="general_label">Chung</string>
-    <string name="general_description">Màu sắc, gói biểu tượng, dấu chấm thông báo</string>
+    <string name="general_description">Màu sắc, gói biểu tượng, chấm thông báo</string>
     <string name="home_screen_label">Trang chủ</string>
     <string name="home_screen_description">Bản tin, lưới, biểu tượng</string>
     <string name="dock_label">Khay</string>
     <string name="dock_description">Thanh tìm kiếm, số biểu tượng</string>
-    <string name="app_drawer_label">Kho ứng dụng</string>
-    <string name="app_drawer_description">Ứng dụng bị ẩn, số cột, biểu tượng</string>
-    <string name="drawer_search_label">Ngăn tìm kiếm</string>
-    <string name="drawer_search_description">Gợi ý websites, tìm kiếm chung</string>
+    <string name="app_drawer_label">Ngăn chứa ứng dụng</string>
+    <string name="app_drawer_description">Ẩn ứng dụng, số cột, biểu tượng</string>
+    <string name="drawer_search_label">Tìm kiếm của ngăn chứa</string>
+    <string name="drawer_search_description">Gợi ý trang web, tìm kiếm chung</string>
     <string name="folders_label">Thư mục</string>
     <string name="folders_description">Số hàng và cột</string>
     <string name="gestures_label">Cử chỉ</string>
@@ -120,27 +120,27 @@
     <!-- Experimental features -->
     <string name="font_picker_label">Đổi phông chữ</string>
     <string name="font_picker_description">Một số văn bản vẫn không thay đổi</string>
-    <string name="smartspace_calendar_label">Tuỳ chỉnh lịch của xem nhanh</string>
+    <string name="smartspace_calendar_label">Tuỳ chỉnh lịch trong Xem nhanh</string>
     <string name="smartspace_calendar_description">Cho phép hiển thị ngày trong hệ thống lịch không phải lịch tây</string>
     <string name="workspace_increase_max_grid_size_label">Tăng độ lớn tối đa của lưới</string>
     <string name="workspace_increase_max_grid_size_description">Cho phép tăng kích thước từ 10x10 lên 20x20 trên màn hình chính</string>
     <string name="always_reload_icons_label">Luôn tải lại biểu tượng</string>
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
     <string name="recents_lock_unlock">Khóa/mở</string>
-    <string name="recents_lock_unlock_description">Ngăn ứng dụng đã chọn đóng khi nhấn \"Xóa tất cả\"</string>
+    <string name="recents_lock_unlock_description">Ngăn chứa ứng dụng đã chọn đóng khi nhấn \"Xóa tất cả\"</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">Để truy cập các phím tắt và tính năng bổ sung, hãy đặt Lawnchair làm trình khởi chạy mặc định của bạn</string>
+    <string name="set_default_launcher_tip">Để truy cập các phím tắt và tính năng bổ sung, hãy đặt Lawnchair làm ứng dụng mặc định màn hình chính của bạn</string>
     <string name="notification_dots">Dấu chấm thông náo</string>
-    <string name="show_notification_count">Hiển thị số thông báo</string>
+    <string name="show_notification_count">Hiển thị số đếm thông báo</string>
     <string name="notification_dots_color">Màu chấm thông báo</string>
     <string name="notification_dots_text_color">Màu số thông báo</string>
     <string name="notification_dots_color_contrast_warning_always">Cảnh báo: Màu sắc của chấm thông báo và số không đủ độ tương phản với nhau</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Cảnh báo: Màu sắc của chấm thông báo và số có thể không phải lúc nào cũng đủ độ tương phản với nhau</string>
-    <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
+    <string name="missing_notification_access_label">Cần quyền truy cập vào thông báo</string>
     <string name="missing_notification_access_desc">Để hiển thị Dấu chấm thông báo, hãy bật thông báo ứng dụng cho <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
@@ -151,17 +151,17 @@
     <string name="icon_style_label">Phong cách biểu tượng</string>
     <string name="icon_shape_label">Hình dạng biểu tượng</string>
     <string name="icon_sizes">Kích thước biểu tượng</string>
-    <string name="show_labels">Hiển thị nhãn</string>
-    <string name="label_size">Kích thước nhãn</string>
-    <string name="twoline_label">Sử dụng nhiều dòng</string>
+    <string name="show_labels">Hiển thị tên</string>
+    <string name="label_size">Kích thước tên</string>
+    <string name="twoline_label">Dùng nhiều dòng</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Biểu tượng theo chủ đề trong suốt</string>
-    <string name="transparent_background_icons_description">Dùng nền trong suốt cho biểu tượng theo chủ đề</string>
+    <string name="transparent_background_icons_label">Biểu tượng theo theme trong suốt</string>
+    <string name="transparent_background_icons_description">Dùng nền trong suốt cho biểu tượng theo theme</string>
     <string name="auto_adaptive_icons_label">Biểu tượng tự động thích ứng</string>
     <string name="auto_adaptive_icons_description">Đối với tất cả các biểu tượng không thích ứng</string>
     <string name="shadow_bg_icons_label">Hiển thị bóng đổ phía sau biểu tượng</string>
-    <string name="background_lightness_label">Độ sáng nền</string>
-    <string name="adaptive_icon_background_description">Sử dụng độ sáng nền 100% cho màu trắng</string>
+    <string name="background_lightness_label">Độ sáng của nền</string>
+    <string name="adaptive_icon_background_description">Sử dụng độ sáng nền 100% từ màu trắng</string>
     <string name="reset_custom_icons">Đặt lại biểu tượng tùy chỉnh</string>
     <string name="reset_custom_icons_confirmation">Mọi biểu tượng tùy chỉnh sẽ được đặt lại. Bạn có muốn tiếp tục không?</string>
     <!-- Icon picker -->
@@ -174,13 +174,13 @@
     <string name="icon_shape_system">Hệ thống</string>
     <string name="icon_shape_circle">Tròn</string>
     <string name="icon_shape_cylinder">Trụ</string>
-    <string name="icon_shape_diamond">Hình Kim Cương</string>
-    <string name="icon_shape_egg">Hình quả Trứng</string>
+    <string name="icon_shape_diamond">Viên Kim Cương</string>
+    <string name="icon_shape_egg">Quả trứng</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Hình bát giác</string>
-    <string name="icon_shape_hexagon">Hình Lục giác</string>
+    <string name="icon_shape_octagon">Bát giác</string>
+    <string name="icon_shape_hexagon">Hình lục giác</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Hình vuông bo tròn</string>
+    <string name="icon_shape_rounded_square">Hình vuông bo góc</string>
     <string name="icon_shape_sharp_square">Hình vuông sắc nét</string>
     <string name="icon_shape_square">Vuông</string>
     <string name="icon_shape_squircle">Vuông tròn</string>
@@ -198,7 +198,7 @@
     <string name="custom_icon_shape_bottom_left">Dưới cùng, bên trái</string>
     <string name="custom_icon_shape_bottom_right">Dưới cùng, bên phải</string>
     <string name="export_to_clipboard">Xuất ra bảng nhớ tạm</string>
-    <string name="import_from_clipboard">Nhập từ bảng nhớ tạm</string>
+    <string name="import_from_clipboard">Dán từ bảng nhớ tạm</string>
     <string name="icon_shape_clipboard_import_error">Bảng nhớ tạm không chứa hình dạng biểu tượng hợp lệ</string>
     <!-- Icon pack settings -->
     <string name="icon_pack">Gói biểu tượng</string>
@@ -243,12 +243,12 @@
     <string name="theme_follow_wallpaper">Phù hợp với hình nền</string>
     <!-- Color style -->
     <string name="color_style_label">Phong cách màu sắc</string>
-    <string name="color_style_spritz">Xịt</string>
-    <string name="color_style_tonal_spot">Điểm tông màu</string>
+    <string name="color_style_spritz">Spriz</string>
+    <string name="color_style_tonal_spot">Màu chủ đạo</string>
     <string name="color_style_vibrant">Sôi động</string>
-    <string name="color_style_expressive">Biểu cảm</string>
+    <string name="color_style_expressive">Diễn cảm</string>
     <string name="color_style_rainbow">Cầu vồng</string>
-    <string name="color_style_fruit_salad">Salad</string>
+    <string name="color_style_fruit_salad">Xa lát trái cây</string>
     <string name="color_style_content">Nội dung</string>
     <string name="color_style_monochromatic">Đơn sắc</string>
     <!-- Accent color and color picker -->
@@ -272,8 +272,8 @@
 
     -->
     <!-- Date formats -->
-    <string name="smartspace_calendar_gregorian">Dương</string>
-    <string name="smartspace_calendar_persian">Ba Tư</string>
+    <string name="smartspace_calendar_gregorian">Lịch tây</string>
+    <string name="smartspace_calendar_persian">Lịch Iran</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
     <string name="smartspace_battery_charging">Đang sạc</string>
@@ -281,16 +281,16 @@
     <string name="smartspace_battery_low">Pin yếu</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Sẽ đầy sau %2$s"</string>
     <string name="smartspace_widget">Xem nhanh</string>
-    <string name="smartspace_widget_description">Hiển thị thứ gì</string>
+    <string name="smartspace_widget_description">Hiển thị những gì</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Lịch</string>
-    <string name="smartspace_date_and_time">Thời gian &amp; giờ</string>
+    <string name="smartspace_date_and_time">Ngày &amp; giờ</string>
     <string name="smartspace_date">Ngày</string>
     <string name="smartspace_time">Giờ</string>
-    <string name="smartspace_time_format">Dạng giờ</string>
+    <string name="smartspace_time_format">Định dạng giờ</string>
     <string name="smartspace_time_follow_system">Theo hệ thống</string>
-    <string name="smartspace_time_12_hour_format">12 giờ</string>
-    <string name="smartspace_time_24_hour_format">24 giờ</string>
+    <string name="smartspace_time_12_hour_format">Dạng 12 giờ</string>
+    <string name="smartspace_time_24_hour_format">Dạng 24 giờ</string>
     <!-- Available targets -->
     <string name="smartspace_weather">Thời tiết</string>
     <string name="smartspace_battery_status">Tình trạng pin</string>
@@ -357,11 +357,11 @@
     <string name="gesture_back_tap">Nút Lùi lại</string>
     <string name="gesture_handler_no_op">Không làm gì</string>
     <string name="gesture_handler_sleep">Ngủ</string>
-    <string name="gesture_handler_recents">Mở Ứng dụng gần đây</string>
+    <string name="gesture_handler_recents">Mở ứng dụng gần đây</string>
     <string name="gesture_handler_open_notifications">Mở thanh thông báo</string>
     <string name="gesture_handler_open_app_option">Mở ứng dụng</string>
     <string name="gesture_handler_open_app_config">Mở %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Mở Kho ứng dụng</string>
+    <string name="gesture_handler_open_app_drawer">Mở trang ứng dụng</string>
     <string name="gesture_handler_open_app_search">Mở thanh tìm kiếm ứng dụng</string>
     <string name="gesture_handler_open_search">Mở thanh tìm kiếm</string>
     <string name="pick_app_for_gesture">Chọn ứng dụng</string>
@@ -369,7 +369,7 @@
     <string name="dt2s_admin_hint">Để sử dụng Chạm Hai Lần để Tắt, hãy đặt Lawnchair làm ứng dụng quản trị thiết bị. Nhấn \"Mở cài đặt\", sau đó nhấn \"Kích hoạt ứng dụng quản trị thiết bị này.\"</string>
     <string name="dt2s_admin_warning">Nhấp đôi để khoá màn hình sẽ được tắt.</string>
     <string name="d2ts_recents_a11y_hint_title">Bật dịch vụ trợ năng</string>
-    <string name="dt2s_a11y_hint">Để sử dụng Chạm Hai Lần, hãy bật dịch vụ trợ năng Lawnchair. Nhấn \"Mở cài đặt\", chọn \"Lawnchair\" và bật \"Sử dụng Lawnchair.\"\n\nLawnchair sử dụng phương thức `performGlobalAction` của Accessibility để thực hiện hành động này. Đây là quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được cấu hình cho mục đích đó.</string>
+    <string name="dt2s_a11y_hint">Để sử dụng Chạm Hai Lần, hãy bật dịch vụ trợ năng Lawnchair. Nhấn \"Mở cài đặt\", chọn \"Lawnchair\" và bật \"Sử dụng Lawnchair.\"\n\nLawnchair sử dụng phương thức `performGlobalAction` của Khả năng tiếp cận để thực hiện hành động này. Đây là quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được cấu hình cho mục đích đó.</string>
     <string name="dt2s_recents_warning_open_settings">Mở Cài đặt</string>
     <string name="recents_a11y_hint">Để sử dụng Mở Ứng dụng gần đây, hãy bật dịch vụ trợ năng Lawnchair. Nhấn \"Mở cài đặt\", chọn \"Lawnchair\" và bật \"Sử dụng Lawnchair.\"\n\nLawnchair sử dụng phương thức `performGlobalAction` của Khả năng tiếp cận để thực hiện hành động này. Đây là quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được cấu hình cho chức năng đó.</string>
     <!--
@@ -402,9 +402,9 @@
     <string name="minus_one_unavailable">Chưa cài đặt bản tin</string>
     <string name="minus_one">Bản tin</string>
     <string name="feed_provider">Nguồn Trang tin tức</string>
-    <string name="wallpaper_scrolling_label">Cuộn hình nền</string>
+    <string name="wallpaper_scrolling_label">Cuộn chuyển hình nền</string>
     <string name="wallpaper_depth_effect_label">Hiệu ứng chiều sâu của hình nền</string>
-    <string name="wallpaper_depth_effect_description">Phóng to và thu nhỏ hình nền khi chuyển đổi giữa các khu vực của launcher</string>
+    <string name="wallpaper_depth_effect_description">Phóng to và thu nhỏ hình nền khi chuyển đổi giữa các khu vực của trình chạy</string>
     <string name="show_sys_ui_scrim">Bóng trên cùng</string>
     <string name="home_screen_grid">Lưới màn hình chính</string>
     <string name="home_screen_lock">Khóa trang chủ</string>
@@ -414,7 +414,7 @@
     <string name="show_dot_pagination_label">Hiển thị dấu chấm số trang</string>
     <string name="show_dot_pagination_description">Sử dụng chấm thay cho số để hiển thị số trang trên trang chủ</string>
     <string name="show_material_u_popup_label">Sử dụng kiểu pop-up mới</string>
-    <string name="show_material_u_popup_description">Sử dụng phong cách pop-up có độ nảy và hơi cố định của Material You</string>
+    <string name="show_material_u_popup_description">Sử dụng phong cách pop-up có độ nảy và hơi cố định Vật liệu của Bạn</string>
     <string name="popup_menu">Menu Pop-up</string>
     <string name="popup_menu_items">Các mục menu Pop-up</string>
     <string name="edit_menu_items">Chỉnh sửa các mục menu Pop-up</string>
@@ -431,16 +431,16 @@
     <string name="allow_widget_overlap">Cho phép chồng chéo</string>
     <string name="force_widget_resize_label">Thực thi thay đổi kích thước tiện ích</string>
     <string name="force_widget_resize_description">Cho phép điều chỉnh kích cỡ tiện ích bị khóa ở một kích cỡ nhất định</string>
-    <string name="widget_unlimited_size_label">Xóa bỏ giới hạn kích thước</string>
+    <string name="widget_unlimited_size_label">Vượt qua giới hạn kích thước</string>
     <string name="widget_unlimited_size_description">Xóa bỏ giới hạn kích thước tối thiểu và tối đa của tiện ích</string>
     <!-- Dock settings -->
-    <string name="show_hotseat_title">Hiển thị thanh dock</string>
-    <string name="enable_dock_to_access_qsb_settings">Cài đặt thanh tìm kiếm khả dụng khi thanh Dock hiển thị. Nhấn để hiển thị thanh Dock.</string>
+    <string name="show_hotseat_title">Hiển thị khay</string>
+    <string name="enable_dock_to_access_qsb_settings">Cài đặt thanh tìm kiếm khả dụng khi Khay hiển thị. Nhấn để hiển thị Khay.</string>
     <string name="search_bar_label">Thanh tìm kiếm</string>
     <string name="search_bar_settings">Cài đặt thanh tìm kiếm</string>
     <string name="hotseat_mode_label">Thanh tìm kiếm tiện ích</string>
     <string name="hotseat_mode_disabled">Đã vô hiệu hoá</string>
-    <string name="hotseat_mode_google_search">Thanh tìm kiếm của Google</string>
+    <string name="hotseat_mode_google_search">Thanh tìm kiếm Google</string>
     <string name="qsb_hotseat_background_transparency">Độ mờ nền</string>
     <string name="qsb_hotseat_stroke_width">Chiều rộng phác thảo</string>
     <string name="qsb_hotseat_stroke_color">Màu phác thảo</string>
@@ -459,11 +459,11 @@
     <string name="pause_apps_dialog_title">Tạm dừng %1$s?</string>
     <string name="pause_apps_dialog_message">Thông báo cho %1$s sẽ bị tạm dừng</string>
     <string name="paused_apps_dialog_title">Ứng dụng đã tạm dừng</string>
-    <string name="paused_apps_dialog_message">%1$s đã được tạm dừng trực tiếp từ launcher</string>
+    <string name="paused_apps_dialog_message">%1$s đã được tạm dừng trực tiếp từ trình chạy</string>
     <string name="paused_apps_drop_target_label">Tạm dừng ứng dụng</string>
-    <string name="dock_icons">Biểu tượng thanh dock</string>
-    <string name="hotseat_bottom_space_label">Đệm dưới cùng</string>
-    <string name="page_indicator_height">Chiều cao chỉ báo trang</string>
+    <string name="dock_icons">Ứng dụng ở khay</string>
+    <string name="hotseat_bottom_space_label">Khoản trống phía dưới</string>
+    <string name="page_indicator_height">Chiều cao của trang chủ</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Tìm kiếm ứng dụng</string>
     <string name="search_provider_sponsored_description">%1$s và Lawnchair có thỏa thuận chia sẻ doanh thu.\n\nTìm kiếm với %1$s giúp hỗ trợ Lawnchair.</string>
@@ -576,6 +576,6 @@
     <string name="grant_requested_permissions">Cấp quyền</string>
     <string name="allapps_web_suggestion_provider_label">Nhà cung cấp gợi ý web</string>
     <string name="allapps_use_web_suggestion_icon_label">Hiển thị biểu tượng nhà cung cấp gợi ý web trong thanh tìm kiếm</string>
-    <string name="allapps_match_qsb_style_label">Phù hợp với hành động thanh tìm kiếm thanh dock</string>
-    <string name="allapps_match_qsb_style_description">Nhấp vào thanh tìm kiếm thanh dock bây giờ sẽ mở giao diện người dùng tìm kiếm kho ứng dụng</string>
+    <string name="allapps_match_qsb_style_label">Phù hợp với hành động thanh tìm kiếm khay</string>
+    <string name="allapps_match_qsb_style_description">Nhấp vào thanh tìm kiếm khay bây giờ sẽ mở giao diện người dùng tìm kiếm ngăn chứa ứng dụng</string>
 </resources>
