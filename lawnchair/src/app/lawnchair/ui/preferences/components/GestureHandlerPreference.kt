@@ -17,10 +17,12 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.config.GestureHandlerOption
 import app.lawnchair.preferences.PreferenceAdapter
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.LocalBottomSheetHandler
+import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.launch
 
 val options = listOf(
@@ -44,6 +46,7 @@ fun GestureHandlerPreference(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val bottomSheetHandler = LocalBottomSheetHandler.current
+    val pref2 = preferenceManager2()
 
     val currentConfig = adapter.state.value
 
@@ -52,6 +55,14 @@ fun GestureHandlerPreference(
             val config = option.buildConfig(context as Activity) ?: return@launch
             adapter.onChange(config)
         }
+    }
+
+    val newOptions = options.filterNot { option ->
+        option in listOf(
+            GestureHandlerOption.OpenAppDrawer,
+            GestureHandlerOption.OpenAppSearch,
+        ) &&
+            pref2.deckLayout.firstBlocking()
     }
 
     PreferenceTemplate(
@@ -68,7 +79,7 @@ fun GestureHandlerPreference(
                     },
                 ) {
                     LazyColumn {
-                        itemsIndexed(options) { index, option ->
+                        itemsIndexed(newOptions) { index, option ->
                             if (index > 0) {
                                 PreferenceDivider(startIndent = 40.dp)
                             }

@@ -101,12 +101,6 @@ public class AddWorkspaceItemsTask implements ModelUpdateTask {
                         continue;
                     }
 
-                    // b/139663018 Short-circuit this logic if the icon is a system app
-                    if (PackageManagerHelper.isSystemApp(context,
-                            Objects.requireNonNull(item.getIntent()))) {
-                        continue;
-                    }
-
                     if (item instanceof ItemInfoWithIcon
                             && ((ItemInfoWithIcon) item).isArchived()) {
                         continue;

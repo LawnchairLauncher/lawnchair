@@ -127,7 +127,7 @@ public final class FeatureFlags {
                                         + "loading all of them at once.");
 
         public static final BooleanFlag CHANGE_MODEL_DELEGATE_LOADING_ORDER = getDebugFlag(251502424,
-                        "CHANGE_MODEL_DELEGATE_LOADING_ORDER", DISABLED,
+                        "CHANGE_MODEL_DELEGATE_LOADING_ORDER", ENABLED,
                         "changes the timing of the loading and binding of delegate items during "
                                         + "data preparation for loading the home screen");
 

@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -66,15 +67,21 @@ fun HomeScreenPreferences(
         modifier = modifier,
     ) {
         val lockHomeScreenAdapter = prefs2.lockHomeScreen.getAdapter()
+
+        HomeLayoutSettings()
+
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             val addIconToHomeAdapter = prefs.addIconToHome.getAdapter()
-            SwitchPreference(
-                checked = !lockHomeScreenAdapter.state.value && addIconToHomeAdapter.state.value,
-                onCheckedChange = addIconToHomeAdapter::onChange,
-                label = stringResource(id = R.string.auto_add_shortcuts_label),
-                description = if (lockHomeScreenAdapter.state.value) stringResource(id = R.string.home_screen_locked) else null,
-                enabled = lockHomeScreenAdapter.state.value.not(),
-            )
+            val isDeckLayoutAdapter = prefs2.deckLayout.getAdapter()
+            ExpandAndShrink(visible = !isDeckLayoutAdapter.state.value) {
+                SwitchPreference(
+                    checked = !lockHomeScreenAdapter.state.value && addIconToHomeAdapter.state.value,
+                    onCheckedChange = addIconToHomeAdapter::onChange,
+                    label = stringResource(id = R.string.auto_add_shortcuts_label),
+                    description = if (lockHomeScreenAdapter.state.value) stringResource(id = R.string.home_screen_locked) else null,
+                    enabled = lockHomeScreenAdapter.state.value.not(),
+                )
+            }
             GestureHandlerPreference(
                 adapter = prefs2.doubleTapGestureHandler.getAdapter(),
                 label = stringResource(id = R.string.gesture_double_tap),

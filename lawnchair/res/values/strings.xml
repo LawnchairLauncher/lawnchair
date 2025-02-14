@@ -518,6 +518,10 @@
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
 
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
+
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
 
     <string name="minus_one_enable">Show feed</string>

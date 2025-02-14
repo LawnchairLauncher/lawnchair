@@ -34,8 +34,10 @@ import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.backup.ui.restoreBackupOpener
+import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
@@ -63,6 +65,7 @@ fun PreferencesDashboard(
 ) {
     val context = LocalContext.current
     SyncLiveInformation()
+    val pref2 = preferenceManager2()
 
     PreferenceLayout(
         label = stringResource(id = R.string.settings),
@@ -116,13 +119,16 @@ fun PreferencesDashboard(
                 isSelected = currentRoute.contains(Routes.DOCK),
             )
 
-            PreferenceCategory(
-                label = stringResource(R.string.app_drawer_label),
-                description = stringResource(R.string.app_drawer_description),
-                iconResource = R.drawable.ic_app_drawer,
-                onNavigate = { onNavigate(Routes.APP_DRAWER) },
-                isSelected = currentRoute.contains(Routes.APP_DRAWER),
-            )
+            val deckLayout = pref2.deckLayout.getAdapter()
+            if (!deckLayout.state.value) {
+                PreferenceCategory(
+                    label = stringResource(R.string.app_drawer_label),
+                    description = stringResource(R.string.app_drawer_description),
+                    iconResource = R.drawable.ic_app_drawer,
+                    onNavigate = { onNavigate(Routes.APP_DRAWER) },
+                    isSelected = currentRoute.contains(Routes.APP_DRAWER),
+                )
+            }
 
             PreferenceCategory(
                 label = stringResource(R.string.search_bar_label),
