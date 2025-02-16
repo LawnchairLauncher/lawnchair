@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
     <string name="recents_lock_unlock">Bloquear/desbloquear</string>
     <string name="recents_lock_unlock_description">Impedir que a aplicação selecionada seja fechada ao pressionar \"Limpar tudo\"</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -365,6 +371,7 @@ Transparentes</string>
     <string name="gesture_handler_open_app_drawer">Abrir gaveta de aplicações</string>
     <string name="gesture_handler_open_app_search">Abrir pesquisa de aplicações</string>
     <string name="gesture_handler_open_search">Abrir pesquisa</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Escolher aplicação</string>
     <string name="dt2s_admin_hint_title">Permissões de administrador necessárias</string>
     <string name="dt2s_admin_hint">Para usar o Toque Duplo para Adormecer, defina o Lawnchair como uma aplicação de administração do dispositivo. Toque em \"Abrir definições\", depois em \"Ativar esta aplicação de administração do dispositivo.\"</string>
@@ -398,6 +405,9 @@ Transparentes</string>
     <string name="wallpaper_blur">Desfocar o papel de parede (experimental)</string>
     <string name="wallpaper_background_blur">Intensidade do desfoque</string>
     <string name="wallpaper_background_blur_factor">Limite do fator</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Adicionar novas aplicações ao ecrã principal</string>
     <string name="minus_one_enable">Mostrar feed</string>
     <string name="minus_one_unavailable">Sem aplicações de feed instaladas</string>

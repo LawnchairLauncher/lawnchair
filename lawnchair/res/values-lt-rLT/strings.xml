@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Vengti talpyklose esančias piktogramas iš piktogramų paketų</string>
     <string name="recents_lock_unlock">Užrakinti/Atrakinti</string>
     <string name="recents_lock_unlock_description">Neleisti pasirinktai programėlei užsidaryti paspaudžiant \"Išvalyti visus\"</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Open app drawer</string>
     <string name="gesture_handler_open_app_search">Open app search</string>
     <string name="gesture_handler_open_search">Open search</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Pick app</string>
     <string name="dt2s_admin_hint_title">Admin permissions required</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
     <string name="minus_one_enable">Show feed</string>
     <string name="minus_one_unavailable">Nėra suinstaliuotu šoninio menių programų</string>

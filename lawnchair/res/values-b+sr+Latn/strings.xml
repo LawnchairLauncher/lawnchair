@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Ne koristi keširane ikone iz paketa ikona</string>
     <string name="recents_lock_unlock">Zaključaj/otključaj</string>
     <string name="recents_lock_unlock_description">Sprečite zatvaranje izabrane aplikacije kada dodirnete „Obriši sve”</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Otvori listu aplikacija</string>
     <string name="gesture_handler_open_app_search">Otvori pretragu aplikacija</string>
     <string name="gesture_handler_open_search">Otvori pretragu</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Izaberite aplikaciju</string>
     <string name="dt2s_admin_hint_title">Potrebne su administratorske dozvole</string>
     <string name="dt2s_admin_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, podesite Lawnchair kao administrator uređaja. U podešavanjima dodirnite „Aktiviraj ovu aplikaciju za administratora uređaja”.</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Zamagli pozadinu (eksperimentalno)</string>
     <string name="wallpaper_background_blur">Nivo zamagljenja</string>
     <string name="wallpaper_background_blur_factor">Prag efekta zamagljenja</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Dodaj nove aplikacije na početni ekran</string>
     <string name="minus_one_enable">Prikaži fid</string>
     <string name="minus_one_unavailable">Nijedna aplikacija za fid nije instalirana</string>

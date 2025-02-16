@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Zamedzí používaniu ikon, ktoré boli uložené vo vyrovnávacej pamäti</string>
     <string name="recents_lock_unlock">Zamknúť/odomknúť</string>
     <string name="recents_lock_unlock_description">Zabrániť ukončeniu vybranej aplikácie po kliknutím tlačidla „Vyčistiť všetko“</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Otvoriť ponuku aplikácií</string>
     <string name="gesture_handler_open_app_search">Otvoriť vyhľadávanie aplikácií</string>
     <string name="gesture_handler_open_search">Otvoriť vyhľadávanie</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Vybrať aplikáciu</string>
     <string name="dt2s_admin_hint_title">Nutné povolenia správcu</string>
     <string name="dt2s_admin_hint">Pre používanie dvojitého kliknutia pre uspanie, nastavte Lawnchair ako správcu aplikácie. Kliknite na Nastavenia a potom na \"Aktivujte túto aplikáciu ako správca.\"</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Rozmazať pozadie (experimentálne)</string>
     <string name="wallpaper_background_blur">Intenzita rozmazania</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Pridať nové aplikácie na domovskú obrazovku</string>
     <string name="minus_one_enable">Ukázať feed</string>
     <string name="minus_one_unavailable">Feed nie je nainštalovaný</string>

@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Gecachte pictogrammen van pictogrampakketten vermijden</string>
     <string name="recents_lock_unlock">Vergrendelen/ontgrendelen</string>
     <string name="recents_lock_unlock_description">Voorkom sluiten van geselecteerde app bij \"Alles Wissen\"</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Invloeien</string>
+    <string name="overlay_suck_in">Inzuigen</string>
+    <string name="app_closing_animation">Animatie bij sluiten app</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">Geen</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">App-lade openen</string>
     <string name="gesture_handler_open_app_search">App zoeken openen</string>
     <string name="gesture_handler_open_search">Zoekopdracht openen</string>
+    <string name="gesture_handler_open_assistant">Assistent openen</string>
     <string name="pick_app_for_gesture">App kiezen</string>
     <string name="dt2s_admin_hint_title">Beheerdersrechten vereist</string>
     <string name="dt2s_admin_hint">Om Dubbeltikken voor Slaapstand te gebruiken, moet Lawnchair worden ingesteld als een apparaatbeheerder-app. Tik op \"Instellingen openen\" en tik vervolgens op \"Activeer deze apparaatbeheerder-app.\"</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Achtergrond vervagen (experimenteel)</string>
     <string name="wallpaper_background_blur">Intensiteit van vervaging</string>
     <string name="wallpaper_background_blur_factor">Factor-drempelwaarde</string>
+    <string name="home_lawn_deck_label">Dek</string>
+    <string name="home_lawn_deck_label_beta">Dek (bèta)</string>
+    <string name="home_lawn_deck_description">Moeiteloos toegang tot je applicaties met Dek, de ultieme ervaring zonder app-lade, ontworpen voor eenvoud en naadloze organisatie</string>
     <string name="auto_add_shortcuts_label">Nieuwe apps toevoegen aan startscherm</string>
     <string name="minus_one_enable">Feed weergeven</string>
     <string name="minus_one_unavailable">Geen feed apps geïnstalleerd</string>

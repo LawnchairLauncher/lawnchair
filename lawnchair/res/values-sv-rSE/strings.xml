@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
     <string name="recents_lock_unlock">Lås/lås upp</string>
     <string name="recents_lock_unlock_description">Förhindra att vald app stängs när \"Rensa alla\" används</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Öppna applåda</string>
     <string name="gesture_handler_open_app_search">Öppna appsökning</string>
     <string name="gesture_handler_open_search">Öppna sökning</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Välj app</string>
     <string name="dt2s_admin_hint_title">Adminbehörigheter krävs</string>
     <string name="dt2s_admin_hint">För att använda Dubbeltryck för att vila, ange Lawnchair som en enhetsadminapp. Tryck på \"Öppna inställningar\", tryck sedan på \"Aktivera denna enhetsadminapp\".</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Gör bakgrundsbild oskarp (experimentell)</string>
     <string name="wallpaper_background_blur">Oskärpans intensitet</string>
     <string name="wallpaper_background_blur_factor">Faktortröskel</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
     <string name="minus_one_enable">Visa flöde</string>
     <string name="minus_one_unavailable">Inga flödesappar installerade</string>

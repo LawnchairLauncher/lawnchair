@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Hindari menggunakan ikon yang telah di tembolok dari paket lambang</string>
     <string name="recents_lock_unlock">Kunci/buka kunci</string>
     <string name="recents_lock_unlock_description">Cegah aplikasi terpilih untuk ditutup saat menekan \"Bersihkan semua\"</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Memudar</string>
+    <string name="overlay_suck_in">Menyedot</string>
+    <string name="app_closing_animation">Animasi penutupan aplikasi</string>
+    <string name="overlay_label">Lapisan</string>
+    <string name="overlay_none">Tidak ada</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Buka laci apli</string>
     <string name="gesture_handler_open_app_search">Buka pencarian apli</string>
     <string name="gesture_handler_open_search">Buka pencarian</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Pilih apli</string>
     <string name="dt2s_admin_hint_title">Izin admin diperlukan</string>
     <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai apli admin perangkat. Ketuk \"Buka pengaturan\", lalu ketuk \"Aktifkan apli admin perangkat ini.\"</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Wallpaper samar (eksperimental)</string>
     <string name="wallpaper_background_blur">Intensitas blur</string>
     <string name="wallpaper_background_blur_factor">Ambang batas faktor</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Tambahkan apli baru ke layar beranda</string>
     <string name="minus_one_enable">Tampilkan umpan</string>
     <string name="minus_one_unavailable">Tidak ada aplikasi feed yang terpasang</string>

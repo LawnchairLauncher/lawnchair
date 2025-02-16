@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Vyhnout se používání uložených ikon z balíčků ikon</string>
     <string name="recents_lock_unlock">Zamknout/odemknout</string>
     <string name="recents_lock_unlock_description">Zabránit ukončení vybrané aplikace při stisknutí tlačítka „Vyčistit vše“</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Otevřít seznam aplikací</string>
     <string name="gesture_handler_open_app_search">Otevřít vyhledávání aplikací</string>
     <string name="gesture_handler_open_search">Otevřít vyhledávání</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Vybrat aplikaci</string>
     <string name="dt2s_admin_hint_title">Vyžaduje oprávnění administrátora</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
     <string name="minus_one_enable">Show feed</string>
     <string name="minus_one_unavailable">Není nainstalován žádný poskytovatel Feedu</string>

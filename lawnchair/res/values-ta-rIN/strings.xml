@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
     <string name="recents_lock_unlock">பூட்டு/திறத்தல்</string>
     <string name="recents_lock_unlock_description">\"அனைத்தையும் அழி\" என்பதை அழுத்தும்போது தேர்ந்தெடுக்கப்பட்ட பயன்பாட்டை மூடுவதைத் தடுக்கவும்</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">ஆப் ட்ரையர் திற</string>
     <string name="gesture_handler_open_app_search">செயலி தேடலைத் திற</string>
     <string name="gesture_handler_open_search">தேடலைத் திற</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">செயலியைத் தேர்ந்தெடு</string>
     <string name="dt2s_admin_hint_title">நிர்வாக அனுமதி தேவை</string>
     <string name="dt2s_admin_hint">அணைக்க இரட்டைத்தட்டலைப் பயன்படுத்த Lawnchairஐச் சாதன நிர்வாகிச் செயலியாக அமை. அமைப்பைத் திற என்பதைத் தட்டி, “இந்தச் சாதன நிர்வாகி ஆப்ஸைச் செயல்படுத்து” என்பதைத் தட்டுக</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">முகப்புத் திரையில் புதிய செயலிகளைச் சேர்</string>
     <string name="minus_one_enable">பீட் காட்டு</string>
     <string name="minus_one_unavailable">பீட் செயலிகள் எதுவும் நிறுவப்படவில்லை</string>

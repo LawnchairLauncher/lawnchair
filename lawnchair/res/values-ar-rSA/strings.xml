@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">تجنب استخدام الأيقونات المخزنة مؤقتًا من حزم الأيقونات</string>
     <string name="recents_lock_unlock">قفل/فتح</string>
     <string name="recents_lock_unlock_description">منع إغلاق التطبيق المحدد عند الضغط على \"مسح الكل\"</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">فتح قائمة التطبيقات</string>
     <string name="gesture_handler_open_app_search">فتح بحث التطبيق</string>
     <string name="gesture_handler_open_search">فتح البحث</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">اختر التطبيق</string>
     <string name="dt2s_admin_hint_title">أذونات المشرف مطلوبة</string>
     <string name="dt2s_admin_hint">لاستخدام النقرة المزدوجة لإطفاء الشاشة، عيّن Lawnchair كتطبيق مشرف للجهاز. انقر على فتح الإعدادات، ثم انقر على \"فعِّل التطبيق كمشرف على الجهاز.\"</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">خلفية ضبابية (تجريبي)</string>
     <string name="wallpaper_background_blur">كثافة التأثير الضبابي</string>
     <string name="wallpaper_background_blur_factor">عتبة العامل</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">إضافة التطبيقات الجديدة إلى الشاشة الرئيسية</string>
     <string name="minus_one_enable">إظهار الموجز</string>
     <string name="minus_one_unavailable">لا توجد تطبيقات عرض موجز مثبتة</string>

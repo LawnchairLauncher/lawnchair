@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">A gyorsítótárazott ikonok használatának elkerülése</string>
     <string name="recents_lock_unlock">Lezárás/Feloldás</string>
     <string name="recents_lock_unlock_description">Megakadályozza, hogy a „Mindent töröljön” gomb megnyomásakor a kiválasztott alkalmazás bezáródjon</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Elhalványulás</string>
+    <string name="overlay_suck_in">Elnyelés</string>
+    <string name="app_closing_animation">Alkalmazás-záródási animáció</string>
+    <string name="overlay_label">Fedőréteg</string>
+    <string name="overlay_none">Semmilyen</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Az Alkalmazástár megnyitása</string>
     <string name="gesture_handler_open_app_search">Az Alkalmazáskereső megnyitása</string>
     <string name="gesture_handler_open_search">A Keresés megnyitása</string>
+    <string name="gesture_handler_open_assistant">A segéd indítása</string>
     <string name="pick_app_for_gesture">Egy alkalmazás választása</string>
     <string name="dt2s_admin_hint_title">Adminisztrátori jogosultság szükséges</string>
     <string name="dt2s_admin_hint">A \'Képernyőkikapcsolás Duplakoppal\' funkcióhoz állítsa be készülékvezérlőként a Lawnchair-t. Nyissa meg a Beállításokat és érintse meg az \"Aktiválja a készülék-adminisztrátori alkalmazást\" lehetőséget</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Homályos háttérkép (kísérleti)</string>
     <string name="wallpaper_background_blur">A homályosítás erőssége</string>
     <string name="wallpaper_background_blur_factor">Küszöbtényező</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Új alkalmazás hozzáadása a Kezdőképernyőhöz</string>
     <string name="minus_one_enable">Látható Hírfolyam</string>
     <string name="minus_one_unavailable">Nincs hírfolyam-alkalmazás telepítve</string>

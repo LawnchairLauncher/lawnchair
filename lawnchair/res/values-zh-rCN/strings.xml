@@ -73,8 +73,8 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">选择要显示的项目</string>
     <string name="wallpapers">背景</string>
-    <string name="caddy_beta">Caddy (测试版)</string>
-    <string name="caddy">Caddy</string>
+    <string name="caddy_beta">糖果 (测试版)</string>
+    <string name="caddy">糖果</string>
     <string name="app_drawer_folder">应用抽屉文件夹</string>
     <string name="app_drawer_folder_settings">抽屉文件夹</string>
     <string name="add_folder">添加文件夹</string>
@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
     <string name="recents_lock_unlock">锁定/解锁</string>
     <string name="recents_lock_unlock_description">按“全部清除”时防止所选应用关闭</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">淡入</string>
+    <string name="overlay_suck_in">吸入</string>
+    <string name="app_closing_animation">应用关闭动画</string>
+    <string name="overlay_label">覆盖</string>
+    <string name="overlay_none">无</string>
     <!--
 
     Notifications
@@ -214,7 +220,7 @@
     <string name="pref_fonts_add_fonts">添加字体</string>
     <string name="pref_fonts_add_fonts_summary">支持 OTF 和 TTF 格式字体</string>
     <string name="pref_fonts_missing_font">未找到字体</string>
-    <string name="font_label">字体（实验性功能）</string>
+    <string name="font_label">字体 (实验性功能)</string>
     <string name="fontWorkspace">通用</string>
     <string name="fontHeading">标题</string>
     <string name="fontHeadingMedium">标题(中)</string>
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">打开应用抽屉</string>
     <string name="gesture_handler_open_app_search">打开应用搜索</string>
     <string name="gesture_handler_open_search">打开搜索</string>
+    <string name="gesture_handler_open_assistant">打开助手</string>
     <string name="pick_app_for_gesture">选择应用</string>
     <string name="dt2s_admin_hint_title">需要管理员权限</string>
     <string name="dt2s_admin_hint">要使用双击息屏，请把 Lawnchair 设置为设备管理员应用，点击\"打开设置\"，然后点击\"启用设备管理员应用\"</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">壁纸模糊 (实验性)</string>
     <string name="wallpaper_background_blur">模糊强度</string>
     <string name="wallpaper_background_blur_factor">因素阈值</string>
+    <string name="home_lawn_deck_label">甲板</string>
+    <string name="home_lawn_deck_label_beta">甲板 (测试版)</string>
+    <string name="home_lawn_deck_description">使用 Deck 轻松访问您的应用程序，这是专为简单和无缝组织而设计的终极无抽屉体验</string>
     <string name="auto_add_shortcuts_label">添加新应用到主屏</string>
     <string name="minus_one_enable">显示订阅</string>
     <string name="minus_one_unavailable">未安装订阅源。</string>

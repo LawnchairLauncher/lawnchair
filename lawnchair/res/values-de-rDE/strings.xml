@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Die Verwendung zwischengespeicherter Symbole aus Symbol-Paketen vermeiden</string>
     <string name="recents_lock_unlock">Anpinnen/Lösen</string>
     <string name="recents_lock_unlock_description">Verhindert, dass die gewählte App durch \"Alle Apps schließen\" entfernt wird</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Einblenden</string>
+    <string name="overlay_suck_in">Einsaugen</string>
+    <string name="app_closing_animation">App-Schließ-Animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">Keines</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">App-Übersicht öffnen</string>
     <string name="gesture_handler_open_app_search">App-Suche öffnen</string>
     <string name="gesture_handler_open_search">Suche öffnen</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">App auswählen</string>
     <string name="dt2s_admin_hint_title">Administrator-Berechtigungen erforderlich</string>
     <string name="dt2s_admin_hint">Um Doppeltippen zum Display Ausschalten zu verwenden, aktiviere Lawnchair als App zur Geräteverwaltung. Tippe auf \"Einstellungen öffnen\" und tippe auf „Diese App zur Geräteverwaltung aktivieren“.</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Bildschirmhintergrund unscharf machen (experimentell)</string>
     <string name="wallpaper_background_blur">Unschärfe-Intensität</string>
     <string name="wallpaper_background_blur_factor">Faktor-Schwellenwert</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Müheloser Zugriff auf Deine Apps mit Deck, der ultimativen Erfahrung ohne App-Übersicht, schlichtes Design für eine nahtlose Anordnung</string>
     <string name="auto_add_shortcuts_label">Neue Apps zum Startbildschirm hinzufügen</string>
     <string name="minus_one_enable">Feed anzeigen</string>
     <string name="minus_one_unavailable">Keine Feed-Apps installiert</string>

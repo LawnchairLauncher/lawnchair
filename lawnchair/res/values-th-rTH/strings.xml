@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">หลีกเลี่ยงการแคชจากชุดไอคอน</string>
     <string name="recents_lock_unlock">ล็อก/ปลดล็อก</string>
     <string name="recents_lock_unlock_description">ป้องกันไม่ให้แอปที่เลือกปิดตัวลงเมื่อกด \"ล้างทั้งหมด\"</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">เปิดรายการแอพ</string>
     <string name="gesture_handler_open_app_search">เปิดการค้นหาแอพ</string>
     <string name="gesture_handler_open_search">เปิดการค้นหา</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">เลือกแอป</string>
     <string name="dt2s_admin_hint_title">จำเป็นต้องมีสิทธิ์ผู้ดูแลอุปกรณ์</string>
     <string name="dt2s_admin_hint">หากต้องการแตะสองครั้งเพี่อปิดจอ ให้ตั้งค่า Lawnchair เป็นแอปผู้ดูแลอุปกรณ์ แตะเปิดการตั้งค่า จากนั้นแตะ “เปิดใช้งานแอปผู้ดูแลระบบอุปกรณ์นี้”</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">เบลอพื้นหลัง (อยู่ในการทดลอง)</string>
     <string name="wallpaper_background_blur">ความเข้มของการเบลอ</string>
     <string name="wallpaper_background_blur_factor">เกณฑ์ปัจจัย</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
     <string name="minus_one_enable">แสดงข่าว</string>
     <string name="minus_one_unavailable">ยังไม่ได้ติดตั้งข่าว</string>

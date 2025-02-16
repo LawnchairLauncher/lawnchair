@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Не користи кеширане иконе из пакета икона</string>
     <string name="recents_lock_unlock">Закључај/откључај</string>
     <string name="recents_lock_unlock_description">Спречите затварање изабране апликације када додирнете „Обриши све”</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Отвори листу апликација</string>
     <string name="gesture_handler_open_app_search">Отвори претрагу апликација</string>
     <string name="gesture_handler_open_search">Отвори претрагу</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Изаберите апликацију</string>
     <string name="dt2s_admin_hint_title">Потребне су администраторске дозволе</string>
     <string name="dt2s_admin_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, подесите Lawnchair као администратор уређаја. У подешавањима додирните „Активирај ову апликацију за администратора уређаја”.</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Замагли позадину (експериментално)</string>
     <string name="wallpaper_background_blur">Ниво замагљења</string>
     <string name="wallpaper_background_blur_factor">Праг ефекта замагљења</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Додај нове апликације на почетни екран</string>
     <string name="minus_one_enable">Прикажи фид</string>
     <string name="minus_one_unavailable">Ниједна апликација за фид није инсталирана</string>

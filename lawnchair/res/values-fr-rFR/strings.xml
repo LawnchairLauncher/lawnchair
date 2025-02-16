@@ -128,12 +128,18 @@
     <string name="always_reload_icons_description">Éviter d\'utiliser les icônes en cache provenant des packs d\'icônes</string>
     <string name="recents_lock_unlock">Verrouiller/déverrouiller</string>
     <string name="recents_lock_unlock_description">Empêcher l\'appli sélectionnée d\'être fermée lors d\'un appui sur « Tout effacer »</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fondu</string>
+    <string name="overlay_suck_in">Aspiration</string>
+    <string name="app_closing_animation">Animation lors de la fermeture d\'une appli</string>
+    <string name="overlay_label">Superposition</string>
+    <string name="overlay_none">Aucune</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">Pour accéder aux raccourcis et à des fonctionnalités supplémentaires, définissez Lawnchair en tant que lanceur d\'applications par défaut.</string>
+    <string name="set_default_launcher_tip">Pour accéder aux raccourcis et à plus de fonctionnalités, définissez Lawnchair en tant que lanceur d\'applications par défaut</string>
     <string name="notification_dots">Pastilles de notification</string>
     <string name="show_notification_count">Afficher le compteur de notifications</string>
     <string name="notification_dots_color">Couleur des pastilles de notification</string>
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Ouvrir le tiroir des applis</string>
     <string name="gesture_handler_open_app_search">Ouvrir la recherche d\'applis</string>
     <string name="gesture_handler_open_search">Ouvrir la recherche</string>
+    <string name="gesture_handler_open_assistant">Ouvrir l\'assistant</string>
     <string name="pick_app_for_gesture">Sélectionnez une appli</string>
     <string name="dt2s_admin_hint_title">Autorisations d\'administration requises</string>
     <string name="dt2s_admin_hint">Pour mettre en veille votre appareil à l\'aide d\'un double appui, définissez Lawnchair comme appli d\'administration de l\'appareil. Appuyez sur « Ouvrir les paramètres » puis appuyez sur « Activer l\'appli d\'administration de cet appareil. »</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Flouter le fond d\'écran (expérimental)</string>
     <string name="wallpaper_background_blur">Intensité du flou</string>
     <string name="wallpaper_background_blur_factor">Seuil factoriel</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (bêta)</string>
+    <string name="home_lawn_deck_description">Accédez à vos applications sans effort avec Deck, l\'expérience sans tiroir d\'applis ultime, conçue pour une organisation simple et fluide de votre écran d\'accueil</string>
     <string name="auto_add_shortcuts_label">Ajouter les nouvelles applis à l\'écran d\'accueil</string>
     <string name="minus_one_enable">Afficher le flux</string>
     <string name="minus_one_unavailable">Aucune appli de flux installée</string>

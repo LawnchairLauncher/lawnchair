@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Уникати використання кешованих значків з наборів значків</string>
     <string name="recents_lock_unlock">Заблокувати/Розблокувати</string>
     <string name="recents_lock_unlock_description">Не закривати обрані додатки при натисканні \"Закрити всі\"</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Відкрити панель додатків</string>
     <string name="gesture_handler_open_app_search">Відкрити пошук додатків</string>
     <string name="gesture_handler_open_search">Відкрити пошук</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Обрати додаток</string>
     <string name="dt2s_admin_hint_title">Потрібен дозвіл Адміністратора</string>
     <string name="dt2s_admin_hint">Щоб використовувати «Подвійний Дотик для Переходу в Режим Сну», надайте Lawnchair дозвіл адміністратора. Натисніть «Відкрити Налаштування», потім натисніть «Активувати цю програму адміністрування пристрою.»</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Ефект розмиття шпалер (експериментально)</string>
     <string name="wallpaper_background_blur">Інтенсивність розмиття</string>
     <string name="wallpaper_background_blur_factor">Поріг фактора</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Додавати нові додатки на головний екран</string>
     <string name="minus_one_enable">Показати стрічку</string>
     <string name="minus_one_unavailable">Не встановлено жодного додатку стрічки</string>

@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Unikaj korzystania z buforowanych ikon z zestawów ikon</string>
     <string name="recents_lock_unlock">Zablokuj/Odblokuj</string>
     <string name="recents_lock_unlock_description">Zapobiegaj zamknięciu wybranej aplikacji przez opcję \"Wyczyść wszystko\"</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Otwórz szufladę aplikacji</string>
     <string name="gesture_handler_open_app_search">Otwórz wyszukiwarkę aplikacji</string>
     <string name="gesture_handler_open_search">Otwórz wyszukiwarkę</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Wybierz aplikację</string>
     <string name="dt2s_admin_hint_title">Wymagane uprawnienia administratora</string>
     <string name="dt2s_admin_hint">Aby użyć opcji usypiania przy podwójnym naciśnięciu, ustaw Lawnchair jako aplikację administrującą urządzeniem. Naciśnij \"Otwórz ustawienia\", następnie naciśnij \"Aktywuj tę aplikację do administrowania urządzeniem.\"</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Efekt rozmycia tapety (eksperymentalne)</string>
     <string name="wallpaper_background_blur">Intensywność efektu rozmycia</string>
     <string name="wallpaper_background_blur_factor">Próg efektu rozmycia</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Dodaj nowe aplikacje do ekranu głównego</string>
     <string name="minus_one_enable">Pokaż wiadomości</string>
     <string name="minus_one_unavailable">Brak zainstalowanych aplikacji wiadomości</string>

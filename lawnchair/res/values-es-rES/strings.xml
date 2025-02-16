@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
     <string name="recents_lock_unlock">Bloqueo/desbloqueo</string>
     <string name="recents_lock_unlock_description">Evita que la aplicación seleccionada se cierre al presionar «Borrar todo»</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -365,6 +371,7 @@
     <string name="gesture_handler_open_app_drawer">Abrir cajón de aplicaciones</string>
     <string name="gesture_handler_open_app_search">Abrir buscador de aplicaciones</string>
     <string name="gesture_handler_open_search">Abrir búsqueda</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Elegir aplicación</string>
     <string name="dt2s_admin_hint_title">Se necesitan permisos de administrador</string>
     <string name="dt2s_admin_hint">Para hacer que funcione el doble toque para apagar pantalla, establece Lawnchair como aplicación del administrador de dispositivos. Pulsa en «Abrir ajustes», luego en «Activar esta aplicación de administrador de dispositivos».</string>
@@ -398,6 +405,9 @@
     <string name="wallpaper_blur">Desenfocar fondo de pantalla (experimental)</string>
     <string name="wallpaper_background_blur">Intensidad del desenfoque</string>
     <string name="wallpaper_background_blur_factor">Cantidad de desenfoque</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Añadir nuevas aplicaciones a la pantalla de inicio</string>
     <string name="minus_one_enable">Mostrar canal de contenido</string>
     <string name="minus_one_unavailable">No hay ninguna aplicación proveedora de contenido instalada</string>

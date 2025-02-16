@@ -128,6 +128,12 @@
     <string name="always_reload_icons_description">Αποφυγή χρήσης αποθηκευμένων εικονιδίων από πακέτα εικονιδίων</string>
     <string name="recents_lock_unlock">Κλείδωμα/ξεκλείδωμα</string>
     <string name="recents_lock_unlock_description">Αποτροπή κλεισίματος επιλεγμένης εφαρμογής κατά το πάτημα του \"Καθαρισμός όλων\"</string>
+    <!--Overlay-->
+    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_suck_in">Suck In</string>
+    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_label">Overlay</string>
+    <string name="overlay_none">None</string>
     <!--
 
     Notifications
@@ -364,6 +370,7 @@
     <string name="gesture_handler_open_app_drawer">Άνοιγμα συρταριού εφαρμογών</string>
     <string name="gesture_handler_open_app_search">Άνοιγμα αναζήτησης εφαρμογών</string>
     <string name="gesture_handler_open_search">Άνοιγμα αναζήτησης</string>
+    <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Επιλογή εφαρμογής</string>
     <string name="dt2s_admin_hint_title">Απαιτούνται δικαιώματα διαχειριστή</string>
     <string name="dt2s_admin_hint">Για να χρησιμοποιήσετε το διπλό πάτημα για ύπνο, ορίστε τον εκκινητή Lawnchair ως εφαρμογή διαχείρισης συσκευής. Πατήστε στο “Άνοιγμα ρυθμίσεων” και μετά πατήστε “Ενεργοποίηση αυτής της εφαρμογής ως διαχειριστή της συσκευής.”</string>
@@ -397,6 +404,9 @@
     <string name="wallpaper_blur">Θόλωμα ταπετσαρίας (πειραματικό)</string>
     <string name="wallpaper_background_blur">Ένταση θολώματος</string>
     <string name="wallpaper_background_blur_factor">Όριο παράγοντα</string>
+    <string name="home_lawn_deck_label">Deck</string>
+    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Προσθήκη νέων εφαρμογών στην αρχική οθόνη</string>
     <string name="minus_one_enable">Εμφάνιση ροής</string>
     <string name="minus_one_unavailable">Δεν υπάρχουν εγκατεστημένες εφαρμογές ροής</string>
