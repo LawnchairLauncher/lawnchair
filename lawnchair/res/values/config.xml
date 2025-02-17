@@ -99,6 +99,13 @@
     <!-- which overlay to use by default -->
     <string name="config_default_overlay" translatable="false">suck_in</string>
 
+
+    <!-- swipe gesture key -->
+    <string name="pref_key_swipe_up" translatable="false">pref_swipe_up</string>
+    <string name="pref_key_swipe_down" translatable="false">pref_swipe_down</string>
+    <string name="pref_key_swipe_right" translatable="false">pref_swipe_right</string>
+    <string name="pref_key_swipe_left" translatable="false">pref_swipe_left</string>
+
     <bool name="config_default_show_hotseat">true</bool>
     <bool name="config_default_always_reload_icons">true</bool>
     <bool name="config_default_dark_status_bar">false</bool>

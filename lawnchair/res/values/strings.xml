@@ -466,6 +466,8 @@
     <string name="gesture_swipe_down">Swipe down</string>
     <string name="gesture_home_tap">Home button</string>
     <string name="gesture_back_tap">Back button</string>
+    <string name="gesture_swipe_left">Swipe left</string>
+    <string name="gesture_swipe_right">Swipe right</string>
 
     <string name="gesture_handler_no_op">Do nothing</string>
     <string name="gesture_handler_sleep">Sleep</string>

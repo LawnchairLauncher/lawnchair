@@ -95,6 +95,7 @@ import java.util.Locale;
 
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.font.FontManager;
+import app.lawnchair.gestures.IconGestureListener;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.LawnchairUtilsKt;
@@ -227,6 +228,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private boolean mEnableIconUpdateAnimation = false;
 
     private final PreferenceManager2 pref2;
+    private IconGestureListener mGestureListener;
 
     public BubbleTextView(Context context) {
         this(context, null, 0);
@@ -378,6 +380,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     @UiThread
     public void applyFromWorkspaceItem(WorkspaceItemInfo info) {
         applyFromWorkspaceItem(info, /* animate = */ false, /* staggerIndex = */ 0);
+        if (info != null) {
+            mGestureListener = new IconGestureListener(mContext, pref2, info);
+        }
     }
 
     @UiThread
@@ -542,6 +547,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        if (mGestureListener != null) {
+            mGestureListener.onTouch(this, event);
+            resetIconScale(true);
+        }
+
         // ignore events if they happen in padding area
         if (event.getAction() == MotionEvent.ACTION_DOWN
                 && shouldIgnoreTouchDown(event.getX(), event.getY())) {
@@ -846,14 +857,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     public boolean shouldTextBeVisible() {
-        // Text should be visible everywhere but the hotseat.
+        // Text should be visible everywhere, and in hotseat if getEnableLabelInDock is enabled.
         Object tag = getParent() instanceof FolderIcon ? ((View) getParent()).getTag() : getTag();
         ItemInfo info = tag instanceof ItemInfo ? (ItemInfo) tag : null;
-        if (info != null && (info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                && info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION)) {
-            return !PreferenceExtensionsKt.firstBlocking(pref2.getEnableLabelInDock());
-        }
-        return true;
+
+        return info == null || info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                && info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION
+                || PreferenceExtensionsKt.firstBlocking(pref2.getEnableLabelInDock());
     }
 
     public void setTextVisibility(boolean visible) {
@@ -1344,6 +1354,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         Object tag = getTag();
         if (tag instanceof ItemInfo itemInfo) {
             return itemInfo.getTargetPackage();
+        }
+        return null;
+    }
+
+    /** Returns the ItemInfo of the app this icon represents. */
+    public ItemInfo getItemInfo() {
+        Object tag = getTag();
+        if (tag instanceof ItemInfo itemInfo) {
+            return itemInfo;
         }
         return null;
     }
