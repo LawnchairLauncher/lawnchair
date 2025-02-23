@@ -37,7 +37,14 @@
     <string name="action_copy_link">Bağlantıyı kopyala</string>
     <string name="action_copy">Kopyala</string>
     <string name="action_paste">Yapıştır</string>
+    <string name="action_done">Tamam</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="inverse_selection">Inverse selection</string>
     <string name="loading">Yükleniyor…</string>
+    <string name="download_update">Download update</string>
+    <string name="install_update">Install update</string>
+    <string name="pro_updated">You\'re up-to-date!</string>
     <string name="managed_by_lawnchair">Lawnchair tarafından yönetilmektedir</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Tercihler</string>
@@ -65,6 +72,7 @@
     <string name="layout">Düzen</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Duvar Kağıdı</string>
+    <string name="style">Style</string>
     <string name="background_opacity">Arka plan opaklığı</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Panoya kaydedildi</string>
@@ -75,9 +83,9 @@
     <string name="wallpapers">Wallpapers</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folder</string>
+    <string name="app_drawer_folder">App drawer folders</string>
     <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Add folder</string>
+    <string name="add_folder">Create folder</string>
     <string name="edit_folder">Edit folder</string>
     <string name="add_label">Add</string>
     <string name="edit_label">Edit</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
     <string name="apps_in_folder_label">Hide folder apps</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">Benim klasörüm</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Telefonunuzu hareketle kilitlemek ve son kullanılanları hareketle açmak için Lawnchair\'a erişilebilirlik izni vermeniz gerekir.\n\nLawnchair, tüm erişilebilirlik hizmetlerinin sahip olduğu izinlere sahip olmasına rağmen, hiçbir zaman kullanıcı eylemlerini izlemez. Lawnchair sistem tarafından gönderilen herhangi bir olayı görmezden gelir.\n\n Telefonunuzu kilitlemek veya Son uygulamaları açmak için Lawnchair, performGlobalAction erişilebilirllik hizmetini kullanır.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="advanced">Advanced</string>
     <!--
 
     Preference Dashboard
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">Aşağı doğru kaydırın</string>
     <string name="gesture_home_tap">Ana sayfa düğmesi</string>
     <string name="gesture_back_tap">Geri düğmesi</string>
+    <string name="gesture_swipe_left">Swipe left</string>
+    <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Hiçbir şey yapma</string>
     <string name="gesture_handler_sleep">Uyku</string>
     <string name="gesture_handler_recents">Son Uygulamaları Aç</string>

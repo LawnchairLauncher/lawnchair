@@ -37,7 +37,14 @@
     <string name="action_copy_link">Koppeling kopiëren</string>
     <string name="action_copy">Kopiëren</string>
     <string name="action_paste">Plakken</string>
+    <string name="action_done">Voltooid</string>
+    <string name="select_all">Alles selecteren</string>
+    <string name="deselect_all">Selectie opheffen</string>
+    <string name="inverse_selection">Selectie omkeren</string>
     <string name="loading">Laden…</string>
+    <string name="download_update">Update downloaden</string>
+    <string name="install_update">Update installeren</string>
+    <string name="pro_updated">Je bent up-to-date!</string>
     <string name="managed_by_lawnchair">Beheerd door Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Voorkeuren</string>
@@ -65,6 +72,7 @@
     <string name="layout">Lay-out</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Achtergrond</string>
+    <string name="style">Stijl</string>
     <string name="background_opacity">Achtergronddekking</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Gekopieerd naar klembord</string>
@@ -75,9 +83,9 @@
     <string name="wallpapers">Achtergrond</string>
     <string name="caddy_beta">Caddy (beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">Map app-lade</string>
+    <string name="app_drawer_folder">App-lade mappen</string>
     <string name="app_drawer_folder_settings">Map app-lade</string>
-    <string name="add_folder">Map toevoegen</string>
+    <string name="add_folder">Map aanmaken</string>
     <string name="edit_folder">Map bewerken</string>
     <string name="add_label">Toevoegen</string>
     <string name="edit_label">Bewerken</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">Veeg naar links om te bewerken, veeg naar rechts om te verwijderen of tik om items bij te werken</string>
     <string name="apps_in_folder_label">Map-apps verbergen</string>
     <string name="apps_in_folder_description">Apps toegewezen aan mappen worden uitgesloten van app lijsten</string>
+    <string name="folders_filter_duplicates">Alleen unieke apps tonen</string>
     <string name="my_folder_label">Mijn map</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Om je telefoon te vergrendelen tijdens het uitvoeren van een gebaar en om Recente apps via een gebaar te openen, heeft Lawnchair toegankelijkheidsrechten nodig.\n\nLawnchair kijkt niet naar gebruikersacties, hoewel het recht om dit te doen vereist is voor alle toegankelijkheidsservices. Lawnchair verwijdert elke gebeurtenis die door het systeem wordt verzonden.\n\nOm je telefoon te kunnen vergrendelen of Recente apps te openen, maakt Lawnchair gebruik van de toegankelijkheidsservice performGlobalAction.</string>
+    <string name="accessibility_service_description">Om bepaalde acties uit te voeren (zoals het vergrendelen van de telefoon) bij het uitvoeren van een gebaar, heeft Lawnchair toegankelijkheidstoegang nodig.\n\nLawnchair kijkt niet naar gebruikersacties, hoewel het recht om dit te doen vereist is voor alle toegankelijkheidsservices. Lawnchair verwijdert elke gebeurtenis die door het systeem wordt verzonden.\n\nOm je telefoon te vergrendelen of Recente apps te openen, maakt Lawnchair gebruik van de toegankelijkheidsservice performGlobalAction.</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="advanced">Geavanceerd</string>
     <!--
 
     Preference Dashboard
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">Omlaag vegen</string>
     <string name="gesture_home_tap">Startknop</string>
     <string name="gesture_back_tap">Terugknop</string>
+    <string name="gesture_swipe_left">Links vegen</string>
+    <string name="gesture_swipe_right">Rechts vegen</string>
     <string name="gesture_handler_no_op">Niets doen</string>
     <string name="gesture_handler_sleep">Slaapstand</string>
     <string name="gesture_handler_recents">Recente apps openen</string>

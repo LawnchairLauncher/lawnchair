@@ -37,7 +37,14 @@
     <string name="action_copy_link">复制链接</string>
     <string name="action_copy">复制</string>
     <string name="action_paste">粘贴</string>
+    <string name="action_done">完成</string>
+    <string name="select_all">全选</string>
+    <string name="deselect_all">取消全选</string>
+    <string name="inverse_selection">逆向全选</string>
     <string name="loading">正在加载…</string>
+    <string name="download_update">下载更新</string>
+    <string name="install_update">安装更新</string>
+    <string name="pro_updated">你已经是最新版！</string>
     <string name="managed_by_lawnchair">由 Lawnchair 管理</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">首选项</string>
@@ -65,6 +72,7 @@
     <string name="layout">布局</string>
     <!-- Generic styling options -->
     <string name="wallpaper">壁纸</string>
+    <string name="style">样式</string>
     <string name="background_opacity">背景不透明度</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">已复制到剪贴板</string>
@@ -77,7 +85,7 @@
     <string name="caddy">糖果</string>
     <string name="app_drawer_folder">应用抽屉文件夹</string>
     <string name="app_drawer_folder_settings">抽屉文件夹</string>
-    <string name="add_folder">添加文件夹</string>
+    <string name="add_folder">新建文件夹</string>
     <string name="edit_folder">编辑文件夹</string>
     <string name="add_label">添加</string>
     <string name="edit_label">编辑</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">向左滑动用来编辑, 向右滑动用来删除, 或点击用来更新内容</string>
     <string name="apps_in_folder_label">隐藏应用文件夹</string>
     <string name="apps_in_folder_description">分配给文件夹的应用程序被排除在应用程序列表之外</string>
+    <string name="folders_filter_duplicates">仅显示唯一应用</string>
     <string name="my_folder_label">我的文件夹</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">要通过手势锁定手机和打开最近任务界面, Lawnchair 需要获取无障碍功能访问权限。\n\nLawnchair 不会监视任何用户操作, 即使此权限允许。Lawnchair 会忽略系统发送的任何事件。\n\n为了锁定手机或打开最近任务界面, Lawnchair 使用 performGlobalAction 无障碍服务。</string>
+    <string name="accessibility_service_description">要在执行手势时执行某些操作（例如锁定手机），Lawnchair 需要无障碍访问权限。\n\nLawnchair 不会监视任何用户操作，尽管所有无障碍服务都需要有这样做的权限。Lawnchair 会丢弃系统发送的任何事件。\n\n为了锁定手机或打开“最近”应用，Lawnchair 会使用 performGlobalAction 无障碍服务。</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="advanced">高级</string>
     <!--
 
     Preference Dashboard
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">下滑</string>
     <string name="gesture_home_tap">主屏键</string>
     <string name="gesture_back_tap">返回键</string>
+    <string name="gesture_swipe_left">向左滑动</string>
+    <string name="gesture_swipe_right">向右滑动</string>
     <string name="gesture_handler_no_op">什么也不做</string>
     <string name="gesture_handler_sleep">息屏</string>
     <string name="gesture_handler_recents">打开最近任务界面</string>

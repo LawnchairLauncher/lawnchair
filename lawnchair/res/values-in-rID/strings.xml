@@ -37,7 +37,14 @@
     <string name="action_copy_link">Salin tautan</string>
     <string name="action_copy">Salin</string>
     <string name="action_paste">Tempel</string>
+    <string name="action_done">Selesai</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="inverse_selection">Inverse selection</string>
     <string name="loading">Memuat…</string>
+    <string name="download_update">Download update</string>
+    <string name="install_update">Install update</string>
+    <string name="pro_updated">You\'re up-to-date!</string>
     <string name="managed_by_lawnchair">Dikelola oleh Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferensi</string>
@@ -65,6 +72,7 @@
     <string name="layout">Tata Letak</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Wallpaper</string>
+    <string name="style">Style</string>
     <string name="background_opacity">Tingkat transparan latar belakang</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Disalin ke papan klip</string>
@@ -75,9 +83,9 @@
     <string name="wallpapers">Wallpaper</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">Folder laci aplikasi</string>
+    <string name="app_drawer_folder">App drawer folders</string>
     <string name="app_drawer_folder_settings">Folder laci</string>
-    <string name="add_folder">Tambah folder</string>
+    <string name="add_folder">Create folder</string>
     <string name="edit_folder">Ubah folder</string>
     <string name="add_label">Tambah</string>
     <string name="edit_label">Ubah</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">Geser ke kiri untuk mengedit, geser ke kanan untuk menghapus, atau ketuk untuk memperbarui item</string>
     <string name="apps_in_folder_label">Sembunyikan aplikasi folder</string>
     <string name="apps_in_folder_description">Aplikasi yang dimasukkan ke dalam folder tidak akan ditampilkan di daftar aplikasi</string>
+    <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">Folder saya</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Untuk mengunci layar dan membuka aplikasi Terbaru dengan gerakan, Lawnchair perlu izin aksesibilitas.\n\nLawnchair tidak melacak apa yang Anda lakukan di ponsel. Izin ini hanya digunakan untuk mengaktifkan gerakan-gerakan tersebut.\n\nLawnchair menggunakan fitur aksesibilitas performGlobalAction untuk mengunci layar atau membuka aplikasi Terbaru.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="advanced">Advanced</string>
     <!--
 
     Preference Dashboard
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">Geser ke bawah</string>
     <string name="gesture_home_tap">Tombol beranda</string>
     <string name="gesture_back_tap">Tombol kembali</string>
+    <string name="gesture_swipe_left">Swipe left</string>
+    <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Tidak melakukan apa-apa</string>
     <string name="gesture_handler_sleep">Tidur</string>
     <string name="gesture_handler_recents">Buka Aplikasi Terkini</string>

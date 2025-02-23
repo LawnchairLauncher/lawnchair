@@ -37,7 +37,14 @@
     <string name="action_copy_link">Copiar link</string>
     <string name="action_copy">Copiar</string>
     <string name="action_paste">Colar</string>
+    <string name="action_done">Concluído</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="inverse_selection">Inverse selection</string>
     <string name="loading">Carregando…</string>
+    <string name="download_update">Download update</string>
+    <string name="install_update">Install update</string>
+    <string name="pro_updated">You\'re up-to-date!</string>
     <string name="managed_by_lawnchair">Gerenciado por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferências</string>
@@ -65,6 +72,7 @@
     <string name="layout">Aparência</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Papel de Parede</string>
+    <string name="style">Style</string>
     <string name="background_opacity">Opacidade do fundo</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiado para a área de transferência</string>
@@ -75,9 +83,9 @@
     <string name="wallpapers">Papéis de parede</string>
     <string name="caddy_beta">Organizador (Beta)</string>
     <string name="caddy">Organizador</string>
-    <string name="app_drawer_folder">App drawer folder</string>
+    <string name="app_drawer_folder">App drawer folders</string>
     <string name="app_drawer_folder_settings">Pasta da gaveta</string>
-    <string name="add_folder">Add folder</string>
+    <string name="add_folder">Create folder</string>
     <string name="edit_folder">Edit folder</string>
     <string name="add_label">Adicionar</string>
     <string name="edit_label">Edit</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">Deslize para a esquerda para editar, deslize para a direita para excluir, ou toque para atualizar itens</string>
     <string name="apps_in_folder_label">Ocultar aplicativos da pasta</string>
     <string name="apps_in_folder_description">Os aplicativos atribuídos a pastas são excluídos das listas de aplicativos</string>
+    <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">Minha pasta</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Para bloquear seu celular ao executar um gesto e para abrir a tela de Recentes por gestos, o Lawnchair requer acesso à acessibilidade.\n\nO Lawnchair não monitora nenhuma ação do usuário, embora esse privilégio seja necessário para todos os serviços de acessibilidade. O Lawnchair descarta qualquer evento enviado pelo sistema.\n\nPara bloquear o celular ou abrir a tela de Recentes, o Lawnchair utiliza o serviço de performGlobalAction Acessibilidade.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="advanced">Advanced</string>
     <!--
 
     Preference Dashboard
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">Deslizar para baixo</string>
     <string name="gesture_home_tap">Botão de início</string>
     <string name="gesture_back_tap">Botão voltar</string>
+    <string name="gesture_swipe_left">Swipe left</string>
+    <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Não fazer nada</string>
     <string name="gesture_handler_sleep">Desligar a Tela</string>
     <string name="gesture_handler_recents">Abrir os recentes</string>

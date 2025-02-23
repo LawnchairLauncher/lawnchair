@@ -37,7 +37,14 @@
     <string name="action_copy_link">Kopiuj link</string>
     <string name="action_copy">Kopiuj</string>
     <string name="action_paste">Wklej</string>
+    <string name="action_done">Gotowe</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="inverse_selection">Inverse selection</string>
     <string name="loading">Ładowanie…</string>
+    <string name="download_update">Download update</string>
+    <string name="install_update">Install update</string>
+    <string name="pro_updated">You\'re up-to-date!</string>
     <string name="managed_by_lawnchair">Zarządzane przez Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Ustawienia</string>
@@ -65,6 +72,7 @@
     <string name="layout">Układ</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Tapeta</string>
+    <string name="style">Style</string>
     <string name="background_opacity">Przezroczystość tła</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Skopiowano do schowka</string>
@@ -75,9 +83,9 @@
     <string name="wallpapers">Tapety</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">Folder szuflady aplikacji</string>
+    <string name="app_drawer_folder">App drawer folders</string>
     <string name="app_drawer_folder_settings">Folder szuflady</string>
-    <string name="add_folder">Dodaj folder</string>
+    <string name="add_folder">Create folder</string>
     <string name="edit_folder">Edytuj folder</string>
     <string name="add_label">Dodaj</string>
     <string name="edit_label">Edytuj</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">Przesuń w lewo aby edytować, przesuń w prawo aby usunąć, dotknij aby zaktualizować elementy</string>
     <string name="apps_in_folder_label">Ukryj aplikacje folderu</string>
     <string name="apps_in_folder_description">Aplikacje przypisane do folderów są wykluczone z list aplikacji</string>
+    <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">Mój folder</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To lock your phone when performing a gesture, and to open Recents via gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s i %2$s</string>
+    <string name="advanced">Advanced</string>
     <!--
 
     Preference Dashboard
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">Przesunięcie w dół</string>
     <string name="gesture_home_tap">Przycisk ekranu głównego</string>
     <string name="gesture_back_tap">Przycisk wstecz</string>
+    <string name="gesture_swipe_left">Swipe left</string>
+    <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Nic nie rób</string>
     <string name="gesture_handler_sleep">Uśpij</string>
     <string name="gesture_handler_recents">Otwórz widok ostatnich aplikacji</string>

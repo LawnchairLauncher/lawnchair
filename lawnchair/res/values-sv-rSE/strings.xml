@@ -37,7 +37,14 @@
     <string name="action_copy_link">Kopiera länk</string>
     <string name="action_copy">Kopiera</string>
     <string name="action_paste">Klistra in</string>
+    <string name="action_done">Klar</string>
+    <string name="select_all">Markera alla</string>
+    <string name="deselect_all">Avmarkera alla</string>
+    <string name="inverse_selection">Invertera markering</string>
     <string name="loading">Laddar …</string>
+    <string name="download_update">Ladda ner uppdatering</string>
+    <string name="install_update">Installera uppdatering</string>
+    <string name="pro_updated">Du är uppdaterad!</string>
     <string name="managed_by_lawnchair">Hanteras av Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Alternativ</string>
@@ -65,6 +72,7 @@
     <string name="layout">Layout</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Bakgrundsbild</string>
+    <string name="style">Stil</string>
     <string name="background_opacity">Bakgrundens opacitet</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopierad till urklipp</string>
@@ -75,9 +83,9 @@
     <string name="wallpapers">Bakgrundsbilder</string>
     <string name="caddy_beta">Skrin (beta)</string>
     <string name="caddy">Skrin</string>
-    <string name="app_drawer_folder">Mapp i applådan</string>
+    <string name="app_drawer_folder">Mappar i applådan</string>
     <string name="app_drawer_folder_settings">Applådemapp</string>
-    <string name="add_folder">Lägg till mapp</string>
+    <string name="add_folder">Skapa mapp</string>
     <string name="edit_folder">Redigera mapp</string>
     <string name="add_label">Lägg till</string>
     <string name="edit_label">Redigera</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">Svep åt vänster för att redigera, svep åt höger för att radera, eller tryck för att uppdatera objekt</string>
     <string name="apps_in_folder_label">Dölj mapp-appar</string>
     <string name="apps_in_folder_description">Appar som har tilldelats mappar exkluderas från applistor</string>
+    <string name="folders_filter_duplicates">Visa endast unika appar</string>
     <string name="my_folder_label">Min mapp</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">För att kunna låsa din telefon när en gest görs och för att kunna öppna Senaste med en gest kräver Lawnchair tillgänglighetsåtkomst.\n\nLawnchair övervakar inte några användaraktiviteter, men behörigheten att kunna göra detta krävs för alla tillgänglighetstjänster. Lawnchair förkastar alla händelser som skickas av systemet.\n\nFör att kunna låsa din telefon och för att kunna öppna Senaste använder Lawnchair tillgänglighetstjänsten performGlobalAction.</string>
+    <string name="accessibility_service_description">För att kunna utföra vissa åtgärder (såsom att låsa din telefon) när en gest görs, kräver Lawnchair tillgänglighetsåtkomst.\n\nLawnchair övervakar inte några användaraktiviteter, men behörigheten att kunna göra detta krävs för alla tillgänglighetstjänster. Lawnchair ignorerar alla händelser som skickas av systemet.\n\nFör att kunna låsa din telefon eller öppna Senaste använder Lawnchair tillgänglighetstjänsten performGlobalAction.</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="advanced">Avancerat</string>
     <!--
 
     Preference Dashboard
@@ -129,11 +140,11 @@
     <string name="recents_lock_unlock">Lås/lås upp</string>
     <string name="recents_lock_unlock_description">Förhindra att vald app stängs när \"Rensa alla\" används</string>
     <!--Overlay-->
-    <string name="overlay_fade_in">Fade In</string>
-    <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
-    <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="overlay_fade_in">Tona in</string>
+    <string name="overlay_suck_in">Sug in</string>
+    <string name="app_closing_animation">Animering vid appstängning</string>
+    <string name="overlay_label">Överlägg</string>
+    <string name="overlay_none">Ingen</string>
     <!--
 
     Notifications
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">Svep nedåt</string>
     <string name="gesture_home_tap">Hemknapp</string>
     <string name="gesture_back_tap">Bakåtknapp</string>
+    <string name="gesture_swipe_left">Svep åt vänster</string>
+    <string name="gesture_swipe_right">Svep åt höger</string>
     <string name="gesture_handler_no_op">Gör ingenting</string>
     <string name="gesture_handler_sleep">Vila</string>
     <string name="gesture_handler_recents">Öppna Senaste</string>
@@ -370,7 +383,7 @@
     <string name="gesture_handler_open_app_drawer">Öppna applåda</string>
     <string name="gesture_handler_open_app_search">Öppna appsökning</string>
     <string name="gesture_handler_open_search">Öppna sökning</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant">Öppna assistent</string>
     <string name="pick_app_for_gesture">Välj app</string>
     <string name="dt2s_admin_hint_title">Adminbehörigheter krävs</string>
     <string name="dt2s_admin_hint">För att använda Dubbeltryck för att vila, ange Lawnchair som en enhetsadminapp. Tryck på \"Öppna inställningar\", tryck sedan på \"Aktivera denna enhetsadminapp\".</string>
@@ -404,9 +417,9 @@
     <string name="wallpaper_blur">Gör bakgrundsbild oskarp (experimentell)</string>
     <string name="wallpaper_background_blur">Oskärpans intensitet</string>
     <string name="wallpaper_background_blur_factor">Faktortröskel</string>
-    <string name="home_lawn_deck_label">Deck</string>
-    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
+    <string name="home_lawn_deck_label">Kortlek</string>
+    <string name="home_lawn_deck_label_beta">Kortlek (beta)</string>
+    <string name="home_lawn_deck_description">Få smidig åtkomst till dina applikationer med Kortlek, den ultimata lådlösa upplevelsen utformad för enkelhet och sömlös organisation</string>
     <string name="auto_add_shortcuts_label">Lägg till nya appar på startskärmen</string>
     <string name="minus_one_enable">Visa flöde</string>
     <string name="minus_one_unavailable">Inga flödesappar installerade</string>

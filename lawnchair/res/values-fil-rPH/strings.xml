@@ -37,7 +37,14 @@
     <string name="action_copy_link">Kopyahin ang link</string>
     <string name="action_copy">Kopya</string>
     <string name="action_paste">Paste</string>
+    <string name="action_done">Tapos na</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="inverse_selection">Inverse selection</string>
     <string name="loading">Maghintay lamang…</string>
+    <string name="download_update">Download update</string>
+    <string name="install_update">Install update</string>
+    <string name="pro_updated">You\'re up-to-date!</string>
     <string name="managed_by_lawnchair">Pinamamahalaan ng Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Mga Kagustuhan</string>
@@ -65,6 +72,7 @@
     <string name="layout">Layout</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Wallpaper</string>
+    <string name="style">Style</string>
     <string name="background_opacity">Kalabuan ng Background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Naisalin sa clipboard</string>
@@ -75,9 +83,9 @@
     <string name="wallpapers">Wallpapers</string>
     <string name="caddy_beta">Caddy(Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folder</string>
+    <string name="app_drawer_folder">App drawer folders</string>
     <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Magdagdag ng folder</string>
+    <string name="add_folder">Create folder</string>
     <string name="edit_folder">I-edit and folder</string>
     <string name="add_label">Magdagdag</string>
     <string name="edit_label">I-edit</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
     <string name="apps_in_folder_label">Hide folder apps</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">Aking folder</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Para i-lock and iyong telepono habang gumagawa ng Gestures at para buksan ang Recents gamit ang Gestures, kailangan ng Lawnchair nang permiso sa accessibility access.\n\nAng Lawnchair ay hindi sumusubaybay sa ginagawa nang user, Ngunit kailangan nang permiso para sa lahat nang serbisyong pang accessibility. Itinatapon nang Lawn chair ang mga events galing sa sistema.\n\nPara mai-lock ang iyong telepono o magbukas nang Recents, Ginagamit nang Lawnchair ang serbisyong performGlobalAction Accessibility.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s at %2$s</string>
+    <string name="advanced">Advanced</string>
     <!--
 
     Preference Dashboard
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">Swipe down</string>
     <string name="gesture_home_tap">Home button</string>
     <string name="gesture_back_tap">Back button</string>
+    <string name="gesture_swipe_left">Swipe left</string>
+    <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Do nothing</string>
     <string name="gesture_handler_sleep">Matulog</string>
     <string name="gesture_handler_recents">Open Recents</string>

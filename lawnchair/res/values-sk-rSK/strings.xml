@@ -37,7 +37,14 @@
     <string name="action_copy_link">Kopírovať odkaz</string>
     <string name="action_copy">Kopírovať</string>
     <string name="action_paste">Prilepiť</string>
+    <string name="action_done">Hotovo</string>
+    <string name="select_all">Select all</string>
+    <string name="deselect_all">Deselect all</string>
+    <string name="inverse_selection">Inverse selection</string>
     <string name="loading">Načítava sa…</string>
+    <string name="download_update">Download update</string>
+    <string name="install_update">Install update</string>
+    <string name="pro_updated">You\'re up-to-date!</string>
     <string name="managed_by_lawnchair">Spravované Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Predvoľby</string>
@@ -65,6 +72,7 @@
     <string name="layout">Rozloženie</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Tapeta</string>
+    <string name="style">Style</string>
     <string name="background_opacity">Priehľadnosť pozadia</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopírovať do schránky</string>
@@ -75,9 +83,9 @@
     <string name="wallpapers">Wallpapers</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folder</string>
+    <string name="app_drawer_folder">App drawer folders</string>
     <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Add folder</string>
+    <string name="add_folder">Create folder</string>
     <string name="edit_folder">Edit folder</string>
     <string name="add_label">Add</string>
     <string name="edit_label">Edit</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
     <string name="apps_in_folder_label">Hide folder apps</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
+    <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">My folder</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Na uzamknutie telefónu pri vykonávaní gesta vyžaduje aplikácia Lawnchair prístup k funkciám prístupnosti.\n\nLawnchair nesleduje žiadnu činnosť používateľa, hoci oprávnenie na to sa vyžaduje pre všetky služby prístupnosti. Služba Lawnchair zahodí akúkoľvek udalosť odoslanú systémom.\n\nNa uzamknutie telefónu používa služba sprístupnenia performGlobalAction.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s a %2$s</string>
+    <string name="advanced">Advanced</string>
     <!--
 
     Preference Dashboard
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">Potiahnutie nadol</string>
     <string name="gesture_home_tap">Tlačidlo Domov</string>
     <string name="gesture_back_tap">Tlačidlo Späť</string>
+    <string name="gesture_swipe_left">Swipe left</string>
+    <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Nič nerobiť</string>
     <string name="gesture_handler_sleep">Uspať</string>
     <string name="gesture_handler_recents">Open Recents</string>

@@ -37,7 +37,14 @@
     <string name="action_copy_link">Copia link</string>
     <string name="action_copy">Copia</string>
     <string name="action_paste">Incolla</string>
+    <string name="action_done">Fatto</string>
+    <string name="select_all">Seleziona tutto</string>
+    <string name="deselect_all">Deseleziona tutto</string>
+    <string name="inverse_selection">Selezione inversa</string>
     <string name="loading">Caricamento…</string>
+    <string name="download_update">Scarica aggiornamento</string>
+    <string name="install_update">Installa aggiornamento</string>
+    <string name="pro_updated">Sei aggiornato!</string>
     <string name="managed_by_lawnchair">Gestito da Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferenze</string>
@@ -65,6 +72,7 @@
     <string name="layout">Layout</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Sfondo</string>
+    <string name="style">Stile</string>
     <string name="background_opacity">Opacità sfondo</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiato negli appunti</string>
@@ -75,9 +83,9 @@
     <string name="wallpapers">Sfondi</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy"></string>
-    <string name="app_drawer_folder">Cartella menu delle app</string>
+    <string name="app_drawer_folder">Cartelle menu delle app</string>
     <string name="app_drawer_folder_settings">Cartella menu</string>
-    <string name="add_folder">Aggiungi cartella</string>
+    <string name="add_folder">Crea cartella</string>
     <string name="edit_folder">Modifica cartella</string>
     <string name="add_label">Aggiungi</string>
     <string name="edit_label">Modifica</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">Scorri verso sinistra per modificare, scorri verso destra per eliminare, o tocca per aggiornare gli elementi</string>
     <string name="apps_in_folder_label">Nascondi le app delle cartelle</string>
     <string name="apps_in_folder_description">Le app assegnate alle cartelle sono escluse dagli elenchi delle app</string>
+    <string name="folders_filter_duplicates">Mostra solo app uniche</string>
     <string name="my_folder_label">La mia cartella</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Per bloccare il telefono quando si esegue un gesto e per aprire Recenti tramite gesto, Lawnchair richiede l\'accesso all\'accessibilità.\n\nLawnchair non monitora alcuna azione dell\'utente, sebbene il privilegio per farlo sia richiesto per tutti i servizi di accessibilità. Lawnchair ignora qualsiasi evento inviato dal sistema.\n\nPer bloccare il telefono o per aprire Recenti, Lawnchair utilizza il servizio di accessibilità performGlobalAction.</string>
+    <string name="accessibility_service_description">Per eseguire determinate azioni (come bloccare il telefono) quando si esegue un gesto, Lawnchair richiede l\'accesso all\'accessibilità.\n\nLawnchair non guarda nessuna azione utente, sebbene il privilegio di farlo sia richiesto per tutti i servizi di accessibilità. Lawnchair scarta qualsiasi evento inviato dal sistema.\n\nPer bloccare il telefono, o per aprire i Recenti, Lawnchair utilizza il servizio di accessibilità performGlobalAction.</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s e %2$s</string>
+    <string name="advanced">Avanzate</string>
     <!--
 
     Preference Dashboard
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">Scorrimento verso il basso</string>
     <string name="gesture_home_tap">Pulsante Home</string>
     <string name="gesture_back_tap">Pulsante Indietro</string>
+    <string name="gesture_swipe_left">Scorri a sinistra</string>
+    <string name="gesture_swipe_right">Scorri a destra</string>
     <string name="gesture_handler_no_op">Non fare nulla</string>
     <string name="gesture_handler_sleep">Sospendi</string>
     <string name="gesture_handler_recents">Apri le App Recenti</string>

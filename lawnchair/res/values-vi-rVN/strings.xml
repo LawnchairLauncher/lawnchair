@@ -37,7 +37,14 @@
     <string name="action_copy_link">Sao chép liên kết</string>
     <string name="action_copy">Sao chép</string>
     <string name="action_paste">Dán</string>
+    <string name="action_done">Xong</string>
+    <string name="select_all">Chọn tất cả</string>
+    <string name="deselect_all">Bỏ chọn tất cả</string>
+    <string name="inverse_selection">Lựa chọn ngược</string>
     <string name="loading">Đang tải…</string>
+    <string name="download_update">Tải xuống bản cập nhật</string>
+    <string name="install_update">Cài đặt bản cập nhật</string>
+    <string name="pro_updated">Bạn đã cập nhật rồi!</string>
     <string name="managed_by_lawnchair">Quản lí bởi Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Tùy chỉnh</string>
@@ -65,6 +72,7 @@
     <string name="layout">Bố cục</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Hình nền</string>
+    <string name="style">Phong cách</string>
     <string name="background_opacity">Độ mờ của nền</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Đã sao chép</string>
@@ -75,9 +83,9 @@
     <string name="wallpapers">Hình nền</string>
     <string name="caddy_beta">Tự động sắp xếp (Thử nghiệm)</string>
     <string name="caddy">Tự động sắp xếp</string>
-    <string name="app_drawer_folder">Thư mục trong ngăn ứng dụng</string>
+    <string name="app_drawer_folder">Thư mục ngăn ứng dụng</string>
     <string name="app_drawer_folder_settings">Thư mục ngăn chứa</string>
-    <string name="add_folder">Thêm thư mục</string>
+    <string name="add_folder">Tạo thư mục</string>
     <string name="edit_folder">Chỉnh sửa thư mục</string>
     <string name="add_label">Ứng dụng</string>
     <string name="edit_label">Chỉnh sửa</string>
@@ -86,11 +94,14 @@
     <string name="folder_list_note">Vuốt sang trái để chỉnh sửa, vuốt sang phải để xóa hoặc chạm để cập nhật mục</string>
     <string name="apps_in_folder_label">Ẩn ứng dụng trong thư mục</string>
     <string name="apps_in_folder_description">Các ứng dụng được gán vào thư mục sẽ bị loại khỏi danh sách ứng dụng</string>
+    <string name="folders_filter_duplicates">Chỉ hiển thị các ứng dụng duy nhất</string>
     <string name="my_folder_label">Thư mục của tôi</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Để khóa điện thoại khi thực hiện cử chỉ và để mở mục Ứng dụng gần đây bằng cử chỉ, Lawnchair yêu cầu quyền truy cập trợ năng.\n\nLawnchair không theo dõi bất kỳ hành động nào của người dùng, mặc dù quyền theo dõi là bắt buộc đối với tất cả các dịch vụ trợ năng. Lawnchair loại bỏ mọi sự kiện được hệ thống gửi đi.\n\nĐể khóa điện thoại hoặc mở mục Ứng dụng gần đây, Lawnchair sử dụng dịch vụ Trợ năng thực performGlobalAction.</string>
+    <string name="accessibility_service_description">Để thực hiện một số hành động nhất định (chẳng hạn như khóa điện thoại) khi thực hiện cử chỉ, Lawnchair yêu cầu quyền truy cập trợ năng.\n\nLawnchair không theo dõi bất kỳ hành động nào của người dùng, mặc dù quyền làm như vậy là bắt buộc đối với tất cả các dịch vụ trợ năng. Lawnchair loại bỏ bất kỳ sự kiện nào được hệ thống gửi đi.\n\nĐể khóa điện thoại hoặc mở mục Ứng dụng gần đây, Lawnchair sử dụng dịch vụ Trợ năng performGlobalAction.</string>
+    <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="advanced">Nâng cao</string>
     <!--
 
     Preference Dashboard
@@ -361,6 +372,8 @@
     <string name="gesture_swipe_down">Trượt xuống</string>
     <string name="gesture_home_tap">Nút Home</string>
     <string name="gesture_back_tap">Nút Lùi lại</string>
+    <string name="gesture_swipe_left">Vuốt sang trái</string>
+    <string name="gesture_swipe_right">Vuốt sang phải</string>
     <string name="gesture_handler_no_op">Không làm gì</string>
     <string name="gesture_handler_sleep">Ngủ</string>
     <string name="gesture_handler_recents">Mở ứng dụng gần đây</string>
@@ -404,9 +417,9 @@
     <string name="wallpaper_blur">Làm mờ hình nền (thử nghiệm)</string>
     <string name="wallpaper_background_blur">Cường độ mờ</string>
     <string name="wallpaper_background_blur_factor">Ngưỡng yếu tố</string>
-    <string name="home_lawn_deck_label">Ứng dụng ở ngoài ngăn chứa</string>
-    <string name="home_lawn_deck_label_beta">Ứng dụng ngoài ngăn chứa (Thử nghiệm)</string>
-    <string name="home_lawn_deck_description">Truy cập ứng dụng của bạn một cách dễ dàng với ứng dụng ở ngoài ngăn chứa, trải nghiệm không ngăn chứa tối ưu được thiết kế để đơn giản và sắp xếp liền mạch</string>
+    <string name="home_lawn_deck_label">Cổ điển</string>
+    <string name="home_lawn_deck_label_beta">Cổ điển (Thử nghiệm)</string>
+    <string name="home_lawn_deck_description">Truy cập ứng dụng của bạn một cách dễ dàng với cổ điển, trải nghiệm không ngăn chứa tối ưu được thiết kế để đơn giản và sắp xếp liền mạch</string>
     <string name="auto_add_shortcuts_label">Thêm ứng dụng mới vào màn hình chính</string>
     <string name="minus_one_enable">Hiển thị Trang tin tức</string>
     <string name="minus_one_unavailable">Chưa cài đặt bản tin</string>
