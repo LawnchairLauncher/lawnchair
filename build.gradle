@@ -378,7 +378,7 @@ dependencies {
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-15.jar')
     withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-15.jar')
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     implementation 'androidx.profileinstaller:profileinstaller:1.4.1'
     baselineProfile projects.baselineProfile
