@@ -38,13 +38,13 @@
     <string name="action_copy">Kopiuj</string>
     <string name="action_paste">Wklej</string>
     <string name="action_done">Gotowe</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="select_all">Wybierz wszystko</string>
+    <string name="deselect_all">Odznacz wszystko</string>
+    <string name="inverse_selection">Odwróć wybór</string>
     <string name="loading">Ładowanie…</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="download_update">Pobierz aktualizację</string>
+    <string name="install_update">Zainstaluj aktualizację</string>
+    <string name="pro_updated">Masz najnowszą wersję!</string>
     <string name="managed_by_lawnchair">Zarządzane przez Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Ustawienia</string>
@@ -73,7 +73,7 @@
     <!-- Generic styling options -->
     <string name="wallpaper">Tapeta</string>
     <string name="style">Style</string>
-    <string name="background_opacity">Przezroczystość tła</string>
+    <string name="background_opacity">Zakrycie tła</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Skopiowano do schowka</string>
     <string name="calculator_search_result_copied_toast">Wynik został skopiowany do schowka</string>
@@ -85,7 +85,7 @@
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">App drawer folders</string>
     <string name="app_drawer_folder_settings">Folder szuflady</string>
-    <string name="add_folder">Create folder</string>
+    <string name="add_folder">Utwórz folder</string>
     <string name="edit_folder">Edytuj folder</string>
     <string name="add_label">Dodaj</string>
     <string name="edit_label">Edytuj</string>
@@ -101,7 +101,7 @@
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s i %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Zaawansowane</string>
     <!--
 
     Preference Dashboard
@@ -142,7 +142,7 @@
     <!--Overlay-->
     <string name="overlay_fade_in">Fade In</string>
     <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
+    <string name="app_closing_animation">Animacja zamykania aplikacji</string>
     <string name="overlay_label">Overlay</string>
     <string name="overlay_none">None</string>
     <!--
@@ -372,8 +372,8 @@
     <string name="gesture_swipe_down">Przesunięcie w dół</string>
     <string name="gesture_home_tap">Przycisk ekranu głównego</string>
     <string name="gesture_back_tap">Przycisk wstecz</string>
-    <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
+    <string name="gesture_swipe_left">Przesuń w lewo</string>
+    <string name="gesture_swipe_right">Przesuń w prawo</string>
     <string name="gesture_handler_no_op">Nic nie rób</string>
     <string name="gesture_handler_sleep">Uśpij</string>
     <string name="gesture_handler_recents">Otwórz widok ostatnich aplikacji</string>
@@ -383,7 +383,7 @@
     <string name="gesture_handler_open_app_drawer">Otwórz szufladę aplikacji</string>
     <string name="gesture_handler_open_app_search">Otwórz wyszukiwarkę aplikacji</string>
     <string name="gesture_handler_open_search">Otwórz wyszukiwarkę</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant">Otwórz asystenta</string>
     <string name="pick_app_for_gesture">Wybierz aplikację</string>
     <string name="dt2s_admin_hint_title">Wymagane uprawnienia administratora</string>
     <string name="dt2s_admin_hint">Aby użyć opcji usypiania przy podwójnym naciśnięciu, ustaw Lawnchair jako aplikację administrującą urządzeniem. Naciśnij \"Otwórz ustawienia\", następnie naciśnij \"Aktywuj tę aplikację do administrowania urządzeniem.\"</string>
@@ -518,8 +518,8 @@
         <item quantity="other">%1$d aplikacji</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Przezroczystość tła podglądu ikon</string>
-    <string name="folder_bg_opacity_label">Przezroczystość tła folderu</string>
+    <string name="folder_preview_bg_opacity_label">Zakrycie tła podglądu ikon</string>
+    <string name="folder_bg_opacity_label">Zakrycie tła folderu</string>
     <string name="folder_preview_bg_color_label">Kolor tła ikon</string>
     <string name="max_folder_columns">Maksymalna liczba kolumn w folderze</string>
     <string name="max_folder_rows">Maksymalna liczba wierszy w folderze</string>
@@ -528,7 +528,7 @@
     <string name="quickstep_incompatible">Niekompatybilna integracja systemowa</string>
     <string name="quickstep_incompatible_description">Twoje urządzenie jest skonfigurowane, żeby używało gestów systemowych (tzw. Quickstep) dostarczonych przez %1$s, ale ta wersja %1$s nie jest zgodna z twoją wersją Androida. Aby móc dalej używać swojego urządzenia, odinstaluj aktualizacje %1$s lub zmień dostawcę gestów systemowych.</string>
     <string name="translucent_background">Prześwitujące tło</string>
-    <string name="translucent_background_alpha">Przezroczystość tła</string>
+    <string name="translucent_background_alpha">Zakrycie tła</string>
     <string name="recents_actions_label">Szybkie akcje</string>
     <string name="action_share">Udostępnij</string>
     <string name="action_lens">Obiektyw</string>

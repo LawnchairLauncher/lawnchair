@@ -94,7 +94,7 @@
     <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
     <string name="apps_in_folder_label">Hide folder apps</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
+    <string name="folders_filter_duplicates">僅顯示唯一應用</string>
     <string name="my_folder_label">我的資料夾</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
@@ -338,7 +338,7 @@
     <string name="news">新聞</string>
     <string name="support">支援</string>
     <string name="product">產品</string>
-    <string name="design_and_development">Design &amp; development</string>
+    <string name="design_and_development">設計&amp;開發</string>
     <string name="development">開發</string>
     <string name="quickswitch_maintenance">QuickSwitch 維護</string>
     <string name="devops">DevOps</string>
@@ -373,7 +373,7 @@
     <string name="gesture_home_tap">Home button</string>
     <string name="gesture_back_tap">Back button</string>
     <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
+    <string name="gesture_swipe_right">向右滑動</string>
     <string name="gesture_handler_no_op">什麼也不做</string>
     <string name="gesture_handler_sleep">睡眠</string>
     <string name="gesture_handler_recents">Open Recents</string>
@@ -385,8 +385,8 @@
     <string name="gesture_handler_open_search">Open search</string>
     <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Pick app</string>
-    <string name="dt2s_admin_hint_title">Admin permissions required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_hint_title">需要管理員權限</string>
+    <string name="dt2s_admin_hint">。</string>
     <string name="dt2s_admin_warning">輕觸兩下進入睡眠模式將會關閉。</string>
     <string name="d2ts_recents_a11y_hint_title">Turn on accessibility service</string>
     <string name="dt2s_a11y_hint">若要使用輕觸兩下進入睡眠功能，請開啟 Lawnchair 輔助功能服務。 輕觸 “開啟設定”，選擇 “Lawnchair”，然後開啟 “使用 Lawnchair。”\n\nLawnchair 使用 Accessibility 的 `performGlobalAction` 方法執行此操作。 這是一個敏感權限，允許監控其他應用程式。 然而，Lawnchair 並未配置該功能且未接收任何事件。</string>
@@ -429,7 +429,7 @@
     <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
-    <string name="home_screen_grid">主螢幕網格</string>
+    <string name="home_screen_grid">主畫面網格</string>
     <string name="home_screen_lock">鎖定主畫面版面</string>
     <string name="home_screen_unlock">解鎖主畫面版面</string>
     <string name="home_screen_locked">主畫面版面已鎖定</string>

@@ -21,28 +21,28 @@
     Actions and Verbs
 
     -->
-    <string name="preview_label">Preview</string>
-    <string name="action_create">Create</string>
-    <string name="action_backup">Backup</string>
-    <string name="action_restore">Restore</string>
-    <string name="action_delete">Delete</string>
+    <string name="preview_label">പ്രിവ്യൂ</string>
+    <string name="action_create">സൃഷ്ടിക്കുക</string>
+    <string name="action_backup">ബാക്കപ്പ്</string>
+    <string name="action_restore">പുനഃസ്ഥാപിക്കുക</string>
+    <string name="action_delete">ഇല്ലാതാക്കുക</string>
     <string name="action_reset">പുനഃക്രമീകരിക്കുക</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
+    <string name="action_unlock">അൺലോക്ക് ചെയ്യുക</string>
+    <string name="action_lock">പൂട്ടുക</string>
     <string name="action_apply">പ്രയോഗിക്കുക</string>
     <string name="action_customize">ഇഷ്ടാനുസൃതമാക്കുക</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="always_choice">എപ്പോഴും</string>
+    <string name="never_choice">ഒരിക്കലും</string>
+    <string name="clipboard">ക്ലിപ്പ്ബോർഡ്</string>
+    <string name="action_copy_link">ലിങ്ക് പകർത്തുക</string>
     <string name="action_copy">കോപ്പി</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">പേസ്റ്റ്</string>
     <string name="action_done">ചെയ്തു</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="select_all">എല്ലാം തിരഞ്ഞെടുക്കുക</string>
+    <string name="deselect_all">എല്ലാം തിരഞ്ഞെടുത്തത് മാറ്റുക</string>
+    <string name="inverse_selection">വിപരീത തിരഞ്ഞെടുപ്പ്</string>
     <string name="loading">ലോഡ് ചെയുന്നു…</string>
-    <string name="download_update">Download update</string>
+    <string name="download_update">അപ്‌ഡേറ്റ് ഡൗൺലോഡ് ചെയ്യുക</string>
     <string name="install_update">Install update</string>
     <string name="pro_updated">You\'re up-to-date!</string>
     <string name="managed_by_lawnchair">Managed by Lawnchair</string>
@@ -95,7 +95,7 @@
     <string name="apps_in_folder_label">Hide folder apps</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">My folder</string>
+    <string name="my_folder_label">എന്റെ ഫോൾഡർ</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>

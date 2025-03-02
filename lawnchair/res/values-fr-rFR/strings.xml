@@ -92,7 +92,7 @@
     <string name="apply_label">Appliquer</string>
     <string name="delete_label">Supprimer</string>
     <string name="folder_list_note">Balayez vers la gauche pour modifier, balayez vers la droite pour supprimer, ou appuyez pour ajouter des éléments</string>
-    <string name="apps_in_folder_label">Masquer les applis rangées dans des dossiers</string>
+    <string name="apps_in_folder_label">Masquer les applis rangées dans un dossier</string>
     <string name="apps_in_folder_description">Les applis assignées à un dossier sont exclues des listes d\'applis</string>
     <string name="folders_filter_duplicates">Afficher seulement les applis uniques</string>
     <string name="my_folder_label">Mon dossier</string>

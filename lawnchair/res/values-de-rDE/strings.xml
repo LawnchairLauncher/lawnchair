@@ -38,13 +38,13 @@
     <string name="action_copy">Kopieren</string>
     <string name="action_paste">Einfügen</string>
     <string name="action_done">Erledigt</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="select_all">Alle auswählen</string>
+    <string name="deselect_all">Alle abwählen</string>
+    <string name="inverse_selection">Auswahl umkehren</string>
     <string name="loading">Laden…</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="download_update">Update laden</string>
+    <string name="install_update">Update installieren</string>
+    <string name="pro_updated">Du verwendest die neuste Version!</string>
     <string name="managed_by_lawnchair">Von Lawnchair verwaltet</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Voreinstellungen</string>
@@ -94,14 +94,14 @@
     <string name="folder_list_note">Zum Bearbeiten nach links, zum Löschen nach rechts wischen oder zum Aktualisieren der Elemente tippen</string>
     <string name="apps_in_folder_label">Ordner-Apps ausblenden</string>
     <string name="apps_in_folder_description">Ordnern zugewiesene Apps sind von der App-Liste ausgeschlossen</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
+    <string name="folders_filter_duplicates">Nur Apps, die keine Duplikate sind, zeigen</string>
     <string name="my_folder_label">Mein Ordner</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Um bestimmte Aktionen (bspw. das Mobiltelefon sperren) auszuführen, wenn eine Geste ausgeführt wird, benötigt Lawnchair Bedienungshilfen-Zugriff.\n\nLawnchair nimmt keine deiner Aktionen auf, jedoch ist die Berechtigung, dies zu tun, teil des Bedienungshilfen-Zugriffes. Lawnchair löscht jedes Ereigniss, das vom System gesendet wird.\n\nUm das Gerät zu sperren, oder die zulezt geöffneten Apps zu öffnen, wird der performGlobalAction Bedienungshilfen-Service verwendet.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Erweitert</string>
     <!--
 
     Preference Dashboard
@@ -109,7 +109,7 @@
     -->
     <string name="settings">Einstellungen</string>
     <string name="general_label">Allgemein</string>
-    <string name="general_description">Farben, Symbolpaket, Benachrichtigungspunkte</string>
+    <string name="general_description">Farben, Symbolpaket, Benachrichtigungs-Punkte</string>
     <string name="home_screen_label">Startbildschirm</string>
     <string name="home_screen_description">Feed, Raster, Symbole</string>
     <string name="dock_label">Dock</string>
@@ -372,8 +372,8 @@
     <string name="gesture_swipe_down">Nach unten wischen</string>
     <string name="gesture_home_tap">Home-Schaltfläche</string>
     <string name="gesture_back_tap">Zurück-Taste</string>
-    <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
+    <string name="gesture_swipe_left">Nach links wischen</string>
+    <string name="gesture_swipe_right">Nach rechts wischen</string>
     <string name="gesture_handler_no_op">Nichts tun</string>
     <string name="gesture_handler_sleep">Ruhezustand</string>
     <string name="gesture_handler_recents">Öffne zuletzt genutzte Apps</string>
@@ -383,7 +383,7 @@
     <string name="gesture_handler_open_app_drawer">App-Übersicht öffnen</string>
     <string name="gesture_handler_open_app_search">App-Suche öffnen</string>
     <string name="gesture_handler_open_search">Suche öffnen</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant">Assistent-App öffnen</string>
     <string name="pick_app_for_gesture">App auswählen</string>
     <string name="dt2s_admin_hint_title">Administrator-Berechtigungen erforderlich</string>
     <string name="dt2s_admin_hint">Um Doppeltippen zum Display Ausschalten zu verwenden, aktiviere Lawnchair als App zur Geräteverwaltung. Tippe auf \"Einstellungen öffnen\" und tippe auf „Diese App zur Geräteverwaltung aktivieren“.</string>
@@ -486,7 +486,7 @@
     <string name="paused_apps_drop_target_label">App anhalten</string>
     <string name="dock_icons">Dock-Symbole</string>
     <string name="hotseat_bottom_space_label">Unterer Abstand</string>
-    <string name="page_indicator_height">Page indicator height</string>
+    <string name="page_indicator_height">Seitenindikator-Höhe</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">App-Suche</string>
     <string name="search_provider_sponsored_description">%1$s und Lawnchair haben eine Umsatzbeteiligungsvereinbarung.\n\nSuchen mit %1$s unterstützt Lawnchair.</string>

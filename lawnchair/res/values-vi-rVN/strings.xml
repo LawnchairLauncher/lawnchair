@@ -151,7 +151,7 @@
 
     -->
     <string name="set_default_launcher_tip">Để truy cập các phím tắt và tính năng bổ sung, hãy đặt Lawnchair làm ứng dụng mặc định màn hình chính của bạn</string>
-    <string name="notification_dots">Dấu chấm thông náo</string>
+    <string name="notification_dots">Dấu chấm thông báo</string>
     <string name="show_notification_count">Hiển thị số đếm thông báo</string>
     <string name="notification_dots_color">Màu chấm thông báo</string>
     <string name="notification_dots_text_color">Màu số thông báo</string>
