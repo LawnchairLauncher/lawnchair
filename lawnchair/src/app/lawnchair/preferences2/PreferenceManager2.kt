@@ -17,6 +17,7 @@
 package app.lawnchair.preferences2
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.Preferences
@@ -47,6 +48,7 @@ import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.ui.popup.LauncherOptionsPopup
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
+import app.lawnchair.ui.preferences.data.liveinfo.LiveInformationManager
 import app.lawnchair.util.kotlinxJson
 import app.lawnchair.views.overlay.FullScreenOverlayMode
 import com.android.launcher3.InvariantDeviceProfile
@@ -75,6 +77,8 @@ class PreferenceManager2 private constructor(private val context: Context) :
 
     private val scope = MainScope()
     private val resourceProvider = DynamicResource.provider(context)
+    private var liveInformationManager: LiveInformationManager =
+        LiveInformationManager.getInstance(context)
 
     private fun idpPreference(
         key: Preferences.Key<Int>,
@@ -105,15 +109,24 @@ class PreferenceManager2 private constructor(private val context: Context) :
 
     val iconShape = preference(
         key = stringPreferencesKey(name = "icon_shape"),
-        defaultValue = IconShape.fromString(value = context.getString(R.string.config_default_icon_shape), context = context) ?: IconShape.Circle,
-        parse = { IconShape.fromString(value = it, context = context) ?: IconShapeManager.getSystemIconShape(context) },
+        defaultValue = IconShape.fromString(
+            value = context.getString(R.string.config_default_icon_shape),
+            context = context,
+        ) ?: IconShape.Circle,
+        parse = {
+            IconShape.fromString(value = it, context = context)
+                ?: IconShapeManager.getSystemIconShape(context)
+        },
         save = { it.toString() },
     )
 
     val customIconShape = preference(
         key = stringPreferencesKey(name = "custom_icon_shape"),
         defaultValue = null,
-        parse = { IconShape.fromString(value = it, context = context) ?: IconShapeManager.getSystemIconShape(context) },
+        parse = {
+            IconShape.fromString(value = it, context = context)
+                ?: IconShapeManager.getSystemIconShape(context)
+        },
         save = { it.toString() },
         onSet = { it?.let(iconShape::setBlocking) },
     )
@@ -201,7 +214,9 @@ class PreferenceManager2 private constructor(private val context: Context) :
 
     val hotseatQsbProvider = preference(
         key = stringPreferencesKey(name = "dock_search_bar_provider"),
-        defaultValue = QsbSearchProvider.resolveDefault(context),
+        defaultValue = getRemoteDefault("dock_search_bar_provider")?.let {
+            QsbSearchProvider.fromId(it)
+        } ?: QsbSearchProvider.resolveDefault(context),
         parse = { QsbSearchProvider.fromId(it) },
         save = { it.id },
         onSet = { reloadHelper.recreate() },
@@ -483,7 +498,10 @@ class PreferenceManager2 private constructor(private val context: Context) :
 
     val webSuggestionProvider = preference(
         key = stringPreferencesKey(name = "web_suggestion_provider"),
-        defaultValue = WebSearchProvider.fromString(context.resources.getString(R.string.config_default_web_suggestion_provider)),
+        defaultValue = WebSearchProvider.fromString(
+            getRemoteDefault("web_suggestion_provider")
+                ?: context.resources.getString(R.string.config_default_web_suggestion_provider),
+        ),
         parse = { WebSearchProvider.fromString(it) },
         save = { it.toString() },
         onSet = { reloadHelper.recreate() },
@@ -706,7 +724,11 @@ class PreferenceManager2 private constructor(private val context: Context) :
             .launchIn(scope)
     }
 
-    suspend fun setGestureForApp(key: ComponentKey, gestureType: GestureType, gesture: GestureHandlerConfig) {
+    suspend fun setGestureForApp(
+        key: ComponentKey,
+        gestureType: GestureType,
+        gesture: GestureHandlerConfig,
+    ) {
         val cmp = Converters().fromComponentKey(key)
         val key = stringPreferencesKey("$cmp:${gestureType.name}")
         preferencesDataStore.edit { prefs ->
@@ -734,6 +756,17 @@ class PreferenceManager2 private constructor(private val context: Context) :
     override fun close() {
     }
 
+    private fun getRemoteDefault(key: String): String? = liveInformationManager.liveInformation
+        .firstBlocking()
+        .features[key]
+        .also { value ->
+            if (value == null) {
+                Log.d(TAG, "getRemoteDefault: $key -> no remote default")
+            } else {
+                Log.d(TAG, "getRemoteDefault: $key -> $value")
+            }
+        }
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
@@ -745,6 +778,8 @@ class PreferenceManager2 private constructor(private val context: Context) :
 
         @JvmStatic
         fun getInstance(context: Context) = INSTANCE.get(context)!!
+
+        private const val TAG = "PreferenceManager2"
     }
 }
 
