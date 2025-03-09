@@ -21,585 +21,585 @@
     Actions and Verbs
 
     -->
-    <string name="preview_label">Preview</string>
-    <string name="action_create">Create</string>
-    <string name="action_backup">Backup</string>
-    <string name="action_restore">Restore</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_reset">Reset</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="action_apply">Apply</string>
-    <string name="action_customize">Customize</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="action_copy_link">Copy link</string>
-    <string name="action_copy">Copy</string>
-    <string name="action_paste">Paste</string>
-    <string name="action_done">Done</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
-    <string name="loading">Loading…</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
-    <string name="managed_by_lawnchair">Managed by Lawnchair</string>
+    <string name="preview_label">پیش نظارہ</string>
+    <string name="action_create">بنائیں</string>
+    <string name="action_backup">بیک اپ</string>
+    <string name="action_restore">بحال کریں۔</string>
+    <string name="action_delete">حذف</string>
+    <string name="action_reset">دوبارہ ترتیب دیں۔</string>
+    <string name="action_unlock">غیر مقفل کریں۔</string>
+    <string name="action_lock">تالا</string>
+    <string name="action_apply">لگائیں</string>
+    <string name="action_customize">حسب ضرورت بنائیں۔</string>
+    <string name="always_choice">ہمیشہ</string>
+    <string name="never_choice">کبھی نہیں</string>
+    <string name="clipboard">کلپ بورڈ</string>
+    <string name="action_copy_link">لنک کاپی کریں۔</string>
+    <string name="action_copy">نقل</string>
+    <string name="action_paste">چسپاں</string>
+    <string name="action_done">مکمل</string>
+    <string name="select_all">سبھی کو منتخب کریں۔</string>
+    <string name="deselect_all">سبھی کو غیر منتخب کریں۔</string>
+    <string name="inverse_selection">الٹا انتخاب</string>
+    <string name="loading">لوڈ ہو رہا ہے…</string>
+    <string name="download_update">اپ ڈیٹ ڈاؤن لوڈ کریں۔</string>
+    <string name="install_update">اپ ڈیٹ انسٹال کریں۔</string>
+    <string name="pro_updated">آپ اپ ٹو ڈیٹ ہیں!</string>
+    <string name="managed_by_lawnchair">لان چیئر کے زیر انتظام</string>
     <!-- When mentioning settings UI -->
-    <string name="smartspace_preferences">Preferences</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="smartspace_preferences">ترجیحات</string>
+    <string name="settings_button_text">گھر کی ترتیبات</string>
+    <string name="system_settings">سسٹم کی ترتیبات</string>
+    <string name="title_change_settings">ترتیبات کو تبدیل کریں۔</string>
     <!--
 
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">دوسرے</string>
     <!-- Selection options -->
-    <string name="dynamic">Dynamic</string>
-    <string name="presets">Presets</string>
-    <string name="custom">Custom</string>
-    <string name="feed_default">Default</string>
-    <string name="system">System</string>
+    <string name="dynamic">متحرک</string>
+    <string name="presets">پری سیٹس</string>
+    <string name="custom">حسب ضرورت</string>
+    <string name="feed_default">طے شدہ</string>
+    <string name="system">سسٹم</string>
     <!-- Relating to the Launcher ui -->
-    <string name="columns">Columns</string>
-    <string name="rows">Rows</string>
-    <string name="label">Label</string>
-    <string name="icons">Icons</string>
-    <string name="grid">Grid</string>
-    <string name="layout">Layout</string>
+    <string name="columns">کالم</string>
+    <string name="rows">قطاریں</string>
+    <string name="label">لینیل</string>
+    <string name="icons">شبیہیں</string>
+    <string name="grid">گرڈ</string>
+    <string name="layout">لے آؤٹ</string>
     <!-- Generic styling options -->
-    <string name="wallpaper">Wallpaper</string>
-    <string name="style">Style</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="wallpaper">وال پیپر</string>
+    <string name="style">انداز</string>
+    <string name="background_opacity">پس منظر کی دھندلاپن</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
-    <string name="item_removed">Item removed</string>
+    <string name="copied_toast">کلپ بورڈ پر کاپی ہو گیا۔</string>
+    <string name="calculator_search_result_copied_toast">نتیجہ کلپ بورڈ پر کاپی ہو گیا۔</string>
+    <string name="item_removed">آئٹم ہٹا دیا گیا۔</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
-    <string name="wallpapers">Wallpapers</string>
-    <string name="caddy_beta">Caddy (Beta)</string>
-    <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
-    <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
-    <string name="apply_label">Apply</string>
-    <string name="delete_label">Delete</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
-    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">My folder</string>
+    <string name="what_to_show">کیا دکھانا ہے۔</string>
+    <string name="wallpapers">وال پیپرز</string>
+    <string name="caddy_beta">کیڈی (بیٹا)</string>
+    <string name="caddy">کیڈی</string>
+    <string name="app_drawer_folder">ایپ ڈراور فولڈرز</string>
+    <string name="app_drawer_folder_settings">دراز فولڈر</string>
+    <string name="add_folder">فولڈر بنائیں</string>
+    <string name="edit_folder">فولڈر میں ترمیم کریں۔</string>
+    <string name="add_label">شامل کریں۔</string>
+    <string name="edit_label">ترمیم کریں۔</string>
+    <string name="apply_label">لگائیں</string>
+    <string name="delete_label">حذف کریں۔</string>
+    <string name="folder_list_note">ترمیم کرنے کے لیے بائیں سوائپ کریں، حذف کرنے کے لیے دائیں سوائپ کریں، یا آئٹمز کو اپ ڈیٹ کرنے کے لیے تھپتھپائیں۔</string>
+    <string name="apps_in_folder_label">فولڈر ایپس کو چھپائیں۔</string>
+    <string name="apps_in_folder_description">فولڈرز کو تفویض کردہ ایپس کو ایپ کی فہرستوں سے خارج کر دیا گیا ہے۔</string>
+    <string name="folders_filter_duplicates">صرف منفرد ایپس دکھائیں۔</string>
+    <string name="my_folder_label">میرا فولڈر</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">اشارہ کرتے وقت مخصوص اعمال (جیسے آپ کے فون کو لاک کرنا) انجام دینے کے لیے، Lawnchair کو ایکسیسبیلٹی رسائی کی ضرورت ہوتی ہے۔\n\nLawnchair صارف کی کسی کارروائی کو نہیں دیکھتا، حالانکہ ایسا کرنے کا استحقاق تمام قابل رسائی خدمات کے لیے درکار ہے۔ Lawnchair سسٹم کی طرف سے بھیجے گئے کسی بھی ایونٹ کو رد کر دیتا ہے۔\n\nآپ کے فون کو لاک کرنے، یا Recents کھولنے کے لیے، Lawnchair پرفارم گلوبل ایکشن ایکسیسبیلٹی سروس استعمال کرتا ہے۔</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">اعلی درجے کی</string>
     <!--
 
     Preference Dashboard
 
     -->
-    <string name="settings">Settings</string>
-    <string name="general_label">General</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
-    <string name="dock_label">Dock</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
-    <string name="folders_label">Folders</string>
-    <string name="folders_description">Row and column count</string>
-    <string name="gestures_label">Gestures</string>
-    <string name="gestures_description">Taps and swipes</string>
-    <string name="quickstep_label">Recents</string>
-    <string name="quickstep_description">Clear All button, corner radius</string>
-    <string name="about_label">About</string>
-    <string name="app_info_drop_target_label">App info</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="settings">ترتیبات</string>
+    <string name="general_label">جنرل</string>
+    <string name="general_description">رنگ، آئیکن پیک، نوٹیفکیشن ڈاٹس</string>
+    <string name="home_screen_label">ہوم اسکرین</string>
+    <string name="home_screen_description">فیڈ، گرڈ، شبیہیں</string>
+    <string name="dock_label">گودی</string>
+    <string name="dock_description">سرچ بار، آئیکن کاؤنٹ</string>
+    <string name="app_drawer_label">ایپ دراز</string>
+    <string name="app_drawer_description">پوشیدہ ایپس، کالم شمار، شبیہیں</string>
+    <string name="drawer_search_label">دراز کی تلاش</string>
+    <string name="drawer_search_description">ویب تجاویز، عالمی تلاش</string>
+    <string name="folders_label">فولڈرز</string>
+    <string name="folders_description">قطار اور کالم کی گنتی</string>
+    <string name="gestures_label">اشارے</string>
+    <string name="gestures_description">ٹیپ اور سوائپس</string>
+    <string name="quickstep_label">حالیہ</string>
+    <string name="quickstep_description">کلئیر آل بٹن، کونے کی گولائی</string>
+    <string name="about_label">کے بارے میں</string>
+    <string name="app_info_drop_target_label">ایپ کی معلومات</string>
+    <string name="debug_restart_launcher">لان چیئر کو دوبارہ شروع کریں۔</string>
+    <string name="experimental_features_label">تجرباتی خصوصیات</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">Font customization</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <string name="font_picker_label">فونٹ حسب ضرورت</string>
+    <string name="font_picker_description">کچھ متن غیر تبدیل شدہ رہتا ہے۔</string>
+    <string name="smartspace_calendar_label">ایک نظر میں کیلنڈر حسب ضرورت</string>
+    <string name="smartspace_calendar_description">غیر گریگورین کیلنڈر سسٹم میں تاریخ دکھانے کی اجازت دیں۔</string>
+    <string name="workspace_increase_max_grid_size_label">زیادہ سے زیادہ گرڈ سائز کی حد میں اضافہ کریں۔</string>
+    <string name="workspace_increase_max_grid_size_description">زیادہ سے زیادہ اجازت شدہ ہوم اسکرین گرڈ سائز کو 10 x 10 سے 20 x 20 تک بڑھا دیں۔</string>
+    <string name="always_reload_icons_label">ہمیشہ شبیہیں دوبارہ لوڈ کریں۔</string>
+    <string name="always_reload_icons_description">آئیکن پیک سے کیشڈ آئیکنز استعمال کرنے سے گریز کریں۔</string>
+    <string name="recents_lock_unlock">لاک/انلاک</string>
+    <string name="recents_lock_unlock_description">\"سب کو صاف کریں\" دبانے پر منتخب ایپ کو بند ہونے سے روکیں۔</string>
     <!--Overlay-->
-    <string name="overlay_fade_in">Fade In</string>
-    <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
-    <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="overlay_fade_in">دھندلا جانا</string>
+    <string name="overlay_suck_in">اندر چوسنا</string>
+    <string name="app_closing_animation">ایپ بند ہونے والی اینیمیشن</string>
+    <string name="overlay_label">اوورلے</string>
+    <string name="overlay_none">کوئی نہیں۔</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
-    <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
-    <string name="notification_dots_text_color">Notification counter color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
-    <string name="missing_notification_access_label">Notification access needed</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="set_default_launcher_tip">شارٹ کٹس اور اضافی خصوصیات تک رسائی کے لیے، لانچر کو اپنے ڈیفالٹ لانچر کے طور پر سیٹ کریں۔</string>
+    <string name="notification_dots">اطلاع کے نقطے۔</string>
+    <string name="show_notification_count">نوٹیفکیشن کاؤنٹر دکھائیں۔</string>
+    <string name="notification_dots_color">نوٹیفکیشن ڈاٹ رنگ</string>
+    <string name="notification_dots_text_color">اطلاع کے انسداد کا رنگ</string>
+    <string name="notification_dots_color_contrast_warning_always">انتباہ: نوٹیفکیشن ڈاٹ اور کاؤنٹر رنگ ایک دوسرے کے ساتھ کافی تضاد نہیں رکھتے ہیں۔</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">انتباہ: نوٹیفکیشن ڈاٹ اور کاؤنٹر رنگ ہمیشہ ایک دوسرے کے ساتھ کافی تضاد نہیں رکھتے ہیں۔</string>
+    <string name="missing_notification_access_label">اطلاع تک رسائی درکار ہے۔</string>
+    <string name="missing_notification_access_desc">نوٹیفکیشن ڈاٹس دکھانے کے لیے، <xliff:g id="name" example="My App">%1$s</xliff:g> کے لیے ایپ کی اطلاعات کو آن کریں۔</string>
     <!--
 
     Icons
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">Icon style</string>
-    <string name="icon_shape_label">Icon shape</string>
-    <string name="icon_sizes">Icon size</string>
-    <string name="show_labels">Show labels</string>
-    <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="icon_style_label">آئیکن اسٹائل</string>
+    <string name="icon_shape_label">شبیہ کی شکل</string>
+    <string name="icon_sizes">آئیکن کا سائز</string>
+    <string name="show_labels">لیبل دکھائیں۔</string>
+    <string name="label_size">لیبل کا سائز</string>
+    <string name="twoline_label">متعدد لائنوں کا استعمال کریں۔</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent themed icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
-    <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
-    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
-    <string name="background_lightness_label">Background lightness</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
-    <string name="reset_custom_icons">Reset custom icons</string>
-    <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+    <string name="transparent_background_icons_label">شفاف تھیم والے آئیکنز</string>
+    <string name="transparent_background_icons_description">تھیم والے شبیہیں پر شفاف پس منظر کا استعمال کریں۔</string>
+    <string name="auto_adaptive_icons_label">خودکار انکولی شبیہیں</string>
+    <string name="auto_adaptive_icons_description">تمام غیر انکولی شبیہیں کے لیے</string>
+    <string name="shadow_bg_icons_label">شبیہیں کے پیچھے سایہ دکھائیں۔</string>
+    <string name="background_lightness_label">پس منظر کی ہلکی پن</string>
+    <string name="adaptive_icon_background_description">سفید کے لیے 100% پس منظر کی ہلکی پن کا استعمال کریں۔</string>
+    <string name="reset_custom_icons">حسب ضرورت شبیہیں دوبارہ ترتیب دیں۔</string>
+    <string name="reset_custom_icons_confirmation">تمام حسب ضرورت شبیہیں دوبارہ ترتیب دی جائیں گی۔ کیا آپ جاری رکھنا چاہتے ہیں؟</string>
     <!-- Icon picker -->
-    <string name="icon_picker_default_category">Icons</string>
-    <string name="icon_picker_reset_to_default">Reset to default</string>
-    <string name="icon_pack_external_picker">Open external picker</string>
-    <string name="pick_icon_from_label">Pick icon from</string>
-    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="icon_picker_default_category">شبیہیں</string>
+    <string name="icon_picker_reset_to_default">ڈیفالٹ پر ری سیٹ کریں۔</string>
+    <string name="icon_pack_external_picker">بیرونی چنندہ کھولیں۔</string>
+    <string name="pick_icon_from_label">سے آئیکن چنیں۔</string>
+    <string name="icon_picker_load_failed">مزید آئیکنز لوڈ نہیں ہو سکے۔</string>
     <!-- Icon shapes  -->
-    <string name="icon_shape_system">System</string>
-    <string name="icon_shape_circle">Circle</string>
-    <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
-    <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
-    <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="icon_shape_sharp_square">Sharp square</string>
-    <string name="icon_shape_square">Square</string>
-    <string name="icon_shape_squircle">Squircle</string>
-    <string name="icon_shape_teardrop">Teardrop</string>
+    <string name="icon_shape_system">سسٹم</string>
+    <string name="icon_shape_circle">دائرہ</string>
+    <string name="icon_shape_cylinder">سلنڈر</string>
+    <string name="icon_shape_diamond">ہیرا</string>
+    <string name="icon_shape_egg">انڈا</string>
+    <string name="icon_shape_cupertino">آئی او ایس</string>
+    <string name="icon_shape_octagon">آکٹگن</string>
+    <string name="icon_shape_hexagon">مسدس</string>
+    <string name="icon_shape_sammy">ون یو آئی</string>
+    <string name="icon_shape_rounded_square">گول مربع</string>
+    <string name="icon_shape_sharp_square">تیز مربع</string>
+    <string name="icon_shape_square">مربع</string>
+    <string name="icon_shape_squircle">سکورکل</string>
+    <string name="icon_shape_teardrop">آنسو</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Custom icon shape</string>
-    <string name="custom_icon_shape_create">Create custom icon shape</string>
-    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
-    <string name="custom_icon_shape_corner">Corner shape</string>
-    <string name="custom_icon_shape_corner_round">Round</string>
-    <string name="custom_icon_shape_corner_squircle">Smooth</string>
-    <string name="custom_icon_shape_corner_cut">Cut</string>
-    <string name="custom_icon_shape_top_left">Top left</string>
-    <string name="custom_icon_shape_top_right">Top right</string>
-    <string name="custom_icon_shape_bottom_left">Bottom left</string>
-    <string name="custom_icon_shape_bottom_right">Bottom right</string>
-    <string name="export_to_clipboard">Export to clipboard</string>
-    <string name="import_from_clipboard">Import from clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <string name="custom_icon_shape">حسب ضرورت آئیکن کی شکل</string>
+    <string name="custom_icon_shape_create">اپنی مرضی کے مطابق آئیکن کی شکل بنائیں</string>
+    <string name="custom_icon_shape_edit">حسب ضرورت آئیکن کی شکل میں ترمیم کریں۔</string>
+    <string name="custom_icon_shape_corner">کارنر شکل</string>
+    <string name="custom_icon_shape_corner_round">گول</string>
+    <string name="custom_icon_shape_corner_squircle">ہموار</string>
+    <string name="custom_icon_shape_corner_cut">کاٹنا</string>
+    <string name="custom_icon_shape_top_left">اوپر بائیں</string>
+    <string name="custom_icon_shape_top_right">اوپر دائیں</string>
+    <string name="custom_icon_shape_bottom_left">نیچے بائیں</string>
+    <string name="custom_icon_shape_bottom_right">نیچے دائیں</string>
+    <string name="export_to_clipboard">کلپ بورڈ پر برآمد کریں۔</string>
+    <string name="import_from_clipboard">کلپ بورڈ سے درآمد کریں۔</string>
+    <string name="icon_shape_clipboard_import_error">کلپ بورڈ میں آئیکن کی درست شکل نہیں ہے۔</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">Icon pack</string>
-    <string name="themed_icon_pack">Themed icon source</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
-    <string name="system_icons">System icons</string>
-    <string name="themed_icon_title">Themed icons</string>
-    <string name="themed_icons_off_label">Off</string>
-    <string name="themed_icons_home_label">Home screen</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen &amp; app drawer</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="icon_pack">آئیکن پیک</string>
+    <string name="themed_icon_pack">تھیم آئیکن ماخذ</string>
+    <string name="themed_icon_pack_tint">لہجے کے رنگ کے ساتھ ٹنٹ</string>
+    <string name="system_icons">سسٹم شبیہیں</string>
+    <string name="themed_icon_title">تھیم والے شبیہیں</string>
+    <string name="themed_icons_off_label">آف</string>
+    <string name="themed_icons_home_label">ہوم اسکرین</string>
+    <string name="themed_icons_home_and_drawer_label">ہوم اسکرین &amp; ایپ دراز</string>
+    <string name="lawnicons_not_installed_description">کوئی تعاون یافتہ آئیکن پیک نہیں ہے۔</string>
     <!-- Fonts -->
-    <string name="pref_fonts_add_fonts">Add fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
-    <string name="font_label">Font (experimental)</string>
-    <string name="fontWorkspace">General</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (medium)</string>
-    <string name="font_variant_italic">Italic</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">Extra light</string>
+    <string name="pref_fonts_add_fonts">فونٹس شامل کریں۔</string>
+    <string name="pref_fonts_add_fonts_summary">OTF اور TTF فونٹس تعاون یافتہ ہیں۔</string>
+    <string name="pref_fonts_missing_font">فونٹ نہیں ملا</string>
+    <string name="font_label">فونٹ (تجرباتی)</string>
+    <string name="fontWorkspace">جنرل</string>
+    <string name="fontHeading">عنوانات</string>
+    <string name="fontHeadingMedium">عنوانات (درمیانی)</string>
+    <string name="fontBody">جسم</string>
+    <string name="fontBodyMedium">باڈی (درمیانی)</string>
+    <string name="font_variant_italic">ترچھا</string>
+    <string name="font_weight_thin">پتلا</string>
+    <string name="font_weight_extra_light">اضافی روشنی</string>
     <string name="font_weight_light">روشن</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extra bold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_regular">باقاعدہ</string>
+    <string name="font_weight_medium">درمیانہ</string>
+    <string name="font_weight_semi_bold">سیمی بولڈ</string>
+    <string name="font_weight_bold">بولڈ</string>
+    <string name="font_weight_extra_bold">اضافی بولڈ</string>
+    <string name="font_weight_extra_black">سیاہ</string>
     <!--
 
     Colors and theme
 
     -->
     <!-- Theme -->
-    <string name="theme_label">Theme</string>
+    <string name="theme_label">تھیم</string>
     <string name="theme_light">روشن</string>
     <string name="theme_dark">اندھیرا</string>
-    <string name="theme_system_default">System</string>
-    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <string name="theme_system_default">سسٹم</string>
+    <string name="theme_follow_wallpaper">وال پیپر میچ کریں۔</string>
     <!-- Color style -->
-    <string name="color_style_label">Color style</string>
-    <string name="color_style_spritz">Spritz</string>
-    <string name="color_style_tonal_spot">Tonal Spot</string>
-    <string name="color_style_vibrant">Vibrant</string>
-    <string name="color_style_expressive">Expressive</string>
-    <string name="color_style_rainbow">Rainbow</string>
-    <string name="color_style_fruit_salad">Fruit Salad</string>
-    <string name="color_style_content">Content</string>
-    <string name="color_style_monochromatic">Monochromatic</string>
+    <string name="color_style_label">رنگین انداز</string>
+    <string name="color_style_spritz">سپرٹز</string>
+    <string name="color_style_tonal_spot">ٹونل جگہ</string>
+    <string name="color_style_vibrant">متحرک</string>
+    <string name="color_style_expressive">اظہار کرنے والا</string>
+    <string name="color_style_rainbow">قوس قزح</string>
+    <string name="color_style_fruit_salad">فروٹ سلاد</string>
+    <string name="color_style_content">مواد</string>
+    <string name="color_style_monochromatic">یک رنگی ۔</string>
     <!-- Accent color and color picker -->
-    <string name="colors">Colors</string>
-    <string name="accent_color">Accent color</string>
-    <string name="swatches">Swatches</string>
-    <string name="rgb">RGB</string>
-    <string name="rgb_red">Red</string>
-    <string name="rgb_green">Green</string>
-    <string name="rgb_blue">Blue</string>
-    <string name="hsb">HSB</string>
-    <string name="hsb_hue">Hue</string>
-    <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
-    <string name="hex">Hex</string>
-    <string name="color_sliders">Sliders</string>
-    <string name="invalid_color">Invalid color</string>
+    <string name="colors">رنگ</string>
+    <string name="accent_color">لہجے کا رنگ</string>
+    <string name="swatches">جھولے۔</string>
+    <string name="rgb">آر جی بی</string>
+    <string name="rgb_red">سرخ</string>
+    <string name="rgb_green">سبز</string>
+    <string name="rgb_blue">نیلا</string>
+    <string name="hsb">ایچ ایس بی</string>
+    <string name="hsb_hue">رنگت</string>
+    <string name="hsb_saturation">سنترپتی</string>
+    <string name="hsb_brightness">چمک</string>
+    <string name="hex">ہیکس</string>
+    <string name="color_sliders">سلائیڈرز</string>
+    <string name="invalid_color">غلط رنگ</string>
     <!--
 
     Smartspace
 
     -->
     <!-- Date formats -->
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
-    <string name="smartspace_calendar_persian">Persian</string>
+    <string name="smartspace_calendar_gregorian">گریگورین</string>
+    <string name="smartspace_calendar_persian">فارسی</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
-    <string name="smartspace_battery_low">Battery low</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
-    <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">What to show</string>
+    <string name="smartspace_battery_charging">چارج ہو رہا ہے۔</string>
+    <string name="smartspace_battery_full">چارج کیا گیا۔</string>
+    <string name="smartspace_battery_low">بیٹری کم ہے۔</string>
+    <string name="battery_charging_percentage_charging_time">"1$d%% — %2$s میں مکمل"</string>
+    <string name="smartspace_widget">ایک نظر میں</string>
+    <string name="smartspace_widget_description">کیا دکھانا ہے۔</string>
     <!-- Data and time format settings -->
-    <string name="smartspace_calendar">Calendar</string>
-    <string name="smartspace_date_and_time">Date &amp; time</string>
-    <string name="smartspace_date">Date</string>
-    <string name="smartspace_time">Time</string>
-    <string name="smartspace_time_format">Time format</string>
-    <string name="smartspace_time_follow_system">Follow system</string>
-    <string name="smartspace_time_12_hour_format">12-hour format</string>
-    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <string name="smartspace_calendar">کیلنڈر</string>
+    <string name="smartspace_date_and_time">تاریخ &amp; وقت</string>
+    <string name="smartspace_date">تاریخ</string>
+    <string name="smartspace_time">وقت</string>
+    <string name="smartspace_time_format">وقت کی شکل</string>
+    <string name="smartspace_time_follow_system">سسٹم پر عمل کریں۔</string>
+    <string name="smartspace_time_12_hour_format">12 گھنٹے کی شکل</string>
+    <string name="smartspace_time_24_hour_format">24 گھنٹے کی شکل</string>
     <!-- Available targets -->
-    <string name="smartspace_weather">Weather</string>
-    <string name="smartspace_battery_status">Battery status</string>
-    <string name="smartspace_now_playing">Now Playing</string>
+    <string name="smartspace_weather">موسم</string>
+    <string name="smartspace_battery_status">بیٹری کی حیثیت</string>
+    <string name="smartspace_now_playing">اب چل رہا ہے۔</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="maximum_number_of_targets">اہداف کی زیادہ سے زیادہ تعداد</string>
+    <string name="open_smartspacer_settings">اسمارٹ اسپیسر کی ترتیبات کھولیں۔</string>
+    <string name="smartspacer_settings">اسمارٹ اسپیسر کی ترتیبات</string>
     <!-- Setup settings -->
-    <string name="smartspace_requires_setup">Tap to set up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
+    <string name="smartspace_requires_setup">سیٹ اپ کرنے کے لیے تھپتھپائیں۔</string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> استعمال کرنے کے لیے، اطلاعی نقطوں کو آن کریں۔</string>
     <!-- Toggle button for enabling Smartspace -->
-    <string name="smartspace_widget_toggle_label">Show on home screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_label">ہوم اسکرین پر دکھائیں۔</string>
+    <string name="smartspace_widget_toggle_description">ایک نظر میں لانچیر ویجیٹ رکھ کر ہوم اسکرین پر دستی طور پر شامل کیا جا سکتا ہے۔</string>
     <!-- List of available providers -->
-    <string name="smartspace_mode_label">At a Glance provider</string>
-    <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Google Search</string>
+    <string name="smartspace_mode_label">ایک نظر میں فراہم کنندہ</string>
+    <string name="smartspace_mode_google">گوگل</string>
+    <string name="smartspace_mode_google_search">گوگل سرچ</string>
     <!-- Miscellaneous Smartspace strings -->
-    <string name="smartspace_media_info_separator">" — "</string>
-    <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
+    <string name="smartspace_media_info_separator">" - "</string>
+    <string name="accessibility_smartspace_page">صفحہ %1$d از %2$d</string>
+    <string name="smartspace_widget_placeholder_date">جمعہ، 3 مارچ</string>
     <!--
 
     About the app
 
     -->
     <string name="news">خبر</string>
-    <string name="support">Support</string>
-    <string name="product">Product</string>
-    <string name="design_and_development">Design &amp; development</string>
-    <string name="development">Development</string>
-    <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
-    <string name="devops">DevOps</string>
-    <string name="support_and_pr">Support &amp; PR</string>
-    <string name="acknowledgements">Acknowledgements</string>
-    <string name="translate">Translate</string>
-    <string name="donate">Donate</string>
+    <string name="support">حمایت</string>
+    <string name="product">پروڈکٹ</string>
+    <string name="design_and_development">ڈیزائن &amp; ترقی</string>
+    <string name="development">ترقی</string>
+    <string name="quickswitch_maintenance">QuickSwitch کی دیکھ بھال</string>
+    <string name="devops">ڈیو اوپس</string>
+    <string name="support_and_pr">سپورٹ &amp; PR</string>
+    <string name="acknowledgements">اعترافات</string>
+    <string name="translate">ترجمہ کریں۔</string>
+    <string name="donate">عطیہ کریں۔</string>
     <!--
 
     Backup and restore
 
     -->
-    <string name="create_backup">Create backup</string>
-    <string name="what_to_backup">What to back up</string>
-    <string name="backup_content_layout_and_settings">Layout and settings</string>
-    <string name="backup_content_wallpaper">Wallpaper</string>
-    <string name="backup_create_success">Backup created</string>
-    <string name="backup_create_error">Failed to create backup</string>
-    <string name="restore_backup">Restore backup</string>
-    <string name="what_to_restore">What to restore</string>
-    <string name="backup_restore_success">Backup restored</string>
-    <string name="backup_restore_error">Failed to restore backup</string>
-    <string name="invalid_backup_file">Invalid backup file</string>
+    <string name="create_backup">بیک اپ بنائیں</string>
+    <string name="what_to_backup">کیا بیک اپ کرنا ہے۔</string>
+    <string name="backup_content_layout_and_settings">ترتیب اور ترتیب</string>
+    <string name="backup_content_wallpaper">وال پیپر</string>
+    <string name="backup_create_success">بیک اپ بنایا گیا۔</string>
+    <string name="backup_create_error">بیک اپ بنانے میں ناکام</string>
+    <string name="restore_backup">بیک اپ بحال کریں۔</string>
+    <string name="what_to_restore">کیا بحال کرنا ہے۔</string>
+    <string name="backup_restore_success">بیک اپ بحال ہو گیا۔</string>
+    <string name="backup_restore_error">بیک اپ بحال کرنے میں ناکام</string>
+    <string name="invalid_backup_file">غلط بیک اپ فائل</string>
     <!--
 
     Gesture settings
 
     -->
-    <string name="gesture_double_tap">Double tap</string>
-    <string name="gesture_swipe_up">Swipe up</string>
-    <string name="gesture_swipe_down">Swipe down</string>
-    <string name="gesture_home_tap">Home button</string>
-    <string name="gesture_back_tap">Back button</string>
-    <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
-    <string name="gesture_handler_no_op">Do nothing</string>
-    <string name="gesture_handler_sleep">Sleep</string>
-    <string name="gesture_handler_recents">Open Recents</string>
-    <string name="gesture_handler_open_notifications">Open notification panel</string>
-    <string name="gesture_handler_open_app_option">Open app</string>
-    <string name="gesture_handler_open_app_config">Open %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Open app drawer</string>
-    <string name="gesture_handler_open_app_search">Open app search</string>
-    <string name="gesture_handler_open_search">Open search</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
-    <string name="pick_app_for_gesture">Pick app</string>
-    <string name="dt2s_admin_hint_title">Admin permissions required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="gesture_double_tap">دو بار تھپتھپائیں۔</string>
+    <string name="gesture_swipe_up">اوپر سوائپ کریں۔</string>
+    <string name="gesture_swipe_down">نیچے سوائپ کریں۔</string>
+    <string name="gesture_home_tap">ہوم بٹن</string>
+    <string name="gesture_back_tap">بیک بٹن</string>
+    <string name="gesture_swipe_left">بائیں سوائپ کریں۔</string>
+    <string name="gesture_swipe_right">دائیں سوائپ کریں۔</string>
+    <string name="gesture_handler_no_op">کچھ نہ کرو</string>
+    <string name="gesture_handler_sleep">سونا</string>
+    <string name="gesture_handler_recents">حالیہ کھولیں۔</string>
+    <string name="gesture_handler_open_notifications">نوٹیفکیشن پینل کھولیں۔</string>
+    <string name="gesture_handler_open_app_option">ایپ کھولیں۔</string>
+    <string name="gesture_handler_open_app_config">%1$s کھولیں۔</string>
+    <string name="gesture_handler_open_app_drawer">ایپ دراز کھولیں۔</string>
+    <string name="gesture_handler_open_app_search">ایپ تلاش کھولیں۔</string>
+    <string name="gesture_handler_open_search">تلاش کھولیں۔</string>
+    <string name="gesture_handler_open_assistant">اسسٹنٹ کھولیں۔</string>
+    <string name="pick_app_for_gesture">ایپ چنیں۔</string>
+    <string name="dt2s_admin_hint_title">ایڈمن کی اجازت درکار ہے۔</string>
+    <string name="dt2s_admin_hint">سونے کے لیے ڈبل تھپتھپائیں استعمال کرنے کے لیے، Lawnchair کو بطور ڈیوائس ایڈمن ایپ سیٹ کریں۔ \"کھولیں ترتیبات\" کو تھپتھپائیں، پھر \"اس ڈیوائس ایڈمن ایپ کو چالو کریں\" پر ٹیپ کریں۔</string>
     <string name="dt2s_admin_warning">دو بار دوبا کر سولانا غیر فعال ہو جائے گا۔.</string>
-    <string name="d2ts_recents_a11y_hint_title">Turn on accessibility service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_recents_warning_open_settings">Open settings</string>
-    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="d2ts_recents_a11y_hint_title">ایکسیسبیلٹی سروس کو آن کریں۔</string>
+    <string name="dt2s_a11y_hint">سونے کے لیے ڈبل تھپتھپائیں استعمال کرنے کے لیے، لانچ چیئر تک رسائی کی خدمت کو آن کریں۔ \"اوپن سیٹنگز\" کو تھپتھپائیں، \"لان چیئر\" کو منتخب کریں اور \"لان چیئر کا استعمال کریں\" کو آن کریں۔\n\nلان چیئر اس کارروائی کو انجام دینے کے لیے ایکسیسبیلٹی کا `پرفارم گلوبل ایکشن` طریقہ استعمال کرتی ہے۔ یہ ایک حساس اجازت ہے جو دوسری ایپس کی نگرانی کرنے کی اجازت دیتی ہے۔ تاہم، Lawnchair کو اس فعالیت کے لیے ترتیب نہیں دیا گیا ہے اور اسے کوئی ایونٹ نہیں ملتا ہے۔</string>
+    <string name="dt2s_recents_warning_open_settings">ترتیبات کھولیں۔</string>
+    <string name="recents_a11y_hint">حالیہ کھولیں استعمال کرنے کے لیے، لان چیئر تک رسائی سروس کو آن کریں۔ \"اوپن سیٹنگز\" کو تھپتھپائیں، \"لان چیئر\" کو منتخب کریں اور \"لان چیئر کا استعمال کریں\" کو آن کریں۔\n\nلان چیئر اس کارروائی کو انجام دینے کے لیے ایکسیسبیلٹی کا `پرفارم گلوبل ایکشن` طریقہ استعمال کرتی ہے۔ یہ ایک حساس اجازت ہے جو دوسری ایپس کی نگرانی کرنے کی اجازت دیتی ہے۔ تاہم، لان چیئر کو اس فعالیت کے لیے ترتیب نہیں دیا گیا ہے اور اسے کوئی ایونٹ نہیں ملتا ہے۔</string>
     <!--
 
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Lawnchair bug report</string>
-    <string name="crash_report_notif_title">%1$s crashed</string>
-    <string name="action_upload_crash_report">Upload crash log</string>
-    <string name="action_upload_error">Upload failed</string>
-    <string name="dogbin_uploading">Uploading…</string>
-    <string name="bugreport_channel_name">Bug reports</string>
-    <string name="status_channel_name">Upload status</string>
-    <string name="bugreport_group_summary">%d new reports</string>
-    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
+    <string name="lawnchair_bug_report">لان چیئر بگ رپورٹ</string>
+    <string name="crash_report_notif_title">%1$s کریش ہو گیا۔</string>
+    <string name="action_upload_crash_report">کریش لاگ اپ لوڈ کریں۔</string>
+    <string name="action_upload_error">اپ لوڈ ناکام ہو گیا۔</string>
+    <string name="dogbin_uploading">اپ لوڈ ہو رہا ہے…</string>
+    <string name="bugreport_channel_name">بگ رپورٹس</string>
+    <string name="status_channel_name">اپ لوڈ کی حیثیت</string>
+    <string name="bugreport_group_summary">%d نئی رپورٹس</string>
+    <string name="bugreport_group_summary_multiple">متعدد نئی رپورٹس</string>
     <!--
 
     Preferences (without special screens)
 
     -->
     <!-- General and home screen settings -->
-    <string name="home_screen_rotation_label">Home screen rotation</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
-    <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
-    <string name="wallpaper_background_blur">Blur intensity</string>
-    <string name="wallpaper_background_blur_factor">Factor threshold</string>
-    <string name="home_lawn_deck_label">Deck</string>
-    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
-    <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
-    <string name="minus_one_enable">Show feed</string>
-    <string name="minus_one_unavailable">No feed apps installed</string>
-    <string name="minus_one">Feed</string>
-    <string name="feed_provider">Feed provider</string>
-    <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
-    <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
-    <string name="show_sys_ui_scrim">Top shadow</string>
-    <string name="home_screen_grid">Home screen grid</string>
-    <string name="home_screen_lock">Lock home screen</string>
-    <string name="home_screen_unlock">Unlock home screen</string>
-    <string name="home_screen_locked">Home screen is locked</string>
-    <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use new pop-up style</string>
-    <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
-    <string name="popup_menu">Pop-up menu</string>
-    <string name="popup_menu_items">Pop-up menu items</string>
-    <string name="edit_menu_items">Edit pop-up menu items</string>
-    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
-    <string name="status_bar_label">Status bar</string>
-    <string name="show_status_bar">Show status bar</string>
-    <string name="dark_status_bar_label">Dark status bar</string>
-    <string name="status_bar_clock_label">Status bar clock</string>
-    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
-    <string name="home_screen_text_color">Text color</string>
+    <string name="home_screen_rotation_label">ہوم اسکرین کی گردش</string>
+    <string name="home_screen_rotation_description">جب آلہ گھمایا جائے تو ہوم اسکرین کو گھمانے کی اجازت دیں۔</string>
+    <string name="wallpaper_blur">بلر وال پیپر (تجرباتی)</string>
+    <string name="wallpaper_background_blur">دھندلا پن کی شدت</string>
+    <string name="wallpaper_background_blur_factor">فیکٹر کی حد</string>
+    <string name="home_lawn_deck_label">ڈیک</string>
+    <string name="home_lawn_deck_label_beta">ڈیک (بیٹا)</string>
+    <string name="home_lawn_deck_description">آسانی کے ساتھ اپنی ایپلی کیشنز تک رسائی حاصل کریں ڈیک کے ساتھ، حتمی دراز کا تجربہ جو سادگی اور ہموار تنظیم کے لیے ڈیزائن کیا گیا ہے۔</string>
+    <string name="auto_add_shortcuts_label">ہوم اسکرین پر نئی ایپس شامل کریں۔</string>
+    <string name="minus_one_enable">فیڈ دکھائیں۔</string>
+    <string name="minus_one_unavailable">کوئی فیڈ ایپس انسٹال نہیں ہیں۔</string>
+    <string name="minus_one">فیڈ</string>
+    <string name="feed_provider">فیڈ فراہم کرنے والا</string>
+    <string name="wallpaper_scrolling_label">وال پیپر سکرول کریں۔</string>
+    <string name="wallpaper_depth_effect_label">وال پیپر کی گہرائی کا اثر</string>
+    <string name="wallpaper_depth_effect_description">لانچر کے علاقوں کے درمیان منتقلی کے وقت وال پیپر کو زوم ان اور آؤٹ کریں۔</string>
+    <string name="show_sys_ui_scrim">اوپر کا سایہ</string>
+    <string name="home_screen_grid">ہوم اسکرین گرڈ</string>
+    <string name="home_screen_lock">ہوم اسکرین کو لاک کریں۔</string>
+    <string name="home_screen_unlock">ہوم اسکرین کو غیر مقفل کریں۔</string>
+    <string name="home_screen_locked">ہوم اسکرین مقفل ہے۔</string>
+    <string name="home_screen_lock_description">ہوم اسکرین لے آؤٹ میں تبدیلیوں کو روکیں۔</string>
+    <string name="show_dot_pagination_label">ڈاٹ صفحہ بندی دکھائیں۔</string>
+    <string name="show_dot_pagination_description">صفحہ نمبر دکھانے کے لیے لائنوں کے بجائے نقطوں کا استعمال کریں۔</string>
+    <string name="show_material_u_popup_label">نیا پاپ اپ اسٹائل استعمال کریں۔</string>
+    <string name="show_material_u_popup_description">مواد کا استعمال کریں جو آپ کا اچھالتا ہے اور تھوڑا سا مستحکم پاپ اپ اسٹائل ہے۔</string>
+    <string name="popup_menu">پاپ اپ مینو</string>
+    <string name="popup_menu_items"> پاپ اپ مینو آئٹمز</string>
+    <string name="edit_menu_items">پاپ اپ مینو آئٹمز میں ترمیم کریں۔</string>
+    <string name="wallpaper_quick_picker">وال پیپر فوری چننے والا</string>
+    <string name="status_bar_label">اسٹیٹس بار</string>
+    <string name="show_status_bar">اسٹیٹس بار دکھائیں۔</string>
+    <string name="dark_status_bar_label">تاریک اسٹیٹس بار</string>
+    <string name="status_bar_clock_label">اسٹیٹس بار کلاک</string>
+    <string name="status_bar_clock_description">پہلی اسکرین میں متحرک طور پر اسٹیٹس بار کلاک کو چھپائیں۔</string>
+    <string name="home_screen_text_color">متن کا رنگ</string>
     <string name="color_light">روشن</string>
     <string name="color_dark">اندھیرا</string>
-    <string name="force_rounded_widgets">Rounded corners</string>
-    <string name="allow_widget_overlap">Allow overlap</string>
-    <string name="force_widget_resize_label">Enforce widget resizing</string>
-    <string name="force_widget_resize_description">Allow resizing of widgets that are constrained to a specific size</string>
-    <string name="widget_unlimited_size_label">Remove size constraints</string>
-    <string name="widget_unlimited_size_description">Remove the minimum and maximum size restrictions of widgets</string>
+    <string name="force_rounded_widgets">گول کونے</string>
+    <string name="allow_widget_overlap">اوورلیپ کی اجازت دیں۔</string>
+    <string name="force_widget_resize_label">ویجیٹ کا سائز تبدیل کرنا نافذ کریں۔</string>
+    <string name="force_widget_resize_description">ایک مخصوص سائز تک محدود وجیٹس کے سائز کو تبدیل کرنے کی اجازت دیں۔</string>
+    <string name="widget_unlimited_size_label">سائز کی رکاوٹوں کو ہٹا دیں۔</string>
+    <string name="widget_unlimited_size_description">ویجٹ کی کم سے کم اور زیادہ سے زیادہ سائز کی پابندیاں ہٹا دیں۔</string>
     <!-- Dock settings -->
-    <string name="show_hotseat_title">Show dock</string>
-    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
-    <string name="search_bar_label">Search bar</string>
-    <string name="search_bar_settings">Search bar settings</string>
-    <string name="hotseat_mode_label">Search bar widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
-    <string name="hotseat_mode_google_search">Google Search bar</string>
-    <string name="qsb_hotseat_background_transparency">Background opacity</string>
-    <string name="qsb_hotseat_stroke_width">Outline width</string>
-    <string name="qsb_hotseat_stroke_color">Outline color</string>
-    <string name="corner_radius_label">Corner radius</string>
-    <string name="apply_accent_color_label">Apply accent color</string>
-    <string name="search_provider">Search provider</string>
-    <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
-    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
-    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
-    <string name="hotseat_bg_color_label">Background color</string>
-    <string name="hotseat_bg_alpha">Background opacity</string>
+    <string name="show_hotseat_title">گودی دکھائیں۔</string>
+    <string name="enable_dock_to_access_qsb_settings">جب ڈاک نظر آتا ہے تو سرچ بار کی ترتیبات دستیاب ہوتی ہیں۔ ڈاک کو دکھانے کے لیے تھپتھپائیں۔</string>
+    <string name="search_bar_label">سرچ بار</string>
+    <string name="search_bar_settings">تلاش بار کی ترتیبات</string>
+    <string name="hotseat_mode_label">سرچ بار ویجیٹ</string>
+    <string name="hotseat_mode_disabled">معذور</string>
+    <string name="hotseat_mode_google_search">گوگل سرچ بار</string>
+    <string name="qsb_hotseat_background_transparency"> پس منظر کی دھندلاپن</string>
+    <string name="qsb_hotseat_stroke_width">آؤٹ لائن کی چوڑائی</string>
+    <string name="qsb_hotseat_stroke_color">آؤٹ لائن کا رنگ</string>
+    <string name="corner_radius_label">کونے کا رداس</string>
+    <string name="apply_accent_color_label">لہجے کا رنگ لگائیں۔</string>
+    <string name="search_provider">فراہم کنندہ تلاش کریں۔</string>
+    <string name="hotseat_background">پس منظر دکھائیں۔</string>
+    <string name="hotseat_bg_horizontal_inset_left">بائیں مارجن</string>
+    <string name="hotseat_bg_horizontal_inset_right">دائیں مارجن</string>
+    <string name="hotseat_bg_vertical_inset_top">اوپر مارجن</string>
+    <string name="hotseat_bg_vertical_inset_bottom">نیچے مارجن</string>
+    <string name="hotseat_bg_color_label">پس منظر کا رنگ</string>
+    <string name="hotseat_bg_alpha">پس منظر کی دھندلاپن</string>
     <!-- Pause apps shortcut -->
-    <string name="pause">Pause</string>
-    <string name="pause_apps_dialog_title">Pause %1$s?</string>
-    <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
-    <string name="paused_apps_dialog_title">App paused</string>
-    <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
-    <string name="paused_apps_drop_target_label">Pause app</string>
-    <string name="dock_icons">Dock icons</string>
-    <string name="hotseat_bottom_space_label">Bottom padding</string>
-    <string name="page_indicator_height">Page indicator height</string>
+    <string name="pause">توقف</string>
+    <string name="pause_apps_dialog_title">%1$s کو موقوف کریں؟</string>
+    <string name="pause_apps_dialog_message">%1$s کی اطلاعات روک دی جائیں گی۔</string>
+    <string name="paused_apps_dialog_title">ایپ روک دی گئی۔</string>
+    <string name="paused_apps_dialog_message">%1$s کو براہ راست لانچر سے روک دیا گیا تھا۔</string>
+    <string name="paused_apps_drop_target_label">ایپ کو روکیں۔</string>
+    <string name="dock_icons">ڈاک آئیکنز</string>
+    <string name="hotseat_bottom_space_label">نیچے کی بھرتی</string>
+    <string name="page_indicator_height">صفحہ کے اشارے کی اونچائی</string>
     <!-- Search providers -->
-    <string name="search_provider_app_search">App search</string>
-    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="search_provider_app_search">ایپ کی تلاش</string>
+    <string name="search_provider_sponsored_description">%1$s اور Lawnchair کا ریونیو شیئر کا معاہدہ ہے۔\n\n%1$s کے ساتھ تلاش کرنے سے Lawnchair کو سپورٹ کرنے میں مدد ملتی ہے۔</string>
+    <string name="app_label">ایپ</string>
+    <string name="website_label">ویب سائٹ</string>
+    <string name="qsb_search_provider_app_required">ایپ درکار ہے۔</string>
     <!-- Dock search bar a11y -->
-    <string name="label_search">Search</string>
-    <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Voice Search</string>
+    <string name="label_search">تلاش کریں۔</string>
+    <string name="label_lens">گوگل لینس</string>
+    <string name="label_voice_search">صوتی تلاش</string>
     <!-- App drawer settings -->
-    <string name="hidden_apps_label">Hidden apps</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">Load apps in bulk</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
-    <string name="pref_all_apps_remember_position_title">Remember position</string>
-    <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
-    <string name="app_drawer_columns">App drawer columns</string>
-    <string name="row_height_label">Row height</string>
-    <string name="app_drawer_indent_label">Horizontal padding</string>
-    <string name="app_drawer_bg_color_label">Background color</string>
+    <string name="hidden_apps_label">پوشیدہ ایپس</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">بڑی تعداد میں ایپس لوڈ کریں۔</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">آئیکنز کو انفرادی طور پر لوڈ اور ڈسپلے کی بجائے بلک میں دکھائیں۔</string>
+    <string name="pref_all_apps_remember_position_title">پوزیشن یاد رکھیں</string>
+    <string name="pref_all_apps_remember_position_description">دراز چھوڑنے کے بعد ایپ دراز کی پوزیشن کو یاد رکھیں</string>
+    <string name="pref_all_apps_show_scrollbar_title">اسکرول بار دکھائیں۔</string>
+    <string name="app_drawer_columns">ایپ دراز کے کالم</string>
+    <string name="row_height_label">قطار کی اونچائی</string>
+    <string name="app_drawer_indent_label">افقی پیڈنگ</string>
+    <string name="app_drawer_bg_color_label">پس منظر کا رنگ</string>
     <!-- HiddenAppsPreferences -->
-    <string name="hide_from_drawer">Hide from app drawer</string>
-    <string name="hidden_apps_label_with_count">Hidden apps (%1$d)</string>
+    <string name="hide_from_drawer">ایپ دراز سے چھپائیں۔</string>
+    <string name="hidden_apps_label_with_count">پوشیدہ ایپس (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d app</item>
-        <item quantity="other">%1$d apps</item>
+        <item quantity="one">%1$d ایپ</item>
+        <item quantity="other">%1$d ایپس</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
-    <string name="folder_bg_opacity_label">Folder background opacity</string>
-    <string name="folder_preview_bg_color_label">Icon background color</string>
-    <string name="max_folder_columns">Maximum folder columns</string>
-    <string name="max_folder_rows">Maximum folder rows</string>
+    <string name="folder_preview_bg_opacity_label">آئیکن کا پیش نظارہ پس منظر کی دھندلاپن</string>
+    <string name="folder_bg_opacity_label">فولڈر کے پس منظر کی دھندلاپن</string>
+    <string name="folder_preview_bg_color_label">آئیکن کے پس منظر کا رنگ</string>
+    <string name="max_folder_columns">زیادہ سے زیادہ فولڈر کالم</string>
+    <string name="max_folder_rows">فولڈر کی زیادہ سے زیادہ قطاریں۔</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
-    <string name="quickstep_incompatible">Incompatible system integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
-    <string name="translucent_background">Translucent background</string>
-    <string name="translucent_background_alpha">Background opacity</string>
-    <string name="recents_actions_label">Quick actions</string>
-    <string name="action_share">Share</string>
-    <string name="action_lens">Lens</string>
-    <string name="recents_clear_all">Clear all</string>
-    <string name="task_menu_force_stop">Force close</string>
-    <string name="window_corner_radius_label">Screen corner radius</string>
-    <string name="override_window_corner_radius_label">Custom screen corner radius</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
-    <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <string name="quickswitch_ignored_warning">ان ترتیبات کو نظر انداز کر دیا جائے گا کیونکہ Lawnchair کو Recents فراہم کنندہ کے طور پر سیٹ نہیں کیا گیا ہے۔</string>
+    <string name="quickstep_incompatible">غیر مطابقت پذیر نظام کا انضمام</string>
+    <string name="quickstep_incompatible_description">آپ کے آلے کو %1$s کے ذریعہ فراہم کردہ سسٹم اشاروں (جسے Quickstep کہا جاتا ہے) کے لیے ترتیب دیا گیا ہے، لیکن %1$s کا یہ ورژن آپ کے Android ورژن کے ساتھ مطابقت نہیں رکھتا ہے۔ اپنے آلے کا استعمال جاری رکھنے کے لیے، براہ کرم %1$s اپ ڈیٹس کو اَن انسٹال کریں یا %1$s کو سسٹم اشارہ فراہم کنندہ کے طور پر غیر فعال کریں۔</string>
+    <string name="translucent_background">شفاف پس منظر</string>
+    <string name="translucent_background_alpha">پس منظر کی دھندلاپن</string>
+    <string name="recents_actions_label">فوری اقدامات</string>
+    <string name="action_share">شیئر کریں۔</string>
+    <string name="action_lens">لینس</string>
+    <string name="recents_clear_all">سب صاف کریں۔</string>
+    <string name="task_menu_force_stop">زبردستی بند کریں۔</string>
+    <string name="window_corner_radius_label">اسکرین کونے کا رداس</string>
+    <string name="override_window_corner_radius_label">حسب ضرورت اسکرین کونے کا رداس</string>
+    <string name="window_corner_radius_description">جب آپ Recents کھولنے کے لیے اوپر سوائپ کرتے ہیں، تو موجودہ ایپ کارڈ میں سکڑ کر آپ کی انگلی کی پیروی کرتی ہے۔  اس سلائیڈر کو کارڈ کے کونے کے رداس کو ایڈجسٹ کرنے کے لیے استعمال کریں جب یہ تقریباً پوری اسکرین پر ہو تاکہ یہ آپ کی اسکرین کے کونوں سے مماثل ہو۔</string>
+    <string name="taskbar_label">ٹاسک بار</string>
+    <string name="enable_taskbar_experimental">ٹاسک بار دکھائیں (تجرباتی)</string>
     <!--
 
     All Apps search
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search</string>
+    <string name="all_apps_device_search_hint">تلاش کریں۔</string>
     <string name="all_apps_search_bar_hint">Search Apps</string>
-    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
-    <string name="all_apps_search_result_suggestions">From the web</string>
-    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
-    <string name="all_apps_search_result_files">Files from device</string>
-    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
-    <string name="all_apps_search_market_message">Search for more apps</string>
-    <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
-    <string name="clear_history">Clear search history</string>
-    <string name="search_input_action_clear_results">Clear search box</string>
+    <string name="all_apps_no_search_results">\"<xliff:g example="Android" id="query">%1$s</xliff:g>\" سے مماثل کوئی ایپ نہیں ملی</string>
+    <string name="all_apps_search_result_suggestions">ویب سے</string>
+    <string name="all_apps_search_result_contacts_from_device">ڈیوائس سے رابطے</string>
+    <string name="all_apps_search_result_files">ڈیوائس سے فائلیں۔</string>
+    <string name="all_apps_search_result_settings_entry_from_device">ڈیوائس سے ترتیبات</string>
+    <string name="all_apps_search_market_message">مزید ایپس تلاش کریں۔</string>
+    <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g> پر تلاش کریں</string>
+    <string name="error_no_market_or_browser_installed">کوئی ایپ اسٹور یا براؤزر انسٹال نہیں ہے۔</string>
+    <string name="clear_history">تلاش کی سرگزشت صاف کریں۔</string>
+    <string name="search_input_action_clear_results">سرچ باکس کو صاف کریں۔</string>
     <!-- Search settings -->
-    <string name="pref_category_search">Search</string>
-    <string name="show_app_search_bar">Show search bar</string>
-    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
-    <string name="fuzzy_search_title">Fuzzy search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches</string>
-    <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
-    <string name="perform_wide_search_title">Device search</string>
-    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
-    <string name="show_hidden_apps_in_search_results">Show hidden apps in search results</string>
-    <string name="hidden_apps_show_name_typed">If full name is typed</string>
-    <string name="app_search_algorithm">Search algorithm</string>
-    <string name="search_algorithm_app_search">App Search</string>
-    <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
-    <string name="search_algorithm_global_search_via_asi">Global search (via ASI)</string>
+    <string name="pref_category_search">تلاش کریں۔</string>
+    <string name="show_app_search_bar">سرچ بار دکھائیں۔</string>
+    <string name="pref_search_auto_show_keyboard">خودکار طور پر کی بورڈ دکھائیں۔</string>
+    <string name="fuzzy_search_title">مبہم تلاش</string>
+    <string name="fuzzy_search_desc">ایپ کی تلاش کے لیے تخمینی مماثلت</string>
+    <string name="suggestion_pref_screen_title">تجاویز</string>
+    <string name="show_suggested_apps_at_drawer_top">دراز کے اوپری حصے میں تجویز کردہ ایپس دکھائیں۔</string>
+    <string name="perform_wide_search_title">ڈیوائس کی تلاش</string>
+    <string name="perform_wide_search_description">اپنے فون کے رابطے، فائلیں اور سیٹنگز تلاش کریں۔</string>
+    <string name="show_hidden_apps_in_search_results">تلاش کے نتائج میں چھپی ہوئی ایپس دکھائیں۔</string>
+    <string name="hidden_apps_show_name_typed">اگر پورا نام ٹائپ کیا جائے۔</string>
+    <string name="app_search_algorithm">الگورتھم تلاش کریں۔</string>
+    <string name="search_algorithm_app_search">ایپ کی تلاش</string>
+    <string name="search_algorithm_global_search_on_device">عالمی تلاش (آلہ پر)</string>
+    <string name="search_algorithm_global_search_via_asi">عالمی تلاش (بذریعہ ASI)</string>
     <!-- Labels of each search result types -->
-    <string name="show_search_result_types">Show in search results</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Shortcuts</string>
-    <string name="search_pref_result_shortcuts_title">App shortcuts</string>
-    <string name="search_pref_result_people_title">People</string>
-    <string name="search_pref_result_tips_title">Pixel tips</string>
-    <string name="search_pref_result_settings_title">Android settings</string>
-    <string name="search_pref_result_files_title">Files</string>
-    <string name="search_pref_result_web_title">Web suggestions</string>
-    <string name="search_pref_result_history_title">Search history</string>
-    <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="show_search_result_types">تلاش کے نتائج میں دکھائیں۔</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">ایپس &amp; شارٹ کٹس</string>
+    <string name="search_pref_result_shortcuts_title">ایپ شارٹ کٹس</string>
+    <string name="search_pref_result_people_title">لوگ</string>
+    <string name="search_pref_result_tips_title">پکسل ٹپس</string>
+    <string name="search_pref_result_settings_title">اینڈرائیڈ کی ترتیبات</string>
+    <string name="search_pref_result_files_title">فائلیں</string>
+    <string name="search_pref_result_web_title">ویب کی تجاویز</string>
+    <string name="search_pref_result_history_title">تلاش کی تاریخ</string>
+    <string name="all_apps_search_result_calculator">کیلکولیٹر</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_result_files_description">Media, files, and more</string>
-    <string name="search_pref_result_contacts_description">Contacts and more</string>
-    <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
+    <string name="search_pref_result_files_description">میڈیا، فائلیں، اور مزید</string>
+    <string name="search_pref_result_contacts_description">رابطے اور مزید</string>
+    <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g> کے ذریعے</string>
     <!-- Maximum xyz for each search result type -->
-    <string name="max_apps_result_count_title">Maximum number of apps</string>
-    <string name="max_people_result_count_title">Maximum number of people</string>
-    <string name="max_file_result_count_title">Maximum number of files</string>
-    <string name="max_settings_entry_result_count_title">Maximum number of settings</string>
-    <string name="max_recent_result_count_title">Maximum items for search history</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
-    <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
+    <string name="max_apps_result_count_title">ایپس کی زیادہ سے زیادہ تعداد</string>
+    <string name="max_people_result_count_title">لوگوں کی زیادہ سے زیادہ تعداد</string>
+    <string name="max_file_result_count_title">فائلوں کی زیادہ سے زیادہ تعداد</string>
+    <string name="max_settings_entry_result_count_title">ترتیبات کی زیادہ سے زیادہ تعداد</string>
+    <string name="max_recent_result_count_title">تلاش کی سرگزشت کے لیے زیادہ سے زیادہ آئٹمز</string>
+    <string name="max_suggestion_result_count_title">تجاویز کی زیادہ سے زیادہ تعداد</string>
+    <string name="max_web_suggestion_delay">ویب کی تجویز میں زیادہ سے زیادہ تاخیر</string>
     <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
-    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
-    <string name="grant_requested_permissions">Grant permissions</string>
-    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
-    <string name="allapps_match_qsb_style_description">Clicking the dock search bar will now open the app drawer search UI</string>
+    <string name="warn_contact_permission_content">رابطوں کو تلاش کرنے کے لیے، لان چیئر کو رابطے اور فون کی اجازت دیں۔</string>
+    <string name="warn_files_permission_content">اپنی فائلیں تلاش کرنے کے لیے، Lawnchair کو اسٹوریج کی اجازت دیں۔</string>
+    <string name="grant_requested_permissions">اجازتیں دیں۔</string>
+    <string name="allapps_web_suggestion_provider_label">ویب تجویز فراہم کنندہ</string>
+    <string name="allapps_use_web_suggestion_icon_label">سرچ بار میں ویب تجویز فراہم کنندہ کا آئیکن دکھائیں۔</string>
+    <string name="allapps_match_qsb_style_label">ڈاک سرچ بار کی کارروائیوں کو میچ کریں۔</string>
+    <string name="allapps_match_qsb_style_description">ڈاک سرچ بار پر کلک کرنے سے اب ایپ ڈراور سرچ UI کھل جائے گا۔</string>
 </resources>

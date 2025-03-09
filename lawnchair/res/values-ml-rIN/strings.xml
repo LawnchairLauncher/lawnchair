@@ -43,25 +43,25 @@
     <string name="inverse_selection">വിപരീത തിരഞ്ഞെടുപ്പ്</string>
     <string name="loading">ലോഡ് ചെയുന്നു…</string>
     <string name="download_update">അപ്‌ഡേറ്റ് ഡൗൺലോഡ് ചെയ്യുക</string>
-    <string name="install_update">Install update</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
-    <string name="managed_by_lawnchair">Managed by Lawnchair</string>
+    <string name="install_update">അപ്ഡേറ്റ് ഇൻസ്റ്റാൾ ചെയ്യുക</string>
+    <string name="pro_updated">താങ്കൾ അപ്ഡേറ്റഡ് ആണ്!</string>
+    <string name="managed_by_lawnchair">ലോൺചെയർ നിയന്ത്രിക്കുന്നത്</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">മുൻഗണനകൾ</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">ഹോം ക്രമീകരണങ്ങൾ</string>
+    <string name="system_settings">സിസ്റ്റം ക്രമീകരണങ്ങൾ</string>
+    <string name="title_change_settings">ക്രമീകരണങ്ങൾ മാറ്റുക</string>
     <!--
 
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">മറ്റുള്ളവ</string>
     <!-- Selection options -->
     <string name="dynamic">ഡൈനാമിക്</string>
     <string name="presets">പ്രീസെറ്റുകൾ</string>
     <string name="custom">ഇഷ്ടാനുസൃതം</string>
-    <string name="feed_default">Default</string>
+    <string name="feed_default">സ്ഥിരസ്ഥിതി</string>
     <string name="system">സിസ്റ്റം</string>
     <!-- Relating to the Launcher ui -->
     <string name="columns">നിരകൾ</string>
@@ -72,27 +72,27 @@
     <string name="layout">രൂപരേഖ</string>
     <!-- Generic styling options -->
     <string name="wallpaper">വാൾപേപ്പർ</string>
-    <string name="style">Style</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="style">ശൈലി</string>
+    <string name="background_opacity">പശ്ചാത്തല അതാര്യത</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
-    <string name="item_removed">Item removed</string>
+    <string name="copied_toast">ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി</string>
+    <string name="calculator_search_result_copied_toast">ഫലം ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി</string>
+    <string name="item_removed">ഇനം നീക്കം ചെയ്തു</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
-    <string name="wallpapers">Wallpapers</string>
-    <string name="caddy_beta">Caddy (Beta)</string>
-    <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
-    <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="what_to_show">എന്ത് കാണിക്കണം</string>
+    <string name="wallpapers">വാൾപേപ്പറുകൾ</string>
+    <string name="caddy_beta">കാഡി (ബീറ്റ)</string>
+    <string name="caddy">കാഡി</string>
+    <string name="app_drawer_folder">ആപ്പ് ഡ്രോയർ ഫോൾഡറുകൾ</string>
+    <string name="app_drawer_folder_settings">ഡ്രോയർ ഫോൾഡർ</string>
+    <string name="add_folder">ഫോൾഡർ സൃഷ്ടിക്കുക</string>
+    <string name="edit_folder">ഫോൾഡർ എഡിറ്റ് ചെയ്യുക</string>
+    <string name="add_label">ചേർക്കുക</string>
+    <string name="edit_label">എഡിറ്റ് ചെയ്യുക</string>
     <string name="apply_label">പ്രയോഗിക്കുക</string>
-    <string name="delete_label">Delete</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="delete_label">ഇല്ലാതാക്കുക</string>
+    <string name="folder_list_note">എഡിറ്റ് ചെയ്യാൻ ഇടത്തേക്ക് സ്വൈപ്പ് ചെയ്യുക, ഇല്ലാതാക്കാൻ വലത്തേക്ക് സ്വൈപ്പ് ചെയ്യുക, അല്ലെങ്കിൽ ഇനങ്ങൾ അപ്ഡേറ്റ് ചെയ്യാൻ ടാപ്പ് ചെയ്യുക</string>
+    <string name="apps_in_folder_label">ഫോൾഡർ ആപ്പുകൾ മറയ്ക്കുക</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">എന്റെ ഫോൾഡർ</string>

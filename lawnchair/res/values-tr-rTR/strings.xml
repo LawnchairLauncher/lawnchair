@@ -38,13 +38,13 @@
     <string name="action_copy">Kopyala</string>
     <string name="action_paste">Yapıştır</string>
     <string name="action_done">Tamam</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="select_all">Tümünü seç</string>
+    <string name="deselect_all">Hiçbirini seçme</string>
+    <string name="inverse_selection">Diğerlerini seç</string>
     <string name="loading">Yükleniyor…</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="download_update">Güncellemeyi indir</string>
+    <string name="install_update">Güncellemeyi kur</string>
+    <string name="pro_updated">Güncel!</string>
     <string name="managed_by_lawnchair">Lawnchair tarafından yönetilmektedir</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Tercihler</string>
@@ -72,36 +72,36 @@
     <string name="layout">Düzen</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Duvar Kağıdı</string>
-    <string name="style">Style</string>
+    <string name="style">Stil</string>
     <string name="background_opacity">Arka plan opaklığı</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Panoya kaydedildi</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Sonuç panoya kopyalandı</string>
     <string name="item_removed">Öğe kaldırıldı</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Ne gösterilsin</string>
-    <string name="wallpapers">Wallpapers</string>
-    <string name="caddy_beta">Caddy (Beta)</string>
+    <string name="wallpapers">Duvar kağıtlarí</string>
+    <string name="caddy_beta">Caddy(Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
+    <string name="app_drawer_folder">Uygulama çekmecesi klasörleri</string>
     <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="add_folder">Klasör oluştur</string>
+    <string name="edit_folder">Klasörü düzenle</string>
+    <string name="add_label">Ekle</string>
+    <string name="edit_label">Düzenle</string>
     <string name="apply_label">Uygula</string>
     <string name="delete_label">Sil</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
-    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
+    <string name="folder_list_note">Düzenlemek için sola kaydırın, silmek için sağa kaydırın veya öğeleri güncellemek için dokunun</string>
+    <string name="apps_in_folder_label">Klasör uygulamalarını gizle</string>
+    <string name="apps_in_folder_description">Klasörlere koyulan uygulamalar uygulama listelerinden hariç tutulur</string>
+    <string name="folders_filter_duplicates">Sadece farklı uygulamaları göster</string>
     <string name="my_folder_label">Benim klasörüm</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Belirli eylemleri (örneğin telefonunuzu kilitlemek) bir hareket gerçekleştirdiğinizde uygulamak için, Lawnchair erişilebilirlik iznine ihtiyaç duyar.\n\nLawnchair hiçbir kullanıcı eylemini izlemez, ancak tüm erişilebilirlik hizmetlerinde bu ayrıcalık gereklidir. Lawnchair, sistem tarafından gönderilen herhangi bir olayı yok sayar.\n\nTelefonunuzu kilitlemek veya Son Kullanılanlar ekranını açmak için Lawnchair, performGlobalAction Erişilebilirlik hizmetini kullanır.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Gelişmiş</string>
     <!--
 
     Preference Dashboard
@@ -140,11 +140,11 @@
     <string name="recents_lock_unlock">Kilitle/kilidi aç</string>
     <string name="recents_lock_unlock_description">\"Tümünü Temizle\"ye basıldığında seçilen uygulamanın kapanmasını engelle</string>
     <!--Overlay-->
-    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_fade_in">Solarak giriş</string>
     <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
-    <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="app_closing_animation">Uygulama kapatma animasyonu</string>
+    <string name="overlay_label">Kaplama</string>
+    <string name="overlay_none">Hiçbiri</string>
     <!--
 
     Notifications
@@ -220,7 +220,7 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Simge paketi</string>
     <string name="themed_icon_pack">Temalı simge kaynağı</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">Vurgulu renk tonu</string>
     <string name="system_icons">Sistem simgeleri</string>
     <string name="themed_icon_title">Temalı simgeler</string>
     <string name="themed_icons_off_label">Kapat</string>
@@ -372,8 +372,8 @@
     <string name="gesture_swipe_down">Aşağı doğru kaydırın</string>
     <string name="gesture_home_tap">Ana sayfa düğmesi</string>
     <string name="gesture_back_tap">Geri düğmesi</string>
-    <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
+    <string name="gesture_swipe_left">Sola kaydır</string>
+    <string name="gesture_swipe_right">Sağa kaydır</string>
     <string name="gesture_handler_no_op">Hiçbir şey yapma</string>
     <string name="gesture_handler_sleep">Uyku</string>
     <string name="gesture_handler_recents">Son Uygulamaları Aç</string>
@@ -383,7 +383,7 @@
     <string name="gesture_handler_open_app_drawer">Uygulama çekmecesini aç</string>
     <string name="gesture_handler_open_app_search">Uygulama aramayı aç</string>
     <string name="gesture_handler_open_search">Aramayı aç</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant">Asistanı aç</string>
     <string name="pick_app_for_gesture">Uygulama seç</string>
     <string name="dt2s_admin_hint_title">Yönetici izinleri gerekli</string>
     <string name="dt2s_admin_hint">Ekranı Kapatmak İçin Çift Dokunun\'u kullanmak için Lawnchair\'i bir cihaz yöneticisi uygulaması olarak ayarlayın. Ayarları Aç\'a tıklayın, ardından \"Bu cihaz yöneticisi uygulamasını aktif et\" seçeneğine tıklayın</string>
@@ -419,7 +419,7 @@
     <string name="wallpaper_background_blur_factor">Bulanıklık faktörü eşiği</string>
     <string name="home_lawn_deck_label">Deck</string>
     <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
+    <string name="home_lawn_deck_description">Deck ile uygulamalarınıza zahmetsizce erişin; sadelik ve kusursuz düzen için tasarlanmış en iyi çekmecesiz deneyimi yaşayın</string>
     <string name="auto_add_shortcuts_label">Ana ekrana yeni uylulamaları ekle</string>
     <string name="minus_one_enable">Akışı göster</string>
     <string name="minus_one_unavailable">Bir akış uygulaması yüklü değil</string>
@@ -439,14 +439,14 @@
     <string name="show_material_u_popup_label">Yeni açılır pencere stilini kullan</string>
     <string name="show_material_u_popup_description">Material You\'nun hareketli ve biraz birleştirilmiş pop-up stilini kullanın</string>
     <string name="popup_menu">Açılır menü</string>
-    <string name="popup_menu_items">Pop-up menu items</string>
-    <string name="edit_menu_items">Edit pop-up menu items</string>
-    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
+    <string name="popup_menu_items">Açılır menü öğeleri</string>
+    <string name="edit_menu_items">Açılır menü öğelerini düzenle</string>
+    <string name="wallpaper_quick_picker">Duvar kağıdı hızlı seçim</string>
     <string name="status_bar_label">Durum çubuğu</string>
     <string name="show_status_bar">Durum çubuğunu göster</string>
     <string name="dark_status_bar_label">Karanlık durum çubuğu</string>
-    <string name="status_bar_clock_label">Status bar clock</string>
-    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
+    <string name="status_bar_clock_label">Durum çubuğu saati</string>
+    <string name="status_bar_clock_description">Ana ekranda durum çubuğu saatini dinamik olarak gizle</string>
     <string name="home_screen_text_color">Metin rengi</string>
     <string name="color_light">Aydınlık</string>
     <string name="color_dark">Karanlık</string>
@@ -458,9 +458,9 @@
     <string name="widget_unlimited_size_description">Widget\'ların maksimum ve minimum boyut sınırlamalarını kaldırır</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">Dock\'u göster</string>
-    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
+    <string name="enable_dock_to_access_qsb_settings">Arama çubuğu ayarları, Dock görünür olduğunda kullanılabilir. Dock\'u göstermek için dokunun.</string>
     <string name="search_bar_label">Arama çubuğu</string>
-    <string name="search_bar_settings">Search bar settings</string>
+    <string name="search_bar_settings">Arama çubuğu ayarları</string>
     <string name="hotseat_mode_label">Arama çubuğu widget\'ı</string>
     <string name="hotseat_mode_disabled">Devre dışı</string>
     <string name="hotseat_mode_google_search">Google Arama çubuğu</string>
@@ -470,15 +470,15 @@
     <string name="corner_radius_label">Köşe yarıçapı</string>
     <string name="apply_accent_color_label">Vurgu rengini uygula</string>
     <string name="search_provider">Arama sağlayıcısı</string>
-    <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
-    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
-    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
-    <string name="hotseat_bg_color_label">Background color</string>
+    <string name="hotseat_background">Arkaplanı göster</string>
+    <string name="hotseat_bg_horizontal_inset_left">Sol kenar boşluğu</string>
+    <string name="hotseat_bg_horizontal_inset_right">Sağ kenar boşluğu</string>
+    <string name="hotseat_bg_vertical_inset_top">Üst boşluk</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Alt boşluk</string>
+    <string name="hotseat_bg_color_label">Arkaplan rengi</string>
     <string name="hotseat_bg_alpha">Arka plan opaklığı</string>
     <!-- Pause apps shortcut -->
-    <string name="pause">Pause</string>
+    <string name="pause">Duraklat</string>
     <string name="pause_apps_dialog_title">Pause %1$s?</string>
     <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
     <string name="paused_apps_dialog_title">App paused</string>

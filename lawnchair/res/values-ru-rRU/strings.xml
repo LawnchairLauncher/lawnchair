@@ -518,8 +518,7 @@
         <item quantity="other">%1$d приложение</item>
     </plurals>
     <!-- Folder settings -->
-    <string name="folder_preview_bg_opacity_label">Прозрачность фона во время\n
-предпоказа иконки</string>
+    <string name="folder_preview_bg_opacity_label">Прозрачность фона во время\nпредпоказа иконки</string>
     <string name="folder_bg_opacity_label">Прозрачность фона иконки</string>
     <string name="folder_preview_bg_color_label">Цвет фона иконки</string>
     <string name="max_folder_columns">Макс. кол-во столбцов в папке</string>

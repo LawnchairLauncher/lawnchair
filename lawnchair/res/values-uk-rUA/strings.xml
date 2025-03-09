@@ -43,7 +43,7 @@
     <string name="inverse_selection">Inverse selection</string>
     <string name="loading">Завантаження…</string>
     <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
+    <string name="install_update">Скачать обновлення</string>
     <string name="pro_updated">You\'re up-to-date!</string>
     <string name="managed_by_lawnchair">Керується Lawnchair</string>
     <!-- When mentioning settings UI -->
@@ -72,7 +72,7 @@
     <string name="layout">Макет</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Шпалери</string>
-    <string name="style">Style</string>
+    <string name="style">Стиль</string>
     <string name="background_opacity">Прозорість фону</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Скопійовано до буфера обміну</string>
@@ -95,7 +95,7 @@
     <string name="apps_in_folder_label">Сховати додатки тека</string>
     <string name="apps_in_folder_description">Додатки, які призначені до тек, виключені зі списків додатків</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">My folder</string>
+    <string name="my_folder_label">Моя папка</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>

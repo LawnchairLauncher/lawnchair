@@ -383,7 +383,7 @@
     <string name="gesture_handler_open_app_drawer">Apri il menu delle app</string>
     <string name="gesture_handler_open_app_search">Apri la ricerca delle app</string>
     <string name="gesture_handler_open_search">Apri la ricerca</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant"></string>
     <string name="pick_app_for_gesture">Seleziona l\'app</string>
     <string name="dt2s_admin_hint_title">Permessi di amministratore necessari</string>
     <string name="dt2s_admin_hint">Per sospendere lo schermo con un doppio tocco, imposta Lawnchair come amministratore del dispositivo. Tocca \"Apri impostazioni\", poi tocca \"Attiva questa app come amministratore del dispositivo\".</string>
