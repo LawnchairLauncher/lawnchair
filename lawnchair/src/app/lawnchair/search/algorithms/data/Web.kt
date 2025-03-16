@@ -72,6 +72,7 @@ sealed class WebSearchProvider {
         fun fromString(value: String): WebSearchProvider = when (value) {
             "google" -> Google
             "duckduckgo" -> DuckDuckGo
+            "kagi" -> Kagi
             else -> StartPage
         }
 
@@ -81,6 +82,7 @@ sealed class WebSearchProvider {
         fun values() = listOf(
             Google,
             DuckDuckGo,
+            Kagi,
             StartPage,
         )
     }
@@ -237,6 +239,56 @@ data object DuckDuckGo : WebSearchProvider() {
 }
 
 /**
+ * Paid, ad-free search engine.
+ */
+data object Kagi : WebSearchProvider() {
+    override var label = R.string.search_provider_kagi
+
+    override val iconRes = R.drawable.ic_kagi
+
+    override val baseUrl = "https://kagi.com/"
+
+    override val service: KagiService by lazy { retrofit.create() }
+
+    override suspend fun getSuggestions(query: String, maxSuggestions: Int): List<String> = withContext(Dispatchers.IO) {
+        if (query.isBlank() || maxSuggestions <= 0) {
+            return@withContext emptyList()
+        }
+
+        try {
+            var response: Response<ResponseBody> = service.getSuggestions(query = query)
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()?.string() ?: return@withContext emptyList()
+
+                val jsonArray = JSONArray(responseBody)
+                val suggestionsArray =
+                    jsonArray.optJSONArray(1) ?: return@withContext emptyList()
+
+                return@withContext (
+                    0 until suggestionsArray.length()
+                        .coerceAtMost(maxSuggestions)
+                    )
+                    .map { suggestionsArray.getString(it) }
+            } else {
+                Log.w(
+                    "KagiSearchProvider",
+                    "Failed to retrieve suggestions: ${response.code()}",
+                )
+                return@withContext emptyList()
+            }
+        } catch (e: Exception) {
+            Log.e("KagiSearchProvider", "Error during suggestion retrieval", e)
+            return@withContext emptyList()
+        }
+    }
+
+    override fun getSearchUrl(query: String) = "https://kagi.com/search?q=$query"
+
+    override fun toString() = "kagi"
+}
+
+/**
  * Provides an interface for getting search suggestions from the web.
  */
 interface GenericSearchService
@@ -275,5 +327,15 @@ interface DuckDuckGoService : GenericSearchService {
         @Query("q") query: String,
         @Query("type") type: String = "list",
         @Query("callback") callback: String = "jsonCallback",
+    ): Response<ResponseBody>
+}
+
+/**
+ * Web suggestions for [WebSearchProvider.Kagi].
+ */
+interface KagiService : GenericSearchService {
+    @GET("api/autosuggest")
+    suspend fun getSuggestions(
+        @Query("q") query: String,
     ): Response<ResponseBody>
 }
