@@ -1,3 +1,4 @@
+import app.cash.licensee.SpdxId
 import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -460,9 +461,9 @@ spotless {
 }
 
 licensee {
-    allow("Apache-2.0")
-    allow("BSD-3-Clause")
-    allow("GPL-2.0-or-later")
+    allow(SpdxId.Apache_20)
+    allow(SpdxId.BSD_3_Clause)
+    allow(SpdxId.GPL_20_or_later)
     allowDependency("com.github.topjohnwu.libsu", "core", "6.0.0")
     allowDependency("com.github.topjohnwu.libsu", "service", "6.0.0")
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
