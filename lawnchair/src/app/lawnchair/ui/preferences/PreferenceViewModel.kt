@@ -112,7 +112,7 @@ class PreferenceViewModel(private val app: Application) :
         .stateIn(viewModelScope, SharingStarted.Lazily, listOf())
 
     override val ossLibraries: StateFlow<List<OssLibrary>> = flow {
-        val jsonString = app.resources.assets.open("artifacts.json")
+        val jsonString = app.resources.assets.open("app/cash/licensee/artifacts.json")
             .bufferedReader().use { it.readText() }
         val ossLibraries = kotlinxJson.decodeFromString<List<OssLibrary>>(jsonString)
             .asSequence()

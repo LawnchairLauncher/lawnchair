@@ -1,4 +1,3 @@
-import app.cash.licensee.LicenseeTask
 import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -322,23 +321,6 @@ android {
     }
 }
 
-androidComponents {
-    onVariants(selector().all()) { variant ->
-        def capName = variant.name.capitalize()
-        def licenseeTask = tasks.named("licenseeAndroid$capName", LicenseeTask)
-        def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
-            dependsOn(licenseeTask)
-            from(licenseeTask.map { it.jsonOutput })
-            // Copy artifacts.json to a new directory.
-            into(layout.buildDirectory.dir("generated/dependencyAssets/${variant.name}"))
-        }
-        variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
-            // Avoid using LicenseeTask::outputDir as it contains extra files that we don't need.
-            objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
-        }
-    }
-}
-
 composeCompiler {
     stabilityConfigurationFile = layout.projectDirectory.file("compose_compiler_config.conf")
     reportsDestination = layout.buildDirectory.dir("compose_build_reports")
@@ -448,7 +430,7 @@ dependencies {
     }
 
     implementation 'io.github.hokofly:hoko-blur:1.5.3'
-    
+
     implementation "androidx.window:window:1.3.0"
 }
 
@@ -486,4 +468,6 @@ licensee {
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
     allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
     allowUrl("https://opensource.org/licenses/mit-license.php")
+
+    bundleAndroidAsset = true
 }
