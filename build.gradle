@@ -1,5 +1,6 @@
 import app.cash.licensee.SpdxId
 import com.android.build.gradle.api.AndroidBasePlugin
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -35,6 +36,10 @@ allprojects {
                 abortOnError true
                 checkReleaseBuilds false
             }
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_17
+                targetCompatibility = JavaVersion.VERSION_17
+            }
         }
         dependencies {
             implementation 'androidx.core:core-ktx:1.15.0'
@@ -66,14 +71,18 @@ allprojects {
 
     plugins.withType(JavaBasePlugin).configureEach {
         java {
-            toolchain.languageVersion = JavaLanguageVersion.of(17)
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
         }
     }
 
     tasks.withType(KotlinCompile).configureEach {
-        compilerOptions.freeCompilerArgs.add(
-            "-Xjvm-default=all",
-        )
+        compilerOptions {
+            freeCompilerArgs.add(
+                "-Xjvm-default=all",
+            )
+            jvmTarget = JvmTarget.JVM_17
+        }
     }
 
     ext {
