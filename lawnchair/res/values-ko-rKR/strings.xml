@@ -94,7 +94,7 @@
     <string name="folder_list_note">항목을 왼쪽으로 쓸어 편집, 오른쪽으로 쓸어 삭제, 누르면 업데이트할 수 있습니다.</string>
     <string name="apps_in_folder_label">폴더 앱 숨기기</string>
     <string name="apps_in_folder_description">폴더에 지정한 앱을 앱 목록에서 제외</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
+    <string name="folders_filter_duplicates">중복 앱 숨기기</string>
     <string name="my_folder_label">내 폴더</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">Lawnchair에서 제스처로 기기를 잠그거나 최근 앱 화면을 열기 위해서는 접근성 권한이 필요합니다.\n\n모든 접근성 서비스에는 대화 상자에 나오는 권한이 필요합니다. Lawnchair는 사용자의 동작을 전혀 감시하지 않으며, 시스템에서 보내는 이벤트를 모두 무시합니다.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다.</string>
