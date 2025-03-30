@@ -26,7 +26,7 @@
     <string name="action_backup">Sao lưu</string>
     <string name="action_restore">Khôi phục</string>
     <string name="action_delete">Xoá</string>
-    <string name="action_reset">Reset</string>
+    <string name="action_reset">Khởi động lại</string>
     <string name="action_unlock">Mở khóa</string>
     <string name="action_lock">Khóa</string>
     <string name="action_apply">Áp dụng</string>
@@ -66,7 +66,7 @@
     <!-- Relating to the Launcher ui -->
     <string name="columns">Cột</string>
     <string name="rows">Hàng</string>
-    <string name="label">Nhãn</string>
+    <string name="label">Tên</string>
     <string name="icons">Biểu tượng</string>
     <string name="grid">Lưới</string>
     <string name="layout">Bố cục</string>
@@ -90,7 +90,7 @@
     <string name="add_label">Ứng dụng</string>
     <string name="edit_label">Chỉnh sửa</string>
     <string name="apply_label">Áp dụng</string>
-    <string name="delete_label">Xoá</string>
+    <string name="delete_label">Xóa</string>
     <string name="folder_list_note">Vuốt sang trái để chỉnh sửa, vuốt sang phải để xóa hoặc chạm để cập nhật mục</string>
     <string name="apps_in_folder_label">Ẩn ứng dụng trong thư mục</string>
     <string name="apps_in_folder_description">Các ứng dụng được gán vào thư mục sẽ bị loại khỏi danh sách ứng dụng</string>
@@ -126,7 +126,7 @@
     <string name="quickstep_description">Xóa tất cả nút, bán kính góc</string>
     <string name="about_label">Giới thiệu</string>
     <string name="app_info_drop_target_label">Thông tin ứng dụng</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">Khởi chạy lại Lawnchair</string>
     <string name="experimental_features_label">Chức năng thử nghiệm</string>
     <!-- Experimental features -->
     <string name="font_picker_label">Đổi phông chữ</string>
@@ -237,16 +237,16 @@
     <string name="fontHeadingMedium">Tiêu đề (vừa)</string>
     <string name="fontBody">Thân</string>
     <string name="fontBodyMedium">Thân (vừa)</string>
-    <string name="font_variant_italic">Italic</string>
-    <string name="font_weight_thin">Thin</string>
+    <string name="font_variant_italic">Nghiêng</string>
+    <string name="font_weight_thin">Gầy</string>
     <string name="font_weight_extra_light">Ánh sáng bổ sung</string>
     <string name="font_weight_light">Sáng</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
+    <string name="font_weight_regular">Thường dùng</string>
+    <string name="font_weight_medium">Vừa phải</string>
+    <string name="font_weight_semi_bold">Nửa đậm</string>
+    <string name="font_weight_bold">In đậm</string>
     <string name="font_weight_extra_bold">Đậm hơn</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_extra_black">Đen</string>
     <!--
 
     Colors and theme
@@ -260,9 +260,9 @@
     <string name="theme_follow_wallpaper">Phù hợp với hình nền</string>
     <!-- Color style -->
     <string name="color_style_label">Phong cách màu sắc</string>
-    <string name="color_style_spritz">Spriz</string>
+    <string name="color_style_spritz">Xịt keo</string>
     <string name="color_style_tonal_spot">Màu chủ đạo</string>
-    <string name="color_style_vibrant">Sôi động</string>
+    <string name="color_style_vibrant">Sống động</string>
     <string name="color_style_expressive">Diễn cảm</string>
     <string name="color_style_rainbow">Cầu vồng</string>
     <string name="color_style_fruit_salad">Xa lát trái cây</string>
@@ -278,7 +278,7 @@
     <string name="rgb_blue">Xanh dương</string>
     <string name="hsb">HSB</string>
     <string name="hsb_hue">Màu sắc</string>
-    <string name="hsb_saturation">Bão hoà</string>
+    <string name="hsb_saturation">Bão hòa</string>
     <string name="hsb_brightness">Độ sáng</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Thanh trượt</string>
@@ -337,9 +337,9 @@
     -->
     <string name="news">Tin tức</string>
     <string name="support">Hỗ trợ</string>
-    <string name="product">Sản phẩm</string>
+    <string name="product">Sản phẩm từ</string>
     <string name="design_and_development">Thiết kế &amp; nhà phát triển</string>
-    <string name="development">Phát triển</string>
+    <string name="development">Nhà phát triển</string>
     <string name="quickswitch_maintenance">Bảo trì Chuyển đổi nhanh</string>
     <string name="devops">Tuỳ chọn của lập trình viên</string>
     <string name="support_and_pr">Hỗ trợ &amp; PR</string>
@@ -375,7 +375,7 @@
     <string name="gesture_swipe_left">Vuốt sang trái</string>
     <string name="gesture_swipe_right">Vuốt sang phải</string>
     <string name="gesture_handler_no_op">Không làm gì</string>
-    <string name="gesture_handler_sleep">Ngủ</string>
+    <string name="gesture_handler_sleep">Tắt màn hình</string>
     <string name="gesture_handler_recents">Mở ứng dụng gần đây</string>
     <string name="gesture_handler_open_notifications">Mở thanh thông báo</string>
     <string name="gesture_handler_open_app_option">Mở ứng dụng</string>

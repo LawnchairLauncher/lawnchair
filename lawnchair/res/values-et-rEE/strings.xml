@@ -64,7 +64,7 @@
     <string name="feed_default">Vaikimisi</string>
     <string name="system">Süsteem</string>
     <!-- Relating to the Launcher ui -->
-    <string name="columns">Veerud</string>
+    <string name="columns">Tulbad</string>
     <string name="rows">Read</string>
     <string name="label">Nimi</string>
     <string name="icons">Ikoonid</string>
@@ -82,7 +82,7 @@
     <string name="what_to_show">Mida kuvada</string>
     <string name="wallpapers">Taustapildid</string>
     <string name="caddy_beta">Caddy (beeta)</string>
-    <string name="caddy">Caddy</string>
+    <string name="caddy">Rühmitamine</string>
     <string name="app_drawer_folder">Rakenduste sahtli kaustad</string>
     <string name="app_drawer_folder_settings">Sahtli kaust</string>
     <string name="add_folder">Loo kaust</string>
@@ -91,7 +91,7 @@
     <string name="edit_label">Muuda</string>
     <string name="apply_label">Rakenda</string>
     <string name="delete_label">Kustuta</string>
-    <string name="folder_list_note">Üksuste muutmiseks pühi vasakule, kustutamiseks pühi paremale või puuduta üksuste värskendamiseks</string>
+    <string name="folder_list_note">Üksuste muutmiseks nipsa vasakule, kustutamiseks nipsa paremale või puuduta üksuste värskendamiseks</string>
     <string name="apps_in_folder_label">Peida kaustade rakendused</string>
     <string name="apps_in_folder_description">Kaustadesse määratud rakendused jäetakse rakenduste loenditest välja</string>
     <string name="folders_filter_duplicates">Kuva ainult unikaalsed rakendused</string>
@@ -115,15 +115,15 @@
     <string name="dock_label">Dokk</string>
     <string name="dock_description">Otsinguriba, ikoonide arv</string>
     <string name="app_drawer_label">Rakenduste sahtel</string>
-    <string name="app_drawer_description">Peidetud rakendused, veergude arv, ikoonid</string>
+    <string name="app_drawer_description">Peidetud rakendused, tulpade arv, ikoonid</string>
     <string name="drawer_search_label">Sahtli otsing</string>
     <string name="drawer_search_description">Veebisoovitused, globaalne otsing</string>
     <string name="folders_label">Kaustad</string>
-    <string name="folders_description">Ridade ja veergude arv</string>
+    <string name="folders_description">Ridade ja tulpade arv</string>
     <string name="gestures_label">Viiped</string>
-    <string name="gestures_description">Puudutused ja pühkimine</string>
+    <string name="gestures_description">Puudutused ja nipsamine</string>
     <string name="quickstep_label">Hiljutised</string>
-    <string name="quickstep_description">Nupp Kustuta kõik, nurga raadius</string>
+    <string name="quickstep_description">Nupp Kustuta kõik, nurgaraadius</string>
     <string name="about_label">Teave</string>
     <string name="app_info_drop_target_label">Rakenduse teave</string>
     <string name="debug_restart_launcher">Taaskäivita Lawnchair</string>
@@ -165,9 +165,9 @@
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">Ikooni stiil</string>
-    <string name="icon_shape_label">Ikooni kuju</string>
-    <string name="icon_sizes">Ikooni suurus</string>
+    <string name="icon_style_label">Ikoonide stiil</string>
+    <string name="icon_shape_label">Ikoonide kuju</string>
+    <string name="icon_sizes">Ikoonide suurus</string>
     <string name="show_labels">Kuva nimesildid</string>
     <string name="label_size">Sildi suurus</string>
     <string name="twoline_label">Kasuta mitut rida</string>
@@ -229,7 +229,7 @@
     <string name="lawnicons_not_installed_description">Toetatud ikoonipakette pole</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Lisa fonte</string>
-    <string name="pref_fonts_add_fonts_summary">OTF ja TTF fonte toetatakse</string>
+    <string name="pref_fonts_add_fonts_summary">Toetatakse OTF ja TTF fonte</string>
     <string name="pref_fonts_missing_font">Fonti ei leitud</string>
     <string name="font_label">Font (katseline)</string>
     <string name="fontWorkspace">Üldised</string>
@@ -241,7 +241,7 @@
     <string name="font_weight_thin">Peenike</string>
     <string name="font_weight_extra_light">Väga peenike</string>
     <string name="font_weight_light">Peenike</string>
-    <string name="font_weight_regular">Tavaline</string>
+    <string name="font_weight_regular">Normaalne</string>
     <string name="font_weight_medium">Keskmine</string>
     <string name="font_weight_semi_bold">Poolpaks</string>
     <string name="font_weight_bold">Paks</string>
@@ -314,8 +314,8 @@
     <string name="smartspace_now_playing">Esitamisel</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maksimaalne sihtmärkide arv</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="open_smartspacer_settings">Avage rakenduse Smartspacer seaded</string>
+    <string name="smartspacer_settings">Rakenduse Smartspacer seaded</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Seadistamiseks puuduta</string>
     <string name="event_provider_missing_notification_dots">Et kasutada <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, luba Märguandetäpid.</string>
@@ -368,12 +368,12 @@
 
     -->
     <string name="gesture_double_tap">Topeltpuudutus</string>
-    <string name="gesture_swipe_up">Pühi üles</string>
-    <string name="gesture_swipe_down">Pühi alla</string>
+    <string name="gesture_swipe_up">Nipsa üles</string>
+    <string name="gesture_swipe_down">Nipsa alla</string>
     <string name="gesture_home_tap">Kodu nupp</string>
     <string name="gesture_back_tap">Tagasi nupp</string>
-    <string name="gesture_swipe_left">Pühi vasakule</string>
-    <string name="gesture_swipe_right">Pühi paremale</string>
+    <string name="gesture_swipe_left">Nipsa vasakule</string>
+    <string name="gesture_swipe_right">Nipsa paremale</string>
     <string name="gesture_handler_no_op">Ära tee midagi</string>
     <string name="gesture_handler_sleep">Ooteseisund</string>
     <string name="gesture_handler_recents">Ava Hiljutised</string>
@@ -417,17 +417,17 @@
     <string name="wallpaper_blur">Hägusta taustapilt (katseline)</string>
     <string name="wallpaper_background_blur">Hägususe aste</string>
     <string name="wallpaper_background_blur_factor">Hägususteguri piirang</string>
-    <string name="home_lawn_deck_label">Deck</string>
-    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
-    <string name="auto_add_shortcuts_label">Lisa avakuvale uusi rakendusi</string>
+    <string name="home_lawn_deck_label">Rakenduste tekk</string>
+    <string name="home_lawn_deck_label_beta">Rakenduste tekk (beeta)</string>
+    <string name="home_lawn_deck_description">Vahetu juurdepääs rakendustele teki abil. Rakenduste menüü puudub, eesmärgiks lihtsus ja sujuv kasutus</string>
+    <string name="auto_add_shortcuts_label">Lisa uued rakendused avakuvale</string>
     <string name="minus_one_enable">Kuva uudistevoog</string>
     <string name="minus_one_unavailable">Uudistevoo rakendusi pole paigaldatud</string>
     <string name="minus_one">Uudistevoog</string>
     <string name="feed_provider">Uudistevoo pakkuja</string>
     <string name="wallpaper_scrolling_label">Taustapilti kerimine</string>
     <string name="wallpaper_depth_effect_label">Taustapildi sügavuse efekt</string>
-    <string name="wallpaper_depth_effect_description">Suumi taustapilti sisse ja välja, kui liikuda käivitaja piirkondade vahel</string>
+    <string name="wallpaper_depth_effect_description">Käivitaja erinevate alade vahel liikumisel suumi taustapilti sisse ja välja</string>
     <string name="show_sys_ui_scrim">Ülemine vari</string>
     <string name="home_screen_grid">Avakuva ruudustik</string>
     <string name="home_screen_lock">Lukusta avakuva</string>
@@ -467,7 +467,7 @@
     <string name="qsb_hotseat_background_transparency">Tausta läbipaistmatus</string>
     <string name="qsb_hotseat_stroke_width">Kontuuri laius</string>
     <string name="qsb_hotseat_stroke_color">Kontuuri värv</string>
-    <string name="corner_radius_label">Nurga raadius</string>
+    <string name="corner_radius_label">Nurkade ümardamine</string>
     <string name="apply_accent_color_label">Kasuta aktsentvärvi</string>
     <string name="search_provider">Otsingu pakkuja</string>
     <string name="hotseat_background">Kuva taust</string>
@@ -519,8 +519,8 @@
     <string name="folder_preview_bg_opacity_label">Ikooni eelvaate tausta läbipaistmatus</string>
     <string name="folder_bg_opacity_label">Kausta tausta läbipaistmatus</string>
     <string name="folder_preview_bg_color_label">Ikooni tausta värv</string>
-    <string name="max_folder_columns">Maksimaalne kaustaveergude arv</string>
-    <string name="max_folder_rows">Maksimaalne kaustaridade arv</string>
+    <string name="max_folder_columns">Maksimaalne tulpade arv kaustas</string>
+    <string name="max_folder_rows">Maksimaalne ridade arv kaustas</string>
     <!-- Quickstep settings -->
     <string name="quickswitch_ignored_warning">Neid sätteid eiratakse, kuna Lawnchair ei ole seatud viimaste rakenduste akna pakkujaks</string>
     <string name="quickstep_incompatible">Ühildumatu süsteemiintegratsioon</string>
@@ -532,9 +532,9 @@
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Tühjenda kõik</string>
     <string name="task_menu_force_stop">Sulge jõuga</string>
-    <string name="window_corner_radius_label">Ekraani nurga ümardamise raadius</string>
-    <string name="override_window_corner_radius_label">Kohandatud ekraani nurga raadius</string>
-    <string name="window_corner_radius_description">Kui pühkida üles, et avada jaotis Hiljutised, järgib praegune rakendus sõrme, kahanedes kaardiks. Kasuta seda liugurit kaardi nurgaraadiuse reguleerimiseks, kui see on peaaegu täisekraanil, nii et see ühtiks teie ekraani nurkadega.</string>
+    <string name="window_corner_radius_label">Ekraani nurgaraadius</string>
+    <string name="override_window_corner_radius_label">Kohandatud ekraani nurgaraadius</string>
+    <string name="window_corner_radius_description">Kui nipsata üles, et avada jaotis Hiljutised, järgib praegune rakendus sõrme, kahanedes kaardiks. Kasuta seda liugurit kaardi nurgaraadiuse reguleerimiseks, kui see on peaaegu täisekraanil, nii et see ühtiks ekraani nurkadega.</string>
     <string name="taskbar_label">Tegumiriba</string>
     <string name="enable_taskbar_experimental">Kuva tegumiriba (katseline)</string>
     <!--
