@@ -26,7 +26,7 @@
     <string name="action_backup">Sao lưu</string>
     <string name="action_restore">Khôi phục</string>
     <string name="action_delete">Xoá</string>
-    <string name="action_reset">Khởi động lại</string>
+    <string name="action_reset">Cài lại</string>
     <string name="action_unlock">Mở khóa</string>
     <string name="action_lock">Khóa</string>
     <string name="action_apply">Áp dụng</string>

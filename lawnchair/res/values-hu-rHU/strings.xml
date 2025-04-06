@@ -129,9 +129,9 @@
     <string name="debug_restart_launcher">A Lawnchair újraindítása</string>
     <string name="experimental_features_label">Kísérleti funkciók</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">A Betűkészlet testreszabása</string>
+    <string name="font_picker_label">A betűkészlet testreszabása</string>
     <string name="font_picker_description">Egyes szövegek változatlanok maradnak</string>
-    <string name="smartspace_calendar_label">A \'Bepillantás\' naptárának testreszabása</string>
+    <string name="smartspace_calendar_label">Az \'Áttekintés\' naptárának testreszabása</string>
     <string name="smartspace_calendar_description">Lehetővé teszi, hogy a dátum nem gregorián naptárban is megjelenjen</string>
     <string name="workspace_increase_max_grid_size_label">A maximális rácsméret-korlát növelése</string>
     <string name="workspace_increase_max_grid_size_description">A kezdőképernyő legnagyobb rácsméretének 10×10-ről 20×20-ra való növelése</string>
@@ -235,8 +235,8 @@
     <string name="fontWorkspace">Általános</string>
     <string name="fontHeading">Címsorok</string>
     <string name="fontHeadingMedium">Címsorok (közepes)</string>
-    <string name="fontBody">Betűtest</string>
-    <string name="fontBodyMedium">Betűtest (közepes)</string>
+    <string name="fontBody">Betűtörzs</string>
+    <string name="fontBodyMedium">Betűtörzs (közepes)</string>
     <string name="font_variant_italic">Dőlt betű</string>
     <string name="font_weight_thin">Vékony betű</string>
     <string name="font_weight_extra_light">Extra vékony</string>
@@ -301,13 +301,13 @@
     <string name="smartspace_widget_description">Mi jelenjen meg</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Naptár</string>
-    <string name="smartspace_date_and_time">Dátum és Idő</string>
+    <string name="smartspace_date_and_time">Dátum és idő</string>
     <string name="smartspace_date">Dátum</string>
     <string name="smartspace_time">Idő</string>
     <string name="smartspace_time_format">Időformátum</string>
     <string name="smartspace_time_follow_system">Rendszerkövető</string>
-    <string name="smartspace_time_12_hour_format">12-órás</string>
-    <string name="smartspace_time_24_hour_format">24-órás</string>
+    <string name="smartspace_time_12_hour_format">12 órás formátum</string>
+    <string name="smartspace_time_24_hour_format">24 órás formátum</string>
     <!-- Available targets -->
     <string name="smartspace_weather">Időjárás</string>
     <string name="smartspace_battery_status">Akkuállapot</string>
@@ -321,9 +321,9 @@
     <string name="event_provider_missing_notification_dots">Kapcsolja be az Értesítési pöttyöket a <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Megjelenítés a Kezdőképernyőn</string>
-    <string name="smartspace_widget_toggle_description">A \'Bepillantás\' manuálisan hozzáadható a Kezdőképernyőhöz a Lawnchair kisalkalmazás elhelyezésével</string>
+    <string name="smartspace_widget_toggle_description">Az \'Áttekintés\' manuálisan hozzáadható a Kezdőképernyőhöz a Lawnchair kisalkalmazás elhelyezésével</string>
     <!-- List of available providers -->
-    <string name="smartspace_mode_label">A \'Bepillantás\' szolgáltatója</string>
+    <string name="smartspace_mode_label">Az \'Áttekintés\' szolgáltatója</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Kereső</string>
     <!-- Miscellaneous Smartspace strings -->

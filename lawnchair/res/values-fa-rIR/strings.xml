@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">فقط برنامه های ویژه را نشان بده</string>
     <string name="my_folder_label">پوشه من</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">برای انجام برخی اقدامات (مانند قفل کردن تلفن) هنگام انجام یک حرکت، Lawnchair به دسترسی دسترس‌پذیری نیاز دارد.\n\nLawnchair هیچ عملکرد کاربر را مشاهده نمی‌کند، اگرچه امتیاز انجام این کار برای همه سرویس‌های دسترس‌پذیری لازم است. Lawnchair هر رویدادی را که سیستم ارسال می‌کند کنار می‌گذارد.\n\nبرای قفل کردن تلفن یا باز کردن اخیراً، Lawnchair از دسترس‌پذیری performGlobalAction استفاده می‌کند.</string>
+    <string name="accessibility_service_description">برای انجام برخی اقدامات (مانند قفل کردن تلفن) هنگام انجام یک حرکت، راه‌انداز به دسترسی دسترس‌پذیری نیاز دارد.\n\nLawnchair هیچ عملکرد کاربر را مشاهده نمی‌کند، اگرچه امتیاز انجام این کار برای همه سرویس‌های دسترس‌پذیری لازم است. راه‌انداز هر رویدادی را که سیستم ارسال می‌کند کنار می‌گذارد.\n\nبرای قفل کردن تلفن یا باز کردن اخیراً، راه‌انداز از دسترس‌پذیری انجام عملکرد جهانی استفاده می‌کند.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -117,7 +117,7 @@
     <string name="app_drawer_label">کشوی برنامه‌ها</string>
     <string name="app_drawer_description">برنامه‌های مخفی، تعداد ستون‌ها، آیکون‌ها</string>
     <string name="drawer_search_label">جستجو کشو</string>
-    <string name="drawer_search_description">پیشنهادات وب، جستجوی جهانی</string>
+    <string name="drawer_search_description">پیشنهادها وب، جستجوی جهانی</string>
     <string name="folders_label">پوشه‌ها</string>
     <string name="folders_description">تعداد سطرها و ستون‌ها</string>
     <string name="gestures_label">حرکات</string>
@@ -342,7 +342,7 @@
     <string name="development">توسعه</string>
     <string name="quickswitch_maintenance">نگهداری QuickSwitch</string>
     <string name="devops">توسعه دهنده</string>
-    <string name="support_and_pr">پشتیبانی و روابط عمومی</string>
+    <string name="support_and_pr">پشتیبانی &amp; روابط عمومی</string>
     <string name="acknowledgements">سپاسگزاریها</string>
     <string name="translate">ترجمه</string>
     <string name="donate">کمک‌کردن</string>
@@ -389,9 +389,9 @@
     <string name="dt2s_admin_hint">برای استفاده از قابلیت خواب با دو ضربه، Lawnchair را به عنوان یک برنامه‌ی مدیرِ دستگاه بگذارید. بر روی باز کردن تنظیمات ضربه بزنید، سپس بر روی «فعال سازی این برنامه مدیر دستگاه» ضربه بزنید.</string>
     <string name="dt2s_admin_warning">دو ضربه سریع برای خواب خاموش خواهد شد.</string>
     <string name="d2ts_recents_a11y_hint_title">فعال‌سازی سرویس دسترس‌پذیری</string>
-    <string name="dt2s_a11y_hint">برای استفاده از قابلیت خواب با دو ضربه، سرویس دسترسی به Lawnchair را روشن کنید. روی «بازکردن تنظیمات» ضربه بزنید، «Lawnchair» را انتخاب کنید و «استفاده از Lawnchair» را روشن کنید.\n\nLawnchair از روش «performGlobalAction» برای انجام این عمل استفاده می‌کند. این یک مجوز حساس است که امکان نظارت بر برنامه های دیگر را فراهم می کند. با این حال، Lawnchair برای آن پیکربندی نشده است و هیچ رویدادی دریافت نمی‌کند.</string>
+    <string name="dt2s_a11y_hint">برای استفاده از قابلیت خواب با دو ضربه، سرویس دسترسی به Lawnchair را روشن کنید. روی «بازکردن تنظیمات» ضربه بزنید، «Lawnchair» را انتخاب کنید و «استفاده از Lawnchair» را روشن کنید.\n\nLawnchair از روش «انجام عملکرد جهانی» برای انجام این عمل استفاده می‌کند. این یک مجوز حساس است که امکان نظارت بر برنامه های دیگر را فراهم می کند. با این حال، Lawnchair برای آن پیکربندی نشده است و هیچ رویدادی دریافت نمی‌کند.</string>
     <string name="dt2s_recents_warning_open_settings">بازکردن تنظیمات</string>
-    <string name="recents_a11y_hint">برای استفاده از بازکردن اخیرا‌، سرویس دسترسی به Lawnchair را روشن کنید. روی «بازکردن تنظیمات» ضربه بزنید، «Lawnchair» را انتخاب کنید و «استفاده از Lawnchair» را روشن کنید.\n\nLawnchair از روش «performGlobalAction» برای انجام این عمل استفاده می‌کند. این یک مجوز حساس است که امکان نظارت بر برنامه های دیگر را فراهم می کند. با این حال، Lawnchair برای آن پیکربندی نشده است و هیچ رویدادی دریافت نمی‌کند.</string>
+    <string name="recents_a11y_hint">برای استفاده از باز‌کردن اخیرا‌، سرویس دسترسی به Lawnchair را روشن کنید. روی «بازکردن تنظیمات» ضربه بزنید، «Lawnchair» را انتخاب کنید و «استفاده از Lawnchair» را روشن کنید.\n\nLawnchair از روش «انجام عملکرد جهانی» برای انجام این عمل استفاده می‌کند. این یک مجوز حساس است که امکان نظارت بر برنامه های دیگر را فراهم می کند. با این حال، Lawnchair برای آن پیکربندی نشده است و هیچ رویدادی دریافت نمی‌کند.</string>
     <!--
 
     Bug reporting

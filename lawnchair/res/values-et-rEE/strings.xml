@@ -93,7 +93,7 @@
     <string name="delete_label">Kustuta</string>
     <string name="folder_list_note">Üksuste muutmiseks nipsa vasakule, kustutamiseks nipsa paremale või puuduta üksuste värskendamiseks</string>
     <string name="apps_in_folder_label">Peida kaustade rakendused</string>
-    <string name="apps_in_folder_description">Kaustadesse määratud rakendused jäetakse rakenduste loenditest välja</string>
+    <string name="apps_in_folder_description">Kaustadesse määratud rakendusi rakenduste loendis ei kuvata</string>
     <string name="folders_filter_duplicates">Kuva ainult unikaalsed rakendused</string>
     <string name="my_folder_label">Minu kaust</string>
     <!-- A11y description -->
@@ -127,11 +127,11 @@
     <string name="about_label">Teave</string>
     <string name="app_info_drop_target_label">Rakenduse teave</string>
     <string name="debug_restart_launcher">Taaskäivita Lawnchair</string>
-    <string name="experimental_features_label">Eksperimentaalsed omadused</string>
+    <string name="experimental_features_label">Katselised omadused</string>
     <!-- Experimental features -->
     <string name="font_picker_label">Fondi kohandamine</string>
     <string name="font_picker_description">Osa tekstist jääb muutmata</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
+    <string name="smartspace_calendar_label">Ülevaate vidina kalendri kohandamine</string>
     <string name="smartspace_calendar_description">Luba kuupäeva kuvamine mitte-Gregoriuse kalendrisüsteemides</string>
     <string name="workspace_increase_max_grid_size_label">Suurenda ruudustiku maksimaalse suuruse limiiti</string>
     <string name="workspace_increase_max_grid_size_description">Suurenda avakuva maksimaalset lubatud ruudustiku suurust 10 x 10 > 20 x 20</string>
@@ -297,7 +297,7 @@
     <string name="smartspace_battery_full">Laetud</string>
     <string name="smartspace_battery_low">Aku tühi</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Täis %2$s pärast"</string>
-    <string name="smartspace_widget">At a Glance</string>
+    <string name="smartspace_widget">Ülevaade</string>
     <string name="smartspace_widget_description">Mida kuvada</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalender</string>
@@ -321,9 +321,9 @@
     <string name="event_provider_missing_notification_dots">Et kasutada <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, luba Märguandetäpid.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Kuva avakuval</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">Ülevaate saab avakuvale lisada käsitsi, paigutades sinna Lawnchair vidina</string>
     <!-- List of available providers -->
-    <string name="smartspace_mode_label">At a Glance provider</string>
+    <string name="smartspace_mode_label">Ülevaate pakkuja</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google otsing</string>
     <!-- Miscellaneous Smartspace strings -->
@@ -434,7 +434,7 @@
     <string name="home_screen_unlock">Ava avakuva lukk</string>
     <string name="home_screen_locked">Avakuva on lukustatud</string>
     <string name="home_screen_lock_description">Väldi avakuva paigutuse muutmist</string>
-    <string name="show_dot_pagination_label">Kuva lehekülgi tähistavad punktid</string>
+    <string name="show_dot_pagination_label">Tähista leheküljed punktidena</string>
     <string name="show_dot_pagination_description">Kasuta leheküljenumbri kuvamiseks joonte asemel punkte</string>
     <string name="show_material_u_popup_label">Kasuta uut hüpikakna stiili</string>
     <string name="show_material_u_popup_description">Kasuta Material You veidi kompaktsemat hüpikaknastiili</string>
@@ -452,7 +452,7 @@
     <string name="color_dark">Tume</string>
     <string name="force_rounded_widgets">Ümarad nurgad</string>
     <string name="allow_widget_overlap">Luba kattumist</string>
-    <string name="force_widget_resize_label">Vidina suuruse muutmine sunniviisiliselt</string>
+    <string name="force_widget_resize_label">Muuda vidina suurust jõuga</string>
     <string name="force_widget_resize_description">Luba muuta kindla suurusega piiratud vidinate suurust</string>
     <string name="widget_unlimited_size_label">Eemalda suurusepiirangud</string>
     <string name="widget_unlimited_size_description">Eemalda vidinate minimaalse ja maksimaalse suuruse piirangud</string>
@@ -504,7 +504,7 @@
     <string name="pref_all_apps_remember_position_title">Jäta asukoht meelde</string>
     <string name="pref_all_apps_remember_position_description">Sahtlist väljumisel jäta asukoht rakenduse sahtlis meelde</string>
     <string name="pref_all_apps_show_scrollbar_title">Kuva kerimisriba</string>
-    <string name="app_drawer_columns">Rakenduse sahtli veerud</string>
+    <string name="app_drawer_columns">Rakenduse sahtli tulbad</string>
     <string name="row_height_label">Rea kõrgus</string>
     <string name="app_drawer_indent_label">Horisontaalne kaugus</string>
     <string name="app_drawer_bg_color_label">Tausta värv</string>
@@ -600,6 +600,6 @@
     <string name="grant_requested_permissions">Lubade andmine</string>
     <string name="allapps_web_suggestion_provider_label">Veebisoovituste pakkuja</string>
     <string name="allapps_use_web_suggestion_icon_label">Kuva veebisoovituste pakkuja ikoon otsinguribal</string>
-    <string name="allapps_match_qsb_style_label">Sobita doki otsinguriba toimingutega</string>
+    <string name="allapps_match_qsb_style_label">Sobita dokk otsinguriba toimingutega</string>
     <string name="allapps_match_qsb_style_description">Doki otsinguribal klõpsamine avab nüüd rakenduste sahtli otsingu</string>
 </resources>

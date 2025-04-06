@@ -21,31 +21,31 @@
     Actions and Verbs
 
     -->
-    <string name="preview_label">Preview</string>
+    <string name="preview_label">पूर्वावलोकन</string>
     <string name="action_create">निर्मित करा</string>
-    <string name="action_backup">Backup</string>
-    <string name="action_restore">Restore</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_reset">Reset</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
-    <string name="action_apply">Apply</string>
+    <string name="action_backup">बॅकअप</string>
+    <string name="action_restore">रीसेट</string>
+    <string name="action_delete">हटवा</string>
+    <string name="action_reset">रिसेट</string>
+    <string name="action_unlock">उघडा</string>
+    <string name="action_lock">बंद करा</string>
+    <string name="action_apply">लागू करा</string>
     <string name="action_customize">Customize</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
+    <string name="always_choice">नेहमी</string>
+    <string name="never_choice">कधीच नाही</string>
     <string name="clipboard">पटफळक</string>
     <string name="action_copy_link">Copy link</string>
-    <string name="action_copy">Copy</string>
+    <string name="action_copy">नक्कल करा</string>
     <string name="action_paste">Paste</string>
     <string name="action_done">पूर्ण झाले</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
-    <string name="loading">Loading…</string>
+    <string name="select_all">सर्व निवडा</string>
+    <string name="deselect_all">सर्व निवड रद्द करा</string>
+    <string name="inverse_selection">उलट निवडा</string>
+    <string name="loading">लोड होत आहे…</string>
     <string name="download_update">Download update</string>
     <string name="install_update">Install update</string>
     <string name="pro_updated">You\'re up-to-date!</string>
-    <string name="managed_by_lawnchair">Managed by Lawnchair</string>
+    <string name="managed_by_lawnchair">Lawnchai द्वारे संचालित</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">प्राधान्य</string>
     <string name="settings_button_text">Home settings</string>
