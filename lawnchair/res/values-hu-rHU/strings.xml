@@ -235,8 +235,8 @@
     <string name="fontWorkspace">Általános</string>
     <string name="fontHeading">Címsorok</string>
     <string name="fontHeadingMedium">Címsorok (közepes)</string>
-    <string name="fontBody">Betűtörzs</string>
-    <string name="fontBodyMedium">Betűtörzs (közepes)</string>
+    <string name="fontBody">Szövegtörzs</string>
+    <string name="fontBodyMedium">Szövegtörzs (közepes)</string>
     <string name="font_variant_italic">Dőlt betű</string>
     <string name="font_weight_thin">Vékony betű</string>
     <string name="font_weight_extra_light">Extra vékony</string>

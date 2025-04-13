@@ -25,7 +25,7 @@
     <string name="action_create">Tạo</string>
     <string name="action_backup">Sao lưu</string>
     <string name="action_restore">Khôi phục</string>
-    <string name="action_delete">Xoá</string>
+    <string name="action_delete">Xóa</string>
     <string name="action_reset">Cài lại</string>
     <string name="action_unlock">Mở khóa</string>
     <string name="action_lock">Khóa</string>
@@ -114,7 +114,7 @@
     <string name="home_screen_description">Bản tin, lưới, biểu tượng</string>
     <string name="dock_label">Khay</string>
     <string name="dock_description">Thanh tìm kiếm, số biểu tượng</string>
-    <string name="app_drawer_label">Ngăn ứng dụng</string>
+    <string name="app_drawer_label">Ngăn chứa ứng dụng</string>
     <string name="app_drawer_description">Ẩn ứng dụng, số cột, biểu tượng</string>
     <string name="drawer_search_label">Tìm kiếm của ngăn chứa</string>
     <string name="drawer_search_description">Gợi ý trang web, tìm kiếm chung</string>

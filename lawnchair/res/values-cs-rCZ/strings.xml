@@ -38,13 +38,13 @@
     <string name="action_copy">Kopírovat</string>
     <string name="action_paste">Vložit</string>
     <string name="action_done">Hotovo</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="select_all">Vybrat vše</string>
+    <string name="deselect_all">Zrušit výběr</string>
+    <string name="inverse_selection">Invertovat výběr</string>
     <string name="loading">Načítání…</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="download_update">Stáhnout aktualizaci</string>
+    <string name="install_update">Instalovat aktualizaci</string>
+    <string name="pro_updated">Jste aktuální!</string>
     <string name="managed_by_lawnchair">Spravováno aplikací Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Předvolby</string>
@@ -76,26 +76,26 @@
     <string name="background_opacity">Průhlednost Pozadí</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Zkopírováno do schránky</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Výsledek zkopírován do schránky</string>
     <string name="item_removed">Položka odebrána</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Co Zobrazit</string>
-    <string name="wallpapers">Wallpapers</string>
+    <string name="wallpapers">Tapety</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">Složky seznamu aplikací</string>
-    <string name="app_drawer_folder_settings">Drawer folder</string>
+    <string name="app_drawer_folder_settings">Složka menu aplikací</string>
     <string name="add_folder">Vytvořit složku</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="edit_folder">Editovat složku</string>
+    <string name="add_label">Přidat</string>
+    <string name="edit_label">Editovat</string>
     <string name="apply_label">Použít</string>
     <string name="delete_label">Odstranit</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
+    <string name="folder_list_note">Přejeďte doleva pro editaci, přejeďte prstem doprava pro odstranění, nebo klepněte pro aktualizaci položek</string>
     <string name="apps_in_folder_label">Hide folder apps</string>
-    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">My folder</string>
+    <string name="apps_in_folder_description">Aplikace zařazené do složek jsou vyloučeny ze seznamů aplikací</string>
+    <string name="folders_filter_duplicates">Zobrazit pouze unikátní aplikace</string>
+    <string name="my_folder_label">Moje složka</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -142,7 +142,7 @@
     <!--Overlay-->
     <string name="overlay_fade_in">Fade In</string>
     <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
+    <string name="app_closing_animation">Animace zavření aplikace</string>
     <string name="overlay_label">Overlay</string>
     <string name="overlay_none">None</string>
     <!--
@@ -301,7 +301,7 @@
     <string name="smartspace_widget_description">Co zobrazit</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalendář</string>
-    <string name="smartspace_date_and_time">Date &amp; time</string>
+    <string name="smartspace_date_and_time">Datum &amp; čas</string>
     <string name="smartspace_date">Datum</string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_time_format">Formát času</string>
@@ -314,14 +314,14 @@
     <string name="smartspace_now_playing">Právě hraje</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maximum number of targets</string>
-    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
-    <string name="smartspacer_settings">Smartspacer settings</string>
+    <string name="open_smartspacer_settings">Otevřít nastavení Smartspacer</string>
+    <string name="smartspacer_settings">Nastavení Smartspacer</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Klepnutím nastavíte</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Zobrazit na domovské obrazovce</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
+    <string name="smartspace_widget_toggle_description">At a Glanc je možné přidat ručně umístěním widgetu \"Lawnchair\"</string>
     <!-- List of available providers -->
     <string name="smartspace_mode_label">At a Glance provider</string>
     <string name="smartspace_mode_google">Google</string>
@@ -338,7 +338,7 @@
     <string name="news">Novinky</string>
     <string name="support">Podpora</string>
     <string name="product">Produkt</string>
-    <string name="design_and_development">Design &amp; development</string>
+    <string name="design_and_development">Design &amp; vývoj</string>
     <string name="development">Vývoj</string>
     <string name="quickswitch_maintenance">Nastavení QuickSwitch</string>
     <string name="devops">DevOps</string>
@@ -372,8 +372,8 @@
     <string name="gesture_swipe_down">Přejetí dolů</string>
     <string name="gesture_home_tap">Tlačítko domů</string>
     <string name="gesture_back_tap">Tlačítko zpět</string>
-    <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
+    <string name="gesture_swipe_left">Přejetí vlevo</string>
+    <string name="gesture_swipe_right">Přejetí vpravo</string>
     <string name="gesture_handler_no_op">Nedělat nic</string>
     <string name="gesture_handler_sleep">Spánek</string>
     <string name="gesture_handler_recents">Open Recents</string>
@@ -383,7 +383,7 @@
     <string name="gesture_handler_open_app_drawer">Otevřít seznam aplikací</string>
     <string name="gesture_handler_open_app_search">Otevřít vyhledávání aplikací</string>
     <string name="gesture_handler_open_search">Otevřít vyhledávání</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant">Otevřít asistenta</string>
     <string name="pick_app_for_gesture">Vybrat aplikaci</string>
     <string name="dt2s_admin_hint_title">Vyžaduje oprávnění administrátora</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
@@ -441,40 +441,40 @@
     <string name="popup_menu">Pop-up menu</string>
     <string name="popup_menu_items">Pop-up menu items</string>
     <string name="edit_menu_items">Edit pop-up menu items</string>
-    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
-    <string name="status_bar_label">Status bar</string>
-    <string name="show_status_bar">Show status bar</string>
-    <string name="dark_status_bar_label">Dark status bar</string>
+    <string name="wallpaper_quick_picker">Rychlý výběr tapety</string>
+    <string name="status_bar_label">Stavová lišta</string>
+    <string name="show_status_bar">Zobrazit stavovou lištu</string>
+    <string name="dark_status_bar_label">Tmavý stavový řádek</string>
     <string name="status_bar_clock_label">Hodiny ve stavové liště</string>
     <string name="status_bar_clock_description">Dynamicky skrýt hodiny ve stavové liště na první obrazovce</string>
-    <string name="home_screen_text_color">Text color</string>
+    <string name="home_screen_text_color">Barva textu</string>
     <string name="color_light">Světlé</string>
     <string name="color_dark">Tmavé</string>
-    <string name="force_rounded_widgets">Rounded corners</string>
-    <string name="allow_widget_overlap">Allow overlap</string>
-    <string name="force_widget_resize_label">Enforce widget resizing</string>
+    <string name="force_rounded_widgets">Zaoblené rohy</string>
+    <string name="allow_widget_overlap">Povolit překrytí</string>
+    <string name="force_widget_resize_label">Vynutit změnu velikosti widgetu</string>
     <string name="force_widget_resize_description">Povolit změnu velikosti widgetů, které jsou omezeny na určitou velikost</string>
     <string name="widget_unlimited_size_label">Remove size constraints</string>
     <string name="widget_unlimited_size_description">Odstranit minimální a maximální omezení velikosti widgetů</string>
     <!-- Dock settings -->
-    <string name="show_hotseat_title">Show dock</string>
+    <string name="show_hotseat_title">Zobrazit dok</string>
     <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
     <string name="search_bar_label">Search bar</string>
     <string name="search_bar_settings">Search bar settings</string>
     <string name="hotseat_mode_label">Search bar widget</string>
     <string name="hotseat_mode_disabled">Zakázáno</string>
-    <string name="hotseat_mode_google_search">Google Search bar</string>
+    <string name="hotseat_mode_google_search">Vyhledávání Google</string>
     <string name="qsb_hotseat_background_transparency">Průhlednost pozadí</string>
-    <string name="qsb_hotseat_stroke_width">Outline width</string>
-    <string name="qsb_hotseat_stroke_color">Outline color</string>
+    <string name="qsb_hotseat_stroke_width">Šířka obrysu</string>
+    <string name="qsb_hotseat_stroke_color">Barva obrysu</string>
     <string name="corner_radius_label">Poloměr rohu</string>
     <string name="apply_accent_color_label">Apply accent color</string>
     <string name="search_provider">Poskytovatel vyhledávání</string>
-    <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
-    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
-    <string name="hotseat_bg_vertical_inset_top">Top margin</string>
-    <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
+    <string name="hotseat_background">Zobrazit pozadí</string>
+    <string name="hotseat_bg_horizontal_inset_left">Levý okraj</string>
+    <string name="hotseat_bg_horizontal_inset_right">Pravý okraj</string>
+    <string name="hotseat_bg_vertical_inset_top">Horní okraj</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Spodní okraj</string>
     <string name="hotseat_bg_color_label">Background color</string>
     <string name="hotseat_bg_alpha">Průhlednost pozadí</string>
     <!-- Pause apps shortcut -->
@@ -486,7 +486,7 @@
     <string name="paused_apps_drop_target_label">Pozastavit aplikaci</string>
     <string name="dock_icons">Ikony doku</string>
     <string name="hotseat_bottom_space_label">Spodní mezera</string>
-    <string name="page_indicator_height">Page indicator height</string>
+    <string name="page_indicator_height">Výška indikátoru stránek</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Hledání aplikací</string>
     <string name="search_provider_sponsored_description">%1$s a Lawnchair má smlouvu o sdílení příjmů.\n\nVyhledávání pomocí %1$s pomáhá podpořit Lawnchair.</string>
@@ -538,7 +538,7 @@
     <string name="override_window_corner_radius_label">Vlastní poloměr rohů obrazovky</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">Hlavní panel</string>
-    <string name="enable_taskbar_experimental">Show taskbar (experimental)</string>
+    <string name="enable_taskbar_experimental">Povolit hlavní panel (experimentální)</string>
     <!--
 
     All Apps search
@@ -549,13 +549,13 @@
     <string name="all_apps_search_bar_hint">Vyhledat aplikace</string>
     <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Z webu</string>
-    <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
-    <string name="all_apps_search_result_files">Files from device</string>
-    <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
+    <string name="all_apps_search_result_contacts_from_device">Kontakty ze zařízení</string>
+    <string name="all_apps_search_result_files">Soubory ze zařízení</string>
+    <string name="all_apps_search_result_settings_entry_from_device">Nastavení ze zařízení</string>
     <string name="all_apps_search_market_message">Search for more apps</string>
     <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
-    <string name="clear_history">Clear search history</string>
+    <string name="clear_history">Vymazat historii hledání</string>
     <string name="search_input_action_clear_results">Clear search box</string>
     <!-- Search settings -->
     <string name="pref_category_search">Vyhledávání</string>
@@ -564,11 +564,11 @@
     <string name="fuzzy_search_title">Fuzzy search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches</string>
     <string name="suggestion_pref_screen_title">Návrhy</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
+    <string name="show_suggested_apps_at_drawer_top">Zobrazit navrhované aplikace v horní části seznamu aplikací</string>
     <string name="perform_wide_search_title">Device search</string>
-    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
+    <string name="perform_wide_search_description">Vyhledávání kontaktů, souborů a nastavení</string>
     <string name="show_hidden_apps_in_search_results">Zobrazit skryté aplikace ve vyhledávání</string>
-    <string name="hidden_apps_show_name_typed">If full name is typed</string>
+    <string name="hidden_apps_show_name_typed">Pokud je zadán celý název</string>
     <string name="app_search_algorithm">Způsob vyhledávání aplikací</string>
     <string name="search_algorithm_app_search">Hledání aplikací</string>
     <string name="search_algorithm_global_search_on_device">Způsob globálního vyhledávání na zařízení</string>
