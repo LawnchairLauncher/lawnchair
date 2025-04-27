@@ -208,7 +208,7 @@
     <string name="custom_icon_shape_edit">Muuda kohandatud ikooni kuju</string>
     <string name="custom_icon_shape_corner">Nurga kuju</string>
     <string name="custom_icon_shape_corner_round">Ümar</string>
-    <string name="custom_icon_shape_corner_squircle">Silutud</string>
+    <string name="custom_icon_shape_corner_squircle">Sujuv</string>
     <string name="custom_icon_shape_corner_cut">Lõigatud</string>
     <string name="custom_icon_shape_top_left">Üleval vasakul</string>
     <string name="custom_icon_shape_top_right">Üleval paremal</string>
