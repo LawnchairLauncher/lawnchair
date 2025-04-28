@@ -405,7 +405,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.2.1"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
-    def accompanistVersion = '0.37.2'
+    def accompanistVersion = '0.37.3'
     implementation "com.google.accompanist:accompanist-adaptive:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
