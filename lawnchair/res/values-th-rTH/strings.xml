@@ -43,7 +43,7 @@
     <string name="inverse_selection">Inverse selection</string>
     <string name="loading">กำลังโหลด…</string>
     <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
+    <string name="install_update">ติดตั้งอัปเดต</string>
     <string name="pro_updated">You\'re up-to-date!</string>
     <string name="managed_by_lawnchair">จัดการโดย Lawnchair</string>
     <!-- When mentioning settings UI -->
@@ -56,7 +56,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">อื่นๆ</string>
     <!-- Selection options -->
     <string name="dynamic">ไดนามิก</string>
     <string name="presets">ค่าที่ตั้งไว้แล้ว</string>
@@ -72,7 +72,7 @@
     <string name="layout">การจัดหน้า</string>
     <!-- Generic styling options -->
     <string name="wallpaper">ภาพพื้นหลัง</string>
-    <string name="style">Style</string>
+    <string name="style">สไตล์</string>
     <string name="background_opacity">ความทึบของพื้นหลัง</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">คัดลอกไปยังคลิปบอร์ดแล้ว</string>
@@ -85,10 +85,10 @@
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">App drawer folders</string>
     <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="add_folder">สร้างโฟลเดอร์</string>
+    <string name="edit_folder">แก้ไขโฟลเดอร์</string>
+    <string name="add_label">เพิ่ม</string>
+    <string name="edit_label">แก้ไข</string>
     <string name="apply_label">ใช้งานทันที</string>
     <string name="delete_label">ลบ</string>
     <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
