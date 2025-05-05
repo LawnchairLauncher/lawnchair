@@ -2,7 +2,6 @@ package app.lawnchair.gestures
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
@@ -10,64 +9,53 @@ import android.view.View
 import android.view.View.OnTouchListener
 import kotlin.math.abs
 
-abstract class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
-    private val mGestureDetector = GestureDetector(ctx, GestureListener())
+open class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
+    private val mGestureDetector: GestureDetector
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         return mGestureDetector.onTouchEvent(event)
     }
 
-    inner class GestureListener : SimpleOnGestureListener() {
-
-        private fun shouldReactToSwipe(diff: Float, velocity: Float): Boolean = abs(diff) > SWIPE_THRESHOLD && abs(velocity) > SWIPE_VELOCITY_THRESHOLD
+    private inner class GestureListener : SimpleOnGestureListener() {
 
         override fun onDown(e: MotionEvent): Boolean {
             return true
         }
 
-        override fun onFling(
-            e1: MotionEvent?,
-            e2: MotionEvent,
-            velocityX: Float,
-            velocityY: Float,
-        ): Boolean {
-            val diffY = e2.y - (e1?.y ?: 0f)
-            val diffX = e2.x - (e1?.x ?: 0f)
+        private fun shouldReactToSwipe(diff: Float, velocity: Float): Boolean = abs(diff) > SWIPE_THRESHOLD && abs(velocity) > SWIPE_VELOCITY_THRESHOLD
 
-            Log.d("GESTURE_DETECTION", "onFling: y " + shouldReactToSwipe(diffY, velocityY))
-            Log.d("GESTURE_DETECTION", "onFling: X " + shouldReactToSwipe(diffX, velocityX))
+        override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+            return try {
+                val diffY = e2.y - (e1?.y ?: 0f)
+                val diffX = e2.x - (e1?.x ?: 0f)
 
-            return when {
-                shouldReactToSwipe(diffY, velocityY) -> {
-                    if (diffY < 0) {
-                        Log.d("GESTURE_DETECTION", "Swipe Up Detected")
-                        onSwipeTop()
-                    } else {
-                        Log.d("GESTURE_DETECTION", "Swipe Down Detected")
-                        onSwipeDown()
+                when {
+                    abs(diffX) > abs(diffY) && shouldReactToSwipe(diffX, velocityX) -> {
+                        if (diffX > 0) onSwipeRight() else onSwipeLeft()
+                        true
                     }
-                    true
-                }
-                shouldReactToSwipe(diffX, velocityX) -> {
-                    if (diffX > 0) {
-                        Log.d("GESTURE_DETECTION", "Swipe Right Detected")
-                        onSwipeRight()
-                    } else {
-                        Log.d("GESTURE_DETECTION", "Swipe Left Detected")
-                        onSwipeLeft()
+                    shouldReactToSwipe(diffY, velocityY) -> {
+                        if (diffY > 0) onSwipeBottom() else onSwipeTop()
+                        true
                     }
-                    true
+                    else -> false
                 }
-                else -> false
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
             }
         }
     }
 
-    abstract fun onSwipeRight()
-    abstract fun onSwipeLeft()
-    abstract fun onSwipeTop()
-    abstract fun onSwipeDown()
+    fun onSwipeRight() {}
+    fun onSwipeLeft() {}
+    fun onSwipeTop() {}
+    open fun onSwipeBottom() {}
+
+    init {
+        mGestureDetector = GestureDetector(ctx, GestureListener())
+    }
 
     companion object {
         private const val SWIPE_THRESHOLD = 100
