@@ -29,7 +29,7 @@ dependencies {
     ksp "com.google.dagger:hilt-compiler:$daggerVersion"
 
     implementation "androidx.concurrent:concurrent-futures:1.2.0"
-    implementation "androidx.lifecycle:lifecycle-common:2.8.7"
+    implementation "androidx.lifecycle:lifecycle-common:2.9.0"
 
     compileOnly projects.androidxLib
 }
