@@ -87,7 +87,7 @@ fun LauncherPopupPreference(
         DraggablePreferenceGroup(
             label = stringResource(R.string.popup_menu_items),
             items = optionsList,
-            defaultList = LauncherOptionsPopup.DEFAULT_ORDER.toLauncherOptions(),
+            defaultList = LauncherOptionsPopup.DEFAULT_ORDER,
             onOrderChange = {
                 optionsList = it
                 optionsPref.onChange(it.toOptionOrderString())
@@ -106,7 +106,7 @@ fun LauncherPopupPreference(
             DraggableSwitchPreference(
                 label = stringResource(metadata.label),
                 description = if (!enabled && item.identifier != "home_settings") stringResource(R.string.home_screen_locked) else null,
-                checked = item.isEnabled,
+                checked = if (!enabled && item.identifier != "home_settings") false else item.isEnabled,
                 onCheckedChange = {
                     optionsList[index].isEnabled = it
                     optionsPref.onChange(optionsList.toOptionOrderString())

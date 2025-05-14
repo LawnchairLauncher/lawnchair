@@ -44,7 +44,7 @@
     <string name="loading">読み込み中…</string>
     <string name="download_update">アップデートをダウンロード</string>
     <string name="install_update">アップデートのインストール</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="pro_updated">最新です！</string>
     <string name="managed_by_lawnchair">Lawnchair に管理されています</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">設定</string>
@@ -85,8 +85,8 @@
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">アプリドロワーの列数</string>
     <string name="app_drawer_folder_settings">ドロワーフォルダ</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
+    <string name="add_folder">フォルダーを作成する</string>
+    <string name="edit_folder">フォルダーを編集する</string>
     <string name="add_label">追加</string>
     <string name="edit_label">編集</string>
     <string name="apply_label">適用</string>

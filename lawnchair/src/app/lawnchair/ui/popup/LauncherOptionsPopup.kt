@@ -1,6 +1,5 @@
 package app.lawnchair.ui.popup
 
-import android.content.Context
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -14,25 +13,15 @@ import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.setBlocking
 
 object LauncherOptionsPopup {
-    const val DEFAULT_ORDER = "+carousel|-lock|-edit_mode|+wallpaper|+widgets|+home_settings|-sys_settings"
-
-    fun disableUnavailableItems(
-        context: Context,
-    ) {
-        val prefs2 = getInstance(context)
-        val optionOrder = prefs2.launcherPopupOrder.firstBlocking()
-
-        prefs2.launcherPopupOrder.setBlocking(
-            optionOrder.split("|")
-                .joinToString("|") { item ->
-                    when (item) {
-                        "+edit_mode" -> "-edit_mode"
-                        "+widgets" -> "-widgets"
-                        else -> item
-                    }
-                },
-        )
-    }
+    val DEFAULT_ORDER = listOf(
+        LauncherOptionPopupItem("carousel", true),
+        LauncherOptionPopupItem("lock", false),
+        LauncherOptionPopupItem("edit_mode", false),
+        LauncherOptionPopupItem("wallpaper", true),
+        LauncherOptionPopupItem("widgets", true),
+        LauncherOptionPopupItem("home_settings", true),
+        LauncherOptionPopupItem("sys_settings", false),
+    )
 
     fun restoreMissingPopupOptions(
         launcher: Launcher,
@@ -40,12 +29,10 @@ object LauncherOptionsPopup {
         val prefs2 = getInstance(launcher)
 
         val currentOrder = prefs2.launcherPopupOrder.firstBlocking()
-
-        val defaultOptions = DEFAULT_ORDER.toLauncherOptions()
         val currentOptions = currentOrder.toLauncherOptions()
 
         // check for missing items in current options; if so, add them
-        val missingItems = defaultOptions.filter { defaultItem ->
+        val missingItems = DEFAULT_ORDER.filter { defaultItem ->
             defaultItem.identifier !in currentOptions.map { it.identifier }
         }
 
@@ -68,7 +55,8 @@ object LauncherOptionsPopup {
     ): ArrayList<OptionItem> {
         val prefs2 = getInstance(launcher!!)
         val lockHomeScreen = prefs2.lockHomeScreen.firstBlocking()
-        val optionOrder = prefs2.launcherPopupOrder.firstBlocking()
+        val optionOrder = prefs2
+            .launcherPopupOrder.firstBlocking().toLauncherOptions()
 
         val wallpaperResString =
             if (Utilities.existsStyleWallpapers(launcher)) R.string.styles_wallpaper_button_text else R.string.wallpapers
@@ -121,18 +109,19 @@ object LauncherOptionsPopup {
         )
 
         val options = ArrayList<OptionItem>()
-        optionOrder.split("|").forEach { item ->
-            val (identifier, isEnabled) = when {
-                item.startsWith("+") -> item.drop(1) to true
-                item.startsWith("-") -> item.drop(1) to false
-                else -> item to true // Default to enabled if no prefix
+        optionOrder
+            .filter {
+                (it.isEnabled && it.identifier != "carousel")
             }
-            if (isEnabled && identifier != "carousel") {
-                optionsList[identifier]?.let { option ->
-                    options.add(option)
+            .filter {
+                if (lockHomeScreen) {
+                    it.identifier != "edit_mode" && it.identifier != "widgets"
+                } else {
+                    true
                 }
             }
-        }
+            .mapNotNull { optionsList[it.identifier] }
+            .forEach { options.add(it) }
 
         return options
     }

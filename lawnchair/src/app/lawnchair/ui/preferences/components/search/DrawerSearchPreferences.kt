@@ -22,6 +22,7 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
+import app.lawnchair.search.algorithms.data.CustomWebSearchProvider
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearchPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
@@ -180,10 +181,14 @@ private fun LocalSearchSettings(
         maxCountRange = 3..10,
         label = stringResource(id = R.string.search_pref_result_web_title),
         maxCountLabel = stringResource(id = R.string.max_suggestion_result_count_title),
-        description = stringResource(
-            id = R.string.search_pref_result_web_provider_description,
-            webSuggestionProvider,
-        ),
+        description = if (webSuggestionProvider == stringResource(CustomWebSearchProvider.label)) {
+            webSuggestionProvider
+        } else {
+            stringResource(
+                id = R.string.search_pref_result_web_provider_description,
+                webSuggestionProvider,
+            )
+        },
     ) {
         SliderPreference(
             label = stringResource(id = R.string.max_web_suggestion_delay),
@@ -194,6 +199,8 @@ private fun LocalSearchSettings(
         )
         WebSearchProvider(
             adapter = prefs2.webSuggestionProvider.getAdapter(),
+            urlAdapter = prefs2.webSuggestionProviderUrl.getAdapter(),
+            suggestionsUrlAdapter = prefs2.webSuggestionProviderSuggestionsUrl.getAdapter(),
         )
     }
     SearchSuggestionPreference(

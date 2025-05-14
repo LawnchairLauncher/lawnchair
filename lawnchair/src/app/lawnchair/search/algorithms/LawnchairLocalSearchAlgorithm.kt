@@ -18,6 +18,7 @@ import app.lawnchair.search.adapter.SearchTargetFactory
 import app.lawnchair.search.adapter.WEB_SUGGESTION
 import app.lawnchair.search.algorithms.data.Calculation
 import app.lawnchair.search.algorithms.data.ContactInfo
+import app.lawnchair.search.algorithms.data.CustomWebSearchProvider
 import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
 import app.lawnchair.search.algorithms.data.SettingInfo
@@ -50,12 +51,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import okhttp3.OkHttpClient
 
 class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
     private val searchTargetFactory = SearchTargetFactory(context)
+
+    private val okHttpClient = OkHttpClient()
 
     private var hiddenApps: Set<String> = emptySet()
 
@@ -65,6 +69,8 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
     private var enableFuzzySearch = false
     private var useWebSuggestions = true
     private var webSuggestionsProvider = ""
+    private var webSuggestionsProviderUrl = ""
+    private var webSuggestionProviderSuggestionsUrl = ""
 
     private val prefs: PreferenceManager = PreferenceManager.getInstance(context)
     private val pref2 = PreferenceManager2.getInstance(context)
@@ -95,6 +101,12 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
         pref2.webSuggestionProvider.onEach(launchIn = coroutineScope) {
             webSuggestionsProvider = it.toString()
+        }
+        pref2.webSuggestionProviderUrl.onEach(launchIn = coroutineScope) {
+            webSuggestionsProviderUrl = it
+        }
+        pref2.webSuggestionProviderSuggestionsUrl.onEach(launchIn = coroutineScope) {
+            webSuggestionProviderSuggestionsUrl = it
         }
 
         pref2.maxAppSearchResultCount.onEach(launchIn = coroutineScope) {
@@ -159,7 +171,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         getLocalSearchResults(query, prefs).let { localResults ->
             allResults.addAll(localResults)
         }
-        getSearchLinks(query).let { otherResults ->
+        getSearchLinks(query, webSuggestionsProviderUrl).let { otherResults ->
             allResults.addAll(otherResults)
         }
 
@@ -193,6 +205,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
     private fun getSearchLinks(
         query: String,
+        suggestionUrl: String,
     ): List<SearchTargetCompat> {
         val searchTargets = mutableListOf<SearchTargetCompat>()
 
@@ -202,6 +215,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                 searchTargetFactory.createWebSearchTarget(
                     query,
                     webSuggestionsProvider,
+                    suggestionUrl,
                 ),
             )
         }
@@ -254,6 +268,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                     searchTargetFactory.createWebSuggestionsTarget(
                         it.resultData as String,
                         suggestionProvider,
+                        webSuggestionsProviderUrl,
                     )
                 },
             )
@@ -377,7 +392,19 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                 val result = withTimeoutOrNull(timeout) {
                     if (prefs.searchResultStartPageSuggestion.get()) {
                         WebSearchProvider.fromString(webSuggestionsProvider)
-                            .getSuggestions(query, maxWebSuggestionsCount).map {
+                            .let {
+                                if (it is CustomWebSearchProvider) {
+                                    it.getCustomSuggestions(
+                                        query,
+                                        maxWebSuggestionsCount,
+                                        okHttpClient,
+                                        webSuggestionProviderSuggestionsUrl,
+                                    )
+                                } else {
+                                    it.getSuggestions(query, maxWebSuggestionsCount)
+                                }
+                            }
+                            .map {
                                 SearchResult(
                                     WEB_SUGGESTION,
                                     it,

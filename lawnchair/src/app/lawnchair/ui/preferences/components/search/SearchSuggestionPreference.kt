@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -46,7 +47,7 @@ fun SearchSuggestionPreference(
     description: String? = null,
     permissionState: PermissionState? = null,
     permissionRationale: String? = null,
-    content: @Composable (() -> Unit)? = null,
+    content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     val isGranted = permissionState?.status?.isGranted ?: true
 
@@ -85,7 +86,7 @@ fun SearchSuggestionPreference(
     isGranted: Boolean = true,
     description: String? = null,
     permissionRationale: String? = null,
-    content: @Composable (() -> Unit)? = null,
+    content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     SearchSuggestionPreference(
         checked = adapter.state.value,
@@ -116,7 +117,7 @@ fun SearchSuggestionPreference(
     isGranted: Boolean = true,
     description: String? = null,
     permissionRationale: String? = null,
-    content: @Composable (() -> Unit)? = null,
+    content: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     SearchSuggestionsSwitchPreference(
         label = label,
@@ -156,7 +157,7 @@ private fun BottomSheetContent(
     onHide: () -> Unit,
     onRequestPermission: (() -> Unit)?,
     permissionRationale: String?,
-    content: @Composable (() -> Unit)?,
+    content: @Composable (ColumnScope.() -> Unit)?,
 ) {
     ModalBottomSheetContent(
         buttons = {
@@ -200,7 +201,9 @@ private fun BottomSheetContent(
                         valueRange = maxCountRange,
                         step = 1,
                     )
-                    content?.invoke()
+                    if (content != null) {
+                        content()
+                    }
                 }
             }
             if (!isPermissionGranted) {

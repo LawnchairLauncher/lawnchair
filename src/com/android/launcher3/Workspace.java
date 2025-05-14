@@ -1208,7 +1208,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             View touchedView = findViewAtPosition(ev.getX(), ev.getY());
-            if (touchedView instanceof ShortcutAndWidgetContainer container) {
+            Boolean iconSwipeGestures = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getIconSwipeGestures());
+            
+            if (iconSwipeGestures && touchedView instanceof ShortcutAndWidgetContainer container) {
                 container.onTouchEvent(ev);
                 return false;
             }

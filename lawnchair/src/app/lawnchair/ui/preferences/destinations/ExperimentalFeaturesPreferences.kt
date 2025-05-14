@@ -46,6 +46,11 @@ fun ExperimentalFeaturesPreferences(
                 label = stringResource(id = R.string.always_reload_icons_label),
                 description = stringResource(id = R.string.always_reload_icons_description),
             )
+            SwitchPreference(
+                adapter = prefs2.iconSwipeGestures.getAdapter(),
+                label = stringResource(R.string.icon_swipe_gestures),
+                description = stringResource(R.string.icon_swipe_gestures_description),
+            )
 
             val enableWallpaperBlur = prefs.enableWallpaperBlur.getAdapter()
 

@@ -47,6 +47,7 @@ import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.ui.popup.LauncherOptionsPopup
+import app.lawnchair.ui.popup.toOptionOrderString
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import app.lawnchair.ui.preferences.data.liveinfo.LiveInformationManager
 import app.lawnchair.util.kotlinxJson
@@ -294,11 +295,6 @@ class PreferenceManager2 private constructor(private val context: Context) :
     val lockHomeScreen = preference(
         key = booleanPreferencesKey(name = "lock_home_screen"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen),
-        onSet = {
-            if (it) {
-                LauncherOptionsPopup.disableUnavailableItems(context)
-            }
-        },
     )
 
     val legacyPopupOptionsMigrated = preference(
@@ -308,7 +304,7 @@ class PreferenceManager2 private constructor(private val context: Context) :
 
     val launcherPopupOrder = preference(
         key = stringPreferencesKey(name = "launcher_popup_order"),
-        defaultValue = LauncherOptionsPopup.DEFAULT_ORDER,
+        defaultValue = LauncherOptionsPopup.DEFAULT_ORDER.toOptionOrderString(),
         onSet = { reloadHelper.reloadGrid() },
     )
 
@@ -507,6 +503,16 @@ class PreferenceManager2 private constructor(private val context: Context) :
         onSet = { reloadHelper.recreate() },
     )
 
+    val webSuggestionProviderUrl = preference(
+        key = stringPreferencesKey(name = "web_suggestion_provider_url"),
+        defaultValue = "https://google.com/search?q=%s",
+    )
+
+    val webSuggestionProviderSuggestionsUrl = preference(
+        key = stringPreferencesKey(name = "web_suggestions_provider_suggestions_url"),
+        defaultValue = "https://google.com/complete/search?client=chrome&q=%s",
+    )
+
     val maxAppSearchResultCount = preference(
         key = intPreferencesKey(name = "max_search_result_count"),
         defaultValue = resourceProvider.getInt(R.dimen.config_default_search_max_result_count),
@@ -672,6 +678,11 @@ class PreferenceManager2 private constructor(private val context: Context) :
         key = booleanPreferencesKey(name = "enable_label_dock"),
         defaultValue = false,
         onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val iconSwipeGestures = preference(
+        key = booleanPreferencesKey(name = "icon_swipe_gestures"),
+        defaultValue = false,
     )
 
     val doubleTapGestureHandler = serializablePreference<GestureHandlerConfig>(
