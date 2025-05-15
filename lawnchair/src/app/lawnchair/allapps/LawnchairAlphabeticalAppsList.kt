@@ -2,11 +2,10 @@ package app.lawnchair.allapps
 
 import android.content.Context
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
-import app.lawnchair.data.factory.ViewModelFactory
 import app.lawnchair.data.folder.model.FolderOrderUtils
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.flowerpot.Flowerpot
@@ -40,7 +39,7 @@ class LawnchairAlphabeticalAppsList<T>(
     private val prefs2 = PreferenceManager2.getInstance(context)
     private val prefs = PreferenceManager.getInstance(context)
 
-    private var viewModel: FolderViewModel
+    private val viewModel: FolderViewModel by (context as ComponentActivity).viewModels()
     private var folderList = mutableListOf<FolderInfo>()
     private val filteredList = mutableListOf<AppInfo>()
 
@@ -57,9 +56,6 @@ class LawnchairAlphabeticalAppsList<T>(
         } catch (t: Throwable) {
             Log.w(TAG, "Failed to initialize hidden apps", t)
         }
-
-        val factory = ViewModelFactory(context) { FolderViewModel(it) }
-        viewModel = ViewModelProvider(context as ViewModelStoreOwner, factory)[FolderViewModel::class.java]
         observeFolders()
     }
 

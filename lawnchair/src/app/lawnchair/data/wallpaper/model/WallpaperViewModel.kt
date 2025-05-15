@@ -1,10 +1,10 @@
 package app.lawnchair.data.wallpaper.model
 
+import android.app.Application
 import android.app.WallpaperManager
-import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.data.wallpaper.Wallpaper
 import app.lawnchair.wallpaper.WallpaperManagerCompat
@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class WallpaperViewModel(context: Context) : ViewModel() {
-    private val wallpaperManagerCompat = WallpaperManagerCompat.INSTANCE.get(context)
+class WallpaperViewModel(application: Application) : AndroidViewModel(application) {
+    private val wallpaperManagerCompat = WallpaperManagerCompat.INSTANCE.get(application)
 
     private val _wallpapers = MutableLiveData<List<Wallpaper>>()
     val wallpapers: LiveData<List<Wallpaper>> = _wallpapers

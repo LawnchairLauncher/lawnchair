@@ -1,9 +1,9 @@
 ﻿package app.lawnchair.data.folder.model
 
-import android.content.Context
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.data.folder.service.FolderService
@@ -20,9 +20,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class FolderViewModel(
-    context: Context,
-    private val repository: FolderService = FolderService.INSTANCE.get(context),
-) : ViewModel() {
+    application: Application,
+) : AndroidViewModel(application) {
+    private val repository: FolderService = FolderService.INSTANCE.get(application)
+
     val folders: StateFlow<List<FolderInfo>> = repository.getFoldersFlow()
         .distinctUntilChanged()
         .catch { exception ->
@@ -40,7 +41,7 @@ class FolderViewModel(
     private val _folderInfo = MutableStateFlow<FolderInfo?>(null)
     val folderInfo = _folderInfo.asStateFlow()
 
-    private val reloadHelper = ReloadHelper(context)
+    private val reloadHelper = ReloadHelper(application)
 
     // yeah these should be separate UI actions
     fun setFolderInfo(folderInfoId: Int, hasId: Boolean) {

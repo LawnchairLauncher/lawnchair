@@ -32,7 +32,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import app.lawnchair.data.factory.ViewModelFactory
 import app.lawnchair.data.folder.model.FolderOrderUtils
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.preferences.getAdapter
@@ -76,7 +75,7 @@ fun AppDrawerFolderPreferenceItem(
 @Composable
 fun AppDrawerFoldersPreference(
     modifier: Modifier = Modifier,
-    viewModel: FolderViewModel = viewModel(factory = ViewModelFactory(LocalContext.current) { FolderViewModel(it) }),
+    viewModel: FolderViewModel = viewModel(),
 ) {
     val navController = LocalNavController.current
     val folders by viewModel.folders.collectAsStateWithLifecycle()

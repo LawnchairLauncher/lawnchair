@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import app.lawnchair.data.factory.ViewModelFactory
 import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
@@ -46,7 +45,7 @@ import com.android.launcher3.model.data.ItemInfo
 fun SelectAppsForDrawerFolder(
     folderInfoId: Int?,
     modifier: Modifier = Modifier,
-    viewModel: FolderViewModel = viewModel(factory = ViewModelFactory(LocalContext.current) { FolderViewModel(it) }),
+    viewModel: FolderViewModel = viewModel(),
 ) {
     if (folderInfoId == null) {
         val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher

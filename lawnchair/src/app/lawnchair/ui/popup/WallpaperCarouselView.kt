@@ -14,13 +14,12 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.data.factory.ViewModelFactory
 import app.lawnchair.data.wallpaper.Wallpaper
 import app.lawnchair.data.wallpaper.model.WallpaperViewModel
 import app.lawnchair.views.component.IconFrame
@@ -39,7 +38,7 @@ class WallpaperCarouselView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private val viewModel: WallpaperViewModel
+    private val viewModel: WallpaperViewModel by (context as ComponentActivity).viewModels()
     private val deviceProfile = ActivityContext.lookupContext<LawnchairLauncher>(context).deviceProfile
     private var currentItemIndex = 0
     private val iconFrame = IconFrame(context).apply {
@@ -51,12 +50,6 @@ class WallpaperCarouselView @JvmOverloads constructor(
     init {
         orientation = HORIZONTAL
         addView(loadingView)
-        val factory = ViewModelFactory(context) { WallpaperViewModel(it) }
-        viewModel = ViewModelProvider(
-            context as ViewModelStoreOwner,
-            factory,
-        )[WallpaperViewModel::class.java]
-
         observeWallpapers()
     }
 
