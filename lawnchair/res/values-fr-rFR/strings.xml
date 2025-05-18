@@ -137,6 +137,8 @@
     <string name="workspace_increase_max_grid_size_description">Augmenter la taille maximale autorisée de la grille de 10 x 10 à 20 x 20</string>
     <string name="always_reload_icons_label">Toujours recharger les icônes</string>
     <string name="always_reload_icons_description">Éviter d\'utiliser les icônes en cache provenant des packs d\'icônes</string>
+    <string name="icon_swipe_gestures">Gestes de balayage des icônes</string>
+    <string name="icon_swipe_gestures_description">Effectuez des actions en balayant les icônes vers la gauche ou vers la droite</string>
     <string name="recents_lock_unlock">Verrouiller/déverrouiller</string>
     <string name="recents_lock_unlock_description">Empêcher l\'appli sélectionnée d\'être fermée lors d\'un appui sur « Tout effacer »</string>
     <!--Overlay-->
@@ -489,6 +491,7 @@
     <string name="page_indicator_height">Hauteur de l\'indicateur de page</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Recherche d\'applis</string>
+    <string name="search_provider_custom">Personnalisé</string>
     <string name="search_provider_sponsored_description">%1$s et Lawnchair ont signé un accord de partage des revenus.\n\nEn effectuant vos recherches avec %1$s, vous soutenez Lawnchair.</string>
     <string name="app_label">Application</string>
     <string name="website_label">Site Web</string>
@@ -553,6 +556,7 @@
     <string name="all_apps_search_market_message">Rechercher plus d\'applis</string>
     <string name="all_apps_search_on_web_message">Rechercher avec <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Aucun magasin d\'applis ni navigateur installé</string>
+    <string name="all_apps_search_on_web_general">Rechercher sur le Web</string>
     <string name="clear_history">Effacer l\'historique des recherches</string>
     <string name="search_input_action_clear_results">Effacer la barre de recherche</string>
     <!-- Search settings -->
@@ -567,10 +571,17 @@
     <string name="perform_wide_search_description">Recherchez parmi les contacts, fichiers et paramètres de votre téléphone</string>
     <string name="show_hidden_apps_in_search_results">Faire apparaître les applis masquées dans les résultats de recherche</string>
     <string name="hidden_apps_show_name_typed">Si le nom complet est saisi</string>
+    <string name="allapps_web_suggestion_provider_label">Fournisseur de suggestions Web</string>
+    <string name="allapps_use_web_suggestion_icon_label">Afficher l\'icône du fournisseur de suggestions Web dans la barre de recherche</string>
+    <string name="allapps_match_qsb_style_label">Utiliser les actions de la barre de recherche du dock</string>
+    <string name="allapps_match_qsb_style_description">Appuyer sur la barre de recherche du dock ouvrira désormais l\'interface de recherche du tiroir des applis</string>
     <string name="app_search_algorithm">Algorithme de recherche</string>
     <string name="search_algorithm_app_search">Recherche d\'applications</string>
     <string name="search_algorithm_global_search_on_device">Recherche globale (sur l\'appareil)</string>
     <string name="search_algorithm_global_search_via_asi">Recherche globale (via ASI)</string>
+    <string name="custom_search_url">URL personnalisée du moteur de recherche</string>
+    <string name="custom_search_suggestions_url">URL personnalisée des suggestions de recherche</string>
+    <string name="custom_search_input_hint">&#37;s sera remplacé par le texte à rechercher</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Afficher dans les résultats de recherche</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Applis et raccourcis</string>
@@ -598,8 +609,4 @@
     <string name="warn_contact_permission_content">Pour rechercher des contacts, accordez à Lawnchair les autorisations Contacts et Téléphone</string>
     <string name="warn_files_permission_content">Pour rechercher des fichiers, autorisez Lawnchair à accéder au stockage</string>
     <string name="grant_requested_permissions">Accorder les autorisations</string>
-    <string name="allapps_web_suggestion_provider_label">Fournisseur de suggestions Web</string>
-    <string name="allapps_use_web_suggestion_icon_label">Afficher l\'icône du fournisseur de suggestions Web dans la barre de recherche</string>
-    <string name="allapps_match_qsb_style_label">Utiliser les actions de la barre de recherche du dock</string>
-    <string name="allapps_match_qsb_style_description">Appuyer sur la barre de recherche du dock ouvrira désormais l\'interface de recherche du tiroir des applis</string>
 </resources>

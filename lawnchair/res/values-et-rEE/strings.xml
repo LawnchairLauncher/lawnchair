@@ -137,6 +137,8 @@
     <string name="workspace_increase_max_grid_size_description">Suurenda avakuva maksimaalset lubatud ruudustiku suurust 10 x 10 > 20 x 20</string>
     <string name="always_reload_icons_label">Laadi ikoonid alati uuesti</string>
     <string name="always_reload_icons_description">Väldi ikoonipakettidest vahemällu salvestatud ikoonide kasutamist</string>
+    <string name="icon_swipe_gestures">Icon swipe gestures</string>
+    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="recents_lock_unlock">Lukusta/ava</string>
     <string name="recents_lock_unlock_description">Takista valitud rakenduse sulgemine, kui vajutada nuppu \"Kustuta kõik\"</string>
     <!--Overlay-->
@@ -489,6 +491,7 @@
     <string name="page_indicator_height">Lehekülje indikaatori kõrgus</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Rakenduse otsing</string>
+    <string name="search_provider_custom">Kohandatud</string>
     <string name="search_provider_sponsored_description">%1$s ja Lawnchairil on tulu jagamise leping.\n\nOtsing %1$s abil aitab Lawnchairi toetada.</string>
     <string name="app_label">Rakendus</string>
     <string name="website_label">Veebileht</string>
@@ -553,6 +556,7 @@
     <string name="all_apps_search_market_message">Otsi rohkem rakendusi</string>
     <string name="all_apps_search_on_web_message">Otsi kasutades <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Rakendustepoodi ega brauserit pole paigaldatud</string>
+    <string name="all_apps_search_on_web_general">Search on the web</string>
     <string name="clear_history">Tühjenda otsinguajalugu</string>
     <string name="search_input_action_clear_results">Tühjenda otsingukast</string>
     <!-- Search settings -->
@@ -567,10 +571,17 @@
     <string name="perform_wide_search_description">Otsi oma telefoni kontaktidest, failidest ja seadetest</string>
     <string name="show_hidden_apps_in_search_results">Kuva peidetud rakendused otsingutulemustes</string>
     <string name="hidden_apps_show_name_typed">Kui sisestatakse täisnimi</string>
+    <string name="allapps_web_suggestion_provider_label">Veebisoovituste pakkuja</string>
+    <string name="allapps_use_web_suggestion_icon_label">Kuva veebisoovituste pakkuja ikoon otsinguribal</string>
+    <string name="allapps_match_qsb_style_label">Sobita dokk otsinguriba toimingutega</string>
+    <string name="allapps_match_qsb_style_description">Doki otsinguribal klõpsamine avab nüüd rakenduste sahtli otsingu</string>
     <string name="app_search_algorithm">Otsingu algorütm</string>
     <string name="search_algorithm_app_search">Rakenduse otsing</string>
     <string name="search_algorithm_global_search_on_device">Globaalne otsing (seadmes)</string>
     <string name="search_algorithm_global_search_via_asi">Globaalne otsing (ASI kaudu)</string>
+    <string name="custom_search_url">Custom search engine URL</string>
+    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
+    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Kuva otsingutulemustes</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Rakendused ja otseteed</string>
@@ -598,8 +609,4 @@
     <string name="warn_contact_permission_content">Kontaktide otsimiseks luba rakendusele Lawnchair ligipääs kontaktidele ja telefonile</string>
     <string name="warn_files_permission_content">Failidede otsimiseks luba rakendusele Lawnchair ligipääs salvestusruumile</string>
     <string name="grant_requested_permissions">Lubade andmine</string>
-    <string name="allapps_web_suggestion_provider_label">Veebisoovituste pakkuja</string>
-    <string name="allapps_use_web_suggestion_icon_label">Kuva veebisoovituste pakkuja ikoon otsinguribal</string>
-    <string name="allapps_match_qsb_style_label">Sobita dokk otsinguriba toimingutega</string>
-    <string name="allapps_match_qsb_style_description">Doki otsinguribal klõpsamine avab nüüd rakenduste sahtli otsingu</string>
 </resources>

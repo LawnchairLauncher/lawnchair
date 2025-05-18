@@ -137,6 +137,8 @@
     <string name="workspace_increase_max_grid_size_description">İzin verilen maksimum na ekran ızgara boyutunu 10 x 10\'dan 20 x 20\'ye artırın</string>
     <string name="always_reload_icons_label">Simgeleri her zaman yeniden yükle</string>
     <string name="always_reload_icons_description">Ön belleklenmiş simgeleri kullanmaktan kaçın</string>
+    <string name="icon_swipe_gestures">Icon swipe gestures</string>
+    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="recents_lock_unlock">Kilitle/kilidi aç</string>
     <string name="recents_lock_unlock_description">\"Tümünü Temizle\"ye basıldığında seçilen uygulamanın kapanmasını engelle</string>
     <!--Overlay-->
@@ -489,6 +491,7 @@
     <string name="page_indicator_height">Sayfa gösterge yüksekliği</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">Uygulama araması</string>
+    <string name="search_provider_custom">Özel</string>
     <string name="search_provider_sponsored_description">Lawnchar\'ın %1$s ile sponsorluk anlaşması vardır\n\n %1$s ile arama yaparak Lawnchair\'a katkı sağlayabilirsiniz.</string>
     <string name="app_label">Uygulama</string>
     <string name="website_label">Web sitesi</string>
@@ -553,6 +556,7 @@
     <string name="all_apps_search_market_message">Daha fazla uygulama arayın</string>
     <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g> üzerinde ara</string>
     <string name="error_no_market_or_browser_installed">Yüklü uygulama mağazası veya tarayıcı yok</string>
+    <string name="all_apps_search_on_web_general">Search on the web</string>
     <string name="clear_history">Arama geçmişini temizle</string>
     <string name="search_input_action_clear_results">Arama kutusunu temizle</string>
     <!-- Search settings -->
@@ -567,10 +571,17 @@
     <string name="perform_wide_search_description">Telefonunuzdaki kişiler, dosyalar ve ayarlarda arama yapın</string>
     <string name="show_hidden_apps_in_search_results">Arama sonuçlarında gizli uygulamaları göster</string>
     <string name="hidden_apps_show_name_typed">Tam ad yazılırsa</string>
+    <string name="allapps_web_suggestion_provider_label">Web önerisi sağlayıcısı</string>
+    <string name="allapps_use_web_suggestion_icon_label">Arama çubuğunda web önerisi sağlayıcı simgesini göster</string>
+    <string name="allapps_match_qsb_style_label">Arama çubuğu eylemlerini eşleştir</string>
+    <string name="allapps_match_qsb_style_description">Alt sıra arama çubuğuna tıklamak artık uygulama çekmecesi arama arayüzünü açar</string>
     <string name="app_search_algorithm">Arama algoritması</string>
     <string name="search_algorithm_app_search">Uygulama Araması</string>
     <string name="search_algorithm_global_search_on_device">Genel arama (cihazda)</string>
     <string name="search_algorithm_global_search_via_asi">Genel arama (ASI aracılığıyla)</string>
+    <string name="custom_search_url">Custom search engine URL</string>
+    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
+    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Arama sonuçlarında göster</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Uygulamalar &amp; Kısayollar</string>
@@ -598,8 +609,4 @@
     <string name="warn_contact_permission_content">Kişiler içinde arama yapmak için Lawnchair\'a kişiler ve telefon izinlerini verin</string>
     <string name="warn_files_permission_content">Dosyalarınızda arama yapmak için Lawnchair\'a Depolama izinlerini verin</string>
     <string name="grant_requested_permissions">İzinleri ver</string>
-    <string name="allapps_web_suggestion_provider_label">Web önerisi sağlayıcısı</string>
-    <string name="allapps_use_web_suggestion_icon_label">Arama çubuğunda web önerisi sağlayıcı simgesini göster</string>
-    <string name="allapps_match_qsb_style_label">Arama çubuğu eylemlerini eşleştir</string>
-    <string name="allapps_match_qsb_style_description">Alt sıra arama çubuğuna tıklamak artık uygulama çekmecesi arama arayüzünü açar</string>
 </resources>
