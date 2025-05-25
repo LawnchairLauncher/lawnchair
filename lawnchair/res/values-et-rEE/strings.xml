@@ -556,7 +556,7 @@
     <string name="all_apps_search_market_message">Otsi rohkem rakendusi</string>
     <string name="all_apps_search_on_web_message">Otsi kasutades <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Rakendustepoodi ega brauserit pole paigaldatud</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">Otsi veebist</string>
     <string name="clear_history">Tühjenda otsinguajalugu</string>
     <string name="search_input_action_clear_results">Tühjenda otsingukast</string>
     <!-- Search settings -->
@@ -579,9 +579,9 @@
     <string name="search_algorithm_app_search">Rakenduse otsing</string>
     <string name="search_algorithm_global_search_on_device">Globaalne otsing (seadmes)</string>
     <string name="search_algorithm_global_search_via_asi">Globaalne otsing (ASI kaudu)</string>
-    <string name="custom_search_url">Custom search engine URL</string>
-    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
+    <string name="custom_search_url">Kohandatud otsingumootori URL</string>
+    <string name="custom_search_suggestions_url">Kohandatud otsingusoovituste URL</string>
+    <string name="custom_search_input_hint">&#37;s asendatakse otsitava tekstiga</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Kuva otsingutulemustes</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Rakendused ja otseteed</string>

@@ -137,8 +137,8 @@
     <string name="workspace_increase_max_grid_size_description">Utöka maximalt tillåten storlek på startskärmsrutnätet från 10 x 10 till 20 x 20</string>
     <string name="always_reload_icons_label">Ladda alltid om ikoner</string>
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
+    <string name="icon_swipe_gestures">Svepgester för ikoner</string>
+    <string name="icon_swipe_gestures_description">Utför åtgärder när du sveper åt vänster eller höger på ikoner i stället för att flytta startskärmen</string>
     <string name="recents_lock_unlock">Lås/lås upp</string>
     <string name="recents_lock_unlock_description">Förhindra att vald app stängs när \"Rensa alla\" används</string>
     <!--Overlay-->
@@ -556,7 +556,7 @@
     <string name="all_apps_search_market_message">Sök efter fler appar</string>
     <string name="all_apps_search_on_web_message">Sök på <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Ingen appbutik eller webbläsare installerad</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">Sök på webben</string>
     <string name="clear_history">Rensa sökhistorik</string>
     <string name="search_input_action_clear_results">Rensa sökruta</string>
     <!-- Search settings -->
@@ -579,9 +579,9 @@
     <string name="search_algorithm_app_search">Appsökning</string>
     <string name="search_algorithm_global_search_on_device">Global sökning (på enheten)</string>
     <string name="search_algorithm_global_search_via_asi">Global sökning (via ASI)</string>
-    <string name="custom_search_url">Custom search engine URL</string>
-    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
+    <string name="custom_search_url">Anpassad sökmotor-URL</string>
+    <string name="custom_search_suggestions_url">Anpassad sökförslags-URL</string>
+    <string name="custom_search_input_hint">&#37;s kommer att ersättas med sökfrågan</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Visa i sökresultat</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Appar &amp; genvägar</string>

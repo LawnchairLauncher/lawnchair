@@ -556,7 +556,7 @@
     <string name="all_apps_search_market_message">جستجو برنامه‌های بیشتر</string>
     <string name="all_apps_search_on_web_message">جستجو در <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">هیچ فروشگاه برنامه یا مرورگری نصب نیست</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">جستجو در وب</string>
     <string name="clear_history">پاک‌کردن تاریخچه جستجو</string>
     <string name="search_input_action_clear_results">پاک‌کردن متن جستجو</string>
     <!-- Search settings -->
@@ -579,8 +579,8 @@
     <string name="search_algorithm_app_search">جست‌وجو برنامه</string>
     <string name="search_algorithm_global_search_on_device">جستجوی جهانی (روی دستگاه)</string>
     <string name="search_algorithm_global_search_via_asi">جستجوی جهانی (با ASI)</string>
-    <string name="custom_search_url">Custom search engine URL</string>
-    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
+    <string name="custom_search_url">لینک موتور جستجوی دلخواه</string>
+    <string name="custom_search_suggestions_url">لینک پیشنهاد جستجوی دلخواه</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">نشان‌دادن در نتایج جستجو</string>
