@@ -137,6 +137,8 @@
     <string name="workspace_increase_max_grid_size_description">将主屏幕网格大小限制从 10 × 10 提升到 20 × 20</string>
     <string name="always_reload_icons_label">始终重载图标</string>
     <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
+    <string name="icon_swipe_gestures">Icon swipe gestures</string>
+    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="recents_lock_unlock">锁定/解锁</string>
     <string name="recents_lock_unlock_description">按“全部清除”时防止所选应用关闭</string>
     <!--Overlay-->
@@ -489,6 +491,7 @@
     <string name="page_indicator_height">页面指​​示器高度</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">应用搜索</string>
+    <string name="search_provider_custom">自定义</string>
     <string name="search_provider_sponsored_description">%1$s 和 Lawnchair 有收益分成协议。\n\n使用 %1$s 进行搜索有助于支持 Lawnchair。</string>
     <string name="app_label">应用</string>
     <string name="website_label">网站</string>
@@ -552,6 +555,7 @@
     <string name="all_apps_search_market_message">搜索更多应用</string>
     <string name="all_apps_search_on_web_message">在 <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g> 上搜索</string>
     <string name="error_no_market_or_browser_installed">应用商店或浏览器没安装</string>
+    <string name="all_apps_search_on_web_general">Search on the web</string>
     <string name="clear_history">清除搜索记录</string>
     <string name="search_input_action_clear_results">清除搜索框</string>
     <!-- Search settings -->
@@ -566,10 +570,17 @@
     <string name="perform_wide_search_description">搜索您的手机联系人、文件和设置</string>
     <string name="show_hidden_apps_in_search_results">在搜索结果中显示隐藏的应用</string>
     <string name="hidden_apps_show_name_typed">如果输入全名</string>
+    <string name="allapps_web_suggestion_provider_label">网络建议提供程序</string>
+    <string name="allapps_use_web_suggestion_icon_label">在搜索栏中显示网络建议提供程序图标</string>
+    <string name="allapps_match_qsb_style_label">匹配dock搜索栏操作</string>
+    <string name="allapps_match_qsb_style_description">现在，点击 dock 搜索栏将打开应用程序抽屉</string>
     <string name="app_search_algorithm">搜索算法</string>
     <string name="search_algorithm_app_search">应用搜索</string>
     <string name="search_algorithm_global_search_on_device">全局搜索 (设备上)</string>
     <string name="search_algorithm_global_search_via_asi">全局搜索 (通过 ASI)</string>
+    <string name="custom_search_url">Custom search engine URL</string>
+    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
+    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">在搜索结果中显示</string>
     <string name="search_pref_result_apps_and_shortcuts_title">应用&amp;快捷方式</string>
@@ -597,8 +608,4 @@
     <string name="warn_contact_permission_content">要搜索联系人，请向 Lawnchair 授予联系人和电话权限</string>
     <string name="warn_files_permission_content">要搜索您的文件，请向 Lawnchair 授予存储权限</string>
     <string name="grant_requested_permissions">授予权限</string>
-    <string name="allapps_web_suggestion_provider_label">网络建议提供程序</string>
-    <string name="allapps_use_web_suggestion_icon_label">在搜索栏中显示网络建议提供程序图标</string>
-    <string name="allapps_match_qsb_style_label">匹配dock搜索栏操作</string>
-    <string name="allapps_match_qsb_style_description">现在，点击 dock 搜索栏将打开应用程序抽屉</string>
 </resources>
