@@ -16,15 +16,12 @@ plugins {
     id 'com.google.protobuf' version "0.9.5"
     id 'app.cash.licensee' version "1.13.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
-    id 'org.gradle.android.cache-fix' version '3.0.1'
     id 'com.diffplug.spotless' version '7.0.4'
 }
 
 
 allprojects {
     plugins.withType(AndroidBasePlugin).configureEach {
-        apply plugin: 'org.gradle.android.cache-fix'
-
         android {
             compileSdk 35
             defaultConfig {
