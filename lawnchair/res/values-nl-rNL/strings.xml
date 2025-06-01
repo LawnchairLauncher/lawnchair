@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Alleen unieke apps tonen</string>
     <string name="my_folder_label">Mijn map</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Om bepaalde acties uit te voeren (zoals het vergrendelen van de telefoon) bij het uitvoeren van een gebaar, heeft Lawnchair toegankelijkheidstoegang nodig.\n\nLawnchair kijkt niet naar gebruikersacties, hoewel het recht om dit te doen vereist is voor alle toegankelijkheidsservices. Lawnchair verwijdert elke gebeurtenis die door het systeem wordt verzonden.\n\nOm je telefoon te vergrendelen of Recente apps te openen, maakt Lawnchair gebruik van de toegankelijkheidsservice performGlobalAction.</string>
+    <string name="accessibility_service_description">Om bepaalde acties uit te voeren (zoals het vergrendelen van je telefoon) bij het uitvoeren van een gebaar, heeft Lawnchair toegang tot toegankelijkheid nodig.\n\nLawnchair observeert echter geen gebruikersacties, hoewel de bevoegdheid om dat te doen vereist is voor alle toegankelijkheidsdiensten. Lawnchair negeert elke gebeurtenis die door het systeem wordt gemeld.\n\nOm je telefoon te vergrendelen of om het recente scherm te openen, maakt Lawnchair gebruik van de toegankelijkheidsdienst performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Themapictogrammen</string>
     <string name="themed_icons_off_label">Uitgeschakeld</string>
     <string name="themed_icons_home_label">Startscherm</string>
-    <string name="themed_icons_home_and_drawer_label">Startscherm &amp; app-lade</string>
+    <string name="themed_icons_home_and_drawer_label">Startscherm en app-lade</string>
     <string name="lawnicons_not_installed_description">Geen ondersteunde pictogrampakketten</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Lettertypen toevoegen</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Weergeven</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Agenda</string>
-    <string name="smartspace_date_and_time">Datum &amp; tijd</string>
+    <string name="smartspace_date_and_time">Datum en tijd</string>
     <string name="smartspace_date">Datum</string>
     <string name="smartspace_time">Tijd</string>
     <string name="smartspace_time_format">Tijdnotatie</string>
@@ -340,11 +340,11 @@
     <string name="news">Nieuws</string>
     <string name="support">Ondersteuning</string>
     <string name="product">Product</string>
-    <string name="design_and_development">Ontwerp &amp; ontwikkeling</string>
+    <string name="design_and_development">Ontwerp en ontwikkeling</string>
     <string name="development">Ontwikkelaar</string>
     <string name="quickswitch_maintenance">QuickSwitch onderhoud</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Ondersteuning &amp; PR</string>
+    <string name="support_and_pr">Ondersteuning en PR</string>
     <string name="acknowledgements">Dankwoord</string>
     <string name="translate">Vertalen</string>
     <string name="donate">Doneren</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">Toegankelijkheidsservice inschakelen</string>
     <string name="dt2s_a11y_hint">Om \'Dubbel tikken om in de sluimerstand te zetten\' te gebruiken, moet de toegankelijkheidsservice Lawnchair ingeschakeld zijn. Tik op \"Instellingen openen\", selecteer \"Lawnchair\" en schakel \"Lawnchair gebruiken\" in. \n\nLawnchair gebruikt de \'performGlobalAction\'-methode van Toegankelijkheid om deze actie uit te voeren. Dit is een gevoelige machtiging waarmee andere apps kunnen worden bewaakt. Lawnchair is echter niet geconfigureerd voor die functionaliteit en ontvangt geen gebeurtenissen.</string>
     <string name="dt2s_recents_warning_open_settings">Instellingen openen</string>
-    <string name="recents_a11y_hint">Om Recent apps te gebruiken, moet de toegankelijkheidsservice van Lawnchair worden ingeschakeld. Tik op \"Instellingen openen\", selecteer \"Lawnchair\" en schakel \"Lawchair gebruiken\" in. \n\nLawnchair gebruikt de \'performGlobalAction\'-methode van Toegankelijkheid om deze actie uit te voeren. Dit is een gevoelige machtiging waarmee andere apps kunnen worden bewaakt. Lawnchair is echter niet geconfigureerd voor die functionaliteit en ontvangt geen gebeurtenissen.</string>
+    <string name="recents_a11y_hint">Om het scherm \'Recente apps openen\' te gebruiken, dient de toegankelijkheidsservice van Lawnchair ingeschakeld te worden. Tik op \'Instellingen openen\', selecteer \'Lawnchair\' en activeer \'Gebruik Lawnchair\'.\n\nLawnchair gebruikt de toegankelijkheidsmethode `performGlobalAction` om deze actie uit te voeren. Dit is een gevoelige toestemming die het mogelijk maakt om andere apps te controleren. Lawnchair is echter niet geconfigureerd voor die functionaliteit en ontvangt geen gebeurtenissen.</string>
     <!--
 
     Bug reporting
@@ -525,7 +525,7 @@
     <string name="max_folder_columns">Maximum aantal mapkolommen</string>
     <string name="max_folder_rows">Maximum aantal maprijen</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Deze instellingen worden genegeerd, omdat Lawnchair niet is ingesteld als de aanbieder van Recente apps</string>
+    <string name="quickswitch_ignored_warning">Deze instellingen worden genegeerd omdat Lawnchair niet is ingesteld als de leverancier voor het scherm Recente apps</string>
     <string name="quickstep_incompatible">Incompatibele systeemintegratie</string>
     <string name="quickstep_incompatible_description">Je toestel is geconfigureerd voor systeemgebaren (bekend als Quickstep) geleverd door %1$s, maar deze versie van %1$s is niet compatibel met deze Android-versie. Om het toestel te blijven gebruiken, dien je %1$s updates te verwijderen of %1$s uit te schakelen als een provider van systeemgebaren.</string>
     <string name="translucent_background">Doorschijnende achtergrond</string>
@@ -537,7 +537,7 @@
     <string name="task_menu_force_stop">Geforceerd sluiten</string>
     <string name="window_corner_radius_label">Schermhoekradius</string>
     <string name="override_window_corner_radius_label">Aangepaste schermhoekradius</string>
-    <string name="window_corner_radius_description">Als je omhoog veegt om de recente apps te openen volgt de huidige app je vinger, deze vormt zich in een kaart. Gebruik deze schuifregelaar om de hoek radius van de kaart aan te passen wanneer het bijna volledig scherm is, zodat het overeenkomt met de hoeken van uw scherm.</string>
+    <string name="window_corner_radius_description">Wanneer je omhoog veegt om het scherm Recente apps te openen, volgt de huidige app je vinger en krimpt deze tot een kaart. Gebruik deze schuifregelaar om de hoekradius van de kaart aan te passen wanneer deze bijna vol scherm is, zodat het overeenkomt met de hoeken van je scherm.</string>
     <string name="taskbar_label">Taakbalk</string>
     <string name="enable_taskbar_experimental">Taakbalk weergeven (experimenteel)</string>
     <!--
@@ -584,7 +584,7 @@
     <string name="custom_search_input_hint">&#37;s zal worden vervangen door de zoekopdracht</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Weergeven in zoekresultaten</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps &amp; Sneltoetsen</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps en snelkoppelingen</string>
     <string name="search_pref_result_shortcuts_title">App-snelkoppelingen</string>
     <string name="search_pref_result_people_title">Personen</string>
     <string name="search_pref_result_tips_title">Pixel tips</string>

@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Visa endast unika appar</string>
     <string name="my_folder_label">Min mapp</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">För att kunna utföra vissa åtgärder (såsom att låsa din telefon) när en gest görs, kräver Lawnchair tillgänglighetsåtkomst.\n\nLawnchair övervakar inte några användaraktiviteter, men behörigheten att kunna göra detta krävs för alla tillgänglighetstjänster. Lawnchair ignorerar alla händelser som skickas av systemet.\n\nFör att kunna låsa din telefon eller öppna Senaste använder Lawnchair tillgänglighetstjänsten performGlobalAction.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">Rad- och kolumnantal</string>
     <string name="gestures_label">Gester</string>
     <string name="gestures_description">Tryckningar och svepningar</string>
-    <string name="quickstep_label">Senaste</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">Rensa alla-knapp, hörnradie</string>
     <string name="about_label">Om</string>
     <string name="app_info_drop_target_label">Appinfo</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Tematiserade ikoner</string>
     <string name="themed_icons_off_label">Av</string>
     <string name="themed_icons_home_label">Startskärm</string>
-    <string name="themed_icons_home_and_drawer_label">Startskärm &amp; applåda</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">Inga ikonpaket som stöds</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Lägg till typsnitt</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Vad ska visas</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalender</string>
-    <string name="smartspace_date_and_time">Datum &amp; tid</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">Datum</string>
     <string name="smartspace_time">Tid</string>
     <string name="smartspace_time_format">Tidsformat</string>
@@ -340,11 +340,11 @@
     <string name="news">Nyheter</string>
     <string name="support">Support</string>
     <string name="product">Produkt</string>
-    <string name="design_and_development">Design &amp; utveckling</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">Utveckling</string>
     <string name="quickswitch_maintenance">QuickSwitch-underhåll</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Support &amp; pr</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">Erkännanden</string>
     <string name="translate">Översätt</string>
     <string name="donate">Donera</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Svep åt höger</string>
     <string name="gesture_handler_no_op">Gör ingenting</string>
     <string name="gesture_handler_sleep">Vila</string>
-    <string name="gesture_handler_recents">Öppna Senaste</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Öppna aviseringspanel</string>
     <string name="gesture_handler_open_app_option">Öppna app</string>
     <string name="gesture_handler_open_app_config">Öppna %1$s</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">Aktivera tillgänglighetstjänst</string>
     <string name="dt2s_a11y_hint">För att använda Dubbeltryck för att vila, aktivera Lawnchairs tillgänglighetstjänst. Tryck på \"Öppna inställningar\", välj \"Lawnchair\" och aktivera \"Använd Lawnchair\".\n\nLawnchair använder Tillgänglighets `performGlobalAction`-metod för att utföra denna åtgärd. Detta är en känslig behörighet som tillåter övervakning av andra appar. Lawnchair är dock inte konfigurerad för den funktionen och tar inte emot några händelser.</string>
     <string name="dt2s_recents_warning_open_settings">Öppna inställningar</string>
-    <string name="recents_a11y_hint">För att använda Öppna Senaste, aktivera Lawnchairs tillgänglighetstjänst. Tryck på \"Öppna inställningar\", välj \"Lawnchair\" och aktivera \"Använd Lawnchair\".\n\nLawnchair använder Tillgänglighets `performGlobalAction`-metod för att utföra denna åtgärd. Detta är en känslig behörighet som tillåter övervakning av andra appar. Lawnchair är dock inte konfigurerad för den funktionen och tar inte emot några händelser.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -525,7 +525,7 @@
     <string name="max_folder_columns">Maximalt antal mappkolumner</string>
     <string name="max_folder_rows">Maximalt antal mapprader</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Dessa inställningar kommer att ignoreras eftersom Lawnchair inte är inställd som Senaste-leverantör</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Inkompatibel systemintegration</string>
     <string name="quickstep_incompatible_description">Din enhet är konfigurerad för att ha systemgester (kända som Quickstep) tillhandahållna av %1$s, men denna version av %1$s är inte kompatibel med din Android-version. För att fortsätta att använda din enhet, vänligen avinstallera uppdateringar till %1$s eller inaktivera %1$s som systemgestsleverantör.</string>
     <string name="translucent_background">Genomlysande bakgrund</string>
@@ -537,7 +537,7 @@
     <string name="task_menu_force_stop">Tvångsavsluta</string>
     <string name="window_corner_radius_label">Skärmhörnsradie</string>
     <string name="override_window_corner_radius_label">Anpassad skärmhörnsradie</string>
-    <string name="window_corner_radius_description">När du sveper uppåt för att öppna Senaste, följer den aktuella appen med ditt finger och krymper till ett kort. Använd detta reglage för att justera kortets hörnradie när det nästan fyller hela skärmen så att den matchar hörnen på din skärm.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">Aktivitetsfält</string>
     <string name="enable_taskbar_experimental">Visa aktivitetsfält (experimentellt)</string>
     <!--
@@ -584,7 +584,7 @@
     <string name="custom_search_input_hint">&#37;s kommer att ersättas med sökfrågan</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Visa i sökresultat</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Appar &amp; genvägar</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">Appgenvägar</string>
     <string name="search_pref_result_people_title">Personer</string>
     <string name="search_pref_result_tips_title">Pixel-tips</string>

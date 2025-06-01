@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">仅显示唯一应用</string>
     <string name="my_folder_label">我的文件夹</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">要在执行手势时执行某些操作（例如锁定手机），Lawnchair 需要无障碍访问权限。\n\nLawnchair 不会监视任何用户操作，尽管所有无障碍服务都需要有这样做的权限。Lawnchair 会丢弃系统发送的任何事件。\n\n为了锁定手机或打开“最近”应用，Lawnchair 会使用 performGlobalAction 无障碍服务。</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">行数和列数</string>
     <string name="gestures_label">手势</string>
     <string name="gestures_description">点击和滑动</string>
-    <string name="quickstep_label">最近任务</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">全部清除按钮，圆角半径</string>
     <string name="about_label">关于</string>
     <string name="app_info_drop_target_label">应用信息</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">主题图标</string>
     <string name="themed_icons_off_label">关</string>
     <string name="themed_icons_home_label">主屏幕</string>
-    <string name="themed_icons_home_and_drawer_label">主屏幕&amp;应用抽屉</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">没有支持的图标包</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">添加字体</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">显示什么</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">日历</string>
-    <string name="smartspace_date_and_time">日期&amp;时间</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">日期</string>
     <string name="smartspace_time">时间</string>
     <string name="smartspace_time_format">时间格式</string>
@@ -340,11 +340,11 @@
     <string name="news">新闻</string>
     <string name="support">支持</string>
     <string name="product">产品</string>
-    <string name="design_and_development">设计&amp;开发</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">开发</string>
     <string name="quickswitch_maintenance">QuickSwitch 维护</string>
     <string name="devops">运维</string>
-    <string name="support_and_pr">支持和公关</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">鸣谢</string>
     <string name="translate">翻译</string>
     <string name="donate">捐赠</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">向右滑动</string>
     <string name="gesture_handler_no_op">什么也不做</string>
     <string name="gesture_handler_sleep">息屏</string>
-    <string name="gesture_handler_recents">打开最近任务界面</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">打开通知面板</string>
     <string name="gesture_handler_open_app_option">打开应用</string>
     <string name="gesture_handler_open_app_config">打开 %1$s</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">打开无障碍服务</string>
     <string name="dt2s_a11y_hint">要使用双击息屏，请开启 Lawnchair 的无障碍服务。点击“打开设置”，选择“Lawnchair”，并开启“使用Lawnchair”。\n\nLawnchair 使用无障碍的 performGlobalAction 方法来执行此操作。这是一个敏感权限，允许监控其他应用。然而，Lawnchair 并未配置此功能，因此不会接收到任何事件。</string>
     <string name="dt2s_recents_warning_open_settings">打开设置</string>
-    <string name="recents_a11y_hint">要使用打开最近任务，请开启 Lawnchair 的无障碍服务。点击“打开设置”，选择“Lawnchair”，并开启“使用 Lawnchair”。\n\nLawnchair 使用无障碍的 performGlobalAction 方法来执行此操作。这是一个敏感权限，允许监控其他应用。然而，Lawnchair 并未配置此功能，因此不会接收任何事件。</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -524,7 +524,7 @@
     <string name="max_folder_columns">最大文件夹列数</string>
     <string name="max_folder_rows">最大文件夹行数</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">由于 Lawnchair 未设置为“最近应用”提供程序，因此这些设置将被忽略</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">不兼容的系统集成</string>
     <string name="quickstep_incompatible_description">您的设备已配置为使用 %1$s 提供的系统手势 (称为 Quickstep)，但此版本的 %1$s 与您的 Android 版本不兼容。要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 作为系统手势提供程序。</string>
     <string name="translucent_background">半透明背景</string>
@@ -536,7 +536,7 @@
     <string name="task_menu_force_stop">强制关闭</string>
     <string name="window_corner_radius_label">屏幕圆角半径</string>
     <string name="override_window_corner_radius_label">自定义屏幕圆角半径</string>
-    <string name="window_corner_radius_description">当您向上滑动打开“最近应用”时，当前应用会跟随您的手指缩小为卡片。当卡片几乎全屏时，使用此滑块调整卡片的圆角半径，使其与屏幕的圆角相匹配。</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">任务栏</string>
     <string name="enable_taskbar_experimental">显示任务栏(实验性)</string>
     <!--
@@ -583,7 +583,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">在搜索结果中显示</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">应用&amp;快捷方式</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">应用快捷方式</string>
     <string name="search_pref_result_people_title">联系人</string>
     <string name="search_pref_result_tips_title">Pixel 提示</string>

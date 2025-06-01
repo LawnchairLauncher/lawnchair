@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Csak az egyedi alkalmazások jelenjenek meg</string>
     <string name="my_folder_label">Mappáim</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Bizonyos műveletek végrehajtásához (pl. a telefon zárolása) kézmozdulat végrehajtásával a Lawnchair kisegítő hozzáférést igényel.\n\nA Lawnchair nem figyel semmilyen felhasználói műveletet, bár az ehhez szükséges jogosultság minden akadálymentesítési szolgáltatáshoz szükséges. A Lawnchair elveti a rendszereseményeket.\n\nA telefon zárolásához vagy az Előzmények megnyitásához a Lawnchair a \'performGlobalAction Accessibility\' szolgáltatást használja.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s és %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">Sorok és oszlopok száma</string>
     <string name="gestures_label">Gesztusok</string>
     <string name="gestures_description">Koppintások és csúsztatások</string>
-    <string name="quickstep_label">Legutóbbiak</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">„Összes törlése” gomb, sarok sugara</string>
     <string name="about_label">Névjegy</string>
     <string name="app_info_drop_target_label">Alkalmazásinformáció</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Témázott ikonok</string>
     <string name="themed_icons_off_label">Kikapcsolás</string>
     <string name="themed_icons_home_label">Kezdőképernyő</string>
-    <string name="themed_icons_home_and_drawer_label">Kezdőképernyő és alkalmazástár</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">Nem támogatott ikoncsomagok</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Betűtípus-hozzáadás</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Mi jelenjen meg</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Naptár</string>
-    <string name="smartspace_date_and_time">Dátum és idő</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">Dátum</string>
     <string name="smartspace_time">Idő</string>
     <string name="smartspace_time_format">Időformátum</string>
@@ -340,11 +340,11 @@
     <string name="news">Hírek</string>
     <string name="support">Támogatás</string>
     <string name="product">Termék</string>
-    <string name="design_and_development">Dizájn és fejlesztés</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">Fejlesztés</string>
     <string name="quickswitch_maintenance">A QuickSwitch karbantartása</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Támogatás és PR</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">Elismerések</string>
     <string name="translate">Fordítás</string>
     <string name="donate">Adományozás</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Söprés jobbra</string>
     <string name="gesture_handler_no_op">Ne történjen semmi</string>
     <string name="gesture_handler_sleep">Alvás</string>
-    <string name="gesture_handler_recents">Az Előzmények megnyitása</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Az Értesítési panel megnyitása</string>
     <string name="gesture_handler_open_app_option">Egy alkalmazás megnyitása</string>
     <string name="gesture_handler_open_app_config">%1$s megnyitása</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">A \'Kisegítő lehetőségek\' bekapcsolása</string>
     <string name="dt2s_a11y_hint">A \'Képernyőkikapcsolás Duplakoppal\' használatához kapcsolja be a Lawnchair \'Kisegítő lehetőségei\'-t. Koppintson a „Beállítások megnyitása”, válassza a „Lawnchair” lehetőséget, és kapcsolja be a „Lawnchair használata” lehetőséget.\n\nA Lawnchair az akadálymentesítés „performGlobalAction” metódusát használja a művelet végrehajtásához. Ez egy bizalmas engedély, amely lehetővé teszi más alkalmazások figyelését. A Lawnchair azonban nincs konfigurálva ehhez a funkcióhoz, és nem fogad eseményeket.</string>
     <string name="dt2s_recents_warning_open_settings">A Beállítások megnyitása</string>
-    <string name="recents_a11y_hint">\'Az Előzmények megnyitása\' használatához kapcsolja be a Lawnchair \'Kisegítő lehetőségei\'-t. Koppintson a „Beállítások megnyitása”, válassza a „Lawnchair” lehetőséget, és kapcsolja be a „Lawnchair használata” lehetőséget.\n\nA Lawnchair az akadálymentesítés „performGlobalAction” metódusát használja a művelet végrehajtásához. Ez egy bizalmas engedély, amely lehetővé teszi más alkalmazások figyelését. A Lawnchair azonban nincs konfigurálva ehhez a funkcióhoz, és nem fogad eseményeket.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -525,7 +525,7 @@
     <string name="max_folder_columns">A mappaoszlopok maximuma</string>
     <string name="max_folder_rows">A mappasorok maximuma</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Ezeket a beállításokat a rendszer figyelmen kívül hagyja, mivel a Lawnchair nincs beállítva az Előzmények szolgáltatójaként</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Nem kompatibilis rendszer-integráció</string>
     <string name="quickstep_incompatible_description">Készüléke úgy van konfigurálva, hogy a(z) %1$s által biztosított rendszermozdulatokat (az úgynevezett Quickstep-et) tartalmazza, de a %1$s-verzió nem kompatibilis az Android-verzióval. A készülék további használatához, kérjük távolítsa el az utolsó %1$s-frissítést vagy állítsa be úgy készülékét hogy nem a(z) %1$s a rendszer mozdulatvezérlője.</string>
     <string name="translucent_background">Átlátszó háttér</string>
@@ -537,7 +537,7 @@
     <string name="task_menu_force_stop">Kényszerített bezárás</string>
     <string name="window_corner_radius_label">A képernyősarok sugara</string>
     <string name="override_window_corner_radius_label">Egyedi képernyősarok-sugár</string>
-    <string name="window_corner_radius_description">Ha felfelé csúsztatva nyitja meg az Előzményeket, az aktuális alkalmazás követi az ujját, és kártyává zsugorodik. Ezzel a csúszkával állíthatja be a kártya sarkának sugarát, ha az majdnem teljes képernyőn van, hogy az illeszkedjen a képernyő sarkaihoz.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">Tálca</string>
     <string name="enable_taskbar_experimental">Látható Tálca (kísérleti)</string>
     <!--
@@ -584,7 +584,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Megjelenítés a keresési találatok között</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Alkalmazások és Parancsikonok</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">Parancsikonok</string>
     <string name="search_pref_result_people_title">Emberek</string>
     <string name="search_pref_result_tips_title">Pixel tippek</string>

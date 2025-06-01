@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">My folder</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s a %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">Počet riadkov a stĺpcov</string>
     <string name="gestures_label">Gestá</string>
     <string name="gestures_description">Klikni a potiahni nahor</string>
-    <string name="quickstep_label">Nedávne</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">Vymazať tlačidlo všetko, Polomery rohov</string>
     <string name="about_label">O aplikácii</string>
     <string name="app_info_drop_target_label">Informácie o aplikácii</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Tematické ikony</string>
     <string name="themed_icons_off_label">Vypnuté</string>
     <string name="themed_icons_home_label">Domovská obrazovka</string>
-    <string name="themed_icons_home_and_drawer_label">Domovská obrazovka &amp; zásuvka s aplikáciami</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">Žiadne podporované balíky ikon</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Pridať písma</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Čo ukázať</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalendár</string>
-    <string name="smartspace_date_and_time">Dátum &amp; čas</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">Dátum</string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_time_format">Formát hodín</string>
@@ -340,11 +340,11 @@
     <string name="news">Správy</string>
     <string name="support">Podpora</string>
     <string name="product">Produkt</string>
-    <string name="design_and_development">Dizajn &amp; Vývoj</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">Vývoj</string>
     <string name="quickswitch_maintenance">Údržba QuickSwitch</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Podpora &amp; PR</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">Poďakovania</string>
     <string name="translate">Preložiť</string>
     <string name="donate">Prispieť</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Nič nerobiť</string>
     <string name="gesture_handler_sleep">Uspať</string>
-    <string name="gesture_handler_recents">Open Recents</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Otvoriť oznamovací panel</string>
     <string name="gesture_handler_open_app_option">Otvoriť aplikáciu</string>
     <string name="gesture_handler_open_app_config">Otvoriť %1$s</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">Zapnúť službu prístupnosti</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_recents_warning_open_settings">Otvoriť nastavenia</string>
-    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -527,7 +527,7 @@
     <string name="max_folder_columns">Max. počet stĺpcov v priečinku</string>
     <string name="max_folder_rows">Max. počet stĺpcov v priečinku</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Tieto nastavenia budú ignorované, pretože Lawnchair není nastavený ako poskytovateľ nedávnych aplikácie</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Nekompatibilná integrácia systému</string>
     <string name="quickstep_incompatible_description">Vaše zariadenie je nakonfigurované na systémové gestá (známe ako Quickstep), ktoré poskytuje %1$s, ale táto verzia %1$s nie je kompatibilná s vašou verziou systému Android. Ak chcete pokračovať v používaní svojho zariadenia, odinštalujte aktualizácie %1$s alebo vypnite %1$s ako poskytovateľa systémových gest.</string>
     <string name="translucent_background">Priesvitné pozadie</string>
@@ -539,7 +539,7 @@
     <string name="task_menu_force_stop">Vynútiť ukončenie</string>
     <string name="window_corner_radius_label">Polomer rohov</string>
     <string name="override_window_corner_radius_label">Vlastný polomer rohov</string>
-    <string name="window_corner_radius_description">Keď potiahnete prstom hore a otvoríte nedávne, tak terajšia aplikácia bude nasledovať váš prst a zmenší sa na kartu. Použite tento posuvník pre nastavenia priemeru rohov karty keď je takmer na celú obrazovku tak aby sa zhodovala z rohmi vašej obrazovky.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">Panel úloh</string>
     <string name="enable_taskbar_experimental">Povoliť panel úloh (Experimentálne)</string>
     <!--
@@ -586,7 +586,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Ukázať vo výsledkoch vyhľadávania</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Aplikácie &amp; Skratky</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">Skratky aplikácií</string>
     <string name="search_pref_result_people_title">Ľudia</string>
     <string name="search_pref_result_tips_title">Pixel tips</string>

@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Kuva ainult unikaalsed rakendused</string>
     <string name="my_folder_label">Minu kaust</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Teatud toimingute (nt. telefoni lukustamine) sooritamiseks viipe abil vajab Lawnchair juurdepääsetavuse juurdepääsu.\n\nLawnchair ei jälgi ühtegi kasutaja tegevust, kuigi õigus seda teha on nõutav kõigi juurdepääsetavuse teenuste jaoks. Lawnchair eirab kõiki süsteemi saadetud sündmusi.\n\nTelefoni lukustamiseks või Hiljutiste avamiseks kasutab Lawnchair teenust performGlobalAction Accessibility.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">Ridade ja tulpade arv</string>
     <string name="gestures_label">Viiped</string>
     <string name="gestures_description">Puudutused ja nipsamine</string>
-    <string name="quickstep_label">Hiljutised</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">Nupp Kustuta kõik, nurgaraadius</string>
     <string name="about_label">Teave</string>
     <string name="app_info_drop_target_label">Rakenduse teave</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Temaatilised ikoonid</string>
     <string name="themed_icons_off_label">Väljas</string>
     <string name="themed_icons_home_label">Avakuva</string>
-    <string name="themed_icons_home_and_drawer_label">Avakuva ja rakenduste sahtel</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">Toetatud ikoonipakette pole</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Lisa fonte</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Mida kuvada</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalender</string>
-    <string name="smartspace_date_and_time">Kuupäev ja kellaaeg</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">Kuupäev</string>
     <string name="smartspace_time">Aeg</string>
     <string name="smartspace_time_format">Aja vorming</string>
@@ -340,11 +340,11 @@
     <string name="news">Uudised</string>
     <string name="support">Tugi</string>
     <string name="product">Toode</string>
-    <string name="design_and_development">Disain ja arendus</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">Arendus</string>
     <string name="quickswitch_maintenance">QuickSwitch tugi</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Tugi ja PR</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">Tänuavaldused</string>
     <string name="translate">Tõlgi</string>
     <string name="donate">Anneta</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Nipsa paremale</string>
     <string name="gesture_handler_no_op">Ära tee midagi</string>
     <string name="gesture_handler_sleep">Ooteseisund</string>
-    <string name="gesture_handler_recents">Ava Hiljutised</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Ava märguannete paneel</string>
     <string name="gesture_handler_open_app_option">Ava rakendus</string>
     <string name="gesture_handler_open_app_config">Ava %1$s</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">Lülita juurdepääsetavuse teenus sisse</string>
     <string name="dt2s_a11y_hint">Ekraani väljalülitamiseks topeltpuudutusega lülita sisse juurdepääsetavuse teenus. Puuduta valikut \"Ava Seaded\" ja luba Lawnchairi kasutamine. \"\n\nSee on tundlik luba, mis võimaldab jälgida muid rakendusi. Kuid Lawnchair pole selle funktsiooni jaoks seadistatud ega võta sündmusi vastu.</string>
     <string name="dt2s_recents_warning_open_settings">Ava seaded</string>
-    <string name="recents_a11y_hint">Hiljutiste rakenduste akna kasutamiseks lülita sisse juurdepääsetavuse teenus. Puuduta valikut \"Ava Seaded\" ja luba Lawnchairi kasutamine. \"\n\nSee on tundlik luba, mis võimaldab jälgida muid rakendusi. Kuid Lawnchair pole selle funktsiooni jaoks seadistatud ega võta sündmusi vastu.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -525,7 +525,7 @@
     <string name="max_folder_columns">Maksimaalne tulpade arv kaustas</string>
     <string name="max_folder_rows">Maksimaalne ridade arv kaustas</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Neid sätteid eiratakse, kuna Lawnchair ei ole seatud viimaste rakenduste akna pakkujaks</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Ühildumatu süsteemiintegratsioon</string>
     <string name="quickstep_incompatible_description">See seade on määratud kasutama süsteemiliigutusi (tuntud kui Quickstep), mida pakub %1$s, kuid see %1$s versioon ei ühildu Androidi versiooniga. Seadme kasutamise jätkamiseks eemalda %1$s värskendus või keela %1$s süsteemiliigutuse pakkujana.</string>
     <string name="translucent_background">Läbipaistev taust</string>
@@ -537,7 +537,7 @@
     <string name="task_menu_force_stop">Sulge jõuga</string>
     <string name="window_corner_radius_label">Ekraani nurgaraadius</string>
     <string name="override_window_corner_radius_label">Kohandatud ekraani nurgaraadius</string>
-    <string name="window_corner_radius_description">Kui nipsata üles, et avada jaotis Hiljutised, järgib praegune rakendus sõrme, kahanedes kaardiks. Kasuta seda liugurit kaardi nurgaraadiuse reguleerimiseks, kui see on peaaegu täisekraanil, nii et see ühtiks ekraani nurkadega.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">Tegumiriba</string>
     <string name="enable_taskbar_experimental">Kuva tegumiriba (katseline)</string>
     <!--
@@ -584,7 +584,7 @@
     <string name="custom_search_input_hint">&#37;s asendatakse otsitava tekstiga</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Kuva otsingutulemustes</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Rakendused ja otseteed</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">Rakenduste otseteed</string>
     <string name="search_pref_result_people_title">Inimesed</string>
     <string name="search_pref_result_tips_title">Pixeli nõuanded</string>

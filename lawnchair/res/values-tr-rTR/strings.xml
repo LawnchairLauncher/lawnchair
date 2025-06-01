@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Sadece farklı uygulamaları göster</string>
     <string name="my_folder_label">Benim klasörüm</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Belirli eylemleri (örneğin telefonunuzu kilitlemek) bir hareket gerçekleştirdiğinizde uygulamak için, Lawnchair erişilebilirlik iznine ihtiyaç duyar.\n\nLawnchair hiçbir kullanıcı eylemini izlemez, ancak tüm erişilebilirlik hizmetlerinde bu ayrıcalık gereklidir. Lawnchair, sistem tarafından gönderilen herhangi bir olayı yok sayar.\n\nTelefonunuzu kilitlemek veya Son Kullanılanlar ekranını açmak için Lawnchair, performGlobalAction Erişilebilirlik hizmetini kullanır.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">Satır ve sütun sayısı</string>
     <string name="gestures_label">Hareketler</string>
     <string name="gestures_description">Dokunmalar ve kaydırmalar</string>
-    <string name="quickstep_label">En Son Uygulamalar</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">Tümünü Temizle tuşu, köşe yarıçapı</string>
     <string name="about_label">Hakkında</string>
     <string name="app_info_drop_target_label">Uygulama Hakkında</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Temalı simgeler</string>
     <string name="themed_icons_off_label">Kapat</string>
     <string name="themed_icons_home_label">Ana ekran</string>
-    <string name="themed_icons_home_and_drawer_label">Ana ekran &amp; uygulama çekmecesi</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">Desteklenen bir simge paketi bulunamadı</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Yazı tipleri ekle</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Ne gösterilsin</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Takvim</string>
-    <string name="smartspace_date_and_time">Tarih &amp; zaman</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">Tarih</string>
     <string name="smartspace_time">Zaman</string>
     <string name="smartspace_time_format">Saat biçimi</string>
@@ -340,11 +340,11 @@
     <string name="news">Haberler</string>
     <string name="support">Destek</string>
     <string name="product">Ürün</string>
-    <string name="design_and_development">Tasarım &amp; geliştirme</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">Geliştirme</string>
     <string name="quickswitch_maintenance">QuickSwitch bakımı</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Destek &amp; Halkla İlişkiler</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">Teşekkürler</string>
     <string name="translate">Çeviri</string>
     <string name="donate">Bağış</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Sağa kaydır</string>
     <string name="gesture_handler_no_op">Hiçbir şey yapma</string>
     <string name="gesture_handler_sleep">Uyku</string>
-    <string name="gesture_handler_recents">Son Uygulamaları Aç</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Bildirim panelini aç</string>
     <string name="gesture_handler_open_app_option">Uygulamayı aç</string>
     <string name="gesture_handler_open_app_config">Aç %1$s</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">Erişilebilirlik hizmetini açın</string>
     <string name="dt2s_a11y_hint">Çift Dokunarak Uyutma özelliğini kullanmak için Lawnchair erişilebilirlik servisini açın. \"Ayarları aç\" seçeneğine dokunun, \"Lawnchair\"i seçin ve \"Etkinleştir\" seçeneğini aktif edin.\n\nLawnchair, bu işlemi gerçekleştirmek için Erişilebilirlik’in performGlobalAction yöntemini kullanır. Bu, diğer uygulamaları izlemeye olanak tanıyan hassas bir izindir. Ancak, Lawnchair bu işlevsellik için yapılandırılmamıştır ve herhangi bir etkinlik almaz.</string>
     <string name="dt2s_recents_warning_open_settings">Ayarları aç</string>
-    <string name="recents_a11y_hint">Son uygulamalar özelliğini kullanmak için Lawnchair erişilebilirlik hizmetini açın. \n\"Ayarları aç\"a dokunun, \"Lawnchair\"i seçin ve etkinleştirin.\n\nLawnchair, bu işlemi gerçekleştirmek için Accessibility\'nin performGlobalAction yöntemini kullanır. Bu, diğer uygulamaları izlemeye olanak tanıyan hassas bir izindir. Ancak Lawnchair, bu işlev için yapılandırılmamıştır ve herhangi bir olay almaz.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -525,7 +525,7 @@
     <string name="max_folder_columns">Maksimum klasör sütunları</string>
     <string name="max_folder_rows">Maksimum klasör satırı</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Lawnchair, Son Kullanılanlar sağlayıcısı olarak ayarlanmadığından bu ayarlar göz ardı edilecek</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Uyumsuz sistem entegrasyonu</string>
     <string name="quickstep_incompatible_description">Cihazınız %1$s tarafından sağlanan sistem hareketlerine (Quickstep olarak bilinir) sahip olacak şekilde yapılandırılmıştır, ancak %1$s\'nin bu sürümü Android sürümünüzle uyumlu değildir. Cihazınızı kullanmaya devam etmek için lütfen %1$s güncellemelerini kaldırın veya sistem hareketi sağlayıcısı olarak %1$s\'ı devre dışı bırakın.</string>
     <string name="translucent_background">Yarı saydam arka plan</string>
@@ -537,7 +537,7 @@
     <string name="task_menu_force_stop">Zorla kapat</string>
     <string name="window_corner_radius_label">Ekran köşe yarıçapı</string>
     <string name="override_window_corner_radius_label">Özel ekran köşe yarıçapı</string>
-    <string name="window_corner_radius_description">Son Kullanılanlar\'ı açmak için yukarı kaydırdığınızda geçerli uygulama parmağınızı takip ederek bir karta küçülür. Kart neredeyse tam ekran olduğunda, ekranınızın köşeleriyle eşleşecek şekilde kartın köşe yarıçapını ayarlamak için bu kaydırıcıyı kullanın.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">Görev çubuğu</string>
     <string name="enable_taskbar_experimental">Görev çubuğunu göster (deneysel)</string>
     <!--
@@ -584,7 +584,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Arama sonuçlarında göster</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Uygulamalar &amp; Kısayollar</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">Uygulama kısayolları</string>
     <string name="search_pref_result_people_title">İnsanlar</string>
     <string name="search_pref_result_tips_title">Piksel ipuçları</string>

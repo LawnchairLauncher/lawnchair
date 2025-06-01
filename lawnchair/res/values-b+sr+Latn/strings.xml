@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">My folder</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s i %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">Broj redova i kolona</string>
     <string name="gestures_label">Pokreti</string>
     <string name="gestures_description">Dodiri i prevlačenja</string>
-    <string name="quickstep_label">Nedavno</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">Dugme „Obriši sve”, zaobljenost uglova</string>
     <string name="about_label">O aplikaciji</string>
     <string name="app_info_drop_target_label">Informacije o aplikaciji</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Tematske ikone</string>
     <string name="themed_icons_off_label">Isključeno</string>
     <string name="themed_icons_home_label">Početni ekran</string>
-    <string name="themed_icons_home_and_drawer_label">Početni ekran i lista aplikacija</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">Nema podržanih paketa ikona</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Dodaj fontove</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Informacije za prikaz</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalendar</string>
-    <string name="smartspace_date_and_time">Datum i vreme</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">Datum</string>
     <string name="smartspace_time">Vreme</string>
     <string name="smartspace_time_format">Vremenski format</string>
@@ -340,11 +340,11 @@
     <string name="news">Novosti</string>
     <string name="support">Podrška</string>
     <string name="product">Proizvod</string>
-    <string name="design_and_development">Dizajn i razvoj</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">Razvoj</string>
     <string name="quickswitch_maintenance">Održavanje QuickSwitcha</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Podrška i odnosi sa javnošću</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">Priznanja</string>
     <string name="translate">Prevod</string>
     <string name="donate">Doniraj</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Ne radi ništa</string>
     <string name="gesture_handler_sleep">Pređi u stanje spavanja</string>
-    <string name="gesture_handler_recents">Otvori nedavno</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Otvori traku sa obaveštenjima</string>
     <string name="gesture_handler_open_app_option">Otvori aplikaciju</string>
     <string name="gesture_handler_open_app_config">Otvori %1$s</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">Uključi uslugu pristupačnosti</string>
     <string name="dt2s_a11y_hint">Da biste koristili funkciju „Dodirnite dvaput za stanje spavanja”, uključite Lawnchair-ovu uslugu pristupačnosti. Dodirnite „Otvori podešavanja”, izaberite „Lawnchair” i uključite „Koristi Lawnchair”.\n\nOva dozvola je osetljiva jer omogućava nadgledanje drugih aplikacija, ali je Lawnchair ne koristi u te svrhe.</string>
     <string name="dt2s_recents_warning_open_settings">Otvori podešavanja</string>
-    <string name="recents_a11y_hint">Da biste koristili funkciju „Otvori nedavne aplikacije”, uključite Lawnchair-ovu uslugu pristupačnosti. Dodirnite „Otvori podešavanja”, izaberite „Lawnchair” i uključite „Koristi Lawnchair”.\n\nOva dozvola je osetljiva jer omogućava nadgledanje drugih aplikacija, ali je Lawnchair ne koristi u te svrhe.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -526,7 +526,7 @@
     <string name="max_folder_columns">Maksimalan broj kolona u folderu</string>
     <string name="max_folder_rows">Maksimalan broj redova u folderu</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Ova podešavanja će biti ignorisana jer Lawnchair nije podešen kao dobavljač nedavnih aplikacija</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Nekompatibilna sistemska integracija</string>
     <string name="quickstep_incompatible_description">Uređaj je podešen da koristi sistemske pokrete (poznate kao Quickstep), koje pruža %1$s, ali ova verzija %1$sa nije kompatibilna sa vašom verzijom Androida. Da biste nastavili da koristite uređaj, deinstalirajte ažuriranja %1$sa ili onemogućite %1$s kao dobavljača sistemskih pokreta.</string>
     <string name="translucent_background">Poluprozirna pozadina</string>
@@ -538,7 +538,7 @@
     <string name="task_menu_force_stop">Prinudno zatvori</string>
     <string name="window_corner_radius_label">Zaobljenost ekrana</string>
     <string name="override_window_corner_radius_label">Prilagođeni nivo zaobljenosti ekrana</string>
-    <string name="window_corner_radius_description">Kada prevučete nagore i otvorite Nedavno, trenutna aplikacija će pratiti vaš prst i smanjiti se u karticu. Pomoću ovog klizača podesite zaobljenost kartice kada je skoro prikazana na celom ekranu kako bi odgovarala uglovima ekrana.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">Traka zadataka</string>
     <string name="enable_taskbar_experimental">Prikaži traku zadataka (eksperimentalno)</string>
     <!--
@@ -585,7 +585,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Prikaži u rezultatima pretrage</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Aplikacije i prečice</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">Prečice aplikacije</string>
     <string name="search_pref_result_people_title">Kontakti</string>
     <string name="search_pref_result_tips_title">Pixel saveti</string>

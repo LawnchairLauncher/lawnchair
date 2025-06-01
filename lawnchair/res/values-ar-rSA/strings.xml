@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">إظهار التطبيقات الفريدة فقط</string>
     <string name="my_folder_label">مجلدي</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">لإجراء إجراءات معينة (مثل قفل هاتفك) عند تنفيذ إيماءة، يتطلب Lawnchair إمكانية الوصول إلى إمكانية الوصول.\n\nلا يراقب Lawnchair أي إجراء للمستخدم، على الرغم من أن امتياز القيام بذلك مطلوب لجميع خدمات إمكانية الوصول. يتجاهل Lawnchair أي حدث يرسله النظام.\n\nلقفل هاتفك أو فتح \"التطبيقات الأخيرة\"، يستخدم Lawnchair خدمة إمكانية الوصول performGlobalAction.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">عدد الصفوف والأعمدة</string>
     <string name="gestures_label">الإيماءات</string>
     <string name="gestures_description">النقرات والسحب</string>
-    <string name="quickstep_label">مؤخَرًا</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">زر \"مسح الكل\"، نصف قطر الزاوية</string>
     <string name="about_label">حول التطبيق</string>
     <string name="app_info_drop_target_label">معلومات التطبيق</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">الأيقونات المخصصة</string>
     <string name="themed_icons_off_label">معطل</string>
     <string name="themed_icons_home_label">الشاشة الرئيسية</string>
-    <string name="themed_icons_home_and_drawer_label">الشاشة الرئيسية ودرج التطبيقات</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">لا توجد حزم أيقونات مدعومة</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">إضافة خطوط</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">ماذا تعرض</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">التقويم</string>
-    <string name="smartspace_date_and_time">التاريخ والوقت</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">التاريخ</string>
     <string name="smartspace_time">الوقت</string>
     <string name="smartspace_time_format">تنسيق الوقت</string>
@@ -340,11 +340,11 @@
     <string name="news">الأخبار</string>
     <string name="support">الدعم</string>
     <string name="product">المنتج</string>
-    <string name="design_and_development">التصميم والتطوير</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">التطوير</string>
     <string name="quickswitch_maintenance">صيانة QuickSwitch</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">الدعم والعلاقات العامة</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">الشكر والتقدير</string>
     <string name="translate">ترجمة</string>
     <string name="donate">تبرع</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">اسحب لليمين</string>
     <string name="gesture_handler_no_op">لا تفعل شيئاً</string>
     <string name="gesture_handler_sleep">السكون</string>
-    <string name="gesture_handler_recents">فتح التطبيقات الحديثة</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">فتح لوحة الإشعارات</string>
     <string name="gesture_handler_open_app_option">فتح التطبيق</string>
     <string name="gesture_handler_open_app_config">فتح %1$s</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">تشغيل خدمة الوصول</string>
     <string name="dt2s_a11y_hint">لاستخدام ميزة النقر المزدوج للسكون، قم بتفعيل خدمة الوصول الخاصة بـ Lawnchair. اضغط على \"فتح الإعدادات\"، ثم اختر \"Lawnchair\" وقم بتفعيل \"استخدام Lawnchair\". يستخدم Lawnchair طريقة performGlobalAction من خدمات الوصول لتنفيذ هذا الإجراء. هذه إذن حساس يسمح بمراقبة التطبيقات الأخرى. ومع ذلك، لم يتم تكوين Lawnchair لهذه الوظيفة ولا يستقبل أي أحداث.</string>
     <string name="dt2s_recents_warning_open_settings">فتح الإعدادات</string>
-    <string name="recents_a11y_hint">لاستخدام فتح التطبيقات الحديثة، قم بتفعيل خدمة الوصول الخاصة بـ Lawnchair. اضغط على \"فتح الإعدادات\"، ثم اختر \"Lawnchair\" وقم بتفعيل \"استخدام Lawnchair\". يستخدم Lawnchair طريقة performGlobalAction من خدمات الوصول لتنفيذ هذا الإجراء. هذا إذن حساس يسمح بمراقبة التطبيقات الأخرى. ومع ذلك، لم يتم تكوين Lawnchair لهذه الوظيفة ولا يستقبل أي أحداث.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -529,7 +529,7 @@
     <string name="max_folder_columns">أقصى عدد من الأعمدة في المجلد</string>
     <string name="max_folder_rows">أقصى عدد من الصفوف في المجلد</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">سيتم تجاهل هذه الإعدادات لأن Lawnchair لم يتم تعيينه كمزود للتطبيقات الأخيرة</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">تكامل النظام غير متوافق</string>
     <string name="quickstep_incompatible_description">تم تكوين جهازك ليحتوي على إيماءات النظام (المعروفة باسم Quickstep) المقدمة بواسطة %1$s، ولكن هذا الإصدار من %1$s غير متوافق مع إصدار Android الخاص بك. لمتابعة استخدام جهازك، يرجى إلغاء تثبيت تحديثات %1$s أو تعطيل %1$s كمزود لإيماءات النظام.</string>
     <string name="translucent_background">خلفية شفافة</string>
@@ -541,7 +541,7 @@
     <string name="task_menu_force_stop">إيقاف إجباري</string>
     <string name="window_corner_radius_label">نصف قطر زوايا الشاشة</string>
     <string name="override_window_corner_radius_label">تخصيص نصف قطر زوايا الشاشة</string>
-    <string name="window_corner_radius_description">عندما تقوم بالتمرير لأعلى لفتح التطبيقات الأخيرة، يتبع التطبيق الحالي إصبعك، ويتقلص إلى بطاقة. استخدم هذا الشريط لضبط نصف قطر زوايا البطاقة عندما تكون تقريبًا ملء الشاشة بحيث يتطابق مع زوايا شاشتك.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">شريط المهام</string>
     <string name="enable_taskbar_experimental">إظهار شريط المهام (تجريبي)</string>
     <!--
@@ -588,7 +588,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">إظهار في نتائج البحث</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">التطبيقات والاختصارات</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">اختصارات التطبيقات</string>
     <string name="search_pref_result_people_title">الأشخاص</string>
     <string name="search_pref_result_tips_title">نصائح Pixel</string>

@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">僅顯示唯一應用</string>
     <string name="my_folder_label">我的資料夾</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">手勢執行某些操作（例如鎖定螢幕），Lawnchair 需要無障礙權限。\n\nLawnchair 不会監視任何用户操作，儘管所有無障礙服務都有這樣做的權限。Lawnchair 會捨棄系統發送的的任何事件。\n\n為了鎖定螢幕或打開“最近”應用，Lawnchair 會使用 performGlobalAction 無障礙服務。</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">行列數</string>
     <string name="gestures_label">手勢</string>
     <string name="gestures_description">點擊並滑動</string>
-    <string name="quickstep_label">最近使用的應用程式</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">清除全部按鈕、圓角大小</string>
     <string name="about_label">關於</string>
     <string name="app_info_drop_target_label">應用程式資訊</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">主題圖示</string>
     <string name="themed_icons_off_label">關閉</string>
     <string name="themed_icons_home_label">主畫面</string>
-    <string name="themed_icons_home_and_drawer_label">主螢幕  &amp; 應用程式抽屜</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">不支援此圖示套件</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">新增字體</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">選擇要顯示的項目</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">日曆</string>
-    <string name="smartspace_date_and_time">日期 &amp; 時間</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">日期</string>
     <string name="smartspace_time">時間</string>
     <string name="smartspace_time_format">時間格式</string>
@@ -340,11 +340,11 @@
     <string name="news">新聞</string>
     <string name="support">支援</string>
     <string name="product">產品</string>
-    <string name="design_and_development">設計&amp;開發</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">開發</string>
     <string name="quickswitch_maintenance">QuickSwitch 維護</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">支援 &amp; 公關</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">銘謝</string>
     <string name="translate">翻譯</string>
     <string name="donate">捐贈</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">向右滑動</string>
     <string name="gesture_handler_no_op">什麼也不做</string>
     <string name="gesture_handler_sleep">睡眠</string>
-    <string name="gesture_handler_recents">開啟最近任務頁面</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">開啟通知面板</string>
     <string name="gesture_handler_open_app_option">開啟應用程式</string>
     <string name="gesture_handler_open_app_config">開啟 %1$s</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">開啟無障礙服務</string>
     <string name="dt2s_a11y_hint">若要使用輕觸兩下進入睡眠功能，請開啟 Lawnchair 輔助功能服務。 輕觸 “開啟設定”，選擇 “Lawnchair”，然後開啟 “使用 Lawnchair。”\n\nLawnchair 使用 Accessibility 的 `performGlobalAction` 方法執行此操作。 這是一個敏感權限，允許監控其他應用程式。 然而，Lawnchair 並未配置該功能且未接收任何事件。</string>
     <string name="dt2s_recents_warning_open_settings">開啟設定</string>
-    <string name="recents_a11y_hint">若要使用「開啟最近任務頁面」功能，請開啟 Lawnchair 輔助功能服務。 點按“開啟設定”，選擇“Lawnchair”並開啟“使用 Lawnchair”。 \n\nLawnchair使用無障礙的“performGlobalAction”方法來執行此操作。 這是一個敏感權限，允許監視其他應用程式。 但是，Lawnchair 未配置該功能，也不會接收任何事件。</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -524,7 +524,7 @@
     <string name="max_folder_columns">Maximum folder columns</string>
     <string name="max_folder_rows">Maximum folder rows</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents provider</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">不相容的系統整合</string>
     <string name="quickstep_incompatible_description">您的裝置配置為使用 %1$s 提供的系統手勢 (稱為 Quickstep)，但此版本的 %1$s 與您的 Android 版本不相容。 若要繼續使用您的裝置，請解除安裝 %1$s 更新或停用 %1$s 作為系統手勢提供者。</string>
     <string name="translucent_background">半透明背景</string>
@@ -536,7 +536,7 @@
     <string name="task_menu_force_stop">強制關閉</string>
     <string name="window_corner_radius_label">螢幕圓角半徑</string>
     <string name="override_window_corner_radius_label">Custom screen corner radius</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">工作列</string>
     <string name="enable_taskbar_experimental">顯示工作列 (實驗性)</string>
     <!--
@@ -583,7 +583,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">在搜尋結果中顯示</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">應用程式、捷徑</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">應用程式捷徑</string>
     <string name="search_pref_result_people_title">聯絡人</string>
     <string name="search_pref_result_tips_title">Pixel tips</string>

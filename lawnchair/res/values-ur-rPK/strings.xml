@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">صرف منفرد ایپس دکھائیں۔</string>
     <string name="my_folder_label">میرا فولڈر</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">اشارہ کرتے وقت مخصوص اعمال (جیسے آپ کے فون کو لاک کرنا) انجام دینے کے لیے، Lawnchair کو ایکسیسبیلٹی رسائی کی ضرورت ہوتی ہے۔\n\nLawnchair صارف کی کسی کارروائی کو نہیں دیکھتا، حالانکہ ایسا کرنے کا استحقاق تمام قابل رسائی خدمات کے لیے درکار ہے۔ Lawnchair سسٹم کی طرف سے بھیجے گئے کسی بھی ایونٹ کو رد کر دیتا ہے۔\n\nآپ کے فون کو لاک کرنے، یا Recents کھولنے کے لیے، Lawnchair پرفارم گلوبل ایکشن ایکسیسبیلٹی سروس استعمال کرتا ہے۔</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">قطار اور کالم کی گنتی</string>
     <string name="gestures_label">اشارے</string>
     <string name="gestures_description">ٹیپ اور سوائپس</string>
-    <string name="quickstep_label">حالیہ</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">کلئیر آل بٹن، کونے کی گولائی</string>
     <string name="about_label">کے بارے میں</string>
     <string name="app_info_drop_target_label">ایپ کی معلومات</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">تھیم والے شبیہیں</string>
     <string name="themed_icons_off_label">آف</string>
     <string name="themed_icons_home_label">ہوم اسکرین</string>
-    <string name="themed_icons_home_and_drawer_label">ہوم اسکرین &amp; ایپ دراز</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">کوئی تعاون یافتہ آئیکن پیک نہیں ہے۔</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">فونٹس شامل کریں۔</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">کیا دکھانا ہے۔</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">کیلنڈر</string>
-    <string name="smartspace_date_and_time">تاریخ &amp; وقت</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">تاریخ</string>
     <string name="smartspace_time">وقت</string>
     <string name="smartspace_time_format">وقت کی شکل</string>
@@ -340,11 +340,11 @@
     <string name="news">خبر</string>
     <string name="support">حمایت</string>
     <string name="product">پروڈکٹ</string>
-    <string name="design_and_development">ڈیزائن &amp; ترقی</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">ترقی</string>
     <string name="quickswitch_maintenance">QuickSwitch کی دیکھ بھال</string>
     <string name="devops">ڈیو اوپس</string>
-    <string name="support_and_pr">سپورٹ &amp; PR</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">اعترافات</string>
     <string name="translate">ترجمہ کریں۔</string>
     <string name="donate">عطیہ کریں۔</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">دائیں سوائپ کریں۔</string>
     <string name="gesture_handler_no_op">کچھ نہ کرو</string>
     <string name="gesture_handler_sleep">سونا</string>
-    <string name="gesture_handler_recents">حالیہ کھولیں۔</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">نوٹیفکیشن پینل کھولیں۔</string>
     <string name="gesture_handler_open_app_option">ایپ کھولیں۔</string>
     <string name="gesture_handler_open_app_config">%1$s کھولیں۔</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">ایکسیسبیلٹی سروس کو آن کریں۔</string>
     <string name="dt2s_a11y_hint">سونے کے لیے ڈبل تھپتھپائیں استعمال کرنے کے لیے، لانچ چیئر تک رسائی کی خدمت کو آن کریں۔ \"اوپن سیٹنگز\" کو تھپتھپائیں، \"لان چیئر\" کو منتخب کریں اور \"لان چیئر کا استعمال کریں\" کو آن کریں۔\n\nلان چیئر اس کارروائی کو انجام دینے کے لیے ایکسیسبیلٹی کا `پرفارم گلوبل ایکشن` طریقہ استعمال کرتی ہے۔ یہ ایک حساس اجازت ہے جو دوسری ایپس کی نگرانی کرنے کی اجازت دیتی ہے۔ تاہم، Lawnchair کو اس فعالیت کے لیے ترتیب نہیں دیا گیا ہے اور اسے کوئی ایونٹ نہیں ملتا ہے۔</string>
     <string name="dt2s_recents_warning_open_settings">ترتیبات کھولیں۔</string>
-    <string name="recents_a11y_hint">حالیہ کھولیں استعمال کرنے کے لیے، لان چیئر تک رسائی سروس کو آن کریں۔ \"اوپن سیٹنگز\" کو تھپتھپائیں، \"لان چیئر\" کو منتخب کریں اور \"لان چیئر کا استعمال کریں\" کو آن کریں۔\n\nلان چیئر اس کارروائی کو انجام دینے کے لیے ایکسیسبیلٹی کا `پرفارم گلوبل ایکشن` طریقہ استعمال کرتی ہے۔ یہ ایک حساس اجازت ہے جو دوسری ایپس کی نگرانی کرنے کی اجازت دیتی ہے۔ تاہم، لان چیئر کو اس فعالیت کے لیے ترتیب نہیں دیا گیا ہے اور اسے کوئی ایونٹ نہیں ملتا ہے۔</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -525,7 +525,7 @@
     <string name="max_folder_columns">زیادہ سے زیادہ فولڈر کالم</string>
     <string name="max_folder_rows">فولڈر کی زیادہ سے زیادہ قطاریں۔</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">ان ترتیبات کو نظر انداز کر دیا جائے گا کیونکہ Lawnchair کو Recents فراہم کنندہ کے طور پر سیٹ نہیں کیا گیا ہے۔</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">غیر مطابقت پذیر نظام کا انضمام</string>
     <string name="quickstep_incompatible_description">آپ کے آلے کو %1$s کے ذریعہ فراہم کردہ سسٹم اشاروں (جسے Quickstep کہا جاتا ہے) کے لیے ترتیب دیا گیا ہے، لیکن %1$s کا یہ ورژن آپ کے Android ورژن کے ساتھ مطابقت نہیں رکھتا ہے۔ اپنے آلے کا استعمال جاری رکھنے کے لیے، براہ کرم %1$s اپ ڈیٹس کو اَن انسٹال کریں یا %1$s کو سسٹم اشارہ فراہم کنندہ کے طور پر غیر فعال کریں۔</string>
     <string name="translucent_background">شفاف پس منظر</string>
@@ -537,7 +537,7 @@
     <string name="task_menu_force_stop">زبردستی بند کریں۔</string>
     <string name="window_corner_radius_label">اسکرین کونے کا رداس</string>
     <string name="override_window_corner_radius_label">حسب ضرورت اسکرین کونے کا رداس</string>
-    <string name="window_corner_radius_description">جب آپ Recents کھولنے کے لیے اوپر سوائپ کرتے ہیں، تو موجودہ ایپ کارڈ میں سکڑ کر آپ کی انگلی کی پیروی کرتی ہے۔  اس سلائیڈر کو کارڈ کے کونے کے رداس کو ایڈجسٹ کرنے کے لیے استعمال کریں جب یہ تقریباً پوری اسکرین پر ہو تاکہ یہ آپ کی اسکرین کے کونوں سے مماثل ہو۔</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">ٹاسک بار</string>
     <string name="enable_taskbar_experimental">ٹاسک بار دکھائیں (تجرباتی)</string>
     <!--
@@ -584,7 +584,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">تلاش کے نتائج میں دکھائیں۔</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">ایپس &amp; شارٹ کٹس</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">ایپ شارٹ کٹس</string>
     <string name="search_pref_result_people_title">لوگ</string>
     <string name="search_pref_result_tips_title">پکسل ٹپس</string>

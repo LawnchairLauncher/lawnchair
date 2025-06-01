@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">Моя папка</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d на %2$d</string>
     <string name="x_and_y">%1$s і %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">Кількість рядків та стовпців</string>
     <string name="gestures_label">Жести</string>
     <string name="gestures_description">Дотики та проводження</string>
-    <string name="quickstep_label">Нещодавні</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">Кнопка \"Очистити все\", радіус заокруглення кутів</string>
     <string name="about_label">Про додаток</string>
     <string name="app_info_drop_target_label">Про застосунок</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Тематичні значки</string>
     <string name="themed_icons_off_label">Вимкнено</string>
     <string name="themed_icons_home_label">Головний екран</string>
-    <string name="themed_icons_home_and_drawer_label">Головний екран та панель додатків</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">Немає підтримуваних наборів значків</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Додати шрифти</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Що показати</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Календар</string>
-    <string name="smartspace_date_and_time">Дата &amp; час</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">Дата</string>
     <string name="smartspace_time">Час</string>
     <string name="smartspace_time_format">Формат часу</string>
@@ -340,11 +340,11 @@
     <string name="news">Новини</string>
     <string name="support">Підтримка</string>
     <string name="product">Продукт</string>
-    <string name="design_and_development">Дизайн &amp; розробка</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">Розробка</string>
     <string name="quickswitch_maintenance">Технічна підтримка QuickSwitch</string>
     <string name="devops">Девопс</string>
-    <string name="support_and_pr">Підтримка &amp; PR</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">Подяки</string>
     <string name="translate">Переклад</string>
     <string name="donate">Зробити внесок</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Нічого не робити</string>
     <string name="gesture_handler_sleep">Сон</string>
-    <string name="gesture_handler_recents">Відкрити Недавні</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Відкрити панель сповіщень</string>
     <string name="gesture_handler_open_app_option">Відкрити додаток</string>
     <string name="gesture_handler_open_app_config">Відкрити %1$s</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">Увімкнути службу Спеціальних Можливостей</string>
     <string name="dt2s_a11y_hint">Щоб використовувати \"Подвійний Дотик для Переходу в Режим Сну\", увімкніть службу доступності Lawnchair. Натисніть \"Відкрити налаштування\", виберіть \"Lawnchair\" і увімкніть \"Використовувати Lawnchair\".\n\nLawnchair використовує метод доступності `performGlobalAction` для виконання цієї дії. Це чутливий дозвіл, який дозволяє контролювати інші програми. Втім, Lawnchair не налаштований на цю можливість і не отримує жодних подій.</string>
     <string name="dt2s_recents_warning_open_settings">Відкрити Налаштування</string>
-    <string name="recents_a11y_hint">Щоб використовувати \"Відкрити Недавні\", увімкніть службу доступності Lawnchair. Натисніть \"Відкрити налаштування\", виберіть \"Lawnchair\" і увімкніть \"Використовувати Lawnchair\".\n\nLawnchair використовує метод доступності `performGlobalAction` для виконання цієї дії. Це чутливий дозвіл, який дозволяє контролювати інші програми. Втім, Lawnchair не налаштований на цю можливість і не отримує жодних подій.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -527,7 +527,7 @@
     <string name="max_folder_columns">Максимальна кількість стовпців у теці</string>
     <string name="max_folder_rows">Максимальна кількість рядків у теці</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Ці параметри буде проігноровано, оскільки Lawnchair не встановлено як постачальника Недавніх</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Несумісна системна інтеграція</string>
     <string name="quickstep_incompatible_description">Ваш пристрій налаштовано на використання системних жестів (відомих як Quickstep) від %1$s, але ця версія %1$s несумісна з вашою версією Android. Щоб продовжити користуватися пристроєм, видаліть оновлення %1$s або вимкніть %1$s як постачальника системних жестів.</string>
     <string name="translucent_background">Напівпрозорий фон</string>
@@ -539,7 +539,7 @@
     <string name="task_menu_force_stop">Примусово закрити</string>
     <string name="window_corner_radius_label">Радіус заокруглення екрану</string>
     <string name="override_window_corner_radius_label">Користувацький радіус заокруглення екрану</string>
-    <string name="window_corner_radius_description">Проводячи вгору, щоб відкрити Недавні, поточний додаток слідує за вашим пальцем, стискаючись у картку. Використовуйте цей повзунок, щоб відрегулювати радіус заокруглення кутів картки, коли вона займає майже весь екран, так щоб він відповідав кутам екрана.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">Панель задач</string>
     <string name="enable_taskbar_experimental">Показати панель задач (експериментально)</string>
     <!--
@@ -586,7 +586,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Показати в результатах пошуку</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Додатки та Ярлики</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">Ярлики додатків</string>
     <string name="search_pref_result_people_title">Люди</string>
     <string name="search_pref_result_tips_title">Поради Pixel</string>

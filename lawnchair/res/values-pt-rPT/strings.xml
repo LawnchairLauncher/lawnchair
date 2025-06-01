@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">A minha pasta</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">Número de linhas e colunas</string>
     <string name="gestures_label">Gestos</string>
     <string name="gestures_description">Toques e deslizes</string>
-    <string name="quickstep_label">Recentes</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">Botão limpar tudo, raio do canto</string>
     <string name="about_label">Sobre</string>
     <string name="app_info_drop_target_label">Informação das aplicações</string>
@@ -228,7 +228,7 @@ Transparentes</string>
     <string name="themed_icon_title">Ícones temáticos</string>
     <string name="themed_icons_off_label">Desligado</string>
     <string name="themed_icons_home_label">Ecrã principal</string>
-    <string name="themed_icons_home_and_drawer_label">Ecrã principal &amp; gaveta de aplicações</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">Sem pacotes de ícones suportados</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Adicionar fontes</string>
@@ -304,7 +304,7 @@ Transparentes</string>
     <string name="smartspace_widget_description">O que mostrar</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Calendário</string>
-    <string name="smartspace_date_and_time">Data e Hora</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">Data</string>
     <string name="smartspace_time">Hora</string>
     <string name="smartspace_time_format">Formato de hora</string>
@@ -341,11 +341,11 @@ Transparentes</string>
     <string name="news">Novidades</string>
     <string name="support">Suporte</string>
     <string name="product">Produto</string>
-    <string name="design_and_development">Design &amp; desenvolvimento</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">Desenvolvimento</string>
     <string name="quickswitch_maintenance">Manutenção do QuickSwitch</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Suporte &amp; PR</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">Reconhecimentos</string>
     <string name="translate">Traduzir</string>
     <string name="donate">Doar</string>
@@ -379,7 +379,7 @@ Transparentes</string>
     <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Não fazer nada</string>
     <string name="gesture_handler_sleep">Suspender</string>
-    <string name="gesture_handler_recents">Abrir Recentes</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Abrir painel de notificações</string>
     <string name="gesture_handler_open_app_option">Abrir aplicação</string>
     <string name="gesture_handler_open_app_config">Abrir %1$s</string>
@@ -394,7 +394,7 @@ Transparentes</string>
     <string name="d2ts_recents_a11y_hint_title">Ativar o serviço de acessibilidade</string>
     <string name="dt2s_a11y_hint">Para usar o Toque Duplo para Dormir, ativa o serviço de acessibilidade do Lawnchair. Toca em \"Abrir definições\", seleciona \"Lawnchair\" e ativa \"Usar Lawnchair\".\n\nO Lawnchair utiliza o método `performGlobalAction` da Acessibilidade para realizar esta ação. Esta é uma permissão sensível que permite monitorizar outras aplicações. No entanto, o Lawnchair não está configurado para essa funcionalidade e não recebe eventos.</string>
     <string name="dt2s_recents_warning_open_settings">Abrir definições</string>
-    <string name="recents_a11y_hint">Para usar Abrir Recentes, ativa o serviço de acessibilidade do Lawnchair. Toca em \"Abrir definições\", seleciona \"Lawnchair\" e ativa \"Usar Lawnchair\".\n\nO Lawnchair utiliza o método `performGlobalAction` da Acessibilidade para realizar esta ação. Esta é uma permissão sensível que permite monitorizar outras aplicações. No entanto, o Lawnchair não está configurado para essa funcionalidade e não recebe eventos.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -526,7 +526,7 @@ Transparentes</string>
     <string name="max_folder_columns">Número máximo de colunas na pasta</string>
     <string name="max_folder_rows">Número máximo de linhas na pasta</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Estas definições serão ignoradas, pois o Lawnchair não está definido como o fornecedor de recentes</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Integração do sistema incompatível</string>
     <string name="quickstep_incompatible_description">O seu dispositivo está configurado para ter gestos do sistema (conhecidos como Quickstep) fornecidos por %1$s, mas esta versão de %1$s não é compatível com a versão do seu Android. Para continuar a usar o seu dispositivo, desinstale as atualizações de %1$s ou desative %1$s como fornecedor de gestos do sistema.</string>
     <string name="translucent_background">Fundo translúcido</string>
@@ -538,7 +538,7 @@ Transparentes</string>
     <string name="task_menu_force_stop">Forçar encerramento</string>
     <string name="window_corner_radius_label">Raio do canto da ecrã</string>
     <string name="override_window_corner_radius_label">Raio de canto de ecrã personalizado</string>
-    <string name="window_corner_radius_description">Ao deslizar para cima para abrir os Recentes, a aplicação atual segue o seu dedo, reduzindo-se para um cartão. Use este controlo deslizante para ajustar o raio dos cantos do cartão quando este estiver quase em ecrã completo, de modo a corresponder aos cantos do seu ecrã.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">Barra de tarefas</string>
     <string name="enable_taskbar_experimental">Mostrar barra de tarefas (experimental)</string>
     <!--
@@ -585,7 +585,7 @@ Transparentes</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Mostrar nos resultados de pesquisa</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Aplicações &amp; Atalhos</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">Atalhos de aplicação</string>
     <string name="search_pref_result_people_title">Pessoas</string>
     <string name="search_pref_result_tips_title">Dicas do Pixel</string>

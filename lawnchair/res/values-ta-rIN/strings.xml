@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">My folder</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open Recents, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">கோப்புறை விளக்கம்</string>
     <string name="gestures_label">சைகைகள்</string>
     <string name="gestures_description">தட்டுவது மற்றும் தேய்ப்பது</string>
-    <string name="quickstep_label">அண்மையவை</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">அனைத்தயுந்துடை பொத்தான், மூலை ஆரம்</string>
     <string name="about_label">விவர பெயர்கள்</string>
     <string name="app_info_drop_target_label">செயலியின் தகவல்கள்</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">தோற்றக்கருமிகுச் சின்னங்கள்</string>
     <string name="themed_icons_off_label">அணை</string>
     <string name="themed_icons_home_label">முகப்புத் திரை</string>
-    <string name="themed_icons_home_and_drawer_label">முகப்பு திரை &amp; ஆப் ட்ராவெர்</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">ஆதரிக்கப்படும் ஐகான் பேக் இல்லை</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">எழுத்துருக்களை சேர்க்கவும்</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">எதைக் காட்ட</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">காலெண்டர்</string>
-    <string name="smartspace_date_and_time">தேதி &amp; நேரம்</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">தேதி</string>
     <string name="smartspace_time">நேரம்</string>
     <string name="smartspace_time_format">நேர அமைப்பு</string>
@@ -340,11 +340,11 @@
     <string name="news">செய்தி</string>
     <string name="support">ஆதரவு</string>
     <string name="product">தயாரிப்பு</string>
-    <string name="design_and_development">வடிவமைப்பு &amp; உருவாக்கம்</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">மேம்பாடு</string>
     <string name="quickswitch_maintenance">விரைமாற்று பராமரிப்பு</string>
     <string name="devops">டெவ்ஆப்ஸ்</string>
-    <string name="support_and_pr">ஆதரவு &amp; மக்கள் தொடர்பு</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">ஒப்புதல்</string>
     <string name="translate">மொழிபெயர்</string>
     <string name="donate">Donate</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">எதுவும் செய்யாதே</string>
     <string name="gesture_handler_sleep">தூங்கு</string>
-    <string name="gesture_handler_recents">Open Recents</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">அறிவிப்பு பேனலைத் திறக்கவும்</string>
     <string name="gesture_handler_open_app_option">செயலியைத் திற</string>
     <string name="gesture_handler_open_app_config">%1$s திற</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">அணுகல்தன்மை சேவையை இயக்கு</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <string name="dt2s_recents_warning_open_settings">அமைப்புகளைத் திற</string>
-    <string name="recents_a11y_hint">To use Open Recents, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -525,7 +525,7 @@
     <string name="max_folder_columns">அதிகபட்ச கோப்புறை நெடுவரிசைகள்</string>
     <string name="max_folder_rows">அதிகபட்ச கோப்புறை நெடுவரிசைகள்</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Lawnchair சமீபத்திய வழங்குநராக அமைக்கப்படாததால் இந்த அமைப்புகள் புறக்கணிக்கப்படும்</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">பொருந்தாத கணினி ஒருங்கிணைப்பு</string>
     <string name="quickstep_incompatible_description">%1$s -ஆல் வழங்கப்பட்ட முறைமை சைகைகளைக் (Quickstep என அறியப்படும்) கொண்டிருக்கும்படி உங்கள் சாதனம் உள்ளமைக்கப்பட்டுள்ளது, ஆனால் %1$s-இன் இந்தப் பதிப்பு உங்கள் Android பதிப்புடன் இணக்கமாக இல்லை. உங்கள் சாதனத்தைப் பயன்படுத்துவதைத் தொடர, முறைமை சைகை வழங்குநராக %1$s புதுப்பித்தல்களை நிறுவல்நீக்கவும் அல்லது %1$s -ஐ முடக்கவும்.</string>
     <string name="translucent_background">ஒளிஊடுருவக்கூடிய பின்னணி</string>
@@ -537,7 +537,7 @@
     <string name="task_menu_force_stop">விசை நெருக்கம்</string>
     <string name="window_corner_radius_label">திரை மூலை ஆரம்</string>
     <string name="override_window_corner_radius_label">தனிப்பயன் திரை மூலை ஆரம்</string>
-    <string name="window_corner_radius_description">அண்மையவையைத் திறக்க மேலே தேய்த்தால், தற்போதைய செயலி உம் விரலைப் பின்தொடர்ந்து அட்டையாகச் சுருக்கும். அட்டையின் மூலை ஆரம் உம் திரை மூலையை அது கிட்டத்தட்ட முழுதிரையிலிருக்கும்போது பொருந்துமாறு அனுசரிக்க இச்சறுக்கியைப் பயன்படுத்து.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">பணிப்பட்டி</string>
     <string name="enable_taskbar_experimental">பணிப்பட்டியைக் காட்டு (சோதனை)</string>
     <!--
@@ -584,7 +584,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">தேடல் முடிவுகளில் காட்டு</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">பயன்பாடுகள் &amp; குறுக்குவழிகள்</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">செயலி குறுக்குவழிகள்</string>
     <string name="search_pref_result_people_title">மக்கள்</string>
     <string name="search_pref_result_tips_title">பிக்சல் துணுக்குதவிகள்</string>

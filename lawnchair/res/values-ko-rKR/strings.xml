@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">중복 앱 숨기기</string>
     <string name="my_folder_label">내 폴더</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Lawnchair에서 제스처로 기기를 잠그거나 최근 앱 화면을 열기 위해서는 접근성 권한이 필요합니다.\n\n모든 접근성 서비스에는 대화 상자에 나오는 권한이 필요합니다. Lawnchair는 사용자의 동작을 전혀 감시하지 않으며, 시스템에서 보내는 이벤트를 모두 무시합니다.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다.</string>
+    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s 및 %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">아이콘 세로 및 가로 배치 수</string>
     <string name="gestures_label">제스처</string>
     <string name="gestures_description">탭 및 스와이프</string>
-    <string name="quickstep_label">최근 앱</string>
+    <string name="quickstep_label">Recents screen</string>
     <string name="quickstep_description">모두 닫기 버튼, 가장자리 둥글기</string>
     <string name="about_label">더 보기</string>
     <string name="app_info_drop_target_label">앱 정보</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">테마 아이콘</string>
     <string name="themed_icons_off_label">사용 안함</string>
     <string name="themed_icons_home_label">홈 화면</string>
-    <string name="themed_icons_home_and_drawer_label">홈 화면 &amp; 앱 서랍</string>
+    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
     <string name="lawnicons_not_installed_description">지원되는 아이콘 팩이 없습니다.</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">글꼴 추가</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">표시할 항목</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">달력</string>
-    <string name="smartspace_date_and_time">날짜 &amp; 시간</string>
+    <string name="smartspace_date_and_time">Date and time</string>
     <string name="smartspace_date">날짜</string>
     <string name="smartspace_time">시간</string>
     <string name="smartspace_time_format">시간 형식</string>
@@ -340,11 +340,11 @@
     <string name="news">뉴스</string>
     <string name="support">지원</string>
     <string name="product">제품</string>
-    <string name="design_and_development">디자인 &amp; 개발</string>
+    <string name="design_and_development">Design and development</string>
     <string name="development">개발</string>
     <string name="quickswitch_maintenance">퀵 스위치 점검</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">지원 &amp; 문의</string>
+    <string name="support_and_pr">Support and PR</string>
     <string name="acknowledgements">감사의 말</string>
     <string name="translate">번역</string>
     <string name="donate">후원</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">오른쪽으로 쓸기</string>
     <string name="gesture_handler_no_op">아무것도 하지 않음</string>
     <string name="gesture_handler_sleep">절전</string>
-    <string name="gesture_handler_recents">최근 앱 화면 열기</string>
+    <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">알림 패널 열기</string>
     <string name="gesture_handler_open_app_option">앱 열기</string>
     <string name="gesture_handler_open_app_config">%1$s 열기</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">접근성 서비스가 활성화되어야합니다</string>
     <string name="dt2s_a11y_hint">두 번 눌러 화면 끄기 기능을 사용하려면 Lawnchair 접근성 서비스를 사용해야 합니다. \"설정 열기\"를 눌러 나오는 화면에서 \"Lawnchair\"를 누른 뒤, \"Lawnchair 사용\"을 켜세요.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다. 이 메소드는 다른 앱을 감시할 수 있는 민감한 권한이지만, Lawnchair는 앱 감시 기능이 없으며 시스템에서 보내는 이벤트를 모두 무시합니다.</string>
     <string name="dt2s_recents_warning_open_settings">설정 열기</string>
-    <string name="recents_a11y_hint">최근 앱 화면 열기 기능을 사용하려면 Lawnchair 접근성 서비스를 사용해야 합니다. \"설정 열기\"를 눌러 나오는 화면에서 \"Lawnchair\"를 누른 뒤, \"Lawnchair 사용\"을 켜세요.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다. 이 메소드는 다른 앱을 감시할 수 있는 민감한 권한이지만, Lawnchair는 앱 감시 기능이 없으며 시스템에서 보내는 이벤트를 모두 무시합니다.</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -524,7 +524,7 @@
     <string name="max_folder_columns">최대 폴더 열</string>
     <string name="max_folder_rows">최대 폴더 행</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">Lawnchair가 최근 앱 제공자로 설정되지 않았으므로 아래 설정은 무시됩니다</string>
+    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">호환되지 않는 시스템 통합</string>
     <string name="quickstep_incompatible_description">기기가 %1$s에서 제공하는 시스템 제스처(Quickstep으로 알려져 있음)가 설정되어 있지만 %1$s의 이 버전은 Android 버전과 호환되지 않습니다. 장치를 계속 사용하려면 %1$s 업데이트를 제거하거나 시스템 제스처 공급자로 %1$s을(를) 비활성화하십시오.</string>
     <string name="translucent_background">반투명 배경</string>
@@ -536,7 +536,7 @@
     <string name="task_menu_force_stop">강제 종료</string>
     <string name="window_corner_radius_label">가장자리 둥글기</string>
     <string name="override_window_corner_radius_label">화면 가장자리 둥글기 사용자 정의</string>
-    <string name="window_corner_radius_description">위로 스와이프하여 최근 앱 화면을 열면, 현재 앱이 손가락을 따라가며 카드로 줄어듭니다. 이 슬라이더를 사용하여 카드가 거의 전체 화면일 때 화면 모서리와 일치하도록 카드의 모서리 반경을 조정할 수 있습니다.</string>
+    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
     <string name="taskbar_label">작업 표시줄</string>
     <string name="enable_taskbar_experimental">작업 표시줄 표시 (실험적 기능)</string>
     <!--
@@ -583,7 +583,7 @@
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">검색 결과에 보여주기</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">앱 및 바로가기</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">앱 바로가기</string>
     <string name="search_pref_result_people_title">사람들</string>
     <string name="search_pref_result_tips_title">Pixel 도움말</string>
