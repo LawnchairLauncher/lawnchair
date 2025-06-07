@@ -35,7 +35,7 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.theme.dividerColor
-import app.lawnchair.ui.util.PreviewLawnchair
+import app.lawnchair.ui.util.preview.PreviewLawnchair
 
 @Composable
 fun SwitchPreference(

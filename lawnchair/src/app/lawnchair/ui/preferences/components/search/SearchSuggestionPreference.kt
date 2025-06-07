@@ -29,8 +29,8 @@ import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.theme.dividerColor
-import app.lawnchair.ui.util.PreviewLawnchair
 import app.lawnchair.ui.util.bottomSheetHandler
+import app.lawnchair.ui.util.preview.PreviewLawnchair
 import com.android.launcher3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
