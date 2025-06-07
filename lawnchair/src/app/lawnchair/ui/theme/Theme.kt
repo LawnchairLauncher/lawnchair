@@ -23,6 +23,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
@@ -84,6 +87,8 @@ fun ComponentActivity.EdgeToEdge() {
 
 @Composable
 fun getColorScheme(darkTheme: Boolean): ColorScheme {
+    if (LocalInspectionMode.current) return getPreviewColorScheme(darkTheme)
+
     val context = LocalContext.current
     val preferenceManager2 = preferenceManager2()
     val accentColor by preferenceManager2.accentColor.asState()
@@ -96,8 +101,16 @@ fun getColorScheme(darkTheme: Boolean): ColorScheme {
     return colorScheme.toComposeColorScheme(isDark = darkTheme)
 }
 
+private fun getPreviewColorScheme(darkTheme: Boolean) = if (darkTheme) {
+    darkColorScheme()
+} else {
+    lightColorScheme()
+}
+
 val isSelectedThemeDark: Boolean
     @Composable get() {
+        if (LocalInspectionMode.current) return isAutoThemeDark
+
         val themeChoice by preferenceManager().launcherTheme.observeAsState()
         return when (themeChoice) {
             ThemeChoice.LIGHT -> false
