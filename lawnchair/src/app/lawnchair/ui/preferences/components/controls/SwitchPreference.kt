@@ -30,11 +30,14 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.theme.dividerColor
+import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
 import app.lawnchair.ui.util.preview.PreviewLawnchair
 
 @Composable
@@ -118,13 +121,21 @@ fun SwitchPreference(
 
 @PreviewLawnchair
 @Composable
-private fun SwitchPreferencePreview() {
+private fun SwitchPreferencePreview(
+    @PreviewParameter(SwitchPreferencePreviewParameterProvider::class) checked: Boolean,
+) {
     LawnchairTheme {
-        SwitchPreference(
-            checked = true,
-            onCheckedChange = {},
-            label = "Example switch",
-            description = "Sample description text",
-        )
+        PreferenceGroupPreviewContainer {
+            SwitchPreference(
+                checked = checked,
+                onCheckedChange = {},
+                label = "Label",
+                description = "Description",
+            )
+        }
     }
+}
+
+private class SwitchPreferencePreviewParameterProvider : PreviewParameterProvider<Boolean> {
+    override val values = sequenceOf(true, false)
 }
