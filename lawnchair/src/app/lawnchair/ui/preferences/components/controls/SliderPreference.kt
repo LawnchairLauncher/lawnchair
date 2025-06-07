@@ -36,10 +36,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.rememberTransformAdapter
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
+import app.lawnchair.ui.theme.LawnchairTheme
+import app.lawnchair.ui.util.preview.PreferenceGroupPreviewContainer
+import app.lawnchair.ui.util.preview.PreviewLawnchair
 import com.android.launcher3.R
 import kotlin.math.roundToInt
 
@@ -80,10 +85,36 @@ fun SliderPreference(
     showUnit: String = "",
 ) {
     var adapterValue by adapter
-    var sliderValue by remember { mutableFloatStateOf(adapterValue) }
 
-    DisposableEffect(adapterValue) {
-        sliderValue = adapterValue
+    SliderPreference(
+        label = label,
+        value = adapterValue,
+        onValueChangeFinished = { newValue ->
+            adapterValue = newValue
+        },
+        valueRange = valueRange,
+        step = step,
+        modifier = modifier,
+        showAsPercentage = showAsPercentage,
+        showUnit = showUnit,
+    )
+}
+
+@Composable
+private fun SliderPreference(
+    label: String,
+    value: Float,
+    onValueChangeFinished: (Float) -> Unit,
+    valueRange: ClosedFloatingPointRange<Float>,
+    step: Float,
+    modifier: Modifier = Modifier,
+    showAsPercentage: Boolean = false,
+    showUnit: String = "",
+) {
+    var sliderValue by remember { mutableFloatStateOf(value) }
+
+    DisposableEffect(value) {
+        sliderValue = value
         onDispose { }
     }
 
@@ -126,7 +157,7 @@ fun SliderPreference(
             Slider(
                 value = sliderValue,
                 onValueChange = { newValue -> sliderValue = newValue },
-                onValueChangeFinished = { adapterValue = sliderValue },
+                onValueChangeFinished = { onValueChangeFinished(sliderValue) },
                 valueRange = valueRange,
                 steps = getSteps(valueRange, step),
                 modifier = Modifier
@@ -158,4 +189,27 @@ fun snapSliderValue(start: Float, value: Float, step: Float): Float {
     val stepsFromStart = (distance / step).roundToInt()
     val snappedDistance = stepsFromStart * step
     return start + snappedDistance
+}
+
+@PreviewLawnchair
+@Composable
+private fun SliderPreferencePreview(
+    @PreviewParameter(SliderPreferencePreviewParameterProvider::class) sliderValue: Float,
+) {
+    LawnchairTheme {
+        PreferenceGroupPreviewContainer {
+            SliderPreference(
+                label = "Label",
+                value = sliderValue,
+                onValueChangeFinished = {},
+                valueRange = 0f..1f,
+                step = 0.1f,
+                showAsPercentage = true,
+            )
+        }
+    }
+}
+
+private class SliderPreferencePreviewParameterProvider : PreviewParameterProvider<Float> {
+    override val values = sequenceOf(0f, 0.25f, 0.5f, 0.75f, 1f)
 }
