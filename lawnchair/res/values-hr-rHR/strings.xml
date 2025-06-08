@@ -37,14 +37,14 @@
     <string name="action_copy_link">Kopiraj poveznicu</string>
     <string name="action_copy">Kopirati</string>
     <string name="action_paste">Zalijepi</string>
-    <string name="action_done">Done</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="action_done">Gotovo</string>
+    <string name="select_all">Izaberi sve</string>
+    <string name="deselect_all">Poništi odabir svega</string>
+    <string name="inverse_selection">Obrni odabir</string>
     <string name="loading">Učitavanje…</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="download_update">Preuzmi aktualizaciju</string>
+    <string name="install_update">Instaliraj aktualizaciju</string>
+    <string name="pro_updated">Ažurirani ste!</string>
     <string name="managed_by_lawnchair">Ovime upravlja Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Postavke</string>
@@ -56,7 +56,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">Ostalo</string>
     <!-- Selection options -->
     <string name="dynamic">Dinamično</string>
     <string name="presets">Predlošci</string>
@@ -72,7 +72,7 @@
     <string name="layout">Raspored</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Pozadina</string>
-    <string name="style">Style</string>
+    <string name="style">Stil</string>
     <string name="background_opacity">Prozirnost pozadine</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopirano u međuspremnik</string>
@@ -80,24 +80,24 @@
     <string name="item_removed">Stavka uklonjena</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Što prikazati</string>
-    <string name="wallpapers">Wallpapers</string>
+    <string name="wallpapers">Pozadine</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
-    <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="app_drawer_folder">Mapa u ladici aplikacija</string>
+    <string name="app_drawer_folder_settings">Mapa u ladici</string>
+    <string name="add_folder">Napravi mapu</string>
+    <string name="edit_folder">Uredi mapu</string>
+    <string name="add_label">Dodaj</string>
+    <string name="edit_label">Uredi</string>
     <string name="apply_label">Primjeni</string>
     <string name="delete_label">Izbrisati</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="folder_list_note">Povucite prema lijevo da uredite, povucite prema desno da obrišete, ili pritisnite da ažurirate stvari</string>
+    <string name="apps_in_folder_label">Sakrijte aplikacije iz mape</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">My folder</string>
+    <string name="folders_filter_duplicates">Samo prikaži određene aplikacije</string>
+    <string name="my_folder_label">Moja mapa</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Da izvedete određene stavke (poput zaključavanja zaslona) dok izvodite gestu, Lawnchair-u je potreban pristup postavki za pristupačnost.\n\nLawnchair ne prati korisničke radnje, iako je odobrenje za to potrebno za sve usluge pristupačnosti. Lawnchair odbija svaki događaj poslan od sustava.\n\nDa zaključate zaslon, ili da otvorite Nedavno, Lawnchair koristi pristupačnu uslugu preformGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>

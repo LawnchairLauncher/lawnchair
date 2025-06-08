@@ -122,7 +122,7 @@
     <string name="folders_description">行数和列数</string>
     <string name="gestures_label">手势</string>
     <string name="gestures_description">点击和滑动</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">最近任务界面</string>
     <string name="quickstep_description">全部清除按钮，圆角半径</string>
     <string name="about_label">关于</string>
     <string name="app_info_drop_target_label">应用信息</string>
@@ -137,7 +137,7 @@
     <string name="workspace_increase_max_grid_size_description">将主屏幕网格大小限制从 10 × 10 提升到 20 × 20</string>
     <string name="always_reload_icons_label">始终重载图标</string>
     <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
+    <string name="icon_swipe_gestures">图标滑动手势</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="recents_lock_unlock">锁定/解锁</string>
     <string name="recents_lock_unlock_description">按“全部清除”时防止所选应用关闭</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">主题图标</string>
     <string name="themed_icons_off_label">关</string>
     <string name="themed_icons_home_label">主屏幕</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">主屏幕和应用抽屉</string>
     <string name="lawnicons_not_installed_description">没有支持的图标包</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">添加字体</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">显示什么</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">日历</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">日期和时间</string>
     <string name="smartspace_date">日期</string>
     <string name="smartspace_time">时间</string>
     <string name="smartspace_time_format">时间格式</string>
@@ -340,11 +340,11 @@
     <string name="news">新闻</string>
     <string name="support">支持</string>
     <string name="product">产品</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">设计和开发</string>
     <string name="development">开发</string>
     <string name="quickswitch_maintenance">QuickSwitch 维护</string>
     <string name="devops">运维</string>
-    <string name="support_and_pr">Support and PR</string>
+    <string name="support_and_pr">支持和PR</string>
     <string name="acknowledgements">鸣谢</string>
     <string name="translate">翻译</string>
     <string name="donate">捐赠</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">向右滑动</string>
     <string name="gesture_handler_no_op">什么也不做</string>
     <string name="gesture_handler_sleep">息屏</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">打开最近任务界面</string>
     <string name="gesture_handler_open_notifications">打开通知面板</string>
     <string name="gesture_handler_open_app_option">打开应用</string>
     <string name="gesture_handler_open_app_config">打开 %1$s</string>
@@ -555,7 +555,7 @@
     <string name="all_apps_search_market_message">搜索更多应用</string>
     <string name="all_apps_search_on_web_message">在 <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g> 上搜索</string>
     <string name="error_no_market_or_browser_installed">应用商店或浏览器没安装</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">在网络上搜索</string>
     <string name="clear_history">清除搜索记录</string>
     <string name="search_input_action_clear_results">清除搜索框</string>
     <!-- Search settings -->
@@ -578,12 +578,12 @@
     <string name="search_algorithm_app_search">应用搜索</string>
     <string name="search_algorithm_global_search_on_device">全局搜索 (设备上)</string>
     <string name="search_algorithm_global_search_via_asi">全局搜索 (通过 ASI)</string>
-    <string name="custom_search_url">Custom search engine URL</string>
-    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
+    <string name="custom_search_url">自定义搜索引擎 URL</string>
+    <string name="custom_search_suggestions_url">自定义搜索引擎 URL</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">在搜索结果中显示</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">应用程序和快捷方式</string>
     <string name="search_pref_result_shortcuts_title">应用快捷方式</string>
     <string name="search_pref_result_people_title">联系人</string>
     <string name="search_pref_result_tips_title">Pixel 提示</string>
