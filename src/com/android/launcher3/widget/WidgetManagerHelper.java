@@ -38,6 +38,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
+import com.android.systemui.Flags;
 
 import java.util.Collections;
 import java.util.List;
@@ -161,7 +162,7 @@ public class WidgetManagerHelper {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     public RemoteViews loadGeneratedPreview(@NonNull AppWidgetProviderInfo info,
             int widgetCategory) {
-        if (!android.appwidget.flags.Flags.generatedPreviews()) return null;
+        if (!Flags.generatedPreviews()) return null;
         return mAppWidgetManager.getWidgetPreview(info.provider, info.getProfile(), widgetCategory);
     }
 

@@ -106,6 +106,8 @@ public interface FeatureFlags {
     
     boolean floatingMenuRadiiAnimation();
     
+    boolean generatedPreviews();
+    
     boolean getConnectedDeviceNameUnsynchronized();
     
     boolean glanceableHubAllowKeyguardWhenDreaming();

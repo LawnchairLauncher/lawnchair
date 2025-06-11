@@ -64,6 +64,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
     private static boolean floatingMenuNarrowTargetContentObserver = true;
     private static boolean floatingMenuOverlapsNavBarsFlag = true;
     private static boolean floatingMenuRadiiAnimation = true;
+    private static boolean generatedPreviews = true;
     private static boolean getConnectedDeviceNameUnsynchronized = true;
     private static boolean glanceableHubAllowKeyguardWhenDreaming = false;
     private static boolean glanceableHubFullscreenSwipe = false;
@@ -241,6 +242,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
         fastUnlockTransition = foundPackage;
         fixImageWallpaperCrashSurfaceAlreadyReleased = foundPackage;
         fixScreenshotActionDismissSystemWindows = foundPackage;
+        generatedPreviews = foundPackage;
         getConnectedDeviceNameUnsynchronized = foundPackage;
         glanceableHubAllowKeyguardWhenDreaming = foundPackage;
         glanceableHubFullscreenSwipe = foundPackage;
@@ -529,6 +531,8 @@ public final class FeatureFlagsImpl implements FeatureFlags {
                     properties.getBoolean(Flags.FLAG_FIX_IMAGE_WALLPAPER_CRASH_SURFACE_ALREADY_RELEASED, true);
             fixScreenshotActionDismissSystemWindows =
                     properties.getBoolean(Flags.FLAG_FIX_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS, true);
+            generatedPreviews =
+                    properties.getBoolean(Flags.FLAG_GENERATED_PREVIEWS, true);
             getConnectedDeviceNameUnsynchronized =
                     properties.getBoolean(Flags.FLAG_GET_CONNECTED_DEVICE_NAME_UNSYNCHRONIZED, true);
             glanceableHubAllowKeyguardWhenDreaming =
@@ -1551,6 +1555,22 @@ public final class FeatureFlagsImpl implements FeatureFlags {
             }
         }
         return floatingMenuRadiiAnimation;
+
+    }
+    
+    @Override
+    
+    public boolean generatedPreviews() {
+        if (isReadFromNew) {
+            if (!isCached) {
+                init();
+            }
+        } else {
+            if (!systemui_is_cached) {
+                load_overrides_systemui();
+            }
+        }
+        return generatedPreviews;
 
     }
 

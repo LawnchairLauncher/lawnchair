@@ -321,6 +321,12 @@ public class CustomFeatureFlags implements FeatureFlags {
         return getValue(Flags.FLAG_FLOATING_MENU_RADII_ANIMATION,
                 FeatureFlags::floatingMenuRadiiAnimation);
     }
+    
+    @Override
+    public boolean generatedPreviews() {
+        return getValue(Flags.FLAG_GENERATED_PREVIEWS,
+            FeatureFlags::generatedPreviews);
+    }
 
     @Override
     public boolean getConnectedDeviceNameUnsynchronized() {

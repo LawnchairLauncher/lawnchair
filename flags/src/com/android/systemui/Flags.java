@@ -105,6 +105,8 @@ public final class Flags {
     /** @hide */
     public static final String FLAG_FLOATING_MENU_RADII_ANIMATION = "com.android.systemui.floating_menu_radii_animation";
     /** @hide */
+    public static final String FLAG_GENERATED_PREVIEWS = "android.appwidget.flags.generated_previews";
+    /** @hide */
     public static final String FLAG_GET_CONNECTED_DEVICE_NAME_UNSYNCHRONIZED = "com.android.systemui.get_connected_device_name_unsynchronized";
     /** @hide */
     public static final String FLAG_GLANCEABLE_HUB_ALLOW_KEYGUARD_WHEN_DREAMING = "com.android.systemui.glanceable_hub_allow_keyguard_when_dreaming";
@@ -507,6 +509,10 @@ public final class Flags {
     
     public static boolean floatingMenuRadiiAnimation() {
         return FEATURE_FLAGS.floatingMenuRadiiAnimation();
+    }
+
+    public static boolean generatedPreviews() {
+        return FEATURE_FLAGS.generatedPreviews();
     }
     
     public static boolean getConnectedDeviceNameUnsynchronized() {
