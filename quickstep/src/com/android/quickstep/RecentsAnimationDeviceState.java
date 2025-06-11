@@ -107,6 +107,18 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
     private final RotationTouchHelper mRotationTouchHelper;
     private final TaskStackChangeListener mPipListener;
     // Cache for better performance since it doesn't change at runtime.
+
+private static boolean isImeRenderingNavButtons() {
+    try {
+        java.lang.reflect.Method method = android.inputmethodservice.InputMethodService.class
+            .getDeclaredMethod("canImeRenderGesturalNavButtons");
+        return (Boolean) method.invoke(null);
+    } catch (Exception e) {
+        // Method does not exist, assume false or provide fallback
+        return false;
+    }
+}
+
     private final boolean mCanImeRenderGesturalNavButtons = isImeRenderingNavButtons();
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
