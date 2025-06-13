@@ -108,17 +108,6 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener, E
     private final TaskStackChangeListener mPipListener;
     // Cache for better performance since it doesn't change at runtime.
 
-private static boolean isImeRenderingNavButtons() {
-    try {
-        java.lang.reflect.Method method = android.inputmethodservice.InputMethodService.class
-            .getDeclaredMethod("canImeRenderGesturalNavButtons");
-        return (Boolean) method.invoke(null);
-    } catch (Exception e) {
-        // Method does not exist, assume false or provide fallback
-        return false;
-    }
-}
-
     private final boolean mCanImeRenderGesturalNavButtons = isImeRenderingNavButtons();
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
@@ -621,10 +610,16 @@ private static boolean isImeRenderingNavButtons() {
     /**
      * Returns whether IME is rendering nav buttons, and IME is currently showing.
      */
-    public boolean isImeRenderingNavButtons() {
-        return mCanImeRenderGesturalNavButtons && mMode == NO_BUTTON
-                && ((mSystemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0);
+    
+public boolean isImeRenderingNavButtons() {
+    try {
+        java.lang.reflect.Method method = android.inputmethodservice.InputMethodService.class
+            .getDeclaredMethod("canImeRenderGesturalNavButtons");
+        return (Boolean) method.invoke(null);
+    } catch (Exception e) {
+        return false;
     }
+}
 
     /**
      * Returns the touch slop for {@link InputConsumer}s to compare against before
