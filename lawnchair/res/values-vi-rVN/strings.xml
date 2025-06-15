@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Chỉ hiển thị các ứng dụng duy nhất</string>
     <string name="my_folder_label">Thư mục của tôi</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Để thực hiện một số hành động nhất định (chẳng hạn như khóa điện thoại) khi thực hiện cử chỉ, Lawnchair cần có quyền truy cập trợ năng.\n\nLawnchair không theo dõi bất kỳ hành động nào của người dùng, mặc dù quyền làm như vậy là bắt buộc đối với tất cả các dịch vụ trợ năng. Lawnchair loại bỏ bất kỳ sự kiện nào được hệ thống gửi đi.\n\nĐể khóa điện thoại hoặc mở màn hình Gần đây, Lawnchair sử dụng dịch vụ Trợ năng performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">Số hàng và cột</string>
     <string name="gestures_label">Cử chỉ</string>
     <string name="gestures_description">Cử chỉ và chạm</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">Màn hình gần đây</string>
     <string name="quickstep_description">Xóa tất cả nút, bán kính góc</string>
     <string name="about_label">Giới thiệu</string>
     <string name="app_info_drop_target_label">Thông tin ứng dụng</string>
@@ -137,8 +137,8 @@
     <string name="workspace_increase_max_grid_size_description">Cho phép tăng kích thước từ 10x10 lên 20x20 trên màn hình chính</string>
     <string name="always_reload_icons_label">Luôn tải lại biểu tượng</string>
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
+    <string name="icon_swipe_gestures">Cử chỉ vuốt biểu tượng</string>
+    <string name="icon_swipe_gestures_description">Thực hiện các hành động khi vuốt sang trái hoặc phải trên các biểu tượng thay vì di chuyển màn hình chính</string>
     <string name="recents_lock_unlock">Khóa/mở</string>
     <string name="recents_lock_unlock_description">Ngăn chứa ứng dụng đã chọn đóng khi nhấn \"Xóa tất cả\"</string>
     <!--Overlay-->
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Biểu tượng theo chủ đề</string>
     <string name="themed_icons_off_label">Tắt</string>
     <string name="themed_icons_home_label">Trang chủ</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Màn hình chính và ngăn chứa ứng dụng</string>
     <string name="lawnicons_not_installed_description">Gói biểu tượng không tương thích hoặc không được hỗ trợ</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Thêm phông chữ</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Hiển thị những gì</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Lịch</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">Ngày và giờ</string>
     <string name="smartspace_date">Ngày</string>
     <string name="smartspace_time">Giờ</string>
     <string name="smartspace_time_format">Định dạng giờ</string>
@@ -340,11 +340,11 @@
     <string name="news">Tin tức</string>
     <string name="support">Hỗ trợ</string>
     <string name="product">Sản phẩm từ</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">Thiết kế và phát triển</string>
     <string name="development">Nhà phát triển</string>
     <string name="quickswitch_maintenance">Bảo trì Chuyển đổi nhanh</string>
     <string name="devops">Tuỳ chọn của lập trình viên</string>
-    <string name="support_and_pr">Support and PR</string>
+    <string name="support_and_pr">Hỗ trợ và PR</string>
     <string name="acknowledgements">Ghi nhận</string>
     <string name="translate">Dịch</string>
     <string name="donate">Đóng góp</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Vuốt sang phải</string>
     <string name="gesture_handler_no_op">Không làm gì</string>
     <string name="gesture_handler_sleep">Tắt màn hình</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">Mở màn hình Gần đây</string>
     <string name="gesture_handler_open_notifications">Mở thanh thông báo</string>
     <string name="gesture_handler_open_app_option">Mở ứng dụng</string>
     <string name="gesture_handler_open_app_config">Mở %1$s</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">Bật dịch vụ trợ năng</string>
     <string name="dt2s_a11y_hint">Để sử dụng Chạm Hai Lần, hãy bật dịch vụ trợ năng Lawnchair. Nhấn \"Mở cài đặt\", chọn \"Lawnchair\" và bật \"Sử dụng Lawnchair.\"\n\nLawnchair sử dụng phương thức `performGlobalAction` của Khả năng tiếp cận để thực hiện hành động này. Đây là quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được cấu hình cho mục đích đó.</string>
     <string name="dt2s_recents_warning_open_settings">Mở Cài đặt</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">Để sử dụng màn hình Mở gần đây, hãy bật dịch vụ trợ năng Lawnchair. Nhấn \"Mở cài đặt\", chọn \"Lawnchair\" và bật \"Sử dụng Lawnchair\".\n\nLawnchair sử dụng phương thức `performGlobalAction` của Accessibility để thực hiện hành động này. Đây là quyền nhạy cảm cho phép giám sát các ứng dụng khác. Tuy nhiên, Lawnchair không được cấu hình cho mục đích đó.</string>
     <!--
 
     Bug reporting
@@ -524,7 +524,7 @@
     <string name="max_folder_columns">Số cột của thư mục tối đa</string>
     <string name="max_folder_rows">Số hàng thư mục tối đa</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">Những thiết lập này sẽ bị bỏ qua vì Lawnchair không được đặt làm nhà cung cấp màn hình Gần đây</string>
     <string name="quickstep_incompatible">Tích hợp hệ thống không tương thích</string>
     <string name="quickstep_incompatible_description">Thiết bị của bạn được cấu hình để có cử chỉ hệ thống (được gọi là Quickstep) được cung cấp bởi %1$s, nhưng phiên bản này của %1$s không tương thích với phiên bản Android của bạn. Để tiếp tục sử dụng thiết bị của bạn, vui lòng gỡ cài đặt %1$s cập nhật hoặc vô hiệu hóa %1$s với tư cách là nhà cung cấp cử chỉ hệ thống.</string>
     <string name="translucent_background">Nền trong suốt</string>
@@ -536,7 +536,7 @@
     <string name="task_menu_force_stop">Buộc đóng</string>
     <string name="window_corner_radius_label">Bán kính góc màn hình</string>
     <string name="override_window_corner_radius_label">Bán kính góc màn hình tùy chỉnh</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Khi bạn vuốt lên để mở màn hình Gần đây, ứng dụng hiện tại sẽ theo ngón tay của bạn, thu nhỏ lại thành một thẻ. Sử dụng thanh trượt này để điều chỉnh bán kính góc của thẻ khi gần đầy màn hình để nó khớp.</string>
     <string name="taskbar_label">Thanh tác vụ</string>
     <string name="enable_taskbar_experimental">Hiển thị thanh tác vụ (thử nghiệm)</string>
     <!--
@@ -555,7 +555,7 @@
     <string name="all_apps_search_market_message">Tìm kiếm thêm ứng dụng</string>
     <string name="all_apps_search_on_web_message">Tìm kiếm trên <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Không có cửa hàng ứng dụng hoặc trình duyệt nào được cài đặt</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">Tìm kiếm trên web</string>
     <string name="clear_history">Xóa lịch sử tìm kiếm</string>
     <string name="search_input_action_clear_results">Xóa hộp tìm kiếm</string>
     <!-- Search settings -->
@@ -578,12 +578,12 @@
     <string name="search_algorithm_app_search">Tìm kiếm ứng dụng</string>
     <string name="search_algorithm_global_search_on_device">Tìm kiếm toàn cầu (trên thiết bị)</string>
     <string name="search_algorithm_global_search_via_asi">Tìm kiếm toàn cầu (thông qua ASI)</string>
-    <string name="custom_search_url">Custom search engine URL</string>
-    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
+    <string name="custom_search_url">URL công cụ tìm kiếm tùy chỉnh</string>
+    <string name="custom_search_suggestions_url">URL gợi ý tìm kiếm tùy chỉnh</string>
+    <string name="custom_search_input_hint">&#37; sẽ được thay thế bằng truy vấn tìm kiếm</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Hiển thị trong kết quả tìm kiếm</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Ứng dụng và phím tắt</string>
     <string name="search_pref_result_shortcuts_title">Phím tắt ứng dụng</string>
     <string name="search_pref_result_people_title">Mọi người</string>
     <string name="search_pref_result_tips_title">Mẹo về pixel</string>

@@ -44,7 +44,7 @@
     <string name="loading">正在載入…</string>
     <string name="download_update">下載更新</string>
     <string name="install_update">安裝更新</string>
-    <string name="pro_updated">您已擁有最新版本！</string>
+    <string name="pro_updated">您的軟體為最新版本！</string>
     <string name="managed_by_lawnchair">由 Lawnchair 管理</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">偏好設定</string>
@@ -81,8 +81,8 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">要顯示什麼</string>
     <string name="wallpapers">桌布</string>
-    <string name="caddy_beta">Caddy (Beta)</string>
-    <string name="caddy">Caddy</string>
+    <string name="caddy_beta">罐裝 (測試版)</string>
+    <string name="caddy">罐裝</string>
     <string name="app_drawer_folder">應用程式抽屜資料夾</string>
     <string name="app_drawer_folder_settings">抽屜資料夾</string>
     <string name="add_folder">建立資料夾</string>
@@ -109,7 +109,7 @@
     -->
     <string name="settings">設定</string>
     <string name="general_label">一般</string>
-    <string name="general_description">色彩、圖示包、通知圓點</string>
+    <string name="general_description">色彩、圖示套件、通知圓點</string>
     <string name="home_screen_label">主畫面</string>
     <string name="home_screen_description">來源、網格、圖示</string>
     <string name="dock_label">底欄</string>
@@ -135,7 +135,7 @@
     <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
     <string name="workspace_increase_max_grid_size_label">增加主畫面網格數量上限</string>
     <string name="workspace_increase_max_grid_size_description">提高主畫面網格最多 10 x 10 的限制至 20 x 20</string>
-    <string name="always_reload_icons_label">永遠重新載入圖示</string>
+    <string name="always_reload_icons_label">一律重新載入圖示</string>
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
     <string name="icon_swipe_gestures">滑動圖示手勢</string>
     <string name="icon_swipe_gestures_description">配置於圖示上向左/右滑動時的動作以取代移動主畫面</string>
@@ -167,7 +167,7 @@
 
     -->
     <!-- General strings -->
-    <string name="icon_style_label">圖示風格</string>
+    <string name="icon_style_label">圖示主題</string>
     <string name="icon_shape_label">圖示形狀</string>
     <string name="icon_sizes">圖示尺寸</string>
     <string name="show_labels">顯示名稱</string>
@@ -193,7 +193,7 @@
     <string name="icon_shape_system">系統</string>
     <string name="icon_shape_circle">圓形</string>
     <string name="icon_shape_cylinder">圓柱形</string>
-    <string name="icon_shape_diamond">鑽石型</string>
+    <string name="icon_shape_diamond">鑽石形</string>
     <string name="icon_shape_egg">蛋形</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">八角形</string>
@@ -220,7 +220,7 @@
     <string name="import_from_clipboard">從剪貼簿匯入</string>
     <string name="icon_shape_clipboard_import_error">剪貼簿不包含有效的圖示形狀</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">圖示包</string>
+    <string name="icon_pack">圖示套件</string>
     <string name="themed_icon_pack">主題圖示來源</string>
     <string name="themed_icon_pack_tint">用強調色進行著色</string>
     <string name="system_icons">系統圖示</string>
@@ -261,9 +261,9 @@
     <string name="theme_system_default">系統</string>
     <string name="theme_follow_wallpaper">跟隨桌布</string>
     <!-- Color style -->
-    <string name="color_style_label">顏色樣式</string>
+    <string name="color_style_label">色彩樣式</string>
     <string name="color_style_spritz">餐前酒</string>
-    <string name="color_style_tonal_spot">調和</string>
+    <string name="color_style_tonal_spot">協調</string>
     <string name="color_style_vibrant">鮮明</string>
     <string name="color_style_expressive">張力</string>
     <string name="color_style_rainbow">彩虹</string>
@@ -391,9 +391,9 @@
     <string name="dt2s_admin_hint">如要使用輕觸兩下休眠，請將 Lawnchair 設為裝置管理員應用程式。按下 \"開啟設定\" 然後選擇 \"啟用這個裝置管理員應用程式\"。</string>
     <string name="dt2s_admin_warning">將會停用輕觸兩下休眠。</string>
     <string name="d2ts_recents_a11y_hint_title">啟用無障礙服務</string>
-    <string name="dt2s_a11y_hint">如要使用輕觸兩下休眠，請啟用 Lawnchair 無障礙服務。按下 \"開啟設定\" 選擇 \"Lawnchair\"，再開啟 \"使用 Lawnchair\" 控制項。\n\nLawnchair 使用無障礙服務 performGlobalAction 執行這項動作。此為允許監控其他應用程式的敏感權限，然而 Lawnchair 並未配置與接收任何事件。</string>
+    <string name="dt2s_a11y_hint">如要使用輕觸兩下休眠，請啟用 Lawnchair 無障礙服務。按下 \"開啟設定\" 選擇 \"Lawnchair\"，再開啟 \"使用 Lawnchair\" 控制項。\n\nLawnchair 使用 performGlobalAction 無障礙服務執行這項動作。此為允許監控其他應用程式的敏感權限，然而 Lawnchair 並未配置與接收任何事件。</string>
     <string name="dt2s_recents_warning_open_settings">開啟設定</string>
-    <string name="recents_a11y_hint">如要開啟最近使用畫面，請啟用 Lawnchair 無障礙服務。按下 \"開啟設定\" 選擇 \"Lawnchair\"，再開啟 \"使用 Lawnchair\" 控制項。\n\nLawnchair 使用無障礙服務 performGlobalAction 執行這項動作。此為允許監控其他應用程式的敏感權限，然而 Lawnchair 並未配置與接收任何事件。</string>
+    <string name="recents_a11y_hint">如要開啟最近使用畫面，請啟用 Lawnchair 無障礙服務。按下 \"開啟設定\" 選擇 \"Lawnchair\"，再開啟 \"使用 Lawnchair\" 控制項。\n\nLawnchair 使用 performGlobalAction 無障礙服務執行這項動作。此為允許監控其他應用程式的敏感權限，然而 Lawnchair 並未配置與接收任何事件。</string>
     <!--
 
     Bug reporting
@@ -419,8 +419,8 @@
     <string name="wallpaper_blur">模糊桌布 (實驗性)</string>
     <string name="wallpaper_background_blur">模糊強度</string>
     <string name="wallpaper_background_blur_factor">係數閥值</string>
-    <string name="home_lawn_deck_label">牌面</string>
-    <string name="home_lawn_deck_label_beta">牌面 (測試版)</string>
+    <string name="home_lawn_deck_label">集卡冊</string>
+    <string name="home_lawn_deck_label_beta">集卡冊 (測試版)</string>
     <string name="home_lawn_deck_description">透過集卡冊輕鬆存取您的應用程式，旨在簡約設計與無縫管理的絕佳無抽屜體驗</string>
     <string name="auto_add_shortcuts_label">新增新應用程式至主畫面</string>
     <string name="minus_one_enable">顯示訂閱</string>
@@ -502,10 +502,10 @@
     <string name="label_voice_search">語音搜尋</string>
     <!-- App drawer settings -->
     <string name="hidden_apps_label">隱藏的應用程式</string>
-    <string name="pref_all_apps_bulk_icon_loading_title">批次載入應用程式</string>
-    <string name="pref_all_apps_bulk_icon_loading_description">批次載入及呈現圖示並取代個別讀取方式</string>
+    <string name="pref_all_apps_bulk_icon_loading_title">大量讀取應用程式</string>
+    <string name="pref_all_apps_bulk_icon_loading_description">大量載入及呈現圖示取代各別讀取</string>
     <string name="pref_all_apps_remember_position_title">記憶位置</string>
-    <string name="pref_all_apps_remember_position_description">記住「所有應用程式」清單的最後捲動位置</string>
+    <string name="pref_all_apps_remember_position_description">記住應用程式抽屜的最後捲動位置</string>
     <string name="pref_all_apps_show_scrollbar_title">顯示捲軸</string>
     <string name="app_drawer_columns">應用程式抽屜列數</string>
     <string name="row_height_label">清單高度</string>
@@ -520,7 +520,7 @@
     <!-- Folder settings -->
     <string name="folder_preview_bg_opacity_label">圖示預覽背景透明度</string>
     <string name="folder_bg_opacity_label">資料夾背景透明度</string>
-    <string name="folder_preview_bg_color_label">圖示背景色彩</string>
+    <string name="folder_preview_bg_color_label">圖示背景顏色</string>
     <string name="max_folder_columns">最大資料夾列數</string>
     <string name="max_folder_rows">最大資料夾列數</string>
     <!-- Quickstep settings -->
@@ -572,7 +572,7 @@
     <string name="hidden_apps_show_name_typed">僅限輸入完整名稱</string>
     <string name="allapps_web_suggestion_provider_label">網路建議提供者</string>
     <string name="allapps_use_web_suggestion_icon_label">在搜尋列中顯示網頁建議提供者圖示</string>
-    <string name="allapps_match_qsb_style_label">Match dock search bar actions</string>
+    <string name="allapps_match_qsb_style_label">同步底欄搜尋列動作</string>
     <string name="allapps_match_qsb_style_description">輕觸底欄搜尋列將會開啟抽屜和搜尋</string>
     <string name="app_search_algorithm">搜尋演算法</string>
     <string name="search_algorithm_app_search">應用程式搜尋</string>
