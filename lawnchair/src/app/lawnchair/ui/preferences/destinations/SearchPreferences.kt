@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.destinations
 
+import androidx.annotation.Keep
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ import app.lawnchair.ui.preferences.components.search.DrawerSearchPreference
 import app.lawnchair.ui.preferences.navigation.Search
 import com.android.launcher3.R
 
+@Keep // This is refed by a Kotlin serializer, we must keep it's fully qualified name.
 enum class SearchRoute {
     DOCK_SEARCH,
     DRAWER_SEARCH,
