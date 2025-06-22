@@ -308,6 +308,14 @@ android {
             }
         }
 
+        github {
+            manifest.srcFile "github/AndroidManifest.xml"
+        }
+
+        nightly {
+            manifest.srcFile "nightly/AndroidManifest.xml"
+        }
+
         lawnWithQuickstepGithub {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
