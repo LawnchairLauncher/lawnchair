@@ -79,11 +79,11 @@
     <string name="calculator_search_result_copied_toast">Результат скопирован в буфер обмена</string>
     <string name="item_removed">Элемент удален</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">Отображаемые элементы</string>
+    <string name="what_to_show">Параметры отображения</string>
     <string name="wallpapers">Обои</string>
     <string name="caddy_beta">Группировка (бета)</string>
     <string name="caddy">Группировка</string>
-    <string name="app_drawer_folder">Папки в списке приложений</string>
+    <string name="app_drawer_folder">Папки в Меню приложений</string>
     <string name="app_drawer_folder_settings">Папка с приложениями</string>
     <string name="add_folder">Создать папку</string>
     <string name="edit_folder">Изменить папку</string>
@@ -91,13 +91,13 @@
     <string name="edit_label">Изменить</string>
     <string name="apply_label">Применить</string>
     <string name="delete_label">Удалить</string>
-    <string name="folder_list_note">Выполните свайп влево для редактирования, свайп вправо для удаления или нажатие для обновления элементов</string>
+    <string name="folder_list_note">Смахните влево для редактирования, Смахните вправо для удаления или Коснитесь для обновления элементов</string>
     <string name="apps_in_folder_label">Скрыть приложения в папках</string>
     <string name="apps_in_folder_description">Скрывать приложения в папках из общего списка приложений</string>
     <string name="folders_filter_duplicates">Показывать только неповторяющиеся приложения</string>
     <string name="my_folder_label">Моя папка</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Для выполнения определённых действий (например, блокировки телефона) с помощью жестов, Lawnchair требуется доступ к спец. возможностям.\n\nLawnchair не отслеживает действий пользователя, хотя это требуется для всех служб спец. возможностей. Lawnchair не учитывает любые системные события.\n\nЧтобы заблокировать телефон или открыть Экран недавних приложений, Lawnchair использует службу спец. возможностей PerformGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s и %2$s</string>
@@ -114,15 +114,15 @@
     <string name="home_screen_description">Лента, сетка, иконки</string>
     <string name="dock_label">Док-панель</string>
     <string name="dock_description">Строка поиска, число иконок</string>
-    <string name="app_drawer_label">Список приложений</string>
+    <string name="app_drawer_label">Меню приложений</string>
     <string name="app_drawer_description">Скрытые приложения, число столбцов, иконки</string>
-    <string name="drawer_search_label">Поиск в списке приложений</string>
-    <string name="drawer_search_description">Поисковые подсказки, глобальный поиск</string>
+    <string name="drawer_search_label">Поиск в Меню приложений</string>
+    <string name="drawer_search_description">Веб-подсказки, глобальный поиск</string>
     <string name="folders_label">Папки</string>
     <string name="folders_description">Кол-во строк и столбцов</string>
     <string name="gestures_label">Жесты</string>
-    <string name="gestures_description">Касания и свайп-жесты</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="gestures_description">Касания и Свайп-жесты</string>
+    <string name="quickstep_label">Экран недавних приложений</string>
     <string name="quickstep_description">Кнопка \"Очистить всё\", радиус углов</string>
     <string name="about_label">О программе</string>
     <string name="app_info_drop_target_label">О приложении</string>
@@ -131,14 +131,14 @@
     <!-- Experimental features -->
     <string name="font_picker_label">Настройки шрифта</string>
     <string name="font_picker_description">Некоторый текст останется без изменений</string>
-    <string name="smartspace_calendar_label">Настройки календаря секции \"Самое главное\"</string>
-    <string name="smartspace_calendar_description">Разрешить показ даты из других календарей</string>
+    <string name="smartspace_calendar_label">Настройки календаря виджета \"Самое главное\"</string>
+    <string name="smartspace_calendar_description">Разрешить отображение даты в календарях не-грегорианского типа</string>
     <string name="workspace_increase_max_grid_size_label">Увеличить макс. размер сетки</string>
     <string name="workspace_increase_max_grid_size_description">Увеличить макс. допустимый размер сетки глав. экрана с 10х10 на 20x20</string>
     <string name="always_reload_icons_label">Всегда перезагружать иконки</string>
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
     <string name="icon_swipe_gestures">Свайп-жесты по иконкам</string>
-    <string name="icon_swipe_gestures_description">Выполнять действия при свайпе влево или вправо по иконкам вместо прокрутки экрана</string>
+    <string name="icon_swipe_gestures_description">Выполнять действия при смахивании влево или вправо по иконкам вместо прокрутки экрана</string>
     <string name="recents_lock_unlock">Блокировка/разблокировка</string>
     <string name="recents_lock_unlock_description">Запретить закрытие выбранного приложения при нажатии кнопки \"Очистить всё\"</string>
     <!--Overlay-->
@@ -152,13 +152,13 @@
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">Для доступа к ярлыкам и дополнительным функциям, установите Lawnchair в качестве лаунчера по умолчанию</string>
+    <string name="set_default_launcher_tip">Для доступа к ярлыкам и доп. функциям, установите Lawnchair в качестве лаунчера по умолчанию</string>
     <string name="notification_dots">Включить Точки уведомлений</string>
     <string name="show_notification_count">Отображать счётчик уведомлений</string>
     <string name="notification_dots_color">Цвет Точек уведомлений</string>
     <string name="notification_dots_text_color">Цвет счётчика уведомлений</string>
-    <string name="notification_dots_color_contrast_warning_always">Внимание: Цвета Точек уведомлений и счётчика уведомлений недостаточно контрастируют друг с другом</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Внимание: Цвета Точек уведомлений и счётчика не всегда могут быть достаточно контрастны друг с другом</string>
+    <string name="notification_dots_color_contrast_warning_always">Внимание: Цвета Точек уведомлений и Счётчика уведомлений недостаточно контрастируют друг с другом</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Внимание: Цвета Точек уведомлений и Счётчика не всегда могут быть достаточно контрастны друг с другом</string>
     <string name="missing_notification_access_label">Необходимо разрешение доступа к уведомлениям</string>
     <string name="missing_notification_access_desc">Для отображения Точек уведомлений, включите уведомления для приложения  <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Тематические иконки</string>
     <string name="themed_icons_off_label">Выкл</string>
     <string name="themed_icons_home_label">Главный экран</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Главный экран и Меню приложений</string>
     <string name="lawnicons_not_installed_description">Нет поддерживаемых наборов значков</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
@@ -299,13 +299,13 @@
     <string name="smartspace_battery_full">Заряжено</string>
     <string name="smartspace_battery_low">Низкий заряд батареи</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Осталось: %2$s"</string>
-    <string name="smartspace_widget">Секция \"Самое главное\"</string>
-    <string name="smartspace_widget_description">Что показывать</string>
+    <string name="smartspace_widget">Виджет \"Самое главное\"</string>
+    <string name="smartspace_widget_description">Показывать в виджете:</string>
     <!-- Data and time format settings -->
-    <string name="smartspace_calendar">Тип календаря</string>
-    <string name="smartspace_date_and_time">Date and time</string>
-    <string name="smartspace_date">Отображать дату</string>
-    <string name="smartspace_time">Отображать время</string>
+    <string name="smartspace_calendar">Календарь</string>
+    <string name="smartspace_date_and_time">Дата и время</string>
+    <string name="smartspace_date">Дата</string>
+    <string name="smartspace_time">Время</string>
     <string name="smartspace_time_format">Формат времени</string>
     <string name="smartspace_time_follow_system">Следовать сист. настройкам</string>
     <string name="smartspace_time_12_hour_format">12-час. формат</string>
@@ -323,9 +323,9 @@
     <string name="event_provider_missing_notification_dots">Чтобы использовать провайдер событий <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите Точки уведомлений.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Показывать на глав. экране</string>
-    <string name="smartspace_widget_toggle_description">Секцию \"Самое главное\" можно добавить на глав. экран вручную с помощью виджета \"Lawnchair\"</string>
+    <string name="smartspace_widget_toggle_description">Данные виджета \"Самое главное\" можно добавить на глав. экран вручную с помощью виджета \"Lawnchair\"</string>
     <!-- List of available providers -->
-    <string name="smartspace_mode_label">Провайдер секции \"Самое главное\"</string>
+    <string name="smartspace_mode_label">Провайдер виджета \"Самое главное\"</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Поиск Google</string>
     <!-- Miscellaneous Smartspace strings -->
@@ -340,11 +340,11 @@
     <string name="news">Новости</string>
     <string name="support">Поддержка</string>
     <string name="product">Команда разработки</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">Дизайн и разработка</string>
     <string name="development">Разработка</string>
     <string name="quickswitch_maintenance">Поддержка QuickSwitch</string>
     <string name="devops">DevOps-инженер</string>
-    <string name="support_and_pr">Support and PR</string>
+    <string name="support_and_pr">Служба поддержки и PR</string>
     <string name="acknowledgements">Выражаем благодарность</string>
     <string name="translate">Перевод</string>
     <string name="donate">Внести пожертвование</string>
@@ -354,7 +354,7 @@
 
     -->
     <string name="create_backup">Создать резерв. копию</string>
-    <string name="what_to_backup">Сохраняемые параметры</string>
+    <string name="what_to_backup">Параметры резервирования</string>
     <string name="backup_content_layout_and_settings">Макет и настройки</string>
     <string name="backup_content_wallpaper">Обои</string>
     <string name="backup_create_success">Резервная копия создана</string>
@@ -378,14 +378,14 @@
     <string name="gesture_swipe_right">Смахнуть Вправо</string>
     <string name="gesture_handler_no_op">Ничего не делать</string>
     <string name="gesture_handler_sleep">Сон</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">Открыть Экран недавних приложений</string>
     <string name="gesture_handler_open_notifications">Открыть панель уведомлений</string>
     <string name="gesture_handler_open_app_option">Открыть приложение</string>
     <string name="gesture_handler_open_app_config">Открыть %1$s</string>
-    <string name="gesture_handler_open_app_drawer">Открыть список приложений</string>
+    <string name="gesture_handler_open_app_drawer">Открыть Меню приложений</string>
     <string name="gesture_handler_open_app_search">Открыть поиск по приложениям</string>
     <string name="gesture_handler_open_search">Открыть поиск</string>
-    <string name="gesture_handler_open_assistant">Открыть приложение «ассистент»</string>
+    <string name="gesture_handler_open_assistant">Открыть приложение-ассистент</string>
     <string name="pick_app_for_gesture">Выбрать приложение</string>
     <string name="dt2s_admin_hint_title">Необходимы права администратора</string>
     <string name="dt2s_admin_hint">Чтобы использовать Спящий режим по двойному нажатию, назначьте Lawnchair администратором устройства. Для этого: откройте Настройки, затем нажмите на \"Активировать приложение администратора устройства.\"</string>
@@ -393,7 +393,7 @@
     <string name="d2ts_recents_a11y_hint_title">Включить службу спец. возможностей</string>
     <string name="dt2s_a11y_hint">Чтобы использовать двойное нажатие для Спящего режима, включите службу спец. возможностей Lawnchair. Нажмите «Открыть настройки», выберите «Lawnchair» и включите переключатель «Использовать Lawnchair». \n\nLawnchair использует метод спец. возможностей «performGlobalAction» для выполнения этого действия. Необходима осторожность, т.к. это разрешение позволяет отслеживать другие приложения. Тем не менее, Lawnchair не настроен на эту функциональность и не получает никаких событий.</string>
     <string name="dt2s_recents_warning_open_settings">Открыть настройки</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">Для открытия Экрана недавних приложений, включите службу спец. возможностей Lawnchair. Нажмите «Открыть настройки», выберите «Lawnchair» и включите переключатель «Использовать Lawnchair». \n\nLawnchair использует метод службы спец. возможностей «performGlobalAction» для выполнения этого действия. Необходима осторожность, т.к. это разрешение позволяет отслеживать другие приложения. Тем не менее, Lawnchair не настроен на эту функциональность и не получает никаких событий.</string>
     <!--
 
     Bug reporting
@@ -507,12 +507,12 @@
     <string name="pref_all_apps_remember_position_title">Запомнить позицию</string>
     <string name="pref_all_apps_remember_position_description">Запомнить позицию Меню приложений после его закрытия</string>
     <string name="pref_all_apps_show_scrollbar_title">Показать полосу прокрутки</string>
-    <string name="app_drawer_columns">Количество столбцов в списке приложений</string>
+    <string name="app_drawer_columns">Кол-во столбцов в Меню приложений</string>
     <string name="row_height_label">Высота строки</string>
     <string name="app_drawer_indent_label">Горизонт. отступ</string>
     <string name="app_drawer_bg_color_label">Цвет фона</string>
     <!-- HiddenAppsPreferences -->
-    <string name="hide_from_drawer">Скрыть из списка приложений</string>
+    <string name="hide_from_drawer">Скрыть из Меню приложений</string>
     <string name="hidden_apps_label_with_count">Скрытые приложения (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d приложение</item>
@@ -527,7 +527,7 @@
     <string name="max_folder_columns">Макс. кол-во столбцов в папке</string>
     <string name="max_folder_rows">Макс. кол-во строк в папке</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">Эти настройки будут проигнорированы, так как Lawnchair не установлен в качестве провайдера Экрана недавних приложений</string>
     <string name="quickstep_incompatible">Несовместимая системная интеграция</string>
     <string name="quickstep_incompatible_description">Ваше устройство настроено на использование системных жестов (известных как Quickstep), предоставляемых %1$s, но эта версия %1$s не совместима с вашей версией Android. Чтобы продолжить использование вашего устройства, удалите обновления %1$s или отключите %1$s как поставщика системных жестов.</string>
     <string name="translucent_background">Полупрозрачный фон</string>
@@ -536,10 +536,10 @@
     <string name="action_share">Поделиться</string>
     <string name="action_lens">Lens</string>
     <string name="recents_clear_all">Очистить всё</string>
-    <string name="task_menu_force_stop">Принудительно закрыть</string>
+    <string name="task_menu_force_stop">Закрыть принудительно </string>
     <string name="window_corner_radius_label">Радиус скругления краёв экрана</string>
     <string name="override_window_corner_radius_label">Польз. радиус углов экрана</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">При жесте \"Смахнуть Вверх\" для открытия Экрана недавних приложений, текущее приложение следует за пальцем, сворачиваясь в карточку. Используйте этот ползунок для настройки радиуса угла карточки, когда она почти развернута, чтобы соответствовать углам экрана.</string>
     <string name="taskbar_label">Панель задач</string>
     <string name="enable_taskbar_experimental">Показать панель задач (экспериментально)</string>
     <!--
@@ -555,7 +555,7 @@
     <string name="all_apps_search_result_contacts_from_device">Контакты на устройстве</string>
     <string name="all_apps_search_result_files">Файлы на устройстве</string>
     <string name="all_apps_search_result_settings_entry_from_device">Настройки устройства</string>
-    <string name="all_apps_search_market_message">Поиск доп. приложений</string>
+    <string name="all_apps_search_market_message">Искать другие приложения</string>
     <string name="all_apps_search_on_web_message">Искать по запросу <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Магазин приложений или браузер не установлены</string>
     <string name="all_apps_search_on_web_general">Искать в интернете</string>
@@ -568,31 +568,31 @@
     <string name="fuzzy_search_title">Поиск по совпадению</string>
     <string name="fuzzy_search_desc">Поиск приложений по схожему запросу</string>
     <string name="suggestion_pref_screen_title">Рекомендации</string>
-    <string name="show_suggested_apps_at_drawer_top">Показывать рекомендации в верх. части списка приложений</string>
+    <string name="show_suggested_apps_at_drawer_top">Показывать рекомендации в верх. части Меню приложений</string>
     <string name="perform_wide_search_title">Поиск по устройству</string>
     <string name="perform_wide_search_description">Поиск контактов, файлов и настроек вашего телефона</string>
     <string name="show_hidden_apps_in_search_results">Показывать скрытые приложения в результатах поиска</string>
     <string name="hidden_apps_show_name_typed">Если введено полное имя</string>
-    <string name="allapps_web_suggestion_provider_label">Провайдер веб-предложений</string>
-    <string name="allapps_use_web_suggestion_icon_label">Показать иконку источника поисковых подсказок в панели поиска</string>
+    <string name="allapps_web_suggestion_provider_label">Провайдер веб-подсказок</string>
+    <string name="allapps_use_web_suggestion_icon_label">Показать иконку провайдера веб-подсказок в панели поиска</string>
     <string name="allapps_match_qsb_style_label">Соответствовать стилю строки поиска в док-панели</string>
     <string name="allapps_match_qsb_style_description">Нажатие на поле поиска в док-панели теперь открывает интерфейс поиска приложений</string>
     <string name="app_search_algorithm">Алгоритм поиска</string>
     <string name="search_algorithm_app_search">Поиск приложений</string>
     <string name="search_algorithm_global_search_on_device">Глобальный поиск (на устройстве)</string>
     <string name="search_algorithm_global_search_via_asi">Глобальный поиск (с помощью ASI)</string>
-    <string name="custom_search_url">URL пользовательского поисковика</string>
+    <string name="custom_search_url">URL пользовательской поисковой системы</string>
     <string name="custom_search_suggestions_url">URL пользовательских поисковых подсказок</string>
     <string name="custom_search_input_hint">&#37; будет заменен на поисковый запрос</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Показывать в результатах поиска</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Приложения и Ярлыки</string>
     <string name="search_pref_result_shortcuts_title">Ярлыки приложений</string>
     <string name="search_pref_result_people_title">Люди</string>
     <string name="search_pref_result_tips_title">Советы Pixel</string>
     <string name="search_pref_result_settings_title">Настройки Android</string>
     <string name="search_pref_result_files_title">Файл</string>
-    <string name="search_pref_result_web_title">Поисковые подсказки</string>
+    <string name="search_pref_result_web_title">Веб-подсказки</string>
     <string name="search_pref_result_history_title">История поиска</string>
     <string name="all_apps_search_result_calculator">Калькулятор</string>
     <!-- Description for each search result type -->
@@ -606,7 +606,7 @@
     <string name="max_settings_entry_result_count_title">Макс. кол-во пунктов настроек</string>
     <string name="max_recent_result_count_title">Макс. кол-во записей истории поиска</string>
     <string name="max_suggestion_result_count_title">Макс. кол-во предложений</string>
-    <string name="max_web_suggestion_delay">Макс. задержка поисковых подсказок</string>
+    <string name="max_web_suggestion_delay">Макс. задержка веб-подсказок</string>
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Для поиска контактов, предоставьте доступ к контактам и телефону для приложения Lawnchair</string>
     <string name="warn_files_permission_content">Чтобы искать файлы, предоставьте доступ к хранилищу для приложения Lawnchair</string>

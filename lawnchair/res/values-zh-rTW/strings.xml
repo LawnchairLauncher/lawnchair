@@ -121,7 +121,7 @@
     <string name="folders_label">資料夾</string>
     <string name="folders_description">行列數</string>
     <string name="gestures_label">手勢</string>
-    <string name="gestures_description">輕觸並滑動</string>
+    <string name="gestures_description">輕觸和滑動</string>
     <string name="quickstep_label">最近使用畫面</string>
     <string name="quickstep_description">清除全部按鈕、圓角大小</string>
     <string name="about_label">關於</string>
@@ -419,9 +419,9 @@
     <string name="wallpaper_blur">模糊桌布 (實驗性)</string>
     <string name="wallpaper_background_blur">模糊強度</string>
     <string name="wallpaper_background_blur_factor">係數閥值</string>
-    <string name="home_lawn_deck_label">集卡冊</string>
-    <string name="home_lawn_deck_label_beta">集卡冊 (測試版)</string>
-    <string name="home_lawn_deck_description">透過集卡冊輕鬆存取您的應用程式，旨在簡約設計與無縫管理的絕佳無抽屜體驗</string>
+    <string name="home_lawn_deck_label">平面</string>
+    <string name="home_lawn_deck_label_beta">平面 (測試版)</string>
+    <string name="home_lawn_deck_description">透過平面模式輕鬆存取您的應用程式，旨在簡約設計與無縫管理的絕佳無抽屜體驗</string>
     <string name="auto_add_shortcuts_label">新增新應用程式至主畫面</string>
     <string name="minus_one_enable">顯示訂閱</string>
     <string name="minus_one_unavailable">尚未安裝訂閱應用程式</string>
@@ -464,7 +464,7 @@
     <string name="search_bar_label">搜尋列</string>
     <string name="search_bar_settings">搜尋列設定</string>
     <string name="hotseat_mode_label">搜尋列小工具</string>
-    <string name="hotseat_mode_disabled">已停用</string>
+    <string name="hotseat_mode_disabled">關閉</string>
     <string name="hotseat_mode_google_search">Google 搜尋列</string>
     <string name="qsb_hotseat_background_transparency">背景透明度</string>
     <string name="qsb_hotseat_stroke_width">外框寬度</string>
@@ -526,7 +526,7 @@
     <!-- Quickstep settings -->
     <string name="quickswitch_ignored_warning">Lawnchair 未設為最近使用畫面提供者時將會略過這些設定</string>
     <string name="quickstep_incompatible">系統整合不相容</string>
-    <string name="quickstep_incompatible_description">您的裝置已設定使用 %1$s 提供的手勢系統 (稱為 Quickstep)，但這個版本的 %1$s 與您的 Android 版本不相容。如要繼續使用您的裝置，請解除安裝 %1$s 更新或停用手勢系統提供者 %1$s。</string>
+    <string name="quickstep_incompatible_description">您的裝置已設定使用 %1$s 提供的手勢系統 (稱為 Quickstep)，但這個版本的 %1$s 與您的 Android 不相容。如要繼續使用您的裝置，請解除安裝 %1$s 更新或停用手勢系統提供者 %1$s。</string>
     <string name="translucent_background">半透明背景</string>
     <string name="translucent_background_alpha">背景不透明度</string>
     <string name="recents_actions_label">快速操作</string>
