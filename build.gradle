@@ -23,7 +23,7 @@ plugins {
 allprojects {
     plugins.withType(AndroidBasePlugin).configureEach {
         android {
-            compileSdk 35
+            compileSdk 36
             defaultConfig {
                 minSdk 26
                 targetSdk 35
