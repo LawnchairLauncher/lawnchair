@@ -448,7 +448,7 @@ dependencies {
         exclude group: "com.github.skydoves", module: "balloon"
     }
 
-    implementation 'io.github.hokofly:hoko-blur:1.5.3'
+    implementation 'io.github.hokofly:hoko-blur:1.5.4'
 
     implementation "androidx.window:window:1.4.0"
 }
