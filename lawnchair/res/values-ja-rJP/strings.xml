@@ -608,4 +608,5 @@
     <string name="warn_contact_permission_content">連絡先を検索するには、Lawnchair に連絡先と電話の権限を付与してください</string>
     <string name="warn_files_permission_content">デバイス内のファイルを検索する場合はLawnchairにストレージ権限を付与してください。</string>
     <string name="grant_requested_permissions">権限の許可</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

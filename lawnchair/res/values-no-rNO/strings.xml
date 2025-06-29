@@ -609,4 +609,5 @@
     <string name="warn_contact_permission_content">For å søke etter kontakter, gi kontakt og telefontilgang til Lawnchair</string>
     <string name="warn_files_permission_content">For å søke i dine filer, gi lagringstillatelse til Lawnchair</string>
     <string name="grant_requested_permissions">Gi tillatelser</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

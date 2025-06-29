@@ -579,8 +579,8 @@
     <string name="search_algorithm_app_search">Recherche d\'applications</string>
     <string name="search_algorithm_global_search_on_device">Recherche globale (sur l\'appareil)</string>
     <string name="search_algorithm_global_search_via_asi">Recherche globale (via ASI)</string>
-    <string name="custom_search_url">URL personnalisée du moteur de recherche</string>
-    <string name="custom_search_suggestions_url">URL personnalisée des suggestions de recherche</string>
+    <string name="custom_search_url">URL du moteur de recherche personnalisé</string>
+    <string name="custom_search_suggestions_url">URL des suggestions de la recherche personnalisée</string>
     <string name="custom_search_input_hint">&#37;s sera remplacé par le texte à rechercher</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Afficher dans les résultats de recherche</string>
@@ -594,7 +594,7 @@
     <string name="search_pref_result_history_title">Historique des recherches</string>
     <string name="all_apps_search_result_calculator">Calculatrice</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_result_files_description">Médias, fichiers et autres</string>
+    <string name="search_pref_result_files_description">Contenu multimédia, fichiers et autres</string>
     <string name="search_pref_result_contacts_description">Contacts et autres</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
     <!-- Maximum xyz for each search result type -->
@@ -608,5 +608,6 @@
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">Pour rechercher des contacts, accordez à Lawnchair les autorisations Contacts et Téléphone</string>
     <string name="warn_files_permission_content">Pour rechercher des fichiers, autorisez Lawnchair à accéder au stockage</string>
-    <string name="grant_requested_permissions">Accorder les autorisations</string>
+    <string name="grant_requested_permissions">Accorder des autorisations</string>
+    <string name="custom_search_label">Nom du moteur de recherche personnalisé</string>
 </resources>

@@ -609,4 +609,5 @@
     <string name="warn_contact_permission_content">Névjegyek kereséséhez adjon a Lawnchair-nek hozzáférést a névjegyekhez és a telefonhoz</string>
     <string name="warn_files_permission_content">Fájlok kereséséhez adjon a Lawnchair-nek hozzáférést a készülék tárhelyéhez</string>
     <string name="grant_requested_permissions">Engedélyek megadása</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

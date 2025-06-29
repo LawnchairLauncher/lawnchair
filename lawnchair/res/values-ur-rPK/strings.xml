@@ -609,4 +609,5 @@
     <string name="warn_contact_permission_content">رابطوں کو تلاش کرنے کے لیے، لان چیئر کو رابطے اور فون کی اجازت دیں۔</string>
     <string name="warn_files_permission_content">اپنی فائلیں تلاش کرنے کے لیے، Lawnchair کو اسٹوریج کی اجازت دیں۔</string>
     <string name="grant_requested_permissions">اجازتیں دیں۔</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

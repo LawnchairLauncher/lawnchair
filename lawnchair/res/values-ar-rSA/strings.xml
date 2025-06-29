@@ -613,4 +613,5 @@
     <string name="warn_contact_permission_content">للبحث عن جهات الاتصال، امنح أذونات جهات الاتصال والهاتف لـ Lawnchair</string>
     <string name="warn_files_permission_content">للبحث في ملفاتك، امنح أذونات التخزين لـ Lawnchair</string>
     <string name="grant_requested_permissions">منح الأذونات</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

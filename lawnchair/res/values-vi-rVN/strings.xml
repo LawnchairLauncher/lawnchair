@@ -608,4 +608,5 @@
     <string name="warn_contact_permission_content">Để tìm kiếm danh bạ, cấp quyền danh bạ và điện thoại cho Lawnchair</string>
     <string name="warn_files_permission_content">Để tìm kiếm các tệp của bạn, hãy cấp quyền lưu trữ cho Lawnchair</string>
     <string name="grant_requested_permissions">Cấp quyền</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

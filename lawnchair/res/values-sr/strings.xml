@@ -38,13 +38,13 @@
     <string name="action_copy">Копирај</string>
     <string name="action_paste">Налепи</string>
     <string name="action_done">Gotovo</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="select_all">Изабери све</string>
+    <string name="deselect_all">Поништи избор</string>
+    <string name="inverse_selection">Обрни избор</string>
     <string name="loading">Учитава се…</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="download_update">Преузми ажурирање</string>
+    <string name="install_update">Инсталирај ажурирање</string>
+    <string name="pro_updated">Имате најновију верзију!</string>
     <string name="managed_by_lawnchair">Управља Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Подешавања</string>
@@ -56,7 +56,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">Остало</string>
     <!-- Selection options -->
     <string name="dynamic">Динамичка</string>
     <string name="presets">Шаблони</string>
@@ -72,7 +72,7 @@
     <string name="layout">Распоред</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Позадина</string>
-    <string name="style">Style</string>
+    <string name="style">Стил</string>
     <string name="background_opacity">Непрозирност позадине</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Копирано у привремену меморију</string>
@@ -80,28 +80,28 @@
     <string name="item_removed">Ставка је уклоњена</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Информације за приказ</string>
-    <string name="wallpapers">Wallpapers</string>
-    <string name="caddy_beta">Caddy (Beta)</string>
-    <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
-    <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="wallpapers">Позадине</string>
+    <string name="caddy_beta">Груписано (бета)</string>
+    <string name="caddy">Груписано</string>
+    <string name="app_drawer_folder">Фолдери на листи апликација</string>
+    <string name="app_drawer_folder_settings">Фолдер на листи апликација</string>
+    <string name="add_folder">Направи фолдер</string>
+    <string name="edit_folder">Уреди фолдер</string>
+    <string name="add_label">Додај</string>
+    <string name="edit_label">Уреди</string>
     <string name="apply_label">Примени</string>
     <string name="delete_label">Избриши</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
-    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">My folder</string>
+    <string name="folder_list_note">Превуците улево за уређивање, удесно за брисање, или додирните за ажурирање ставки</string>
+    <string name="apps_in_folder_label">Сакриј апликације из фолдера</string>
+    <string name="apps_in_folder_description">Апликације у фолдерима су изузете са листа апликација</string>
+    <string name="folders_filter_duplicates">Приказуј само апликације које се не понављају</string>
+    <string name="my_folder_label">Мој фолдер</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s и %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Напредно</string>
     <!--
 
     Preference Dashboard
@@ -122,7 +122,7 @@
     <string name="folders_description">Број редова и колона</string>
     <string name="gestures_label">Покрети</string>
     <string name="gestures_description">Додири и превлачења</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">Недавне апликације</string>
     <string name="quickstep_description">Дугме „Обриши све”, заобљеност углова</string>
     <string name="about_label">О апликацији</string>
     <string name="app_info_drop_target_label">Информације о апликацији</string>
@@ -137,14 +137,14 @@
     <string name="workspace_increase_max_grid_size_description">Повећајте максималну величину мреже почетног екрана из 10 × 10 у 20 × 20</string>
     <string name="always_reload_icons_label">Увек учитавај иконе изнова</string>
     <string name="always_reload_icons_description">Не користи кеширане иконе из пакета икона</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
+    <string name="icon_swipe_gestures">Превлачење преко икона</string>
+    <string name="icon_swipe_gestures_description">Извршава радње при превлачењу улево или удесно преко икона уместо померања екрана</string>
     <string name="recents_lock_unlock">Закључај/откључај</string>
     <string name="recents_lock_unlock_description">Спречите затварање изабране апликације када додирнете „Обриши све”</string>
     <!--Overlay-->
     <string name="overlay_fade_in">Fade In</string>
-    <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
+    <string name="overlay_suck_in">Увлачење</string>
+    <string name="app_closing_animation">Анимација затварања апликација</string>
     <string name="overlay_label">Overlay</string>
     <string name="overlay_none">None</string>
     <!--
@@ -610,4 +610,5 @@
     <string name="warn_contact_permission_content">Да бисте претраживали контакте, доделите Lawnchair-у дозволе Контакти и Телефон</string>
     <string name="warn_files_permission_content">Да бисте претраживали фајлове, доделите Lawnchair-у приступ меморији</string>
     <string name="grant_requested_permissions">Додели дозволе</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

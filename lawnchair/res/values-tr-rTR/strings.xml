@@ -609,4 +609,5 @@
     <string name="warn_contact_permission_content">Kişiler içinde arama yapmak için Lawnchair\'a kişiler ve telefon izinlerini verin</string>
     <string name="warn_files_permission_content">Dosyalarınızda arama yapmak için Lawnchair\'a Depolama izinlerini verin</string>
     <string name="grant_requested_permissions">İzinleri ver</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

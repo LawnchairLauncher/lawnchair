@@ -608,4 +608,5 @@
     <string name="warn_contact_permission_content">要搜索联系人，请向 Lawnchair 授予联系人和电话权限</string>
     <string name="warn_files_permission_content">要搜索您的文件，请向 Lawnchair 授予存储权限</string>
     <string name="grant_requested_permissions">授予权限</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

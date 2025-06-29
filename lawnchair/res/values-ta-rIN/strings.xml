@@ -609,4 +609,5 @@
     <string name="warn_contact_permission_content">தொடர்புகளைத் தேட, தொடர்புகள் மற்றும் தொலைபேசி அனுமதிகளை Lawnchair க்கு வழங்கவும்</string>
     <string name="warn_files_permission_content">உங்கள் கோப்புகளைத் தேட, Lawnchair க்கு சேமிப்பக அனுமதிகளை வழங்கவும்</string>
     <string name="grant_requested_permissions">அனுமதிகளை வழங்கவும்</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

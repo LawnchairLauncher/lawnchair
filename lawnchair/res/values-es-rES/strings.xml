@@ -610,4 +610,5 @@
     <string name="warn_contact_permission_content">Para buscar contactos tienes que otorgar a Lawnchair los permisos de ver contactos y teléfono</string>
     <string name="warn_files_permission_content">Para buscar en tus archivos tienes que otorgar a Lawnchair el permiso para leer el almacenamiento</string>
     <string name="grant_requested_permissions">Conceder permisos</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

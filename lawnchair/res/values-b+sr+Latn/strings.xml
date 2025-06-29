@@ -610,4 +610,5 @@
     <string name="warn_contact_permission_content">Da biste pretraživali kontakte, dodelite Lawnchairu dozvole Kontakti i Telefon</string>
     <string name="warn_files_permission_content">Da biste pretraživali fajlove, dodelite Lawnchairu pristup memoriji</string>
     <string name="grant_requested_permissions">Dodeli dozvole</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

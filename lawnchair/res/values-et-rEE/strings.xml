@@ -609,4 +609,5 @@
     <string name="warn_contact_permission_content">Kontaktide otsimiseks luba rakendusele Lawnchair ligipääs kontaktidele ja telefonile</string>
     <string name="warn_files_permission_content">Failidede otsimiseks luba rakendusele Lawnchair ligipääs salvestusruumile</string>
     <string name="grant_requested_permissions">Lubade andmine</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

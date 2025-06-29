@@ -608,4 +608,5 @@
     <string name="warn_contact_permission_content">연락처를 검색하려면 Lawnchair에 연락처 및 전화 권한을 부여하세요</string>
     <string name="warn_files_permission_content">파일을 검색하려면 Lawnchair에 저장소 권한을 부여하세요</string>
     <string name="grant_requested_permissions">권한 부여</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

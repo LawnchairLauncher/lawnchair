@@ -609,4 +609,5 @@
     <string name="warn_contact_permission_content">Um nach Kontakten zu suchen, erteile Lawnchair Berechtigungen für Kontakte und Telefon</string>
     <string name="warn_files_permission_content">Um Deine Dateien zu durchsuchen, erteile Lawnchair Speicher-Berechtigungen</string>
     <string name="grant_requested_permissions">Berechtigungen erteilen</string>
+    <string name="custom_search_label">Name der benutzerdefinierten Suchmaschine</string>
 </resources>

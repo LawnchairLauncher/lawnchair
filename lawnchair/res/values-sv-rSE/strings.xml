@@ -579,8 +579,8 @@
     <string name="search_algorithm_app_search">Appsökning</string>
     <string name="search_algorithm_global_search_on_device">Global sökning (på enheten)</string>
     <string name="search_algorithm_global_search_via_asi">Global sökning (via ASI)</string>
-    <string name="custom_search_url">Anpassad sökmotor-URL</string>
-    <string name="custom_search_suggestions_url">Anpassad sökförslags-URL</string>
+    <string name="custom_search_url">URL för anpassad sökmotor</string>
+    <string name="custom_search_suggestions_url">URL för anpassade sökförslag</string>
     <string name="custom_search_input_hint">&#37;s kommer att ersättas med sökfrågan</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Visa i sökresultat</string>
@@ -609,4 +609,5 @@
     <string name="warn_contact_permission_content">För att söka efter kontakter, bevilja kontakter- och telefonbehörigheter till Lawnchair</string>
     <string name="warn_files_permission_content">För att söka bland dina filer, bevilja lagringsbehörigheter till Lawnchair</string>
     <string name="grant_requested_permissions">Bevilja behörigheter</string>
+    <string name="custom_search_label">Namn på anpassad sökmotor</string>
 </resources>

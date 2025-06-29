@@ -611,4 +611,5 @@
     <string name="warn_contact_permission_content">Щоб шукати контакти, надайте Lawnchair доступ до списку контактів та дзвінків</string>
     <string name="warn_files_permission_content">Щоб шукати файли, надайте Lawnchair доступ до сховища</string>
     <string name="grant_requested_permissions">Надати дозвіл</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>

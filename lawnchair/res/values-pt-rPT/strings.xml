@@ -610,4 +610,5 @@ Transparentes</string>
     <string name="warn_contact_permission_content">Para pesquisar contactos, conceda permissões de contactos e telemóvel ao Lawnchair</string>
     <string name="warn_files_permission_content">Para pesquisar os seus ficheiros, conceda permissões de armazenamento ao Lawnchair</string>
     <string name="grant_requested_permissions">Conceder permissões</string>
+    <string name="custom_search_label">Custom search engine name</string>
 </resources>
