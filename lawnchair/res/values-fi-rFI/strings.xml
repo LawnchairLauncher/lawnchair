@@ -44,7 +44,7 @@
     <string name="loading">Ladataan…</string>
     <string name="download_update">Download update</string>
     <string name="install_update">Install update</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="pro_updated">Olet ajan tasalla!</string>
     <string name="managed_by_lawnchair">Lawnchairin hallinnoima</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Asetukset</string>
@@ -92,7 +92,7 @@
     <string name="apply_label">Käytä</string>
     <string name="delete_label">Poista</string>
     <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
+    <string name="apps_in_folder_label">Piilota kansion sovelluksia</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">My folder</string>

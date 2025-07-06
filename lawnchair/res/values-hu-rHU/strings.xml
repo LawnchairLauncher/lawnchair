@@ -122,7 +122,7 @@
     <string name="folders_description">Sorok és oszlopok száma</string>
     <string name="gestures_label">Gesztusok</string>
     <string name="gestures_description">Koppintások és csúsztatások</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">Az Előzmények képernyője</string>
     <string name="quickstep_description">„Összes törlése” gomb, sarok sugara</string>
     <string name="about_label">Névjegy</string>
     <string name="app_info_drop_target_label">Alkalmazásinformáció</string>
@@ -137,8 +137,8 @@
     <string name="workspace_increase_max_grid_size_description">A kezdőképernyő legnagyobb rácsméretének 10×10-ről 20×20-ra való növelése</string>
     <string name="always_reload_icons_label">Az ikonok újratöltése mindig</string>
     <string name="always_reload_icons_description">A gyorsítótárazott ikonok használatának elkerülése</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
+    <string name="icon_swipe_gestures">Vezérlés az ikonon való csúsztatással</string>
+    <string name="icon_swipe_gestures_description">Képernyőmozgatás helyett végrehajthat műveleteket az ikonon való jobbra vagy balra csúsztatással</string>
     <string name="recents_lock_unlock">Lezárás/Feloldás</string>
     <string name="recents_lock_unlock_description">Megakadályozza, hogy a „Mindent töröljön” gomb megnyomásakor a kiválasztott alkalmazás bezáródjon</string>
     <!--Overlay-->
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Témázott ikonok</string>
     <string name="themed_icons_off_label">Kikapcsolás</string>
     <string name="themed_icons_home_label">Kezdőképernyő</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Kezdőképernyő és Alkalmazástár</string>
     <string name="lawnicons_not_installed_description">Nem támogatott ikoncsomagok</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Betűtípus-hozzáadás</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Mi jelenjen meg</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Naptár</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">Dátum és Idő</string>
     <string name="smartspace_date">Dátum</string>
     <string name="smartspace_time">Idő</string>
     <string name="smartspace_time_format">Időformátum</string>
@@ -340,11 +340,11 @@
     <string name="news">Hírek</string>
     <string name="support">Támogatás</string>
     <string name="product">Termék</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">Dizájn és Fejlesztés</string>
     <string name="development">Fejlesztés</string>
     <string name="quickswitch_maintenance">A QuickSwitch karbantartása</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Support and PR</string>
+    <string name="support_and_pr">Támogatás és PR</string>
     <string name="acknowledgements">Elismerések</string>
     <string name="translate">Fordítás</string>
     <string name="donate">Adományozás</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Söprés jobbra</string>
     <string name="gesture_handler_no_op">Ne történjen semmi</string>
     <string name="gesture_handler_sleep">Alvás</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">Az Előzményképernyő megnyitása</string>
     <string name="gesture_handler_open_notifications">Az Értesítési panel megnyitása</string>
     <string name="gesture_handler_open_app_option">Egy alkalmazás megnyitása</string>
     <string name="gesture_handler_open_app_config">%1$s megnyitása</string>
@@ -556,7 +556,7 @@
     <string name="all_apps_search_market_message">További alkalmazások keresése</string>
     <string name="all_apps_search_on_web_message">Keresés itt: <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Nincs telepítve alkalmazás-áruház vagy böngésző</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">Keresés a weben</string>
     <string name="clear_history">A keresési előzmények törlése</string>
     <string name="search_input_action_clear_results">A keresőmező törlése</string>
     <!-- Search settings -->

@@ -580,7 +580,7 @@
     <string name="search_algorithm_global_search_on_device">Recherche globale (sur l\'appareil)</string>
     <string name="search_algorithm_global_search_via_asi">Recherche globale (via ASI)</string>
     <string name="custom_search_url">URL du moteur de recherche personnalisé</string>
-    <string name="custom_search_suggestions_url">URL des suggestions de la recherche personnalisée</string>
+    <string name="custom_search_suggestions_url">URL des suggestions de recherche personnalisées</string>
     <string name="custom_search_input_hint">&#37;s sera remplacé par le texte à rechercher</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Afficher dans les résultats de recherche</string>

@@ -83,7 +83,7 @@
     <string name="wallpapers">Wallpaper</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
+    <string name="app_drawer_folder">Folder untuk laci aplikasi</string>
     <string name="app_drawer_folder_settings">Folder laci</string>
     <string name="add_folder">Buat folder</string>
     <string name="edit_folder">Ubah folder</string>
@@ -122,7 +122,7 @@
     <string name="folders_description">Jumlah baris dan kolom</string>
     <string name="gestures_label">Isyarat</string>
     <string name="gestures_description">Ketukan dan usapan</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">Layar terbaru</string>
     <string name="quickstep_description">Tombol Hapus Semua, radius sudut</string>
     <string name="about_label">Tentang</string>
     <string name="app_info_drop_target_label">Info aplikasi</string>
@@ -227,7 +227,7 @@
     <string name="themed_icon_title">Ikon bertema</string>
     <string name="themed_icons_off_label">Mati</string>
     <string name="themed_icons_home_label">Layar beranda</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Layar beranda dan laci aplikasi</string>
     <string name="lawnicons_not_installed_description">Tidak ada paket ikon yang didukung</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Tambahkan font</string>
@@ -303,7 +303,7 @@
     <string name="smartspace_widget_description">Untuk ditampilkan</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalender</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">Tanggal dan waktu</string>
     <string name="smartspace_date">Tanggal</string>
     <string name="smartspace_time">Waktu</string>
     <string name="smartspace_time_format">Format waktu</string>
@@ -340,7 +340,7 @@
     <string name="news">Berita</string>
     <string name="support">Dukungan</string>
     <string name="product">Produk</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">Desain dan pengembangan</string>
     <string name="development">Pengembangan</string>
     <string name="quickswitch_maintenance">Pemeliharaan QuickSwitch</string>
     <string name="devops">DevOps</string>
@@ -378,7 +378,7 @@
     <string name="gesture_swipe_right">Geser ke kanan</string>
     <string name="gesture_handler_no_op">Tidak melakukan apa-apa</string>
     <string name="gesture_handler_sleep">Tidur</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">Buka layar terbaru</string>
     <string name="gesture_handler_open_notifications">Buka panel notifikasi</string>
     <string name="gesture_handler_open_app_option">Buka apli</string>
     <string name="gesture_handler_open_app_config">Buka %1$s</string>
