@@ -8,6 +8,5 @@ data object Ecosia : QsbSearchProvider(
     icon = R.drawable.ic_ecosia,
     packageName = "com.ecosia.android",
     website = "https://www.ecosia.org/",
-
     type = QsbSearchProviderType.APP_AND_WEBSITE
 )
