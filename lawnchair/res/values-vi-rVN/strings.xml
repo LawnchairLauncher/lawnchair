@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">Tránh sử dụng các biểu tượng được lưu trong bộ nhớ đệm từ các gói biểu tượng</string>
     <string name="icon_swipe_gestures">Cử chỉ vuốt biểu tượng</string>
     <string name="icon_swipe_gestures_description">Thực hiện các hành động khi vuốt sang trái hoặc phải trên các biểu tượng thay vì di chuyển màn hình chính</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">Khóa/mở</string>
     <string name="recents_lock_unlock_description">Ngăn chứa ứng dụng đã chọn đóng khi nhấn \"Xóa tất cả\"</string>
     <!--Overlay-->

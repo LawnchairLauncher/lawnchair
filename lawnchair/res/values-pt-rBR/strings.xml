@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">Evite usar ícones guardados no cache dos pacotes de ícones</string>
     <string name="icon_swipe_gestures">Gestos de deslizamento de ícones</string>
     <string name="icon_swipe_gestures_description">Realizar ações ao deslizar para a esquerda ou à direita dos ícones em vez de mover para a tela inicial</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">Bloquear/desbloquear</string>
     <string name="recents_lock_unlock_description">Prevenir app selecionado de fechar ao clicar em \"Limpar tudo\"</string>
     <!--Overlay-->

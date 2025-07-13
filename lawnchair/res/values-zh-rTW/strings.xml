@@ -91,13 +91,13 @@
     <string name="edit_label">編輯</string>
     <string name="apply_label">套用</string>
     <string name="delete_label">刪除</string>
-    <string name="folder_list_note">向左滑動以編輯，向右滑動以刪除，或是輕觸以更新項目</string>
+    <string name="folder_list_note">向左滑動進行編輯，向右滑動進行刪除，或是輕觸以更新項目</string>
     <string name="apps_in_folder_label">隱藏應用程式資料夾</string>
     <string name="apps_in_folder_description">分配至資料夾的應用程式將會從抽屜中排除</string>
     <string name="folders_filter_duplicates">僅顯示單一應用程式</string>
     <string name="my_folder_label">我的資料夾</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Lawnchair 需要存取無障礙服務，才能透過手勢執行特定動作 (例如鎖定您的裝置)。\n\n存取所有無障礙服務皆需要這項權限，但 Lawnchair 不會監視任何使用者操作，並會捨棄任何系統發送的事件。\n\nLawnchair 使用 performGlobalAction 無障礙服務以鎖定您的裝置或開啟最近使用畫面。</string>
+    <string name="accessibility_service_description">Lawnchair 需要存取無障礙服務，才能透過手勢執行特定動作 (例如鎖定您的裝置)。\n\n存取所有無障礙服務都需要這項權限，但 Lawnchair 不會監視任何使用者操作，並會捨棄任何系統發送的事件。\n\nLawnchair 使用 performGlobalAction (執行全域動作)無障礙服務以鎖定您的裝置或開啟最近使用畫面。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -129,7 +129,7 @@
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="experimental_features_label">實驗性功能</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">自訂字型</string>
+    <string name="font_picker_label">自訂字體</string>
     <string name="font_picker_description">部分文字維持原樣</string>
     <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
     <string name="smartspace_calendar_description">允許顯示非公曆的日期</string>
@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
     <string name="icon_swipe_gestures">滑動圖示手勢</string>
     <string name="icon_swipe_gestures_description">配置於圖示上向左/右滑動時的動作以取代移動主畫面</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">鎖定/解鎖</string>
     <string name="recents_lock_unlock_description">按下 \"全部清除\" 時略過已選取的應用程式</string>
     <!--Overlay-->

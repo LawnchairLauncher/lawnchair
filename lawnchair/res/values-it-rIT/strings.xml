@@ -137,8 +137,10 @@
     <string name="workspace_increase_max_grid_size_description">Aumenta il limite massimo della dimensione della griglia della schermata Home da 10 × 10 a 20 × 20</string>
     <string name="always_reload_icons_label">Ricarica sempre le icone</string>
     <string name="always_reload_icons_description">Evita di utilizzare icone dalla cache dai pacchetti d\'icone</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
+    <string name="icon_swipe_gestures">Gesti di scorrimento icona</string>
     <string name="icon_swipe_gestures_description">Esegui azioni quando scorri a sinistra o a destra sulle icone invece di spostare la schermata iniziale</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">Blocca/Sblocca</string>
     <string name="recents_lock_unlock_description">Impedisci all\'app selezionata di chiudersi quando premi \"Cancella tutto\"</string>
     <!--Overlay-->
@@ -609,5 +611,5 @@
     <string name="warn_contact_permission_content">Per cercare tra i contatti, concedi a Lawnchair i permessi Contatti e Telefono</string>
     <string name="warn_files_permission_content">Per cercare tra i tuoi file, concedi a Lawnchair il permesso Archiviazione</string>
     <string name="grant_requested_permissions">Concedi i permessi</string>
-    <string name="custom_search_label">Custom search engine name</string>
+    <string name="custom_search_label">Nome del motore di ricerca personalizzato</string>
 </resources>

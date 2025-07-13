@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">Не користи кеширане иконе из пакета икона</string>
     <string name="icon_swipe_gestures">Превлачење преко икона</string>
     <string name="icon_swipe_gestures_description">Извршава радње при превлачењу улево или удесно преко икона уместо померања екрана</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">Закључај/откључај</string>
     <string name="recents_lock_unlock_description">Спречите затварање изабране апликације када додирнете „Обриши све”</string>
     <!--Overlay-->

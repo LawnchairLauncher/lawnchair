@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">A gyorsítótárazott ikonok használatának elkerülése</string>
     <string name="icon_swipe_gestures">Vezérlés az ikonon való csúsztatással</string>
     <string name="icon_swipe_gestures_description">Képernyőmozgatás helyett végrehajthat műveleteket az ikonon való jobbra vagy balra csúsztatással</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">Lezárás/Feloldás</string>
     <string name="recents_lock_unlock_description">Megakadályozza, hogy a „Mindent töröljön” gomb megnyomásakor a kiválasztott alkalmazás bezáródjon</string>
     <!--Overlay-->

@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">Ne koristi keširane ikone iz paketa ikona</string>
     <string name="icon_swipe_gestures">Icon swipe gestures</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">Zaključaj/otključaj</string>
     <string name="recents_lock_unlock_description">Sprečite zatvaranje izabrane aplikacije kada dodirnete „Obriši sve”</string>
     <!--Overlay-->

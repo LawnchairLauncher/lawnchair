@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">Unikaj korzystania z buforowanych ikon z zestawów ikon</string>
     <string name="icon_swipe_gestures">Gesty przeciągania ikon</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">Zablokuj/Odblokuj</string>
     <string name="recents_lock_unlock_description">Zapobiegaj zamknięciu wybranej aplikacji przez opcję \"Wyczyść wszystko\"</string>
     <!--Overlay-->

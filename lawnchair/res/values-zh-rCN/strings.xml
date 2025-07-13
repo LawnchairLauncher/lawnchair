@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">仅显示唯一应用</string>
     <string name="my_folder_label">我的文件夹</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">为了在您执行手势时进行某些操作（例如锁定手机），Lawnchair 需要获取无障碍服务权限。\n\nLawnchair 不会监视您的任何用户操作，尽管所有无障碍服务都必须申请该权限。Lawnchair 会丢弃系统发送的任何事件。\n\n为了锁定您的手机或打开最近任务界面，Lawnchair 使用 performGlobalAction 无障碍服务。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -138,7 +138,9 @@
     <string name="always_reload_icons_label">始终重载图标</string>
     <string name="always_reload_icons_description">避免使用图标包中的缓存图标</string>
     <string name="icon_swipe_gestures">图标滑动手势</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
+    <string name="icon_swipe_gestures_description">左滑或右滑图标以执行操作，而非移动主屏幕</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">锁定/解锁</string>
     <string name="recents_lock_unlock_description">按“全部清除”时防止所选应用关闭</string>
     <!--Overlay-->
@@ -393,7 +395,7 @@
     <string name="d2ts_recents_a11y_hint_title">打开无障碍服务</string>
     <string name="dt2s_a11y_hint">要使用双击息屏，请开启 Lawnchair 的无障碍服务。点击“打开设置”，选择“Lawnchair”，并开启“使用Lawnchair”。\n\nLawnchair 使用无障碍的 performGlobalAction 方法来执行此操作。这是一个敏感权限，允许监控其他应用。然而，Lawnchair 并未配置此功能，因此不会接收到任何事件。</string>
     <string name="dt2s_recents_warning_open_settings">打开设置</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">若要使用打开最近任务界面，请开启 Lawnchair 的无障碍服务。点击 “打开设置”，选择Lawnchair，然后开启 “使用 Lawnchair” 选项。\n\nLawnchair 使用无障碍服务的 performGlobalAction 方法来执行此操作。这是一个敏感权限，它允许应用监控其他应用。但是Lawnchair 并未配置该功能，也不会接收任何事件。</string>
     <!--
 
     Bug reporting
@@ -524,7 +526,7 @@
     <string name="max_folder_columns">最大文件夹列数</string>
     <string name="max_folder_rows">最大文件夹行数</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">由于 Lawnchair 未被设为最近任务应用，这些设置将不会生效</string>
     <string name="quickstep_incompatible">不兼容的系统集成</string>
     <string name="quickstep_incompatible_description">您的设备已配置为使用 %1$s 提供的系统手势 (称为 Quickstep)，但此版本的 %1$s 与您的 Android 版本不兼容。要继续使用您的设备，请卸载 %1$s 更新或禁用 %1$s 作为系统手势提供程序。</string>
     <string name="translucent_background">半透明背景</string>
@@ -536,7 +538,7 @@
     <string name="task_menu_force_stop">强制关闭</string>
     <string name="window_corner_radius_label">屏幕圆角半径</string>
     <string name="override_window_corner_radius_label">自定义屏幕圆角半径</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">当您上滑打开最近任务界面时，当前应用会跟随您的手指滑动并缩小成一张卡片。您可以使用此滑块调整该卡片在接近全屏状态下的圆角大小，使其与您的手机屏幕边角匹配。</string>
     <string name="taskbar_label">任务栏</string>
     <string name="enable_taskbar_experimental">显示任务栏(实验性)</string>
     <!--
@@ -580,7 +582,7 @@
     <string name="search_algorithm_global_search_via_asi">全局搜索 (通过 ASI)</string>
     <string name="custom_search_url">自定义搜索引擎 URL</string>
     <string name="custom_search_suggestions_url">自定义搜索引擎 URL</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
+    <string name="custom_search_input_hint">&#37;s 将被替换为搜索内容</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">在搜索结果中显示</string>
     <string name="search_pref_result_apps_and_shortcuts_title">应用程序和快捷方式</string>
@@ -608,5 +610,5 @@
     <string name="warn_contact_permission_content">要搜索联系人，请向 Lawnchair 授予联系人和电话权限</string>
     <string name="warn_files_permission_content">要搜索您的文件，请向 Lawnchair 授予存储权限</string>
     <string name="grant_requested_permissions">授予权限</string>
-    <string name="custom_search_label">Custom search engine name</string>
+    <string name="custom_search_label">自定义搜索引擎名称</string>
 </resources>

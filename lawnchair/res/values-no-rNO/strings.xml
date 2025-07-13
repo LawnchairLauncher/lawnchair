@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">Unngå å bruk buffrede ikoner fra ikonpakker</string>
     <string name="icon_swipe_gestures">Icon swipe gestures</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">Lås/lås opp</string>
     <string name="recents_lock_unlock_description">Forhindre at valgt app lukker seg når man trykker \"Tøm alle\"</string>
     <!--Overlay-->

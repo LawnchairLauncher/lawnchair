@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
     <string name="icon_swipe_gestures">Svepgester för ikoner</string>
     <string name="icon_swipe_gestures_description">Utför åtgärder när du sveper åt vänster eller höger på ikoner i stället för att flytta startskärmen</string>
+    <string name="show_deck_layout">Kortlekslayout</string>
+    <string name="show_deck_layout_description">Visa ett layoutalternativ för att dölja applådan och automatiskt lägga till nya appar på startskärmen</string>
     <string name="recents_lock_unlock">Lås/lås upp</string>
     <string name="recents_lock_unlock_description">Förhindra att vald app stängs när \"Rensa alla\" används</string>
     <!--Overlay-->
@@ -233,7 +235,7 @@
     <string name="pref_fonts_add_fonts">Lägg till typsnitt</string>
     <string name="pref_fonts_add_fonts_summary">OTF- och TTF-typsnitt stöds</string>
     <string name="pref_fonts_missing_font">Typsnittet hittades inte</string>
-    <string name="font_label">Typsnitt (experimentellt)</string>
+    <string name="font_label">Typsnitt (experimentell)</string>
     <string name="fontWorkspace">Allmänt</string>
     <string name="fontHeading">Rubriker</string>
     <string name="fontHeadingMedium">Rubriker (medium)</string>
@@ -539,7 +541,7 @@
     <string name="override_window_corner_radius_label">Anpassad skärmhörnsradie</string>
     <string name="window_corner_radius_description">När du sveper uppåt för att öppna Senaste-skärmen, följer den aktuella appen med ditt finger och krymper till ett kort. Använd detta reglage för att justera kortets hörnradie när det nästan fyller hela skärmen så att den matchar hörnen på din skärm.</string>
     <string name="taskbar_label">Aktivitetsfält</string>
-    <string name="enable_taskbar_experimental">Visa aktivitetsfält (experimentellt)</string>
+    <string name="enable_taskbar_experimental">Visa aktivitetsfält (experimentell)</string>
     <!--
 
     All Apps search

@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">Gecachte pictogrammen van pictogrampakketten vermijden</string>
     <string name="icon_swipe_gestures">Pictogram veeggebaren</string>
     <string name="icon_swipe_gestures_description">Acties uitvoeren bij het naar links of rechts vegen op pictogrammen in plaats van het startscherm te verplaatsen</string>
+    <string name="show_deck_layout">Opmaak van het dek</string>
+    <string name="show_deck_layout_description">De optie Opmaak weergeven om de app-lade te verbergen en nieuwe apps automatisch toe te voegen aan het startscherm</string>
     <string name="recents_lock_unlock">Vergrendelen/ontgrendelen</string>
     <string name="recents_lock_unlock_description">Voorkom sluiten van geselecteerde app bij \"Alles Wissen\"</string>
     <!--Overlay-->

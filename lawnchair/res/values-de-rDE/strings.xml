@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">Die Verwendung zwischengespeicherter Symbole aus Symbol-Paketen vermeiden</string>
     <string name="icon_swipe_gestures">Symbol-Wischgesten</string>
     <string name="icon_swipe_gestures_description">Führe beim nach links oder rechts Wischen Aktionen aus, statt zwischen Startbildschirmseiten zu wechseln</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">Anpinnen/Lösen</string>
     <string name="recents_lock_unlock_description">Verhindert, dass die gewählte App durch \"Alle Apps schließen\" entfernt wird</string>
     <!--Overlay-->

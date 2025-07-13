@@ -139,6 +139,8 @@
     <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
     <string name="icon_swipe_gestures">Icon swipe gestures</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
+    <string name="show_deck_layout">Deck layout</string>
+    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">பூட்டு/திறத்தல்</string>
     <string name="recents_lock_unlock_description">\"அனைத்தையும் அழி\" என்பதை அழுத்தும்போது தேர்ந்தெடுக்கப்பட்ட பயன்பாட்டை மூடுவதைத் தடுக்கவும்</string>
     <!--Overlay-->
