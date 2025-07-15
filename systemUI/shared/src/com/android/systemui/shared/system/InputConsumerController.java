@@ -20,6 +20,7 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.INPUT_CONSUMER_RECENTS_ANIMATION;
 
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
@@ -32,6 +33,8 @@ import android.view.InputEvent;
 import android.view.WindowManagerGlobal;
 
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Manages the input consumer that allows the SystemUI to directly receive input.
@@ -139,7 +142,14 @@ public class InputConsumerController {
         if (mInputEventReceiver == null) {
             final InputChannel inputChannel = new InputChannel();
             try {
-                mWindowManager.destroyInputConsumer(mToken, DEFAULT_DISPLAY);
+                // Hook for Android P (9) to VANILLA_ICE_CREAM (15), where the method signature changed
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                    && Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                    hookDestroyInputConsumer(mWindowManager);
+                } else {
+                    mWindowManager.destroyInputConsumer(mToken, DEFAULT_DISPLAY);
+                }
+                
                 mWindowManager.createInputConsumer(mToken, mName, DEFAULT_DISPLAY, inputChannel);
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to create input consumer", e);
@@ -152,13 +162,36 @@ public class InputConsumerController {
         }
     }
 
+
+    /**
+     * IWindowManager @destroyInputConsumer reflection
+     */
+    private void hookDestroyInputConsumer(IWindowManager mWindowManager) throws RemoteException {
+        try {
+            Class<?> iWindowManagerClass = Class.forName("android.view.IWindowManager");
+            Method destroyInputConsumerMethod = iWindowManagerClass.getMethod("destroyInputConsumer", String.class, int.class);
+            destroyInputConsumerMethod.invoke(mWindowManager, mName, DEFAULT_DISPLAY);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
+                 InvocationTargetException e) {
+            Log.e(TAG, "Failed to invoke destroyInputConsumer", e);
+            mWindowManager.destroyInputConsumer(mToken, DEFAULT_DISPLAY);
+        }
+
+    }
+
     /**
      * Unregisters the input consumer.
      */
     public void unregisterInputConsumer() {
         if (mInputEventReceiver != null) {
             try {
-                mWindowManager.destroyInputConsumer(mToken, DEFAULT_DISPLAY);
+                // Hook for Android P (9) to VANILLA_ICE_CREAM (15), where the method signature changed
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                    && Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                    hookDestroyInputConsumer(mWindowManager);
+                } else {
+                    mWindowManager.destroyInputConsumer(mToken, DEFAULT_DISPLAY);
+                }
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to destroy input consumer", e);
             }

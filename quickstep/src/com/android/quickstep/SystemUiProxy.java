@@ -1569,6 +1569,16 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle, SafeCloseable {
                 listener.onAnimationStart(new RecentsAnimationControllerCompat(controller), apps,
                         wallpapers, homeContentInsets, minimizedHomeBounds, extras);
             }
+            
+            // Support for Android 13 and below
+            public void onAnimationStart(IRecentsAnimationController controller,
+                                         RemoteAnimationTarget[] apps, RemoteAnimationTarget[] nonAppTargets,
+                                         Rect homeContentInsets, Rect minimizedHomeBounds) {
+                // Chain the call to the newer 6-argument version, passing null for the 'extras' bundle.
+                onAnimationStart(controller, apps, nonAppTargets, homeContentInsets,
+                    minimizedHomeBounds, null);
+            }
+            
 
             @Override
             public void onAnimationCanceled(int[] taskIds, TaskSnapshot[] taskSnapshots) {

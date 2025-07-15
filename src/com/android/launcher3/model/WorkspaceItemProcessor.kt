@@ -342,7 +342,7 @@ class WorkspaceItemProcessor(
             }
             try {
                 if (
-                    Utilities.ATLEAST_U && (c.restoreFlag != 0 ||
+                    Utilities.ATLEAST_V && (c.restoreFlag != 0 ||
                             Flags.enableSupportForArchiving() &&
                             activityInfo != null &&
                             activityInfo.applicationInfo.isArchived) && !TextUtils.isEmpty(targetPkg)

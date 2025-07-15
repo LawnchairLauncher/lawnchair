@@ -2883,7 +2883,12 @@ public abstract class RecentsView<CONTAINER_TYPE extends Context & RecentsViewCo
     }
 
     private boolean hasDesktopTask(Task[] runningTasks) {
-        if (!DesktopModeStatus.canEnterDesktopMode(getContext())) {
+        try {
+            if (!DesktopModeStatus.canEnterDesktopMode(getContext())) {
+                return false;
+            }
+        } catch (NoClassDefFoundError e) {
+            // Desktop mode is not supported on this device
             return false;
         }
         for (Task task : runningTasks) {

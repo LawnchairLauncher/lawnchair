@@ -36,6 +36,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.UserInfo;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -53,6 +54,7 @@ import com.android.internal.app.IVoiceInteractionManagerService;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -155,9 +157,24 @@ public class ActivityManagerWrapper {
     public @NonNull ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
         TaskSnapshot snapshot = null;
         try {
-            snapshot = getService().getTaskSnapshot(taskId, isLowResolution);
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                Method getTaskSnapshotMethod = getService().getClass().getMethod(
+                    "getTaskSnapshot",
+                    int.class,      // taskId
+                    boolean.class,  // isLowResolution
+                    boolean.class   // isTranslucent (added in Android 14)
+                );
+
+                snapshot = (TaskSnapshot) getTaskSnapshotMethod.invoke(
+                    getService(), taskId, isLowResolution, false);
+                
+            } else {
+                snapshot = getService().getTaskSnapshot(taskId, isLowResolution);
+            }
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to retrieve task snapshot", e);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            Log.e(TAG, "Failed to invoke getTaskSnapshot", e);
         }
         if (snapshot != null) {
             return ThumbnailData.fromSnapshot(snapshot);
