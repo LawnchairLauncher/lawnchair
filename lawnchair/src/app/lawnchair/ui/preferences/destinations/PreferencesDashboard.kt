@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.LauncherApps
 import android.os.Process
 import android.provider.Settings
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +40,7 @@ import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.OverflowMenu
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.controls.PreferenceCategory
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
@@ -233,8 +234,8 @@ fun RowScope.PreferencesOverflowMenu(
             },
         )
     }
-    val navController = LocalNavController.current
-    val openCreateBackup = { navController.navigate(CreateBackup) }
+    val backstack = LocalBackStack.current
+    val openCreateBackup = { backstack.add(CreateBackup) }
     val openRestoreBackup = restoreBackupOpener()
     OverflowMenu(
         modifier = modifier.addIf(

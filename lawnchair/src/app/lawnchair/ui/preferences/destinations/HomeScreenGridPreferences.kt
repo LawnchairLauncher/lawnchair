@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.asPreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.components.GridOverridesPreview
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
@@ -81,7 +81,7 @@ fun HomeScreenGridPreferences(
             )
         }
 
-        val navController = LocalNavController.current
+        val backstack = LocalBackStack.current
         val context = LocalContext.current
         val applyOverrides = {
             prefs.batchEdit {
@@ -89,7 +89,7 @@ fun HomeScreenGridPreferences(
                 rowsAdapter.onChange(rows.intValue)
             }
             LauncherAppState.getIDP(context).onPreferencesChanged(context)
-            navController.popBackStack()
+            backstack.removeLastOrNull()
         }
 
         Box(

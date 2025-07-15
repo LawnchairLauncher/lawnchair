@@ -37,8 +37,8 @@ import app.lawnchair.ui.popup.LauncherOptionPopupItem
 import app.lawnchair.ui.popup.LauncherOptionsPopup
 import app.lawnchair.ui.popup.toLauncherOptions
 import app.lawnchair.ui.popup.toOptionOrderString
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
-import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.DragHandle
 import app.lawnchair.ui.preferences.components.DraggablePreferenceGroup
 import app.lawnchair.ui.preferences.components.DraggableSwitchPreference
@@ -53,12 +53,12 @@ import com.android.launcher3.R
 fun LauncherPopupPreferenceItem(
     modifier: Modifier = Modifier,
 ) {
-    val navController = LocalNavController.current
+    val backstack = LocalBackStack.current
     ClickablePreference(
         modifier = modifier,
         label = stringResource(R.string.edit_menu_items),
         onClick = {
-            navController.navigate(HomeScreenPopupEditor)
+            backstack.add(HomeScreenPopupEditor)
         },
     )
 }

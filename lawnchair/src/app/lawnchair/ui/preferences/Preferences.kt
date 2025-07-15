@@ -30,9 +30,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -40,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.rememberNavBackStack
 import app.lawnchair.ui.preferences.destinations.PreferencesDashboard
 import app.lawnchair.ui.preferences.navigation.General
 import app.lawnchair.ui.preferences.navigation.IconPicker
@@ -54,10 +57,10 @@ import app.lawnchair.util.ProvideLifecycleState
 import com.google.accompanist.adaptive.HorizontalTwoPaneStrategy
 import com.google.accompanist.adaptive.TwoPane
 
-// todo migrate away from implicit navcontroller
-val LocalNavController = staticCompositionLocalOf<NavController> {
-    error("CompositionLocal LocalNavController not present")
-}
+val LocalBackStack = compositionLocalOf<SnapshotStateList<PreferenceRoute>>
+    {
+        SnapshotStateList()
+    }
 
 val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
     error("CompositionLocal LocalPreferenceInteractor not present")
@@ -77,7 +80,6 @@ fun Preferences(
     startDestination: PreferenceRoute? = null,
     interactor: PreferenceInteractor = viewModel<PreferenceViewModel>(),
 ) {
-    val navController = rememberNavController()
     val isExpandedScreen = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Expanded &&
         windowSizeClass.heightSizeClass in
         setOf(WindowHeightSizeClass.Expanded, WindowHeightSizeClass.Medium)
@@ -88,6 +90,8 @@ fun Preferences(
     val blacklistedRoute = startingRoute::class in twoPaneBlacklist
     val useTwoPane = !blacklistedRoute && isExpandedScreen
 
+    // FIXME: Use rememberNavBackStack?
+    val backStack = remember { mutableStateListOf<PreferenceRoute>() }
     var currentTopRoute by remember { mutableStateOf(defaultStartingRoute) }
 
     Providers {
@@ -96,9 +100,9 @@ fun Preferences(
             modifier = modifier,
         ) {
             CompositionLocalProvider(
-                LocalNavController provides navController,
                 LocalPreferenceInteractor provides interactor,
                 LocalIsExpandedScreen provides isExpandedScreen,
+                LocalBackStack provides backStack
             ) {
                 PreferenceScreen(
                     currentTopRoute = currentTopRoute,
@@ -107,10 +111,8 @@ fun Preferences(
                     },
                     useTwoPane = useTwoPane,
                     isExpandedScreen = isExpandedScreen,
-                    navController = navController,
                 ) {
                     PreferenceNavigation(
-                        navController = navController,
                         startDestination = startingRoute,
                     )
                 }
@@ -125,10 +127,11 @@ private fun PreferenceScreen(
     onRouteChange: (PreferenceRootRoute) -> Unit,
     useTwoPane: Boolean,
     isExpandedScreen: Boolean,
-    navController: NavHostController,
     navHost: @Composable () -> Unit,
 ) {
     val moveableNavHost = remember { movableContentOf { navHost() } }
+    val backStack = LocalBackStack.current
+
     when {
         useTwoPane -> {
             TwoPane(
@@ -137,10 +140,7 @@ private fun PreferenceScreen(
                         PreferencesDashboard(
                             currentRoute = currentTopRoute,
                             onNavigate = {
-                                navController.navigate(it) {
-                                    launchSingleTop = true
-                                    popUpTo(navController.graph.id)
-                                }
+                                backStack.add(it)
                                 onRouteChange(it)
                             },
                         )

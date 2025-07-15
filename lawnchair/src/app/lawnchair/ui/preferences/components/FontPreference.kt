@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.lawnchair.preferences.BasePreferenceManager
 import app.lawnchair.preferences.getAdapter
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.GeneralFontSelection
 
@@ -16,7 +16,7 @@ fun FontPreference(
     label: String,
     modifier: Modifier = Modifier,
 ) {
-    val navController = LocalNavController.current
+    val stack = LocalBackStack.current
 
     PreferenceTemplate(
         title = { Text(text = label) },
@@ -28,6 +28,8 @@ fun FontPreference(
             )
         },
         modifier = modifier
-            .clickable { navController.navigate(route = GeneralFontSelection(fontPref.key)) },
+            .clickable { stack.add(GeneralFontSelection(fontPref.key)) }
+//        modifier = modifier
+//            .clickable { navController.navigate(route = GeneralFontSelection(fontPref.key)) },
     )
 }

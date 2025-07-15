@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.TwoTabPreferenceLayout
@@ -31,14 +31,14 @@ fun SearchBarPreference(
     modifier: Modifier = Modifier,
     showLabel: Boolean = true,
 ) {
-    val navController = LocalNavController.current
+    val backstack = LocalBackStack.current
     val preference = remember {
         movableContentOf {
             ClickablePreference(
                 label = stringResource(R.string.search_bar_settings),
                 modifier = modifier,
             ) {
-                navController.navigate(route = Search(id))
+                backstack.add(Search(id))
             }
         }
     }

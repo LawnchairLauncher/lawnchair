@@ -38,7 +38,7 @@ import app.lawnchair.data.folder.model.FolderViewModel
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.ModalBottomSheetContent
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.components.DragHandle
 import app.lawnchair.ui.preferences.components.DraggablePreferenceGroup
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
@@ -58,7 +58,7 @@ import com.android.launcher3.model.data.FolderInfo
 fun AppDrawerFolderPreferenceItem(
     modifier: Modifier = Modifier,
 ) {
-    val navController = LocalNavController.current
+    val backstack = LocalBackStack.current
 
     PreferenceGroup(
         modifier = modifier,
@@ -67,7 +67,7 @@ fun AppDrawerFolderPreferenceItem(
             label = stringResource(R.string.app_drawer_folder),
             modifier = Modifier,
             onClick = {
-                navController.navigate(route = AppDrawerFolder)
+                backstack.add(AppDrawerFolder)
             },
         )
     }
@@ -78,7 +78,7 @@ fun AppDrawerFoldersPreference(
     modifier: Modifier = Modifier,
     viewModel: FolderViewModel = viewModel(factory = ViewModelFactory(LocalContext.current) { FolderViewModel(it) }),
 ) {
-    val navController = LocalNavController.current
+    val backstack = LocalBackStack.current
     val folders by viewModel.folders.collectAsStateWithLifecycle()
 
     AppDrawerFoldersPreference(
@@ -92,7 +92,7 @@ fun AppDrawerFoldersPreference(
         },
         onEditFolderItems = {
             viewModel.setFolderInfo(it, false)
-            navController.navigate(AppDrawerAppListToFolder(it))
+            backstack.add(AppDrawerAppListToFolder(it))
         },
         onRenameFolder = { folderInfo, it ->
             folderInfo.apply {

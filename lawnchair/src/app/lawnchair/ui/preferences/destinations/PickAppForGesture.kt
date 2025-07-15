@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.destinations
 
 import android.app.Activity
 import android.content.Intent
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable

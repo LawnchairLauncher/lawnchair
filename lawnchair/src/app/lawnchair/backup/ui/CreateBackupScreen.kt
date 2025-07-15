@@ -39,7 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
 import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.components.controls.FlagSwitchPreference
@@ -89,7 +89,7 @@ fun CreateBackupScreen(
         BackHandler {}
     }
 
-    val navController = LocalNavController.current
+    val backstack = LocalBackStack.current
     val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
         val uri = it.data?.data ?: return@rememberLauncherForActivityResult
@@ -98,7 +98,7 @@ fun CreateBackupScreen(
             creatingBackup = true
             try {
                 LawnchairBackup.create(context, contents, screenshot, uri)
-                navController.popBackStack()
+                backstack.removeLastOrNull()
                 Toast.makeText(context, R.string.backup_create_success, Toast.LENGTH_SHORT).show()
             } catch (t: Throwable) {
                 Log.e("CreateBackupScreen", "failed to create backup", t)

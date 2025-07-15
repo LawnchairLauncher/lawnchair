@@ -13,7 +13,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.icons.IconPickerItem
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
@@ -37,7 +37,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
         activity.label.toString()
     }
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
-    val navController = LocalNavController.current
+    val backstack = LocalBackStack.current
     val scope = rememberCoroutineScope()
     val model = LauncherAppState.getInstance(context).model
 
@@ -85,9 +85,9 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                 icon = remember(iconPack) { iconPack.icon.toBitmap() },
                 onClick = {
                     if (iconPack.packageName.isEmpty()) {
-                        navController.navigate(IconPicker())
+                        backstack.add(IconPicker())
                     } else {
-                        navController.navigate(IconPicker(iconPack.packageName))
+                        backstack.add(IconPicker(iconPack.packageName))
                     }
                 },
             )

@@ -1,20 +1,39 @@
 package app.lawnchair.ui.preferences.navigation
 
+import androidx.collection.intSetOf
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
+import androidx.navigation3.ui.rememberSceneSetupNavEntryDecorator
 import app.lawnchair.backup.ui.CreateBackupScreen
-import app.lawnchair.backup.ui.restoreBackupGraph
+import app.lawnchair.backup.ui.RestoreBackupScreen
+import app.lawnchair.backup.ui.RestoreBackupViewModel
+import app.lawnchair.icons.IconPack
+import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.preferences.BasePreferenceManager
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.about.About
 import app.lawnchair.ui.preferences.about.acknowledgements.Acknowledgements
@@ -47,121 +66,136 @@ import app.lawnchair.ui.preferences.destinations.SelectAppsForDrawerFolder
 import app.lawnchair.ui.preferences.destinations.SelectIconPreference
 import app.lawnchair.ui.preferences.destinations.SmartspacePreferences
 import com.android.launcher3.util.ComponentKey
+import java.util.Base64
 import soup.compose.material.motion.animation.materialSharedAxisXIn
 import soup.compose.material.motion.animation.materialSharedAxisXOut
 import soup.compose.material.motion.animation.rememberSlideDistance
 
 @Composable
 fun PreferenceNavigation(
-    navController: NavHostController,
     startDestination: PreferenceRoute,
 ) {
-    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
-    val slideDistance = rememberSlideDistance()
+    val backStack = LocalBackStack.current
 
-    // TODO: navigate to nav3: https://developer.android.com/guide/navigation/navigation-3
-    NavHost(
-        navController = navController,
-        startDestination = startDestination,
-        enterTransition = { materialSharedAxisXIn(!isRtl, slideDistance) },
-        exitTransition = { materialSharedAxisXOut(!isRtl, slideDistance) },
-        popEnterTransition = { materialSharedAxisXIn(isRtl, slideDistance) },
-        popExitTransition = { materialSharedAxisXOut(isRtl, slideDistance) },
-    ) {
-        composable<Root> {
-            val isExpandedScreen = LocalIsExpandedScreen.current
+//    if (backStack.isEmpty()) //?
+    backStack.add(startDestination)
 
-            PreferencesDashboard(
-                currentRoute = Root,
-                onNavigate = {
-                    navController.navigate(it)
-                },
-            )
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        contentAlignment = Alignment.Center,
+        transitionSpec = {
+            // Slide in from right when navigating forward
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { -it })
+        },
+        popTransitionSpec = {
+            // Slide in from left when navigating back
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { it })
+        },
+        predictivePopTransitionSpec = {
+            // Slide in from left when navigating back
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                slideOutHorizontally(targetOffsetX = { it })
+        },
+        entryProvider = { key ->
+            NavEntry(key) {
+                when (key) {
+                    is Root -> {
+                        val isExpandedScreen = LocalIsExpandedScreen.current
 
-            LaunchedEffect(isExpandedScreen) {
-                if (isExpandedScreen) {
-                    navController.navigate(General) {
-                        launchSingleTop = true
-                        popUpTo(navController.graph.id)
+                        PreferencesDashboard(
+                            currentRoute = Root,
+                            onNavigate = {
+                                backStack.add(it)
+                            },
+                        )
+
+                        LaunchedEffect(isExpandedScreen) {
+                            if (isExpandedScreen) {
+                                backStack.add(General)
+
+//                                    launchSingleTop = true
+//                                    popUpTo(navController.graph.id)
+
+                            }
+                        }
+                    }
+
+                    is Dummy -> DummyPreference()
+
+                    is General -> GeneralPreferences()
+                    is GeneralFontSelection -> {
+                        val pref = preferenceManager().prefsMap[key.prefKey]
+                            as? BasePreferenceManager.FontPref ?: return@NavEntry
+                        FontSelection(pref)
+                    }
+
+                    is GeneralIconPack -> IconPackPreferences()
+                    is GeneralIconShape -> IconShapePreference()
+                    is GeneralCustomIconShapeCreator -> CustomIconShapePreference()
+
+                    is HomeScreen -> HomeScreenPreferences()
+                    is HomeScreenGrid -> HomeScreenGridPreferences()
+                    is HomeScreenPopupEditor -> LauncherPopupPreference()
+
+                    is Dock -> DockPreferences()
+                    is DockSearchProvider -> SearchProviderPreferences()
+
+                    is Smartspace -> SmartspacePreferences(fromWidget = false)
+                    is SmartspaceWidget -> SmartspacePreferences(fromWidget = true)
+
+                    is AppDrawer -> AppDrawerPreferences()
+                    is AppDrawerHiddenApps -> HiddenAppsPreferences()
+                    is AppDrawerAppListToFolder -> SelectAppsForDrawerFolder(key.id)
+                    is AppDrawerFolder -> AppDrawerFoldersPreference()
+
+                    is Search -> SearchPreferences(currentTab = key.selectedId)
+
+                    is Folders -> FolderPreferences()
+
+                    is Gestures -> GesturePreferences()
+                    is GesturesPickApp -> PickAppForGesture()
+
+                    is Quickstep -> QuickstepPreferences()
+
+                    is About -> About()
+                    is AboutLicenses -> Acknowledgements()
+
+                    is DebugMenu -> DebugMenuPreferences()
+
+                    is SelectIcon -> SelectIconPreference(ComponentKey.fromString(key.componentKey)!!)
+                    is IconPicker -> IconPickerPreference(packageName = key.packageName)
+
+                    is ExperimentalFeatures -> ExperimentalFeaturesPreferences()
+
+                    is ColorSelection -> {
+                        val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
+                        val model = modelList[key.prefKey]
+                        ColorSelection(
+                            label = stringResource(id = model.labelRes),
+                            preference = model.prefObject,
+                            dynamicEntries = model.dynamicEntries,
+                        )
+                    }
+
+                    is CreateBackup -> CreateBackupScreen(viewModel())
+                    is RestoreBackup -> {
+                        val backupUri = remember {
+                            val base64Uri = key.base64Uri
+                            val backupUriString = String(Base64.getDecoder().decode(base64Uri))
+                            backupUriString.toUri()
+                        }
+                        val viewModel: RestoreBackupViewModel = viewModel()
+                        DisposableEffect(key1 = null) {
+                            viewModel.init(backupUri)
+                            onDispose { }
+                        }
+                        RestoreBackupScreen()
                     }
                 }
             }
-        }
-        composable<Dummy> {
-            DummyPreference()
-        }
-
-        composable<General> { GeneralPreferences() }
-        composable<GeneralFontSelection> { backStackEntry ->
-            val route: GeneralFontSelection = backStackEntry.toRoute()
-            val pref = preferenceManager().prefsMap[route.prefKey]
-                as? BasePreferenceManager.FontPref ?: return@composable
-            FontSelection(pref)
-        }
-        composable<GeneralIconPack> { IconPackPreferences() }
-        composable<GeneralIconShape> { IconShapePreference() }
-        composable<GeneralCustomIconShapeCreator> { CustomIconShapePreference() }
-
-        composable<HomeScreen> { HomeScreenPreferences() }
-        composable<HomeScreenGrid> { HomeScreenGridPreferences() }
-        composable<HomeScreenPopupEditor> { LauncherPopupPreference() }
-
-        composable<Dock> { DockPreferences() }
-        composable<DockSearchProvider> { SearchProviderPreferences() }
-
-        composable<Smartspace> { SmartspacePreferences(fromWidget = false) }
-        composable<SmartspaceWidget> { SmartspacePreferences(fromWidget = true) }
-
-        composable<AppDrawer> { AppDrawerPreferences() }
-        composable<AppDrawerHiddenApps> { HiddenAppsPreferences() }
-        composable<AppDrawerAppListToFolder> { backStackEntry ->
-            val args = backStackEntry.arguments!!
-            val folderInfoId = args.getInt("id")
-            SelectAppsForDrawerFolder(folderInfoId)
-        }
-        composable<AppDrawerFolder> { AppDrawerFoldersPreference() }
-
-        composable<Search> { backStackEntry ->
-            val route: Search = backStackEntry.toRoute()
-            SearchPreferences(currentTab = route.selectedId)
-        }
-        composable<Folders> { FolderPreferences() }
-
-        composable<Gestures> { GesturePreferences() }
-        composable<GesturesPickApp> { PickAppForGesture() }
-
-        composable<Quickstep> { QuickstepPreferences() }
-
-        composable<About> { About() }
-        composable<AboutLicenses> { Acknowledgements() }
-
-        composable<DebugMenu> { DebugMenuPreferences() }
-
-        composable<SelectIcon> { backStackEntry ->
-            val args: SelectIcon = backStackEntry.toRoute()
-            val componentKey = args.componentKey
-            val key = ComponentKey.fromString(componentKey)!!
-            SelectIconPreference(key)
-        }
-        composable<IconPicker> { backStackEntry ->
-            val args: IconPicker = backStackEntry.toRoute()
-            IconPickerPreference(packageName = args.packageName)
-        }
-
-        composable<ExperimentalFeatures> { ExperimentalFeaturesPreferences() }
-        composable<ColorSelection> { backStackEntry ->
-            val screen: ColorSelection = backStackEntry.toRoute()
-            val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
-            val model = modelList[screen.prefKey]
-            ColorSelection(
-                label = stringResource(id = model.labelRes),
-                preference = model.prefObject,
-                dynamicEntries = model.dynamicEntries,
-            )
-        }
-
-        composable<CreateBackup> { CreateBackupScreen(viewModel()) }
-
-        restoreBackupGraph()
-    }
+        },
+    )
 }

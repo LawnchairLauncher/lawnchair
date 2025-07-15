@@ -20,7 +20,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.PreferenceRoute
 
@@ -32,10 +32,10 @@ fun NavigationActionPreference(
     subtitle: String? = null,
     endWidget: (@Composable () -> Unit)? = null,
 ) {
-    val navController = LocalNavController.current
+    val backstack = LocalBackStack.current
 
     PreferenceTemplate(
-        modifier = modifier.clickable { navController.navigate(route = destination) },
+        modifier = modifier.clickable { backstack.add(destination) },
         title = { Text(text = label) },
         description = { subtitle?.let { Text(text = it) } },
         endWidget = endWidget,

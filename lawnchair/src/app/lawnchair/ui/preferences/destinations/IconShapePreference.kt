@@ -53,7 +53,7 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
@@ -169,7 +169,7 @@ private fun ModifyCustomIconShapePreference(
     customIconShape: IconShape?,
     modifier: Modifier = Modifier,
 ) {
-    val navController = LocalNavController.current
+    val backstack = LocalBackStack.current
     val route = GeneralCustomIconShapeCreator
 
     val created = customIconShape != null
@@ -186,7 +186,7 @@ private fun ModifyCustomIconShapePreference(
         modifier = modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate(route = route)
+                backstack.add(route)
             },
         contentAlignment = Alignment.Center,
     ) {

@@ -41,9 +41,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import androidx.navigation3.ui.NavDisplay
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
 import app.lawnchair.ui.preferences.components.controls.FlagSwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
@@ -55,23 +56,6 @@ import app.lawnchair.util.restartLauncher
 import com.android.launcher3.R
 import java.util.Base64
 import kotlinx.coroutines.launch
-
-fun NavGraphBuilder.restoreBackupGraph() {
-    composable<RestoreBackup> { backStackEntry ->
-        val route: RestoreBackup = backStackEntry.toRoute()
-        val backupUri = remember {
-            val base64Uri = route.base64Uri
-            val backupUriString = String(Base64.getDecoder().decode(base64Uri))
-            backupUriString.toUri()
-        }
-        val viewModel: RestoreBackupViewModel = viewModel()
-        DisposableEffect(key1 = null) {
-            viewModel.init(backupUri)
-            onDispose { }
-        }
-        RestoreBackupScreen()
-    }
-}
 
 @Composable
 fun RestoreBackupScreen(
@@ -210,14 +194,14 @@ fun ColumnScope.RestoreBackupOptions(
 
 @Composable
 fun restoreBackupOpener(): () -> Unit {
-    val navController = LocalNavController.current
+    val backStack = LocalBackStack.current
 
     val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
         val uri = it.data?.data ?: return@rememberLauncherForActivityResult
 
         val base64Uri = Base64.getEncoder().encodeToString(uri.toString().toByteArray())
-        navController.navigate(RestoreBackup(base64Uri))
+        backStack.add(RestoreBackup(base64Uri))
     }
 
     return {

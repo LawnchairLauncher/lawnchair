@@ -26,7 +26,7 @@ import androidx.datastore.preferences.core.Preferences
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.theme.color.ColorOption
-import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.LocalBackStack
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.ColorSelection as ColorSelectionRoute
 import com.patrykmichalik.opto.domain.Preference
@@ -44,7 +44,7 @@ fun ColorPreference(
     val modelList = ColorPreferenceModelList.INSTANCE.get(LocalContext.current)
     val model = modelList[preference.key.name]
     val adapter: PreferenceAdapter<ColorOption> = model.prefObject.getAdapter()
-    val navController = LocalNavController.current
+    val backStack = LocalBackStack.current
     PreferenceTemplate(
         title = { Text(text = stringResource(id = model.labelRes)) },
         endWidget = {
@@ -53,6 +53,6 @@ fun ColorPreference(
         description = {
             Text(text = adapter.state.value.colorPreferenceEntry.label())
         },
-        modifier = modifier.clickable { navController.navigate(route = ColorSelectionRoute(model.prefObject.key.name)) },
+        modifier = modifier.clickable { backStack.add(ColorSelectionRoute(model.prefObject.key.name)) },
     )
 }
