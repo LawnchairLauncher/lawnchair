@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 /*
 * Copyright (C) 2017 The Android Open Source Project
 *
@@ -21,7 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Ghim"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Dạng tự do"</string>
-    <string name="recent_task_option_desktop" msgid="8280879717125435668">"Máy tính"</string>
+    <string name="recent_task_option_desktop" msgid="8280879717125435668">"Desktop"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Không có mục gần đây nào"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Cài đặt mức sử dụng ứng dụng"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Xóa tất cả"</string>
@@ -31,7 +31,7 @@
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 phút"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Hôm nay còn <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Các ứng dụng đề xuất"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Các ứng dụng gợi ý của bạn"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Các ứng dụng gợi ý cho bạn"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Nhận các ứng dụng đề xuất ở cuối Màn hình chính"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Nhận các ứng dụng đề xuất trên hàng mục ưa thích của Màn hình chính"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Bạn có thể dễ dàng truy cập những ứng dụng mà mình dùng thường xuyên nhất ngay trên màn hình chính. Các ứng dụng đề xuất sẽ thay đổi dựa trên thói quen của bạn. Các ứng dụng ở hàng dưới cùng sẽ chuyển lên phía trên của Màn hình chính."</string>
