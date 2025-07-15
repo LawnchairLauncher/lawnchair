@@ -20,6 +20,7 @@ android {
     ksp {
         arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
     }
+    buildToolsVersion '36.0.0'
 }
 
 addFrameworkJar('framework-15.jar')
