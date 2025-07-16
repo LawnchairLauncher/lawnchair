@@ -23,6 +23,7 @@ plugins {
 allprojects {
     plugins.withType(AndroidBasePlugin).configureEach {
         android {
+            buildToolsVersion "36.0.0"
             compileSdk 36
             defaultConfig {
                 minSdk 26
