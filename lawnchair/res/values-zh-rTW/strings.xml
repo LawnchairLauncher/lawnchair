@@ -139,8 +139,8 @@
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
     <string name="icon_swipe_gestures">滑動圖示手勢</string>
     <string name="icon_swipe_gestures_description">配置於圖示上向左/右滑動時的動作以取代移動主畫面</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="show_deck_layout">平面模式</string>
+    <string name="show_deck_layout_description">顯示版面選項以隱藏應用程式抽屜並自動將項目加到主畫面</string>
     <string name="recents_lock_unlock">鎖定/解鎖</string>
     <string name="recents_lock_unlock_description">按下 \"全部清除\" 時略過已選取的應用程式</string>
     <!--Overlay-->
@@ -441,7 +441,7 @@
     <string name="show_dot_pagination_label">顯示圓點頁面指示器</string>
     <string name="show_dot_pagination_description">以小圓點取代線狀頁面指示器</string>
     <string name="show_material_u_popup_label">使用新的彈出樣式</string>
-    <string name="show_material_u_popup_description">使用 Material You 輕巧彈性的選單樣式</string>
+    <string name="show_material_u_popup_description">使用 Material You 輕彈的選單樣式</string>
     <string name="popup_menu">彈出選單</string>
     <string name="popup_menu_items">彈出選單項目</string>
     <string name="edit_menu_items">編輯彈出選單項目</string>

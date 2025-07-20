@@ -139,8 +139,8 @@
     <string name="always_reload_icons_description">Αποφυγή χρήσης αποθηκευμένων εικονιδίων από πακέτα εικονιδίων</string>
     <string name="icon_swipe_gestures">Χειρονομίες σάρωσης εικονιδίων</string>
     <string name="icon_swipe_gestures_description">Εκτελέστε ενέργειες όταν σύρετε αριστερά ή δεξιά στα εικονίδια αντί να μετακινείτε την αρχική οθόνη</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="show_deck_layout">Διάταξη τράπουλας</string>
+    <string name="show_deck_layout_description">Εμφάνιση μιας επιλογής διάταξης για την απόκρυψη του συρταριού εφαρμογών και την αυτόματη προσθήκη νέων εφαρμογών στην αρχική οθόνη</string>
     <string name="recents_lock_unlock">Κλείδωμα/ξεκλείδωμα</string>
     <string name="recents_lock_unlock_description">Αποτροπή κλεισίματος επιλεγμένης εφαρμογής κατά το πάτημα του \"Καθαρισμός όλων\"</string>
     <!--Overlay-->
@@ -611,5 +611,5 @@
     <string name="warn_contact_permission_content">Για αναζήτηση επαφών, εκχωρήστε δικαιώματα ανάγνωσης επαφών και τηλεφώνου στον εκκινητή Lawnchair</string>
     <string name="warn_files_permission_content">Για αναζήτηση στα αρχεία σας, εκχωρήστε δικαιώματα ανάγνωσης αποθηκευτικού χώρου στον εκκινητή Lawnchair</string>
     <string name="grant_requested_permissions">Εκχώρηση δικαιωμάτων</string>
-    <string name="custom_search_label">Custom search engine name</string>
+    <string name="custom_search_label">Όνομα προσαρμοσμένης μηχανής αναζήτησης</string>
 </resources>

@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Tunjukkan aplikasi yang unik saja</string>
     <string name="my_folder_label">Folder saya</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Agar dapat melakukan suatu aksi (misalnya mengunci ponsel) saat melakukan gesture, Lawnchair butuh izin aksesibilitas.\n\nLawnchair tidak melihat aksi pengguna apa pun, meskipun kemampuan tersebut dibutuhkan untuk semua layanan aksesibilitas. Lawnchair mengabaikan event yang dikirim oleh sistem.\n\nAgar dapat mengunci ponsel Anda, atau membuka layar terbaru, Lawnchair memakai API aksesibilitas \"performGlobalAction\".</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -137,10 +137,10 @@
     <string name="workspace_increase_max_grid_size_description">Tingkatkan batas ukuran kisi yang diperbolehkan dari 10x10 ke 20x20</string>
     <string name="always_reload_icons_label">Selalu muat ulang lambang</string>
     <string name="always_reload_icons_description">Hindari menggunakan ikon yang telah di tembolok dari paket lambang</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="icon_swipe_gestures">Gerakan menggeser ikon</string>
+    <string name="icon_swipe_gestures_description">Lakukan tindakan saat menggeser ke kiri atau kanan pada ikon alih-alih memindahkan layar beranda</string>
+    <string name="show_deck_layout">Tata letak dek</string>
+    <string name="show_deck_layout_description">Tampilkan opsi tata letak untuk menyembunyikan laci aplikasi dan secara otomatis menambahkan aplikasi baru ke layar beranda</string>
     <string name="recents_lock_unlock">Kunci/buka kunci</string>
     <string name="recents_lock_unlock_description">Cegah aplikasi terpilih untuk ditutup saat menekan \"Bersihkan semua\"</string>
     <!--Overlay-->
@@ -346,7 +346,7 @@
     <string name="development">Pengembangan</string>
     <string name="quickswitch_maintenance">Pemeliharaan QuickSwitch</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Support and PR</string>
+    <string name="support_and_pr">Bantuan dan relasi Publik</string>
     <string name="acknowledgements">Ucapan Terima Kasih</string>
     <string name="translate">Terjemahkan</string>
     <string name="donate">Donasi</string>
@@ -395,7 +395,7 @@
     <string name="d2ts_recents_a11y_hint_title">Aktifkan layanan aksesibilitas</string>
     <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk-Ganda untuk Tidur, aktifkan layanan aksesibilitas Lawnchair. Ketuk \"Buka pengaturan\", pilih \"Lawnchair\" dan aktifkan \"Gunakan Lawnchair\".\n\nLawnchair menggunakan metode performGlobalAction dari Aksesibilitas untuk melakukan tindakan ini. Ini adalah izin sensitif yang memungkinkan pemantauan aplikasi lain. Namun, Lawnchair tidak dikonfigurasi untuk fungsi tersebut dan tidak menerima acara apa pun.</string>
     <string name="dt2s_recents_warning_open_settings">Buka pengaturan</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">Untuk menggunakan Buka layar terbaru, aktifkan layanan aksesibilitas Lawnchair. Ketuk \"Buka pengaturan\", pilih \"Lawnchair\" dan aktifkan \"Gunakan Lawnchair\".\n\nLawnchair menggunakan metode `performGlobalAction` dari Aksesibilitas untuk melakukan tindakan ini. Ini adalah izin sensitif yang memungkinkan pemantauan aplikasi lain. Namun, Lawnchair tidak dikonfigurasi untuk fungsi tersebut dan tidak menerima kejadian apa pun.</string>
     <!--
 
     Bug reporting
@@ -421,9 +421,9 @@
     <string name="wallpaper_blur">Wallpaper samar (eksperimental)</string>
     <string name="wallpaper_background_blur">Intensitas blur</string>
     <string name="wallpaper_background_blur_factor">Ambang batas faktor</string>
-    <string name="home_lawn_deck_label">Deck</string>
-    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
+    <string name="home_lawn_deck_label">Dek</string>
+    <string name="home_lawn_deck_label_beta">Dek (Beta)</string>
+    <string name="home_lawn_deck_description">Akses aplikasi Anda dengan mudah dengan Deck, pengalaman tanpa laci terbaik yang dirancang untuk kesederhanaan dan pengaturan yang mulus</string>
     <string name="auto_add_shortcuts_label">Tambahkan apli baru ke layar beranda</string>
     <string name="minus_one_enable">Tampilkan umpan</string>
     <string name="minus_one_unavailable">Tidak ada aplikasi feed yang terpasang</string>
@@ -526,7 +526,7 @@
     <string name="max_folder_columns">Kolom folder maksimum</string>
     <string name="max_folder_rows">Baris folder maksimum</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">Pengaturan ini akan diabaikan karena Lawnchair tidak diatur sebagai penyedia layar terbaru</string>
     <string name="quickstep_incompatible">Integrasi sistem tidak kompatibel</string>
     <string name="quickstep_incompatible_description">Perangkat Anda dikonfigurasi untuk menggunakan gestur sistem (dikenal sebagai Quickstep) disediakan oleh %1$s, tetapi versi %1$s tidak kompatibel dengan versi Android Anda. Untuk melanjutkan menggunakan perangkat Anda, harap lepas pembarian %1$s atau nonaktifkan %1$s sebagai penyedia gestur sistem.</string>
     <string name="translucent_background">Latar belakang transparan</string>
@@ -538,7 +538,7 @@
     <string name="task_menu_force_stop">Tutup paksa</string>
     <string name="window_corner_radius_label">Radius sudut layar</string>
     <string name="override_window_corner_radius_label">Radius sudut layar kustom</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Saat Anda menggeser ke atas untuk membuka layar terbaru, aplikasi saat ini mengikuti jari Anda, mengecil menjadi kartu. Gunakan slider ini untuk menyesuaikan radius sudut kartu saat hampir memenuhi layar sehingga cocok dengan sudut layar Anda.</string>
     <string name="taskbar_label">Bilah Tugas</string>
     <string name="enable_taskbar_experimental">Tampilkan taskbar (eksperimental)</string>
     <!--
@@ -557,7 +557,7 @@
     <string name="all_apps_search_market_message">Cari lebih banyak aplikasi</string>
     <string name="all_apps_search_on_web_message">Cari di <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Tidak ada toko aplikasi atau browser yang terinstal</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">Cari di web</string>
     <string name="clear_history">Bersihkan riwayat pencarian</string>
     <string name="search_input_action_clear_results">Bersihkan bilah pencarian</string>
     <!-- Search settings -->
@@ -580,7 +580,7 @@
     <string name="search_algorithm_app_search">Pencarian Aplikasi</string>
     <string name="search_algorithm_global_search_on_device">Pencarian global (dalam perangkat)</string>
     <string name="search_algorithm_global_search_via_asi">Pencarian global (melalui ASI)</string>
-    <string name="custom_search_url">Custom search engine URL</string>
+    <string name="custom_search_url">Mesin pencarian URL Kustom</string>
     <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <!-- Labels of each search result types -->

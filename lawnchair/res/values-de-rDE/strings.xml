@@ -42,9 +42,9 @@
     <string name="deselect_all">Alle abwählen</string>
     <string name="inverse_selection">Auswahl umkehren</string>
     <string name="loading">Laden…</string>
-    <string name="download_update">Update laden</string>
+    <string name="download_update">Update herunterladen</string>
     <string name="install_update">Update installieren</string>
-    <string name="pro_updated">Du verwendest die neuste Version!</string>
+    <string name="pro_updated">Du verwendest die neueste Version!</string>
     <string name="managed_by_lawnchair">Von Lawnchair verwaltet</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Voreinstellungen</string>
@@ -84,7 +84,7 @@
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">Ordner in App-Übersicht</string>
-    <string name="app_drawer_folder_settings">App-Listen-Ordner</string>
+    <string name="app_drawer_folder_settings">App-Übersicht-Ordner</string>
     <string name="add_folder">Ordner erstellen</string>
     <string name="edit_folder">Ordner bearbeiten</string>
     <string name="add_label">Hinzufügen</string>
@@ -97,7 +97,7 @@
     <string name="folders_filter_duplicates">Nur Apps, die keine Duplikate sind, zeigen</string>
     <string name="my_folder_label">Mein Ordner</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Für einige Aktionen (wie die Gerätesperrung) über Gesten benötigt Lawnchair Bedienungshilfen-Zugriff. \n\nLawnchair verfügt keinerlei Nutzungsvorgänge, obwohl dieses Privileg für alle Bedienungshilfen erforderlich ist. Lawnchair verwirft sämtliche Vorgänge, die vom System empfangen werden.\n\nUm Dein Gerät zu sperren oder zwischen den Bildschirmen zu wechseln, nutzt Lawnchair die performGlobalAction-Bedienungshilfe.</string>
+    <string name="accessibility_service_description">Um bestimmte Aktionen (bspw. das Mobiltelefon sperren) auszuführen, wenn eine Geste ausgeführt wird, benötigt Lawnchair Bedienungshilfen-Zugriff.\n\nLawnchair nimmt keine deiner Aktionen auf, jedoch ist die Berechtigung, dies zu tun, Teil des Bedienungshilfen-Zugriffes. Lawnchair löscht jedes Ereigniss, das vom System gesendet wird.\n\nUm das Gerät zu sperren, oder die zulezt geöffneten Apps zu öffnen, wird der performGlobalAction Bedienungshilfen-Service verwendet.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -109,7 +109,7 @@
     -->
     <string name="settings">Einstellungen</string>
     <string name="general_label">Allgemein</string>
-    <string name="general_description">Farben, Symbolpaket, Benachrichtigungs-Punkte</string>
+    <string name="general_description">Farben, Symbolpakete, Benachrichtigungspunkte</string>
     <string name="home_screen_label">Startbildschirm</string>
     <string name="home_screen_description">Feed, Raster, Symbole</string>
     <string name="dock_label">Dock</string>
@@ -139,8 +139,8 @@
     <string name="always_reload_icons_description">Die Verwendung zwischengespeicherter Symbole aus Symbol-Paketen vermeiden</string>
     <string name="icon_swipe_gestures">Symbol-Wischgesten</string>
     <string name="icon_swipe_gestures_description">Führe beim nach links oder rechts Wischen Aktionen aus, statt zwischen Startbildschirmseiten zu wechseln</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="show_deck_layout">Deck-Layout</string>
+    <string name="show_deck_layout_description">Zeige eine Layout-Option, um die App-Übersicht auszublenden und neue Apps automatisch zum Startbildschirm hinzuzufügen</string>
     <string name="recents_lock_unlock">Anpinnen/Lösen</string>
     <string name="recents_lock_unlock_description">Verhindert, dass die gewählte App durch \"Alle Apps schließen\" entfernt wird</string>
     <!--Overlay-->
@@ -509,12 +509,12 @@
     <string name="pref_all_apps_remember_position_title">Position merken</string>
     <string name="pref_all_apps_remember_position_description">App-Drawer-Position nach Verlassen der Übersicht merken</string>
     <string name="pref_all_apps_show_scrollbar_title">Scroll-Leiste anzeigen</string>
-    <string name="app_drawer_columns">Spalten in der Anwendungsübersicht</string>
+    <string name="app_drawer_columns">Spalten der App-Übersicht</string>
     <string name="row_height_label">Zeilenhöhe</string>
     <string name="app_drawer_indent_label">Horizontaler Abstand</string>
     <string name="app_drawer_bg_color_label">Hintergrundfarbe</string>
     <!-- HiddenAppsPreferences -->
-    <string name="hide_from_drawer">Aus der Anwendungsübersicht ausblenden</string>
+    <string name="hide_from_drawer">Aus der App-Übersicht ausblenden</string>
     <string name="hidden_apps_label_with_count">Versteckte Apps (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d App</item>
