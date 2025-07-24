@@ -52,8 +52,13 @@ fun CheckUpdate(
     var isDownloading by remember { mutableStateOf(false) }
     var downloadedFile by remember { mutableStateOf<File?>(null) }
 
+    // As of now the version string looks like this (CI builds only):
+    // <major>.<branch>.(#<CI build number>)
+    // This is done inside build.gradle in the source root. Reflect
+    // changes from there if needed.
     val currentVersionNumber = BuildConfig.VERSION_DISPLAY_NAME
         .substringAfterLast("#")
+        .removeSuffix(")")
         .toIntOrNull() ?: 0
 
     LaunchedEffect(Unit) {
