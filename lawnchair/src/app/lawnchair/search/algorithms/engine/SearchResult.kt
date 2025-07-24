@@ -2,7 +2,6 @@ package app.lawnchair.search.algorithms.engine
 
 import android.annotation.DrawableRes
 import android.content.pm.ShortcutInfo
-import androidx.annotation.StringRes
 import app.lawnchair.search.adapter.HEADER
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.algorithms.data.ContactInfo
@@ -31,7 +30,7 @@ sealed class SearchResult {
             val query: String,
             val providerName: String,
             val searchUrl: String,
-            @DrawableRes val providerIconRes: Int
+            @DrawableRes val providerIconRes: Int,
         ) : Action()
         data class Header(val title: String, val pkg: String = HEADER) : Action()
         data class Divider(val pkg: String = SPACE) : Action()

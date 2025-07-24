@@ -18,7 +18,7 @@ interface SectionBuilder {
     fun build(
         context: Context,
         factory: SearchTargetFactory,
-        results: List<SearchResult>
+        results: List<SearchResult>,
     ): List<SearchTargetCompat>
 }
 
@@ -26,7 +26,7 @@ object ContactsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
-        results: List<SearchResult>
+        results: List<SearchResult>,
     ): List<SearchTargetCompat> {
         val contacts = results.filterIsInstance<SearchResult.Contact>()
         if (contacts.isEmpty()) {
@@ -45,7 +45,7 @@ object FilesSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
-        results: List<SearchResult>
+        results: List<SearchResult>,
     ): List<SearchTargetCompat> {
         val files = results.filterIsInstance<SearchResult.File>()
         if (files.isEmpty()) {
@@ -64,7 +64,7 @@ object SettingsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
-        results: List<SearchResult>
+        results: List<SearchResult>,
     ): List<SearchTargetCompat> {
         val settings = results.filterIsInstance<SearchResult.Setting>()
 
@@ -84,7 +84,7 @@ object CalculationSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
-        results: List<SearchResult>
+        results: List<SearchResult>,
     ): List<SearchTargetCompat> {
         val calculations = results.filterIsInstance<SearchResult.Calculation>()
         if (calculations.isEmpty()) {
@@ -102,7 +102,7 @@ object WebSuggestionsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
-        results: List<SearchResult>
+        results: List<SearchResult>,
     ): List<SearchTargetCompat> {
         val webSuggestions = results.filterIsInstance<SearchResult.WebSuggestion>()
         if (webSuggestions.isEmpty()) {
@@ -145,21 +145,20 @@ object HistorySectionBuilder : SectionBuilder {
             history.map {
                 factory.createSearchHistoryTarget(
                     it.data,
-                    webSuggestion::getSearchUrl
+                    webSuggestion::getSearchUrl,
                 )
-            }
+            },
         )
         targets.add(factory.createHeaderTarget(SPACE))
         return targets
     }
-
 }
 
 object ActionsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
-        results: List<SearchResult>
+        results: List<SearchResult>,
     ): List<SearchTargetCompat> {
         val marketSearch = results.filterIsInstance<SearchResult.Action.MarketSearch>()
         val webSearch = results.filterIsInstance<SearchResult.Action.WebSearch>()
@@ -176,7 +175,7 @@ object ActionsSectionBuilder : SectionBuilder {
                 query = webSearch.first().query,
                 providerName = webSearch.first().providerName,
                 searchUrl = webSearch.first().searchUrl,
-                providerIconRes = webSearch.first().providerIconRes
+                providerIconRes = webSearch.first().providerIconRes,
             ).let {
                 targets.add(it)
             }
@@ -190,7 +189,7 @@ object AppsAndShortcutsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
-        results: List<SearchResult>
+        results: List<SearchResult>,
     ): List<SearchTargetCompat> {
         val apps = results.filterIsInstance<SearchResult.App>()
         val shortcuts = results.filterIsInstance<SearchResult.Shortcut>()

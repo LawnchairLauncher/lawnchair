@@ -7,4 +7,3 @@ data class RecentKeyword(
         return data[key]
     }
 }
-

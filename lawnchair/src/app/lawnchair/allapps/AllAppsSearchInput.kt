@@ -41,7 +41,6 @@ import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.theme.drawable.DrawableTokens
 import app.lawnchair.util.viewAttachedScope
-import com.android.internal.R.attr.editable
 import com.android.internal.R.attr.query
 import com.android.internal.org.bouncycastle.util.Arrays.isNullOrEmpty
 import com.android.launcher3.Insettable

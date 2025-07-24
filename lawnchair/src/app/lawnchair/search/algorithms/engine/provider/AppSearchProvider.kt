@@ -1,16 +1,12 @@
 package app.lawnchair.search.algorithms.engine.provider
 
 import android.content.Context
-import android.content.pm.ShortcutInfo
-import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.search.algorithms.filterHiddenApps
 import app.lawnchair.search.algorithms.engine.SearchResult
+import app.lawnchair.search.algorithms.filterHiddenApps
 import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.data.AppInfo
-import com.android.launcher3.popup.PopupPopulator
 import com.android.launcher3.search.StringMatcherUtility
-import com.android.launcher3.shortcuts.ShortcutRequest
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
 import me.xdrop.fuzzywuzzy.FuzzySearch

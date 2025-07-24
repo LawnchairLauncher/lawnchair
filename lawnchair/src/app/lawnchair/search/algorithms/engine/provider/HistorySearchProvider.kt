@@ -46,7 +46,6 @@ object HistorySearchProvider {
                 recentKeywords.asReversed()
                     .take(maxResults)
                     .map { SearchResult.History(data = it) }
-
             } catch (e: Exception) {
                 Log.e("HistorySearchProvider", "Error during recent keyword retrieval", e)
                 emptyList()

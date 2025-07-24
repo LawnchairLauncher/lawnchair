@@ -5,4 +5,3 @@ data class Calculation(
     val result: String,
     val isValid: Boolean,
 )
-

@@ -1,11 +1,5 @@
 package app.lawnchair.search.algorithms
 
-import app.lawnchair.search.algorithms.engine.provider.AppSearchProvider
-import app.lawnchair.search.algorithms.engine.provider.ContactsSearchProvider
-import app.lawnchair.search.algorithms.engine.provider.FileSearchProvider
-import app.lawnchair.search.algorithms.engine.provider.HistorySearchProvider
-import app.lawnchair.search.algorithms.engine.provider.SettingsSearchProvider
-import app.lawnchair.search.algorithms.engine.provider.web.WebSuggestionProvider
 import android.content.Context
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -23,16 +17,27 @@ import app.lawnchair.search.algorithms.engine.SearchResult
 import app.lawnchair.search.algorithms.engine.SectionBuilder
 import app.lawnchair.search.algorithms.engine.SettingsSectionBuilder
 import app.lawnchair.search.algorithms.engine.WebSuggestionsSectionBuilder
+import app.lawnchair.search.algorithms.engine.provider.AppSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.CalculatorSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.ContactsSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.FileSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.HistorySearchProvider
+import app.lawnchair.search.algorithms.engine.provider.SettingsSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.ShortcutSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.web.CustomWebSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.web.WebSuggestionProvider
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchCallback
 import com.patrykmichalik.opto.core.firstBlocking
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
@@ -60,7 +65,7 @@ class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgori
             currentJob?.cancel()
             currentJob = coroutineScope.launch {
                 val nonAppProvidersFlow = combine(
-                    searchProviders.map { it.search(context, query) }
+                    searchProviders.map { it.search(context, query) },
                 ) { resultsArray ->
                     resultsArray.toList().flatten()
                 }
@@ -123,8 +128,8 @@ class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgori
                     query = query,
                     providerName = providerName,
                     searchUrl = webProvider.getSearchUrl(query),
-                    providerIconRes = webProvider.iconRes
-                )
+                    providerIconRes = webProvider.iconRes,
+                ),
             )
         }
 
@@ -143,7 +148,7 @@ class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgori
         FilesSectionBuilder,
         SettingsSectionBuilder,
         HistorySectionBuilder,
-        ActionsSectionBuilder
+        ActionsSectionBuilder,
     )
 
     private fun translateToSearchTargets(

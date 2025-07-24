@@ -1,6 +1,5 @@
 package app.lawnchair.search.adapter
 
-import androidx.annotation.DrawableRes
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,6 +12,7 @@ import android.os.Process
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.DrawableRes
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import app.lawnchair.allapps.views.SearchResultView
@@ -239,7 +239,7 @@ class SearchTargetFactory(
         query: String,
         providerName: String, // The actual display name, not an ID
         searchUrl: String, // The final, pre-formatted search URL
-        @DrawableRes providerIconRes: Int
+        @DrawableRes providerIconRes: Int,
     ): SearchTargetCompat {
         val id = "browser:$query:$providerName"
         val browserIntent = Intent(Intent.ACTION_VIEW, searchUrl.toUri())
