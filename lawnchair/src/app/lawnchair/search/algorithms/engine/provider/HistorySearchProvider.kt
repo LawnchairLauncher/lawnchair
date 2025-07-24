@@ -1,4 +1,4 @@
-package app.lawnchair.search.engine.provider
+package app.lawnchair.search.algorithms.engine.provider
 
 import android.content.ContentResolver
 import android.content.Context
@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.core.net.toUri
 import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.algorithms.data.RecentKeyword
-import app.lawnchair.search.engine.SearchResult
+import app.lawnchair.search.algorithms.engine.SearchResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

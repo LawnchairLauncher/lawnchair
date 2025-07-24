@@ -1,4 +1,4 @@
-package app.lawnchair.search.engine
+package app.lawnchair.search.algorithms.engine
 
 import android.content.Context
 import kotlinx.coroutines.flow.Flow

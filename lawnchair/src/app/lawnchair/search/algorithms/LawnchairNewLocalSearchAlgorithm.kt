@@ -1,11 +1,11 @@
-package app.lawnchair.search.engine
+package app.lawnchair.search.algorithms
 
-import app.lawnchair.search.engine.provider.AppSearchProvider
-import app.lawnchair.search.engine.provider.ContactsSearchProvider
-import app.lawnchair.search.engine.provider.FileSearchProvider
-import app.lawnchair.search.engine.provider.HistorySearchProvider
-import app.lawnchair.search.engine.provider.SettingsSearchProvider
-import app.lawnchair.search.engine.provider.web.WebSuggestionProvider
+import app.lawnchair.search.algorithms.engine.provider.AppSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.ContactsSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.FileSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.HistorySearchProvider
+import app.lawnchair.search.algorithms.engine.provider.SettingsSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.web.WebSuggestionProvider
 import android.content.Context
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -13,11 +13,12 @@ import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchLinksTarget
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetFactory
-import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.search.algorithms.data.Calculation
-import app.lawnchair.search.engine.provider.CalculatorSearchProvider
-import app.lawnchair.search.engine.provider.ShortcutSearchProvider
-import app.lawnchair.search.engine.provider.web.CustomWebSearchProvider
+import app.lawnchair.search.algorithms.engine.SearchProvider
+import app.lawnchair.search.algorithms.engine.SearchResult
+import app.lawnchair.search.algorithms.engine.provider.CalculatorSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.ShortcutSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.web.CustomWebSearchProvider
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.allapps.BaseAllAppsAdapter
@@ -27,7 +28,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 
-class NewSearchAlgorithmAdapter(context: Context) : LawnchairSearchAlgorithm(context) {
+class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
     private val appState = LauncherAppState.getInstance(context)
 

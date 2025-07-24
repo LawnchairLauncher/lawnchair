@@ -1,4 +1,4 @@
-package app.lawnchair.search.engine.provider
+package app.lawnchair.search.algorithms.engine.provider
 
 import android.content.Context
 import android.provider.ContactsContract
@@ -6,8 +6,8 @@ import android.util.Log
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.algorithms.data.ContactInfo
-import app.lawnchair.search.engine.SearchProvider
-import app.lawnchair.search.engine.SearchResult
+import app.lawnchair.search.algorithms.engine.SearchProvider
+import app.lawnchair.search.algorithms.engine.SearchResult
 import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers

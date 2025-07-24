@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
-import app.lawnchair.search.engine.provider.web.WebSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.layout.Chip
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate

@@ -1,4 +1,4 @@
-package app.lawnchair.search.engine
+package app.lawnchair.search.algorithms.engine
 
 import android.annotation.DrawableRes
 import android.content.pm.ShortcutInfo

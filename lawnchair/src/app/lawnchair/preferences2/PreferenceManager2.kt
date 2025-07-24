@@ -39,7 +39,8 @@ import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
-import app.lawnchair.search.engine.provider.web.WebSearchProvider.WebSearchProviderCompanion
+import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.web.WebSearchProvider.WebSearchProviderCompanion
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
@@ -494,11 +495,11 @@ class PreferenceManager2 private constructor(private val context: Context) :
 
     val webSuggestionProvider = preference(
         key = stringPreferencesKey(name = "web_suggestion_provider"),
-        defaultValue = app.lawnchair.search.engine.provider.web.WebSearchProvider.fromString(
+        defaultValue = WebSearchProvider.fromString(
             getRemoteDefault("web_suggestion_provider")
                 ?: context.resources.getString(R.string.config_default_web_suggestion_provider),
         ),
-        parse = { app.lawnchair.search.engine.provider.web.WebSearchProvider.fromString(it) },
+        parse = { WebSearchProvider.fromString(it) },
         save = { it.toString() },
         onSet = { reloadHelper.recreate() },
     )

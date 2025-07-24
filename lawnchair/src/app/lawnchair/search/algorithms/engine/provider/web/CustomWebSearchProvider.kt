@@ -1,4 +1,4 @@
-package app.lawnchair.search.engine.provider.web
+package app.lawnchair.search.algorithms.engine.provider.web
 
 import android.content.Context
 import android.net.Uri
@@ -48,9 +48,9 @@ object CustomWebSearchProvider : WebSearchProvider {
 
     override fun configure(context: Context): WebSearchProvider {
         val prefs = PreferenceManager2.getInstance(context)
-        this.searchUrlTemplate = prefs.webSuggestionProviderUrl.firstBlocking()
-        this.suggestionsUrlTemplate = prefs.webSuggestionProviderSuggestionsUrl.firstBlocking()
-        this.displayName = prefs.webSuggestionProviderName.firstBlocking()
+        searchUrlTemplate = prefs.webSuggestionProviderUrl.firstBlocking()
+        suggestionsUrlTemplate = prefs.webSuggestionProviderSuggestionsUrl.firstBlocking()
+        displayName = prefs.webSuggestionProviderName.firstBlocking()
         return this
     }
 

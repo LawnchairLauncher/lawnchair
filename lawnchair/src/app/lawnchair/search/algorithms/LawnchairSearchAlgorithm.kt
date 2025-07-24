@@ -10,7 +10,6 @@ import app.lawnchair.search.adapter.SearchAdapterItem
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
-import app.lawnchair.search.engine.NewSearchAlgorithmAdapter
 import com.android.app.search.LayoutType.CALCULATOR
 import com.android.app.search.LayoutType.EMPTY_DIVIDER
 import com.android.app.search.LayoutType.HORIZONTAL_MEDIUM_TEXT
@@ -29,7 +28,7 @@ import com.android.launcher3.search.SearchAlgorithm
 import com.android.launcher3.search.SearchCallback
 import com.patrykmichalik.opto.core.firstBlocking
 
-abstract class LawnchairSearchAlgorithm(
+sealed class LawnchairSearchAlgorithm(
     protected val context: Context,
 ) : SearchAlgorithm<BaseAllAppsAdapter.AdapterItem> {
 
@@ -216,7 +215,7 @@ abstract class LawnchairSearchAlgorithm(
                     context,
                 )
 
-                searchAlgorithm == LOCAL_SEARCH -> NewSearchAlgorithmAdapter(context)
+                searchAlgorithm == LOCAL_SEARCH -> LawnchairNewLocalSearchAlgorithm(context)
                 else -> LawnchairAppSearchAlgorithm(context)
             }
         }

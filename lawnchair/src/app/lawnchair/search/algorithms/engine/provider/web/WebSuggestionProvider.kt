@@ -1,10 +1,10 @@
-package app.lawnchair.search.engine.provider.web
+package app.lawnchair.search.algorithms.engine.provider.web
 
 import android.content.Context
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.search.engine.SearchProvider
-import app.lawnchair.search.engine.SearchResult
+import app.lawnchair.search.algorithms.engine.SearchProvider
+import app.lawnchair.search.algorithms.engine.SearchResult
 import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow

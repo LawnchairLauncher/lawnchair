@@ -1,4 +1,4 @@
-package app.lawnchair.search.engine.provider.web
+package app.lawnchair.search.algorithms.engine.provider.web
 
 import android.content.Context
 import androidx.annotation.DrawableRes

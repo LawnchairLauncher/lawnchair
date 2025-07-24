@@ -1,4 +1,4 @@
-package app.lawnchair.search.engine.provider
+package app.lawnchair.search.algorithms.engine.provider
 
 import android.content.Context
 import android.database.Cursor
@@ -9,8 +9,8 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.algorithms.data.FileInfo
 import app.lawnchair.search.algorithms.data.FolderInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
-import app.lawnchair.search.engine.SearchProvider
-import app.lawnchair.search.engine.SearchResult
+import app.lawnchair.search.algorithms.engine.SearchProvider
+import app.lawnchair.search.algorithms.engine.SearchResult
 import app.lawnchair.util.exists
 import app.lawnchair.util.isDirectory
 import app.lawnchair.util.isHidden
