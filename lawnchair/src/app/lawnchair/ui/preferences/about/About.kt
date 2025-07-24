@@ -16,8 +16,10 @@
 
 package app.lawnchair.ui.preferences.about
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -45,6 +47,7 @@ import androidx.core.net.toUri
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
+import app.lawnchair.ui.preferences.components.AskForFileAccessPermission
 import app.lawnchair.ui.preferences.components.CheckUpdate
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
@@ -52,6 +55,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.AboutLicenses
 import app.lawnchair.ui.util.bottomSheetHandler
+import app.lawnchair.ui.util.isPlayStoreFlavor
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -226,16 +230,6 @@ fun About(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val permissionState = rememberPermissionState(
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            android.Manifest.permission.READ_MEDIA_IMAGES
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !isPlayStoreFlavor()) {
-            android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
-        } else {
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        },
-    )
-    var canUpdate: Boolean
 
     PreferenceLayout(
         label = stringResource(id = R.string.about_label),
@@ -272,7 +266,19 @@ fun About(
                 ),
             )
             if (BuildConfig.APPLICATION_ID.contains("nightly")) {
-                if (!permission.state.isGranted) {
+                var canUpdate = true
+                val permissionState = rememberPermissionState(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        android.Manifest.permission.READ_MEDIA_IMAGES
+                    } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !isPlayStoreFlavor()) {
+                        android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                    } else {
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    },
+                )
+
+                if (!permissionState.status.isGranted) {
+                    canUpdate = false
                     val prefs2 = PreferenceManager2.getInstance(context)
                     val dontAsk = prefs2.doNotAskForFilesAccessAgain
 
@@ -285,14 +291,12 @@ fun About(
                             }
                         }
                     }
-                } else {
-                    canUpdate = true
                 }
-            }
 
-            if (canUpdate) {
-                Spacer(modifier = Modifier.height(8.dp))
-                CheckUpdate()
+                if (canUpdate) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CheckUpdate()
+                }
             }
 
             Spacer(modifier = Modifier.requiredHeight(16.dp))
