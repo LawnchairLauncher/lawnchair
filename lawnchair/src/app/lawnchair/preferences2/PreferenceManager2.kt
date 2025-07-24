@@ -326,6 +326,11 @@ class PreferenceManager2 private constructor(private val context: Context) :
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val doNotAskForFilesAccessAgain = preference(
+        key = booleanPreferencesKey(name = "do_not_ask_for_file_access"),
+        defaultValue = false,
+    )
+
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),

@@ -8,7 +8,6 @@ import android.os.Build
 import android.util.Size
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -16,15 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
-import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.ui.util.bottomSheetHandler
 import app.lawnchair.ui.util.isPlayStoreFlavor
-import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.filesAndStorageGranted
 import app.lawnchair.util.scaleDownToDisplaySize
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -74,8 +75,16 @@ fun wallpaperDrawable(): Drawable? {
     }
 
     if (!permissionState.status.isGranted) {
-        SideEffect {
-            checkAndRequestFilesPermission(context, PreferenceManager.getInstance(context))
+        val prefs2 = PreferenceManager2.getInstance(context)
+        val dontAsk = prefs2.doNotAskForFilesAccessAgain
+
+        if (!dontAsk.firstBlocking()) {
+            val bottomSheetHandler = bottomSheetHandler
+            bottomSheetHandler.show {
+                AskForFileAccessPermission(adapter = dontAsk.getAdapter()) {
+                    bottomSheetHandler.hide()
+                }
+            }
         }
     }
 

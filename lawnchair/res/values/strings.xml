@@ -63,6 +63,8 @@
     <string name="system_settings">System settings</string>
     <string name="title_change_settings">Change settings</string>
 
+    <string name="do_not_ask_again">Do not ask again</string>
+
     <!--
 
     General "words" used throughout Lawnchair
@@ -806,6 +808,7 @@
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
     <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
+    <string name="warn_files_read_permission_content">File permission is used to render wallpaper in previews and search for your files.</string>
     <string name="grant_requested_permissions">Grant permissions</string>
     <string name="custom_search_label">Custom search engine name</string>
 </resources>
