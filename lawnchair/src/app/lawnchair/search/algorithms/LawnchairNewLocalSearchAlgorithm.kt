@@ -9,18 +9,24 @@ import app.lawnchair.search.algorithms.engine.provider.web.WebSuggestionProvider
 import android.content.Context
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchLinksTarget
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetFactory
-import app.lawnchair.search.algorithms.data.Calculation
+import app.lawnchair.search.algorithms.engine.ActionsSectionBuilder
+import app.lawnchair.search.algorithms.engine.AppsAndShortcutsSectionBuilder
+import app.lawnchair.search.algorithms.engine.CalculationSectionBuilder
+import app.lawnchair.search.algorithms.engine.ContactsSectionBuilder
+import app.lawnchair.search.algorithms.engine.FilesSectionBuilder
+import app.lawnchair.search.algorithms.engine.HistorySectionBuilder
 import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
+import app.lawnchair.search.algorithms.engine.SectionBuilder
+import app.lawnchair.search.algorithms.engine.SettingsSectionBuilder
+import app.lawnchair.search.algorithms.engine.WebSuggestionsSectionBuilder
 import app.lawnchair.search.algorithms.engine.provider.CalculatorSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.ShortcutSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.web.CustomWebSearchProvider
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.R
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchCallback
 import com.patrykmichalik.opto.core.firstBlocking
@@ -65,7 +71,7 @@ class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgori
 
                     val allResults = appResults + shortcutResults + (calcResult ?: emptyList()) + nonAppResults + generateActionResults(query)
 
-                    val searchTargets = translateToSearchTargets(allResults, appResults.size)
+                    val searchTargets = translateToSearchTargets(allResults)
                     val adapterItems = transformSearchResults(searchTargets)
                     withContext(Dispatchers.Main) {
                         callback.onSearchResult(query, ArrayList(adapterItems))
@@ -83,7 +89,7 @@ class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgori
 
             val historyResults = historySearchProvider.getRecentKeywords(context, maxHistory)
 
-            val searchTargets = translateToSearchTargets(historyResults, 0)
+            val searchTargets = translateToSearchTargets(historyResults)
             val adapterItems = transformSearchResults(searchTargets)
             withContext(Dispatchers.Main) {
                 callback.onSearchResult("", ArrayList(adapterItems))
@@ -129,110 +135,25 @@ class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgori
         return actions
     }
 
+    private val sectionBuilders: List<SectionBuilder> = listOf(
+        AppsAndShortcutsSectionBuilder,
+        WebSuggestionsSectionBuilder,
+        CalculationSectionBuilder,
+        ContactsSectionBuilder,
+        FilesSectionBuilder,
+        SettingsSectionBuilder,
+        HistorySectionBuilder,
+        ActionsSectionBuilder
+    )
+
     private fun translateToSearchTargets(
         results: List<SearchResult>,
-        appResultCount: Int,
     ): List<SearchTargetCompat> {
         val factory = SearchTargetFactory(context)
-        val targets = mutableListOf<SearchTargetCompat>()
 
-        val apps = results.filterIsInstance<SearchResult.App>()
-        val shortcuts = results.filterIsInstance<SearchResult.Shortcut>()
-        val otherResults = results.filter { it !is SearchResult.App && it !is SearchResult.Shortcut }
-
-        if (appResultCount == 1 && shortcuts.isNotEmpty()) {
-            val singleApp = apps.first()
-            targets.add(factory.createAppSearchTarget(singleApp.data, asRow = true))
-            targets.addAll(shortcuts.map { factory.createShortcutTarget(it.data) })
-        } else {
-            targets.addAll(apps.map { factory.createAppSearchTarget(it.data, asRow = false) })
+        // The new function is just a flatMap. It's declarative and beautiful.
+        return sectionBuilders.flatMap { builder ->
+            builder.build(context, factory, results)
         }
-
-        if (targets.isNotEmpty() && otherResults.isNotEmpty()) {
-            targets.add(factory.createHeaderTarget(SPACE))
-        }
-
-        val webSuggestions = otherResults.filterIsInstance<SearchResult.WebSuggestion>()
-        if (webSuggestions.isNotEmpty()) {
-            val suggestionsHeader =
-                factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
-            targets.add(suggestionsHeader)
-            targets.addAll(
-                webSuggestions.map {
-                    factory.createWebSuggestionsTarget(
-                        it.suggestion,
-                        it.provider,
-                    )
-                },
-            )
-        }
-
-        val calculator = otherResults.filterIsInstance<Calculation>()
-        if (calculator.isNotEmpty()) {
-            val calculatorHeader =
-                factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_calculator))
-            targets.add(calculatorHeader)
-            targets.add(
-                factory.createCalculatorTarget(calculator.first()),
-            )
-        }
-
-        val contacts = otherResults.filterIsInstance<SearchResult.Contact>()
-        if (contacts.isNotEmpty()) {
-            val contactsHeader =
-                factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_contacts_from_device))
-            targets.add(contactsHeader)
-            targets.addAll(contacts.map { factory.createContactsTarget(it.data) })
-        }
-
-        val settings = otherResults.filterIsInstance<SearchResult.Setting>()
-        if (settings.isNotEmpty()) {
-            val settingsHeader =
-                factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_settings_entry_from_device))
-            targets.add(settingsHeader)
-            targets.addAll(settings.mapNotNull { factory.createSettingsTarget(it.data) })
-        }
-
-        val files = otherResults.filterIsInstance<SearchResult.File>()
-        if (files.isNotEmpty()) {
-            val filesHeader =
-                factory.createHeaderTarget(context.getString(R.string.all_apps_search_result_files))
-            targets.add(filesHeader)
-            targets.addAll(files.map { factory.createFilesTarget(it.data) })
-        }
-
-        val history = otherResults.filterIsInstance<SearchResult.History>()
-        if (history.isNotEmpty()) {
-            val historyHeader = factory.createHeaderTarget(context.getString(R.string.search_pref_result_history_title))
-            targets.add(historyHeader)
-        }
-
-        val marketSearch = otherResults.filterIsInstance<SearchResult.Action.MarketSearch>()
-        if (marketSearch.isNotEmpty()) {
-            factory.createMarketSearchTarget((marketSearch.first()).query)?.let { targets.add(it) }
-        }
-
-        val webSearch = otherResults.filterIsInstance<SearchResult.Action.WebSearch>()
-        if (webSearch.isNotEmpty()) {
-            val action = webSearch.first()
-
-            factory.createWebSearchActionTarget(
-                query = action.query,
-                providerName = action.providerName,
-                searchUrl = action.searchUrl,
-                providerIconRes = action.providerIconRes
-            )
-        }
-
-        val header = otherResults.filterIsInstance<SearchResult.Action.Header>()
-        if (header.isNotEmpty()) {
-            header.forEach {
-                factory.createHeaderTarget(
-                    it.pkg, it.title
-                )
-            }
-        }
-
-        return targets
     }
 }

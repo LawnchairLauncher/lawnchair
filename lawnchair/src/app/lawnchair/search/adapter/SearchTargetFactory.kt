@@ -140,12 +140,10 @@ class SearchTargetFactory(
         )
     }
 
-    fun createSearchHistoryTarget(recentKeyword: RecentKeyword, suggestionProvider: String): SearchTargetCompat {
+    fun createSearchHistoryTarget(recentKeyword: RecentKeyword, searchUrl: (String) -> String): SearchTargetCompat {
         val value = recentKeyword.getValueByKey("display1") ?: ""
-        val webSearchProvider = WebSearchProvider.fromString(suggestionProvider)
-        val url = webSearchProvider.getSearchUrl(value)
-        val browserIntent = Intent(Intent.ACTION_VIEW, url.toUri())
-        val id = recentKeyword.data.toString() + url
+        val browserIntent = Intent(Intent.ACTION_VIEW, searchUrl(value).toUri())
+        val id = recentKeyword.data.toString() + searchUrl(value)
         val action = SearchActionCompat.Builder(id, value)
             .setIcon(
                 Icon.createWithResource(context, R.drawable.ic_recent)
