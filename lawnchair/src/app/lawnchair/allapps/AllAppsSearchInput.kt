@@ -190,7 +190,6 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         val currentPaddingLeft = initialPaddingLeft
         val currentPaddingRight = initialPaddingRight
         input.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
-
             if (hasFocus) {
                 if (prefs2.searchAlgorithm.firstBlocking() != LawnchairSearchAlgorithm.APP_SEARCH) {
                     input.setHint(R.string.all_apps_device_search_hint)
@@ -201,6 +200,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                 setBackgroundVisibility(false, 0f)
                 animateHintVisibility(true)
                 animatePadding(currentPaddingLeft / 2, currentPaddingRight / 2)
+
+                // Sometimes the user has to click the input bar one more time
+                // for the keyboard to show.
+                input.showKeyboard()
             } else {
                 setBackgroundVisibility(true, 1f)
                 animateHintVisibility(false)
