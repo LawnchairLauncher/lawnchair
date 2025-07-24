@@ -42,10 +42,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.ui.util.bottomSheetHandler
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.CheckUpdate
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -53,12 +51,13 @@ import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.AboutLicenses
+import app.lawnchair.ui.util.bottomSheetHandler
+import com.android.launcher3.BuildConfig
+import com.android.launcher3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.patrykmichalik.opto.core.firstBlocking
-import com.android.launcher3.BuildConfig
-import com.android.launcher3.R
 
 private enum class Role(val descriptionResId: Int) {
     Development(descriptionResId = R.string.development),
@@ -286,8 +285,7 @@ fun About(
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     canUpdate = true
                 }
             }
