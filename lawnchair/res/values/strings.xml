@@ -808,7 +808,7 @@
     <!-- Permission warnings -->
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
     <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
-    <string name="warn_files_read_permission_content">File permission is used to render wallpaper in previews and search for your files.</string>
+    <string name="warn_files_read_permission_content">To search your files, add wallpaper to previews, install updates and backups, grant storage permissions to Lawnchair.</string>
     <string name="grant_requested_permissions">Grant permissions</string>
     <string name="custom_search_label">Custom search engine name</string>
 </resources>

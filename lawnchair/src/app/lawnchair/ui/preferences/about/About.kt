@@ -43,6 +43,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.ui.util.bottomSheetHandler
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.CheckUpdate
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -50,7 +53,10 @@ import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.AboutLicenses
-import app.lawnchair.util.checkAndRequestFilesPermission
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.patrykmichalik.opto.core.firstBlocking
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
@@ -214,11 +220,23 @@ object AboutRoutes {
     const val LICENSES = "licenses"
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
+@SuppressLint("MissingPermission")
 @Composable
 fun About(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val permissionState = rememberPermissionState(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            android.Manifest.permission.READ_MEDIA_IMAGES
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !isPlayStoreFlavor()) {
+            android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+        } else {
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        },
+    )
+    var canUpdate: Boolean
 
     PreferenceLayout(
         label = stringResource(id = R.string.about_label),
@@ -254,15 +272,31 @@ fun About(
                     },
                 ),
             )
-            if (BuildConfig.APPLICATION_ID.contains("nightly") &&
-                checkAndRequestFilesPermission(
-                    context,
-                    preferenceManager(),
-                )
-            ) {
+            if (BuildConfig.APPLICATION_ID.contains("nightly")) {
+                if (!permission.state.isGranted) {
+                    val prefs2 = PreferenceManager2.getInstance(context)
+                    val dontAsk = prefs2.doNotAskForFilesAccessAgain
+
+                    if (!dontAsk.firstBlocking()) {
+                        val bottomSheetHandler = bottomSheetHandler
+                        bottomSheetHandler.show {
+                            AskForFileAccessPermission(adapter = dontAsk.getAdapter()) {
+                                canUpdate = true
+                                bottomSheetHandler.hide()
+                            }
+                        }
+                    }
+                }
+                else {
+                    canUpdate = true
+                }
+            }
+
+            if (canUpdate) {
                 Spacer(modifier = Modifier.height(8.dp))
                 CheckUpdate()
             }
+
             Spacer(modifier = Modifier.requiredHeight(16.dp))
             Row(
                 modifier = Modifier
