@@ -41,6 +41,8 @@ import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.theme.drawable.DrawableTokens
 import app.lawnchair.util.viewAttachedScope
+import com.android.internal.R.attr.editable
+import com.android.internal.org.bouncycastle.util.Arrays.isNullOrEmpty
 import com.android.launcher3.Insettable
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
 import com.android.launcher3.LauncherState
@@ -86,6 +88,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
     private lateinit var apps: LawnchairAlphabeticalAppsList<*>
     private lateinit var appsView: ActivityAllAppsContainerView<*>
+    private var searchAlgorithm: LawnchairSearchAlgorithm? = null
 
     private var focusedResultTitle = ""
     private var canShowHint = false
@@ -197,6 +200,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     input.setHint(R.string.all_apps_search_bar_hint)
                 }
 
+                if (input.text.toString().isEmpty()) {
+                    searchAlgorithm?.doZeroStateSearch(this)
+                }
+
                 setBackgroundVisibility(false, 0f)
                 animateHintVisibility(true)
                 animatePadding(currentPaddingLeft / 2, currentPaddingRight / 2)
@@ -225,6 +232,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             },
             afterTextChanged = {
                 updateHint()
+                if (input.editableText.isNullOrEmpty()) {
+                    searchAlgorithm?.doZeroStateSearch(this)
+                }
                 if (input.text.toString() == "/lawnchairdebug") {
                     val enableDebugMenu = prefs.enableDebugMenu
                     enableDebugMenu.set(!enableDebugMenu.get())
@@ -337,8 +347,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
     override fun initializeSearch(appsView: ActivityAllAppsContainerView<*>) {
         apps = appsView.searchResultList as LawnchairAlphabeticalAppsList<*>
         this.appsView = appsView
+        val algorithm = LawnchairSearchAlgorithm.create(context)
+        this.searchAlgorithm = algorithm
         searchBarController.initialize(
-            LawnchairSearchAlgorithm.create(context),
+            algorithm,
             input,
             launcher,
             this,
