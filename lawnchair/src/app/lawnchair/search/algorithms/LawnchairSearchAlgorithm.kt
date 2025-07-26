@@ -225,7 +225,7 @@ sealed class LawnchairSearchAlgorithm(
                     context,
                 )
 
-                searchAlgorithm == LOCAL_SEARCH -> LawnchairNewLocalSearchAlgorithm(context)
+                searchAlgorithm == LOCAL_SEARCH -> LawnchairLocalSearchAlgorithm(context)
                 else -> LawnchairAppSearchAlgorithm(context)
             }
         }
