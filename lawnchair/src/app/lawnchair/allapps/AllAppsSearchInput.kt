@@ -41,8 +41,6 @@ import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.theme.drawable.DrawableTokens
 import app.lawnchair.util.viewAttachedScope
-import com.android.internal.R.attr.query
-import com.android.internal.org.bouncycastle.util.Arrays.isNullOrEmpty
 import com.android.launcher3.Insettable
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener
 import com.android.launcher3.LauncherState
@@ -136,18 +134,6 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         micIcon.isVisible = shouldShowIcons && voiceIntent != null
         lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null
 
-        with(input) {
-            addTextChangedListener {
-                if (input.text.toString().isEmpty()) {
-                    searchAlgorithm?.doZeroStateSearch(this@AllAppsSearchInput)
-                }
-
-                actionButton.isVisible = !it.isNullOrEmpty()
-                micIcon.isVisible = shouldShowIcons && voiceIntent != null && it.isNullOrEmpty()
-                lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null && it.isNullOrEmpty()
-            }
-        }
-
         actionButton = ViewCompat.requireViewById(this, R.id.action_btn)
         with(actionButton) {
             isVisible = false
@@ -237,7 +223,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             },
             afterTextChanged = {
                 updateHint()
-                if (input.editableText.isNullOrEmpty()) {
+                if (input.text.isNullOrEmpty()) {
                     searchAlgorithm?.doZeroStateSearch(this)
                 }
                 if (input.text.toString() == "/lawnchairdebug") {
@@ -245,6 +231,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     enableDebugMenu.set(!enableDebugMenu.get())
                     launcher.stateManager.goToState(LauncherState.NORMAL)
                 }
+
+                actionButton.isVisible = !it.isNullOrEmpty()
+                micIcon.isVisible = shouldShowIcons && voiceIntent != null && it.isNullOrEmpty()
+                lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null && it.isNullOrEmpty()
             },
         )
 
