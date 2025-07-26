@@ -1,11 +1,14 @@
 package app.lawnchair.search.algorithms.engine.provider
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.provider.ContactsContract
 import android.util.Log
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.algorithms.data.ContactInfo
+import app.lawnchair.search.algorithms.engine.SearchPermission
 import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
 import com.patrykmichalik.opto.core.firstBlocking
@@ -18,7 +21,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
-object ContactsSearchProvider : SearchProvider {
+object ContactsSearchProvider : SearchProvider, SearchPermission {
     override val id: String = "contacts"
 
     override fun search(
@@ -28,7 +31,7 @@ object ContactsSearchProvider : SearchProvider {
         val prefs = PreferenceManager.getInstance(context)
         val prefs2 = PreferenceManager2.getInstance(context)
 
-        val permissionsGranted = true // TODO: replace with real permission check
+        val permissionsGranted = checkPermission(context)
         if (query.isBlank() || !prefs.searchResultPeople.get() || !permissionsGranted) {
             emit(emptyList())
             return@flow
@@ -43,6 +46,10 @@ object ContactsSearchProvider : SearchProvider {
             SearchResult.Contact(data = contactInfo)
         }
         emit(searchResults)
+    }
+
+    override fun checkPermission(context: Context): Boolean {
+        return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
     }
 
     private suspend fun findContactsByName(context: Context, query: String, max: Int): List<ContactInfo> {

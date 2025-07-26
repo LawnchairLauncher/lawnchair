@@ -1,14 +1,19 @@
 package app.lawnchair.search.algorithms.engine.provider
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.algorithms.data.FileInfo
 import app.lawnchair.search.algorithms.data.FolderInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
+import app.lawnchair.search.algorithms.engine.SearchPermission
 import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
 import app.lawnchair.util.exists
@@ -23,7 +28,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import okio.Path.Companion.toPath
 
-object FileSearchProvider : SearchProvider {
+object FileSearchProvider : SearchProvider, SearchPermission {
     override val id = "Files"
 
     override fun search(
@@ -33,7 +38,7 @@ object FileSearchProvider : SearchProvider {
         val prefs = PreferenceManager.getInstance(context)
         val prefs2 = PreferenceManager2.getInstance(context)
 
-        val permissionsGranted = true // TODO: Replace with real permission check, to be added later
+        val permissionsGranted = checkPermission(context)
         if (query.isBlank() || !prefs.searchResultFiles.get() || !permissionsGranted) {
             emit(emptyList())
             return@flow
@@ -52,6 +57,16 @@ object FileSearchProvider : SearchProvider {
         }
 
         emit(searchResults)
+    }
+
+    override fun checkPermission(context: Context): Boolean {
+        // TODO: improve granularity of permissions
+        return when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
+                Environment.isExternalStorageManager() || context.checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Environment.isExternalStorageManager()
+            else -> context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        }
     }
 
     private suspend fun queryFilesInMediaStore(
