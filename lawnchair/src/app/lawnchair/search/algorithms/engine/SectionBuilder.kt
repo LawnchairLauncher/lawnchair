@@ -209,3 +209,42 @@ object AppsAndShortcutsSectionBuilder : SectionBuilder {
         return targets
     }
 }
+
+object EmptyStateSectionBuilder : SectionBuilder {
+    override fun build(
+        context: Context,
+        factory: SearchTargetFactory,
+        results: List<SearchResult>,
+    ): List<SearchTargetCompat> {
+        val result = results.filterIsInstance<SearchResult.Action.EmptyState>()
+        val targets = mutableListOf<SearchTargetCompat>()
+
+        result.firstOrNull()?.let {
+            targets.add(
+                factory.createEmptyStateTarget(
+                    it.titleRes,
+                    it.subtitleRes,
+                ),
+            )
+        }
+        return targets
+    }
+}
+
+object SearchSettingsSectionBuilder : SectionBuilder {
+    override fun build(
+        context: Context,
+        factory: SearchTargetFactory,
+        results: List<SearchResult>,
+    ): List<SearchTargetCompat> {
+        val result = results.filterIsInstance<SearchResult.Action.SearchSettings>()
+        val targets = mutableListOf<SearchTargetCompat>()
+
+        result.firstOrNull()?.let {
+            targets.add(
+                factory.createSearchSettingsTarget(),
+            )
+        }
+        return targets
+    }
+}

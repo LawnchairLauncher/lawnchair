@@ -13,6 +13,7 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import app.lawnchair.allapps.views.SearchResultView
@@ -313,6 +314,53 @@ class SearchTargetFactory(
         )
     }
 
+    fun createEmptyStateTarget(
+        @StringRes titleRes: Int,
+        @StringRes subtitleRes: Int,
+    ): SearchTargetCompat {
+        val id = "empty_state:$titleRes"
+        // The action doesn't do anything, it's just for display.
+        val action = SearchActionCompat.Builder(id, "")
+            .setIntent(Intent())
+            .build()
+
+        return SearchTargetCompat.Builder(
+            SearchTargetCompat.RESULT_TYPE_EMPTY_RESULT,
+            LayoutType.EMPTY_STATE,
+            id,
+        ).apply {
+            setPackageName(EMPTY_STATE)
+            setUserHandle(Process.myUserHandle())
+            setSearchAction(action)
+            setExtras(
+                bundleOf(
+                    "titleRes" to titleRes,
+                    "subtitleRes" to subtitleRes,
+                ),
+            )
+        }.build()
+    }
+
+    fun createSearchSettingsTarget(): SearchTargetCompat {
+        val id = "action:search_settings"
+
+        // The action doesn't do anything, it's just for display.
+        val action = SearchActionCompat.Builder(id, "")
+            .setIntent(Intent())
+            .build()
+
+        return SearchTargetCompat.Builder(
+            SearchTargetCompat.RESULT_TYPE_SEARCH_SETTINGS,
+            LayoutType.SEARCH_SETTINGS,
+            id,
+        ).apply {
+            setPackageName(SEARCH_SETTINGS)
+            setUserHandle(Process.myUserHandle())
+            setSearchAction(action)
+            setExtras(Bundle())
+        }.build()
+    }
+
     companion object {
         private const val HASH_ALGORITHM = "SHA-256"
 
@@ -423,3 +471,5 @@ const val SHORTCUT = "shortcut"
 const val HISTORY = "recent_keyword"
 const val HEADER_JUSTIFY = "header_justify"
 const val CALCULATOR = "calculator"
+const val EMPTY_STATE = "empty_state"
+const val SEARCH_SETTINGS = "search_settings"

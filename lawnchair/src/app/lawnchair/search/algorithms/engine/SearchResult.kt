@@ -1,9 +1,8 @@
 package app.lawnchair.search.algorithms.engine
 
-import android.annotation.DrawableRes
 import android.content.pm.ShortcutInfo
-import app.lawnchair.search.adapter.HEADER
-import app.lawnchair.search.adapter.SPACE
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import app.lawnchair.search.algorithms.data.ContactInfo
 import app.lawnchair.search.algorithms.data.IFileInfo
 import app.lawnchair.search.algorithms.data.RecentKeyword
@@ -32,7 +31,10 @@ sealed class SearchResult {
             val searchUrl: String,
             @DrawableRes val providerIconRes: Int,
         ) : Action()
-        data class Header(val title: String, val pkg: String = HEADER) : Action()
-        data class Divider(val pkg: String = SPACE) : Action()
+        data class EmptyState(
+            @StringRes val titleRes: Int,
+            @StringRes val subtitleRes: Int,
+        ) : Action()
+        data object SearchSettings : Action()
     }
 }

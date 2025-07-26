@@ -10,10 +10,12 @@ import app.lawnchair.search.algorithms.engine.ActionsSectionBuilder
 import app.lawnchair.search.algorithms.engine.AppsAndShortcutsSectionBuilder
 import app.lawnchair.search.algorithms.engine.CalculationSectionBuilder
 import app.lawnchair.search.algorithms.engine.ContactsSectionBuilder
+import app.lawnchair.search.algorithms.engine.EmptyStateSectionBuilder
 import app.lawnchair.search.algorithms.engine.FilesSectionBuilder
 import app.lawnchair.search.algorithms.engine.HistorySectionBuilder
 import app.lawnchair.search.algorithms.engine.SearchProvider
 import app.lawnchair.search.algorithms.engine.SearchResult
+import app.lawnchair.search.algorithms.engine.SearchSettingsSectionBuilder
 import app.lawnchair.search.algorithms.engine.SectionBuilder
 import app.lawnchair.search.algorithms.engine.SettingsSectionBuilder
 import app.lawnchair.search.algorithms.engine.WebSuggestionsSectionBuilder
@@ -26,7 +28,9 @@ import app.lawnchair.search.algorithms.engine.provider.SettingsSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.ShortcutSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.web.CustomWebSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.web.WebSuggestionProvider
+import com.android.internal.R.id.actions
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.R
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchCallback
 import com.patrykmichalik.opto.core.firstBlocking
@@ -89,12 +93,40 @@ class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgori
     override fun doZeroStateSearch(callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
         currentJob?.cancel()
         currentJob = coroutineScope.launch {
+            val prefs = PreferenceManager.getInstance(context)
             val prefs2 = PreferenceManager2.getInstance(context)
+
+            val historyEnabled = prefs.searchResulRecentSuggestion.get()
             val maxHistory = prefs2.maxRecentResultCount.firstBlocking()
 
-            val historyResults = historySearchProvider.getRecentKeywords(context, maxHistory)
+            val historyResults = if (historyEnabled) {
+                historySearchProvider.getRecentKeywords(context, maxHistory)
+            } else {
+                emptyList()
+            }
 
-            val searchTargets = translateToSearchTargets(historyResults)
+            val resultsToTranslate = if (historyResults.isNotEmpty()) {
+                historyResults + listOf(SearchResult.Action.SearchSettings)
+            } else {
+                listOf(
+                    if (historyEnabled) {
+                        // State A: No History
+                        SearchResult.Action.EmptyState(
+                            titleRes = R.string.search_empty_state_title,
+                            subtitleRes = R.string.search_empty_state_no_history_subtitle,
+                        )
+                    } else {
+                        // State B: History Disabled
+                        SearchResult.Action.EmptyState(
+                            titleRes = R.string.search_empty_state_title,
+                            subtitleRes = R.string.search_empty_state_history_disabled_subtitle,
+                        )
+                    },
+                    SearchResult.Action.SearchSettings,
+                )
+            }
+
+            val searchTargets = translateToSearchTargets(resultsToTranslate)
             val adapterItems = transformSearchResults(searchTargets)
             withContext(Dispatchers.Main) {
                 callback.onSearchResult("", ArrayList(adapterItems))
@@ -110,8 +142,6 @@ class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgori
         val actions = mutableListOf<SearchResult.Action>()
         val prefs = PreferenceManager.getInstance(context)
         val prefs2 = PreferenceManager2.getInstance(context)
-
-        actions.add(SearchResult.Action.Divider())
 
         if (prefs.searchResultStartPageSuggestion.get()) {
             val provider = prefs2.webSuggestionProvider.firstBlocking()
@@ -137,6 +167,9 @@ class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgori
             actions.add(SearchResult.Action.MarketSearch(query = query))
         }
 
+        actions.add(SearchResult.Action.SearchSettings)
+        actions.add(SearchResult.Action.SearchSettings)
+
         return actions
     }
 
@@ -149,6 +182,8 @@ class LawnchairNewLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgori
         SettingsSectionBuilder,
         HistorySectionBuilder,
         ActionsSectionBuilder,
+        EmptyStateSectionBuilder,
+        SearchSettingsSectionBuilder,
     )
 
     private fun translateToSearchTargets(

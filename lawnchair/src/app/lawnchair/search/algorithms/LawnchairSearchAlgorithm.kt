@@ -12,11 +12,13 @@ import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_APP
 import app.lawnchair.search.adapter.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import com.android.app.search.LayoutType.CALCULATOR
 import com.android.app.search.LayoutType.EMPTY_DIVIDER
+import com.android.app.search.LayoutType.EMPTY_STATE
 import com.android.app.search.LayoutType.HORIZONTAL_MEDIUM_TEXT
 import com.android.app.search.LayoutType.ICON_HORIZONTAL_TEXT
 import com.android.app.search.LayoutType.ICON_SINGLE_VERTICAL_TEXT
 import com.android.app.search.LayoutType.ICON_SLICE
 import com.android.app.search.LayoutType.PEOPLE_TILE
+import com.android.app.search.LayoutType.SEARCH_SETTINGS
 import com.android.app.search.LayoutType.SMALL_ICON_HORIZONTAL_TEXT
 import com.android.app.search.LayoutType.TEXT_HEADER
 import com.android.app.search.LayoutType.THUMBNAIL
@@ -32,6 +34,12 @@ sealed class LawnchairSearchAlgorithm(
     protected val context: Context,
 ) : SearchAlgorithm<BaseAllAppsAdapter.AdapterItem> {
 
+    private val transparentBackground = SearchItemBackground(
+        context,
+        showBackground = false,
+        roundBottom = false,
+        roundTop = false,
+    )
     private val iconBackground = SearchItemBackground(
         context,
         showBackground = false,
@@ -169,6 +177,8 @@ sealed class LawnchairSearchAlgorithm(
         layoutType == ICON_SLICE -> getGroupedBackground(index, settingIndices)
         layoutType == WIDGET_LIVE -> getGroupedBackground(index, recentIndices)
         layoutType == CALCULATOR && calculator.isNotEmpty() -> normalBackground
+        layoutType == EMPTY_STATE -> transparentBackground
+        layoutType == SEARCH_SETTINGS -> transparentBackground
         isFirst && isLast -> normalBackground
         isFirst -> topBackground
         isLast -> bottomBackground

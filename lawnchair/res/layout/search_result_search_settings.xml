@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app.lawnchair.allapps.views.SearchResultSearchSettings xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_result_search_settings"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/search_result_text_height"
+    android:orientation="horizontal"
+    android:gravity="end">
+
+    <ImageButton
+        android:background="@drawable/pill_ripple"
+        android:id="@+id/search_settings"
+        android:layout_gravity="bottom|center|end"
+        android:layout_width="@dimen/search_box_height"
+        android:textAllCaps="false"
+        android:clickable="true"
+        android:layout_height="@dimen/search_box_height"
+        android:src="@drawable/ic_setting"
+        android:textStyle="normal"
+        android:contentDescription="@string/settings" />
+
+</app.lawnchair.allapps.views.SearchResultSearchSettings>

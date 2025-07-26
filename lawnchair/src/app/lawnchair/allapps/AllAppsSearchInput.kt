@@ -138,6 +138,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
 
         with(input) {
             addTextChangedListener {
+                if (input.text.toString().isEmpty()) {
+                    searchAlgorithm?.doZeroStateSearch(this@AllAppsSearchInput)
+                }
+
                 actionButton.isVisible = !it.isNullOrEmpty()
                 micIcon.isVisible = shouldShowIcons && voiceIntent != null && it.isNullOrEmpty()
                 lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null && it.isNullOrEmpty()
