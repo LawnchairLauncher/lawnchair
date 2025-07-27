@@ -139,8 +139,8 @@
     <string name="always_reload_icons_description">Evita di utilizzare icone dalla cache dai pacchetti d\'icone</string>
     <string name="icon_swipe_gestures">Gesti di scorrimento icona</string>
     <string name="icon_swipe_gestures_description">Esegui azioni quando scorri a sinistra o a destra sulle icone invece di spostare la schermata iniziale</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="show_deck_layout">Disposizione a Deck</string>
+    <string name="show_deck_layout_description">Mostra un\'opzione di disposizione per nascondere il Menu delle App e aggiungere automaticamente nuove app alla Schermata Home</string>
     <string name="recents_lock_unlock">Blocca/Sblocca</string>
     <string name="recents_lock_unlock_description">Impedisci all\'app selezionata di chiudersi quando premi \"Cancella tutto\"</string>
     <!--Overlay-->
@@ -423,7 +423,7 @@
     <string name="wallpaper_background_blur_factor">Soglia del fattore</string>
     <string name="home_lawn_deck_label">Deck</string>
     <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
-    <string name="home_lawn_deck_description">Accedi senza sforzo alle tue applicazioni con Deck, l\'esperienza completa senza cassetti progettata per semplicità e organizzazione senza soluzione di continuità</string>
+    <string name="home_lawn_deck_description">Accedi senza sforzo alle tue applicazioni con Deck, l\'esperienza completa senza Menu delle App, progettata per semplicità e organizzazione fluida</string>
     <string name="auto_add_shortcuts_label">Aggiungi le nuove app alla schermata home</string>
     <string name="minus_one_enable">Mostra il feed</string>
     <string name="minus_one_unavailable">Nessuna app per il feed installata</string>

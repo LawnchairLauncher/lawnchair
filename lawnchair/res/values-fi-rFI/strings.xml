@@ -23,45 +23,45 @@
     -->
     <string name="preview_label">Esikatselu</string>
     <string name="action_create">Luo</string>
-    <string name="action_backup">Backup</string>
+    <string name="action_backup">Varmuuskopio</string>
     <string name="action_restore">Palauta</string>
     <string name="action_delete">Poista</string>
     <string name="action_reset">Nollaa</string>
-    <string name="action_unlock">Unlock</string>
-    <string name="action_lock">Lock</string>
+    <string name="action_unlock">Poista lukitus</string>
+    <string name="action_lock">Lukitse</string>
     <string name="action_apply">Käytä</string>
     <string name="action_customize">Mukauta</string>
-    <string name="always_choice">Always</string>
-    <string name="never_choice">Never</string>
+    <string name="always_choice">Aina</string>
+    <string name="never_choice">Ei koskaan</string>
     <string name="clipboard">Leikepöytä</string>
-    <string name="action_copy_link">Copy link</string>
+    <string name="action_copy_link">Kopioi linkki</string>
     <string name="action_copy">Kopioi</string>
     <string name="action_paste">Liitä</string>
     <string name="action_done">Valmis</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="select_all">Valitse kaikki</string>
+    <string name="deselect_all">Poista kaikki valinnat</string>
+    <string name="inverse_selection">Käännä valinta</string>
     <string name="loading">Ladataan…</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
+    <string name="download_update">Lataa päivitys</string>
+    <string name="install_update">Asenna päivitys</string>
     <string name="pro_updated">Olet ajan tasalla!</string>
     <string name="managed_by_lawnchair">Lawnchairin hallinnoima</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Asetukset</string>
-    <string name="settings_button_text">Home settings</string>
-    <string name="system_settings">System settings</string>
-    <string name="title_change_settings">Change settings</string>
+    <string name="settings_button_text">Kotiasetukset</string>
+    <string name="system_settings">Järjestelmäasetukset</string>
+    <string name="title_change_settings">Muuta asetuksia</string>
     <!--
 
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">Muut</string>
     <!-- Selection options -->
     <string name="dynamic">Dynaaminen</string>
     <string name="presets">Esiasetukset</string>
     <string name="custom">Mukautettu</string>
-    <string name="feed_default">Default</string>
+    <string name="feed_default">Oletus</string>
     <string name="system">Järjestelmä</string>
     <!-- Relating to the Launcher ui -->
     <string name="columns">Sarakkeet</string>
@@ -72,36 +72,36 @@
     <string name="layout">Asettelu</string>
     <!-- Generic styling options -->
     <string name="wallpaper">Taustakuva</string>
-    <string name="style">Style</string>
-    <string name="background_opacity">Background opacity</string>
+    <string name="style">Tyyli</string>
+    <string name="background_opacity">Taustan läpinäkymättömyys</string>
     <!-- Toast text and tips -->
-    <string name="copied_toast">Copied to clipboard</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
-    <string name="item_removed">Item removed</string>
+    <string name="copied_toast">Kopioitu leikepöydälle</string>
+    <string name="calculator_search_result_copied_toast">Tulos kopioitu leikepöydälle</string>
+    <string name="item_removed">Esine poistettu</string>
     <!-- Miscellaneous -->
-    <string name="what_to_show">What to show</string>
-    <string name="wallpapers">Wallpapers</string>
-    <string name="caddy_beta">Caddy (Beta)</string>
-    <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
-    <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="what_to_show">Mitä näytetään</string>
+    <string name="wallpapers">Taustakuvat</string>
+    <string name="caddy_beta">Ryhmitetyt sovellukset (Beta)</string>
+    <string name="caddy">Ryhmitetty sovellukset</string>
+    <string name="app_drawer_folder">Kansiot sovellusvalikossa</string>
+    <string name="app_drawer_folder_settings">Sovellusvalikon kansio</string>
+    <string name="add_folder">Luo kansio</string>
+    <string name="edit_folder">Muokkaa kansiota</string>
+    <string name="add_label">Lisää</string>
+    <string name="edit_label">Muokkaa</string>
     <string name="apply_label">Käytä</string>
     <string name="delete_label">Poista</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
+    <string name="folder_list_note">Pyyhkäise vasemmalle muokataksesi, oikealle poistaaksesi tai napauta muokataksesi esineitä</string>
     <string name="apps_in_folder_label">Piilota kansion sovelluksia</string>
-    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">My folder</string>
+    <string name="apps_in_folder_description">Sovelluksia kansoissa ei näy sovelluslistoissa</string>
+    <string name="folders_filter_duplicates">Näytä vain yksi kappale jokaista sovellusta</string>
+    <string name="my_folder_label">Minun kansioni</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Suorittaakseen tiettyjä toimintoja (niin kuin lukitakseen puhelimesi) kun käytät jotain elettä, Lawnchair pitää asettaa saavutettavuussovellukseksi.\n\nLawnchair ei seuraa mitään käyttäjän toimintaa, vaikkakin kyseistä lupaa käytetään kaikille saavutettavuussovelluksille. Lawnchair hylkää kaikki tapahtumat, jotka käyttöjärjestelmä lähettää.\n\nJotta Lawnchair voisi lukita puhelimesi tai avata viimeisimpien sovellusten näkymän, se käyttää performGlobalAction saavutettavuuspalvelua.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
-    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="x_by_y">%1$d X %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Kehittyneet asetukset</string>
     <!--
 
     Preference Dashboard
@@ -109,52 +109,52 @@
     -->
     <string name="settings">Asetukset</string>
     <string name="general_label">Yleiset</string>
-    <string name="general_description">Colors, icon packs, notification dots</string>
-    <string name="home_screen_label">Home screen</string>
-    <string name="home_screen_description">Feed, grid, icons</string>
+    <string name="general_description">Värit, kuvakepaketit, ilmoituspisteet</string>
+    <string name="home_screen_label">Aloitusnäyttö</string>
+    <string name="home_screen_description">Syöte, ruudukko, kuvakkeet</string>
     <string name="dock_label">Telakka</string>
-    <string name="dock_description">Search bar, icon count</string>
-    <string name="app_drawer_label">App drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
-    <string name="drawer_search_label">Drawer search</string>
-    <string name="drawer_search_description">Web suggestions, global search</string>
+    <string name="dock_description">Hakupalkki, kuvakkeiden määrä</string>
+    <string name="app_drawer_label">Sovellusvalikko</string>
+    <string name="app_drawer_description">Piilotetut sovellukset, pylväiden määrä, kuvakkeet</string>
+    <string name="drawer_search_label">Sovellusvalikon haku</string>
+    <string name="drawer_search_description">Internet-ehdotukset, globaali haku</string>
     <string name="folders_label">Kansiot</string>
-    <string name="folders_description">Row and column count</string>
+    <string name="folders_description">Palkkien ja pylväiden määrä</string>
     <string name="gestures_label">Eleet</string>
-    <string name="gestures_description">Taps and swipes</string>
-    <string name="quickstep_label">Recents screen</string>
-    <string name="quickstep_description">Clear All button, corner radius</string>
+    <string name="gestures_description">Napautukset ja pyyhkäisyt</string>
+    <string name="quickstep_label">Viimeisimmät-näyttö</string>
+    <string name="quickstep_description">Tyhjennä kaikki -nappi, kulmien pyöreys</string>
     <string name="about_label">Tietoja</string>
-    <string name="app_info_drop_target_label">App info</string>
+    <string name="app_info_drop_target_label">Tietoa sovelluksesta</string>
     <string name="debug_restart_launcher">Uudelleenkäynnistä Lawnchair</string>
-    <string name="experimental_features_label">Experimental features</string>
+    <string name="experimental_features_label">Kokeelliset ominaisuudet</string>
     <!-- Experimental features -->
-    <string name="font_picker_label">Font customization</string>
-    <string name="font_picker_description">Some text remains unchanged</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
-    <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
-    <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
-    <string name="always_reload_icons_label">Always reload icons</string>
+    <string name="font_picker_label">Fontin muokkaus</string>
+    <string name="font_picker_description">Jotkin tekstit eivät muutu</string>
+    <string name="smartspace_calendar_label">Silmien edessä -ominaisuuden kalenterin muokkaus</string>
+    <string name="smartspace_calendar_description">Salli päivämäärän näyttö ei Gregoriaanisissa järjestelmissä</string>
+    <string name="workspace_increase_max_grid_size_label">Kasvata suurimman mahdollisen ruudukon rajaa.</string>
+    <string name="workspace_increase_max_grid_size_description">Kasvata suurinta mahdollista aloitusnäytön ruudukon kokoa 10 X 10:stä 20 X 20:een</string>
+    <string name="always_reload_icons_label">Lataa kuvakkeet aina uudelleen</string>
     <string name="always_reload_icons_description">Vältä välimuistissa olevien kuvakkeiden käyttöä kuvakepakkauksissa</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
-    <string name="recents_lock_unlock">Lock/unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <string name="icon_swipe_gestures">Kuvakkeiden pyyhkäisyliikkeet</string>
+    <string name="icon_swipe_gestures_description">Suorita toimintoja kuvakkeita oikealle tai vasemmalle pyyhkäisemällä aloitusnäytön siirtämisen sijaan</string>
+    <string name="show_deck_layout">Telakan asettelu</string>
+    <string name="show_deck_layout_description">Näytä asetus sovellusvalikon piilottamiseksi ja sovellusten automaattisen aloitusnäyttöön lisäämiseksi</string>
+    <string name="recents_lock_unlock">Lukitsee/avaa</string>
+    <string name="recents_lock_unlock_description">Estä valittua sovellusta sulkeutumaan kun painetaan: \"Poista kaikki\"</string>
     <!--Overlay-->
-    <string name="overlay_fade_in">Fade In</string>
-    <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
-    <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="overlay_fade_in">Himmennä sisään</string>
+    <string name="overlay_suck_in">Imaise sisään</string>
+    <string name="app_closing_animation">Sovelluksen sulkemisanimaatio</string>
+    <string name="overlay_label">Peitekerros</string>
+    <string name="overlay_none">Ei mitään</string>
     <!--
 
     Notifications
 
     -->
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
+    <string name="set_default_launcher_tip">Päästäksesi käsiksi pikku alkeisiin ja muihin lisäominaisuuksiin, aseta Lawnchair oletusaloitusnäyttösovellukseksesi.</string>
     <string name="notification_dots">Notification dots</string>
     <string name="show_notification_count">Show notification counter</string>
     <string name="notification_dots_color">Notification dot color</string>
