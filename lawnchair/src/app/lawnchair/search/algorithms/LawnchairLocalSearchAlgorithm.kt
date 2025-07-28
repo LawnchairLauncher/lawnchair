@@ -147,7 +147,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
             val webProvider = provider.configure(context)
 
             val providerName = if (webProvider is CustomWebSearchProvider) {
-                webProvider.getDisplayName(context.getString(webProvider.label))
+                webProvider.getDisplayName()
             } else {
                 context.getString(webProvider.label)
             }
@@ -158,6 +158,7 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
                     providerName = providerName,
                     searchUrl = webProvider.getSearchUrl(query),
                     providerIconRes = webProvider.iconRes,
+                    tintIcon = webProvider is CustomWebSearchProvider,
                 ),
             )
         }
@@ -174,8 +175,8 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
 
     private val sectionBuilders: List<SectionBuilder> = listOf(
         AppsAndShortcutsSectionBuilder,
-        WebSuggestionsSectionBuilder,
         CalculationSectionBuilder,
+        WebSuggestionsSectionBuilder,
         ContactsSectionBuilder,
         FilesSectionBuilder,
         SettingsSectionBuilder,

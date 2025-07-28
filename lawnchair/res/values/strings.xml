@@ -796,6 +796,8 @@
     <string name="all_apps_search_result_calculator">Calculator</string>
 
     <!-- Description for each search result type -->
+    <string name="search_pref_files_search_on">Search on</string>
+
     <string name="search_pref_result_files_description">Media, files, and more</string>
     <string name="search_pref_result_contacts_description">Contacts and more</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>

@@ -102,6 +102,7 @@ class FileAccessManager private constructor(private val context: Context) : Safe
         _allFilesAccessState.value = getCurrentAllFilesAccessState()
         _visualMediaAccessState.value = getCurrentVisualMediaState()
         _audioAccessState.value = getCurrentAudioState()
+        _hasAnyPermission.value = hasAnyPermissions()
     }
 
     private fun hasAnyPermissions(): Boolean {

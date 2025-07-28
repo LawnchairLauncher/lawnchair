@@ -30,6 +30,7 @@ sealed class SearchResult {
             val providerName: String,
             val searchUrl: String,
             @DrawableRes val providerIconRes: Int,
+            val tintIcon: Boolean = false,
         ) : Action()
         data class EmptyState(
             @StringRes val titleRes: Int,

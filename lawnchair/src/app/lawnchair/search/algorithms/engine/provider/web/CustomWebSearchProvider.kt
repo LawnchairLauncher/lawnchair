@@ -44,7 +44,7 @@ object CustomWebSearchProvider : WebSearchProvider {
     private var displayName: String = ""
     private val okHttpClient = OkHttpClient()
 
-    fun getDisplayName(getDisplayNamedefault: String): String = displayName
+    fun getDisplayName(): String = displayName
 
     override fun configure(context: Context): WebSearchProvider {
         val prefs = PreferenceManager2.getInstance(context)

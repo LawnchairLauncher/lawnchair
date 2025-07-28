@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -81,6 +82,10 @@ fun FileSearchProvider(
     val mainAdapter = prefs.searchResultFilesToggle.getAdapter()
     val hasAnyPermissions by viewModel.hasAnyPermissions.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.refreshAccessStates()
+    }
+
     LifecycleResumeEffect(Unit) {
         viewModel.refreshAccessStates()
         onPauseOrDispose {}
@@ -93,18 +98,21 @@ fun FileSearchProvider(
         enabled = hasAnyPermissions,
         modifier = modifier,
     )
-    PreferenceGroup {
+    PreferenceGroup(
+        heading = stringResource(R.string.search_pref_files_search_on),
+    ) {
         val allFilesAccessState by viewModel.allFilesAccessState.collectAsStateWithLifecycle()
+        val allFilesAccessAdapter = prefs.searchResultAllFiles.getAdapter()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             ManageExternalStorageSetting(
                 accessState = allFilesAccessState,
-                adapter = prefs.searchResultAllFiles.getAdapter(),
+                adapter = allFilesAccessAdapter,
                 onPermissionRequest = viewModel::refreshAccessStates,
             )
         } else {
             GenericAccessSetting(
-                adapter = prefs.searchResultAllFiles.getAdapter(),
+                adapter = allFilesAccessAdapter,
                 requiredPermission = android.Manifest.permission.READ_EXTERNAL_STORAGE,
                 switchEnabled = { allFilesAccessState != FileAccessState.Denied },
                 label = stringResource(R.string.search_pref_result_all_files_title),
@@ -122,6 +130,7 @@ fun FileSearchProvider(
                 accessState = visualMediaAccessState,
                 adapter = prefs.searchResultVisualMedia.getAdapter(),
                 onPermissionRequest = viewModel::refreshAccessStates,
+                alwaysEnabled = allFilesAccessAdapter.state.value && allFilesAccessState == FileAccessState.Full,
             )
 
             GenericAccessSetting(
@@ -132,6 +141,7 @@ fun FileSearchProvider(
                 permissionTitle = stringResource(R.string.permissions_music_audio),
                 permissionDescription = stringResource(R.string.permissions_music_audio_description),
                 onPermissionResult = { viewModel.refreshAccessStates() },
+                alwaysEnabled = allFilesAccessAdapter.state.value && allFilesAccessState == FileAccessState.Full,
             )
         }
     }
@@ -182,7 +192,7 @@ private fun ManageExternalStorageSetting(
                     showPermissionDialog = true
                 }
             },
-            switchEnabled = !isPlayStoreFlavor(),
+            switchEnabled = !isPlayStoreFlavor() && (accessState != FileAccessState.Denied),
             modifier = modifier,
         )
     }
@@ -190,8 +200,8 @@ private fun ManageExternalStorageSetting(
     if (showPermissionDialog) {
         if (!isPlayStoreFlavor()) {
             PermissionDialog(
-                title = stringResource(R.string.permissions_photos_videos),
-                text = stringResource(R.string.permissions_photos_videos_description),
+                title = stringResource(R.string.permissions_manage_storage),
+                text = stringResource(R.string.permissions_manage_storage_description),
                 isPermanentlyDenied = true,
                 onConfirm = { },
                 onDismiss = { showPermissionDialog = false },
@@ -273,7 +283,7 @@ private fun VisualMediaSetting(
         PermissionDialog(
             title = stringResource(R.string.permissions_photos_videos),
             text = stringResource(R.string.permissions_photos_videos_description),
-            isPermanentlyDenied = !permissionState.shouldShowRationale && !permissionState.allPermissionsGranted,
+            isPermanentlyDenied = permissionState.allPermissionsGranted,
             onConfirm = { permissionState.launchMultiplePermissionRequest() },
             onDismiss = { showPermissionDialog = false },
             onGoToSettings = { context.openAppPermissionSettings() },

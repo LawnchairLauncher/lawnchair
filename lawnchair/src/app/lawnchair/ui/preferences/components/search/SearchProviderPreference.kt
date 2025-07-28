@@ -157,7 +157,7 @@ fun ContactsSearchProvider(
         PermissionDialog(
             title = stringResource(R.string.warn_contact_permission_title),
             text = stringResource(id = R.string.warn_contact_permission_content),
-            isPermanentlyDenied = !contactsPermissionState.status.isGranted && !contactsPermissionState.status.shouldShowRationale,
+            isPermanentlyDenied = contactsPermissionState.status.shouldShowRationale,
             onConfirm = { contactsPermissionState.launchPermissionRequest() },
             onDismiss = {
                 backDispatcher?.onBackPressed()

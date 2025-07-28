@@ -176,6 +176,7 @@ object ActionsSectionBuilder : SectionBuilder {
                 providerName = webSearch.first().providerName,
                 searchUrl = webSearch.first().searchUrl,
                 providerIconRes = webSearch.first().providerIconRes,
+                tintIcon = webSearch.first().tintIcon,
             ).let {
                 targets.add(it)
             }

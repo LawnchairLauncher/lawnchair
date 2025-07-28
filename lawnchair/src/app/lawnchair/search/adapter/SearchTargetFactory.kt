@@ -238,16 +238,23 @@ class SearchTargetFactory(
 
     fun createWebSearchActionTarget(
         query: String,
-        providerName: String, // The actual display name, not an ID
-        searchUrl: String, // The final, pre-formatted search URL
+        providerName: String,
+        searchUrl: String,
         @DrawableRes providerIconRes: Int,
+        tintIcon: Boolean = false,
     ): SearchTargetCompat {
         val id = "browser:$query:$providerName"
         val browserIntent = Intent(Intent.ACTION_VIEW, searchUrl.toUri())
         val title = context.getString(R.string.all_apps_search_on_web_message, providerName)
 
+        val icon = Icon.createWithResource(context, providerIconRes).apply {
+            if (tintIcon) {
+                setTint(ColorTokens.TextColorSecondary.resolveColor(context))
+            }
+        }
+
         val action = SearchActionCompat.Builder(id, title)
-            .setIcon(Icon.createWithResource(context, providerIconRes))
+            .setIcon(icon)
             .setIntent(browserIntent)
             .build()
 
