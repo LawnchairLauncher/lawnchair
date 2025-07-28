@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.navigation
 
+import app.lawnchair.ui.preferences.components.search.SearchProviderId
 import app.lawnchair.ui.preferences.destinations.SearchRoute
 import kotlinx.serialization.Serializable
 
@@ -103,6 +104,10 @@ data object AppDrawerFolder : PreferenceRoute
 
 @Serializable
 data class AppDrawerAppListToFolder(val id: Int) : PreferenceRoute
+
+// Search section routes
+@Serializable
+data class SearchProviderPreference(val id: SearchProviderId) : PreferenceRoute
 
 // Smartspace section routes
 @Serializable

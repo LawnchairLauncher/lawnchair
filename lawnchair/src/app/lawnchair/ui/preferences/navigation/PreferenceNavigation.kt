@@ -20,6 +20,7 @@ import app.lawnchair.ui.preferences.about.About
 import app.lawnchair.ui.preferences.about.acknowledgements.Acknowledgements
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceModelList
 import app.lawnchair.ui.preferences.components.colorpreference.ColorSelection
+import app.lawnchair.ui.preferences.components.search.SearchProviderPreferenceScreen
 import app.lawnchair.ui.preferences.destinations.AppDrawerFoldersPreference
 import app.lawnchair.ui.preferences.destinations.AppDrawerPreferences
 import app.lawnchair.ui.preferences.destinations.CustomIconShapePreference
@@ -126,6 +127,11 @@ fun PreferenceNavigation(
             val route: Search = backStackEntry.toRoute()
             SearchPreferences(currentTab = route.selectedId)
         }
+        composable<SearchProviderPreference> { backStackEntry ->
+            val route: SearchProviderPreference = backStackEntry.toRoute()
+            SearchProviderPreferenceScreen(route.id)
+        }
+
         composable<Folders> { FolderPreferences() }
 
         composable<Gestures> { GesturePreferences() }

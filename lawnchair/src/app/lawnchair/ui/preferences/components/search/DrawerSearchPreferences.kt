@@ -1,19 +1,11 @@
 package app.lawnchair.ui.preferences.components.search
 
-import android.Manifest
 import android.content.Context
-import android.os.Build
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
@@ -23,18 +15,19 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
 import app.lawnchair.search.algorithms.engine.provider.web.CustomWebSearchProvider
+import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearchPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
-import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
-import app.lawnchair.util.checkAndRequestFilesPermission
-import app.lawnchair.util.filesAndStorageGranted
+import app.lawnchair.ui.preferences.navigation.SearchProviderPreference
+import app.lawnchair.util.FileAccessManager
 import com.android.launcher3.R
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable
@@ -74,25 +67,19 @@ fun DrawerSearchPreference(
         PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
             val searchAlgorithm = preferenceManager2().searchAlgorithm.getAdapter().state.value
             if (searchAlgorithm != LawnchairSearchAlgorithm.ASI_SEARCH) {
+                val navController = LocalNavController.current
                 val canDisable = searchAlgorithm != LawnchairSearchAlgorithm.APP_SEARCH
                 val adapter = prefs.searchResultApps.getAdapter()
 
-                SearchSuggestionPreference(
+                TwoTargetSwitchPreference(
                     checked = if (canDisable) adapter.state.value else true,
                     onCheckedChange = if (canDisable) adapter::onChange else ({}),
-                    enabled = if (canDisable) true else false,
-                    onRequestPermission = {},
-                    maxCountAdapter = prefs2.maxAppSearchResultCount.getAdapter(),
-                    maxCountRange = 3..15,
+                    enabled = canDisable,
                     label = stringResource(R.string.search_pref_result_apps_and_shortcuts_title),
-                    maxCountLabel = stringResource(R.string.max_apps_result_count_title),
-                ) {
-                    SwitchPreference(
-                        adapter = prefs2.enableFuzzySearch.getAdapter(),
-                        label = stringResource(id = R.string.fuzzy_search_title),
-                        description = stringResource(id = R.string.fuzzy_search_desc),
-                    )
-                }
+                    onClick = {
+                        navController.navigate(SearchProviderPreference(SearchProviderId.APPS))
+                    },
+                )
             }
             when (searchAlgorithm) {
                 LawnchairSearchAlgorithm.LOCAL_SEARCH -> {
@@ -165,22 +152,13 @@ private fun LocalSearchSettings(
     prefs2: PreferenceManager2,
     context: Context,
 ) {
-    val contactsPermissionState = rememberPermissionState(
-        Manifest.permission.READ_CONTACTS,
-    )
-    val filesPermissionState =
-        rememberPermissionState(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-        )
-
+    val navController = LocalNavController.current
     val webSuggestionProvider =
         stringResource(prefs2.webSuggestionProvider.getAdapter().state.value.label)
-    SearchSuggestionPreference(
+
+    SearchProviderPreferenceItem(
         adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
-        maxCountAdapter = prefs2.maxWebSuggestionResultCount.getAdapter(),
-        maxCountRange = 3..10,
         label = stringResource(id = R.string.search_pref_result_web_title),
-        maxCountLabel = stringResource(id = R.string.max_suggestion_result_count_title),
         description = if (webSuggestionProvider == stringResource(CustomWebSearchProvider.label)) {
             webSuggestionProvider
         } else {
@@ -189,86 +167,41 @@ private fun LocalSearchSettings(
                 webSuggestionProvider,
             )
         },
-    ) {
-        SliderPreference(
-            label = stringResource(id = R.string.max_web_suggestion_delay),
-            adapter = prefs2.maxWebSuggestionDelay.getAdapter(),
-            step = 500,
-            valueRange = 500..5000,
-            showUnit = "ms",
-        )
-        WebSearchProvider(
-            adapter = prefs2.webSuggestionProvider.getAdapter(),
-            nameAdapter = prefs2.webSuggestionProviderName.getAdapter(),
-            urlAdapter = prefs2.webSuggestionProviderUrl.getAdapter(),
-            suggestionsUrlAdapter = prefs2.webSuggestionProviderSuggestionsUrl.getAdapter(),
-        )
-    }
-    SearchSuggestionPreference(
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.WEB))
+        },
+    )
+    SearchProviderPreferenceItem(
         adapter = prefs.searchResultPeople.getAdapter(),
-        maxCountAdapter = prefs2.maxPeopleResultCount.getAdapter(),
-        maxCountRange = 3..15,
         label = stringResource(id = R.string.search_pref_result_people_title),
-        maxCountLabel = stringResource(id = R.string.max_people_result_count_title),
         description = stringResource(id = R.string.search_pref_result_contacts_description),
-        permissionState = contactsPermissionState,
-        permissionRationale = stringResource(id = R.string.warn_contact_permission_content),
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.CONTACTS))
+        },
+        enabled = rememberPermissionState(android.Manifest.permission.READ_CONTACTS).status.isGranted,
     )
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        val lifecycleOwner = LocalLifecycleOwner.current
-        val state by lifecycleOwner.lifecycle.currentStateFlow.collectAsStateWithLifecycle()
-        var isGranted by remember { mutableStateOf(filesAndStorageGranted(context)) }
-        // TODO refactor permission handling of all files access
-
-        LaunchedEffect(state) {
-            if (!filesAndStorageGranted(context)) {
-                isGranted = false
-                prefs.searchResultFiles.set(false)
-            }
-
-            if (state == Lifecycle.State.RESUMED) {
-                isGranted = filesAndStorageGranted(context)
-            }
-        }
-
-        SearchSuggestionPreference(
-            adapter = prefs.searchResultFiles.getAdapter(),
-            maxCountAdapter = prefs2.maxFileResultCount.getAdapter(),
-            maxCountRange = 3..10,
-            label = stringResource(id = R.string.search_pref_result_files_title),
-            maxCountLabel = stringResource(id = R.string.max_file_result_count_title),
-            description = stringResource(id = R.string.search_pref_result_files_description),
-            isGranted = filesAndStorageGranted(context),
-            onRequestPermission = {
-                checkAndRequestFilesPermission(context, prefs)
-            },
-            permissionRationale = stringResource(id = R.string.warn_files_permission_content),
-        )
-    } else {
-        SearchSuggestionPreference(
-            adapter = prefs.searchResultFiles.getAdapter(),
-            maxCountAdapter = prefs2.maxFileResultCount.getAdapter(),
-            maxCountRange = 3..10,
-            label = stringResource(id = R.string.search_pref_result_files_title),
-            maxCountLabel = stringResource(id = R.string.max_file_result_count_title),
-            description = stringResource(id = R.string.search_pref_result_files_description),
-            permissionState = filesPermissionState,
-            permissionRationale = stringResource(id = R.string.warn_files_permission_content),
-        )
-    }
-    SearchSuggestionPreference(
+    SearchProviderPreferenceItem(
+        adapter = prefs.searchResultFilesToggle.getAdapter(),
+        label = stringResource(R.string.search_pref_result_files_title),
+        description = stringResource(R.string.search_pref_result_files_description),
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.FILES))
+        },
+        enabled = FileAccessManager.getInstance(context).hasAnyPermission.collectAsStateWithLifecycle().value,
+    )
+    SearchProviderPreferenceItem(
         adapter = prefs.searchResultSettingsEntry.getAdapter(),
-        maxCountAdapter = prefs2.maxSettingsEntryResultCount.getAdapter(),
-        maxCountRange = 2..10,
         label = stringResource(id = R.string.search_pref_result_settings_title),
-        maxCountLabel = stringResource(id = R.string.max_settings_entry_result_count_title),
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.SETTINGS))
+        },
     )
-    SearchSuggestionPreference(
+    SearchProviderPreferenceItem(
         adapter = prefs.searchResulRecentSuggestion.getAdapter(),
-        maxCountAdapter = prefs2.maxRecentResultCount.getAdapter(),
-        maxCountRange = 1..10,
         label = stringResource(id = R.string.search_pref_result_history_title),
-        maxCountLabel = stringResource(id = R.string.max_recent_result_count_title),
+        onClick = {
+            navController.navigate(SearchProviderPreference(SearchProviderId.HISTORY))
+        },
     )
     SwitchPreference(
         adapter = prefs.searchResultCalculator.getAdapter(),

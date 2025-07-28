@@ -2,7 +2,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 
-import static app.lawnchair.util.PackagePermissionManagerKt.checkAndRequestFilesPermission;
+import static app.lawnchair.util.FileAccessManagerKt.checkAndRequestFilesPermission;
 
 import android.app.WallpaperManager;
 import android.content.Context;

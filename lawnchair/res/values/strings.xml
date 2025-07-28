@@ -50,6 +50,7 @@
     <string name="inverse_selection">Inverse selection</string>
 
     <string name="loading">Loading…</string>
+    <string name="dismiss">Dismiss</string>
 
     <string name="download_update">Download update</string>
     <string name="install_update">Install update</string>
@@ -771,9 +772,11 @@
     <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
     <string name="search_algorithm_global_search_via_asi">Global search (via ASI)</string>
 
-    <string name="custom_search_url">Custom search engine URL</string>
-    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
+    <string name="custom_search_label">Search engine name</string>
+    <string name="custom_search_url">Search engine URL</string>
+    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
+    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
     <string name="custom_search_input_placeholder" translatable="false">https://example.com/search?q=%s</string>
 
     <!-- Labels of each search result types -->
@@ -785,6 +788,9 @@
     <string name="search_pref_result_tips_title">Pixel tips</string>
     <string name="search_pref_result_settings_title">Android settings</string>
     <string name="search_pref_result_files_title">Files</string>
+    <string name="search_pref_result_visual_media_title">Photos and videos</string>
+    <string name="search_pref_result_audio_media_title">Audio files</string>
+    <string name="search_pref_result_all_files_title">All files</string>
     <string name="search_pref_result_web_title">Web suggestions</string>
     <string name="search_pref_result_history_title">Search history</string>
     <string name="all_apps_search_result_calculator">Calculator</string>
@@ -804,12 +810,37 @@
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
 
     <!-- Permission warnings -->
+    <string name="warn_contact_permission_title">Contacts permission needed</string>
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
+
     <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
+
+    <string name="permissions_music_audio">Music and audio access needed</string>
+    <string name="permissions_music_audio_description">To search your music and other audio files, Lawnchair needs permission to access your media library.</string>
+
+    <string name="permissions_external_storage">External storage access needed</string>
+    <string name="permissions_external_storage_description">To search your files, Lawnchair needs permission to access your device\'s external storage.</string>
+
+    <string name="permissions_manage_storage">Manage storage access needed</string>
+    <string name="permissions_manage_storage_description">To display your files in search results, Lawnchair requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
+    <string name="permissions_manage_storage_description_wallpaper">To display previews of your current wallpaper and include it in backups, Lawnchair requires permission to manage all files on your device. This permission is required due to system limitations for accessing wallpaper data for these features.</string>
+
+    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
+    <string name="manage_storage_access_denied_description">Due to Play Store policy, Lawnchair cannot request full storage access here. To access all files, please download Lawnchair from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+
+    <string name="permissions_photos_videos">Photos and videos access needed</string>
+    <string name="permissions_photos_videos_description">To search your photos and videos, Lawnchair needs permission to access your media library.</string>
+
+    <string name="permissions_photos_videos_full">Access your full media library?</string>
+    <string name="permissions_photos_videos_full_description">To search all your photos and videos, Lawnchair needs full access to your media library.</string>
+    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
+    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+
+    <string name="open_permission_settings">Open settings</string>
     <string name="grant_requested_permissions">Grant permissions</string>
-    <string name="custom_search_label">Custom search engine name</string>
+    <string name="permissions_needed">Permissions needed</string>
+
 
     <string name="search_empty_state_title">Start searching</string>
     <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
-</resources>
+    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string></resources>

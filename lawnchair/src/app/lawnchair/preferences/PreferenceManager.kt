@@ -89,7 +89,10 @@ class PreferenceManager private constructor(private val context: Context) :
     val searchResultCalculator = BoolPref("pref_searchResultCalculator", false)
 
     val searchResultApps = BoolPref("pref_searchResultApps", true, recreate)
-    val searchResultFiles = BoolPref("pref_searchResultFiles", false, recreate)
+    val searchResultFilesToggle = BoolPref("pref_searchResultFiles", false, recreate)
+    val searchResultAllFiles = BoolPref("pref_searchResultAllFiles", false, recreate)
+    val searchResultAudio = BoolPref("pref_searchResultAudio", false, recreate)
+    val searchResultVisualMedia = BoolPref("pref_searchResultVisualMedia", false, recreate)
     val searchResultStartPageSuggestion = BoolPref("pref_searchResultStartPageSuggestion", true, recreate)
     val searchResultSettingsEntry = BoolPref("pref_searchResultSettingsEntry", false, recreate)
     val searchResulRecentSuggestion = BoolPref("pref_searchResultRecentSuggestion", false, recreate)

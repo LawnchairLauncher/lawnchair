@@ -505,12 +505,12 @@ class PreferenceManager2 private constructor(private val context: Context) :
 
     val webSuggestionProviderUrl = preference(
         key = stringPreferencesKey(name = "web_suggestion_provider_url"),
-        defaultValue = "https://google.com/search?q=%s",
+        defaultValue = "",
     )
 
     val webSuggestionProviderSuggestionsUrl = preference(
         key = stringPreferencesKey(name = "web_suggestions_provider_suggestions_url"),
-        defaultValue = "https://google.com/complete/search?client=chrome&q=%s",
+        defaultValue = "",
     )
 
     val webSuggestionProviderName = preference(
