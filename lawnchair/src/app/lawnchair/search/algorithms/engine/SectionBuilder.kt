@@ -9,7 +9,7 @@ import app.lawnchair.search.adapter.SearchTargetFactory
 import com.android.launcher3.R
 import com.patrykmichalik.opto.core.firstBlocking
 
-interface SectionBuilder {
+sealed interface SectionBuilder {
     /**
      * Takes the full list of results and returns a list of SearchTargetCompat
      * objects for its specific section, or an empty list if its section
@@ -22,7 +22,7 @@ interface SectionBuilder {
     ): List<SearchTargetCompat>
 }
 
-object ContactsSectionBuilder : SectionBuilder {
+data object ContactsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
@@ -41,7 +41,7 @@ object ContactsSectionBuilder : SectionBuilder {
     }
 }
 
-object FilesSectionBuilder : SectionBuilder {
+data object FilesSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
@@ -60,7 +60,7 @@ object FilesSectionBuilder : SectionBuilder {
     }
 }
 
-object SettingsSectionBuilder : SectionBuilder {
+data object SettingsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
@@ -80,7 +80,7 @@ object SettingsSectionBuilder : SectionBuilder {
     }
 }
 
-object CalculationSectionBuilder : SectionBuilder {
+data object CalculationSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
@@ -98,7 +98,7 @@ object CalculationSectionBuilder : SectionBuilder {
     }
 }
 
-object WebSuggestionsSectionBuilder : SectionBuilder {
+data object WebSuggestionsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
@@ -126,7 +126,7 @@ object WebSuggestionsSectionBuilder : SectionBuilder {
     }
 }
 
-object HistorySectionBuilder : SectionBuilder {
+data object HistorySectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
@@ -154,7 +154,7 @@ object HistorySectionBuilder : SectionBuilder {
     }
 }
 
-object ActionsSectionBuilder : SectionBuilder {
+data object ActionsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
@@ -186,7 +186,7 @@ object ActionsSectionBuilder : SectionBuilder {
     }
 }
 
-object AppsAndShortcutsSectionBuilder : SectionBuilder {
+data object AppsAndShortcutsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
@@ -211,7 +211,7 @@ object AppsAndShortcutsSectionBuilder : SectionBuilder {
     }
 }
 
-object EmptyStateSectionBuilder : SectionBuilder {
+data object EmptyStateSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,
@@ -232,7 +232,7 @@ object EmptyStateSectionBuilder : SectionBuilder {
     }
 }
 
-object SearchSettingsSectionBuilder : SectionBuilder {
+data object SearchSettingsSectionBuilder : SectionBuilder {
     override fun build(
         context: Context,
         factory: SearchTargetFactory,

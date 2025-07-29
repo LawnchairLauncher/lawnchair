@@ -1,6 +1,6 @@
 package app.lawnchair.ui.preferences.components.search
 
-import android.content.Context
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -30,11 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import app.lawnchair.data.factory.ViewModelFactory
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -59,9 +58,10 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 
 class FileSearchProviderViewModel(
-    context: Context,
-    private val fileAccessManager: FileAccessManager = FileAccessManager.getInstance(context),
-) : ViewModel() {
+    application: Application,
+) : AndroidViewModel(application) {
+    private val fileAccessManager: FileAccessManager = FileAccessManager.getInstance(application)
+
     val hasAnyPermissions = fileAccessManager.hasAnyPermission
     val visualMediaAccessState = fileAccessManager.visualMediaAccessState
     val audioAccessState = fileAccessManager.audioAccessState
@@ -74,7 +74,7 @@ class FileSearchProviderViewModel(
 @Composable
 fun FileSearchProvider(
     modifier: Modifier = Modifier,
-    viewModel: FileSearchProviderViewModel = viewModel(factory = ViewModelFactory(LocalContext.current) { FileSearchProviderViewModel(it) }),
+    viewModel: FileSearchProviderViewModel = viewModel(),
 ) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
