@@ -168,7 +168,6 @@ class LawnchairLocalSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm
         }
 
         actions.add(SearchResult.Action.SearchSettings)
-        actions.add(SearchResult.Action.SearchSettings)
 
         return actions
     }

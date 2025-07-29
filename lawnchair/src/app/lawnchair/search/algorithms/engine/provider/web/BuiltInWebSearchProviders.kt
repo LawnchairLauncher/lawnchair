@@ -277,7 +277,7 @@ object StartPageWebSearchProvider : WebSearchProvider {
  * Provides web search suggestions from Kagi.
  */
 object KagiWebSearchProvider : WebSearchProvider {
-    override var label = R.string.search_provider_kagi
+    override val label = R.string.search_provider_kagi
 
     override val iconRes = R.drawable.ic_kagi
 
