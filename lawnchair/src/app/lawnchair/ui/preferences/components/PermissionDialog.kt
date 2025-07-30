@@ -26,6 +26,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -120,7 +123,13 @@ fun WallpaperAccessPermissionDialog(
                 },
             )
         } else {
+            val latestOnDismiss by rememberUpdatedState(onDismiss)
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val mediaPermission = rememberMultiplePermissionsState(
+                    listOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO),
+                )
+
                 AlertDialog(
                     onDismissRequest = onDismiss,
                     modifier = modifier,
@@ -128,10 +137,6 @@ fun WallpaperAccessPermissionDialog(
                         Text(stringResource(R.string.permission_desc_wallpaper_multiple))
                     },
                     text = {
-                        val mediaPermission = rememberMultiplePermissionsState(
-                            listOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO),
-                        )
-
                         Column {
                             Text(stringResource(R.string.permission_desc_wallpaper_multiple_desc, stringResource(id = R.string.derived_app_name)))
 
@@ -162,6 +167,12 @@ fun WallpaperAccessPermissionDialog(
                         TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) }
                     },
                 )
+
+                LaunchedEffect(managedFilesChecked, mediaPermission.allPermissionsGranted) {
+                    if (managedFilesChecked && mediaPermission.allPermissionsGranted) {
+                        latestOnDismiss()
+                    }
+                }
             } else {
                 PermissionDialog(
                     title = stringResource(R.string.permissions_manage_storage),
@@ -178,6 +189,11 @@ fun WallpaperAccessPermissionDialog(
                         context.requestManageAllFilesAccessPermission()
                     },
                 )
+                LaunchedEffect(managedFilesChecked) {
+                    if (managedFilesChecked) {
+                        latestOnDismiss()
+                    }
+                }
             }
         }
     } else {

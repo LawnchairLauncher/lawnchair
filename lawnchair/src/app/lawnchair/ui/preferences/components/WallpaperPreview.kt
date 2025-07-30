@@ -85,7 +85,6 @@ fun ColumnScope.WithWallpaper(
             managedFilesChecked = allFilesAccessState != FileAccessState.Denied,
             onDismiss = {
                 showPermissionDialog = false
-                fileAccessManager.refresh()
             },
             onPermissionRequest = {
                 fileAccessManager.refresh()

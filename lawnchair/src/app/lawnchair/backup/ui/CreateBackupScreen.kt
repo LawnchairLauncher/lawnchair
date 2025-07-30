@@ -193,6 +193,8 @@ fun CreateBackupScreen(
                 managedFilesChecked = allFilesAccessState == FileAccessState.Full,
                 onDismiss = {
                     showPermissionDialog = false
+                },
+                onPermissionRequest = {
                     viewModel.refreshFilePermissionStates()
                 },
             )
