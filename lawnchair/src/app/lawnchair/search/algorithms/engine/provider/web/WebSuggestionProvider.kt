@@ -9,6 +9,7 @@ import com.patrykmichalik.opto.core.firstBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 
 object WebSuggestionProvider : SearchProvider {
     override val id = "web_suggestions"
@@ -25,16 +26,19 @@ object WebSuggestionProvider : SearchProvider {
         }
 
         val provider = prefs2.webSuggestionProvider.firstBlocking()
+        val maxResults = prefs2.maxWebSuggestionResultCount.firstBlocking()
 
         val webProvider = provider
             .configure(context)
 
-        // 4. Now we can safely use it.
         return webProvider.getSuggestions(query)
             .map { suggestions ->
-                suggestions.map { suggestion ->
-                    SearchResult.WebSuggestion(suggestion = suggestion, provider = webProvider.id)
-                }
+                suggestions
+                    .take(maxResults)
+                    .map { suggestion ->
+                        SearchResult.WebSuggestion(suggestion = suggestion, provider = webProvider.id)
+                    }
             }
+
     }
 }
