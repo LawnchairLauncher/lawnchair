@@ -95,7 +95,7 @@ fun SearchProviderPreferenceItem(
                 modifier = Modifier
                     .padding(all = 16.dp)
                     .height(24.dp),
-                checked = adapter.state.value,
+                checked = enabled && adapter.state.value,
                 onCheckedChange = adapter::onChange,
                 enabled = enabled,
             )
@@ -140,8 +140,10 @@ fun ContactsSearchProvider(
         }
     }
 
+    val adapter = prefs.searchResultPeople.getAdapter()
     MainSwitchPreference(
-        adapter = prefs.searchResultPeople.getAdapter(),
+        checked = adapter.state.value && contactsPermissionState.status.isGranted,
+        onCheckedChange = adapter::onChange,
         label = stringResource(R.string.search_pref_result_people_title),
         modifier = modifier,
         enabled = contactsPermissionState.status.isGranted,
