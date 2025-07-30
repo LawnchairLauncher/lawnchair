@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
+import app.lawnchair.font.FontManager
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.model.SearchResultActionCallBack
 import app.lawnchair.theme.color.tokens.ColorTokens
@@ -25,6 +26,9 @@ class SearchResultEmptyState(context: Context, attrs: AttributeSet?) :
         title = ViewCompat.requireViewById(this, R.id.empty_state_title)
         subtitle = ViewCompat.requireViewById(this, R.id.empty_state_subtitle)
         icon = ViewCompat.requireViewById(this, R.id.empty_state_icon)
+
+        FontManager.INSTANCE.get(context).setCustomFont(title, R.id.font_heading)
+        FontManager.INSTANCE.get(context).setCustomFont(subtitle, R.id.font_body)
 
         subtitle.setTextColor(Themes.getAttrColor(context, android.R.attr.textColorTertiary))
         icon.setColorFilter(ColorTokens.ColorAccent.resolveColor(context))
