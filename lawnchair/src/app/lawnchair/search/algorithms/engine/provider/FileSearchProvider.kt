@@ -47,8 +47,8 @@ object FileSearchProvider : SearchProvider {
 
         val fileSearchEnabled = prefs.searchResultFilesToggle.get()
         val anyProviderEnabled = searchAllFiles || searchAudio || searchVisualMedia
-        if (query.isBlank() || (fileSearchEnabled && !anyProviderEnabled)) {
-            // do nothing if query is empty or if none of the providers are enabled
+        if (query.isBlank() || !fileSearchEnabled || !anyProviderEnabled) {
+            // do nothing if query is empty, file search is disabled, or none of the providers are enabled
             emit(emptyList())
             return@flow
         }
