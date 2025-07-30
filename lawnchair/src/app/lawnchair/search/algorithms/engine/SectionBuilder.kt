@@ -2,7 +2,6 @@ package app.lawnchair.search.algorithms.engine
 
 import android.content.Context
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.search.adapter.HEADER_JUSTIFY
 import app.lawnchair.search.adapter.SPACE
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.SearchTargetFactory
@@ -140,7 +139,7 @@ data object HistorySectionBuilder : SectionBuilder {
         }
 
         val targets = mutableListOf<SearchTargetCompat>()
-        targets.add(factory.createHeaderTarget(context.getString(R.string.search_pref_result_history_title), HEADER_JUSTIFY))
+        targets.add(factory.createHeaderTarget(context.getString(R.string.search_pref_result_history_title)))
         targets.addAll(
             history.map {
                 factory.createSearchHistoryTarget(

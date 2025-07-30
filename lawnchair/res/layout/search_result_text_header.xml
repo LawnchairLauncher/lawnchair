@@ -33,17 +33,4 @@
             android:textColor="?android:textColorPrimary"
             android:textSize="@dimen/search_result_hero_subtitle_size" />
     </LinearLayout>
-
-    <ImageButton
-        android:background="@drawable/pill_ripple"
-        android:id="@+id/clear_history"
-        android:layout_gravity="bottom|center|end"
-        android:layout_width="@dimen/search_box_height"
-        android:textAllCaps="false"
-        android:clickable="true"
-        android:layout_height="@dimen/search_box_height"
-        android:src="@drawable/ic_remove_no_shadow"
-        android:visibility="gone"
-        android:textStyle="normal"
-        android:contentDescription="@string/recents_clear_all" />
 </app.lawnchair.allapps.views.SearchResultText>

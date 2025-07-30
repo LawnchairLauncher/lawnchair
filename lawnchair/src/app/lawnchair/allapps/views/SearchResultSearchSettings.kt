@@ -6,7 +6,6 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import app.lawnchair.search.adapter.SearchTargetCompat
-import app.lawnchair.search.model.SearchResultActionCallBack
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.destinations.SearchRoute
 import app.lawnchair.ui.preferences.navigation.Search
@@ -32,7 +31,6 @@ class SearchResultSearchSettings(context: Context, attrs: AttributeSet?) :
     override fun bind(
         target: SearchTargetCompat,
         shortcuts: List<SearchTargetCompat>,
-        callBack: SearchResultActionCallBack?,
     ) {
         // no-op
     }

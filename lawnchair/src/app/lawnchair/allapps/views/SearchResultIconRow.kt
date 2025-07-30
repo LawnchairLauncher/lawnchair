@@ -14,7 +14,6 @@ import app.lawnchair.search.adapter.HISTORY
 import app.lawnchair.search.adapter.SETTINGS
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.WEB_SUGGESTION
-import app.lawnchair.search.model.SearchResultActionCallBack
 import app.lawnchair.util.copyToClipboard
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
@@ -78,7 +77,7 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
         return true
     }
 
-    override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>, callBack: SearchResultActionCallBack?) {
+    override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>) {
         if (boundId == target.id) return
         boundId = target.id
         flags = getFlags(target.extras)
@@ -153,7 +152,7 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
         shortcutIcons.forEachIndexed { index, icon ->
             if (index < shortcuts.size) {
                 icon.isVisible = true
-                icon.bind(shortcuts[index], emptyList(), null)
+                icon.bind(shortcuts[index], emptyList())
             } else {
                 icon.isVisible = false
             }

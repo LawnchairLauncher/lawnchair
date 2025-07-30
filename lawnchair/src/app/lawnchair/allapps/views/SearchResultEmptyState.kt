@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.core.view.ViewCompat
 import app.lawnchair.font.FontManager
 import app.lawnchair.search.adapter.SearchTargetCompat
-import app.lawnchair.search.model.SearchResultActionCallBack
 import app.lawnchair.theme.color.tokens.ColorTokens
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
@@ -40,7 +39,6 @@ class SearchResultEmptyState(context: Context, attrs: AttributeSet?) :
     override fun bind(
         target: SearchTargetCompat,
         shortcuts: List<SearchTargetCompat>,
-        callBack: SearchResultActionCallBack?,
     ) {
         val extras = target.extras
         val titleRes = extras.getInt("titleRes")

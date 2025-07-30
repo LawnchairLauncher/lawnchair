@@ -10,7 +10,6 @@ import app.lawnchair.search.adapter.MARKET_STORE
 import app.lawnchair.search.adapter.START_PAGE
 import app.lawnchair.search.adapter.SearchTargetCompat
 import app.lawnchair.search.adapter.WEB_SUGGESTION
-import app.lawnchair.search.model.SearchResultActionCallBack
 import com.android.app.search.LayoutType
 
 sealed interface SearchResultView {
@@ -20,7 +19,7 @@ sealed interface SearchResultView {
 
     fun launch(): Boolean
 
-    fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>, callBack: SearchResultActionCallBack?)
+    fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>)
 
     fun getFlags(extras: Bundle): Int {
         var flags = 0
