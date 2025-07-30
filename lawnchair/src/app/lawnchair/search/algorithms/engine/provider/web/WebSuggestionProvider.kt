@@ -39,6 +39,5 @@ object WebSuggestionProvider : SearchProvider {
                         SearchResult.WebSuggestion(suggestion = suggestion, provider = webProvider.id)
                     }
             }
-
     }
 }
