@@ -1,18 +1,11 @@
 package app.lawnchair.util
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.provider.Settings
-import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.util.isPlayStoreFlavor
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.util.SafeCloseable
@@ -62,6 +55,8 @@ class FileAccessManager private constructor(private val context: Context) : Safe
     private val _allFilesAccessState = MutableStateFlow(getCurrentAllFilesAccessState())
     private val _hasAnyPermission = MutableStateFlow(hasAnyPermissions())
 
+    private val _wallpaperAccessState = MutableStateFlow(getCurrentWallpaperAccessState())
+
     /**
      * Represents the state of access to Photos & Videos.
      * On API < 33, this is controlled by READ_EXTERNAL_STORAGE.
@@ -93,6 +88,30 @@ class FileAccessManager private constructor(private val context: Context) : Safe
     val hasAnyPermission: StateFlow<Boolean> = _hasAnyPermission.asStateFlow()
 
     /**
+     * Determines the current access state for reading the device wallpaper.
+     * This is needed to use [android.app.WallpaperManager.getDrawable].
+     *
+     * The permission requirements vary by Android version:
+     * - **API 29 (Android 10) and below:** `READ_EXTERNAL_STORAGE` is required.
+     *   This is covered if [allFilesAccessState] returns `Full`.
+     * - **API 30-32 (Android 11 - Android 12L):** `MANAGE_EXTERNAL_STORAGE` is required.
+     *   This is covered if [allFilesAccessState] returns `Full`.
+     * - **API 33 (Android 13 Tiramisu):** `MANAGE_EXTERNAL_STORAGE` **OR**
+     *   (`READ_MEDIA_IMAGES` **AND** `READ_MEDIA_VIDEO`) are required.
+     *   If `MANAGE_EXTERNAL_STORAGE` is not available (e.g., Play Store builds),
+     *   then `Full` access to visual media via `READ_MEDIA_IMAGES` and `READ_MEDIA_VIDEO` is necessary.
+     * - **API 34+ (Android 14 Upside Down Cake and later):** `MANAGE_EXTERNAL_STORAGE` **OR**
+     *   (`READ_MEDIA_IMAGES` **AND** `READ_MEDIA_VIDEO`) are required.
+     *   `READ_MEDIA_VISUAL_USER_SELECTED` (partial access) is **not sufficient** for wallpaper access.
+     *   Similar to API 33, if `MANAGE_EXTERNAL_STORAGE` is unavailable, full visual media access is required.
+     *
+     * In essence, for API 33 and above, if the app doesn't have `MANAGE_EXTERNAL_STORAGE`,
+     * it needs full `visualMediaAccessState` to read the wallpaper.
+     * `Partial` visual media access is insufficient.
+     */
+    val wallpaperAccessState: StateFlow<FileAccessState> = _wallpaperAccessState.asStateFlow()
+
+    /**
      * Re-evaluates the current permission status and updates all StateFlows.
      * This should be called when the app resumes to catch any permission
      * changes made by the user in system settings.
@@ -102,6 +121,7 @@ class FileAccessManager private constructor(private val context: Context) : Safe
         _allFilesAccessState.value = getCurrentAllFilesAccessState()
         _visualMediaAccessState.value = getCurrentVisualMediaState()
         _audioAccessState.value = getCurrentAudioState()
+        _wallpaperAccessState.value = getCurrentWallpaperAccessState()
         _hasAnyPermission.value = hasAnyPermissions()
     }
 
@@ -109,6 +129,26 @@ class FileAccessManager private constructor(private val context: Context) : Safe
         return _visualMediaAccessState.value != FileAccessState.Denied ||
             _audioAccessState.value != FileAccessState.Denied ||
             _allFilesAccessState.value != FileAccessState.Denied
+    }
+
+    private fun getCurrentWallpaperAccessState(): FileAccessState {
+        if (getCurrentAllFilesAccessState() == FileAccessState.Full) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (checkPermission(Manifest.permission.READ_MEDIA_IMAGES) && checkPermission(Manifest.permission.READ_MEDIA_VIDEO)) {
+                    return FileAccessState.Full
+                } else if (
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+                    checkPermission(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)
+                ) {
+                    // Partial access only. Wallpaper access requires full media access
+                    return FileAccessState.Denied
+                }
+            } else {
+                return FileAccessState.Full
+            }
+        }
+
+        return FileAccessState.Denied
     }
 
     private fun getCurrentVisualMediaState(): FileAccessState {
@@ -181,83 +221,4 @@ class FileAccessManager private constructor(private val context: Context) : Safe
         @JvmStatic
         fun getInstance(context: Context) = INSTANCE.get(context)!!
     }
-}
-
-fun checkAndRequestFilesPermission(context: Context, prefs: PreferenceManager): Boolean {
-    when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
-            if (!Environment.isExternalStorageManager() || !hasReadMediaImagesPermission(context)) {
-                if (!Environment.isExternalStorageManager()) {
-                    requestManageAllFilesAccessPermission(context)
-                }
-                if (!hasReadMediaImagesPermission(context)) {
-                    requestReadMediaImagesPermission(context)
-                }
-                prefs.searchResultFilesToggle.set(false)
-                return false
-            }
-        }
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-            if (!Environment.isExternalStorageManager()) {
-                requestManageAllFilesAccessPermission(context)
-                prefs.searchResultFilesToggle.set(false)
-                return false
-            }
-        }
-        else -> {
-            if (!hasReadExternalStoragePermission(context)) {
-                requestReadExternalStoragePermission(context)
-                return false
-            }
-        }
-    }
-    return true
-}
-
-fun filesAndStorageGranted(context: Context): Boolean {
-    return when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
-            Environment.isExternalStorageManager() && hasReadMediaImagesPermission(context)
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> Environment.isExternalStorageManager()
-        else -> hasReadExternalStoragePermission(context)
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.R)
-private fun requestManageAllFilesAccessPermission(context: Context) {
-    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-    intent.data = Uri.fromParts("package", context.packageName, null)
-    context.startActivity(intent)
-}
-
-private fun hasReadExternalStoragePermission(context: Context): Boolean {
-    return ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-    ) == PackageManager.PERMISSION_GRANTED
-}
-
-private fun requestReadExternalStoragePermission(context: Context) {
-    ActivityCompat.requestPermissions(
-        context as Activity,
-        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-        123,
-    )
-}
-
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private fun hasReadMediaImagesPermission(context: Context): Boolean {
-    return ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.READ_MEDIA_IMAGES,
-    ) == PackageManager.PERMISSION_GRANTED
-}
-
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-private fun requestReadMediaImagesPermission(context: Context) {
-    ActivityCompat.requestPermissions(
-        context as Activity,
-        arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
-        124,
-    )
 }

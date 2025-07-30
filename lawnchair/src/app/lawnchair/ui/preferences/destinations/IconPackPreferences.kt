@@ -65,6 +65,7 @@ import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
 import app.lawnchair.ui.preferences.components.DummyLauncherLayout
 import app.lawnchair.ui.preferences.components.WallpaperPreview
+import app.lawnchair.ui.preferences.components.WithWallpaper
 import app.lawnchair.ui.preferences.components.controls.ListPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreferenceEntry
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
@@ -139,18 +140,23 @@ fun IconPackPreferences(
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                DummyLauncherBox(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(top = 8.dp)
-                        .clip(MaterialTheme.shapes.large),
-                ) {
-                    WallpaperPreview(modifier = Modifier.fillMaxSize())
-                    key(iconPackAdapter.state.value, themedIconPackAdapter.state.value, themedIconsAdapter.state.value, tintIconpack.state.value) {
-                        DummyLauncherLayout(
-                            idp = invariantDeviceProfile(),
+                WithWallpaper { wallpaper ->
+                    DummyLauncherBox(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(top = 8.dp)
+                            .clip(MaterialTheme.shapes.large),
+                    ) {
+                        WallpaperPreview(
+                            wallpaper = wallpaper,
                             modifier = Modifier.fillMaxSize(),
                         )
+                        key(iconPackAdapter.state.value, themedIconPackAdapter.state.value, themedIconsAdapter.state.value, tintIconpack.state.value) {
+                            DummyLauncherLayout(
+                                idp = invariantDeviceProfile(),
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
                     }
                 }
             }

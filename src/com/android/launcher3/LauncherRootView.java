@@ -2,8 +2,6 @@ package com.android.launcher3;
 
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 
-import static app.lawnchair.util.FileAccessManagerKt.checkAndRequestFilesPermission;
-
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,6 +26,7 @@ import java.util.List;
 
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.util.FileAccessManager;
 
 public class LauncherRootView extends InsettableFrameLayout {
 
@@ -53,15 +52,17 @@ public class LauncherRootView extends InsettableFrameLayout {
         super(context, attrs);
         mActivity = StatefulActivity.fromContext(context);
         mSysUiScrim = new SysUiScrim(this);
-        PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
+
+        pref = PreferenceManager.getInstance(context);
+        PreferenceManager2 prefs2 = PreferenceManager2.getInstance(context);
+        
         mEnableTaskbarOnPhone = PreferenceExtensionsKt.firstBlocking(prefs2.getEnableTaskbarOnPhone());
 
-        pref = PreferenceManager.getInstance(getContext());
+        FileAccessManager fileAccessManager = FileAccessManager.getInstance(context);
+        Boolean hasFileAccessPermission = fileAccessManager.getHasAnyPermission().getValue();
 
-        if (pref.getEnableWallpaperBlur().get()){
-            if (checkAndRequestFilesPermission(context, pref)){
-                setUpBlur(context);
-            }
+        if (pref.getEnableWallpaperBlur().get() && hasFileAccessPermission) {
+            setUpBlur(context);
         }
     }
 

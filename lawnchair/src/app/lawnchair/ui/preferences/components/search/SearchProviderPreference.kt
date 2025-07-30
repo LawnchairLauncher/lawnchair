@@ -26,6 +26,7 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.ui.preferences.components.PermissionDialog
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
@@ -160,7 +161,7 @@ fun ContactsSearchProvider(
 
         PermissionDialog(
             title = stringResource(R.string.warn_contact_permission_title),
-            text = stringResource(id = R.string.warn_contact_permission_content),
+            text = stringResource(id = R.string.warn_contact_permission_content, stringResource(id = R.string.derived_app_name)),
             isPermanentlyDenied = contactsPermissionState.status.shouldShowRationale,
             onConfirm = { contactsPermissionState.launchPermissionRequest() },
             onDismiss = {

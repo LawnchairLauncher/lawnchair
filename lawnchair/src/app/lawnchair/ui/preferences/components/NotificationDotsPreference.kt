@@ -22,19 +22,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -42,9 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
-import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.util.bottomSheetHandler
 import app.lawnchair.util.lifecycleState
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
@@ -61,7 +57,7 @@ fun NotificationDotsPreference(
     serviceEnabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val bottomSheetHandler = bottomSheetHandler
+    var showPermissionDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val showWarning = enabled && !serviceEnabled
     val summary = when {
@@ -90,11 +86,7 @@ fun NotificationDotsPreference(
         modifier = modifier
             .clickable {
                 if (showWarning) {
-                    bottomSheetHandler.show {
-                        NotificationAccessConfirmation {
-                            bottomSheetHandler.hide()
-                        }
-                    }
+                    showPermissionDialog = true
                 } else {
                     val extras = bundleOf(EXTRA_FRAGMENT_HIGHLIGHT_KEY to "notification_badging")
                     val intent = Intent("android.settings.NOTIFICATION_SETTINGS")
@@ -103,6 +95,12 @@ fun NotificationDotsPreference(
                 }
             },
     )
+
+    if (showPermissionDialog) {
+        NotificationAccessConfirmation {
+            showPermissionDialog = false
+        }
+    }
 }
 
 @Composable
@@ -111,41 +109,30 @@ fun NotificationAccessConfirmation(
     onDismissRequest: () -> Unit,
 ) {
     val context = LocalContext.current
+    val appName = stringResource(id = R.string.derived_app_name)
 
-    ModalBottomSheetContent(
+    PermissionDialog(
+        title = stringResource(id = R.string.missing_notification_access_label),
         modifier = modifier,
-        title = { Text(text = stringResource(id = R.string.missing_notification_access_label)) },
-        text = {
-            val appName = stringResource(id = R.string.derived_app_name)
-            Text(text = stringResource(id = R.string.missing_notification_access_desc, appName))
-        },
-        buttons = {
-            OutlinedButton(
-                onClick = onDismissRequest,
-            ) {
-                Text(text = stringResource(id = android.R.string.cancel))
-            }
-            Spacer(modifier = Modifier.requiredWidth(8.dp))
-            Button(
-                onClick = {
-                    onDismissRequest()
+        text = stringResource(id = R.string.missing_notification_access_desc, appName),
+        isPermanentlyDenied = true,
+        onConfirm = {},
+        onDismiss = onDismissRequest,
+        onGoToSettings = {
+            onDismissRequest()
 
-                    val cn = ComponentName(context, NotificationListener::class.java)
-                    val showFragmentArgs = Bundle()
-                    showFragmentArgs.putString(
-                        EXTRA_FRAGMENT_HIGHLIGHT_KEY,
-                        cn.flattenToString(),
-                    )
+            val cn = ComponentName(context, NotificationListener::class.java)
+            val showFragmentArgs = Bundle()
+            showFragmentArgs.putString(
+                EXTRA_FRAGMENT_HIGHLIGHT_KEY,
+                cn.flattenToString(),
+            )
 
-                    val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .putExtra(EXTRA_FRAGMENT_HIGHLIGHT_KEY, cn.flattenToString())
-                        .putExtra(EXTRA_FRAGMENT_ARGS, showFragmentArgs)
-                    context.startActivity(intent)
-                },
-            ) {
-                Text(text = stringResource(id = R.string.title_change_settings))
-            }
+            val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(EXTRA_FRAGMENT_HIGHLIGHT_KEY, cn.flattenToString())
+                .putExtra(EXTRA_FRAGMENT_ARGS, showFragmentArgs)
+            context.startActivity(intent)
         },
     )
 }

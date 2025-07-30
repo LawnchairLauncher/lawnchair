@@ -19,6 +19,7 @@ package app.lawnchair.ui.preferences.destinations
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -36,8 +38,8 @@ import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
 import app.lawnchair.ui.preferences.components.DummyLauncherLayout
 import app.lawnchair.ui.preferences.components.WallpaperPreview
-import app.lawnchair.ui.preferences.components.clipToPercentage
-import app.lawnchair.ui.preferences.components.clipToVisiblePercentage
+import app.lawnchair.ui.preferences.components.WithWallpaper
+import app.lawnchair.ui.preferences.components.clipToBottomPercentage
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.MainSwitchPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
@@ -46,6 +48,7 @@ import app.lawnchair.ui.preferences.components.createPreviewIdp
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
+import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import com.android.launcher3.R
 
@@ -182,24 +185,30 @@ fun ColumnScope.DockPreferencesPreview(modifier: Modifier = Modifier) {
             prefs.hotseatBGAlpha.getAdapter(),
         )
 
-        PreferenceGroup(
+        PreferenceGroupHeading(
             heading = stringResource(id = R.string.preview_label),
-            modifier = modifier,
+        )
+        DividerColumn(
+            modifier = modifier.padding(horizontal = 16.dp),
         ) {
-            DummyLauncherBox(
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterHorizontally)
-                    .clip(MaterialTheme.shapes.large)
-                    .clipToVisiblePercentage(0.3f)
-                    .clipToPercentage(1.0f),
-            ) {
-                WallpaperPreview(modifier = Modifier.fillMaxSize())
-                key(adapters.map { it.state.value }.toTypedArray()) {
-                    DummyLauncherLayout(
-                        idp = createPreviewIdp { copy(numHotseatColumns = prefs.hotseatColumns.get()) },
+            WithWallpaper { wallpaper ->
+                DummyLauncherBox(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterHorizontally)
+                        .clip(MaterialTheme.shapes.large)
+                        .clipToBottomPercentage(0.3f),
+                ) {
+                    WallpaperPreview(
+                        wallpaper = wallpaper,
                         modifier = Modifier.fillMaxSize(),
                     )
+                    key(adapters.map { it.state.value }.toTypedArray()) {
+                        DummyLauncherLayout(
+                            idp = createPreviewIdp { copy(numHotseatColumns = prefs.hotseatColumns.get()) },
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
                 }
             }
         }

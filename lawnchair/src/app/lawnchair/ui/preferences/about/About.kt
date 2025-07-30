@@ -34,6 +34,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,7 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import app.lawnchair.preferences.preferenceManager
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.CheckUpdate
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -50,7 +51,8 @@ import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.navigation.AboutLicenses
-import app.lawnchair.util.checkAndRequestFilesPermission
+import app.lawnchair.util.FileAccessManager
+import app.lawnchair.util.FileAccessState
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
@@ -254,11 +256,11 @@ fun About(
                     },
                 ),
             )
+            val fileAccessManager = remember { FileAccessManager.getInstance(context) }
+            val allFileAccessState = fileAccessManager.allFilesAccessState.collectAsStateWithLifecycle().value
+
             if (BuildConfig.APPLICATION_ID.contains("nightly") &&
-                checkAndRequestFilesPermission(
-                    context,
-                    preferenceManager(),
-                )
+                allFileAccessState == FileAccessState.Full
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
                 CheckUpdate()

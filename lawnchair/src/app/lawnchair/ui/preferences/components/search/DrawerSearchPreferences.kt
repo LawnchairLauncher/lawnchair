@@ -187,7 +187,7 @@ private fun LocalSearchSettings(
         onClick = {
             navController.navigate(SearchProviderPreference(SearchProviderId.FILES))
         },
-        enabled = FileAccessManager.getInstance(context).hasAnyPermission.collectAsStateWithLifecycle().value,
+        enabled = remember { FileAccessManager.getInstance(context) }.hasAnyPermission.collectAsStateWithLifecycle().value,
     )
     SearchProviderPreferenceItem(
         adapter = prefs.searchResultSettingsEntry.getAdapter(),

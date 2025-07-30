@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.backup.LawnchairBackup
+import app.lawnchair.util.FileAccessManager
 import app.lawnchair.views.LauncherPreviewView
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -27,6 +28,14 @@ class CreateBackupViewModel(
 ) : AndroidViewModel(application) {
     val screenshot = MutableStateFlow(Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888))
     val screenshotDone = MutableStateFlow(false)
+
+    private val fileAccessManager = FileAccessManager.getInstance(application)
+    val allFilesAccessState = fileAccessManager.allFilesAccessState
+    val wallpaperAccessState = fileAccessManager.wallpaperAccessState
+
+    fun refreshFilePermissionStates() {
+        fileAccessManager.refresh()
+    }
 
     val backupContents = savedStateHandle.getStateFlow(
         "contents",

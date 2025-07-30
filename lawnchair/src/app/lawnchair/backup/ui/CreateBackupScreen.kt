@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.WallpaperManager
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.provider.DocumentsContract
 import android.util.Log
 import android.widget.Toast
@@ -37,27 +36,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.backup.LawnchairBackup
-import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.components.DummyLauncherBox
+import app.lawnchair.ui.preferences.components.WallpaperAccessPermissionDialog
 import app.lawnchair.ui.preferences.components.WallpaperPreview
+import app.lawnchair.ui.preferences.components.WithWallpaper
 import app.lawnchair.ui.preferences.components.controls.FlagSwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.util.isPlayStoreFlavor
 import app.lawnchair.util.BackHandler
-import app.lawnchair.util.checkAndRequestFilesPermission
-import app.lawnchair.util.filesAndStorageGranted
+import app.lawnchair.util.FileAccessState
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.removeFlag
 import com.android.launcher3.R
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CreateBackupScreen(
     viewModel: CreateBackupViewModel,
@@ -72,16 +66,11 @@ fun CreateBackupScreen(
 
     val context = LocalContext.current
     val hasLiveWallpaper = remember { WallpaperManager.getInstance(context).wallpaperInfo != null }
-    val permissionState = rememberPermissionState(
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            android.Manifest.permission.READ_MEDIA_IMAGES
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !isPlayStoreFlavor()) {
-            android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
-        } else {
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        },
-    )
-    val hasStoragePermission = permissionState.status.isGranted || filesAndStorageGranted(context)
+    val allFilesAccessState by viewModel.allFilesAccessState.collectAsStateWithLifecycle()
+    val wallpaperAccessState by viewModel.wallpaperAccessState.collectAsStateWithLifecycle()
+    val hasWallpaperPermission = wallpaperAccessState == FileAccessState.Full
+
+    var showPermissionDialog by remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
     var creatingBackup by remember { mutableStateOf(false) }
@@ -120,11 +109,12 @@ fun CreateBackupScreen(
     PreferenceLayout(
         label = stringResource(id = R.string.create_backup),
         modifier = modifier,
+        isExpandedScreen = true,
         backArrowVisible = !LocalIsExpandedScreen.current,
         scrollState = if (isPortrait) null else scrollState,
     ) {
-        DisposableEffect(contents, hasLiveWallpaper, hasStoragePermission) {
-            val canBackupWallpaper = hasLiveWallpaper || !hasStoragePermission
+        DisposableEffect(contents, hasLiveWallpaper, hasWallpaperPermission) {
+            val canBackupWallpaper = hasLiveWallpaper || !hasWallpaperPermission
             if (contents.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER) && canBackupWallpaper) {
                 viewModel.setBackupContents(contents.removeFlag(LawnchairBackup.INCLUDE_WALLPAPER))
             }
@@ -132,23 +122,30 @@ fun CreateBackupScreen(
         }
 
         if (isPortrait) {
-            DummyLauncherBox(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .weight(1f)
-                    .align(Alignment.CenterHorizontally)
-                    .clip(MaterialTheme.shapes.large),
-            ) {
-                if (contents.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER)) {
-                    WallpaperPreview(modifier = Modifier.fillMaxSize())
-                }
-                if (contents.hasFlag(LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS)) {
-                    Image(
-                        bitmap = screenshot.asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.FillHeight,
-                    )
+            WithWallpaper(
+                displayWallpaperButton = false,
+            ) { wallpaper ->
+                DummyLauncherBox(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .weight(1f)
+                        .align(Alignment.CenterHorizontally)
+                        .clip(MaterialTheme.shapes.large),
+                ) {
+                    if (contents.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER)) {
+                        WallpaperPreview(
+                            wallpaper = wallpaper,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                    if (contents.hasFlag(LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS)) {
+                        Image(
+                            bitmap = screenshot.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.FillHeight,
+                        )
+                    }
                 }
             }
         }
@@ -163,8 +160,8 @@ fun CreateBackupScreen(
             FlagSwitchPreference(
                 flags = contents,
                 setFlags = {
-                    if (it.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER) && !hasStoragePermission) {
-                        checkAndRequestFilesPermission(context, PreferenceManager.getInstance(context))
+                    if (it.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER) && !hasWallpaperPermission) {
+                        showPermissionDialog = true
                     } else {
                         viewModel.setBackupContents(it)
                     }
@@ -189,6 +186,16 @@ fun CreateBackupScreen(
             ) {
                 Text(text = stringResource(id = R.string.action_create))
             }
+        }
+
+        if (showPermissionDialog) {
+            WallpaperAccessPermissionDialog(
+                managedFilesChecked = allFilesAccessState == FileAccessState.Full,
+                onDismiss = {
+                    showPermissionDialog = false
+                    viewModel.refreshFilePermissionStates()
+                },
+            )
         }
     }
 }
