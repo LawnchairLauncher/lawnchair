@@ -27,6 +27,7 @@ import java.util.List;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.util.FileAccessManager;
+import app.lawnchair.util.FileAccessState;
 
 public class LauncherRootView extends InsettableFrameLayout {
 
@@ -59,9 +60,8 @@ public class LauncherRootView extends InsettableFrameLayout {
         mEnableTaskbarOnPhone = PreferenceExtensionsKt.firstBlocking(prefs2.getEnableTaskbarOnPhone());
 
         FileAccessManager fileAccessManager = FileAccessManager.getInstance(context);
-        Boolean hasFileAccessPermission = fileAccessManager.getHasAnyPermission().getValue();
-
-        if (pref.getEnableWallpaperBlur().get() && hasFileAccessPermission) {
+        FileAccessState wallpaperAccessState = fileAccessManager.getWallpaperAccessState().getValue();
+        if (pref.getEnableWallpaperBlur().get() && wallpaperAccessState != FileAccessState.Denied.INSTANCE) {
             setUpBlur(context);
         }
     }
