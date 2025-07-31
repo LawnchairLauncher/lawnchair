@@ -167,7 +167,7 @@ To update Lawnchair's font listing, follow these steps:
 [telegram]: https://t.me/lccommunity
 [discord]: https://discord.com/invite/3x8qNWxgGZ
 [nightly]: https://github.com/LawnchairLauncher/lawnchair/releases/tag/nightly
-[bug-reports]: https://github.com/LawnchairLaunccher/lawnchair/issues/new?assignees=&labels=bug&projects=&template=bug_report.yaml&title=%5BBUG%5D+
+[bug-reports]: https://github.com/LawnchairLauncher/lawnchair/issues/new?assignees=&labels=bug&projects=&template=bug_report.yaml&title=%5BBUG%5D+
 [feature-requests]: https://github.com/LawnchairLauncher/lawnchair/issues/new?assignees=&labels=feature%2Cenhancement&projects=&template=feature_request.yaml&title=%5BFEATURE%5D+
 [code-of-conduct]: CODE_OF_CONDUCT.md
 [crowdin]: https://lawnchair.crowdin.com
