@@ -22,15 +22,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
-import app.lawnchair.ui.preferences.about.acknowledgements.OssLibrary
 import app.lawnchair.ui.preferences.destinations.IconPackInfo
 import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.getPackageVersionCode
-import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
@@ -110,18 +107,4 @@ class PreferenceViewModel(private val app: Application) :
     }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Lazily, listOf())
-
-    override val ossLibraries: StateFlow<List<OssLibrary>> = flow {
-        val jsonString = app.resources.assets.open("app/cash/licensee/artifacts.json")
-            .bufferedReader().use { it.readText() }
-        val ossLibraries = kotlinxJson.decodeFromString<List<OssLibrary>>(jsonString)
-            .asSequence()
-            .filter { it.name != OssLibrary.UNKNOWN_NAME }
-            .distinctBy { "${it.groupId}:${it.artifactId}" }
-            .sortedBy { it.name }
-            .toList()
-        emit(ossLibraries)
-    }
-        .flowOn(Dispatchers.IO)
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }

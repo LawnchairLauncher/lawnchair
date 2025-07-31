@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package app.lawnchair.ui.preferences
+package app.lawnchair.ui.preferences.about.acknowledgements
 
-import app.lawnchair.ui.preferences.destinations.IconPackInfo
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.Serializable
 
-sealed interface PreferenceInteractor {
-    val iconPacks: StateFlow<List<IconPackInfo>>
-    val themedIconPacks: StateFlow<List<IconPackInfo>>
+@Serializable
+data class OssLibrary(
+    val groupId: String,
+    val artifactId: String,
+    val name: String = artifactId,
+    val spdxLicenses: List<License>? = null,
+    val unknownLicenses: List<License>? = null,
+) {
+    @Serializable
+    data class License(
+        val name: String,
+        val url: String,
+    )
 }
