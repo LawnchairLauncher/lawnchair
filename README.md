@@ -90,6 +90,17 @@ Verify the integrity of your Lawnchair download using these SHA-256 hashes:
 
 Please visit the [Lawnchair Contributing Guidelines](CONTRIBUTING.md) for information and tips on contributing to Lawnchair.
 
+## Supporting Lawnchair
+
+If you love what we do, consider [supporting us on Open Collective](https://opencollective.com/lawnchair)! Your contributions help keep Lawnchair independent and enable us to develop faster.
+
+A huge thank you to our **Core Backers ($5+)**:
+*(These backers directly fund our Project Velocity Fund)*
+
+[![Core Backers](https://opencollective.com/lawnchair/tiers/backer.svg?avatarHeight=64&width=890&button=false)](https://opencollective.com/lawnchair)
+
+[Become a supporter](https://opencollective.com/lawnchair) to help us cover our operational costs, or become a Core Backer to be featured here!
+
 ## Quick links
 
 -   [Website](https://lawnchair.app)
