@@ -1,21 +1,22 @@
 package app.lawnchair.ui.preferences.about
 
-import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import androidx.core.content.FileProvider
-import app.lawnchair.ui.preferences.components.hasInstallPermission
-import app.lawnchair.ui.preferences.components.requestInstallPermission
+import androidx.core.net.toUri
 import com.android.launcher3.BuildConfig
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.util.SafeCloseable
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -26,9 +27,10 @@ import okhttp3.Request
 
 class NightlyBuildsRepository private constructor(
     private val applicationContext: Context,
+    private val okHttpClient: OkHttpClient,
+    private val api: GitHubService,
 ) : SafeCloseable {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    val api = RetrofitClient.githubService
 
     private val _updateState = MutableStateFlow<UpdateState>(UpdateState.UpToDate)
     val updateState = _updateState.asStateFlow()
@@ -45,17 +47,22 @@ class NightlyBuildsRepository private constructor(
                 val latestVersion =
                     asset?.name?.substringAfter("_")?.substringBefore("-")?.toIntOrNull() ?: 0
 
-                if (asset != null && latestVersion > currentVersion) {
-                    _updateState.update {
-                        UpdateState.Available(
-                            asset.name,
-                            asset.browserDownloadUrl,
-                        )
+                withContext(Dispatchers.Main) {
+                    if (asset != null && latestVersion > currentVersion) {
+                        _updateState.update {
+                            UpdateState.Available(
+                                asset.name,
+                                asset.browserDownloadUrl,
+                            )
+                        }
+                    } else {
+                        _updateState.update { UpdateState.UpToDate }
                     }
-                } else {
-                    _updateState.update { UpdateState.UpToDate }
                 }
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                Log.e(TAG, "Network error during update check", e)
+                _updateState.update { UpdateState.Failed }
+            } catch (e: Exception) { // General fallback
                 Log.e(TAG, "Failed to check for update", e)
                 _updateState.update { UpdateState.Failed }
             }
@@ -70,15 +77,11 @@ class NightlyBuildsRepository private constructor(
             _updateState.update { UpdateState.Downloading(0f) }
             try {
                 val file = downloadApk(currentState.url) { progress ->
-                    // Update progress on the main thread if UI is involved
-                    // For now, updating directly as _updateState is thread-safe (StateFlow)
                     _updateState.update { UpdateState.Downloading(progress) }
                 }
                 if (file != null) {
                     _updateState.update { UpdateState.Downloaded(file) }
                 } else {
-                    // It's better to log and set to Failed state than to throw an exception
-                    // that might not be handled by the caller of this repository method.
                     Log.e(TAG, "Downloaded file is null")
                     _updateState.update { UpdateState.Failed }
                 }
@@ -107,16 +110,20 @@ class NightlyBuildsRepository private constructor(
         applicationContext.startActivity(intent)
     }
 
-    private suspend fun downloadApk(url: String, onProgress: (Float) -> Unit): File? {
+    private fun downloadApk(url: String, onProgress: (Float) -> Unit): File? {
         return try {
-            val apkDir = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                "Lawnchair",
-            )
-            if (!apkDir.exists()) apkDir.mkdirs()
+            val cacheDir = applicationContext.cacheDir
+            val apkDir = File(cacheDir, "updates")
+            if (!apkDir.exists()) {
+                apkDir.mkdirs()
+            }
             val apkFile = File(apkDir, "Lawnchair-update.apk")
 
-            val response = OkHttpClient().newCall(Request.Builder().url(url).build()).execute()
+            if (apkFile.exists()) {
+                apkFile.delete()
+            }
+
+            val response = okHttpClient.newCall(Request.Builder().url(url).build()).execute()
             val body = response.body
             val totalBytes = body.contentLength().toFloat()
             if (totalBytes <= 0) {
@@ -132,33 +139,28 @@ class NightlyBuildsRepository private constructor(
                     while (input.read(buffer).also { bytesRead = it } != -1) {
                         output.write(buffer, 0, bytesRead)
                         bytesDownloaded += bytesRead
-                        // Ensure onProgress is called from a scope that can update UI if needed
-                        // For this repository, we can call it directly or ensure the passed
-                        // coroutineScope is appropriate.
-                        // Using withContext to switch to a scope that can safely update _updateState
-                        // if onProgress directly updates it from a different thread.
-                        // However, since onProgress is a lambda passed from downloadUpdate (which uses coroutineScope),
-                        // it should be fine. For safety, or if onProgress were more complex:
-                        withContext(coroutineScope.coroutineContext) {
-                            onProgress(bytesDownloaded / totalBytes)
-                        }
+                        onProgress(bytesDownloaded / totalBytes)
                     }
                 }
             }
             apkFile
         } catch (e: Exception) {
-            Log.e(TAG, "APK Download failed", e)
+            Log.e(TAG, "APK download failed", e)
             null
         }
     }
 
-    override fun close() {}
+    override fun close() {
+        coroutineScope.cancel()
+    }
 
     companion object {
         private const val TAG = "NightlyBuildsRepository"
 
         @JvmField
-        val INSTANCE = MainThreadInitializedObject { NightlyBuildsRepository(it) }
+        val INSTANCE = MainThreadInitializedObject {
+            NightlyBuildsRepository(it, OkHttpClient(), RetrofitClient.githubService)
+        }
 
         @JvmStatic
         fun getInstance(context: Context) = INSTANCE.get(context)!!
