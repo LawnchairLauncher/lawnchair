@@ -457,6 +457,10 @@
     <string name="translate">Translate</string>
     <string name="donate">Donate</string>
 
+    <string name="contributor_status_active">Active</string>
+
+    <string name="update_check_failed">Failed to check for updates</string>
+
     <!--
 
     Backup and restore
