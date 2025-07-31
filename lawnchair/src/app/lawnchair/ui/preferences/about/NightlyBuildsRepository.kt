@@ -90,8 +90,9 @@ class NightlyBuildsRepository private constructor(
     }
 
     fun installUpdate(file: File) {
-        if (!hasInstallPermission(applicationContext as Application)) { // Assuming context is Application
-            requestInstallPermission(applicationContext)
+        if (!applicationContext.hasInstallPermission()) {
+            // todo expose proper permission UI instead of requesting immediately on click
+            applicationContext.requestInstallPermission()
             return
         }
         val uri = FileProvider.getUriForFile(
@@ -161,5 +162,25 @@ class NightlyBuildsRepository private constructor(
 
         @JvmStatic
         fun getInstance(context: Context) = INSTANCE.get(context)!!
+    }
+}
+
+private fun Context.hasInstallPermission(): Boolean {
+    return if (Utilities.ATLEAST_O) {
+        packageManager.canRequestPackageInstalls()
+    } else {
+        true
+    }
+}
+
+private fun Context.requestInstallPermission() {
+    if (Utilities.ATLEAST_O) {
+        val intent = Intent(
+            Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+            "package:$packageName".toUri(),
+        ).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        startActivity(intent)
     }
 }
