@@ -18,12 +18,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
 class NightlyBuildsRepository(
     val applicationContext: Context,
-    val okHttpClient: OkHttpClient,
     val api: GitHubService,
 ) {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -107,7 +104,7 @@ class NightlyBuildsRepository(
         applicationContext.startActivity(intent)
     }
 
-    private fun downloadApk(url: String, onProgress: (Float) -> Unit): File? {
+    private suspend fun downloadApk(url: String, onProgress: (Float) -> Unit): File? {
         return try {
             val cacheDir = applicationContext.cacheDir
             val apkDir = File(cacheDir, "updates")
@@ -120,15 +117,14 @@ class NightlyBuildsRepository(
                 apkFile.delete()
             }
 
-            val response = okHttpClient.newCall(Request.Builder().url(url).build()).execute()
-            val body = response.body
-            val totalBytes = body.contentLength().toFloat()
+            val responseBody = api.downloadFile(url) // Use Retrofit service
+            val totalBytes = responseBody.contentLength().toFloat()
             if (totalBytes <= 0) {
                 Log.w(TAG, "Content length is invalid: $totalBytes")
                 return null
             }
 
-            body.byteStream().use { input ->
+            responseBody.byteStream().use { input ->
                 FileOutputStream(apkFile).use { output ->
                     val buffer = ByteArray(8192)
                     var bytesDownloaded = 0L

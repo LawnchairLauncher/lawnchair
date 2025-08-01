@@ -3,7 +3,6 @@ package app.lawnchair.ui.preferences.about
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import app.lawnchair.ui.preferences.about.RetrofitClient.githubService
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 
 class AboutViewModel(
     application: Application,
@@ -20,7 +18,6 @@ class AboutViewModel(
     private val githubService = RetrofitClient.githubService
     private val nightlyBuildsRepository = NightlyBuildsRepository(
         applicationContext = application,
-        okHttpClient = OkHttpClient(),
         api = githubService,
     )
 

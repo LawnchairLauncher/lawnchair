@@ -4,10 +4,13 @@ import app.lawnchair.util.kotlinxJson
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Streaming
+import retrofit2.http.Url
 
 /**
  * Interface for interacting with the GitHub API.
@@ -24,6 +27,10 @@ interface GitHubService {
         @Path("owner") owner: String,
         @Path("repo") repo: String,
     ): List<GitHubEvent>
+
+    @Streaming
+    @GET
+    suspend fun downloadFile(@Url fileUrl: String): ResponseBody
 }
 
 /**
@@ -37,20 +44,20 @@ data class GitHubRelease(
     @SerialName("tag_name")
     val tagName: String,
     val assets: List<GitHubAsset>,
-)
-
-/**
- * Represents an asset associated with a GitHub release.
- *
- * @property name The name of the asset.
- * @property browserDownloadUrl The URL to download the asset from a browser.
- */
-@Serializable
-data class GitHubAsset(
-    val name: String,
-    @SerialName("browser_download_url")
-    val browserDownloadUrl: String,
-)
+) {
+    /**
+     * Represents an asset associated with a GitHub release.
+     *
+     * @property name The name of the asset.
+     * @property browserDownloadUrl The URL to download the asset from a browser.
+     */
+    @Serializable
+    data class GitHubAsset(
+        val name: String,
+        @SerialName("browser_download_url")
+        val browserDownloadUrl: String,
+    )
+}
 
 /**
  * Represents a GitHub event.
@@ -65,17 +72,17 @@ data class GitHubEvent(
     val actor: Actor,
     @SerialName("created_at")
     val createdAt: String,
-)
-
-/**
- * Represents the actor (user) who triggered a GitHub event.
- *
- * @property login The username of the actor.
- */
-@Serializable
-data class Actor(
-    val login: String,
-)
+) {
+    /**
+     * Represents the actor (user) who triggered a GitHub event.
+     *
+     * @property login The username of the actor.
+     */
+    @Serializable
+    data class Actor(
+        val login: String,
+    )
+}
 
 /**
  * A singleton object that provides a configured Retrofit instance for accessing the GitHub API.
