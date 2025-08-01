@@ -17,28 +17,17 @@
 package app.lawnchair.ui.preferences.about.acknowledgements
 
 import android.content.Intent
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import app.lawnchair.ui.ModalBottomSheetContent
+import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayoutLazyColumn
-import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
-import app.lawnchair.ui.util.bottomSheetHandler
 import com.android.launcher3.R
 
 @Composable
@@ -53,7 +42,8 @@ fun Acknowledgements(
     ) {
         preferenceGroupItems(ossLibraries, isFirstChild = true) { _, library ->
             OssLibraryItem(
-                ossLibrary = library,
+                name = library.name,
+                license = viewModel.getLicense(library),
             )
         }
     }
@@ -61,59 +51,24 @@ fun Acknowledgements(
 
 @Composable
 fun OssLibraryItem(
-    ossLibrary: OssLibrary,
-    modifier: Modifier = Modifier,
-) {
-    val bottomSheetHandler = bottomSheetHandler
-
-    PreferenceTemplate(
-        title = {
-            Text(
-                text = ossLibrary.name,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        },
-        modifier = modifier
-            .clickable {
-                bottomSheetHandler.show {
-                    NoticePage(ossLibrary = ossLibrary)
-                }
-            },
-    )
-}
-
-@Composable
-fun NoticePage(
-    ossLibrary: OssLibrary,
+    name: String,
+    license: OssLibrary.License?,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val license = ossLibrary.spdxLicenses?.get(0) ?: ossLibrary.unknownLicenses?.get(0) ?: return
 
-    ModalBottomSheetContent(
-        title = {
-            Text(text = ossLibrary.name)
-        },
-        buttons = {},
+    ClickablePreference(
+        label = name,
         modifier = modifier,
-    ) {
-        Column {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                    .clickable {
-                        val webpage = license.url.toUri()
-                        val intent = Intent(Intent.ACTION_VIEW, webpage)
-                        if (intent.resolveActivity(context.packageManager) != null) {
-                            context.startActivity(intent)
-                        }
-                    },
-                text = license.url,
-                fontFamily = FontFamily.Monospace,
-                fontSize = 14.sp,
-            )
-        }
-    }
+        subtitle = license?.name,
+        onClick = {
+            license?.url?.let { urlString ->
+                val webpage = urlString.toUri()
+                val intent = Intent(Intent.ACTION_VIEW, webpage)
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                }
+            }
+        },
+    )
 }
