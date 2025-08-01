@@ -47,10 +47,6 @@ class AcknowledgementsViewModel(
             initialValue = emptyList(),
         )
 
-    fun getLicense(
-        ossLibrary: OssLibrary,
-    ): OssLibrary.License? = ossLibrary.spdxLicenses?.get(0) ?: ossLibrary.spdxLicenses?.get(0)
-
     companion object {
         private const val ACKNOWLEDGEMENTS_FILE_PATH = "app/cash/licensee/artifacts.json"
         private const val TAG = "AcknowledgementsViewmModel"

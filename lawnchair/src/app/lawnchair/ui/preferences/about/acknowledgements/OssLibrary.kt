@@ -26,6 +26,8 @@ data class OssLibrary(
     val spdxLicenses: List<License>? = null,
     val unknownLicenses: List<License>? = null,
 ) {
+    val license: License? = spdxLicenses?.firstOrNull() ?: unknownLicenses?.firstOrNull()
+
     @Serializable
     data class License(
         val name: String,

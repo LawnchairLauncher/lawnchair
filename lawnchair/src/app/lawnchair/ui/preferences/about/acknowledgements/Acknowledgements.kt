@@ -43,7 +43,7 @@ fun Acknowledgements(
         preferenceGroupItems(ossLibraries, isFirstChild = true) { _, library ->
             OssLibraryItem(
                 name = library.name,
-                license = viewModel.getLicense(library),
+                license = library.license,
             )
         }
     }
