@@ -8,28 +8,24 @@ import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
-import com.android.launcher3.util.MainThreadInitializedObject
-import com.android.launcher3.util.SafeCloseable
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class NightlyBuildsRepository private constructor(
-    private val applicationContext: Context,
-    private val okHttpClient: OkHttpClient,
-    private val api: GitHubService,
-) : SafeCloseable {
+class NightlyBuildsRepository(
+    val applicationContext: Context,
+    val okHttpClient: OkHttpClient,
+    val api: GitHubService,
+) {
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val _updateState = MutableStateFlow<UpdateState>(UpdateState.UpToDate)
@@ -43,21 +39,22 @@ class NightlyBuildsRepository private constructor(
                 val nightly = releases.firstOrNull { it.tagName == "nightly" }
                 val asset = nightly?.assets?.firstOrNull()
 
-                val currentVersion = BuildConfig.VERSION_CODE
+                val currentVersion = BuildConfig.VERSION_DISPLAY_NAME
+                    .substringAfter("_")
+                    .substringBefore("-")
+                    .toIntOrNull() ?: 0
                 val latestVersion =
                     asset?.name?.substringAfter("_")?.substringBefore("-")?.toIntOrNull() ?: 0
 
-                withContext(Dispatchers.Main) {
-                    if (asset != null && latestVersion > currentVersion) {
-                        _updateState.update {
-                            UpdateState.Available(
-                                asset.name,
-                                asset.browserDownloadUrl,
-                            )
-                        }
-                    } else {
-                        _updateState.update { UpdateState.UpToDate }
+                if (asset != null && latestVersion > currentVersion) {
+                    _updateState.update {
+                        UpdateState.Available(
+                            asset.name,
+                            asset.browserDownloadUrl,
+                        )
                     }
+                } else {
+                    _updateState.update { UpdateState.UpToDate }
                 }
             } catch (e: IOException) {
                 Log.e(TAG, "Network error during update check", e)
@@ -150,20 +147,8 @@ class NightlyBuildsRepository private constructor(
         }
     }
 
-    override fun close() {
-        coroutineScope.cancel()
-    }
-
     companion object {
         private const val TAG = "NightlyBuildsRepository"
-
-        @JvmField
-        val INSTANCE = MainThreadInitializedObject {
-            NightlyBuildsRepository(it, OkHttpClient(), RetrofitClient.githubService)
-        }
-
-        @JvmStatic
-        fun getInstance(context: Context) = INSTANCE.get(context)!!
     }
 }
 
