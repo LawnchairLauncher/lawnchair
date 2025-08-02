@@ -10,15 +10,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.create
 
 class AboutViewModel(
     application: Application,
 ) : AndroidViewModel(application) {
 
-    private val githubService = RetrofitClient.githubService
     private val nightlyBuildsRepository = NightlyBuildsRepository(
         applicationContext = application,
-        api = githubService,
+        api = gitHubApiRetrofit.create(),
     )
 
     private val _uiState = MutableStateFlow(AboutUiState())
@@ -36,7 +36,7 @@ class AboutViewModel(
             )
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Default) {
             val activeContributors = fetchActiveContributors()
             val updatedCoreTeam = _uiState.value.coreTeam.map { member ->
                 val status = if (member.githubUsername != null && activeContributors.contains(member.githubUsername.lowercase())) ContributorStatus.Active else ContributorStatus.Idle
@@ -63,14 +63,12 @@ class AboutViewModel(
     }
 
     private suspend fun fetchActiveContributors(): Set<String> {
-        return try {
-            val events = githubService.getRepositoryEvents("LawnchairLauncher", "lawnchair")
-            events.map { it.actor.login.lowercase() }.toSet()
-        } catch (e: Exception) {
-            emptySet()
-        }
+        return runCatching {
+            nightlyBuildsRepository.api.getRepositoryEvents("LawnchairLauncher", "lawnchair")
+                .map { it.actor.login.lowercase() }
+                .toSet()
+        }.getOrDefault(emptySet())
     }
-
     companion object {
         private val team = listOf(
             TeamMember(

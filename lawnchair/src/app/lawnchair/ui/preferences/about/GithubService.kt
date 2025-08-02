@@ -84,24 +84,11 @@ data class GitHubEvent(
     )
 }
 
-/**
- * A singleton object that provides a configured Retrofit instance for accessing the GitHub API.
- *
- * It initializes Retrofit with the base URL for the GitHub API and uses kotlinx.serialization
- * for JSON conversion. The `githubService` property provides an implementation of the
- * [GitHubService] interface, allowing easy access to API endpoints.
- */
-object RetrofitClient {
-    private const val BASE_URL = "https://api.github.com/"
-
-    private val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(kotlinxJson.asConverterFactory("application/json".toMediaType()))
-            .build()
-    }
-
-    val githubService: GitHubService by lazy {
-        retrofit.create(GitHubService::class.java)
-    }
+internal val gitHubApiRetrofit: Retrofit by lazy {
+    Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(kotlinxJson.asConverterFactory("application/json".toMediaType()))
+        .build()
 }
+
+private const val BASE_URL = "https://api.github.com/"

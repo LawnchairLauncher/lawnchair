@@ -19,25 +19,22 @@ class AcknowledgementsViewModel(
 ) : AndroidViewModel(application) {
 
     val ossLibraries: StateFlow<List<OssLibrary>> = flow {
-        try {
-            val jsonString = application.resources.assets.open(ACKNOWLEDGEMENTS_FILE_PATH)
-                .bufferedReader().use { it.readText() }
-            val libraries = kotlinxJson.decodeFromString<List<OssLibrary>>(jsonString)
-                .asSequence()
-                .distinctBy { "${it.groupId}:${it.artifactId}" }
-                .sortedBy { it.name }
-                .toList()
-            emit(libraries)
-        } catch (e: IOException) {
-            Log.e(TAG, "Error reading acknowledgements file", e)
-            emit(emptyList())
-        } catch (e: kotlinx.serialization.SerializationException) {
-            Log.e(TAG, "Error parsing acknowledgements JSON", e)
-            emit(emptyList())
-        }
+        val jsonString = application.resources.assets.open(ACKNOWLEDGEMENTS_FILE_PATH)
+            .bufferedReader().use { it.readText() }
+        val libraries = kotlinxJson.decodeFromString<List<OssLibrary>>(jsonString)
+            .asSequence()
+            .distinctBy { "${it.groupId}:${it.artifactId}" }
+            .sortedBy { it.name }
+            .toList()
+        emit(libraries)
     }
         .catch { e ->
-            Log.e(TAG, "Unexpected error in ossLibraries flow", e)
+            val errorMessage = when (e) {
+                is IOException -> "Error reading acknowledgements file"
+                is kotlinx.serialization.SerializationException -> "Error parsing acknowledgements JSON"
+                else -> "Unexpected error in ossLibraries flow"
+            }
+            Log.e(TAG, errorMessage, e)
             emit(emptyList())
         }
         .flowOn(Dispatchers.IO)

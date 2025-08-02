@@ -9,8 +9,10 @@ import androidx.core.net.toUri
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.io.path.createDirectories
+import kotlin.io.path.deleteIfExists
+import kotlin.io.path.outputStream
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,7 +31,7 @@ class NightlyBuildsRepository(
     val updateState = _updateState.asStateFlow()
 
     fun checkForUpdate() {
-        coroutineScope.launch(Dispatchers.IO) {
+        coroutineScope.launch(Dispatchers.Default) {
             _updateState.update { UpdateState.Checking }
             try {
                 val releases = api.getReleases()
@@ -53,11 +55,15 @@ class NightlyBuildsRepository(
                 } else {
                     _updateState.update { UpdateState.UpToDate }
                 }
-            } catch (e: IOException) {
-                Log.e(TAG, "Network error during update check", e)
-                _updateState.update { UpdateState.Failed }
-            } catch (e: Exception) { // General fallback
-                Log.e(TAG, "Failed to check for update", e)
+            } catch (e: Exception) {
+                when (e) {
+                    is IOException -> {
+                        Log.e(TAG, "Network error during update check", e)
+                    }
+                    else -> {
+                        Log.e(TAG, "Failed to check for update", e)
+                    }
+                }
                 _updateState.update { UpdateState.Failed }
             }
         }
@@ -107,17 +113,10 @@ class NightlyBuildsRepository(
     private suspend fun downloadApk(url: String, onProgress: (Float) -> Unit): File? {
         return try {
             val cacheDir = applicationContext.cacheDir
-            val apkDir = File(cacheDir, "updates")
-            if (!apkDir.exists()) {
-                apkDir.mkdirs()
-            }
-            val apkFile = File(apkDir, "Lawnchair-update.apk")
+            val apkDirPath = cacheDir.toPath().resolve("updates").createDirectories()
+            val apkFilePath = apkDirPath.resolve("Lawnchair-update.apk").apply { deleteIfExists() }
 
-            if (apkFile.exists()) {
-                apkFile.delete()
-            }
-
-            val responseBody = api.downloadFile(url) // Use Retrofit service
+            val responseBody = api.downloadFile(url)
             val totalBytes = responseBody.contentLength().toFloat()
             if (totalBytes <= 0) {
                 Log.w(TAG, "Content length is invalid: $totalBytes")
@@ -125,7 +124,7 @@ class NightlyBuildsRepository(
             }
 
             responseBody.byteStream().use { input ->
-                FileOutputStream(apkFile).use { output ->
+                apkFilePath.outputStream().use { output ->
                     val buffer = ByteArray(8192)
                     var bytesDownloaded = 0L
                     var bytesRead: Int
@@ -136,7 +135,7 @@ class NightlyBuildsRepository(
                     }
                 }
             }
-            apkFile
+            apkFilePath.toFile()
         } catch (e: Exception) {
             Log.e(TAG, "APK download failed", e)
             null
