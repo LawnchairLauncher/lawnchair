@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -111,6 +112,11 @@ fun ExperimentalFeaturesPreferences(
                     },
                     onPermissionRequest = { fileAccessManager.refresh() },
                 )
+            }
+            LifecycleResumeEffect(Unit) {
+                showPermissionDialog = false
+                fileAccessManager.refresh()
+                onPauseOrDispose { }
             }
         }
     }
