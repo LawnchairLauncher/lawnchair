@@ -42,6 +42,7 @@
     <string name="deselect_all">Alle abwählen</string>
     <string name="inverse_selection">Auswahl umkehren</string>
     <string name="loading">Laden…</string>
+    <string name="dismiss">Verwerfen</string>
     <string name="download_update">Update herunterladen</string>
     <string name="install_update">Update installieren</string>
     <string name="pro_updated">Du verwendest die neueste Version!</string>
@@ -71,6 +72,7 @@
     <string name="grid">Raster</string>
     <string name="layout">Layout</string>
     <!-- Generic styling options -->
+    <string name="show_wallpaper">Show wallpaper</string>
     <string name="wallpaper">Hintergrund</string>
     <string name="style">Stil</string>
     <string name="background_opacity">Hintergrundtransparenz</string>
@@ -161,8 +163,6 @@
     <string name="notification_dots_text_color">Benachrichtigungszähler-Farbe</string>
     <string name="notification_dots_color_contrast_warning_always">Achtung: Benachrichtigungspunkt- und -zählerfarbe haben nicht genug Kontrast zueinander</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Achtung: Benachrichtigungspunkt- und -zählerfarbe haben nicht immer genug Kontrast zueinander</string>
-    <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
-    <string name="missing_notification_access_desc">Um Benachrichtigungspunkte anzuzeigen, aktiviere App-Benachrichtigungen für <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -206,6 +206,10 @@
     <string name="icon_shape_square">Quadrat</string>
     <string name="icon_shape_squircle">Quadreis</string>
     <string name="icon_shape_teardrop">Tropfen</string>
+    <!-- Icon shape (Material 3 Expressive) -->
+    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
+    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
+    <string name="icon_shape_arch">Arch</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Eigene Symbolform</string>
     <string name="custom_icon_shape_create">Eigene Symbolform erstellen</string>
@@ -350,6 +354,8 @@
     <string name="acknowledgements">Danksagungen</string>
     <string name="translate">Übersetzen</string>
     <string name="donate">Spenden</string>
+    <string name="contributor_status_active">Active</string>
+    <string name="update_check_failed">Failed to check for updates</string>
     <!--
 
     Backup and restore
@@ -548,7 +554,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Suchen</string>
+    <string name="all_apps_device_search_hint">Apps, Web und mehr durchsuchen</string>
     <string name="all_apps_search_bar_hint">Apps durchsuchen</string>
     <string name="all_apps_no_search_results">Keine Apps gefunden, die mit „<xliff:g example="Android" id="query">%1$s</xliff:g>“ übereinstimmen</string>
     <string name="all_apps_search_result_suggestions">Aus dem Internet</string>
@@ -581,9 +587,11 @@
     <string name="search_algorithm_app_search">App-Suche</string>
     <string name="search_algorithm_global_search_on_device">Globale Suche (auf dem Gerät)</string>
     <string name="search_algorithm_global_search_via_asi">Globale Suche (über ASI)</string>
-    <string name="custom_search_url">Benutzerdefinierte Suchmaschinen-URL</string>
+    <string name="custom_search_label">Suchmaschinen-Name</string>
+    <string name="custom_search_url">Suchmaschinen-URL</string>
     <string name="custom_search_suggestions_url">Benutzerdefinierte Suchvorschläge-URL</string>
     <string name="custom_search_input_hint">&#37;s wird durch den Suchbegriff ersetzt</string>
+    <string name="custom_search_suggestions_hint">&#37;s wird durch die Suchanfrage ersetzt. Ergebnisse müssen im JSON OpenSearch Format sein.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">In Suchergebnissen anzeigen</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Apps und Verknüpfungen</string>
@@ -592,10 +600,17 @@
     <string name="search_pref_result_tips_title">Pixel-Tipps</string>
     <string name="search_pref_result_settings_title">Android-Einstellungen</string>
     <string name="search_pref_result_files_title">Dateien</string>
+    <string name="search_pref_result_visual_media_title">Fotos und Videos</string>
+    <string name="search_pref_result_audio_media_title">Audio-Dateien</string>
+    <string name="search_pref_result_all_files_title">Alle Dateien</string>
     <string name="search_pref_result_web_title">Webvorschläge</string>
     <string name="search_pref_result_history_title">Suchverlauf</string>
     <string name="all_apps_search_result_calculator">Taschenrechner</string>
+    <string name="search_empty_state_title">Suche starten</string>
+    <string name="search_empty_state_no_history_subtitle">Finde Apps, Kontakte und mehr. Deine letzten Suchen werden hier angezeigt.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Finde Apps, Kontakte und mehr.</string>
     <!-- Description for each search result type -->
+    <string name="search_pref_files_search_on">Suche in</string>
     <string name="search_pref_result_files_description">Medien, Dateien und mehr</string>
     <string name="search_pref_result_contacts_description">Kontakte und mehr</string>
     <string name="search_pref_result_web_provider_description">Mit <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -607,9 +622,36 @@
     <string name="max_recent_result_count_title">Maximalzahl Elemente im Suchverlauf</string>
     <string name="max_suggestion_result_count_title">Maximalzahl Vorschläge</string>
     <string name="max_web_suggestion_delay">Maximale Verzögerung für Webvorschläge</string>
-    <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">Um nach Kontakten zu suchen, erteile Lawnchair Berechtigungen für Kontakte und Telefon</string>
-    <string name="warn_files_permission_content">Um Deine Dateien zu durchsuchen, erteile Lawnchair Speicher-Berechtigungen</string>
+    <!-- Permission management -->
+    <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
+    <string name="missing_notification_access_desc">Um Benachrichtigungspunkte anzuzeigen, aktiviere App-Benachrichtigungen für <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="warn_contact_permission_title">Kontakte-Berechtigung erforderlich</string>
+    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Musik- und Audio-Berechtigung erforderlich</string>
+    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <!-- Photos and videos -->
+    <string name="permissions_photos_videos">Foto- und Videozugriff benötigt</string>
+    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_photos_videos_full">Auf Deine vollständige Medienbibliothek zugreifen?</string>
+    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
+    <string name="permissions_photos_videos_grant_full">Vollständige Medienberechtigungen gewähren</string>
+    <string name="permissions_photos_videos_manage_selected">Gewählte Elemente verwalten</string>
+    <!-- External storage -->
+    <string name="permissions_external_storage">Externe Speicher-Berechtigung erforderlich</string>
+    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
+    <string name="permissions_manage_storage">Speicherzugriff verwalten erforderlich</string>
+    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
+    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
+    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
+    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
+    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
+    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
+    <string name="permission_label_manage_all_files">Manage all files on device</string>
+    <string name="permission_label_read_photos_videos">Read photos and videos</string>
+    <string name="manage_storage_access_denied_title">Kann Berechtigung zur Speicherverwaltung nicht aktivieren</string>
+    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="open_permission_settings">Einstellungen öffnen</string>
     <string name="grant_requested_permissions">Berechtigungen erteilen</string>
-    <string name="custom_search_label">Name der benutzerdefinierten Suchmaschine</string>
+    <string name="permissions_needed">Berechtigung benötigt</string>
+    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
 </resources>

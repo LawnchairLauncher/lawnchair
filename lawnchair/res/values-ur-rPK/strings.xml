@@ -42,6 +42,7 @@
     <string name="deselect_all">سبھی کو غیر منتخب کریں۔</string>
     <string name="inverse_selection">الٹا انتخاب</string>
     <string name="loading">لوڈ ہو رہا ہے…</string>
+    <string name="dismiss">Dismiss</string>
     <string name="download_update">اپ ڈیٹ ڈاؤن لوڈ کریں۔</string>
     <string name="install_update">اپ ڈیٹ انسٹال کریں۔</string>
     <string name="pro_updated">آپ اپ ٹو ڈیٹ ہیں!</string>
@@ -71,6 +72,7 @@
     <string name="grid">گرڈ</string>
     <string name="layout">لے آؤٹ</string>
     <!-- Generic styling options -->
+    <string name="show_wallpaper">Show wallpaper</string>
     <string name="wallpaper">وال پیپر</string>
     <string name="style">انداز</string>
     <string name="background_opacity">پس منظر کی دھندلاپن</string>
@@ -161,8 +163,6 @@
     <string name="notification_dots_text_color">اطلاع کے انسداد کا رنگ</string>
     <string name="notification_dots_color_contrast_warning_always">انتباہ: نوٹیفکیشن ڈاٹ اور کاؤنٹر رنگ ایک دوسرے کے ساتھ کافی تضاد نہیں رکھتے ہیں۔</string>
     <string name="notification_dots_color_contrast_warning_sometimes">انتباہ: نوٹیفکیشن ڈاٹ اور کاؤنٹر رنگ ہمیشہ ایک دوسرے کے ساتھ کافی تضاد نہیں رکھتے ہیں۔</string>
-    <string name="missing_notification_access_label">اطلاع تک رسائی درکار ہے۔</string>
-    <string name="missing_notification_access_desc">نوٹیفکیشن ڈاٹس دکھانے کے لیے، <xliff:g id="name" example="My App">%1$s</xliff:g> کے لیے ایپ کی اطلاعات کو آن کریں۔</string>
     <!--
 
     Icons
@@ -206,6 +206,10 @@
     <string name="icon_shape_square">مربع</string>
     <string name="icon_shape_squircle">سکورکل</string>
     <string name="icon_shape_teardrop">آنسو</string>
+    <!-- Icon shape (Material 3 Expressive) -->
+    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
+    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
+    <string name="icon_shape_arch">Arch</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">حسب ضرورت آئیکن کی شکل</string>
     <string name="custom_icon_shape_create">اپنی مرضی کے مطابق آئیکن کی شکل بنائیں</string>
@@ -350,6 +354,8 @@
     <string name="acknowledgements">اعترافات</string>
     <string name="translate">ترجمہ کریں۔</string>
     <string name="donate">عطیہ کریں۔</string>
+    <string name="contributor_status_active">Active</string>
+    <string name="update_check_failed">Failed to check for updates</string>
     <!--
 
     Backup and restore
@@ -548,7 +554,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">تلاش کریں۔</string>
+    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
     <string name="all_apps_search_bar_hint">Search Apps</string>
     <string name="all_apps_no_search_results">\"<xliff:g example="Android" id="query">%1$s</xliff:g>\" سے مماثل کوئی ایپ نہیں ملی</string>
     <string name="all_apps_search_result_suggestions">ویب سے</string>
@@ -581,9 +587,11 @@
     <string name="search_algorithm_app_search">ایپ کی تلاش</string>
     <string name="search_algorithm_global_search_on_device">عالمی تلاش (آلہ پر)</string>
     <string name="search_algorithm_global_search_via_asi">عالمی تلاش (بذریعہ ASI)</string>
-    <string name="custom_search_url">Custom search engine URL</string>
-    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
+    <string name="custom_search_label">Search engine name</string>
+    <string name="custom_search_url">Search engine URL</string>
+    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
+    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">تلاش کے نتائج میں دکھائیں۔</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
@@ -592,10 +600,17 @@
     <string name="search_pref_result_tips_title">پکسل ٹپس</string>
     <string name="search_pref_result_settings_title">اینڈرائیڈ کی ترتیبات</string>
     <string name="search_pref_result_files_title">فائلیں</string>
+    <string name="search_pref_result_visual_media_title">Photos and videos</string>
+    <string name="search_pref_result_audio_media_title">Audio files</string>
+    <string name="search_pref_result_all_files_title">All files</string>
     <string name="search_pref_result_web_title">ویب کی تجاویز</string>
     <string name="search_pref_result_history_title">تلاش کی تاریخ</string>
     <string name="all_apps_search_result_calculator">کیلکولیٹر</string>
+    <string name="search_empty_state_title">Start searching</string>
+    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
     <!-- Description for each search result type -->
+    <string name="search_pref_files_search_on">Search on</string>
     <string name="search_pref_result_files_description">میڈیا، فائلیں، اور مزید</string>
     <string name="search_pref_result_contacts_description">رابطے اور مزید</string>
     <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g> کے ذریعے</string>
@@ -607,9 +622,36 @@
     <string name="max_recent_result_count_title">تلاش کی سرگزشت کے لیے زیادہ سے زیادہ آئٹمز</string>
     <string name="max_suggestion_result_count_title">تجاویز کی زیادہ سے زیادہ تعداد</string>
     <string name="max_web_suggestion_delay">ویب کی تجویز میں زیادہ سے زیادہ تاخیر</string>
-    <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">رابطوں کو تلاش کرنے کے لیے، لان چیئر کو رابطے اور فون کی اجازت دیں۔</string>
-    <string name="warn_files_permission_content">اپنی فائلیں تلاش کرنے کے لیے، Lawnchair کو اسٹوریج کی اجازت دیں۔</string>
+    <!-- Permission management -->
+    <string name="missing_notification_access_label">اطلاع تک رسائی درکار ہے۔</string>
+    <string name="missing_notification_access_desc">نوٹیفکیشن ڈاٹس دکھانے کے لیے، <xliff:g id="name" example="My App">%1$s</xliff:g> کے لیے ایپ کی اطلاعات کو آن کریں۔</string>
+    <string name="warn_contact_permission_title">Contacts permission needed</string>
+    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Music and audio access needed</string>
+    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <!-- Photos and videos -->
+    <string name="permissions_photos_videos">Photos and videos access needed</string>
+    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_photos_videos_full">Access your full media library?</string>
+    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
+    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
+    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <!-- External storage -->
+    <string name="permissions_external_storage">External storage access needed</string>
+    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
+    <string name="permissions_manage_storage">Manage storage access needed</string>
+    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
+    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
+    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
+    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
+    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
+    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
+    <string name="permission_label_manage_all_files">Manage all files on device</string>
+    <string name="permission_label_read_photos_videos">Read photos and videos</string>
+    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
+    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="open_permission_settings">ترتیبات کھولیں۔</string>
     <string name="grant_requested_permissions">اجازتیں دیں۔</string>
-    <string name="custom_search_label">Custom search engine name</string>
+    <string name="permissions_needed">Permissions needed</string>
+    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
 </resources>

@@ -42,6 +42,7 @@
     <string name="deselect_all">Tout désélectionner</string>
     <string name="inverse_selection">Inverser la sélection</string>
     <string name="loading">Chargement…</string>
+    <string name="dismiss">Ignorer</string>
     <string name="download_update">Télécharger la mise à jour</string>
     <string name="install_update">Installer la mise à jour</string>
     <string name="pro_updated">Vous êtes à jour !</string>
@@ -71,6 +72,7 @@
     <string name="grid">Grille</string>
     <string name="layout">Mise en page</string>
     <!-- Generic styling options -->
+    <string name="show_wallpaper">Afficher le fond d\'écran</string>
     <string name="wallpaper">Fond d\'écran</string>
     <string name="style">Style</string>
     <string name="background_opacity">Opacité de l\'arrière-plan</string>
@@ -161,8 +163,6 @@
     <string name="notification_dots_text_color">Couleur du compteur de notifications</string>
     <string name="notification_dots_color_contrast_warning_always">Attention : il n\'y a pas assez de contraste entre la couleur de la pastille et celle du compteur</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Attention : il se peut qu\'il n\'y ait pas toujours assez de contraste entre la couleur de la pastille et celle du compteur</string>
-    <string name="missing_notification_access_label">Accès aux notifications requis</string>
-    <string name="missing_notification_access_desc">Pour afficher les pastilles de notification, activez les notifications de l\'appli <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -206,6 +206,10 @@
     <string name="icon_shape_square">Carré</string>
     <string name="icon_shape_squircle">Carré rond</string>
     <string name="icon_shape_teardrop">Goutte</string>
+    <!-- Icon shape (Material 3 Expressive) -->
+    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
+    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
+    <string name="icon_shape_arch">Arch</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Forme d\'icône personnalisée</string>
     <string name="custom_icon_shape_create">Créer une forme d\'icône personnalisée</string>
@@ -350,6 +354,8 @@
     <string name="acknowledgements">Remerciements</string>
     <string name="translate">Traduire</string>
     <string name="donate">Faire un don</string>
+    <string name="contributor_status_active">Active</string>
+    <string name="update_check_failed">Failed to check for updates</string>
     <!--
 
     Backup and restore
@@ -393,9 +399,9 @@
     <string name="dt2s_admin_hint">Pour mettre en veille votre appareil à l\'aide d\'un double appui, définissez Lawnchair comme appli d\'administration de l\'appareil. Appuyez sur « Ouvrir les paramètres » puis appuyez sur « Activer l\'appli d\'administration de cet appareil. »</string>
     <string name="dt2s_admin_warning">Vous ne pourrez plus mettre en veille votre appareil à l\'aide d\'un double appui.</string>
     <string name="d2ts_recents_a11y_hint_title">Activez le service d\'accessibilité</string>
-    <string name="dt2s_a11y_hint">Pour mettre en veille votre appareil avec un double appui, activez le service d\'accessibilité Lawnchair. Appuyez sur « Ouvrir les paramètres », sélectionnez « Lawnchair » et activez « Utiliser Lawnchair ».\n\nLawnchair utilise la méthode d\'Accessibility `performGlobalAction`. Il s\'agit d\'une autorisation sensible qui permet de suivre le comportement des autres applis, mais Lawnchair n\'est pas configuré de manière à utiliser ces fonctionnalités et ne reçoit donc aucun événement.</string>
+    <string name="dt2s_a11y_hint">Pour mettre en veille votre appareil avec un double appui, activez le service d\'accessibilité Lawnchair. Appuyez sur « Ouvrir les paramètres », sélectionnez « Lawnchair » et activez « Utiliser Lawnchair ».\n\nLawnchair utilise la méthode d\'accessibilité `performGlobalAction`. Il s\'agit d\'une autorisation sensible qui permet de suivre le comportement des autres applis, mais Lawnchair n\'est pas configuré de manière à utiliser ces fonctionnalités et ne reçoit donc aucun événement.</string>
     <string name="dt2s_recents_warning_open_settings">Ouvrir les paramètres</string>
-    <string name="recents_a11y_hint">Pour utiliser Ouvrir l\'écran Récents, activez le service d\'accessibilité Lawnchair. Appuyez sur « Ouvrir les paramètres », sélectionnez « Lawnchair » et activez « Utiliser Lawnchair ».\n\nLawnchair utilise la méthode d\'Accessibility `performGlobalAction`. Il s\'agit d\'une autorisation sensible qui permet de suivre le comportement des autres applis, mais Lawnchair n\'est pas configuré de manière à utiliser ces fonctionnalités et ne reçoit donc aucun événement.</string>
+    <string name="recents_a11y_hint">Pour utiliser Ouvrir l\'écran Récents, activez le service d\'accessibilité Lawnchair. Appuyez sur « Ouvrir les paramètres », sélectionnez « Lawnchair » et activez « Utiliser Lawnchair ».\n\nLawnchair utilise la méthode d\'accessibilité `performGlobalAction`. Il s\'agit d\'une autorisation sensible qui permet de suivre le comportement des autres applis, mais Lawnchair n\'est pas configuré de manière à utiliser ces fonctionnalités et ne reçoit donc aucun événement.</string>
     <!--
 
     Bug reporting
@@ -548,7 +554,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Rechercher</string>
+    <string name="all_apps_device_search_hint">Recherche Web/applis</string>
     <string name="all_apps_search_bar_hint">Rechercher des applis</string>
     <string name="all_apps_no_search_results">Aucune application correspondant à « <xliff:g example="Android" id="query">%1$s</xliff:g> » n\'a pu être trouvée</string>
     <string name="all_apps_search_result_suggestions">Depuis le Web</string>
@@ -581,9 +587,11 @@
     <string name="search_algorithm_app_search">Recherche d\'applications</string>
     <string name="search_algorithm_global_search_on_device">Recherche globale (sur l\'appareil)</string>
     <string name="search_algorithm_global_search_via_asi">Recherche globale (via ASI)</string>
-    <string name="custom_search_url">URL du moteur de recherche personnalisé</string>
-    <string name="custom_search_suggestions_url">URL des suggestions de recherche personnalisées</string>
+    <string name="custom_search_label">Nom du moteur de recherche</string>
+    <string name="custom_search_url">URL du moteur de recherche</string>
+    <string name="custom_search_suggestions_url">URL des suggestions de recherche</string>
     <string name="custom_search_input_hint">&#37;s sera remplacé par le texte à rechercher</string>
+    <string name="custom_search_suggestions_hint">&#37;s sera remplacé par le texte à rechercher. Les résultats doivent être au format JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Afficher dans les résultats de recherche</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Applis et raccourcis</string>
@@ -592,10 +600,17 @@
     <string name="search_pref_result_tips_title">Astuces Pixel</string>
     <string name="search_pref_result_settings_title">Paramètres Android</string>
     <string name="search_pref_result_files_title">Fichiers</string>
+    <string name="search_pref_result_visual_media_title">Photos et vidéos</string>
+    <string name="search_pref_result_audio_media_title">Fichiers audio</string>
+    <string name="search_pref_result_all_files_title">Tous les fichiers</string>
     <string name="search_pref_result_web_title">Suggestions Web</string>
     <string name="search_pref_result_history_title">Historique des recherches</string>
     <string name="all_apps_search_result_calculator">Calculatrice</string>
+    <string name="search_empty_state_title">Commencez à rechercher</string>
+    <string name="search_empty_state_no_history_subtitle">Recherchez des applis, des contacts et bien plus encore. Vos recherches récentes apparaîtront ici.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Recherchez des applis, des contacts et bien plus encore</string>
     <!-- Description for each search result type -->
+    <string name="search_pref_files_search_on">Rechercher dans</string>
     <string name="search_pref_result_files_description">Contenu multimédia, fichiers et autres</string>
     <string name="search_pref_result_contacts_description">Contacts et autres</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -607,9 +622,36 @@
     <string name="max_recent_result_count_title">Éléments max. de l\'historique des recherches</string>
     <string name="max_suggestion_result_count_title">Nombre maximal de suggestions</string>
     <string name="max_web_suggestion_delay">Délai maximal des suggestions Web</string>
-    <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">Pour rechercher des contacts, accordez à Lawnchair les autorisations Contacts et Téléphone</string>
-    <string name="warn_files_permission_content">Pour rechercher des fichiers, autorisez Lawnchair à accéder au stockage</string>
+    <!-- Permission management -->
+    <string name="missing_notification_access_label">Accès aux notifications requis</string>
+    <string name="missing_notification_access_desc">Pour afficher les pastilles de notification, activez les notifications de l\'appli <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="warn_contact_permission_title">Autorisation Contacts nécessaire</string>
+    <string name="warn_contact_permission_content">Pour rechercher des contacts, accordez les autorisations Contacts et Téléphone à <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Accès Musique et audio nécessaire</string>
+    <string name="permissions_music_audio_description">Pour rechercher votre musique et d\'autres fichiers audio, <xliff:g id="name" example="My App">%1$s</xliff:g> a besoin de votre autorisation pour accéder à votre bibliothèque multimédia.</string>
+    <!-- Photos and videos -->
+    <string name="permissions_photos_videos">Accès Photos et vidéos nécessaire</string>
+    <string name="permissions_photos_videos_description">Pour rechercher dans vos photos et vidéos, <xliff:g id="name" example="My App">%1$s</xliff:g> a besoin d\'accéder à votre bibliothèque multimédia.</string>
+    <string name="permissions_photos_videos_full">Accéder à votre bibliothèque multimédia complète ?</string>
+    <string name="permissions_photos_videos_full_description">Pour rechercher dans toutes vos photos et vidéos, <xliff:g id="name" example="My App">%1$s</xliff:g> a besoin d\'un accès complet à votre bibliothèque multimédia.</string>
+    <string name="permissions_photos_videos_grant_full">Accorder toutes les autorisations multimédia</string>
+    <string name="permissions_photos_videos_manage_selected">Gérer les éléments sélectionnés</string>
+    <!-- External storage -->
+    <string name="permissions_external_storage">Accès au stockage externe nécessaire</string>
+    <string name="permissions_external_storage_description">Pour rechercher dans vos fichiers, <xliff:g id="name" example="My App">%1$s</xliff:g> a besoin d\'accéder au stockage externe de votre appareil.</string>
+    <string name="permissions_manage_storage">Accès à tous les fichiers nécessaire</string>
+    <string name="permissions_manage_storage_description">Pour afficher vos fichiers dans les résultats de recherche, <xliff:g id="name" example="My App">%1$s</xliff:g> requiert l\'autorisation de gérer tous les fichiers sur votre appareil. Cette autorisation est utilisée exclusivement afin de lister les fichiers et ne sera pas utilisée pour lire ou modifier le contenu de vos fichiers personnels.</string>
+    <string name="permission_desc_wallpaper_base">Pour afficher des aperçus de votre fond d\'écran actuel et les inclure dans les sauvegardes, <xliff:g id="name" example="My App">%1$s</xliff:g> requiert l\'autorisation %2$s en raison de limitations système relatives à l\'accès aux données de fond d\'écran.</string>
+    <string name="permission_desc_ending_read_all_files">de lire tous les fichiers sur votre appareil</string>
+    <string name="permission_desc_ending_manage_all_files">de gérer tous les fichiers sur votre appareil</string>
+    <string name="permission_desc_wallpaper_multiple">Plusieurs autorisations nécessaires</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Pour afficher des aperçus de votre fond d\'écran actuel et les inclure dans les sauvegardes, <xliff:g id="name" example="My App">%1$s</xliff:g> requiert les autorisations suivantes en raison de limitations système relatives à l\'accès aux données de fond d\'écran.</string>
+    <string name="permission_label_manage_all_files">Gérer tous les fichiers sur l\'appareil</string>
+    <string name="permission_label_read_photos_videos">Lire les photos et les vidéos</string>
+    <string name="manage_storage_access_denied_title">Impossible d\'activer l\'accès à tous les fichiers</string>
+    <string name="manage_storage_access_denied_description">En raison de la politique du Play Store, <xliff:g id="name" example="My App">%1$s</xliff:g> ne peut pas demander un accès complet au stockage. Pour accéder à tous les fichiers, veuillez télécharger <xliff:g id="name" example="My App">%1$s</xliff:g> depuis GitHub. Vous pouvez également accorder l\'accès aux photos, vidéos et fichiers audio individuellement dans les paramètres.</string>
+    <string name="open_permission_settings">Ouvrir les paramètres</string>
     <string name="grant_requested_permissions">Accorder des autorisations</string>
-    <string name="custom_search_label">Nom du moteur de recherche personnalisé</string>
+    <string name="permissions_needed">Autorisations nécessaires</string>
+    <string name="grant_requested_permissions_tap">Appuyez pour accorder les autorisations</string>
 </resources>

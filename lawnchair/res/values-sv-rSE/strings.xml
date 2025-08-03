@@ -42,6 +42,7 @@
     <string name="deselect_all">Avmarkera alla</string>
     <string name="inverse_selection">Invertera markering</string>
     <string name="loading">Laddar …</string>
+    <string name="dismiss">Avvisa</string>
     <string name="download_update">Ladda ner uppdatering</string>
     <string name="install_update">Installera uppdatering</string>
     <string name="pro_updated">Du är uppdaterad!</string>
@@ -71,6 +72,7 @@
     <string name="grid">Rutnät</string>
     <string name="layout">Layout</string>
     <!-- Generic styling options -->
+    <string name="show_wallpaper">Visa bakgrundsbild</string>
     <string name="wallpaper">Bakgrundsbild</string>
     <string name="style">Stil</string>
     <string name="background_opacity">Bakgrundens opacitet</string>
@@ -161,8 +163,6 @@
     <string name="notification_dots_text_color">Aviseringsräknarens färg</string>
     <string name="notification_dots_color_contrast_warning_always">Varning: Färgerna på aviseringsprick och aviseringsräknare har inte tillräcklig kontrast mot varandra</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Varning: Färgerna på aviseringsprick och aviseringsräknare har kanske inte alltid tillräcklig kontrast mot varandra</string>
-    <string name="missing_notification_access_label">Åtkomst till aviseringar krävs</string>
-    <string name="missing_notification_access_desc">För att visa aviseringsprickar, aktivera appaviseringar för <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -206,6 +206,10 @@
     <string name="icon_shape_square">Kvadrat</string>
     <string name="icon_shape_squircle">Kvirkel</string>
     <string name="icon_shape_teardrop">Droppe</string>
+    <!-- Icon shape (Material 3 Expressive) -->
+    <string name="icon_shape_four_sided_cookie">Fyrsidig kaka</string>
+    <string name="icon_shape_seven_sided_cookie">Sjusidig kaka</string>
+    <string name="icon_shape_arch">Valvbåge</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Anpassad ikonform</string>
     <string name="custom_icon_shape_create">Skapa anpassad ikonform</string>
@@ -350,6 +354,8 @@
     <string name="acknowledgements">Erkännanden</string>
     <string name="translate">Översätt</string>
     <string name="donate">Donera</string>
+    <string name="contributor_status_active">Aktiv</string>
+    <string name="update_check_failed">Misslyckades med att söka efter uppdateringar</string>
     <!--
 
     Backup and restore
@@ -548,7 +554,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Sök</string>
+    <string name="all_apps_device_search_hint">Sök efter appar, på webben och mer</string>
     <string name="all_apps_search_bar_hint">Sök efter appar</string>
     <string name="all_apps_no_search_results">Inga appar hittades som matchar \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Från webben</string>
@@ -581,9 +587,11 @@
     <string name="search_algorithm_app_search">Appsökning</string>
     <string name="search_algorithm_global_search_on_device">Global sökning (på enheten)</string>
     <string name="search_algorithm_global_search_via_asi">Global sökning (via ASI)</string>
-    <string name="custom_search_url">URL för anpassad sökmotor</string>
-    <string name="custom_search_suggestions_url">URL för anpassade sökförslag</string>
+    <string name="custom_search_label">Namn på sökmotor</string>
+    <string name="custom_search_url">URL för sökmotor</string>
+    <string name="custom_search_suggestions_url">URL för sökförslag</string>
     <string name="custom_search_input_hint">&#37;s kommer att ersättas med sökfrågan</string>
+    <string name="custom_search_suggestions_hint">&#37;s kommer att ersättas med sökfrågan. Resultaten måste vara i JSON OpenSearch-formatet.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Visa i sökresultat</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Appar och genvägar</string>
@@ -592,10 +600,17 @@
     <string name="search_pref_result_tips_title">Pixel-tips</string>
     <string name="search_pref_result_settings_title">Android-inställningar</string>
     <string name="search_pref_result_files_title">Filer</string>
+    <string name="search_pref_result_visual_media_title">Foton och videor</string>
+    <string name="search_pref_result_audio_media_title">Ljudfiler</string>
+    <string name="search_pref_result_all_files_title">Alla filer</string>
     <string name="search_pref_result_web_title">Webbförslag</string>
     <string name="search_pref_result_history_title">Sökhistorik</string>
     <string name="all_apps_search_result_calculator">Kalkylator</string>
+    <string name="search_empty_state_title">Börja söka</string>
+    <string name="search_empty_state_no_history_subtitle">Hitta appar, kontakter med mera. Dina senaste sökningar kommer att visas här.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Hitta appar, kontakter med mera.</string>
     <!-- Description for each search result type -->
+    <string name="search_pref_files_search_on">Sök bland</string>
     <string name="search_pref_result_files_description">Medier, filer med mera</string>
     <string name="search_pref_result_contacts_description">Kontakter med mera</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -607,9 +622,36 @@
     <string name="max_recent_result_count_title">Maximalt antal objekt för sökhistorik</string>
     <string name="max_suggestion_result_count_title">Maximalt antal förslag</string>
     <string name="max_web_suggestion_delay">Max fördröjning av webbförslag</string>
-    <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">För att söka efter kontakter, bevilja kontakter- och telefonbehörigheter till Lawnchair</string>
-    <string name="warn_files_permission_content">För att söka bland dina filer, bevilja lagringsbehörigheter till Lawnchair</string>
+    <!-- Permission management -->
+    <string name="missing_notification_access_label">Åtkomst till aviseringar krävs</string>
+    <string name="missing_notification_access_desc">För att visa aviseringsprickar, aktivera appaviseringar för <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="warn_contact_permission_title">Kontaktbehörighet krävs</string>
+    <string name="warn_contact_permission_content">För att söka efter kontakter, bevilja kontakt- och telefonbehörigheter till <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Åtkomst till musik och ljud krävs</string>
+    <string name="permissions_music_audio_description">För att söka bland dina musik- och andra ljudfiler behöver <xliff:g id="name" example="My App">%1$s</xliff:g> behörighet att komma åt ditt mediebibliotek.</string>
+    <!-- Photos and videos -->
+    <string name="permissions_photos_videos">Åtkomst till foton och videor krävs</string>
+    <string name="permissions_photos_videos_description">För att söka bland dina foton och videor behöver <xliff:g id="name" example="My App">%1$s</xliff:g> behörighet att komma åt ditt mediebibliotek.</string>
+    <string name="permissions_photos_videos_full">Få åtkomst till hela ditt mediebibliotek?</string>
+    <string name="permissions_photos_videos_full_description">För att söka bland alla dina foton och videor behöver <xliff:g id="name" example="My App">%1$s</xliff:g> fullständig åtkomst till ditt mediebibliotek.</string>
+    <string name="permissions_photos_videos_grant_full">Bevilja fullständiga mediebehörigheter</string>
+    <string name="permissions_photos_videos_manage_selected">Hantera valda objekt</string>
+    <!-- External storage -->
+    <string name="permissions_external_storage">Åtkomst till externt lagringsutrymme krävs</string>
+    <string name="permissions_external_storage_description">För att söka bland dina filer behöver <xliff:g id="name" example="My App">%1$s</xliff:g> behörighet att komma åt din enhets externa lagringsutrymme.</string>
+    <string name="permissions_manage_storage">Åtkomst till hantering av lagringsutrymme krävs</string>
+    <string name="permissions_manage_storage_description">För att visa dina filer bland sökresultaten måste <xliff:g id="name" example="My App">%1$s</xliff:g> ha behörighet att hantera alla filer på din enhet. Denna behörighet används endast för att lista filer och kommer inte att användas för att läsa eller ändra innehållet i dina personliga filer.</string>
+    <string name="permission_desc_wallpaper_base">För att visa förhandsgranskningar av bakgrundsbilder och inkludera dem i säkerhetskopior måste <xliff:g id="name" example="My App">%1$s</xliff:g> ha behörighet %2$s. Detta beror på systembegränsningar för åtkomst till bakgrundsbildsdata.</string>
+    <string name="permission_desc_ending_read_all_files">att läsa alla filer på din enhet</string>
+    <string name="permission_desc_ending_manage_all_files">att hantera alla filer på din enhet</string>
+    <string name="permission_desc_wallpaper_multiple">Flera behörigheter krävs</string>
+    <string name="permission_desc_wallpaper_multiple_desc">För att visa förhandsgranskningar av bakgrundsbilder och inkludera dem i säkerhetskopior måste <xliff:g id="name" example="My App">%1$s</xliff:g> ha följande behörigheter. Detta beror på systembegränsningar för åtkomst till bakgrundsbildsdata.</string>
+    <string name="permission_label_manage_all_files">Hantera alla filer på enheten</string>
+    <string name="permission_label_read_photos_videos">Läsa foton och videor</string>
+    <string name="manage_storage_access_denied_title">Kan inte aktivera åtkomst till hantering av lagringsutrymme</string>
+    <string name="manage_storage_access_denied_description">På grund av Play Stores policy kan <xliff:g id="name" example="My App">%1$s</xliff:g> inte begära fullständig åtkomst till lagringsutrymmet här. För att få åtkomst till alla filer, vänligen ladda ner <xliff:g id="name" example="My App">%1$s</xliff:g> från GitHub. Alternativt kan du bevilja åtkomst till foton, videor och ljudfiler individuellt i inställningarna.</string>
+    <string name="open_permission_settings">Öppna inställningar</string>
     <string name="grant_requested_permissions">Bevilja behörigheter</string>
-    <string name="custom_search_label">Namn på anpassad sökmotor</string>
+    <string name="permissions_needed">Behörigheter krävs</string>
+    <string name="grant_requested_permissions_tap">Tryck för att bevilja behörigheter</string>
 </resources>

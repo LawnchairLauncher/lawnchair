@@ -42,6 +42,7 @@
     <string name="deselect_all">എല്ലാം തിരഞ്ഞെടുത്തത് മാറ്റുക</string>
     <string name="inverse_selection">വിപരീത തിരഞ്ഞെടുപ്പ്</string>
     <string name="loading">ലോഡ് ചെയുന്നു…</string>
+    <string name="dismiss">Dismiss</string>
     <string name="download_update">അപ്‌ഡേറ്റ് ഡൗൺലോഡ് ചെയ്യുക</string>
     <string name="install_update">അപ്ഡേറ്റ് ഇൻസ്റ്റാൾ ചെയ്യുക</string>
     <string name="pro_updated">താങ്കൾ അപ്ഡേറ്റഡ് ആണ്!</string>
@@ -71,6 +72,7 @@
     <string name="grid">കളം</string>
     <string name="layout">രൂപരേഖ</string>
     <!-- Generic styling options -->
+    <string name="show_wallpaper">Show wallpaper</string>
     <string name="wallpaper">വാൾപേപ്പർ</string>
     <string name="style">ശൈലി</string>
     <string name="background_opacity">പശ്ചാത്തല അതാര്യത</string>
@@ -161,8 +163,6 @@
     <string name="notification_dots_text_color">Notification counter color</string>
     <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
-    <string name="missing_notification_access_label">Notification access needed</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -206,6 +206,10 @@
     <string name="icon_shape_square">സമചതുരം</string>
     <string name="icon_shape_squircle">ചതുരാകൃതിയിലുള്ള വൃത്തം</string>
     <string name="icon_shape_teardrop">കണ്ണുനീർത്തുള്ളി</string>
+    <!-- Icon shape (Material 3 Expressive) -->
+    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
+    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
+    <string name="icon_shape_arch">Arch</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Custom icon shape</string>
     <string name="custom_icon_shape_create">Create custom icon shape</string>
@@ -350,6 +354,8 @@
     <string name="acknowledgements">അംഗീകാരങ്ങൾ</string>
     <string name="translate">പരിഭാഷപ്പെടുത്തുക</string>
     <string name="donate">Donate</string>
+    <string name="contributor_status_active">Active</string>
+    <string name="update_check_failed">Failed to check for updates</string>
     <!--
 
     Backup and restore
@@ -548,7 +554,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">തിരയുക</string>
+    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
     <string name="all_apps_search_bar_hint">ആപ്പുകൾ തിരയുക</string>
     <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">From the web</string>
@@ -581,9 +587,11 @@
     <string name="search_algorithm_app_search">App Search</string>
     <string name="search_algorithm_global_search_on_device">Global search (on-device)</string>
     <string name="search_algorithm_global_search_via_asi">Global search (via ASI)</string>
-    <string name="custom_search_url">Custom search engine URL</string>
-    <string name="custom_search_suggestions_url">Custom search suggestions URL</string>
+    <string name="custom_search_label">Search engine name</string>
+    <string name="custom_search_url">Search engine URL</string>
+    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
+    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Show in search results</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
@@ -592,10 +600,17 @@
     <string name="search_pref_result_tips_title">Pixel tips</string>
     <string name="search_pref_result_settings_title">Android settings</string>
     <string name="search_pref_result_files_title">Files</string>
+    <string name="search_pref_result_visual_media_title">Photos and videos</string>
+    <string name="search_pref_result_audio_media_title">Audio files</string>
+    <string name="search_pref_result_all_files_title">All files</string>
     <string name="search_pref_result_web_title">Web suggestions</string>
     <string name="search_pref_result_history_title">Search history</string>
     <string name="all_apps_search_result_calculator">Calculator</string>
+    <string name="search_empty_state_title">Start searching</string>
+    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
     <!-- Description for each search result type -->
+    <string name="search_pref_files_search_on">Search on</string>
     <string name="search_pref_result_files_description">Media, files, and more</string>
     <string name="search_pref_result_contacts_description">Contacts and more</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -607,9 +622,36 @@
     <string name="max_recent_result_count_title">Maximum items for search history</string>
     <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
-    <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to Lawnchair</string>
-    <string name="warn_files_permission_content">To search your files, grant storage permissions to Lawnchair</string>
+    <!-- Permission management -->
+    <string name="missing_notification_access_label">Notification access needed</string>
+    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="warn_contact_permission_title">Contacts permission needed</string>
+    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Music and audio access needed</string>
+    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <!-- Photos and videos -->
+    <string name="permissions_photos_videos">Photos and videos access needed</string>
+    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_photos_videos_full">Access your full media library?</string>
+    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
+    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
+    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <!-- External storage -->
+    <string name="permissions_external_storage">External storage access needed</string>
+    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
+    <string name="permissions_manage_storage">Manage storage access needed</string>
+    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
+    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
+    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
+    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
+    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
+    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
+    <string name="permission_label_manage_all_files">Manage all files on device</string>
+    <string name="permission_label_read_photos_videos">Read photos and videos</string>
+    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
+    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="open_permission_settings">Open settings</string>
     <string name="grant_requested_permissions">Grant permissions</string>
-    <string name="custom_search_label">Custom search engine name</string>
+    <string name="permissions_needed">Permissions needed</string>
+    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
 </resources>

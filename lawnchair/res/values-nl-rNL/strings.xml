@@ -42,6 +42,7 @@
     <string name="deselect_all">Selectie opheffen</string>
     <string name="inverse_selection">Selectie omkeren</string>
     <string name="loading">Laden…</string>
+    <string name="dismiss">Negeren</string>
     <string name="download_update">Update downloaden</string>
     <string name="install_update">Update installeren</string>
     <string name="pro_updated">Je bent up-to-date!</string>
@@ -71,6 +72,7 @@
     <string name="grid">Raster</string>
     <string name="layout">Lay-out</string>
     <!-- Generic styling options -->
+    <string name="show_wallpaper">Achtergrond weergeven</string>
     <string name="wallpaper">Achtergrond</string>
     <string name="style">Stijl</string>
     <string name="background_opacity">Achtergronddekking</string>
@@ -161,8 +163,6 @@
     <string name="notification_dots_text_color">Aantal meldingen kleur</string>
     <string name="notification_dots_color_contrast_warning_always">Waarschuwing: Meldingsstip- en aantal-kleuren staan in onvoldoende onderling contrast</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Waarschuwing: Meldingsstip- en aantal-kleuren staan mogelijk in onvoldoende onderling contrast</string>
-    <string name="missing_notification_access_label">Toegang tot meldingen vereist</string>
-    <string name="missing_notification_access_desc">Om meldingsstippen te tonen, schakel app-meldingen in voor <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -206,6 +206,10 @@
     <string name="icon_shape_square">Vierkant</string>
     <string name="icon_shape_squircle">Vierkantcirkel</string>
     <string name="icon_shape_teardrop">Teardrop</string>
+    <!-- Icon shape (Material 3 Expressive) -->
+    <string name="icon_shape_four_sided_cookie">Vierzijdig koekje</string>
+    <string name="icon_shape_seven_sided_cookie">Zevenzijdig koekje</string>
+    <string name="icon_shape_arch">Boog</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Aangepaste pictogramvorm</string>
     <string name="custom_icon_shape_create">Aangepaste pictogramvorm aanmaken</string>
@@ -350,6 +354,8 @@
     <string name="acknowledgements">Dankwoord</string>
     <string name="translate">Vertalen</string>
     <string name="donate">Doneren</string>
+    <string name="contributor_status_active">Active</string>
+    <string name="update_check_failed">Failed to check for updates</string>
     <!--
 
     Backup and restore
@@ -548,7 +554,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Zoeken</string>
+    <string name="all_apps_device_search_hint">Zoeken naar apps, web en meer</string>
     <string name="all_apps_search_bar_hint">Apps zoeken</string>
     <string name="all_apps_no_search_results">Geen apps gevonden die overeenkomen met \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Van het web</string>
@@ -581,9 +587,11 @@
     <string name="search_algorithm_app_search">Apps Doorzoeken</string>
     <string name="search_algorithm_global_search_on_device">Algemeen zoeken (op apparaat)</string>
     <string name="search_algorithm_global_search_via_asi">Algemeen zoeken (via ASI)</string>
-    <string name="custom_search_url">Aangepaste zoekmachine-URL</string>
-    <string name="custom_search_suggestions_url">Aangepaste zoeksuggesties-URL</string>
+    <string name="custom_search_label">Naam zoekmachine</string>
+    <string name="custom_search_url">Zoekmachine URL</string>
+    <string name="custom_search_suggestions_url">Zoeksuggestie URL</string>
     <string name="custom_search_input_hint">&#37;s zal worden vervangen door de zoekopdracht</string>
+    <string name="custom_search_suggestions_hint">&#37;s wordt vervangen door de zoekopdracht. Resultaten moeten in JSON OpenSearch formaat zijn.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Weergeven in zoekresultaten</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Apps en snelkoppelingen</string>
@@ -592,10 +600,17 @@
     <string name="search_pref_result_tips_title">Pixel tips</string>
     <string name="search_pref_result_settings_title">Android-instellingen</string>
     <string name="search_pref_result_files_title">Bestanden</string>
+    <string name="search_pref_result_visual_media_title">Foto\'s en video\'s</string>
+    <string name="search_pref_result_audio_media_title">Audio-bestanden</string>
+    <string name="search_pref_result_all_files_title">Alle bestanden</string>
     <string name="search_pref_result_web_title">Websuggesties</string>
     <string name="search_pref_result_history_title">Zoekgeschiedenis</string>
     <string name="all_apps_search_result_calculator">Rekenmachine</string>
+    <string name="search_empty_state_title">Begin met zoeken</string>
+    <string name="search_empty_state_no_history_subtitle">Vind apps, contacten en meer. Je recente zoekopdrachten verschijnen hier.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Vind apps, contacten en meer.</string>
     <!-- Description for each search result type -->
+    <string name="search_pref_files_search_on">Zoeken op</string>
     <string name="search_pref_result_files_description">Media, bestanden en meer</string>
     <string name="search_pref_result_contacts_description">Contacten en meer</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -607,9 +622,36 @@
     <string name="max_recent_result_count_title">Maximum aantal items voor zoekgeschiedenis</string>
     <string name="max_suggestion_result_count_title">Maximum aantal suggesties</string>
     <string name="max_web_suggestion_delay">Maximale vertraging bij websuggestie</string>
-    <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">Om naar contacten te zoeken, moet Lawnchair toegang krijgen tot contacten en telefoon</string>
-    <string name="warn_files_permission_content">Om bestanden te doorzoeken, moet Lawnchair toegang krijgen tot opslag</string>
+    <!-- Permission management -->
+    <string name="missing_notification_access_label">Toegang tot meldingen vereist</string>
+    <string name="missing_notification_access_desc">Om meldingsstippen te tonen, schakel app-meldingen in voor <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="warn_contact_permission_title">Toegang tot contacten nodig</string>
+    <string name="warn_contact_permission_content">Om te zoeken naar contactpersonen, dien je toegangsrechten te verlenen tot contactpersonen en telefoon aan <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Toegang tot muziek en audio nodig</string>
+    <string name="permissions_music_audio_description">Om je muziek en andere audiobestanden te doorzoeken, heeft <xliff:g id="name" example="My App">%1$s</xliff:g> toestemming nodig om toegang te krijgen tot je mediabibliotheek.</string>
+    <!-- Photos and videos -->
+    <string name="permissions_photos_videos">Toegang tot foto\'s en video\'s nodig</string>
+    <string name="permissions_photos_videos_description">Om je foto\'s en video\'s te doorzoeken, heeft <xliff:g id="name" example="My App">%1$s</xliff:g> toestemming nodig om je mediabibliotheek te openen.</string>
+    <string name="permissions_photos_videos_full">Toegang tot je volledige mediabibliotheek?</string>
+    <string name="permissions_photos_videos_full_description">Om al je foto\'s en video\'s te doorzoeken, heeft <xliff:g id="name" example="My App">%1$s</xliff:g> volledige toegang tot je mediabibliotheek nodig.</string>
+    <string name="permissions_photos_videos_grant_full">Volledige mediatoestemming verlenen</string>
+    <string name="permissions_photos_videos_manage_selected">Geselecteerde items beheren</string>
+    <!-- External storage -->
+    <string name="permissions_external_storage">Toegang tot externe opslag nodig</string>
+    <string name="permissions_external_storage_description">Om je bestanden te doorzoeken, heeft <xliff:g id="name" example="My App">%1$s</xliff:g> toestemming nodig om toegang te krijgen tot de externe opslag van je apparaat.</string>
+    <string name="permissions_manage_storage">Benodigde toegang tot opslag beheren</string>
+    <string name="permissions_manage_storage_description">Om je bestanden weer te geven in de zoekresultaten, vereist <xliff:g id="name" example="Mijn App">%1$s</xliff:g> toestemming om alle bestanden op je apparaat te beheren. Deze toestemming wordt uitsluitend gebruikt om bestandenlijsten te vergaren en zal niet worden gebruikt om de inhoud van je persoonlijke bestanden te lezen of te wijzigen.</string>
+    <string name="permission_desc_wallpaper_base">Om voorbeelden van achtergronden weer te geven en ze op te nemen in back-ups, heeft <xliff:g id="name" example="My App">%1$s</xliff:g> de volgende toestemming nodig: %2$s. Dit is te wijten aan systeembeperkingen voor toegang tot achtergrondafbeeldingen.</string>
+    <string name="permission_desc_ending_read_all_files">alle bestanden op je apparaat lezen</string>
+    <string name="permission_desc_ending_manage_all_files">om alle bestanden op je apparaat te beheren</string>
+    <string name="permission_desc_wallpaper_multiple">Meerdere machtigingen nodig</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Om voorbeelden van achtergronden weer te geven en deze in backups op te nemen, vereist <xliff:g id="name" example="My App">%1$s</xliff:g> de volgende machtigingen. Dit is te wijten aan systeembeperkingen voor toegang tot achtergrondafbeeldingen.</string>
+    <string name="permission_label_manage_all_files">Alle bestanden op het apparaat beheren</string>
+    <string name="permission_label_read_photos_videos">Foto\'s en video\'s lezen</string>
+    <string name="manage_storage_access_denied_title">Kan beheer opslagtoegang niet inschakelen</string>
+    <string name="manage_storage_access_denied_description">Als gevolg van Play Store beleid, kan <xliff:g id="name" example="My App">%1$s</xliff:g> geen volledige opslag toegang vragen. Voor toegang tot alle bestanden, download <xliff:g id="name" example="My App">%1$s</xliff:g> vanaf GitHub. Als alternatief kun je individuele toegang verlenen tot foto\'s, video\'s en audiobestanden.</string>
+    <string name="open_permission_settings">Instellingen openen</string>
     <string name="grant_requested_permissions">Machtigingen verlenen</string>
-    <string name="custom_search_label">Aangepaste naam voor zoekmachine</string>
+    <string name="permissions_needed">Machtigingen nodig</string>
+    <string name="grant_requested_permissions_tap">Tik om machtigingen te verlenen</string>
 </resources>

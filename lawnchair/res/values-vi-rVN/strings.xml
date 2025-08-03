@@ -42,6 +42,7 @@
     <string name="deselect_all">Bỏ chọn tất cả</string>
     <string name="inverse_selection">Lựa chọn ngược</string>
     <string name="loading">Đang tải…</string>
+    <string name="dismiss">Miễn nhiệm</string>
     <string name="download_update">Tải xuống bản cập nhật</string>
     <string name="install_update">Cài đặt bản cập nhật</string>
     <string name="pro_updated">Bạn đã cập nhật rồi!</string>
@@ -71,6 +72,7 @@
     <string name="grid">Lưới</string>
     <string name="layout">Bố cục</string>
     <!-- Generic styling options -->
+    <string name="show_wallpaper">Hiển thị hình nền</string>
     <string name="wallpaper">Hình nền</string>
     <string name="style">Phong cách</string>
     <string name="background_opacity">Độ mờ của nền</string>
@@ -161,8 +163,6 @@
     <string name="notification_dots_text_color">Màu số thông báo</string>
     <string name="notification_dots_color_contrast_warning_always">Cảnh báo: Màu sắc của chấm thông báo và số không đủ độ tương phản với nhau</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Cảnh báo: Màu sắc của chấm thông báo và số có thể không phải lúc nào cũng đủ độ tương phản với nhau</string>
-    <string name="missing_notification_access_label">Cần quyền truy cập vào thông báo</string>
-    <string name="missing_notification_access_desc">Để hiển thị Dấu chấm thông báo, hãy bật thông báo ứng dụng cho <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!--
 
     Icons
@@ -206,6 +206,10 @@
     <string name="icon_shape_square">Vuông</string>
     <string name="icon_shape_squircle">Vuông tròn</string>
     <string name="icon_shape_teardrop">Giọt nước</string>
+    <!-- Icon shape (Material 3 Expressive) -->
+    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
+    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
+    <string name="icon_shape_arch">Arch</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Tùy chỉnh hình dạng biểu tượng</string>
     <string name="custom_icon_shape_create">Tạo hình dạng biểu tượng tùy chỉnh</string>
@@ -350,6 +354,8 @@
     <string name="acknowledgements">Ghi nhận</string>
     <string name="translate">Dịch</string>
     <string name="donate">Đóng góp</string>
+    <string name="contributor_status_active">Active</string>
+    <string name="update_check_failed">Failed to check for updates</string>
     <!--
 
     Backup and restore
@@ -547,7 +553,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Tìm kiếm</string>
+    <string name="all_apps_device_search_hint">Tìm kiếm ứng dụng, web và nhiều hơn nữa</string>
     <string name="all_apps_search_bar_hint">Tìm kiếm ứng dụng</string>
     <string name="all_apps_no_search_results">Không tìm thấy ứng dụng nào phù hợp \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Từ web</string>
@@ -580,9 +586,11 @@
     <string name="search_algorithm_app_search">Tìm kiếm ứng dụng</string>
     <string name="search_algorithm_global_search_on_device">Tìm kiếm toàn thiết bị</string>
     <string name="search_algorithm_global_search_via_asi">Tìm kiếm toàn thiết bị (thông qua ASI)</string>
-    <string name="custom_search_url">URL công cụ tìm kiếm tùy chỉnh</string>
-    <string name="custom_search_suggestions_url">URL gợi ý tìm kiếm tùy chỉnh</string>
+    <string name="custom_search_label">Tên công cụ tìm kiếm</string>
+    <string name="custom_search_url">URL công cụ tìm kiếm</string>
+    <string name="custom_search_suggestions_url">URL gợi ý thân mến</string>
     <string name="custom_search_input_hint">&#37; sẽ được thay thế bằng truy vấn tìm kiếm</string>
+    <string name="custom_search_suggestions_hint">&#37; sẽ được thay thế bằng truy vấn tìm kiếm. Kết quả phải ở định dạng JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Hiển thị trong kết quả tìm kiếm</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Ứng dụng và phím tắt</string>
@@ -591,10 +599,17 @@
     <string name="search_pref_result_tips_title">Mẹo về Pixel</string>
     <string name="search_pref_result_settings_title">Cài đặt Android</string>
     <string name="search_pref_result_files_title">Các tệp</string>
+    <string name="search_pref_result_visual_media_title">Hình ảnh và video</string>
+    <string name="search_pref_result_audio_media_title">Tệp âm thanh</string>
+    <string name="search_pref_result_all_files_title">Tất cả tệp</string>
     <string name="search_pref_result_web_title">Gợi ý web</string>
     <string name="search_pref_result_history_title">Lịch sử tìm kiếm</string>
     <string name="all_apps_search_result_calculator">Máy tính toán</string>
+    <string name="search_empty_state_title">Bắt đầu tìm kiếm</string>
+    <string name="search_empty_state_no_history_subtitle">Tìm ứng dụng, danh bạ và nhiều nội dung khác. Các tìm kiếm gần đây của bạn sẽ hiển thị ở đây.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Tìm ứng dụng, danh bạ và nhiều thông tin khác.</string>
     <!-- Description for each search result type -->
+    <string name="search_pref_files_search_on">Tìm kiếm trên</string>
     <string name="search_pref_result_files_description">Phương tiện, tệp và nhiều hơn nữa</string>
     <string name="search_pref_result_contacts_description">Danh bạ và mục khác</string>
     <string name="search_pref_result_web_provider_description">Thông qua <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -606,9 +621,36 @@
     <string name="max_recent_result_count_title">Số lượng mục tối đa cho lịch sử tìm kiếm</string>
     <string name="max_suggestion_result_count_title">Số lượng đề xuất tối đa</string>
     <string name="max_web_suggestion_delay">Độ trễ đề xuất web tối đa</string>
-    <!-- Permission warnings -->
-    <string name="warn_contact_permission_content">Để tìm kiếm danh bạ, cấp quyền truy cập danh bạ và điện thoại cho Lawnchair</string>
-    <string name="warn_files_permission_content">Để tìm kiếm các tệp của bạn, hãy cấp quyền lưu trữ cho Lawnchair</string>
+    <!-- Permission management -->
+    <string name="missing_notification_access_label">Cần quyền truy cập vào thông báo</string>
+    <string name="missing_notification_access_desc">Để hiển thị Dấu chấm thông báo, hãy bật thông báo ứng dụng cho <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="warn_contact_permission_title">Cần có quyền liên hệ</string>
+    <string name="warn_contact_permission_content">Để tìm kiếm danh bạ, cấp quyền cho danh bạ và điện thoại <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Cần có quyền truy cập âm nhạc và âm thanh</string>
+    <string name="permissions_music_audio_description">Tìm kiếm nhạc và các tệp âm thanh khác của bạn, <xliff:g id="name" example="My App">%1$s</xliff:g> cần có quyền truy cập vào thư viện phương tiện của bạn.</string>
+    <!-- Photos and videos -->
+    <string name="permissions_photos_videos">Cần quyền truy cập vào ảnh và video</string>
+    <string name="permissions_photos_videos_description">Để tìm kiếm ảnh và video của bạn, <xliff:g id="name" example="My App">%1$s</xliff:g> cần có quyền truy cập vào thư viện phương tiện của bạn.</string>
+    <string name="permissions_photos_videos_full">Truy cập toàn bộ thư viện phương tiện của bạn?</string>
+    <string name="permissions_photos_videos_full_description">Để tìm kiếm tất cả ảnh và video của bạn, <xliff:g id="name" example="My App">%1$s</xliff:g> cần quyền truy cập đầy đủ vào thư viện phương tiện của bạn.</string>
+    <string name="permissions_photos_videos_grant_full">Cấp toàn quyền cho phương tiện truyền thông</string>
+    <string name="permissions_photos_videos_manage_selected">Quản lý các mục đã chọn</string>
+    <!-- External storage -->
+    <string name="permissions_external_storage">Cần truy cập bộ nhớ ngoài</string>
+    <string name="permissions_external_storage_description">Để tìm kiếm các tập tin của bạn, <xliff:g id="name" example="My App">%1$s</xliff:g> cần có quyền truy cập vào bộ nhớ ngoài của thiết bị.</string>
+    <string name="permissions_manage_storage">Quản lý quyền truy cập lưu trữ cần thiết</string>
+    <string name="permissions_manage_storage_description">Để hiển thị các tập tin của bạn trong kết quả tìm kiếm, <xliff:g id="name" example="My App">%1$s</xliff:g> Yêu cầu quyền quản lý tất cả tệp trên thiết bị của bạn. Quyền này chỉ được sử dụng để liệt kê các tệp và sẽ không được sử dụng để đọc hoặc thay đổi nội dung tệp cá nhân của bạn.</string>
+    <string name="permission_desc_wallpaper_base">Để hiển thị bản xem trước hình nền và đưa chúng vào bản sao lưu, <xliff:g id="name" example="My App">%1$s</xliff:g> cần có quyền %2$s. Điều này là do hạn chế của hệ thống trong việc truy cập dữ liệu hình nền.</string>
+    <string name="permission_desc_ending_read_all_files">để đọc tất cả các tập tin trên thiết bị của bạn</string>
+    <string name="permission_desc_ending_manage_all_files">để quản lý tất cả các tập tin trên thiết bị của bạn</string>
+    <string name="permission_desc_wallpaper_multiple">Cần nhiều quyền</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Để hiển thị bản xem trước hình nền và đưa chúng vào bản sao lưu,, <xliff:g id="name" example="My App">%1$s</xliff:g> yêu cầu các quyền sau. Điều này là do hạn chế của hệ thống trong việc truy cập dữ liệu hình nền.</string>
+    <string name="permission_label_manage_all_files">Quản lý tất cả các tập tin trên thiết bị</string>
+    <string name="permission_label_read_photos_videos">Đọc ảnh và video</string>
+    <string name="manage_storage_access_denied_title">Không thể bật quản lý quyền truy cập lưu trữ</string>
+    <string name="manage_storage_access_denied_description">Do chính sách của Cửa hàng Play, <xliff:g id="name" example="My App">%1$s</xliff:g> không thể yêu cầu quyền truy cập lưu trữ đầy đủ ở đây. Để truy cập tất cả các tệp, vui lòng tải xuống <xliff:g id="name" example="My App">%1$s</xliff:g> từ GitHub. Ngoài ra, bạn có thể cấp quyền truy cập vào từng tệp ảnh, video và âm thanh trong phần cài đặt.</string>
+    <string name="open_permission_settings">Mở Cài đặt</string>
     <string name="grant_requested_permissions">Cấp quyền</string>
-    <string name="custom_search_label">Tên công cụ tìm kiếm</string>
+    <string name="permissions_needed">Cần có quyền</string>
+    <string name="grant_requested_permissions_tap">Nhấn để cấp quyền</string>
 </resources>
