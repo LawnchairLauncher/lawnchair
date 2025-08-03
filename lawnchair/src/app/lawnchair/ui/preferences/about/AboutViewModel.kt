@@ -16,14 +16,19 @@ class AboutViewModel(
     application: Application,
 ) : AndroidViewModel(application) {
 
-    private val nightlyBuildsRepository = NightlyBuildsRepository(
+    private val api: GitHubService = gitHubApiRetrofit.create()
+    
+    val nightlyBuildsRepository = NightlyBuildsRepository(
         applicationContext = application,
-        api = gitHubApiRetrofit.create(),
+        api = api,
     )
 
     private val _uiState = MutableStateFlow(AboutUiState())
     val uiState = _uiState.asStateFlow()
     val updateState = nightlyBuildsRepository.updateState
+    
+    private val _showChangesDialog = MutableStateFlow(false)
+    val showChangesDialog = _showChangesDialog.asStateFlow()
 
     init {
         _uiState.update {
@@ -60,8 +65,17 @@ class AboutViewModel(
         when (event) {
             is AboutEvent.OnDownloadClicked -> nightlyBuildsRepository.downloadUpdate()
             is AboutEvent.OnInstallClicked -> nightlyBuildsRepository.installUpdate(event.file)
+            is AboutEvent.OnViewChangesClicked -> _showChangesDialog.update { true }
         }
     }
+    
+    fun dismissChangesDialog() {
+        _showChangesDialog.update { false }
+    }
+    
+    fun getCurrentBuildNumber(): Int = nightlyBuildsRepository.getCurrentBuildNumber()
+    
+    fun getLatestBuildNumber(): Int = nightlyBuildsRepository.getLatestBuildNumber()
 
     private suspend fun fetchActiveContributors(): Set<String> {
         return runCatching {

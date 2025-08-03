@@ -1,12 +1,21 @@
 package app.lawnchair.ui.preferences.about
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,11 +48,26 @@ fun UpdateSection(
                 )
             }
             is UpdateState.Available -> {
-                Button(
-                    onClick = { onEvent(AboutEvent.OnDownloadClicked) },
+                Column(
                     modifier = Modifier.padding(top = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(text = stringResource(R.string.download_update))
+                    OutlinedButton(
+                        onClick = { onEvent(AboutEvent.OnViewChangesClicked) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = stringResource(R.string.view_changes),
+                            modifier = Modifier.padding(end = 4.dp),
+                        )
+                        Text(text = stringResource(R.string.view_changes))
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = { onEvent(AboutEvent.OnDownloadClicked) },
+                    ) {
+                        Text(text = stringResource(R.string.download_update))
+                    }
                 }
             }
             is UpdateState.Downloading -> {
@@ -57,11 +81,26 @@ fun UpdateSection(
                 )
             }
             is UpdateState.Downloaded -> {
-                Button(
-                    onClick = { onEvent(AboutEvent.OnInstallClicked(updateState.file)) },
+                Column(
                     modifier = Modifier.padding(top = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(text = stringResource(R.string.install_update))
+                    OutlinedButton(
+                        onClick = { onEvent(AboutEvent.OnViewChangesClicked) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = stringResource(R.string.view_changes),
+                            modifier = Modifier.padding(end = 4.dp),
+                        )
+                        Text(text = stringResource(R.string.view_changes))
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = { onEvent(AboutEvent.OnInstallClicked(updateState.file)) },
+                    ) {
+                        Text(text = stringResource(R.string.install_update))
+                    }
                 }
             }
             UpdateState.Failed -> {

@@ -60,7 +60,17 @@ fun About(
     viewModel: AboutViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val showChangesDialog by viewModel.showChangesDialog.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    
+    if (showChangesDialog) {
+        ChangesDialog(
+            currentBuild = viewModel.getCurrentBuildNumber(),
+            latestBuild = viewModel.getLatestBuildNumber(),
+            repository = viewModel.nightlyBuildsRepository,
+            onDismiss = viewModel::dismissChangesDialog,
+        )
+    }
 
     PreferenceLayoutLazyColumn(
         label = stringResource(id = R.string.about_label),

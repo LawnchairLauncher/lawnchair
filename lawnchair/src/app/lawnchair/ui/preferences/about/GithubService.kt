@@ -27,6 +27,20 @@ interface GitHubService {
         @Path("owner") owner: String,
         @Path("repo") repo: String,
     ): List<GitHubEvent>
+    
+    @GET("repos/{owner}/{repo}/commits")
+    suspend fun getRepositoryCommits(
+        @Path("owner") owner: String,
+        @Path("repo") repo: String,
+    ): List<GitHubCommit>
+    
+    @GET("repos/{owner}/{repo}/compare/{base}...{head}")
+    suspend fun compareCommits(
+        @Path("owner") owner: String,
+        @Path("repo") repo: String,
+        @Path("base") base: String,
+        @Path("head") head: String,
+    ): GitHubCompareResponse
 
     @Streaming
     @GET
@@ -83,6 +97,53 @@ data class GitHubEvent(
         val login: String,
     )
 }
+
+/**
+ * Represents a GitHub commit.
+ *
+ * @property sha The SHA hash of the commit.
+ * @property commit The commit details.
+ * @property author The author of the commit.
+ */
+@Serializable
+data class GitHubCommit(
+    val sha: String,
+    val commit: CommitDetails,
+    val author: Author? = null,
+) {
+    @Serializable
+    data class CommitDetails(
+        val message: String,
+        val author: CommitAuthor,
+    )
+    
+    @Serializable
+    data class CommitAuthor(
+        val name: String,
+        val date: String,
+    )
+    
+    @Serializable
+    data class Author(
+        val login: String,
+    )
+}
+
+/**
+ * Represents a GitHub comparison response between two commits.
+ *
+ * @property commits List of commits between the base and head.
+ * @property aheadBy Number of commits ahead.
+ * @property behindBy Number of commits behind.
+ */
+@Serializable
+data class GitHubCompareResponse(
+    val commits: List<GitHubCommit>,
+    @SerialName("ahead_by")
+    val aheadBy: Int,
+    @SerialName("behind_by")
+    val behindBy: Int,
+)
 
 internal val gitHubApiRetrofit: Retrofit by lazy {
     Retrofit.Builder()

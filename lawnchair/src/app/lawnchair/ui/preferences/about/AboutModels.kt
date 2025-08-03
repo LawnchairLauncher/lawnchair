@@ -103,8 +103,9 @@ sealed interface UpdateState {
      * A new update is available. Contains the name and URL of the update.
      * @param name The name of the available update (used in `Available` state).
      * @param url The URL to download the update from (used in `Available` state).
+     * @param latestBuildNumber The build number of the latest version available.
      */
-    data class Available(val name: String, val url: String) : UpdateState
+    data class Available(val name: String, val url: String, val latestBuildNumber: Int = 0) : UpdateState
 
     /**
      * An update is currently being downloaded. Contains the download progress.
@@ -115,8 +116,9 @@ sealed interface UpdateState {
     /**
      * An update has been successfully downloaded. Contains the downloaded file.
      * @param file The [File] object representing the downloaded update package (used in `Downloaded` state).
+     * @param latestBuildNumber The build number of the latest version available.
      */
-    data class Downloaded(val file: File) : UpdateState
+    data class Downloaded(val file: File, val latestBuildNumber: Int = 0) : UpdateState
 
     /** An update download has failed. */
     data object Failed : UpdateState
@@ -131,6 +133,7 @@ sealed interface UpdateState {
 sealed interface AboutEvent {
     data object OnDownloadClicked : AboutEvent
     data class OnInstallClicked(val file: File) : AboutEvent
+    data object OnViewChangesClicked : AboutEvent
 }
 
 /**
