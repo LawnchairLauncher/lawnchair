@@ -29,7 +29,7 @@ class NightlyBuildsRepository(
 
     private val _updateState = MutableStateFlow<UpdateState>(UpdateState.UpToDate)
     val updateState = _updateState.asStateFlow()
-    
+
     private var currentBuildNumber: Int = 0
     private var latestBuildNumber: Int = 0
     private var currentCommitHash: String = BuildConfig.COMMIT_HASH
@@ -118,21 +118,21 @@ class NightlyBuildsRepository(
         }
         applicationContext.startActivity(intent)
     }
-    
+
     fun getCurrentBuildNumber(): Int = currentBuildNumber
-    
+
     fun getLatestBuildNumber(): Int = latestBuildNumber
-    
+
     fun getCurrentCommitHash(): String = currentCommitHash
-    
+
     suspend fun getCommitsSinceCurrentVersion(): List<GitHubCommit>? {
         return try {
             // Get the latest commits (last 100)
             val commits = api.getRepositoryCommits("LawnchairLauncher", "lawnchair")
-            
+
             // Find the index of current commit
             val currentIndex = commits.indexOfFirst { it.sha.startsWith(currentCommitHash) }
-            
+
             if (currentIndex > 0) {
                 // Return all commits newer than current version
                 commits.take(currentIndex)

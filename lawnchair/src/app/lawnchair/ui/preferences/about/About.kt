@@ -62,7 +62,7 @@ fun About(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val showChangesDialog by viewModel.showChangesDialog.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    
+
     if (showChangesDialog) {
         ChangesDialog(
             currentBuild = viewModel.getCurrentBuildNumber(),

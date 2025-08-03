@@ -28,17 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.android.launcher3.R
+import java.time.Instant
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.Instant
-import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
 
 @Composable
 fun ChangesDialog(
@@ -117,7 +115,7 @@ fun ChangesDialog(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 8.dp),
                         )
-                        
+
                         commits?.forEach { commit ->
                             CommitItem(commit = commit)
                             Spacer(modifier = Modifier.height(8.dp))
@@ -139,11 +137,11 @@ fun ChangesDialog(
 @Composable
 private fun CommitItem(commit: GitHubCommit) {
     val context = LocalContext.current
-    
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { 
+            .clickable {
                 openCommitInBrowser(context, commit.sha)
             },
         colors = CardDefaults.cardColors(
@@ -156,7 +154,7 @@ private fun CommitItem(commit: GitHubCommit) {
             val message = commit.commit.message
             val title = message.substringBefore("\n").take(100)
             val description = message.substringAfter("\n", "").take(200)
-            
+
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium,
@@ -164,7 +162,7 @@ private fun CommitItem(commit: GitHubCommit) {
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
-            
+
             if (description.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -175,7 +173,7 @@ private fun CommitItem(commit: GitHubCommit) {
                     overflow = TextOverflow.Ellipsis,
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(4.dp))
             val timeAgo = getTimeAgo(context, commit.commit.author.date)
             Text(
@@ -198,7 +196,7 @@ private fun getTimeAgo(context: Context, dateString: String): String {
         val commitDate = Instant.parse(dateString)
         val currentTime = Instant.now()
         val diffMillis = currentTime.toEpochMilli() - commitDate.toEpochMilli()
-        
+
         when {
             diffMillis < TimeUnit.MINUTES.toMillis(1) -> {
                 context.getString(R.string.time_just_now)

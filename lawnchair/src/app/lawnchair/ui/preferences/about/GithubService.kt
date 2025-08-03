@@ -27,13 +27,13 @@ interface GitHubService {
         @Path("owner") owner: String,
         @Path("repo") repo: String,
     ): List<GitHubEvent>
-    
+
     @GET("repos/{owner}/{repo}/commits")
     suspend fun getRepositoryCommits(
         @Path("owner") owner: String,
         @Path("repo") repo: String,
     ): List<GitHubCommit>
-    
+
     @GET("repos/{owner}/{repo}/compare/{base}...{head}")
     suspend fun compareCommits(
         @Path("owner") owner: String,
@@ -116,13 +116,13 @@ data class GitHubCommit(
         val message: String,
         val author: CommitAuthor,
     )
-    
+
     @Serializable
     data class CommitAuthor(
         val name: String,
         val date: String,
     )
-    
+
     @Serializable
     data class Author(
         val login: String,
