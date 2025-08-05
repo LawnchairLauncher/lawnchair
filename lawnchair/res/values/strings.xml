@@ -556,6 +556,26 @@
     <string name="minus_one_unavailable">No feed apps installed</string>
     <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed provider</string>
+    
+    <!-- AIDL Bridge -->
+    <string name="aidl_bridge_required">AIDL Bridge Required</string>
+    <string name="aidl_bridge_description">For feed compatibility on production builds</string>
+    <string name="aidl_bridge_install">Install</string>
+    <string name="aidl_bridge_info">Why AIDL Bridge?</string>
+    <string name="aidl_bridge_info_title">About AIDL Bridge</string>
+    <string name="aidl_bridge_info_message">This is due to the Google Feed API being more permissive on debug builds; as soon as you apply it to a production app, it will no longer work (hence the beta version not working). A bug is opened on Github for them to look into this, meanwhile the AIDLBridge fix is the best to use.</string>
+    <string name="aidl_bridge_downloading">Downloading AIDL Bridge...</string>
+    <string name="aidl_bridge_installed">AIDL Bridge Installed</string>
+    <string name="aidl_bridge_installed_description">AIDL Bridge is already installed and ready to use</string>
+    <string name="aidl_bridge_already_installed">AIDL Bridge Already Installed</string>
+    <string name="aidl_bridge_reinstall_message">AIDL Bridge is already installed on your device. Do you want to reinstall it?</string>
+    <string name="aidl_bridge_reinstall">Reinstall</string>
+    <string name="aidl_bridge_restart_required">Restart Lawnchair</string>
+    <string name="aidl_bridge_restart_title">Restart Required</string>
+    <string name="aidl_bridge_restart_message">AIDL Bridge has been installed. Lawnchair needs to restart for it to appear in the feed providers list.</string>
+    <string name="aidl_bridge_restart_now">Restart Now</string>
+    <string name="aidl_bridge_restart_later">Later</string>
+    <string name="action_cancel">Cancel</string>
 
     <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
     <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>

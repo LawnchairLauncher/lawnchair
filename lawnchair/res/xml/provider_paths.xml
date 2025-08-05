@@ -2,6 +2,7 @@
 <paths>
     <cache-path name="log_files" path="logs"/>
     <cache-path name="nightly_updates" path="updates" />
+    <cache-path name="aidlbridge" path="aidlbridge" />
     <external-path name="external_files" path="." />
     <external-path name="external_storage" path="/"/>
 </paths>
