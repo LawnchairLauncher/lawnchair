@@ -65,9 +65,7 @@ fun About(
 
     if (showChangesDialog) {
         ChangesDialog(
-            currentBuild = viewModel.getCurrentBuildNumber(),
-            latestBuild = viewModel.getLatestBuildNumber(),
-            repository = viewModel.nightlyBuildsRepository,
+            changelogState = uiState.changelogState,
             onDismiss = viewModel::dismissChangesDialog,
         )
     }
@@ -135,6 +133,7 @@ fun About(
         item {
             UpdateSection(
                 updateState = uiState.updateState,
+                showChangesDialog = uiState.changelogState != null,
                 onEvent = viewModel::onEvent,
             )
         }

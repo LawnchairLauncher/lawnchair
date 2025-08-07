@@ -14,17 +14,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -35,32 +28,17 @@ import androidx.compose.ui.window.DialogProperties
 import com.android.launcher3.R
 import java.time.Instant
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Composable
 fun ChangesDialog(
-    currentBuild: Int,
-    latestBuild: Int,
-    repository: NightlyBuildsRepository,
+    changelogState: ChangelogState?,
     onDismiss: () -> Unit,
 ) {
-    val context = LocalContext.current
-    var commits by remember { mutableStateOf<List<GitHubCommit>?>(null) }
-    var isLoading by remember { mutableStateOf(true) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    if (changelogState == null) return
 
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            try {
-                commits = repository.getCommitsSinceCurrentVersion()
-                isLoading = false
-            } catch (e: Exception) {
-                errorMessage = context.getString(R.string.changes_dialog_error)
-                isLoading = false
-            }
-        }
-    }
+    val commits = changelogState.commits
+    val currentBuild = changelogState.currentBuildNumber
+    val latestBuild = changelogState.latestBuildNumber
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -83,44 +61,26 @@ fun ChangesDialog(
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
             ) {
-                when {
-                    isLoading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(16.dp),
-                        )
-                    }
-                    errorMessage != null -> {
-                        Text(
-                            text = errorMessage ?: stringResource(R.string.changes_dialog_error),
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                    }
-                    commits != null -> {
-                        val commitCount = commits?.size ?: 0
-                        Text(
-                            text = if (commitCount > 0) {
-                                val commitText = if (commitCount > 1) {
-                                    stringResource(R.string.changes_dialog_commit_count_plural, commitCount)
-                                } else {
-                                    stringResource(R.string.changes_dialog_commit_count, commitCount)
-                                }
-                                "$commitText ${stringResource(R.string.changes_dialog_commit_count_since_version)}"
-                            } else {
-                                stringResource(R.string.changes_dialog_no_changes)
-                            },
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 8.dp),
-                        )
-
-                        commits?.forEach { commit ->
-                            CommitItem(commit = commit)
-                            Spacer(modifier = Modifier.height(8.dp))
+                val commitCount = commits.size ?: 0
+                Text(
+                    text = if (commitCount > 0) {
+                        val commitText = if (commitCount > 1) {
+                            stringResource(R.string.changes_dialog_commit_count_plural, commitCount)
+                        } else {
+                            stringResource(R.string.changes_dialog_commit_count, commitCount)
                         }
-                    }
+                        "$commitText ${stringResource(R.string.changes_dialog_commit_count_since_version)}"
+                    } else {
+                        stringResource(R.string.changes_dialog_no_changes)
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+
+                commits.forEach { commit ->
+                    CommitItem(commit = commit)
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         },

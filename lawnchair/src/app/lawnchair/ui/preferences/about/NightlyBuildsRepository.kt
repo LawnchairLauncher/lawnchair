@@ -30,6 +30,9 @@ class NightlyBuildsRepository(
     private val _updateState = MutableStateFlow<UpdateState>(UpdateState.UpToDate)
     val updateState = _updateState.asStateFlow()
 
+    private val _changelogState = MutableStateFlow<ChangelogState?>(null)
+    val changelogState = _changelogState.asStateFlow()
+
     private var currentBuildNumber: Int = 0
     private var latestBuildNumber: Int = 0
     private var currentCommitHash: String = BuildConfig.COMMIT_HASH
@@ -58,11 +61,20 @@ class NightlyBuildsRepository(
                         UpdateState.Available(
                             asset.name,
                             asset.browserDownloadUrl,
-                            latestBuildNumber,
+                        )
+                    }
+
+                    _changelogState.update {
+                        ChangelogState(
+                            commits = getCommitsSinceCurrentVersion() ?: emptyList(),
+                            currentBuildNumber = currentBuildNumber,
+                            latestBuildNumber = latestBuildNumber,
                         )
                     }
                 } else {
                     _updateState.update { UpdateState.UpToDate }
+                    // no changelog to show
+                    _changelogState.value = null
                 }
             } catch (e: Exception) {
                 when (e) {
@@ -73,6 +85,7 @@ class NightlyBuildsRepository(
                         Log.e(TAG, "Failed to check for update", e)
                     }
                 }
+                _changelogState.value = null
                 _updateState.update { UpdateState.Failed }
             }
         }
@@ -89,7 +102,7 @@ class NightlyBuildsRepository(
                     _updateState.update { UpdateState.Downloading(progress) }
                 }
                 if (file != null) {
-                    _updateState.update { UpdateState.Downloaded(file, latestBuildNumber) }
+                    _updateState.update { UpdateState.Downloaded(file) }
                 } else {
                     Log.e(TAG, "Downloaded file is null")
                     _updateState.update { UpdateState.Failed }
@@ -119,13 +132,7 @@ class NightlyBuildsRepository(
         applicationContext.startActivity(intent)
     }
 
-    fun getCurrentBuildNumber(): Int = currentBuildNumber
-
-    fun getLatestBuildNumber(): Int = latestBuildNumber
-
-    fun getCurrentCommitHash(): String = currentCommitHash
-
-    suspend fun getCommitsSinceCurrentVersion(): List<GitHubCommit>? {
+    private suspend fun getCommitsSinceCurrentVersion(): List<GitHubCommit>? {
         return try {
             // Get the latest commits (last 100)
             val commits = api.getRepositoryCommits("LawnchairLauncher", "lawnchair")
@@ -137,8 +144,8 @@ class NightlyBuildsRepository(
                 // Return all commits newer than current version
                 commits.take(currentIndex)
             } else {
-                // If current commit not found, show last 30 commits
-                commits.take(30)
+                // If current commit not found, show last N commits
+                commits.take(MAX_FALLBACK_COMMITS)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get commits", e)
@@ -202,3 +209,5 @@ private fun Context.requestInstallPermission() {
         startActivity(intent)
     }
 }
+
+private const val MAX_FALLBACK_COMMITS = 30

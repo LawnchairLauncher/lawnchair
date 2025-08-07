@@ -18,7 +18,7 @@ class AboutViewModel(
 
     private val api: GitHubService = gitHubApiRetrofit.create()
 
-    val nightlyBuildsRepository = NightlyBuildsRepository(
+    private val nightlyBuildsRepository = NightlyBuildsRepository(
         applicationContext = application,
         api = api,
     )
@@ -58,6 +58,11 @@ class AboutViewModel(
                     _uiState.update { it.copy(updateState = state) }
                 }
             }
+            viewModelScope.launch {
+                nightlyBuildsRepository.changelogState.collect { state ->
+                    _uiState.update { it.copy(changelogState = state) }
+                }
+            }
         }
     }
 
@@ -73,10 +78,6 @@ class AboutViewModel(
         _showChangesDialog.update { false }
     }
 
-    fun getCurrentBuildNumber(): Int = nightlyBuildsRepository.getCurrentBuildNumber()
-
-    fun getLatestBuildNumber(): Int = nightlyBuildsRepository.getLatestBuildNumber()
-
     private suspend fun fetchActiveContributors(): Set<String> {
         return runCatching {
             nightlyBuildsRepository.api.getRepositoryEvents("LawnchairLauncher", "lawnchair")
@@ -84,6 +85,7 @@ class AboutViewModel(
                 .toSet()
         }.getOrDefault(emptySet())
     }
+
     companion object {
         private val team = listOf(
             TeamMember(

@@ -1,15 +1,13 @@
 package app.lawnchair.ui.preferences.about
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -24,6 +22,7 @@ import com.android.launcher3.R
 @Composable
 fun UpdateSection(
     updateState: UpdateState,
+    showChangesDialog: Boolean,
     onEvent: (AboutEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -45,32 +44,28 @@ fun UpdateSection(
                 )
             }
             is UpdateState.Available -> {
-                Column(
-                    modifier = Modifier.padding(top = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    OutlinedButton(
-                        onClick = { onEvent(AboutEvent.OnViewChangesClicked) },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Info,
-                            contentDescription = stringResource(R.string.view_changes),
-                            modifier = Modifier.padding(end = 4.dp),
-                        )
-                        Text(text = stringResource(R.string.view_changes))
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
+                Row {
                     Button(
                         onClick = { onEvent(AboutEvent.OnDownloadClicked) },
                     ) {
                         Text(text = stringResource(R.string.download_update))
+                    }
+                    if (showChangesDialog) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        OutlinedButton(
+                            onClick = { onEvent(AboutEvent.OnViewChangesClicked) },
+                        ) {
+                            Text(text = stringResource(R.string.view_changes))
+                        }
                     }
                 }
             }
             is UpdateState.Downloading -> {
                 LinearProgressIndicator(
                     progress = { updateState.progress },
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 )
                 Text(
                     text = "${(updateState.progress * 100).toInt()}%",
@@ -78,26 +73,10 @@ fun UpdateSection(
                 )
             }
             is UpdateState.Downloaded -> {
-                Column(
-                    modifier = Modifier.padding(top = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                Button(
+                    onClick = { onEvent(AboutEvent.OnInstallClicked(updateState.file)) },
                 ) {
-                    OutlinedButton(
-                        onClick = { onEvent(AboutEvent.OnViewChangesClicked) },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Info,
-                            contentDescription = stringResource(R.string.view_changes),
-                            modifier = Modifier.padding(end = 4.dp),
-                        )
-                        Text(text = stringResource(R.string.view_changes))
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = { onEvent(AboutEvent.OnInstallClicked(updateState.file)) },
-                    ) {
-                        Text(text = stringResource(R.string.install_update))
-                    }
+                    Text(text = stringResource(R.string.install_update))
                 }
             }
             UpdateState.Failed -> {
