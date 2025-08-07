@@ -440,11 +440,11 @@
     About the app
 
     -->
-    <string name="news">News</string>
-    <string name="support">Support</string>
-    <string name="x_twitter" translatable="false">X</string>
+
     <string name="github" translatable="false">GitHub</string>
-    <string name="discord" translatable="false">Discord</string>
+    <string name="support">Support</string>
+    <string name="translate">Translate</string>
+    <string name="donate">Donate</string>
 
     <string name="product">Product</string>
     <string name="design_and_development">Design and development</string>
@@ -453,9 +453,15 @@
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Support and PR</string>
 
+    <string name="community">Community</string>
+    <string name="x_twitter" translatable="false">X</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">News</string>
+    <string name="discord" translatable="false">Discord</string>
+
+    <string name="legal">Legal</string>
     <string name="acknowledgements">Acknowledgements</string>
-    <string name="translate">Translate</string>
-    <string name="donate">Donate</string>
+    <string name="privacy_policy">Privacy policy</string>
 
     <string name="contributor_status_active">Active</string>
 

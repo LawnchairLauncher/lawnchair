@@ -46,6 +46,7 @@ import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
+import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroupItem
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
@@ -136,7 +137,7 @@ fun About(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
             ) {
-                uiState.links.forEach { link ->
+                uiState.topLinks.forEach { link ->
                     LawnchairLink(
                         iconResId = link.iconResId,
                         label = stringResource(id = link.labelResId),
@@ -166,8 +167,22 @@ fun About(
                 member = it,
             )
         }
+        preferenceGroupItems(
+            items = uiState.bottomLinks,
+            key = { _, it -> it.labelResId },
+            isFirstChild = false,
+            heading = { stringResource(id = R.string.community) },
+        ) { _, it ->
+            HorizontalLawnchairLink(
+                iconResId = it.iconResId,
+                label = stringResource(id = it.labelResId),
+                url = it.url,
+            )
+        }
         item {
-            Spacer(modifier = Modifier.requiredHeight(16.dp))
+            PreferenceGroupHeading(
+                stringResource(R.string.legal),
+            )
         }
         item {
             PreferenceGroupItem(
@@ -187,27 +202,9 @@ fun About(
             ) {
                 PreferenceDivider()
                 ClickablePreference(
-                    label = stringResource(id = R.string.translate),
+                    label = stringResource(id = R.string.privacy_policy),
                     onClick = {
-                        val webpage = CROWDIN_URL.toUri()
-                        val intent = Intent(Intent.ACTION_VIEW, webpage)
-                        if (intent.resolveActivity(context.packageManager) != null) {
-                            context.startActivity(intent)
-                        }
-                    },
-                )
-            }
-        }
-        item {
-            PreferenceGroupItem(
-                cutTop = true,
-                cutBottom = false,
-            ) {
-                PreferenceDivider()
-                ClickablePreference(
-                    label = stringResource(id = R.string.donate),
-                    onClick = {
-                        val webpage = OPENCOLLECTIVE_FUNDING_URL.toUri()
+                        val webpage = PRIVACY_POLICY.toUri()
                         val intent = Intent(Intent.ACTION_VIEW, webpage)
                         if (intent.resolveActivity(context.packageManager) != null) {
                             context.startActivity(intent)
@@ -219,5 +216,4 @@ fun About(
     }
 }
 
-private const val OPENCOLLECTIVE_FUNDING_URL = "https://opencollective.com/lawnchair"
-private const val CROWDIN_URL = "https://lawnchair.crowdin.com/lawnchair"
+private const val PRIVACY_POLICY = "https://lawnchair.app/privacy_policy"

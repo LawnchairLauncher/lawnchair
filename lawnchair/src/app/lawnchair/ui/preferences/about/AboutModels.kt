@@ -16,7 +16,7 @@ import java.io.File
  * @param commitHash The commit hash of the current build.
  * @param coreTeam A list of [TeamMember] objects representing the core development team.
  * @param supportAndPr A list of [TeamMember] objects representing those involved in support and public relations.
- * @param links A list of [Link] objects representing useful external links (e.g., social media, website).
+ * @param topLinks A list of [Link] objects representing useful external links (e.g., social media, website).
  * @param updateState The current [UpdateState] of the application's update checker.
  */
 data class AboutUiState(
@@ -24,7 +24,8 @@ data class AboutUiState(
     val commitHash: String = "",
     val coreTeam: List<TeamMember> = emptyList(),
     val supportAndPr: List<TeamMember> = emptyList(),
-    val links: List<Link> = emptyList(),
+    val topLinks: List<Link> = emptyList(),
+    val bottomLinks: List<Link> = emptyList(),
     val updateState: UpdateState = UpdateState.Hidden,
 )
 
