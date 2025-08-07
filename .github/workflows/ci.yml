@@ -118,7 +118,7 @@ jobs:
 
   nightly-release:
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && github.ref == 'refs/heads/15-dev'
+    # if: github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && github.ref == 'refs/heads/15-dev'
     needs: build-debug-apk
     permissions:
       contents: write
@@ -128,13 +128,15 @@ jobs:
         with:
           name: Debug APK
       # Note the # and () symbols are not supported in GitHub Release filenames, even manually
+      - name: List output directories and files
+        run: find . -type d -print; find . -type f -print
       - name: Export APK_NAME for later use
         run: echo "APK_NAME=Lawnchair.Debug.${{ github.ref_name }}.Nightly-CI_${{ github.run_number }}-$(echo ${{ github.sha }} | cut -c1-7).apk" >> $GITHUB_ENV
       - name: Rename .apk file
-        run: mv "./Debug APK/lawnWithQuickstepNightly/release/"*.apk "./$APK_NAME"
-      - name: Delete release if exist then create release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag
-          gh release create "nightly" "./$APK_NAME" -p -t "Lawnchair Nightly" --generate-notes
+        run: mv "./lawnWithQuickstepNightly/release/"*.apk "./$APK_NAME"
+      # - name: Delete release if exist then create release
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag
+      #     gh release create "nightly" "./$APK_NAME" -p -t "Lawnchair Nightly" --generate-notes
