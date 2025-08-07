@@ -1,16 +1,12 @@
 package app.lawnchair.ui.preferences.about
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,12 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.launcher3.R
+import java.io.File
 
 @Composable
 fun UpdateSection(
     updateState: UpdateState,
-    showChangesDialog: Boolean,
-    onEvent: (AboutEvent) -> Unit,
+    onViewChanges: () -> Unit,
+    onInstall: (File) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -44,20 +41,10 @@ fun UpdateSection(
                 )
             }
             is UpdateState.Available -> {
-                Row {
-                    Button(
-                        onClick = { onEvent(AboutEvent.OnDownloadClicked) },
-                    ) {
-                        Text(text = stringResource(R.string.download_update))
-                    }
-                    if (showChangesDialog) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        OutlinedButton(
-                            onClick = { onEvent(AboutEvent.OnViewChangesClicked) },
-                        ) {
-                            Text(text = stringResource(R.string.view_changes))
-                        }
-                    }
+                Button(
+                    onClick = onViewChanges,
+                ) {
+                    Text(text = stringResource(R.string.download_update))
                 }
             }
             is UpdateState.Downloading -> {
@@ -74,7 +61,9 @@ fun UpdateSection(
             }
             is UpdateState.Downloaded -> {
                 Button(
-                    onClick = { onEvent(AboutEvent.OnInstallClicked(updateState.file)) },
+                    onClick = {
+                        onInstall(updateState.file)
+                    },
                 ) {
                     Text(text = stringResource(R.string.install_update))
                 }

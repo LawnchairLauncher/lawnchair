@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,9 +27,6 @@ class AboutViewModel(
     private val _uiState = MutableStateFlow(AboutUiState())
     val uiState = _uiState.asStateFlow()
     val updateState = nightlyBuildsRepository.updateState
-
-    private val _showChangesDialog = MutableStateFlow(false)
-    val showChangesDialog = _showChangesDialog.asStateFlow()
 
     init {
         _uiState.update {
@@ -58,24 +56,15 @@ class AboutViewModel(
                     _uiState.update { it.copy(updateState = state) }
                 }
             }
-            viewModelScope.launch {
-                nightlyBuildsRepository.changelogState.collect { state ->
-                    _uiState.update { it.copy(changelogState = state) }
-                }
-            }
         }
     }
 
-    fun onEvent(event: AboutEvent) {
-        when (event) {
-            is AboutEvent.OnDownloadClicked -> nightlyBuildsRepository.downloadUpdate()
-            is AboutEvent.OnInstallClicked -> nightlyBuildsRepository.installUpdate(event.file)
-            is AboutEvent.OnViewChangesClicked -> _showChangesDialog.update { true }
-        }
+    fun downloadUpdate() {
+        nightlyBuildsRepository.downloadUpdate()
     }
 
-    fun dismissChangesDialog() {
-        _showChangesDialog.update { false }
+    fun installUpdate(file: File) {
+        nightlyBuildsRepository.installUpdate(file)
     }
 
     private suspend fun fetchActiveContributors(): Set<String> {

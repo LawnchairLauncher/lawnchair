@@ -28,10 +28,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -53,21 +59,39 @@ import app.lawnchair.ui.preferences.components.layout.preferenceGroupItems
 import app.lawnchair.ui.preferences.navigation.AboutLicenses
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun About(
     modifier: Modifier = Modifier,
     viewModel: AboutViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val showChangesDialog by viewModel.showChangesDialog.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    if (showChangesDialog) {
-        ChangesDialog(
-            changelogState = uiState.changelogState,
-            onDismiss = viewModel::dismissChangesDialog,
-        )
+    val sheetState = rememberModalBottomSheetState(true)
+    var openBottomSheet by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    if (openBottomSheet) {
+        val updateState = uiState.updateState
+        if (updateState is UpdateState.Available) {
+            ChangesDialog(
+                changelogState = updateState.changelogState,
+                onDismiss = {
+                    scope.launch {
+                        sheetState.hide()
+                    }.invokeOnCompletion {
+                        openBottomSheet = false
+                    }
+                },
+                onDownload = {
+                    viewModel.downloadUpdate()
+                },
+                sheetState = sheetState,
+            )
+        }
     }
 
     PreferenceLayoutLazyColumn(
@@ -133,8 +157,15 @@ fun About(
         item {
             UpdateSection(
                 updateState = uiState.updateState,
-                showChangesDialog = uiState.changelogState != null,
-                onEvent = viewModel::onEvent,
+                onInstall = {
+                    viewModel.installUpdate(it)
+                },
+                onViewChanges = {
+                    openBottomSheet = true
+                    scope.launch {
+                        sheetState.show()
+                    }
+                },
             )
         }
         item {

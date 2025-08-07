@@ -30,9 +30,6 @@ class NightlyBuildsRepository(
     private val _updateState = MutableStateFlow<UpdateState>(UpdateState.UpToDate)
     val updateState = _updateState.asStateFlow()
 
-    private val _changelogState = MutableStateFlow<ChangelogState?>(null)
-    val changelogState = _changelogState.asStateFlow()
-
     private var currentBuildNumber: Int = 0
     private var latestBuildNumber: Int = 0
     private var currentCommitHash: String = BuildConfig.COMMIT_HASH
@@ -57,24 +54,25 @@ class NightlyBuildsRepository(
                     asset?.name?.substringAfter("_")?.substringBefore("-")?.toIntOrNull() ?: 0
 
                 if (asset != null && latestBuildNumber > currentBuildNumber) {
+                    val commitList = getCommitsSinceCurrentVersion()
+
                     _updateState.update {
                         UpdateState.Available(
                             asset.name,
                             asset.browserDownloadUrl,
-                        )
-                    }
-
-                    _changelogState.update {
-                        ChangelogState(
-                            commits = getCommitsSinceCurrentVersion() ?: emptyList(),
-                            currentBuildNumber = currentBuildNumber,
-                            latestBuildNumber = latestBuildNumber,
+                            changelogState = if (commitList != null) {
+                                ChangelogState(
+                                    commits = commitList,
+                                    currentBuildNumber = currentBuildNumber,
+                                    latestBuildNumber = latestBuildNumber,
+                                )
+                            } else {
+                                null
+                            },
                         )
                     }
                 } else {
                     _updateState.update { UpdateState.UpToDate }
-                    // no changelog to show
-                    _changelogState.value = null
                 }
             } catch (e: Exception) {
                 when (e) {
@@ -85,7 +83,6 @@ class NightlyBuildsRepository(
                         Log.e(TAG, "Failed to check for update", e)
                     }
                 }
-                _changelogState.value = null
                 _updateState.update { UpdateState.Failed }
             }
         }

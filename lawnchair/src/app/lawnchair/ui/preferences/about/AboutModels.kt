@@ -27,13 +27,6 @@ data class AboutUiState(
     val topLinks: List<Link> = emptyList(),
     val bottomLinks: List<Link> = emptyList(),
     val updateState: UpdateState = UpdateState.Hidden,
-    val changelogState: ChangelogState? = null,
-)
-
-data class ChangelogState(
-    val commits: List<GitHubCommit> = emptyList(),
-    val currentBuildNumber: Int = 0,
-    val latestBuildNumber: Int = 0,
 )
 
 /**
@@ -111,7 +104,7 @@ sealed interface UpdateState {
      * @param name The name of the available update (used in `Available` state).
      * @param url The URL to download the update from (used in `Available` state).
      */
-    data class Available(val name: String, val url: String) : UpdateState
+    data class Available(val name: String, val url: String, val changelogState: ChangelogState?) : UpdateState
 
     /**
      * An update is currently being downloaded. Contains the download progress.
@@ -129,17 +122,11 @@ sealed interface UpdateState {
     data object Failed : UpdateState
 }
 
-/**
- * Sealed interface representing user actions that can be triggered from the "About" screen.
- *
- * This interface defines the different types of events related to user interactions,
- * such as initiating a download or an installation.
- */
-sealed interface AboutEvent {
-    data object OnDownloadClicked : AboutEvent
-    data class OnInstallClicked(val file: File) : AboutEvent
-    data object OnViewChangesClicked : AboutEvent
-}
+data class ChangelogState(
+    val commits: List<GitHubCommit> = emptyList(),
+    val currentBuildNumber: Int = 0,
+    val latestBuildNumber: Int = 0,
+)
 
 /**
  * Represents the status of a contributor.
