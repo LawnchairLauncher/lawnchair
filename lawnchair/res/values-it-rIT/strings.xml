@@ -45,7 +45,22 @@
     <string name="dismiss">Dismiss</string>
     <string name="download_update">Scarica aggiornamento</string>
     <string name="install_update">Installa aggiornamento</string>
+    <string name="view_changes">View changes</string>
     <string name="pro_updated">Sei aggiornato!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">just now</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">Gestito da Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferenze</string>
@@ -343,17 +358,21 @@
     About the app
 
     -->
-    <string name="news">Novità</string>
     <string name="support">Supporto</string>
+    <string name="translate">Traduci</string>
+    <string name="donate">Dona</string>
     <string name="product">Prodotto</string>
     <string name="design_and_development">Design e sviluppo</string>
     <string name="development">Sviluppo</string>
     <string name="quickswitch_maintenance">Manutenzione QuickSwitch</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Supporto e PR</string>
+    <string name="community">Community</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">Novità</string>
+    <string name="legal">Legal</string>
     <string name="acknowledgements">Riconoscimenti</string>
-    <string name="translate">Traduci</string>
-    <string name="donate">Dona</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--
@@ -393,7 +412,7 @@
     <string name="gesture_handler_open_app_drawer">Apri il menu delle app</string>
     <string name="gesture_handler_open_app_search">Apri la ricerca delle app</string>
     <string name="gesture_handler_open_search">Apri la ricerca</string>
-    <string name="gesture_handler_open_assistant"></string>
+    <string name="gesture_handler_open_assistant">Apri assistente</string>
     <string name="pick_app_for_gesture">Seleziona l\'app</string>
     <string name="dt2s_admin_hint_title">Permessi di amministratore necessari</string>
     <string name="dt2s_admin_hint">Per sospendere lo schermo con un doppio tocco, imposta Lawnchair come amministratore del dispositivo. Tocca \"Apri impostazioni\", poi tocca \"Attiva questa app come amministratore del dispositivo\".</string>

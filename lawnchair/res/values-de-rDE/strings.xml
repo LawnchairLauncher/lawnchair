@@ -45,7 +45,22 @@
     <string name="dismiss">Verwerfen</string>
     <string name="download_update">Update herunterladen</string>
     <string name="install_update">Update installieren</string>
+    <string name="view_changes">Änderungen ansehen</string>
     <string name="pro_updated">Du verwendest die neueste Version!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Änderungen</string>
+    <string name="changes_dialog_error">Fehler beim Laden der Änderungen</string>
+    <string name="changes_dialog_no_changes">Keine Änderungen gefunden</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">von %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">gerade eben</string>
+    <string name="time_minutes_ago">%dMin.</string>
+    <string name="time_hours_ago">%dStd.</string>
+    <string name="time_days_ago">%dT.</string>
+    <string name="time_weeks_ago">%dW.</string>
+    <string name="time_months_ago">%dMon.</string>
+    <string name="time_years_ago">%dJ.</string>
     <string name="managed_by_lawnchair">Von Lawnchair verwaltet</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Voreinstellungen</string>
@@ -343,17 +358,21 @@
     About the app
 
     -->
-    <string name="news">Neuigkeiten</string>
     <string name="support">Support</string>
+    <string name="translate">Übersetzen</string>
+    <string name="donate">Spenden</string>
     <string name="product">Produkt</string>
     <string name="design_and_development">Design und Entwicklung</string>
     <string name="development">Entwicklung</string>
     <string name="quickswitch_maintenance">QuickSwitch Betreiber</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Support und PR</string>
+    <string name="community">Gemeinschaft</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">Neuigkeiten</string>
+    <string name="legal">Rechtliches</string>
     <string name="acknowledgements">Danksagungen</string>
-    <string name="translate">Übersetzen</string>
-    <string name="donate">Spenden</string>
+    <string name="privacy_policy">Datenschutzerklärung</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--

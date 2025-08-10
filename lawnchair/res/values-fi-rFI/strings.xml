@@ -42,10 +42,25 @@
     <string name="deselect_all">Poista kaikki valinnat</string>
     <string name="inverse_selection">Käännä valinta</string>
     <string name="loading">Ladataan…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">Hylkää</string>
     <string name="download_update">Lataa päivitys</string>
     <string name="install_update">Asenna päivitys</string>
+    <string name="view_changes">View changes</string>
     <string name="pro_updated">Olet ajan tasalla!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">just now</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">Lawnchairin hallinnoima</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Asetukset</string>
@@ -72,7 +87,7 @@
     <string name="grid">Ruudukko</string>
     <string name="layout">Asettelu</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Näytä taustakuva</string>
     <string name="wallpaper">Taustakuva</string>
     <string name="style">Tyyli</string>
     <string name="background_opacity">Taustan läpinäkymättömyys</string>
@@ -179,18 +194,18 @@
     <string name="transparent_background_icons_label">Läpinäkyvät tyylitellyt kuvakkeet</string>
     <string name="transparent_background_icons_description">Käytä läpinäkyvää taustaa teemojen kuvakkeissa</string>
     <string name="auto_adaptive_icons_label">Automaattisesti sopeutuvat kuvakkeet</string>
-    <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
-    <string name="background_lightness_label">Background lightness</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
-    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="auto_adaptive_icons_description">Kaikille ei mukautuville kuvakkeille</string>
+    <string name="shadow_bg_icons_label">Näytä varjot kuvakkeiden takana</string>
+    <string name="background_lightness_label">Taustan valkoisuus</string>
+    <string name="adaptive_icon_background_description">Käytä 100% kirkkautta saadaksesi valkoisen taustan</string>
+    <string name="reset_custom_icons">Nollaa mukautetut kuvakkeet</string>
     <string name="reset_custom_icons_confirmation">Kaikki mukautetut kuvakkeet nollataan. Haluatko jatkaa?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Kuvakkeet</string>
-    <string name="icon_picker_reset_to_default">Reset to default</string>
-    <string name="icon_pack_external_picker">Open external picker</string>
-    <string name="pick_icon_from_label">Pick icon from</string>
-    <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
+    <string name="icon_picker_reset_to_default">Palauta oletukseen</string>
+    <string name="icon_pack_external_picker">Avaa ulkoinen valitsija</string>
+    <string name="pick_icon_from_label">Valitse kuvake täältä:</string>
+    <string name="icon_picker_load_failed">Ei pystytty lataamaan lisää kuvakkeita</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">Järjestelmä</string>
     <string name="icon_shape_circle">Ympyrä</string>
@@ -199,61 +214,61 @@
     <string name="icon_shape_egg">Muna</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Oktagoni</string>
-    <string name="icon_shape_hexagon">Hexagon</string>
+    <string name="icon_shape_hexagon">Kuusikulmio</string>
     <string name="icon_shape_sammy">One UI</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="icon_shape_sharp_square">Sharp square</string>
+    <string name="icon_shape_rounded_square">Pyöristetty neliö</string>
+    <string name="icon_shape_sharp_square">Terävä nelio</string>
     <string name="icon_shape_square">Neliö</string>
     <string name="icon_shape_squircle">Ympyrä</string>
     <string name="icon_shape_teardrop">Pisara</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">Neljäreunainen keksi</string>
+    <string name="icon_shape_seven_sided_cookie">Seitsemänreunainen keksi</string>
+    <string name="icon_shape_arch">Kaari</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Custom icon shape</string>
-    <string name="custom_icon_shape_create">Create custom icon shape</string>
-    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
-    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape">Mukautettu kuvakkeen muoto</string>
+    <string name="custom_icon_shape_create">Luo mukautettu kuvakkeen muoto</string>
+    <string name="custom_icon_shape_edit">Tallenna mukautettu kuvakkeen muoto</string>
+    <string name="custom_icon_shape_corner">Kulman muoto</string>
     <string name="custom_icon_shape_corner_round">Pyöreä</string>
     <string name="custom_icon_shape_corner_squircle">Pyöreä neliö</string>
     <string name="custom_icon_shape_corner_cut">Leikattu neliö</string>
-    <string name="custom_icon_shape_top_left">Top left</string>
-    <string name="custom_icon_shape_top_right">Top right</string>
-    <string name="custom_icon_shape_bottom_left">Bottom left</string>
-    <string name="custom_icon_shape_bottom_right">Bottom right</string>
-    <string name="export_to_clipboard">Export to clipboard</string>
-    <string name="import_from_clipboard">Import from clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard doesn\'t contain a valid icon shape</string>
+    <string name="custom_icon_shape_top_left">Ylävasen</string>
+    <string name="custom_icon_shape_top_right">Yläoikea</string>
+    <string name="custom_icon_shape_bottom_left">Alavasen</string>
+    <string name="custom_icon_shape_bottom_right">Alaoikea</string>
+    <string name="export_to_clipboard">Vie leikepöydälle</string>
+    <string name="import_from_clipboard">Tuo leikepöydältä</string>
+    <string name="icon_shape_clipboard_import_error">Leikepöytä ei sisällä kunnollista kuvakkeen muotoa</string>
     <!-- Icon pack settings -->
-    <string name="icon_pack">Icon pack</string>
-    <string name="themed_icon_pack">Themed icon source</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
-    <string name="system_icons">System icons</string>
-    <string name="themed_icon_title">Themed icons</string>
+    <string name="icon_pack">Kuvakepaketti</string>
+    <string name="themed_icon_pack">Mukautettujen kuvakkeiden lähde</string>
+    <string name="themed_icon_pack_tint">Sävyjä korostusvärillä</string>
+    <string name="system_icons">Järjestelmän kuvakkeet</string>
+    <string name="themed_icon_title">Mukautetut kuvakkeet</string>
     <string name="themed_icons_off_label">Pois</string>
-    <string name="themed_icons_home_label">Home screen</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
-    <string name="lawnicons_not_installed_description">No supported icon packs</string>
+    <string name="themed_icons_home_label">Aloitusnäyttö</string>
+    <string name="themed_icons_home_and_drawer_label">Aloitusnäyttö ja sovellusvalikko</string>
+    <string name="lawnicons_not_installed_description">Ei tuetut kuvakepaketit</string>
     <!-- Fonts -->
-    <string name="pref_fonts_add_fonts">Add fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
-    <string name="font_label">Font (experimental)</string>
+    <string name="pref_fonts_add_fonts">Lisää fontteja</string>
+    <string name="pref_fonts_add_fonts_summary">OTF- ja TTF-fontit ovat tuettuja</string>
+    <string name="pref_fonts_missing_font">Fonttia ei löydetty</string>
+    <string name="font_label">Fontti (kokeellinen)</string>
     <string name="fontWorkspace">Yleiset</string>
-    <string name="fontHeading">Headings</string>
-    <string name="fontHeadingMedium">Headings (medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (medium)</string>
+    <string name="fontHeading">Otsikot</string>
+    <string name="fontHeadingMedium">Otsikot (keskikokoiset)</string>
+    <string name="fontBody">Runko</string>
+    <string name="fontBodyMedium">Runko (keskikokoinen)</string>
     <string name="font_variant_italic">Kursivoitu</string>
     <string name="font_weight_thin">Ohut</string>
-    <string name="font_weight_extra_light">Extra light</string>
+    <string name="font_weight_extra_light">Extraohut</string>
     <string name="font_weight_light">Vaalea</string>
     <string name="font_weight_regular">Normaali</string>
     <string name="font_weight_medium">Keskisuuri</string>
     <string name="font_weight_semi_bold">Puolilihavoitu</string>
     <string name="font_weight_bold">Lihavoitu</string>
-    <string name="font_weight_extra_bold">Extra bold</string>
+    <string name="font_weight_extra_bold">Extralihavoitu</string>
     <string name="font_weight_extra_black">Musta</string>
     <!--
 
@@ -265,7 +280,7 @@
     <string name="theme_light">Vaalea</string>
     <string name="theme_dark">Tumma</string>
     <string name="theme_system_default">Järjestelmä</string>
-    <string name="theme_follow_wallpaper">Match wallpaper</string>
+    <string name="theme_follow_wallpaper">Vastaa taustakuvaa</string>
     <!-- Color style -->
     <string name="color_style_label">Color style</string>
     <string name="color_style_spritz">Spritz</string>
@@ -343,17 +358,21 @@
     About the app
 
     -->
-    <string name="news">Uutiset</string>
     <string name="support">Tuki</string>
+    <string name="translate">Käännä</string>
+    <string name="donate">Donate</string>
     <string name="product">Tuote</string>
     <string name="design_and_development">Design and development</string>
     <string name="development">Kehitys</string>
     <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Support and PR</string>
+    <string name="community">Community</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">Uutiset</string>
+    <string name="legal">Legal</string>
     <string name="acknowledgements">Kiitokset</string>
-    <string name="translate">Käännä</string>
-    <string name="donate">Donate</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--

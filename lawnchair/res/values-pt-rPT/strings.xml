@@ -45,7 +45,22 @@
     <string name="dismiss">Dismiss</string>
     <string name="download_update">Download update</string>
     <string name="install_update">Install update</string>
+    <string name="view_changes">View changes</string>
     <string name="pro_updated">You\'re up-to-date!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">just now</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">Gerido por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferências</string>
@@ -103,7 +118,7 @@
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Avançado</string>
     <!--
 
     Preference Dashboard
@@ -124,7 +139,7 @@
     <string name="folders_description">Número de linhas e colunas</string>
     <string name="gestures_label">Gestos</string>
     <string name="gestures_description">Toques e deslizes</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">Recentes</string>
     <string name="quickstep_description">Botão limpar tudo, raio do canto</string>
     <string name="about_label">Sobre</string>
     <string name="app_info_drop_target_label">Informação das aplicações</string>
@@ -139,18 +154,18 @@
     <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grelha do ecrã inicial de 10 x 10 para 20 x 20</string>
     <string name="always_reload_icons_label">Recarregar sempre os ícones</string>
     <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
-    <string name="show_deck_layout">Deck layout</string>
+    <string name="icon_swipe_gestures">Gesto de deslizar no ícone</string>
+    <string name="icon_swipe_gestures_description">Fazer uma ação quando faz um gesto para a esquerda ou direita sobre um ícone em vez de o mover para o ecrã principal</string>
+    <string name="show_deck_layout">Ambiente do Deck</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">Bloquear/desbloquear</string>
     <string name="recents_lock_unlock_description">Impedir que a aplicação selecionada seja fechada ao pressionar \"Limpar tudo\"</string>
     <!--Overlay-->
-    <string name="overlay_fade_in">Fade In</string>
+    <string name="overlay_fade_in">Esvanecer</string>
     <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
-    <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="app_closing_animation">Animação de fecho</string>
+    <string name="overlay_label">Sobrepor</string>
+    <string name="overlay_none">Nada</string>
     <!--
 
     Notifications
@@ -344,19 +359,23 @@ Transparentes</string>
     About the app
 
     -->
-    <string name="news">Novidades</string>
     <string name="support">Suporte</string>
+    <string name="translate">Traduzir</string>
+    <string name="donate">Doar</string>
     <string name="product">Produto</string>
     <string name="design_and_development"></string>
     <string name="development">Desenvolvimento</string>
     <string name="quickswitch_maintenance">Manutenção do QuickSwitch</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Support and PR</string>
+    <string name="community">Community</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">Novidades</string>
+    <string name="legal">Legal</string>
     <string name="acknowledgements">Reconhecimentos</string>
-    <string name="translate">Traduzir</string>
-    <string name="donate">Doar</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="contributor_status_active">Ativo</string>
+    <string name="update_check_failed">Falha na procura de atualizações</string>
     <!--
 
     Backup and restore
@@ -383,18 +402,18 @@ Transparentes</string>
     <string name="gesture_swipe_down">Deslizar para baixo</string>
     <string name="gesture_home_tap">Botão home</string>
     <string name="gesture_back_tap">Botão de retroceder</string>
-    <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
+    <string name="gesture_swipe_left">Empurrar para a esquerda</string>
+    <string name="gesture_swipe_right">Empurrar para a direita</string>
     <string name="gesture_handler_no_op">Não fazer nada</string>
     <string name="gesture_handler_sleep">Suspender</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">Abrir ecrã de recentes</string>
     <string name="gesture_handler_open_notifications">Abrir painel de notificações</string>
     <string name="gesture_handler_open_app_option">Abrir aplicação</string>
     <string name="gesture_handler_open_app_config">Abrir %1$s</string>
     <string name="gesture_handler_open_app_drawer">Abrir gaveta de aplicações</string>
     <string name="gesture_handler_open_app_search">Abrir pesquisa de aplicações</string>
     <string name="gesture_handler_open_search">Abrir pesquisa</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant">Abrir assistente</string>
     <string name="pick_app_for_gesture">Escolher aplicação</string>
     <string name="dt2s_admin_hint_title">Permissões de administrador necessárias</string>
     <string name="dt2s_admin_hint">Para usar o Toque Duplo para Adormecer, defina o Lawnchair como uma aplicação de administração do dispositivo. Toque em \"Abrir definições\", depois em \"Ativar esta aplicação de administração do dispositivo.\"</string>
@@ -555,7 +574,7 @@ Transparentes</string>
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">Procurar aplicações, na web e muito mais</string>
     <string name="all_apps_search_bar_hint">Pesquisar aplicações</string>
     <string name="all_apps_no_search_results">Nenhum aplicativo encontrado correspondente a \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Da web</string>
@@ -564,8 +583,8 @@ Transparentes</string>
     <string name="all_apps_search_result_settings_entry_from_device">Definições do dispositivo</string>
     <string name="all_apps_search_market_message">Procurar mais aplicações</string>
     <string name="all_apps_search_on_web_message">Procurar em <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">Nenhuma loja de aplicativos ou navegador instalado</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="error_no_market_or_browser_installed">Nenhuma loja de aplicações ou navegador instalado</string>
+    <string name="all_apps_search_on_web_general">Procurar na web</string>
     <string name="clear_history">Limpar histórico de pesquisas</string>
     <string name="search_input_action_clear_results">Limpar caixa de pesquisa</string>
     <!-- Search settings -->
@@ -577,7 +596,7 @@ Transparentes</string>
     <string name="suggestion_pref_screen_title">Sugestões</string>
     <string name="show_suggested_apps_at_drawer_top">Mostrar aplicações sugeridas no topo do menu de aplicações</string>
     <string name="perform_wide_search_title">Pesquisa do dispositivo</string>
-    <string name="perform_wide_search_description">Pesquisar no telemóvel os seus contactos, ficheiros e definições</string>
+    <string name="perform_wide_search_description">Pesquisar nos seus contactos, ficheiros e definições</string>
     <string name="show_hidden_apps_in_search_results">Mostrar aplicações ocultas nos resultados da pesquisa</string>
     <string name="hidden_apps_show_name_typed">Se o nome completo for escrito</string>
     <string name="allapps_web_suggestion_provider_label">Fornecedor de sugestões da web</string>
@@ -588,8 +607,8 @@ Transparentes</string>
     <string name="search_algorithm_app_search">Pesquisa de Aplicações</string>
     <string name="search_algorithm_global_search_on_device">Pesquisa global (no dispositivo)</string>
     <string name="search_algorithm_global_search_via_asi">Pesquisa global (via ASI)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
+    <string name="custom_search_label">Nome do motor de pesquisa</string>
+    <string name="custom_search_url">Endereço do motor de pesquisa</string>
     <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
@@ -603,7 +622,7 @@ Transparentes</string>
     <string name="search_pref_result_files_title">Ficheiros</string>
     <string name="search_pref_result_visual_media_title">Fotos e Videos</string>
     <string name="search_pref_result_audio_media_title">Ficheiros de Audio</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_all_files_title"></string>
     <string name="search_pref_result_web_title">Sugestões da Web</string>
     <string name="search_pref_result_history_title">Histórico de pesquisa</string>
     <string name="all_apps_search_result_calculator">Calculadora</string>
@@ -645,7 +664,7 @@ Transparentes</string>
     <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
     <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
     <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
+    <string name="permission_desc_wallpaper_multiple">Necessárias várias permissões</string>
     <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
     <string name="permission_label_manage_all_files">Manage all files on device</string>
     <string name="permission_label_read_photos_videos">Read photos and videos</string>
@@ -654,5 +673,5 @@ Transparentes</string>
     <string name="open_permission_settings">Abrir definições</string>
     <string name="grant_requested_permissions">Conceder permissões</string>
     <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="grant_requested_permissions_tap">Ativar permissões</string>
 </resources>

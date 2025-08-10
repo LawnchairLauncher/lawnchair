@@ -45,7 +45,22 @@
     <string name="dismiss">Dismiss</string>
     <string name="download_update">Frissítés-letöltés</string>
     <string name="install_update">Frissítés-telepítés</string>
+    <string name="view_changes">View changes</string>
     <string name="pro_updated">Minden a legfrissebb!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">just now</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">A Lawnchair által kezelve</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Beállítások</string>
@@ -343,17 +358,21 @@
     About the app
 
     -->
-    <string name="news">Hírek</string>
     <string name="support">Támogatás</string>
+    <string name="translate">Fordítás</string>
+    <string name="donate">Adományozás</string>
     <string name="product">Termék</string>
     <string name="design_and_development">Dizájn és Fejlesztés</string>
     <string name="development">Fejlesztés</string>
     <string name="quickswitch_maintenance">A QuickSwitch karbantartása</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Támogatás és PR</string>
+    <string name="community">Community</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">Hírek</string>
+    <string name="legal">Legal</string>
     <string name="acknowledgements">Elismerések</string>
-    <string name="translate">Fordítás</string>
-    <string name="donate">Adományozás</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--

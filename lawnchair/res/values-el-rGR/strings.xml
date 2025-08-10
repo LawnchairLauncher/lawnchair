@@ -42,10 +42,25 @@
     <string name="deselect_all">Αποεπιλογή όλων</string>
     <string name="inverse_selection">Αντίστροφη επιλογή</string>
     <string name="loading">Φόρτωση…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">Παράβλεψη</string>
     <string name="download_update">Λήψη ενημέρωσης</string>
     <string name="install_update">Εγκατάσταση ενημέρωσης</string>
+    <string name="view_changes">Προβολή αλλαγών</string>
     <string name="pro_updated">Είστε ενημερωμένοι!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Ενημερώσεις</string>
+    <string name="changes_dialog_error">Αποτυχία φόρτωσης αλλαγών</string>
+    <string name="changes_dialog_no_changes">Δεν βρέθηκαν αλλαγές</string>
+    <string name="changes_dialog_build_format">Έκδοση #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">από %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">μόλις τώρα</string>
+    <string name="time_minutes_ago">%dλεπτά</string>
+    <string name="time_hours_ago">%dώρες</string>
+    <string name="time_days_ago">%dημέρες</string>
+    <string name="time_weeks_ago">%dεβδομάδες</string>
+    <string name="time_months_ago">%dμήνες</string>
+    <string name="time_years_ago">%dχρόνια</string>
     <string name="managed_by_lawnchair">Διαχειριζόμενο από τον εκκινητή Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Προτιμήσεις</string>
@@ -72,7 +87,7 @@
     <string name="grid">Πλέγμα</string>
     <string name="layout">Διάταξη</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Εμφάνιση ταπετσαρίας</string>
     <string name="wallpaper">Ταπετσαρία</string>
     <string name="style">Στυλ</string>
     <string name="background_opacity">Αδιαφάνεια φόντου</string>
@@ -207,9 +222,9 @@
     <string name="icon_shape_squircle">Οβάλ Τετράγωνο</string>
     <string name="icon_shape_teardrop">Δάκρυ</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">Τετράπλευρο μπισκότο</string>
+    <string name="icon_shape_seven_sided_cookie">Επτάπλευρο μπισκότο</string>
+    <string name="icon_shape_arch">Αψίδα</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Προσαρμοσμένο σχήμα εικονιδίων</string>
     <string name="custom_icon_shape_create">Δημιουργία προσαρμοσμένου σχήματος εικονιδίων</string>
@@ -343,19 +358,23 @@
     About the app
 
     -->
-    <string name="news">Νέα</string>
     <string name="support">Υποστήριξη</string>
+    <string name="translate">Μεταφράσεις</string>
+    <string name="donate">Δωρεά</string>
     <string name="product">Προϊόν</string>
     <string name="design_and_development">Σχεδιασμός &amp; ανάπτυξη</string>
     <string name="development">Ανάπτυξη</string>
     <string name="quickswitch_maintenance">Συντήρηση λειτουργίας QuickSwitch</string>
     <string name="devops">Προγραμματιστές</string>
     <string name="support_and_pr">Υποστήριξη &amp; PR</string>
+    <string name="community">Κοινότητα</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">Νέα</string>
+    <string name="legal">Νομικά</string>
     <string name="acknowledgements">Ευχαριστίες</string>
-    <string name="translate">Μεταφράσεις</string>
-    <string name="donate">Δωρεά</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">Πολιτική απορρήτου</string>
+    <string name="contributor_status_active">Ενεργό</string>
+    <string name="update_check_failed">Αποτυχία ελέγχου ενημερώσεων</string>
     <!--
 
     Backup and restore
@@ -554,7 +573,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">Αναζήτηση εφαρμογών, ιστοσελίδων και άλλων</string>
     <string name="all_apps_search_bar_hint">Αναζήτηση εφαρμογών</string>
     <string name="all_apps_no_search_results">Δεν βρέθηκαν εφαρμογές που να ταιριάζουν “<xliff:g example="Android" id="query">%1$s</xliff:g>”</string>
     <string name="all_apps_search_result_suggestions">Από το διαδίκτυο</string>
@@ -587,11 +606,11 @@
     <string name="search_algorithm_app_search">Αναζήτηση Εφαρμογής</string>
     <string name="search_algorithm_global_search_on_device">Γενική αναζήτηση (στην συσκευή)</string>
     <string name="search_algorithm_global_search_via_asi">Γενική αναζήτηση (μέσω ASI)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
+    <string name="custom_search_label">Όνομα μηχανής αναζήτησης</string>
+    <string name="custom_search_url">URL μηχανής αναζήτησης</string>
+    <string name="custom_search_suggestions_url">URL προτάσεων αναζήτησης</string>
     <string name="custom_search_input_hint">&#37;s θα αντικατασταθεί με το ερώτημα αναζήτησης</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_suggestions_hint">Το &#37;s θα αντικατασταθεί με το ερώτημα αναζήτησης. Τα αποτελέσματα πρέπει να είναι σε μορφή JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Εμφάνιση στα αποτελέσματα αναζήτησης</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Εφαρμογές &amp; συντομεύσεις</string>
@@ -600,17 +619,17 @@
     <string name="search_pref_result_tips_title">Συμβουλές Pixel</string>
     <string name="search_pref_result_settings_title">Ρυθμίσεις Android</string>
     <string name="search_pref_result_files_title">Αρχεία</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
-    <string name="search_pref_result_audio_media_title">Audio files</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_visual_media_title">Φωτογραφίες και βίντεο</string>
+    <string name="search_pref_result_audio_media_title">Αρχεία ήχου</string>
+    <string name="search_pref_result_all_files_title">Όλα τα αρχεία</string>
     <string name="search_pref_result_web_title">Προτάσεις ιστού</string>
     <string name="search_pref_result_history_title">Ιστορικό αναζήτησης</string>
     <string name="all_apps_search_result_calculator">Αριθμομηχανή</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_title">Έναρξη αναζήτησης</string>
+    <string name="search_empty_state_no_history_subtitle">Βρείτε εφαρμογές, επαφές και πολλά άλλα. Οι πρόσφατες αναζητήσεις σας θα εμφανίζονται εδώ.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Βρείτε εφαρμογές, επαφές και πολλά άλλα.</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">Αναζήτηση σε</string>
     <string name="search_pref_result_files_description">Πολυμέσα, αρχεία, &amp; άλλα</string>
     <string name="search_pref_result_contacts_description">Επαφές και άλλα</string>
     <string name="search_pref_result_web_provider_description">Μέσω <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -625,33 +644,33 @@
     <!-- Permission management -->
     <string name="missing_notification_access_label">Απαιτείται πρόσβαση ειδοποιήσεων</string>
     <string name="missing_notification_access_desc">Για να εμφανίσετε τις κουκκίδες ειδοποίησης, ενεργοποιήστε τις ειδοποιήσεις εφαρμογών για <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="warn_contact_permission_title">Απαιτείται άδεια ανάγνωσης επαφών</string>
+    <string name="warn_contact_permission_content">Για αναζήτηση επαφών, εκχωρήστε δικαιώματα ανάγνωσης επαφών και τηλεφώνου στο <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Απαιτείται πρόσβαση μουσικής και ήχου</string>
+    <string name="permissions_music_audio_description">Για να αναζητήσετε μουσική και άλλα αρχεία ήχου, το <xliff:g id="name" example="My App">%1$s</xliff:g> χρειάζεται άδεια για να έχει πρόσβαση στη βιβλιοθήκη πολυμέσων.</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos">Απαιτείται πρόσβαση σε φωτογραφίες και βίντεο</string>
+    <string name="permissions_photos_videos_description">Για να αναζητήσετε τις φωτογραφίες και τα βίντεό σας, το <xliff:g id="name" example="My App">%1$s</xliff:g> χρειάζεται άδεια πρόσβασης στη βιβλιοθήκη πολυμέσων σας.</string>
+    <string name="permissions_photos_videos_full">Πρόσβαση σε ολόκληρη τη βιβλιοθήκη πολυμέσων σας;</string>
+    <string name="permissions_photos_videos_full_description">Για να αναζητήσετε όλες τις φωτογραφίες και τα βίντεό σας, το <xliff:g id="name" example="My App">%1$s</xliff:g> χρειάζεται πλήρη πρόσβαση στη βιβλιοθήκη πολυμέσων σας.</string>
+    <string name="permissions_photos_videos_grant_full">Παραχώρηση πλήρους δικαιώματος πολυμέσων</string>
+    <string name="permissions_photos_videos_manage_selected">Διαχείριση επιλεγμένων στοιχείων</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage">Απαιτείται πρόσβαση σε εξωτερικό αποθηκευτικό χώρο</string>
+    <string name="permissions_external_storage_description">Για να αναζητήσετε τα αρχεία σας, το <xliff:g id="name" example="My App">%1$s</xliff:g> χρειάζεται άδεια πρόσβασης στον εξωτερικό χώρο αποθήκευσης της συσκευής σας.</string>
+    <string name="permissions_manage_storage">Διαχείριση πρόσβασης στον αποθηκευτικό χώρο που απαιτείται</string>
+    <string name="permissions_manage_storage_description">Για να εμφανίσετε τα αρχεία σας στα αποτελέσματα αναζήτησης, το <xliff:g id="name" example="My App">%1$s</xliff:g> απαιτεί άδεια διαχείρισης όλων των αρχείων στη συσκευή σας. Αυτή η άδεια χρησιμοποιείται αποκλειστικά για την καταχώριση αρχείων και δεν θα χρησιμοποιηθεί για την ανάγνωση ή την αλλαγή του περιεχομένου των προσωπικών σας αρχείων.</string>
+    <string name="permission_desc_wallpaper_base">Για την εμφάνιση προεπισκοπήσεων ταπετσαρίας και τη συμπερίληψή τους σε αντίγραφα ασφαλείας, το <xliff:g id="name" example="My App">%1$s</xliff:g> απαιτεί άδεια %2$s. Αυτό οφείλεται σε περιορισμούς συστήματος για την πρόσβαση σε δεδομένα ταπετσαρίας.</string>
+    <string name="permission_desc_ending_read_all_files">για να διαβάσετε όλα τα αρχεία στη συσκευή σας</string>
+    <string name="permission_desc_ending_manage_all_files">για να διαχειριστείτε όλα τα αρχεία στη συσκευή σας</string>
+    <string name="permission_desc_wallpaper_multiple">Απαιτούνται πολλαπλά δικαιώματα</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Για την εμφάνιση προεπισκοπήσεων ταπετσαρίας και τη συμπερίληψή τους σε αντίγραφα ασφαλείας, το <xliff:g id="name" example="My App">%1$s</xliff:g> απαιτεί τα ακόλουθα δικαιώματα. Αυτό οφείλεται σε περιορισμούς συστήματος για την πρόσβαση σε δεδομένα ταπετσαρίας.</string>
+    <string name="permission_label_manage_all_files">Διαχείριση όλων των αρχείων στη συσκευή</string>
+    <string name="permission_label_read_photos_videos">Διαβάστε φωτογραφίες και βίντεο</string>
+    <string name="manage_storage_access_denied_title">Δεν είναι δυνατή η ενεργοποίηση της διαχείρισης πρόσβασης στον αποθηκευτικό χώρο</string>
+    <string name="manage_storage_access_denied_description">Λόγω της πολιτικής του Play Store, το <xliff:g id="name" example="My App">%1$s</xliff:g> δεν μπορεί να ζητήσει πλήρη πρόσβαση στον αποθηκευτικό χώρο εδώ. Για να αποκτήσετε πρόσβαση σε όλα τα αρχεία, κατεβάστε το <xliff:g id="name" example="My App">%1$s</xliff:g> από το GitHub. Εναλλακτικά, μπορείτε να παραχωρήσετε πρόσβαση σε φωτογραφίες, βίντεο και αρχεία ήχου ξεχωριστά στις ρυθμίσεις.</string>
     <string name="open_permission_settings">Άνοιγμα ρυθμίσεων</string>
     <string name="grant_requested_permissions">Εκχώρηση δικαιωμάτων</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">Απαιτούνται δικαιώματα</string>
+    <string name="grant_requested_permissions_tap">Πατήστε για εκχώρηση δικαιωμάτων</string>
 </resources>

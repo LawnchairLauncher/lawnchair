@@ -45,7 +45,22 @@
     <string name="dismiss">Dismiss</string>
     <string name="download_update">업데이트 다운로드</string>
     <string name="install_update">업데이트 설치</string>
+    <string name="view_changes">View changes</string>
     <string name="pro_updated">최신 버전입니다!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">just now</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">Lawnchair에서 관리</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">설정</string>
@@ -343,17 +358,21 @@
     About the app
 
     -->
-    <string name="news">뉴스</string>
     <string name="support">지원</string>
+    <string name="translate">번역</string>
+    <string name="donate">후원</string>
     <string name="product">제품</string>
     <string name="design_and_development">디자인 및 개발</string>
     <string name="development">개발</string>
     <string name="quickswitch_maintenance">퀵 스위치 점검</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">지원 및 홍보</string>
+    <string name="community">Community</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">뉴스</string>
+    <string name="legal">Legal</string>
     <string name="acknowledgements">감사의 말</string>
-    <string name="translate">번역</string>
-    <string name="donate">후원</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--
@@ -397,7 +416,7 @@
     <string name="pick_app_for_gesture">앱 선택</string>
     <string name="dt2s_admin_hint_title">관리자 권한이 필요합니다</string>
     <string name="dt2s_admin_hint">두 번 눌러 화면 끄기 기능을 사용하려면, Lawnchair 앱을 기기 관리자 앱으로 할당 받아야 합니다. \"설정 열기\"를 누른 후, \"이 기기 관리자 앱 활성화\"를 누르세요.</string>
-    <string name="dt2s_admin_warning">두 번 눌러 화면 끄기 기능이 비활성화 되었습니다.</string>
+    <string name="dt2s_admin_warning">두 번 눌러 화면 끄기 기능이 비활성화됩니다.</string>
     <string name="d2ts_recents_a11y_hint_title">접근성 서비스가 활성화되어야합니다</string>
     <string name="dt2s_a11y_hint">두 번 눌러 화면 끄기 기능을 사용하려면 Lawnchair 접근성 서비스를 사용해야 합니다. \"설정 열기\"를 눌러 나오는 화면에서 \"Lawnchair\"를 누른 뒤, \"Lawnchair 사용\"을 켜세요.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다. 이 메소드는 다른 앱을 감시할 수 있는 민감한 권한이지만, Lawnchair는 앱 감시 기능이 없으며 시스템에서 보내는 이벤트를 모두 무시합니다.</string>
     <string name="dt2s_recents_warning_open_settings">설정 열기</string>
@@ -652,5 +671,5 @@
     <string name="open_permission_settings">설정 열기</string>
     <string name="grant_requested_permissions">권한 부여</string>
     <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="grant_requested_permissions_tap">여기를 눌러 권한 허용</string>
 </resources>

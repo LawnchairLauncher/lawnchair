@@ -45,7 +45,22 @@
     <string name="dismiss">Negeren</string>
     <string name="download_update">Update downloaden</string>
     <string name="install_update">Update installeren</string>
+    <string name="view_changes">Wijzigingen weergeven</string>
     <string name="pro_updated">Je bent up-to-date!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_error">Kan wijzigingen niet laden</string>
+    <string name="changes_dialog_no_changes">Geen wijzigingen gevonden</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">door %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">zojuist</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">Beheerd door Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Voorkeuren</string>
@@ -343,19 +358,23 @@
     About the app
 
     -->
-    <string name="news">Nieuws</string>
     <string name="support">Ondersteuning</string>
+    <string name="translate">Vertalen</string>
+    <string name="donate">Doneren</string>
     <string name="product">Product</string>
     <string name="design_and_development">Ontwerp en ontwikkeling</string>
     <string name="development">Ontwikkelaar</string>
     <string name="quickswitch_maintenance">QuickSwitch onderhoud</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Ondersteuning en PR</string>
+    <string name="community">Gemeenschap</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">Nieuws</string>
+    <string name="legal">Juridisch</string>
     <string name="acknowledgements">Dankwoord</string>
-    <string name="translate">Vertalen</string>
-    <string name="donate">Doneren</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">Privacybeleid</string>
+    <string name="contributor_status_active">Actief</string>
+    <string name="update_check_failed">Controleren op updates is mislukt</string>
     <!--
 
     Backup and restore

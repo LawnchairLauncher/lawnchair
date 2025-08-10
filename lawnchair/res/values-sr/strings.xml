@@ -45,7 +45,22 @@
     <string name="dismiss">Dismiss</string>
     <string name="download_update">Преузми ажурирање</string>
     <string name="install_update">Инсталирај ажурирање</string>
+    <string name="view_changes">View changes</string>
     <string name="pro_updated">Имате најновију верзију!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">just now</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">Управља Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Подешавања</string>
@@ -343,17 +358,21 @@
     About the app
 
     -->
-    <string name="news">Новости</string>
     <string name="support">Подршка</string>
+    <string name="translate">Превод</string>
+    <string name="donate">Донације</string>
     <string name="product">Производ</string>
     <string name="design_and_development">Дизајн и развој</string>
     <string name="development">Развој</string>
     <string name="quickswitch_maintenance">Одржавање QuickSwitch-а</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Подршка и односи са јавношћу</string>
+    <string name="community">Community</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">Новости</string>
+    <string name="legal">Legal</string>
     <string name="acknowledgements">Признања</string>
-    <string name="translate">Превод</string>
-    <string name="donate">Донације</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--

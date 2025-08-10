@@ -45,7 +45,22 @@
     <string name="dismiss">Ignorer</string>
     <string name="download_update">Télécharger la mise à jour</string>
     <string name="install_update">Installer la mise à jour</string>
+    <string name="view_changes">Voir les changements</string>
     <string name="pro_updated">Vous êtes à jour !</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Mises à jour</string>
+    <string name="changes_dialog_error">Échec du chargement des changements</string>
+    <string name="changes_dialog_no_changes">Aucun changement trouvé</string>
+    <string name="changes_dialog_build_format">Build n°%1$d → n°%2$d</string>
+    <string name="changes_dialog_commit_info">par %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">à l\'instant</string>
+    <string name="time_minutes_ago">%d min</string>
+    <string name="time_hours_ago">%d h</string>
+    <string name="time_days_ago">%d j</string>
+    <string name="time_weeks_ago">%d sem.</string>
+    <string name="time_months_ago">%d m.</string>
+    <string name="time_years_ago">%d a</string>
     <string name="managed_by_lawnchair">Gérée par Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Préférences</string>
@@ -207,9 +222,9 @@
     <string name="icon_shape_squircle">Carré rond</string>
     <string name="icon_shape_teardrop">Goutte</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">Cookie à quatre côtés</string>
+    <string name="icon_shape_seven_sided_cookie">Cookie à sept côtés</string>
+    <string name="icon_shape_arch">Arche</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Forme d\'icône personnalisée</string>
     <string name="custom_icon_shape_create">Créer une forme d\'icône personnalisée</string>
@@ -343,19 +358,23 @@
     About the app
 
     -->
-    <string name="news">Actualités</string>
     <string name="support">Assistance</string>
+    <string name="translate">Traduire</string>
+    <string name="donate">Soutenir</string>
     <string name="product">Produit</string>
     <string name="design_and_development">Conception et développement</string>
     <string name="development">Développement</string>
     <string name="quickswitch_maintenance">Maintenance de QuickSwitch</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Assistance et relations publiques</string>
-    <string name="acknowledgements">Remerciements</string>
-    <string name="translate">Traduire</string>
-    <string name="donate">Faire un don</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="community">Communauté</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">Actualités</string>
+    <string name="legal">Mentions légales</string>
+    <string name="acknowledgements">Licences tierces</string>
+    <string name="privacy_policy">Règles de confidentialité</string>
+    <string name="contributor_status_active">En activité</string>
+    <string name="update_check_failed">Échec de la recherche des mises à jour</string>
     <!--
 
     Backup and restore
