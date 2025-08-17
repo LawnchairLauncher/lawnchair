@@ -42,19 +42,19 @@
     <string name="deselect_all">すべて選択解除</string>
     <string name="inverse_selection">Inverse selection</string>
     <string name="loading">読み込み中…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">無視</string>
     <string name="download_update">アップデートをダウンロード</string>
     <string name="install_update">アップデートのインストール</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">変更点を確認する</string>
     <string name="pro_updated">最新です！</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_title">更新内容</string>
+    <string name="changes_dialog_error">変更点の読み込みに失敗しました</string>
+    <string name="changes_dialog_no_changes">変更点が見つかりませんでした</string>
+    <string name="changes_dialog_build_format">ビルド #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">たった今</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>

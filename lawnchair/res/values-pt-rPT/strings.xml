@@ -45,13 +45,13 @@
     <string name="dismiss">Dismiss</string>
     <string name="download_update">Download update</string>
     <string name="install_update">Install update</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">Ver alterações</string>
     <string name="pro_updated">You\'re up-to-date!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_title">Atualizações</string>
     <string name="changes_dialog_error">Failed to load changes</string>
     <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_build_format">Versão %1$d - %2$d</string>
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">just now</string>
@@ -114,7 +114,7 @@
     <string name="folders_filter_duplicates">Only show unique apps</string>
     <string name="my_folder_label">A minha pasta</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">.</string>
+    <string name="accessibility_service_description">Para efetuar algumas ações, o Lawnchair precisa de permissões de Acessibilidade \n\nPor favor ative os serviços de acessibilidade.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -511,8 +511,8 @@ Transparentes</string>
     <string name="pause">Pausar</string>
     <string name="pause_apps_dialog_title">Pausar %1$s?</string>
     <string name="pause_apps_dialog_message">As notificações para %1$s serão pausadas</string>
-    <string name="paused_apps_dialog_title">Aplicação pausada</string>
-    <string name="paused_apps_dialog_message"></string>
+    <string name="paused_apps_dialog_title">Aplicação em pausa</string>
+    <string name="paused_apps_dialog_message">%1$s foi colocada em pausa a partir do launcher</string>
     <string name="paused_apps_drop_target_label">Pausar aplicação</string>
     <string name="dock_icons">Ícones da doca</string>
     <string name="hotseat_bottom_space_label">Preenchimento inferior</string>
@@ -626,9 +626,9 @@ Transparentes</string>
     <string name="search_pref_result_web_title">Sugestões da Web</string>
     <string name="search_pref_result_history_title">Histórico de pesquisa</string>
     <string name="all_apps_search_result_calculator">Calculadora</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_title">Procurar</string>
+    <string name="search_empty_state_no_history_subtitle">Procurar aplicações, contactos e muito mais... As pesquisas recentes irão aparecer aqui.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Procurar aplicações, contactos e muito mais.</string>
     <!-- Description for each search result type -->
     <string name="search_pref_files_search_on">Search on</string>
     <string name="search_pref_result_files_description">Média, ficheiros e mais</string>

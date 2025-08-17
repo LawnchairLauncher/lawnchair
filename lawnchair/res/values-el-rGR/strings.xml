@@ -163,7 +163,7 @@
     <!--Overlay-->
     <string name="overlay_fade_in">Ξεθώριασμα προς τα μέσα</string>
     <string name="overlay_suck_in">Ρούφηγμα προς τα μέσα</string>
-    <string name="app_closing_animation">Εφέ κίνησης κλεισίματος εφαρμογών</string>
+    <string name="app_closing_animation">Εφέ κίνησης κλεισίματος συρταριού εφαρμογών</string>
     <string name="overlay_label">Επικάλυψη</string>
     <string name="overlay_none">Κανένα</string>
     <!--

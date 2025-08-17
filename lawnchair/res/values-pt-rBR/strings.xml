@@ -42,25 +42,25 @@
     <string name="deselect_all">Desmarcar tudo</string>
     <string name="inverse_selection">Inverter seleção</string>
     <string name="loading">Carregando…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">Dispensar</string>
     <string name="download_update">Baixar atualização</string>
     <string name="install_update">Instalar atualização</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">Exibir alterações</string>
     <string name="pro_updated">Você está atualizado!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">Atualizações</string>
+    <string name="changes_dialog_error">Falha ao carregar as alterações</string>
+    <string name="changes_dialog_no_changes">Nenhuma alteração encontrada</string>
+    <string name="changes_dialog_build_format">Compilação #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">por %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
+    <string name="time_just_now">agora há pouco</string>
+    <string name="time_minutes_ago">%dmin</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_weeks_ago">%dsem</string>
+    <string name="time_months_ago">%dm</string>
+    <string name="time_years_ago">%da</string>
     <string name="managed_by_lawnchair">Gerenciado por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferências</string>
@@ -87,7 +87,7 @@
     <string name="grid">Grade</string>
     <string name="layout">Aparência</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Mostrar papel de parede</string>
     <string name="wallpaper">Papel de Parede</string>
     <string name="style">Estilo</string>
     <string name="background_opacity">Opacidade do fundo</string>
@@ -114,7 +114,7 @@
     <string name="folders_filter_duplicates">Mostrar apenas apps únicos</string>
     <string name="my_folder_label">Minha pasta</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Para executar certas ações (como bloquear seu telefone) utilizando gestos, o Lawnchair precisar obter acesso aos recursos de acessibilidade.\n\nO Lawnchair não rastreia nenhuma ação do usuário, mesmo que o privilégio para fazer isso seja exigido para todos os serviços de acessibilidade. O Lawnchair descartará qualquer evento enviado pelo sistema.\n\nPara bloquear seu telefone, ou abrir a janela de aplicativos recentes, o Lawnchair utiliza o serviço de acessibilidade performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -139,7 +139,7 @@
     <string name="folders_description">Contagem de linhas e colunas</string>
     <string name="gestures_label">Gestos</string>
     <string name="gestures_description">Toques e deslizamentos</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">Janela de aplicativos recentes</string>
     <string name="quickstep_description">Botão \"Limpar Tudo\", raio de canto</string>
     <string name="about_label">Sobre</string>
     <string name="app_info_drop_target_label">Informações do app</string>
@@ -156,8 +156,8 @@
     <string name="always_reload_icons_description">Evite usar ícones guardados no cache dos pacotes de ícones</string>
     <string name="icon_swipe_gestures">Gestos de deslizamento de ícones</string>
     <string name="icon_swipe_gestures_description">Realizar ações ao deslizar para a esquerda ou à direita dos ícones em vez de mover para a tela inicial</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="show_deck_layout">Layout do deck</string>
+    <string name="show_deck_layout_description">Mostrar uma opção de layout para ocultar a gaveta de aplicativos e adicionar automaticamente novos aplicativos à tela inicial</string>
     <string name="recents_lock_unlock">Bloquear/desbloquear</string>
     <string name="recents_lock_unlock_description">Prevenir app selecionado de fechar ao clicar em \"Limpar tudo\"</string>
     <!--Overlay-->
@@ -222,9 +222,9 @@
     <string name="icon_shape_squircle">Quadrado arredondado</string>
     <string name="icon_shape_teardrop">Lágrima</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">Biscoito de quatro lados</string>
+    <string name="icon_shape_seven_sided_cookie">Biscoito de sete lados</string>
+    <string name="icon_shape_arch">Arco</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Formato de Ícone Personalizado</string>
     <string name="custom_icon_shape_create">Criar forma de ícone personalizada</string>
@@ -248,7 +248,7 @@
     <string name="themed_icon_title">Ícones Temáticos</string>
     <string name="themed_icons_off_label">Desligado</string>
     <string name="themed_icons_home_label">Tela inicial</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Tela inicial e gaveta de aplicativos</string>
     <string name="lawnicons_not_installed_description">Não há pacotes de ícones suportados</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Adicionar Fontes</string>
@@ -324,7 +324,7 @@
     <string name="smartspace_widget_description">O que mostrar</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Calendário</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">Data e hora</string>
     <string name="smartspace_date">Data</string>
     <string name="smartspace_time">Horário</string>
     <string name="smartspace_time_format">Formato da Hora</string>
@@ -362,19 +362,19 @@
     <string name="translate">Traduzir</string>
     <string name="donate">Doar</string>
     <string name="product">Produto</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">Design e desenvolvimento</string>
     <string name="development">Desenvolvimento</string>
     <string name="quickswitch_maintenance">Manutenção do \"QuickSwitch\"</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Support and PR</string>
-    <string name="community">Community</string>
+    <string name="support_and_pr">Suporte e PR</string>
+    <string name="community">Comunidade</string>
     <string name="telegram">Telegram</string>
     <string name="news">Notícias</string>
-    <string name="legal">Legal</string>
+    <string name="legal">Jurídico</string>
     <string name="acknowledgements">Agradecimentos</string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">Politica de privacidade</string>
+    <string name="contributor_status_active">Ativo</string>
+    <string name="update_check_failed">Falha ao verificar atualizações</string>
     <!--
 
     Backup and restore
@@ -382,7 +382,7 @@
     -->
     <string name="create_backup">Criar backup</string>
     <string name="what_to_backup">O que fazer backup</string>
-    <string name="backup_content_layout_and_settings">\"Layout\" e configurações</string>
+    <string name="backup_content_layout_and_settings">Layout e configurações</string>
     <string name="backup_content_wallpaper">Papel de Parede</string>
     <string name="backup_create_success">Backup criado</string>
     <string name="backup_create_error">Falha ao criar backup</string>
@@ -405,7 +405,7 @@
     <string name="gesture_swipe_right">Deslizar à direita</string>
     <string name="gesture_handler_no_op">Não fazer nada</string>
     <string name="gesture_handler_sleep">Desligar a Tela</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">Abrir a janela de aplicativos recentes</string>
     <string name="gesture_handler_open_notifications">Abrir painel de notificações</string>
     <string name="gesture_handler_open_app_option">Abrir aplicativo</string>
     <string name="gesture_handler_open_app_config">Abrir %1$s</string>
@@ -420,7 +420,7 @@
     <string name="d2ts_recents_a11y_hint_title">Ativar serviço de acessibilidade</string>
     <string name="dt2s_a11y_hint">Para usar o toque duplo para desligar, ative o serviço de acessibilidade do Lawnchair. Toque em \"Abrir configurações\", selecione \"Lawnchair\" e ative \"Usar Lawnchair.\n\nLawnchair usa o método de acessibilidade `performGlobalAction` para executar essa ação. Essa é uma permissão sensível que permite monitorar outros aplicativos. No entanto, o Lawnchair não está configurado para essa funcionalidade e não recebe eventos.</string>
     <string name="dt2s_recents_warning_open_settings">Abrir as configurações</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">Para usar Abrir Recentes, ative o serviço de acessibilidade do Lawnchair. Toque em \"Abrir configurações\", selecione \"Lawnchair\" e ative \"Usar o Lawnchair.\"\n\nO Lawnchair usa o método de acessibilidade `performGlobalAction` para executar essa ação. Essa é uma permissão sensível que permite monitorar outros aplicativos. No entanto, o Lawnchair não está configurado para essa funcionalidade e não irá receber eventos.</string>
     <!--
 
     Bug reporting
@@ -552,7 +552,7 @@
     <string name="max_folder_columns">Máximo de colunas nas pastas</string>
     <string name="max_folder_rows">Máximo de linhas nas pastas</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">Estas configurações serão ignoradas, já que o Lawnchair não está definido como o provedor de aplicativos recentes</string>
     <string name="quickstep_incompatible">Integração de sistema incompatível</string>
     <string name="quickstep_incompatible_description">Seu dispositivo está configurado para ter gestos do sistema (conhecido como Quickstep) fornecidos por %1$s, mas esta versão do %1$s não é compatível com sua versão do Android. Para continuar usando o seu dispositivo, desinstale as atualizações de %1$s ou desative %1$s como provedor de gestos do sistema.</string>
     <string name="translucent_background">Fundo translúcido</string>
@@ -564,7 +564,7 @@
     <string name="task_menu_force_stop">Forçar fechamento</string>
     <string name="window_corner_radius_label">Raio do canto da tela</string>
     <string name="override_window_corner_radius_label">Raio do canto de tela personalizado</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Ao deslizar para cima para abrir a janela de aplicativos recentes, o aplicativo atual segue o seu dedo, diminuindo em um cartão. Utilize este controle deslizante para ajustar o raio de curvatura do cartão quando este estiver quase em tela cheia, de modo que ele corresponda aos cantos da sua tela.</string>
     <string name="taskbar_label">Barra de Tarefas</string>
     <string name="enable_taskbar_experimental">Mostrar barra de tarefas (experimental)</string>
     <!--
@@ -573,7 +573,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">Pesquisar aplicativos, web e mais</string>
     <string name="all_apps_search_bar_hint">Pesquisar aplicativos</string>
     <string name="all_apps_no_search_results">Nenhum aplicativo encontrado que corresponda a \"<xliff:g example="Android" id="query">%1$s</xliff:g></string>
     <string name="all_apps_search_result_suggestions">Da web</string>
@@ -606,30 +606,30 @@
     <string name="search_algorithm_app_search">Pesquisa de aplicativos</string>
     <string name="search_algorithm_global_search_on_device">Pesquisa global (no dispositivo)</string>
     <string name="search_algorithm_global_search_via_asi">Pesquisa global (via ASI)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
+    <string name="custom_search_label">Nome do provedor de pesquisa</string>
+    <string name="custom_search_url">URL do provedor de pesquisa</string>
+    <string name="custom_search_suggestions_url">URL das sugestões de pesquisa</string>
     <string name="custom_search_input_hint">&#37;s será trocada pelo termo de pesquisa</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_suggestions_hint">&#37;s será substituído pela consulta de pesquisa. Os resultados precisam estar em formato JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Mostrar nos resultados da pesquisa</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Aplicativos e atalhos</string>
     <string name="search_pref_result_shortcuts_title">Atalhos de aplicativos</string>
     <string name="search_pref_result_people_title">Pessoas</string>
     <string name="search_pref_result_tips_title">Dicas do Pixel</string>
     <string name="search_pref_result_settings_title">Configurações do Android</string>
     <string name="search_pref_result_files_title">Arquivos</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
-    <string name="search_pref_result_audio_media_title">Audio files</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_visual_media_title">Fotos e vídeos</string>
+    <string name="search_pref_result_audio_media_title">Arquivos de áudio</string>
+    <string name="search_pref_result_all_files_title">Todos os arquivos</string>
     <string name="search_pref_result_web_title">Sugestões da Web</string>
     <string name="search_pref_result_history_title">Histórico de pesquisas</string>
     <string name="all_apps_search_result_calculator">Calculadora</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_title">Começar a pesquisar</string>
+    <string name="search_empty_state_no_history_subtitle">Encontre apps, contatos e muito mais. Suas pesquisas recentes serão exibidas aqui.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Encontre apps, contatos e mais.</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">Procurar em</string>
     <string name="search_pref_result_files_description">Mídia, arquivos e mais</string>
     <string name="search_pref_result_contacts_description">Contatos e mais</string>
     <string name="search_pref_result_web_provider_description">Via <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -644,33 +644,33 @@
     <!-- Permission management -->
     <string name="missing_notification_access_label">O acesso às notificações é necessário</string>
     <string name="missing_notification_access_desc">Para mostrar Pontos de Notificação, ative as notificações para o app <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="warn_contact_permission_title">Permissão de contatos necessária</string>
+    <string name="warn_contact_permission_content">Para pesquisar por contatos, conceda permissões de telefone e contatos a <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Acesso à música e áudio necessário</string>
+    <string name="permissions_music_audio_description">Para pesquisar suas músicas e outros arquivos de áudio, <xliff:g id="name" example="My App">%1$s</xliff:g> precisa de permissão para acessar sua biblioteca de mídia.</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos">Acesso a fotos e vídeos necessário</string>
+    <string name="permissions_photos_videos_description">Para pesquisar suas músicas e outros arquivos de áudio, <xliff:g id="name" example="My App">%1$s</xliff:g> precisa de permissão para acessar sua biblioteca de mídia.</string>
+    <string name="permissions_photos_videos_full">Deseja acessar toda sua biblioteca de mídia?</string>
+    <string name="permissions_photos_videos_full_description">Para pesquisar todas as suas fotos e vídeos, <xliff:g id="name" example="My App">%1$s</xliff:g> precisa de acesso total à sua biblioteca de mídia.</string>
+    <string name="permissions_photos_videos_grant_full">Conceder todas as permissões de mídia</string>
+    <string name="permissions_photos_videos_manage_selected">Gerenciar itens selecionados</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage">Acesso ao armazenamento externo necessário</string>
+    <string name="permissions_external_storage_description">Para pesquisar seus arquivos, <xliff:g id="name" example="My App">%1$s</xliff:g> precisa de permissão para acessar o armazenamento externo do seu dispositivo.</string>
+    <string name="permissions_manage_storage">Acesso ao armazenamento necessário</string>
+    <string name="permissions_manage_storage_description">Para exibir seus arquivos nos resultados de pesquisa, <xliff:g id="name" example="My App">%1$s</xliff:g> requer permissão para gerenciar todos os arquivos no seu dispositivo. Essa permissão é usada exclusivamente para listar arquivos e não será usada para ler ou alterar o conteúdo dos seus arquivos pessoais.</string>
+    <string name="permission_desc_wallpaper_base">Para exibir pré-visualizações de planos de fundo e incluí-los em backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requer permissão %2$s. Isto deve-se a limitações do sistema para acessar dados de papel de parede.</string>
+    <string name="permission_desc_ending_read_all_files">ler todos os arquivos no seu dispositivo</string>
+    <string name="permission_desc_ending_manage_all_files">gerenciar todos os arquivos no seu dispositivo</string>
+    <string name="permission_desc_wallpaper_multiple">Várias permissões necessárias</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Para exibir pré-visualizações de planos de fundo e incluí-los em backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requer as seguintes permissões. Isto deve-se a limitações do sistema para acessar dados de papel de parede.</string>
+    <string name="permission_label_manage_all_files">Gerenciar todos os arquivos no dispositivo</string>
+    <string name="permission_label_read_photos_videos">Ler fotos e vídeos</string>
+    <string name="manage_storage_access_denied_title">Não foi possível ativar o acesso ao armazenamento</string>
+    <string name="manage_storage_access_denied_description">Devido a uma política imposta pela Play Store, <xliff:g id="name" example="My App">%1$s</xliff:g> não pode solicitar acesso total ao armazenamento aqui. Para acessar todos os arquivos, faça o download de <xliff:g id="name" example="My App">%1$s</xliff:g> através do GitHub. Como alternativa, você pode conceder acesso a fotos, vídeos e arquivos de áudio individualmente nas configurações.</string>
     <string name="open_permission_settings">Abrir as configurações</string>
     <string name="grant_requested_permissions">Permitir permissões</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">Permissões necessárias</string>
+    <string name="grant_requested_permissions_tap">Toque para conceder permissões</string>
 </resources>

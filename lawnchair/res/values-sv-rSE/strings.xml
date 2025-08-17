@@ -45,22 +45,22 @@
     <string name="dismiss">Avvisa</string>
     <string name="download_update">Ladda ner uppdatering</string>
     <string name="install_update">Installera uppdatering</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">Visa ändringar</string>
     <string name="pro_updated">Du är uppdaterad!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">Uppdateringar</string>
+    <string name="changes_dialog_error">Misslyckades med att ladda ändringar</string>
+    <string name="changes_dialog_no_changes">Inga ändringar hittades</string>
+    <string name="changes_dialog_build_format">Bygge #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">av %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_just_now">alldeles nyss</string>
+    <string name="time_minutes_ago">%d min</string>
+    <string name="time_hours_ago">%d tim</string>
+    <string name="time_days_ago">%d dgr</string>
+    <string name="time_weeks_ago">%d vkr</string>
+    <string name="time_months_ago">%d mån</string>
+    <string name="time_years_ago">%d år</string>
     <string name="managed_by_lawnchair">Hanteras av Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Alternativ</string>
@@ -367,12 +367,12 @@
     <string name="quickswitch_maintenance">QuickSwitch-underhåll</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Support och pr</string>
-    <string name="community">Community</string>
+    <string name="community">Gemenskap</string>
     <string name="telegram">Telegram</string>
     <string name="news">Nyheter</string>
-    <string name="legal">Legal</string>
+    <string name="legal">Juridiskt</string>
     <string name="acknowledgements">Erkännanden</string>
-    <string name="privacy_policy">Privacy policy</string>
+    <string name="privacy_policy">Integritetspolicy</string>
     <string name="contributor_status_active">Aktiv</string>
     <string name="update_check_failed">Misslyckades med att söka efter uppdateringar</string>
     <!--
@@ -573,7 +573,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Sök efter appar, på webben och mer</string>
+    <string name="all_apps_device_search_hint">Sök appar, webben med mera</string>
     <string name="all_apps_search_bar_hint">Sök efter appar</string>
     <string name="all_apps_no_search_results">Inga appar hittades som matchar \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Från webben</string>
@@ -581,7 +581,7 @@
     <string name="all_apps_search_result_files">Filer från enheten</string>
     <string name="all_apps_search_result_settings_entry_from_device">Inställningar från enheten</string>
     <string name="all_apps_search_market_message">Sök efter fler appar</string>
-    <string name="all_apps_search_on_web_message">Sök på <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
+    <string name="all_apps_search_on_web_message">Sök med <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">Ingen appbutik eller webbläsare installerad</string>
     <string name="all_apps_search_on_web_general">Sök på webben</string>
     <string name="clear_history">Rensa sökhistorik</string>

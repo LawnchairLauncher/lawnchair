@@ -46,7 +46,7 @@
     <string name="download_update">Télécharger la mise à jour</string>
     <string name="install_update">Installer la mise à jour</string>
     <string name="view_changes">Voir les changements</string>
-    <string name="pro_updated">Vous êtes à jour !</string>
+    <string name="pro_updated">Vous êtes à jour !</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Mises à jour</string>
     <string name="changes_dialog_error">Échec du chargement des changements</string>

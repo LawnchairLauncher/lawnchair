@@ -42,24 +42,24 @@
     <string name="deselect_all">Hiçbirini seçme</string>
     <string name="inverse_selection">Diğerlerini seç</string>
     <string name="loading">Yükleniyor…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">Yok say</string>
     <string name="download_update">Güncellemeyi indir</string>
     <string name="install_update">Güncellemeyi kur</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">Değişiklikleri göster</string>
     <string name="pro_updated">Güncel!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">Güncellemeler</string>
+    <string name="changes_dialog_error">Değişiklikler yüklenirken bir hata oluştu</string>
+    <string name="changes_dialog_no_changes">Değişiklik bulunmadı</string>
+    <string name="changes_dialog_build_format">Yapı #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">yapan: %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
+    <string name="time_just_now">tam şimdi</string>
+    <string name="time_minutes_ago">%ddk</string>
+    <string name="time_hours_ago">%dsa</string>
+    <string name="time_days_ago">%dg</string>
+    <string name="time_weeks_ago">%dhft</string>
+    <string name="time_months_ago">%day</string>
     <string name="time_years_ago">%dyıl</string>
     <string name="managed_by_lawnchair">Lawnchair tarafından yönetilmektedir</string>
     <!-- When mentioning settings UI -->
@@ -87,7 +87,7 @@
     <string name="grid">Izgara</string>
     <string name="layout">Düzen</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Duvar kağıdını göster</string>
     <string name="wallpaper">Duvar Kağıdı</string>
     <string name="style">Stil</string>
     <string name="background_opacity">Arka plan opaklığı</string>
@@ -98,7 +98,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">Ne gösterilsin</string>
     <string name="wallpapers">Duvar kağıtları</string>
-    <string name="caddy_beta">Caddy(Beta)</string>
+    <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">Uygulama çekmecesi klasörleri</string>
     <string name="app_drawer_folder_settings">Çekmece klasörü</string>
@@ -114,7 +114,7 @@
     <string name="folders_filter_duplicates">Sadece farklı uygulamaları göster</string>
     <string name="my_folder_label">Benim klasörüm</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">Belirli eylemleri (örneğin telefonunuzu kilitlemek) bir hareketle gerçekleştirebilmek için, Lawnchair erişilebilirlik iznine ihtiyaç duyar.\n\nLawnchair hiçbir kullanıcı etkinliğini izlemez; ancak tüm erişilebilirlik servislerinde bu ayrıcalık gereklidir. Lawnchair, sistem tarafından gönderilen tüm olayları yok sayar.\n\nTelefonunuzu kilitlemek veya Son uygulamalar ekranını açmak için Lawnchair, performGlobalAction Erişilebilirlik servisini kullanır.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -139,7 +139,7 @@
     <string name="folders_description">Satır ve sütun sayısı</string>
     <string name="gestures_label">Hareketler</string>
     <string name="gestures_description">Dokunmalar ve kaydırmalar</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">Son Kullanılanlar</string>
     <string name="quickstep_description">Tümünü Temizle tuşu, köşe yarıçapı</string>
     <string name="about_label">Hakkında</string>
     <string name="app_info_drop_target_label">Uygulama Hakkında</string>
@@ -154,10 +154,10 @@
     <string name="workspace_increase_max_grid_size_description">İzin verilen maksimum na ekran ızgara boyutunu 10 x 10\'dan 20 x 20\'ye artırın</string>
     <string name="always_reload_icons_label">Simgeleri her zaman yeniden yükle</string>
     <string name="always_reload_icons_description">Ön belleklenmiş simgeleri kullanmaktan kaçın</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="icon_swipe_gestures">Simge kaydırma hareketleri</string>
+    <string name="icon_swipe_gestures_description">Ana ekranda kaydırmak yerine simgeleri sola ya da sağa kaydırarak işlemler yap</string>
+    <string name="show_deck_layout">Deck düzeni</string>
+    <string name="show_deck_layout_description">Uygulama çekmecesini gizle ve yeni uygulamaları ana ekrana ekle seçeneğini göster</string>
     <string name="recents_lock_unlock">Kilitle/kilidi aç</string>
     <string name="recents_lock_unlock_description">\"Tümünü Temizle\"ye basıldığında seçilen uygulamanın kapanmasını engelle</string>
     <!--Overlay-->
@@ -222,9 +222,9 @@
     <string name="icon_shape_squircle">Yuvarlatılmış Kare</string>
     <string name="icon_shape_teardrop">Damla</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">Dörtgen kurabiye</string>
+    <string name="icon_shape_seven_sided_cookie">Yedigen kurabiye</string>
+    <string name="icon_shape_arch">Kavis</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Özel simge şekli</string>
     <string name="custom_icon_shape_create">Özel simge şekli oluştur</string>
@@ -248,7 +248,7 @@
     <string name="themed_icon_title">Temalı simgeler</string>
     <string name="themed_icons_off_label">Kapat</string>
     <string name="themed_icons_home_label">Ana ekran</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Ana ekran ve uygulama çekmecesi</string>
     <string name="lawnicons_not_installed_description">Desteklenen bir simge paketi bulunamadı</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Yazı tipleri ekle</string>
@@ -324,7 +324,7 @@
     <string name="smartspace_widget_description">Ne gösterilsin</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Takvim</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">Tarih ve saat</string>
     <string name="smartspace_date">Tarih</string>
     <string name="smartspace_time">Zaman</string>
     <string name="smartspace_time_format">Saat biçimi</string>
@@ -362,19 +362,19 @@
     <string name="translate">Çeviri</string>
     <string name="donate">Bağış</string>
     <string name="product">Ürün</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">Tasarım ve geliştirme</string>
     <string name="development">Geliştirme</string>
     <string name="quickswitch_maintenance">QuickSwitch bakımı</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Support and PR</string>
-    <string name="community">Community</string>
+    <string name="support_and_pr">Destek ve PR</string>
+    <string name="community">Topluluk</string>
     <string name="telegram">Telegram</string>
     <string name="news">Haberler</string>
-    <string name="legal">Legal</string>
+    <string name="legal">Yasal</string>
     <string name="acknowledgements">Teşekkürler</string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">Gizlilik sözleşmesi</string>
+    <string name="contributor_status_active">Aktif</string>
+    <string name="update_check_failed">Güncellemeler denetlenirken bir hata oluştu</string>
     <!--
 
     Backup and restore
@@ -405,7 +405,7 @@
     <string name="gesture_swipe_right">Sağa kaydır</string>
     <string name="gesture_handler_no_op">Hiçbir şey yapma</string>
     <string name="gesture_handler_sleep">Uyku</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">Son uygulamaları aç</string>
     <string name="gesture_handler_open_notifications">Bildirim panelini aç</string>
     <string name="gesture_handler_open_app_option">Uygulamayı aç</string>
     <string name="gesture_handler_open_app_config">Aç %1$s</string>
@@ -420,7 +420,7 @@
     <string name="d2ts_recents_a11y_hint_title">Erişilebilirlik hizmetini açın</string>
     <string name="dt2s_a11y_hint">Çift Dokunarak Uyutma özelliğini kullanmak için Lawnchair erişilebilirlik servisini açın. \"Ayarları aç\" seçeneğine dokunun, \"Lawnchair\"i seçin ve \"Etkinleştir\" seçeneğini aktif edin.\n\nLawnchair, bu işlemi gerçekleştirmek için Erişilebilirlik’in performGlobalAction yöntemini kullanır. Bu, diğer uygulamaları izlemeye olanak tanıyan hassas bir izindir. Ancak, Lawnchair bu işlevsellik için yapılandırılmamıştır ve herhangi bir etkinlik almaz.</string>
     <string name="dt2s_recents_warning_open_settings">Ayarları aç</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">Son Kullanılanlar özelliğini kullanmak için Lawnchair erişilebilirlik hizmetini açın. \"Ayarları aç\"a dokunun, \"Lawnchair\"i seçin ve etkinleştirin.\n\nLawnchair, bu işlemi gerçekleştirmek için Accessibility\'nin performGlobalAction yöntemini kullanır. Bu, diğer uygulamaları izlemeye olanak tanıyan hassas bir izindir. Ancak Lawnchair, bu işlev için yapılandırılmamıştır ve herhangi bir olay almaz.</string>
     <!--
 
     Bug reporting
@@ -552,7 +552,7 @@
     <string name="max_folder_columns">Maksimum klasör sütunları</string>
     <string name="max_folder_rows">Maksimum klasör satırı</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">Bu ayarlar Lawnchair Son Kullanılanlar sağlayıcısı olmadığı sürece yok sayılacak</string>
     <string name="quickstep_incompatible">Uyumsuz sistem entegrasyonu</string>
     <string name="quickstep_incompatible_description">Cihazınız %1$s tarafından sağlanan sistem hareketlerine (Quickstep olarak bilinir) sahip olacak şekilde yapılandırılmıştır, ancak %1$s\'nin bu sürümü Android sürümünüzle uyumlu değildir. Cihazınızı kullanmaya devam etmek için lütfen %1$s güncellemelerini kaldırın veya sistem hareketi sağlayıcısı olarak %1$s\'ı devre dışı bırakın.</string>
     <string name="translucent_background">Yarı saydam arka plan</string>
@@ -564,7 +564,7 @@
     <string name="task_menu_force_stop">Zorla kapat</string>
     <string name="window_corner_radius_label">Ekran köşe yarıçapı</string>
     <string name="override_window_corner_radius_label">Özel ekran köşe yarıçapı</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Son Kullanılanlar\'ı açmak için yukarı kaydırdığınızda geçerli uygulama parmağınızı takip ederek bir karta küçülür. Kart neredeyse tam ekran olduğunda, ekranınızın köşeleriyle eşleşecek şekilde kartın köşe yarıçapını ayarlamak için bu kaydırıcıyı kullanın.</string>
     <string name="taskbar_label">Görev çubuğu</string>
     <string name="enable_taskbar_experimental">Görev çubuğunu göster (deneysel)</string>
     <!--
@@ -573,7 +573,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">Uygulama, site ve daha fazlasını aratın</string>
     <string name="all_apps_search_bar_hint">Uygulamaları Ara</string>
     <string name="all_apps_no_search_results">\"<xliff:g example="Android" id="query">%1$s</xliff:g>\" ile eşleşen bir uygulama bulunamadı</string>
     <string name="all_apps_search_result_suggestions">Web\'den</string>
@@ -583,7 +583,7 @@
     <string name="all_apps_search_market_message">Daha fazla uygulama arayın</string>
     <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g> üzerinde ara</string>
     <string name="error_no_market_or_browser_installed">Yüklü uygulama mağazası veya tarayıcı yok</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">İnternette aratın</string>
     <string name="clear_history">Arama geçmişini temizle</string>
     <string name="search_input_action_clear_results">Arama kutusunu temizle</string>
     <!-- Search settings -->
@@ -606,30 +606,30 @@
     <string name="search_algorithm_app_search">Uygulama Araması</string>
     <string name="search_algorithm_global_search_on_device">Genel arama (cihazda)</string>
     <string name="search_algorithm_global_search_via_asi">Genel arama (ASI aracılığıyla)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_label">Makine ismi aratın</string>
+    <string name="custom_search_url">Makine URL\'si aratın</string>
+    <string name="custom_search_suggestions_url">Önerilen URL\'leri aratın</string>
+    <string name="custom_search_input_hint">&#37; arama sorgusu ile değiştirilecek</string>
+    <string name="custom_search_suggestions_hint">&#37; arama sorgusu ile değiştirilecek. Sonuçlar JSON OpenSearch biçiminde olmalı.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Arama sonuçlarında göster</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">Uygulamalar ve kısayollar</string>
     <string name="search_pref_result_shortcuts_title">Uygulama kısayolları</string>
     <string name="search_pref_result_people_title">İnsanlar</string>
     <string name="search_pref_result_tips_title">Piksel ipuçları</string>
     <string name="search_pref_result_settings_title">Android ayarları</string>
     <string name="search_pref_result_files_title">Dosya arama</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
-    <string name="search_pref_result_audio_media_title">Audio files</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_visual_media_title">Fotoğraflar ve videolar</string>
+    <string name="search_pref_result_audio_media_title">Ses dosyaları</string>
+    <string name="search_pref_result_all_files_title">Tüm dosyalar</string>
     <string name="search_pref_result_web_title">Web önerileri</string>
     <string name="search_pref_result_history_title">Arama geçmişi</string>
     <string name="all_apps_search_result_calculator">Hesap makinesi</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_title">Aramayı başlat</string>
+    <string name="search_empty_state_no_history_subtitle">Uygulamaları, kişileri ve daha fazlasını bulun. Son arananlar burada gözükür.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Uygulamarı, kişileri ve daha fazlasını bulun.</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">Şurada aratın:</string>
     <string name="search_pref_result_files_description">Medya, dosyalar ve fazlası</string>
     <string name="search_pref_result_contacts_description">Kişiler ve fazlası</string>
     <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -644,33 +644,33 @@
     <!-- Permission management -->
     <string name="missing_notification_access_label">Bildirim Erişimi Gerekli</string>
     <string name="missing_notification_access_desc">Bildirim Noktalarını göstermek için <xliff:g id="name" example="Uygulamam">%1$s</xliff:g> uygulama bildirimlerini açın</string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="warn_contact_permission_title">Kişiler izni gerekli</string>
+    <string name="warn_contact_permission_content">Kişiler içinde arama yapmak için, kişiler ve telefon izinlerini <xliff:g id="name" example="My App">%1$s</xliff:g>\'e verin</string>
+    <string name="permissions_music_audio">Müzik ve ses erişimi gerekli</string>
+    <string name="permissions_music_audio_description">Müzik ve diğer ses dosyalarınızı aratmak için, <xliff:g id="name" example="My App">%1$s</xliff:g>\'in medyalarınıza erişme iznine ihtiyacı var.</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos">Fotoğraflar ve videolar izni gerekli</string>
+    <string name="permissions_photos_videos_description">Fotoğraf ve videolarınızı aratmak için, <xliff:g id="name" example="My App">%1$s</xliff:g>\'in medyalarınıza erişme iznine ihtiyacı var.</string>
+    <string name="permissions_photos_videos_full">Tüm dosyalarınıza erişilsin mi?</string>
+    <string name="permissions_photos_videos_full_description">Tüm fotoğraf ve videolarınızı aratmak için, <xliff:g id="name" example="My App">%1$s</xliff:g>\'in tüm medyalarınıza erişmesi gerekir.</string>
+    <string name="permissions_photos_videos_grant_full">Medya için tam izin ver</string>
+    <string name="permissions_photos_videos_manage_selected">Seçilmiş öğeleri yönet</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage">Harici depolamaya erişim gerekiyor</string>
+    <string name="permissions_external_storage_description">Dosyalarınızı aratmak için, <xliff:g id="name" example="My App">%1$s</xliff:g>\'in cihazınızın harici depolamasına erişme iznine ihtiyacı var.</string>
+    <string name="permissions_manage_storage">Depolama erişimi gerekli</string>
+    <string name="permissions_manage_storage_description">Arama sonuçlarında dosyalarınızı da görüntülemek için, <xliff:g id="name" example="My App">%1$s</xliff:g> cihazınızdaki tüm dosyaları yönetme iznine ihtiyaç duyar. Bu izin sadece dosyaları sıralamak için kullanılır, kişisel dosyalarınızı okuma ya da değiştirme gibi işlemlerde kullanılmaz.</string>
+    <string name="permission_desc_wallpaper_base">Duvar kağıdı ön gösterimini görmek ve yedeklemek için, <xliff:g id="name" example="My App">%1$s</xliff:g> %2$s iznine ihtiyaç duyar. Sistemin, duvar kağıdı verilerine erişimi kısıtlamasından kaynaklanır.</string>
+    <string name="permission_desc_ending_read_all_files">cihazınızdaki tüm dosyaları okuma</string>
+    <string name="permission_desc_ending_manage_all_files">cihazınızdaki tüm dosyaları yönetme</string>
+    <string name="permission_desc_wallpaper_multiple">Birden fazla izin gerekli</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Duvar kağıdı ön gösterimini görmek ve yedeklemek için, <xliff:g id="name" example="My App">%1$s</xliff:g> gösterilen izinlere ihtiyaç duyar. Sistemin, duvar kağıdı verilerine erişimi kısıtlamasından kaynaklanır.</string>
+    <string name="permission_label_manage_all_files">Cihazdaki tüm dosyaları yönetme</string>
+    <string name="permission_label_read_photos_videos">Fotoğraf ve videoları okuma</string>
+    <string name="manage_storage_access_denied_title">Depolama yönetme izni verilemedi</string>
+    <string name="manage_storage_access_denied_description">Play Store politikası nedeniyle, <xliff:g id="name" example="My App">%1$s</xliff:g> burada tüm dosyalara erişim talep edemez. Tüm dosyalara erişmek için lütfen <xliff:g id="name" example="My App">%1$s</xliff:g>\'i GitHub’dan indirin. Alternatif olarak, ayarlardan fotoğraf, video ve ses dosyalarına ayrı ayrı erişim verebilirsiniz.</string>
     <string name="open_permission_settings">Ayarları aç</string>
     <string name="grant_requested_permissions">İzinleri ver</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">İzinler gerekli</string>
+    <string name="grant_requested_permissions_tap">İzinleri vermek için dokunun</string>
 </resources>

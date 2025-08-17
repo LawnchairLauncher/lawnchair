@@ -45,22 +45,22 @@
     <string name="dismiss">Descartar</string>
     <string name="download_update">Descargar actualización</string>
     <string name="install_update">Instalar actualización</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">Ver cambios</string>
     <string name="pro_updated">Estás na última versión!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_title">Actualizacións</string>
     <string name="changes_dialog_error">Failed to load changes</string>
     <string name="changes_dialog_no_changes">No changes found</string>
     <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_just_now">xusto agora</string>
+    <string name="time_minutes_ago">%d m</string>
+    <string name="time_hours_ago">%d h</string>
+    <string name="time_days_ago">%d días</string>
+    <string name="time_weeks_ago">%d semanas</string>
+    <string name="time_months_ago">%d meses</string>
+    <string name="time_years_ago">%d anos</string>
     <string name="managed_by_lawnchair">Xestionado por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferencias</string>
