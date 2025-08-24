@@ -28,19 +28,19 @@
     <string name="action_delete">Burahin</string>
     <string name="action_reset">I-reset</string>
     <string name="action_unlock">I-unlock</string>
-    <string name="action_lock">I-Lock</string>
+    <string name="action_lock">Ikandado</string>
     <string name="action_apply">Ilapat</string>
     <string name="action_customize">I-customize</string>
-    <string name="always_choice">Lagi</string>
-    <string name="never_choice">Huwag</string>
+    <string name="always_choice">Palagi</string>
+    <string name="never_choice">Hindi</string>
     <string name="clipboard">Klipboard</string>
     <string name="action_copy_link">Kopyahin ang link</string>
     <string name="action_copy">Kopya</string>
     <string name="action_paste">Paste</string>
     <string name="action_done">Tapos na</string>
-    <string name="select_all">Select all</string>
+    <string name="select_all">Piliin lahat</string>
     <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="inverse_selection">Baliktarin ang pagpili</string>
     <string name="loading">Maghintay lamang…</string>
     <string name="dismiss">Dismiss</string>
     <string name="download_update">Download update</string>
@@ -52,15 +52,15 @@
     <string name="changes_dialog_error">Failed to load changes</string>
     <string name="changes_dialog_no_changes">No changes found</string>
     <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_commit_info">ni %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">ngayon lang</string>
     <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_hours_ago">%do</string>
+    <string name="time_days_ago">%da</string>
+    <string name="time_weeks_ago">%dl</string>
+    <string name="time_months_ago">%db</string>
+    <string name="time_years_ago">%dt</string>
     <string name="managed_by_lawnchair">Pinamamahalaan ng Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Mga Kagustuhan</string>
@@ -89,11 +89,11 @@
     <!-- Generic styling options -->
     <string name="show_wallpaper">Show wallpaper</string>
     <string name="wallpaper">Wallpaper</string>
-    <string name="style">Style</string>
+    <string name="style">Istillo</string>
     <string name="background_opacity">Kalabuan ng Background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Naisalin sa clipboard</string>
-    <string name="calculator_search_result_copied_toast">Naisalin ang resulta sa clipboard</string>
+    <string name="calculator_search_result_copied_toast">Nadikit ang resulta sa clipboard</string>
     <string name="item_removed">Tinanggal ang item</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Ano ang ipapakita</string>
@@ -105,14 +105,14 @@
     <string name="add_folder">Create folder</string>
     <string name="edit_folder">I-edit and folder</string>
     <string name="add_label">Magdagdag</string>
-    <string name="edit_label">I-edit</string>
+    <string name="edit_label">Baguhin</string>
     <string name="apply_label">Ilapat</string>
     <string name="delete_label">Burahin</string>
     <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
     <string name="apps_in_folder_label">Hide folder apps</string>
     <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
     <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">Aking folder</string>
+    <string name="my_folder_label">Baguhin ang folder</string>
     <!-- A11y description -->
     <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
@@ -132,11 +132,11 @@
     <string name="dock_label">Dock</string>
     <string name="dock_description">Search bar, icon count</string>
     <string name="app_drawer_label">App Drawer</string>
-    <string name="app_drawer_description">Hidden apps, column count, icons</string>
+    <string name="app_drawer_description">Mga nakatagong app, bilang ng mga hanay, mga icon</string>
     <string name="drawer_search_label">Drawer search</string>
     <string name="drawer_search_description">Web suggestions, global search</string>
     <string name="folders_label">Mga Folder</string>
-    <string name="folders_description">Bilang ng Row at Column</string>
+    <string name="folders_description">Bilang ng hilera at hanay</string>
     <string name="gestures_label">Gestures</string>
     <string name="gestures_description">Taps and swipes</string>
     <string name="quickstep_label">Recents screen</string>
@@ -165,16 +165,16 @@
     <string name="overlay_suck_in">Suck In</string>
     <string name="app_closing_animation">App closing animation</string>
     <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="overlay_none">Wala</string>
     <!--
 
     Notifications
 
     -->
     <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
-    <string name="notification_dots">Notification dots</string>
+    <string name="notification_dots">Mga tuldok ng abiso</string>
     <string name="show_notification_count">Show notification counter</string>
-    <string name="notification_dots_color">Notification dot color</string>
+    <string name="notification_dots_color">Kulay ng tuldok ng abiso</string>
     <string name="notification_dots_text_color">Notification counter color</string>
     <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification dot and counter colors might not always have enough contrast with each other</string>
@@ -189,7 +189,7 @@
     <string name="icon_sizes">Laki ng Icon</string>
     <string name="show_labels">Show labels</string>
     <string name="label_size">Label size</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="twoline_label">Gamitin ang mga maramihang linya</string>
     <!-- Icon-related settings -->
     <string name="transparent_background_icons_label">Transparent themed icons</string>
     <string name="transparent_background_icons_description">Gumamit ng transparent na background sa themed icons</string>
@@ -204,7 +204,7 @@
     <string name="icon_picker_default_category">Mga Icon</string>
     <string name="icon_picker_reset_to_default">Reset to default</string>
     <string name="icon_pack_external_picker">Open external picker</string>
-    <string name="pick_icon_from_label">Pick icon from</string>
+    <string name="pick_icon_from_label">Kunin ang Icon mula sa</string>
     <string name="icon_picker_load_failed">Couldn\'t load more icons</string>
     <!-- Icon shapes  -->
     <string name="icon_shape_system">System</string>
@@ -226,10 +226,10 @@
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">Custom icon shape</string>
-    <string name="custom_icon_shape_create">Create custom icon shape</string>
-    <string name="custom_icon_shape_edit">Edit custom icon shape</string>
-    <string name="custom_icon_shape_corner">Corner shape</string>
+    <string name="custom_icon_shape">Pasadyang hugis ng icon</string>
+    <string name="custom_icon_shape_create">Gumawa ng pasadyang hugis ng icon</string>
+    <string name="custom_icon_shape_edit">Baguhin ang pasadyang hugis ng icon</string>
+    <string name="custom_icon_shape_corner">Hugis ng sulok</string>
     <string name="custom_icon_shape_corner_round">Bilog</string>
     <string name="custom_icon_shape_corner_squircle">Smooth</string>
     <string name="custom_icon_shape_corner_cut">I-cut</string>
@@ -258,8 +258,8 @@
     <string name="fontWorkspace">Pangkalahatan</string>
     <string name="fontHeading">Headings</string>
     <string name="fontHeadingMedium">Headings (medium)</string>
-    <string name="fontBody">Body</string>
-    <string name="fontBodyMedium">Body (medium)</string>
+    <string name="fontBody">Katawan</string>
+    <string name="fontBodyMedium">Katawan (katamtaman)</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Manipis</string>
     <string name="font_weight_extra_light">Extra light</string>
@@ -287,7 +287,7 @@
     <string name="color_style_tonal_spot">Tonal Spot</string>
     <string name="color_style_vibrant">Vibrant</string>
     <string name="color_style_expressive">Expressive</string>
-    <string name="color_style_rainbow">Rainbow</string>
+    <string name="color_style_rainbow">Bahaghari</string>
     <string name="color_style_fruit_salad">Fruit Salad</string>
     <string name="color_style_content">Content</string>
     <string name="color_style_monochromatic">Monochromatic</string>
@@ -318,13 +318,13 @@
     <!-- Battery labels -->
     <string name="smartspace_battery_charging">Pinupuno</string>
     <string name="smartspace_battery_full">Puno na</string>
-    <string name="smartspace_battery_low">Battery low</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Mapuno sa loob ng %2$s"</string>
+    <string name="smartspace_battery_low">Mababa ang baterya</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — Mapupuno sa loob ng %2$s"</string>
     <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">What to show</string>
+    <string name="smartspace_widget_description">Ano ang ipapakita</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalendaryo</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">Petsa at oras</string>
     <string name="smartspace_date">Petsa</string>
     <string name="smartspace_time">Oras</string>
     <string name="smartspace_time_format">Time format</string>
@@ -333,7 +333,7 @@
     <string name="smartspace_time_24_hour_format">24-hour format</string>
     <!-- Available targets -->
     <string name="smartspace_weather">Panahon</string>
-    <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_battery_status">Katayuan ng baterya</string>
     <string name="smartspace_now_playing">Tumutugtog</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maximum number of targets</string>
@@ -341,7 +341,7 @@
     <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tap to set up</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots">Upang gamitin ang <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, paganahin ang mga Tuldok ng Abiso.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Show on home screen</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
@@ -351,7 +351,7 @@
     <string name="smartspace_mode_google_search">Google Search</string>
     <!-- Miscellaneous Smartspace strings -->
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="accessibility_smartspace_page">Pahinang %1$d ng %2$d</string>
+    <string name="accessibility_smartspace_page">Pahina %1$d ng %2$d</string>
     <string name="smartspace_widget_placeholder_date">Biy, Mar 3</string>
     <!--
 
@@ -373,7 +373,7 @@
     <string name="legal">Legal</string>
     <string name="acknowledgements">Mga Pagkilala</string>
     <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
+    <string name="contributor_status_active">Aktibo</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--
 
@@ -396,7 +396,7 @@
     Gesture settings
 
     -->
-    <string name="gesture_double_tap">Double tap</string>
+    <string name="gesture_double_tap">Pagpindot ng dalawang beses</string>
     <string name="gesture_swipe_up">Swipe up</string>
     <string name="gesture_swipe_down">Swipe down</string>
     <string name="gesture_home_tap">Home button</string>
@@ -455,7 +455,7 @@
     <string name="minus_one">Feed</string>
     <string name="feed_provider">Feed provider</string>
     <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
-    <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
+    <string name="wallpaper_depth_effect_label">Epekto ng lalim ng wallpaper</string>
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
     <string name="home_screen_grid">Home screen grid</string>
@@ -476,7 +476,7 @@
     <string name="dark_status_bar_label">Dark status bar</string>
     <string name="status_bar_clock_label">Status bar clock</string>
     <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
-    <string name="home_screen_text_color">Text color</string>
+    <string name="home_screen_text_color">Kulay ng text</string>
     <string name="color_light">Light</string>
     <string name="color_dark">Dark</string>
     <string name="force_rounded_widgets">Rounded corners</string>
@@ -549,8 +549,8 @@
     <string name="folder_preview_bg_opacity_label">Icon preview background opacity</string>
     <string name="folder_bg_opacity_label">Folder background opacity</string>
     <string name="folder_preview_bg_color_label">Icon background color</string>
-    <string name="max_folder_columns">Maximum folder columns</string>
-    <string name="max_folder_rows">Maximum folder rows</string>
+    <string name="max_folder_columns">Pinakamataas na bilang ng mga hanay</string>
+    <string name="max_folder_rows">Pinakamataas na bilang ng mga hilera</string>
     <!-- Quickstep settings -->
     <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
     <string name="quickstep_incompatible">Incompatible system integration</string>
@@ -582,7 +582,7 @@
     <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
     <string name="all_apps_search_market_message">Search for more apps</string>
     <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
-    <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
+    <string name="error_no_market_or_browser_installed">Walang naka-install na app store o browser</string>
     <string name="all_apps_search_on_web_general">Search on the web</string>
     <string name="clear_history">Clear search history</string>
     <string name="search_input_action_clear_results">Clear search box</string>
@@ -625,7 +625,7 @@
     <string name="search_pref_result_web_title">Web suggestions</string>
     <string name="search_pref_result_history_title">Search history</string>
     <string name="all_apps_search_result_calculator">Calculator</string>
-    <string name="search_empty_state_title">Start searching</string>
+    <string name="search_empty_state_title">Simulan ang paghahanap</string>
     <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
     <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
     <!-- Description for each search result type -->
@@ -643,7 +643,7 @@
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
     <!-- Permission management -->
     <string name="missing_notification_access_label">Notification access needed</string>
-    <string name="missing_notification_access_desc">To show Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="missing_notification_access_desc">Upang ipakita ang mga tuldok ng abiso, paganahin ang mga abiso ng app para sa <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <string name="warn_contact_permission_title">Contacts permission needed</string>
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <string name="permissions_music_audio">Music and audio access needed</string>
@@ -654,7 +654,7 @@
     <string name="permissions_photos_videos_full">Access your full media library?</string>
     <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
     <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos_manage_selected">Pamahalaan ang napili na mga item</string>
     <!-- External storage -->
     <string name="permissions_external_storage">External storage access needed</string>
     <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>

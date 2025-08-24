@@ -608,7 +608,7 @@
     <string name="search_algorithm_global_search_via_asi">جستجوی جهانی (با ASI)</string>
     <string name="custom_search_label">Search engine name</string>
     <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
+    <string name="custom_search_suggestions_url">آدرس اینترنتی پیشنهادات جستجو</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
     <!-- Labels of each search result types -->
@@ -620,13 +620,13 @@
     <string name="search_pref_result_settings_title">تنظیمات اندروید</string>
     <string name="search_pref_result_files_title">فایل‌ها</string>
     <string name="search_pref_result_visual_media_title">Photos and videos</string>
-    <string name="search_pref_result_audio_media_title">Audio files</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_audio_media_title">فایل‌های صوتی</string>
+    <string name="search_pref_result_all_files_title">همه فایل‌ها</string>
     <string name="search_pref_result_web_title">پیشنهادات وب</string>
     <string name="search_pref_result_history_title">تاریخچه جستجو</string>
     <string name="all_apps_search_result_calculator">ماشین حساب</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
+    <string name="search_empty_state_title">شروع جستجو</string>
+    <string name="search_empty_state_no_history_subtitle">برنامه‌ها، مخاطبین و موارد دیگر را پیدا کنید. جستجوهای اخیر شما در اینجا نمایش داده می‌شوند.</string>
     <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
     <!-- Description for each search result type -->
     <string name="search_pref_files_search_on">Search on</string>
@@ -649,11 +649,11 @@
     <string name="permissions_music_audio">Music and audio access needed</string>
     <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
+    <string name="permissions_photos_videos">دسترسی به عکس‌ها و ویدیوها الزامی است</string>
     <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
     <string name="permissions_photos_videos_full">Access your full media library?</string>
     <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
+    <string name="permissions_photos_videos_grant_full">اعطای مجوز کامل رسانه</string>
     <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
     <!-- External storage -->
     <string name="permissions_external_storage">External storage access needed</string>

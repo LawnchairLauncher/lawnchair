@@ -573,7 +573,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Αναζήτηση εφαρμογών, ιστοσελίδων και άλλων</string>
+    <string name="all_apps_device_search_hint">Έξυπνη αναζήτηση</string>
     <string name="all_apps_search_bar_hint">Αναζήτηση εφαρμογών</string>
     <string name="all_apps_no_search_results">Δεν βρέθηκαν εφαρμογές που να ταιριάζουν “<xliff:g example="Android" id="query">%1$s</xliff:g>”</string>
     <string name="all_apps_search_result_suggestions">Από το διαδίκτυο</string>
@@ -627,7 +627,7 @@
     <string name="all_apps_search_result_calculator">Αριθμομηχανή</string>
     <string name="search_empty_state_title">Έναρξη αναζήτησης</string>
     <string name="search_empty_state_no_history_subtitle">Βρείτε εφαρμογές, επαφές και πολλά άλλα. Οι πρόσφατες αναζητήσεις σας θα εμφανίζονται εδώ.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Βρείτε εφαρμογές, επαφές και πολλά άλλα.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Βρείτε εφαρμογές, επαφές, ιστοσελίδες και πολλά άλλα</string>
     <!-- Description for each search result type -->
     <string name="search_pref_files_search_on">Αναζήτηση σε</string>
     <string name="search_pref_result_files_description">Πολυμέσα, αρχεία, &amp; άλλα</string>

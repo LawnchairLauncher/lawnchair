@@ -574,7 +574,7 @@ Transparentes</string>
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Procurar aplicações, na web e muito mais</string>
+    <string name="all_apps_device_search_hint">Pesquisa</string>
     <string name="all_apps_search_bar_hint">Pesquisar aplicações</string>
     <string name="all_apps_no_search_results">Nenhum aplicativo encontrado correspondente a \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Da web</string>
