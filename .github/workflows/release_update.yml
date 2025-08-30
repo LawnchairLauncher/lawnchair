@@ -51,7 +51,7 @@ jobs:
       - name: Rename artifact
         run: mv build/outputs/apk/**/**/*.apk "${{ github.event.inputs.artifactName }}"
       - name: Attest
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v3
         with:
           subject-path: ${{ github.event.inputs.artifactName }}
       - name: Upload artifact
