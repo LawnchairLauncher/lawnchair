@@ -573,7 +573,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Έξυπνη αναζήτηση</string>
+    <string name="all_apps_device_search_hint">Αναζήτηση ιστού και άλλα</string>
     <string name="all_apps_search_bar_hint">Αναζήτηση εφαρμογών</string>
     <string name="all_apps_no_search_results">Δεν βρέθηκαν εφαρμογές που να ταιριάζουν “<xliff:g example="Android" id="query">%1$s</xliff:g>”</string>
     <string name="all_apps_search_result_suggestions">Από το διαδίκτυο</string>

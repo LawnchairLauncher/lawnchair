@@ -42,25 +42,25 @@
     <string name="deselect_all">لغو‌انتخاب همه</string>
     <string name="inverse_selection">انتخاب معکوس</string>
     <string name="loading">درحال بارگذاری…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">رد کردن</string>
     <string name="download_update">بارگیری به‌روزرسانی</string>
     <string name="install_update">نصب به‌روزرسانی</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">مشاهده تغییرات</string>
     <string name="pro_updated">شما به روز هستید!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">به‌روزرسانی‌ها</string>
+    <string name="changes_dialog_error">بارگیری تغییرات ناموفق بود</string>
+    <string name="changes_dialog_no_changes">هیچ تغییری یافت نشد</string>
+    <string name="changes_dialog_build_format">ساخت #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">توسط %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_just_now">همین الان</string>
+    <string name="time_minutes_ago">%dد</string>
+    <string name="time_hours_ago">%dس</string>
+    <string name="time_days_ago">%dر</string>
+    <string name="time_weeks_ago">%dه</string>
+    <string name="time_months_ago">%dماه</string>
+    <string name="time_years_ago">%dسال</string>
     <string name="managed_by_lawnchair">مدیریت شده توسط Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">ترجیحات</string>
@@ -87,7 +87,7 @@
     <string name="grid">جدول</string>
     <string name="layout">چیدمان</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">نمایش تصویر‌زمینه</string>
     <string name="wallpaper">کاغذ دیواری</string>
     <string name="style">سبک</string>
     <string name="background_opacity">شفافیت پس‌زمینه</string>
@@ -114,7 +114,7 @@
     <string name="folders_filter_duplicates">فقط برنامه های ویژه را نشان بده</string>
     <string name="my_folder_label">پوشه من</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">برای انجام برخی اقدامات (مانند قفل کردن تلفن شما) هنگام انجام یک حرکت، Lawnchair نیاز به دسترسی به قابلیت دسترسی دارد.\n\nLawnchair هیچ اقدام کاربر را زیر نظر نمی‌گیرد، اگرچه امتیاز انجام این کار برای همه سرویس‌های دسترسی لازم است. Lawnchair هر رویدادی را که توسط سیستم ارسال شود، نادیده می‌گیرد.\n\nبرای قفل کردن تلفن شما یا باز کردن صفحه اخیراً، Lawnchair از سرویس دسترسی اقدام جهانی استفاده می‌کند.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -139,7 +139,7 @@
     <string name="folders_description">تعداد سطرها و ستون‌ها</string>
     <string name="gestures_label">حرکات</string>
     <string name="gestures_description">ضربه‌ها و کشیدن‌ها</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">صفحه اخیر</string>
     <string name="quickstep_description">دکمه پاک‌کردن همه، شعاع گوشه‌ها</string>
     <string name="about_label">درباره</string>
     <string name="app_info_drop_target_label">اطلاعات برنامه</string>
@@ -154,10 +154,10 @@
     <string name="workspace_increase_max_grid_size_description">افزایش حداکثر اندازه جدول صفحه اصلی از ۱۰ در ۱۰ به ۲۰ در ۲۰</string>
     <string name="always_reload_icons_label">همیشه بارگذاری دوباره آیکون‌ها</string>
     <string name="always_reload_icons_description">خودداری از استفاده از آیکون‌های ذخیره شده در آیکون پک‌ها</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="icon_swipe_gestures">حرکات کشیدن آیکون</string>
+    <string name="icon_swipe_gestures_description">انجام اقدامات هنگام کشیدن انگشت به چپ یا راست روی آیکون‌ها به جای حرکت دادن صفحه اصلی</string>
+    <string name="show_deck_layout">چیدمان عرشه</string>
+    <string name="show_deck_layout_description">نمایش گزینه طرح‌بندی برای مخفی کردن کشوی برنامه‌ها و افزودن خودکار برنامه‌های جدید به صفحه اصلی</string>
     <string name="recents_lock_unlock">قفل/بازکردن</string>
     <string name="recents_lock_unlock_description">جلوگیری از بسته شدن برنامه انتخابی با فشار دادن «پاک کردن همه»</string>
     <!--Overlay-->
@@ -222,9 +222,9 @@
     <string name="icon_shape_squircle">مربع دایره‌ای</string>
     <string name="icon_shape_teardrop">اشک</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">کوکی چهار طرفه</string>
+    <string name="icon_shape_seven_sided_cookie">کوکی هفت ضلعی</string>
+    <string name="icon_shape_arch">قوس</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">شکل آیکون سفارشی</string>
     <string name="custom_icon_shape_create">ایجاد شکل آیکون سفارشی</string>
@@ -248,7 +248,7 @@
     <string name="themed_icon_title">آیکون‌های پوسته‎‌ای</string>
     <string name="themed_icons_off_label">خاموش</string>
     <string name="themed_icons_home_label">صفحه اصلی</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">کشوی برنامه‌ها و صفحه اصلی</string>
     <string name="lawnicons_not_installed_description">هیچ بسته آیکونی پشتیبانی نمی‌شود</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">افزودن قلم</string>
@@ -324,7 +324,7 @@
     <string name="smartspace_widget_description">چه چیزی نشان‌داده شود</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">تقویم</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">تاریخ و زمان</string>
     <string name="smartspace_date">تاریخ</string>
     <string name="smartspace_time">زمان</string>
     <string name="smartspace_time_format">قالب ساعت</string>
@@ -362,19 +362,19 @@
     <string name="translate">ترجمه</string>
     <string name="donate">کمک‌کردن</string>
     <string name="product">محصول</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">طراحی و توسعه</string>
     <string name="development">توسعه</string>
     <string name="quickswitch_maintenance">نگهداری QuickSwitch</string>
     <string name="devops">توسعه دهنده</string>
-    <string name="support_and_pr">Support and PR</string>
-    <string name="community">Community</string>
-    <string name="telegram">Telegram</string>
+    <string name="support_and_pr">پشتیبانی و روابط عمومی</string>
+    <string name="community">انجمن</string>
+    <string name="telegram">تلگرام</string>
     <string name="news">اخبار</string>
-    <string name="legal">Legal</string>
+    <string name="legal">حقوقی</string>
     <string name="acknowledgements">سپاسگزاریها</string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">سیاست حفظ حریم خصوصی</string>
+    <string name="contributor_status_active">فعال</string>
+    <string name="update_check_failed">بررسی به‌روزرسانی‌ها ناموفق بود</string>
     <!--
 
     Backup and restore
@@ -405,7 +405,7 @@
     <string name="gesture_swipe_right">کشیدن راست</string>
     <string name="gesture_handler_no_op">انجام هیچ‌کار</string>
     <string name="gesture_handler_sleep">خاموش کردن صفحه نمایش</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">باز کردن صفحه موارد اخیر</string>
     <string name="gesture_handler_open_notifications">بازکردن صفحه اعلان</string>
     <string name="gesture_handler_open_app_option">بازکردن برنامه</string>
     <string name="gesture_handler_open_app_config">بازکردن %1$s</string>
@@ -420,7 +420,7 @@
     <string name="d2ts_recents_a11y_hint_title">فعال‌سازی سرویس دسترس‌پذیری</string>
     <string name="dt2s_a11y_hint">برای استفاده از قابلیت خواب با دو ضربه، سرویس دسترسی به Lawnchair را روشن کنید. روی «بازکردن تنظیمات» ضربه بزنید، «Lawnchair» را انتخاب کنید و «استفاده از Lawnchair» را روشن کنید.\n\nLawnchair از روش «انجام عملکرد جهانی» برای انجام این عمل استفاده می‌کند. این یک مجوز حساس است که امکان نظارت بر برنامه های دیگر را فراهم می کند. با این حال، Lawnchair برای آن پیکربندی نشده است و هیچ رویدادی دریافت نمی‌کند.</string>
     <string name="dt2s_recents_warning_open_settings">بازکردن تنظیمات</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">برای استفاده از صفحه باز کردن برنامه‌های اخیر، سرویس دسترسی Lawnchair را روشن کنید. روی «باز کردن تنظیمات» ضربه بزنید، «Lawnchair» را انتخاب کنید و «استفاده از Lawnchair» را روشن کنید.\n\nLawnchair از متد «انجام عمل جهانی» در قابلیت دسترسی برای انجام این عمل استفاده می‌کند. این یک مجوز حساس است که امکان نظارت بر سایر برنامه‌ها را فراهم می‌کند. با این حال، Lawnchair برای این عملکرد پیکربندی نشده است و هیچ رویدادی دریافت نمی‌کند.</string>
     <!--
 
     Bug reporting
@@ -552,7 +552,7 @@
     <string name="max_folder_columns">حداکثر ستون‌های پوشه‌</string>
     <string name="max_folder_rows">حداکثر ردیف پوشه</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">این تنظیمات نادیده گرفته می‌شوند زیرا Lawnchair به عنوان ارائه دهنده صفحه اخیراً تنظیم نشده</string>
     <string name="quickstep_incompatible">یکپارچه سازی سیستم ناسازگار</string>
     <string name="quickstep_incompatible_description">دستگاه شما به گونه‌ای پیکربندی شده که ژست‌های حرکتی سیستم (معروف به Quickstep) توسط %1$s ارائه شده سازگار باشد، ولی این نسخه %1$s با اندروید شما سازگار نیست. برای ادامه استفاده از دستگاهتان، لطفاً به‌روزرسانی‌ %1$s را حذف نصب کنید یا %1$s را به‌عنوان ارائه‌دهنده اشاره سیستم غیرفعال کنید.</string>
     <string name="translucent_background">پس‌زمینه نیمه شفاف</string>
@@ -564,7 +564,7 @@
     <string name="task_menu_force_stop">توقف اجباری</string>
     <string name="window_corner_radius_label">شعاع گوشه صفحه</string>
     <string name="override_window_corner_radius_label">شعاع گوشه صفحه سفارشی</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">وقتی برای باز کردن صفحه اخیرا، انگشت خود را به بالا می‌کشید، برنامه فعلی انگشت شما را دنبال می‌کند و به شکل یک کارت کوچک می‌شود. از این اسلایدر برای تنظیم شعاع گوشه کارت، زمانی که تقریباً تمام صفحه است، استفاده کنید تا با گوشه‌های صفحه نمایش شما مطابقت داشته باشد.</string>
     <string name="taskbar_label">نوار وظیفه</string>
     <string name="enable_taskbar_experimental">نمایش نوار وظیفه (آزمایشی)</string>
     <!--
@@ -573,7 +573,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">جستجوی برنامه‌ها، وب و موارد دیگر</string>
     <string name="all_apps_search_bar_hint">جستجو برنامه‌ها</string>
     <string name="all_apps_no_search_results">هیچ برنامه ای مطابق با \"<xliff:g example="Android" id="query">%1$s</xliff:g>\" یافت نشد</string>
     <string name="all_apps_search_result_suggestions">از وب</string>
@@ -606,20 +606,20 @@
     <string name="search_algorithm_app_search">جست‌وجو برنامه</string>
     <string name="search_algorithm_global_search_on_device">جستجوی جهانی (روی دستگاه)</string>
     <string name="search_algorithm_global_search_via_asi">جستجوی جهانی (با ASI)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
+    <string name="custom_search_label">نام موتور جستجو</string>
+    <string name="custom_search_url">آدرس موتور جستجو</string>
     <string name="custom_search_suggestions_url">آدرس اینترنتی پیشنهادات جستجو</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
+    <string name="custom_search_input_hint">&#37; با عبارت جستجو جایگزین خواهد شد</string>
     <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">نشان‌دادن در نتایج جستجو</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">برنامه‌ها و میانبرها</string>
     <string name="search_pref_result_shortcuts_title">میانبرهای برنامه</string>
     <string name="search_pref_result_people_title">مردم</string>
     <string name="search_pref_result_tips_title">نکته‌های پیکسل</string>
     <string name="search_pref_result_settings_title">تنظیمات اندروید</string>
     <string name="search_pref_result_files_title">فایل‌ها</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
+    <string name="search_pref_result_visual_media_title">عکس‌ها و ویدیوها</string>
     <string name="search_pref_result_audio_media_title">فایل‌های صوتی</string>
     <string name="search_pref_result_all_files_title">همه فایل‌ها</string>
     <string name="search_pref_result_web_title">پیشنهادات وب</string>
@@ -627,9 +627,9 @@
     <string name="all_apps_search_result_calculator">ماشین حساب</string>
     <string name="search_empty_state_title">شروع جستجو</string>
     <string name="search_empty_state_no_history_subtitle">برنامه‌ها، مخاطبین و موارد دیگر را پیدا کنید. جستجوهای اخیر شما در اینجا نمایش داده می‌شوند.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_history_disabled_subtitle">برنامه‌ها، مخاطبین و موارد دیگر را پیدا کنید.</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">جستجو در</string>
     <string name="search_pref_result_files_description">رسانه، فایل‌ها و موارد دیگر</string>
     <string name="search_pref_result_contacts_description">مخاطبین و موارد دیگر</string>
     <string name="search_pref_result_web_provider_description">با <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -644,7 +644,7 @@
     <!-- Permission management -->
     <string name="missing_notification_access_label">دسترسی به اعلان‌ها نیاز است</string>
     <string name="missing_notification_access_desc">برای نمایش نشان اعلان، اعلان‌های برنامه را برای <xliff:g id="name" example="My App">%1$s</xliff:g> روشن کنید</string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
+    <string name="warn_contact_permission_title">مجوز مخاطبین مورد نیاز است</string>
     <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <string name="permissions_music_audio">Music and audio access needed</string>
     <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
@@ -666,11 +666,11 @@
     <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
     <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
     <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
+    <string name="permission_label_read_photos_videos">خواندن عکسها و ویدیو ها</string>
+    <string name="manage_storage_access_denied_title">نمیتوان دسترسی مدیریت حافظه را فعال کرد</string>
     <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
     <string name="open_permission_settings">بازکردن تنظیمات</string>
     <string name="grant_requested_permissions">اعطای مجوز</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">مجوزهای مورد نیاز</string>
+    <string name="grant_requested_permissions_tap">برای اعطای مجوزها ضربه بزنید</string>
 </resources>

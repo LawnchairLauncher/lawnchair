@@ -38,23 +38,23 @@
     <string name="action_copy">Copia</string>
     <string name="action_paste">Enganxar</string>
     <string name="action_done">Feta</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="select_all">Seleccionar tot</string>
+    <string name="deselect_all">Desseleccionar tot</string>
+    <string name="inverse_selection">Invertir selecció</string>
     <string name="loading">Carregant…</string>
     <string name="dismiss">Dismiss</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="view_changes">View changes</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="download_update">Descarregar actualització</string>
+    <string name="install_update">Instal·lar actualització</string>
+    <string name="view_changes">Veure canvis</string>
+    <string name="pro_updated">Estàs al dia!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_title">Actualitzacions</string>
+    <string name="changes_dialog_error">Hi ha hagut un error en carregar els canvis</string>
+    <string name="changes_dialog_no_changes">No s\'han trobat canvis</string>
     <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">just ara</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
@@ -72,7 +72,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">Altres</string>
     <!-- Selection options -->
     <string name="dynamic">Dinàmic</string>
     <string name="presets">Predefinits</string>
@@ -87,13 +87,13 @@
     <string name="grid">Graella</string>
     <string name="layout">Diseny</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Mostrar fons de pantalla</string>
     <string name="wallpaper">Fons de pantalla</string>
-    <string name="style">Style</string>
+    <string name="style">Estil</string>
     <string name="background_opacity">Opacitat del fons</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">S\'ha copiat al porta-retalls</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Resultat copiat al porta-retalls</string>
     <string name="item_removed">Item removed</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">What to show</string>
