@@ -1427,13 +1427,31 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                                 ? mCurrentPage : mCurrentPage - getPanelCount();
                         runOnPageScrollsInitialized(
                                 () -> snapToPageWithVelocity(finalPage, velocity));
-                    } else if (((isSignificantMove && isDeltaLeft && !isFling) ||
-                            (isFling && isVelocityLeft)) &&
-                            mCurrentPage < getChildCount() - 1) {
-                        finalPage = returnToOriginalPage
-                                ? mCurrentPage : mCurrentPage + getPanelCount();
-                        runOnPageScrollsInitialized(
-                                () -> snapToPageWithVelocity(finalPage, velocity));
+					//elys mod//			
+                    } else if (((isSignificantMove && isDeltaLeft && !isFling) || (isFling && isVelocityLeft)) && mCurrentPage < getChildCount() - 1) {
+												
+                        finalPage = returnToOriginalPage ? mCurrentPage : mCurrentPage + getPanelCount();
+                        runOnPageScrollsInitialized(() -> snapToPageWithVelocity(finalPage, velocity));
+												
+						
+						Log.d("elys-log", "mCurrentPage: "+mCurrentPage);
+						Log.d("elys-log", "getPanelCount(): "+getPanelCount());	
+						Log.d("elys-log", "finalPage: "+finalPage);						
+						Log.d("elys-log", "isVelocityLeft: "+isVelocityLeft);	
+	
+						
+					} else if (mCurrentPage == getChildCount() - 1 && infiniteScroll) {
+                        finalPage = returnToOriginalPage ? mCurrentPage : 0;
+                        snapToPageWithVelocity(finalPage, velocity);
+						
+						
+                    } else if (mCurrentPage == 0 && infiniteScroll) {
+                        finalPage = returnToOriginalPage ? mCurrentPage : getChildCount() - 1;
+                        snapToPageWithVelocity(finalPage, velocity);						
+						
+						
+						
+						
                     } else {
                         runOnPageScrollsInitialized(this::snapToDestination);
                     }
