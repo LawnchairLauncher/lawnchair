@@ -86,6 +86,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     private static final float MAX_SCROLL_PROGRESS = 1.0f;
 
+    private boolean infiniteScroll = true;   
     private boolean mFreeScroll = false;
 
     private int mFlingThresholdVelocity;
