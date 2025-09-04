@@ -1,0 +1,91 @@
+name: Build APK and publish
+
+on:
+  push:
+    branches:
+      - '*'
+    paths-ignore:
+      - '.idea/**'
+      - '.gitattributes'
+      - '.github/**.json'
+      - '.gitignore'
+      - '.gitmodules'
+      - '**.md'
+      - 'LICENSE'
+      - 'NOTICE'
+  pull_request:
+    branches:
+      - '*'  
+    paths-ignore:
+      - '.idea/**'
+      - '.gitattributes'
+      - '.github/**.json'
+      - '.gitignore'
+      - '.gitmodules'
+      - '**.md'
+      - 'LICENSE'
+      - 'NOTICE'
+  workflow_dispatch:
+  workflow_call:
+
+permissions: write-all
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+          
+      - name: Build APK
+        run: ./gradlew assembleLawnWithQuickstepGithubRelease
+        
+      - name: current dir
+        run: | 
+            ls -la build/outputs/apk/lawnWithQuickstepGithub/release    
+
+      - name: Setup build tool version variable
+        shell: bash
+        run: |
+         BUILD_TOOL_VERSION=$(ls /usr/local/lib/android/sdk/build-tools/ | tail -n 1)
+         echo "BUILD_TOOL_VERSION=$BUILD_TOOL_VERSION" >> $GITHUB_ENV
+         echo Last build tool version is: $BUILD_TOOL_VERSION
+       
+      - name: Sign APK
+        uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: build/outputs/apk/lawnWithQuickstepGithub/release/
+          signingKeyBase64: ${{ secrets.KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.PASSWORD }}
+          keyPassword: ${{ secrets.PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: ${{ env.BUILD_TOOL_VERSION }}
+        
+      - name: Output Signed APK
+        run:  echo 'Signed APK is ${{ steps.sign_app.outputs.signedReleaseFile }}' 
+                  
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.run_number }}
+          prerelease: false
+          draft: false
+          body: ${{ github.event.head_commit.message }}
+          files: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          name: ${{ github.run_number }} 
+
+          
+        
+        
+        
+        
+       
