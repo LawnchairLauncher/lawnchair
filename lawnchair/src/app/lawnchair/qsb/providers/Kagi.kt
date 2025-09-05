@@ -14,6 +14,8 @@ data object Kagi : QsbSearchProvider(
     themedIcon = R.drawable.ic_kagi_tinted,
     themingMethod = ThemingMethod.TINT,
     packageName = "com.kagi.search",
+    className = "com.kagi.search.HomeActivity",
+    action = "WIDGET_SEARCH_TEXT",
     website = "https://kagi.com",
     type = QsbSearchProviderType.APP_AND_WEBSITE,
     sponsored = false,
