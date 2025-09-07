@@ -48,7 +48,7 @@
     <string name="view_changes">Xem các thay đổi</string>
     <string name="pro_updated">Bạn đã cập nhật rồi!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_title"></string>
     <string name="changes_dialog_error">Failed to load changes</string>
     <string name="changes_dialog_no_changes">No changes found</string>
     <string name="changes_dialog_build_format">Bản dựng #%1$d -> #%2$d</string>
