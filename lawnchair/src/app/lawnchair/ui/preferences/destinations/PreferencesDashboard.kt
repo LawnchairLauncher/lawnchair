@@ -15,12 +15,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Backup
+import androidx.compose.material.icons.outlined.Science
+import androidx.compose.material.icons.outlined.SettingsBackupRestore
 import androidx.compose.material.icons.rounded.Backup
 import androidx.compose.material.icons.rounded.Build
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material.icons.rounded.RestorePage
 import androidx.compose.material.icons.rounded.Science
+import androidx.compose.material.icons.rounded.SettingsBackupRestore
 import androidx.compose.material.icons.rounded.TipsAndUpdates
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -33,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.getSystemService
@@ -256,7 +259,7 @@ fun RowScope.PreferencesOverflowMenu(
         DropdownMenuItem(
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Info,
+                    painter = painterResource(R.drawable.ic_about),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -288,7 +291,7 @@ fun RowScope.PreferencesOverflowMenu(
         DropdownMenuItem(
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Science,
+                    imageVector = Icons.Outlined.Science,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -305,7 +308,7 @@ fun RowScope.PreferencesOverflowMenu(
         DropdownMenuItem(
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Backup,
+                    imageVector = Icons.Outlined.Backup,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -321,7 +324,7 @@ fun RowScope.PreferencesOverflowMenu(
         DropdownMenuItem(
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.RestorePage,
+                    imageVector = Icons.Rounded.SettingsBackupRestore,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
