@@ -4,9 +4,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.12.0"
-    id 'com.android.library' version "8.12.0" apply false
-    id 'com.android.test' version '8.12.0' apply false
+    id 'com.android.application' version "8.13.0"
+    id 'com.android.library' version "8.13.0" apply false
+    id 'com.android.test' version '8.13.0' apply false
     id 'androidx.baselineprofile' version '1.4.0'
     id 'org.jetbrains.kotlin.android' version "2.1.10"
     id 'org.jetbrains.kotlin.plugin.compose' version "2.1.10"
@@ -40,12 +40,12 @@ allprojects {
             }
         }
         dependencies {
-            implementation 'androidx.core:core-ktx:1.16.0'
+            implementation 'androidx.core:core-ktx:1.17.0'
         }
     }
 
     plugins.withId('com.google.protobuf') {
-        def protocVersion = '4.31.1'
+        def protocVersion = '4.32.0'
         protobuf {
             // Configure the protoc executable
             protoc {
@@ -393,7 +393,7 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
-    implementation platform("androidx.compose:compose-bom:2025.07.00")
+    implementation platform("androidx.compose:compose-bom:2025.08.01")
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
@@ -406,7 +406,7 @@ dependencies {
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.material3:material3-window-size-class'
     implementation "androidx.activity:activity-compose:1.10.1"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.9.3"
     implementation "androidx.navigation:navigation-compose:2.9.3"
     implementation "androidx.constraintlayout:constraintlayout:2.2.1"
     implementation "androidx.palette:palette-ktx:1.0.0"
@@ -415,7 +415,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-adaptive:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
-    implementation "com.google.android.material:material:1.12.0"
+    implementation "com.google.android.material:material:1.13.0"
     implementation "io.github.fornewid:material-motion-compose-core:1.2.1"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.7.0'

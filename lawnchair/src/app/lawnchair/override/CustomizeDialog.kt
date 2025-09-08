@@ -148,6 +148,7 @@ fun CustomizeAppDialog(
     var title by remember {
         mutableStateOf(prefs.customAppName[componentKey] ?: defaultTitle)
     }
+    val launcherAppState = LauncherAppState.getInstance(context)
 
     val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
@@ -168,7 +169,7 @@ fun CustomizeAppDialog(
             val newTitle = if (title != defaultTitle) title else null
             if (newTitle != previousTitle) {
                 prefs.customAppName[componentKey] = newTitle
-                val model = LauncherAppState.getInstance(context).model
+                val model = launcherAppState.model
                 model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
             }
         }

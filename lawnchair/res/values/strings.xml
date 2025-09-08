@@ -679,7 +679,7 @@
     <string name="search_provider_fennec" translatable="false">Fennec</string>
     <string name="search_provider_firefox" translatable="false">Firefox</string>
     <string name="search_provider_iceraven" translatable="false">Iceraven</string>
-    <string name="search_provider_mull" translatable="false">Mull</string>
+    <string name="search_provider_ironfox" translatable="false">IronFox</string>
     <string name="search_provider_kagi" translatable="false">Kagi</string>
     <string name="search_provider_custom">Custom</string>
 

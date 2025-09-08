@@ -42,10 +42,25 @@
     <string name="deselect_all">سبھی کو غیر منتخب کریں۔</string>
     <string name="inverse_selection">الٹا انتخاب</string>
     <string name="loading">لوڈ ہو رہا ہے…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">برطرف</string>
     <string name="download_update">اپ ڈیٹ ڈاؤن لوڈ کریں۔</string>
     <string name="install_update">اپ ڈیٹ انسٹال کریں۔</string>
+    <string name="view_changes">تبدیلیاں دیکھیں</string>
     <string name="pro_updated">آپ اپ ٹو ڈیٹ ہیں!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">just now</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">لان چیئر کے زیر انتظام</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">ترجیحات</string>
@@ -343,17 +358,21 @@
     About the app
 
     -->
-    <string name="news">خبر</string>
     <string name="support">حمایت</string>
+    <string name="translate">ترجمہ کریں۔</string>
+    <string name="donate">عطیہ کریں۔</string>
     <string name="product">پروڈکٹ</string>
     <string name="design_and_development">Design and development</string>
     <string name="development">ترقی</string>
     <string name="quickswitch_maintenance">QuickSwitch کی دیکھ بھال</string>
     <string name="devops">ڈیو اوپس</string>
     <string name="support_and_pr">Support and PR</string>
+    <string name="community">Community</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">خبر</string>
+    <string name="legal">Legal</string>
     <string name="acknowledgements">اعترافات</string>
-    <string name="translate">ترجمہ کریں۔</string>
-    <string name="donate">عطیہ کریں۔</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--

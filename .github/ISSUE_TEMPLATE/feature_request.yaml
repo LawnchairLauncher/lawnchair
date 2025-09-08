@@ -1,7 +1,7 @@
 name: Feature request
 description: Suggest features you want the developers (or contributors) to make for the launcher.
 title: "[FEATURE] "
-labels: [feature, enhancement]
+labels: [feature-request]
 type: Feature
 body:
   - type: markdown

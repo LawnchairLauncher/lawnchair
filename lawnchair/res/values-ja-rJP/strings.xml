@@ -42,10 +42,25 @@
     <string name="deselect_all">すべて選択解除</string>
     <string name="inverse_selection">Inverse selection</string>
     <string name="loading">読み込み中…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">無視</string>
     <string name="download_update">アップデートをダウンロード</string>
     <string name="install_update">アップデートのインストール</string>
+    <string name="view_changes">変更点を確認する</string>
     <string name="pro_updated">最新です！</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">更新内容</string>
+    <string name="changes_dialog_error">変更点の読み込みに失敗しました</string>
+    <string name="changes_dialog_no_changes">変更点が見つかりませんでした</string>
+    <string name="changes_dialog_build_format">ビルド #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">たった今</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">Lawnchair に管理されています</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">設定</string>
@@ -343,17 +358,21 @@
     About the app
 
     -->
-    <string name="news">お知らせ</string>
     <string name="support">サポート</string>
+    <string name="translate">翻訳</string>
+    <string name="donate">寄付</string>
     <string name="product">プロダクト</string>
     <string name="design_and_development">Design and development</string>
     <string name="development">開発</string>
     <string name="quickswitch_maintenance">QuickSwitchのメンテナンス</string>
     <string name="devops">開発・運用</string>
     <string name="support_and_pr">Support and PR</string>
+    <string name="community">Community</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">お知らせ</string>
+    <string name="legal">Legal</string>
     <string name="acknowledgements">謝辞</string>
-    <string name="translate">翻訳</string>
-    <string name="donate">寄付</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--

@@ -45,7 +45,22 @@
     <string name="dismiss">Dismiss</string>
     <string name="download_update">അപ്‌ഡേറ്റ് ഡൗൺലോഡ് ചെയ്യുക</string>
     <string name="install_update">അപ്ഡേറ്റ് ഇൻസ്റ്റാൾ ചെയ്യുക</string>
+    <string name="view_changes">View changes</string>
     <string name="pro_updated">താങ്കൾ അപ്ഡേറ്റഡ് ആണ്!</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">just now</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">ലോൺചെയർ നിയന്ത്രിക്കുന്നത്</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">മുൻഗണനകൾ</string>
@@ -343,17 +358,21 @@
     About the app
 
     -->
-    <string name="news">വാര്‍ത്ത</string>
     <string name="support">പിന്തുണ</string>
+    <string name="translate">പരിഭാഷപ്പെടുത്തുക</string>
+    <string name="donate">Donate</string>
     <string name="product">ഉൽപ്പന്നം</string>
     <string name="design_and_development">Design and development</string>
     <string name="development">വികസനം</string>
     <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
     <string name="devops">വികസന പ്രവർത്തനങ്ങൾ</string>
     <string name="support_and_pr">Support and PR</string>
+    <string name="community">Community</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">വാര്‍ത്ത</string>
+    <string name="legal">Legal</string>
     <string name="acknowledgements">അംഗീകാരങ്ങൾ</string>
-    <string name="translate">പരിഭാഷപ്പെടുത്തുക</string>
-    <string name="donate">Donate</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--

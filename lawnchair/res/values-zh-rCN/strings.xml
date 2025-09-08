@@ -45,7 +45,22 @@
     <string name="dismiss">Dismiss</string>
     <string name="download_update">下载更新</string>
     <string name="install_update">安装更新</string>
+    <string name="view_changes">View changes</string>
     <string name="pro_updated">你已经是最新版！</string>
+    <!-- Changes dialog strings -->
+    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <!-- Time ago strings -->
+    <string name="time_just_now">just now</string>
+    <string name="time_minutes_ago">%dm</string>
+    <string name="time_hours_ago">%dh</string>
+    <string name="time_days_ago">%dd</string>
+    <string name="time_weeks_ago">%dw</string>
+    <string name="time_months_ago">%dmo</string>
+    <string name="time_years_ago">%dy</string>
     <string name="managed_by_lawnchair">由 Lawnchair 管理</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">首选项</string>
@@ -343,17 +358,21 @@
     About the app
 
     -->
-    <string name="news">新闻</string>
     <string name="support">支持</string>
+    <string name="translate">翻译</string>
+    <string name="donate">捐赠</string>
     <string name="product">产品</string>
     <string name="design_and_development">设计和开发</string>
     <string name="development">开发</string>
     <string name="quickswitch_maintenance">QuickSwitch 维护</string>
     <string name="devops">运维</string>
     <string name="support_and_pr">支持和PR</string>
+    <string name="community">Community</string>
+    <string name="telegram">Telegram</string>
+    <string name="news">新闻</string>
+    <string name="legal">Legal</string>
     <string name="acknowledgements">鸣谢</string>
-    <string name="translate">翻译</string>
-    <string name="donate">捐赠</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
     <!--
