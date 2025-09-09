@@ -154,6 +154,8 @@ object ColorTokens {
 
     val SwitchTrackOn = DayNightColorToken(Accent1_600, Accent2_500.setLStar(51.0))
     val SwitchTrackOff = DayNightColorToken(Neutral2_500.setLStar(45.0), Neutral1_700)
+
+    @JvmField val PredictedPlateColor = Accent1_300
 }
 
 @Composable

@@ -66,6 +66,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import app.lawnchair.theme.color.tokens.ColorTokens;
+
 /**
  * A BubbleTextView with a ring around it's drawable
  */
@@ -189,7 +191,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
 
         int newPlateColor;
         if (getIcon().isThemed()) {
-            newPlateColor = getResources().getColor(android.R.color.system_accent1_300);
+            newPlateColor = ColorTokens.PredictedPlateColor.resolveColor(getContext());
         } else {
             float[] hctPlateColor = new float[3];
             ColorUtils.colorToM3HCT(mDotParams.appColor, hctPlateColor);
