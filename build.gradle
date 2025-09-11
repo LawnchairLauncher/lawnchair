@@ -7,7 +7,7 @@ plugins {
     id 'com.android.application' version "8.13.0"
     id 'com.android.library' version "8.13.0" apply false
     id 'com.android.test' version '8.13.0' apply false
-    id 'androidx.baselineprofile' version '1.4.0'
+    id 'androidx.baselineprofile' version '1.4.1'
     id 'org.jetbrains.kotlin.android' version "2.1.10"
     id 'org.jetbrains.kotlin.plugin.compose' version "2.1.10"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "2.1.10"
@@ -393,7 +393,7 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
-    implementation platform("androidx.compose:compose-bom:2025.08.01")
+    implementation platform("androidx.compose:compose-bom:2025.09.00")
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
@@ -405,9 +405,9 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.material3:material3-window-size-class'
-    implementation "androidx.activity:activity-compose:1.10.1"
+    implementation "androidx.activity:activity-compose:1.11.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.9.3"
-    implementation "androidx.navigation:navigation-compose:2.9.3"
+    implementation "androidx.navigation:navigation-compose:2.9.4"
     implementation "androidx.constraintlayout:constraintlayout:2.2.1"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
