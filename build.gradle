@@ -45,7 +45,7 @@ allprojects {
     }
 
     plugins.withId('com.google.protobuf') {
-        def protocVersion = '4.32.0'
+        def protocVersion = '4.32.1'
         protobuf {
             // Configure the protoc executable
             protoc {
