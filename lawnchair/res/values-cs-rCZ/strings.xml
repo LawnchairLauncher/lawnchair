@@ -360,7 +360,7 @@
     -->
     <string name="support">Podpora</string>
     <string name="translate">Přeložit</string>
-    <string name="donate">Donate</string>
+    <string name="donate">Přispět</string>
     <string name="product">Produkt</string>
     <string name="design_and_development">Design and development</string>
     <string name="development">Vývoj</string>
@@ -442,7 +442,7 @@
     -->
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Home screen rotation</string>
-    <string name="home_screen_rotation_description">Allow home screen rotation when device is rotated</string>
+    <string name="home_screen_rotation_description">Povolit otáčení domovské obrazovky při otočení zařízení</string>
     <string name="wallpaper_blur">Blur wallpaper (experimental)</string>
     <string name="wallpaper_background_blur">Blur intensity</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
@@ -461,7 +461,7 @@
     <string name="home_screen_grid">Home screen grid</string>
     <string name="home_screen_lock">Lock home screen</string>
     <string name="home_screen_unlock">Unlock home screen</string>
-    <string name="home_screen_locked">Home screen is locked</string>
+    <string name="home_screen_locked">Domovská obrazovka je uzamčena</string>
     <string name="home_screen_lock_description">Zabránit změnám rozvržení domovské obrazovky</string>
     <string name="show_dot_pagination_label">Show dot pagination</string>
     <string name="show_dot_pagination_description">Použít tečky namísto řádků k zobrazení čísla stránky</string>
@@ -585,7 +585,7 @@
     <string name="all_apps_search_market_message">Search for more apps</string>
     <string name="all_apps_search_on_web_message">Search on <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">Hledat na webu</string>
     <string name="clear_history">Vymazat historii hledání</string>
     <string name="search_input_action_clear_results">Clear search box</string>
     <!-- Search settings -->
@@ -618,7 +618,7 @@
     <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
     <string name="search_pref_result_shortcuts_title">App shortcuts</string>
     <string name="search_pref_result_people_title">Lidé</string>
-    <string name="search_pref_result_tips_title">Pixel tips</string>
+    <string name="search_pref_result_tips_title">Tipy Pixel</string>
     <string name="search_pref_result_settings_title">Android settings</string>
     <string name="search_pref_result_files_title">Soubory</string>
     <string name="search_pref_result_visual_media_title">Photos and videos</string>
@@ -667,7 +667,7 @@
     <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
     <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
     <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
+    <string name="permission_label_manage_all_files">Spravovat všechny soubory v zařízení</string>
     <string name="permission_label_read_photos_videos">Read photos and videos</string>
     <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
     <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>

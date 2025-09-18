@@ -406,7 +406,7 @@ dependencies {
     implementation 'androidx.compose.material3:material3'
     implementation 'androidx.compose.material3:material3-window-size-class'
     implementation "androidx.activity:activity-compose:1.11.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.9.3"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4"
     implementation "androidx.navigation:navigation-compose:2.9.4"
     implementation "androidx.constraintlayout:constraintlayout:2.2.1"
     implementation "androidx.palette:palette-ktx:1.0.0"
@@ -440,7 +440,7 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
-    implementation 'com.airbnb.android:lottie:6.6.7'
+    implementation 'com.airbnb.android:lottie:6.6.9'
 
     // Compose drag and drop library
     implementation 'sh.calvin.reorderable:reorderable:2.5.1'

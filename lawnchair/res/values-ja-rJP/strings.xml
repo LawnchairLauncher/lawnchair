@@ -100,7 +100,7 @@
     <string name="wallpapers">壁紙</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">アプリドロワーの列数</string>
+    <string name="app_drawer_folder">アプリドロワーのフォルダ</string>
     <string name="app_drawer_folder_settings">ドロワーフォルダ</string>
     <string name="add_folder">フォルダーを作成する</string>
     <string name="edit_folder">フォルダーを編集する</string>
