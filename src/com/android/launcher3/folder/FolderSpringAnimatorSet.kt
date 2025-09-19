@@ -82,7 +82,7 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             return FolderSpringAnimatorSet(animatorSet)
         }
 
-        private fun playSpringAnimation(
+        private fun <T : View> playSpringAnimation(
             context: Context,
             animatorSet: AnimatorSet,
             isOpening: Boolean,
@@ -92,8 +92,8 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             startValue: Float,
             endValue: Float,
             minVisibleChange: Float,
-            property: Property<View, Float>,
-            view: View,
+            property: Property<T, Float>,
+            view: T,
         ) {
             val animatorBuilder =
                 SpringAnimationBuilder(context)
@@ -398,11 +398,19 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
                 if (isOpening) {
                     titleText.setTextVisibility(false)
                 }
-                val anim =
-                    titleText.createTextAlphaAnimator(isOpening).apply {
-                        startDelay = (if (isOpening) iconDelay + 100 else iconDelay).toLong()
-                    }
-                animatorSet.play(anim)
+                playSpringAnimation(
+                    context = context,
+                    animatorSet = animatorSet,
+                    isOpening = isOpening,
+                    startDelay = if (isOpening) iconDelay + 100 else iconDelay,
+                    stiffness = STIFFNESS_ALPHA,
+                    damping = DAMPING_ALPHA,
+                    startValue = 0f,
+                    endValue = 1f,
+                    minVisibleChange = MIN_VISIBLE_CHANGE_ALPHA,
+                    property = BubbleTextView.TEXT_ALPHA_PROPERTY,
+                    view = titleText,
+                )
                 if (!itemsInPreview.contains(icon)) {
                     playSpringAnimation(
                         context = context,
