@@ -38,7 +38,7 @@
     <string name="action_copy">Kopier</string>
     <string name="action_paste">Lim inn</string>
     <string name="action_done">Fullført</string>
-    <string name="select_all">Select all</string>
+    <string name="select_all">Velg alle</string>
     <string name="deselect_all">Deselect all</string>
     <string name="inverse_selection">Inverse selection</string>
     <string name="loading">Laster…</string>

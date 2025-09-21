@@ -534,9 +534,9 @@
     <string name="pref_all_apps_remember_position_title">Muista sijainti</string>
     <string name="pref_all_apps_remember_position_description">Muista sovellusvalikon sijainti siitä poistumisen jälkeen</string>
     <string name="pref_all_apps_show_scrollbar_title">Näytä vierityspalkki</string>
-    <string name="app_drawer_columns">App drawer columns</string>
-    <string name="row_height_label">Row height</string>
-    <string name="app_drawer_indent_label">Horizontal padding</string>
+    <string name="app_drawer_columns">Sovellusvalikon pylväät</string>
+    <string name="row_height_label">Rivin korkeus</string>
+    <string name="app_drawer_indent_label">Vaakareunus</string>
     <string name="app_drawer_bg_color_label">Background color</string>
     <!-- HiddenAppsPreferences -->
     <string name="hide_from_drawer">Hide from app drawer</string>
