@@ -16,7 +16,7 @@ plugins {
     id 'com.google.protobuf' version "0.9.5"
     id 'app.cash.licensee' version "1.13.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
-    id 'com.diffplug.spotless' version '7.2.1'
+    id 'com.diffplug.spotless' version '8.0.0'
 }
 
 
