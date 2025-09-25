@@ -42,19 +42,19 @@
     <string name="deselect_all">Deseleccionar todo</string>
     <string name="inverse_selection">Invertir selección</string>
     <string name="loading">Cargando…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">Descartar</string>
     <string name="download_update">Descargar actualización</string>
     <string name="install_update">Instalar actualización</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">Ver cambios</string>
     <string name="pro_updated">¡Tienes la última versión!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_title">Actualizaciones</string>
     <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_no_changes">No se encontraron cambios</string>
     <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">justo ahora</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
@@ -87,7 +87,7 @@
     <string name="grid">Cuadrícula</string>
     <string name="layout">Diseño</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Mostrar fondo de pantalla</string>
     <string name="wallpaper">Fondo de pantalla</string>
     <string name="style">Estilo</string>
     <string name="background_opacity">Opacidad del fondo</string>
@@ -100,7 +100,7 @@
     <string name="wallpapers">Fondos de pantalla</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">Columnas del cajón de aplicaciones</string>
+    <string name="app_drawer_folder">Carpetas del cajón de aplicaciones</string>
     <string name="app_drawer_folder_settings">Carpeta del cajón de aplicaciones</string>
     <string name="add_folder">Crear carpeta</string>
     <string name="edit_folder">Editar carpeta</string>
@@ -108,7 +108,7 @@
     <string name="edit_label">Editar</string>
     <string name="apply_label">Aplicar</string>
     <string name="delete_label">Eliminar</string>
-    <string name="folder_list_note">Desliza hacia la izquierda para editar, hacia la derecha para eliminar o pulsa para actualizar los elementos</string>
+    <string name="folder_list_note">Desliza hacia la izquierda para editar, hacia la derecha para eliminar, o pulsa para actualizar los elementos</string>
     <string name="apps_in_folder_label">Ocultar carpetas de apps</string>
     <string name="apps_in_folder_description">Las aplicaciones asignadas a carpetas están excluidas de la lista de aplicaciones</string>
     <string name="folders_filter_duplicates">Mostrar solo aplicaciones únicas</string>
@@ -138,7 +138,7 @@
     <string name="folders_label">Carpetas</string>
     <string name="folders_description">Número de filas y columnas</string>
     <string name="gestures_label">Gestos</string>
-    <string name="gestures_description">Toques y gestos de los dedos</string>
+    <string name="gestures_description">Toques y gestos</string>
     <string name="quickstep_label">Aplicaciones recientes</string>
     <string name="quickstep_description">Botón de «borrar todo» y curvatura</string>
     <string name="about_label">Acerca de</string>
@@ -222,9 +222,9 @@
     <string name="icon_shape_squircle">Círculo encuadrado</string>
     <string name="icon_shape_teardrop">Lágrima</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">Galleta (4 lados)</string>
+    <string name="icon_shape_seven_sided_cookie">Galleta (7 lados)</string>
+    <string name="icon_shape_arch">Arco</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Forma de icono propia</string>
     <string name="custom_icon_shape_create">Crear forma de icono propia</string>
@@ -367,14 +367,14 @@
     <string name="quickswitch_maintenance">Mantenimiento de QuickSwitch</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Ayuda y relaciones públicas</string>
-    <string name="community">Community</string>
+    <string name="community">Comunidad</string>
     <string name="telegram">Telegram</string>
     <string name="news">Noticias</string>
     <string name="legal">Legal</string>
     <string name="acknowledgements">Agradecimientos</string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">Políticas de privacidad</string>
+    <string name="contributor_status_active">Activo</string>
+    <string name="update_check_failed">Error al buscar actualizaciones</string>
     <!--
 
     Backup and restore
@@ -573,7 +573,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">Buscar aplicaciones, web, y más</string>
     <string name="all_apps_search_bar_hint">Buscar aplicaciones</string>
     <string name="all_apps_no_search_results">No se han encontrado aplicaciones que coincidan con \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">De Internet</string>
@@ -606,9 +606,9 @@
     <string name="search_algorithm_app_search">Búsqueda de aplicaciones</string>
     <string name="search_algorithm_global_search_on_device">Búsqueda global (en el dispositivo)</string>
     <string name="search_algorithm_global_search_via_asi">Búsqueda global (a través de ASI)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
+    <string name="custom_search_label">Nombre del buscador</string>
+    <string name="custom_search_url">URL del buscador</string>
+    <string name="custom_search_suggestions_url">URL de sugerencias de búsqueda</string>
     <string name="custom_search_input_hint">&#37;s se reemplazará con la consulta de búsqueda</string>
     <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
     <!-- Labels of each search result types -->
@@ -619,15 +619,15 @@
     <string name="search_pref_result_tips_title">Consejos de Pixel</string>
     <string name="search_pref_result_settings_title">Ajustes de Android</string>
     <string name="search_pref_result_files_title">Archivos</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
+    <string name="search_pref_result_visual_media_title">Fotos y videos</string>
     <string name="search_pref_result_audio_media_title">Archivos de audio</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_all_files_title">Todos los archivos</string>
     <string name="search_pref_result_web_title">Sugerencias web</string>
     <string name="search_pref_result_history_title">Historial de búsqueda</string>
     <string name="all_apps_search_result_calculator">Calculadora</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_title">Empezar a buscar</string>
+    <string name="search_empty_state_no_history_subtitle">Encuentra aplicaciones, contactos, y más. Tus búsquedas recientes aparecerán aquí.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Encuentra aplicaciones, contactos, y más.</string>
     <!-- Description for each search result type -->
     <string name="search_pref_files_search_on">Search on</string>
     <string name="search_pref_result_files_description">Multimedia, archivos y otras cosas</string>
@@ -645,9 +645,9 @@
     <string name="missing_notification_access_label">Se necesita acceso a las notificaciones</string>
     <string name="missing_notification_access_desc">Para poder ver las burbujas de notificación tienes que conceder permiso a
 <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
+    <string name="warn_contact_permission_title">El permiso CONTACTOS es necesario</string>
+    <string name="warn_contact_permission_content">Para buscar contactos, debes otorgar el permiso CONTACTOS Y TELÉFONO a <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Se necesita acceso a música y audio</string>
     <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
     <!-- Photos and videos -->
     <string name="permissions_photos_videos">Photos and videos access needed</string>
