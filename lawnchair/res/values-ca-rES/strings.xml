@@ -348,7 +348,7 @@
     <!-- List of available providers -->
     <string name="smartspace_mode_label">At a Glance provider</string>
     <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Busqueda de Google</string>
+    <string name="smartspace_mode_google_search">Recerca de Google</string>
     <!-- Miscellaneous Smartspace strings -->
     <string name="smartspace_media_info_separator">" - "</string>
     <string name="accessibility_smartspace_page">Pàgina %1$d de %2$d</string>
@@ -451,7 +451,7 @@
     <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">Add new apps to home screen</string>
     <string name="minus_one_enable">Show feed</string>
-    <string name="minus_one_unavailable">No n\'hi ha aplicacions de feed instal·lades</string>
+    <string name="minus_one_unavailable">Sense aplicacions al feed</string>
     <string name="minus_one">Canal de notícies</string>
     <string name="feed_provider">Feed provider</string>
     <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
@@ -576,7 +576,7 @@
     <string name="all_apps_device_search_hint">Search apps, web, and more</string>
     <string name="all_apps_search_bar_hint">Cerca aplicacions</string>
     <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
-    <string name="all_apps_search_result_suggestions">Desde la web</string>
+    <string name="all_apps_search_result_suggestions">Des de la web</string>
     <string name="all_apps_search_result_contacts_from_device">Contacts from device</string>
     <string name="all_apps_search_result_files">Files from device</string>
     <string name="all_apps_search_result_settings_entry_from_device">Settings from device</string>
