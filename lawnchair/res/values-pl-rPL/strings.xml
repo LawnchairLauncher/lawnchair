@@ -54,7 +54,7 @@
     <string name="changes_dialog_build_format">Kompilacja #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">przez %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">właśnie teraz</string>
+    <string name="time_just_now">Teraz</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
@@ -114,7 +114,7 @@
     <string name="folders_filter_duplicates">Pokaż tylko niedodane aplikacje</string>
     <string name="my_folder_label">Mój folder</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Aby wykonywać określone czynności (takie jak blokowanie telefonu) za pomocą gestów, aplikacja Lawnchair wymaga uprawnień dostępu do ułatwień dostępu.\n\nLawnchair nie obserwuje żadnych działań użytkownika, mimo że uprawnienie do tego jest wymagane przez wszystkie usługi ułatwień dostępu. Wszelkie zdarzenia wysyłane przez system są przez Lawnchair odrzucane.\n\nW celu zablokowania telefonu lub otwarcia ekranu Ostatnich aplikacji, Lawnchair korzysta z funkcji performGlobalAction w ramach usług ułatwień dostępu.</string>
+    <string name="accessibility_service_description">Aby wykonywać określone czynności (takie jak blokowanie telefonu) za pomocą gestów, Lawnchair wymaga uprawnień dostępu do ułatwień dostępu.\n\nLawnchair nie obserwuje żadnych działań użytkownika, mimo że uprawnienie do tego jest wymagane przez wszystkie usługi ułatwień dostępu. Wszelkie zdarzenia wysyłane przez system są przez Lawnchair odrzucane.\n\nW celu zablokowania telefonu lub otwarcia ekranu Ostatnich aplikacji, Lawnchair korzysta z funkcji performGlobalAction w ramach usług ułatwień dostępu.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s i %2$s</string>
@@ -258,7 +258,7 @@
     <string name="fontWorkspace">Ogólne</string>
     <string name="fontHeading">Nagłówki</string>
     <string name="fontHeadingMedium">Nagłówki (średnie)</string>
-    <string name="fontBody">Treść</string>
+    <string name="fontBody">Tekst podstawowy</string>
     <string name="fontBodyMedium">Tekst podstawowy (średni)</string>
     <string name="font_variant_italic">Kursywa</string>
     <string name="font_weight_thin">Wąska</string>
@@ -370,7 +370,7 @@
     <string name="community">Społeczność</string>
     <string name="telegram">Telegram</string>
     <string name="news">Wiadomości</string>
-    <string name="legal">Prawne</string>
+    <string name="legal">Informacje prawne</string>
     <string name="acknowledgements">Podziękowania</string>
     <string name="privacy_policy">Polityka prywatności</string>
     <string name="contributor_status_active">Aktywny</string>
@@ -418,7 +418,7 @@
     <string name="dt2s_admin_hint">Aby użyć opcji usypiania przy podwójnym naciśnięciu, ustaw Lawnchair jako aplikację administrującą urządzeniem. Naciśnij \"Otwórz ustawienia\", następnie naciśnij \"Aktywuj tę aplikację do administrowania urządzeniem.\"</string>
     <string name="dt2s_admin_warning">Opcja \"Dotknij dwa razy aby uśpić\" zostanie wyłączona.</string>
     <string name="d2ts_recents_a11y_hint_title">Włącz usługę dostępności</string>
-    <string name="dt2s_a11y_hint">Aby użyć podwójnego naciśnięcia, włącz usługę dostępności Lawnchair i kliknij \"Otwórz ustawienia\", wybierz \"Lawnchair\" i włącz \"Użyj Lawnchair.\n\nLawnchair używa metody `performGlobalAction` Dostępności do wykonania tej czynności. To jest wrażliwe uprawnienie, które pozwala na monitorowanie innych aplikacji. Lawnchair nie jest jednak skonfigurowany dla tej funkcjonalności i nie otrzymuje żadnych zdarzeń.</string>
+    <string name="dt2s_a11y_hint">Aby użyć opcji usypiania przy podwójnym naciśnięciu, włącz usługę dostępności Lawnchair i kliknij \"Otwórz ustawienia\", wybierz \"Lawnchair\" i włącz \"Użyj Lawnchair.\n\nLawnchair używa metody `performGlobalAction` Dostępności do wykonania tej czynności. To jest wrażliwe uprawnienie, które pozwala na monitorowanie innych aplikacji. Lawnchair nie jest jednak skonfigurowany dla tej funkcjonalności i nie otrzymuje żadnych zdarzeń.</string>
     <string name="dt2s_recents_warning_open_settings">Otwórz ustawienia</string>
     <string name="recents_a11y_hint">Aby korzystać z funkcji otwierania ekranu Ostatnich aplikacji, włącz usługę ułatwień dostępu Lawnchair. Dotknij „Otwórz ustawienia”, wybierz „Lawnchair” i włącz opcję „Używaj Lawnchair”.\n\nDo wykonania tej czynności Lawnchair używa metody performGlobalAction z usług ułatwień dostępu. Jest to wrażliwe uprawnienie, które może pozwalać na monitorowanie innych aplikacji. Lawnchair nie jest jednak skonfigurowany do używania tej funkcji i nie odbiera żadnych zdarzeń systemowych.</string>
     <!--
@@ -470,7 +470,7 @@
     <string name="popup_menu">Wyskakujące menu</string>
     <string name="popup_menu_items">Elementy wyskakującego menu</string>
     <string name="edit_menu_items">Edytuj elementy wyskakującego menu</string>
-    <string name="wallpaper_quick_picker">Wybór tapety</string>
+    <string name="wallpaper_quick_picker">Szybki wybór tapety</string>
     <string name="status_bar_label">Pasek stanu</string>
     <string name="show_status_bar">Pokaż pasek stanu</string>
     <string name="dark_status_bar_label">Ciemny pasek stanu</string>
