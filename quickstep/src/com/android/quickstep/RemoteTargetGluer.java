@@ -144,7 +144,8 @@ public class RemoteTargetGluer {
         //     a) mSplitBounds was already set (from the clicked GroupedTaskView)
         //     b) A SplitBounds was passed up from shell (via AbsSwipeUpHandler)
         // If both of these are null, we are in a 1-app or 1-app-plus-assistant case.
-        if (mSplitBounds == null) {
+        if (mSplitBounds == null && targets.extras != null
+                && targets.extras.containsKey(KEY_EXTRA_SPLIT_BOUNDS)) {
             SplitBounds shellSplitBounds = targets.extras.getParcelable(KEY_EXTRA_SPLIT_BOUNDS,
                     SplitBounds.class);
             mSplitBounds = convertShellSplitBoundsToLauncher(shellSplitBounds);

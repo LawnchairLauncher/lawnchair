@@ -51,10 +51,10 @@
     <string name="changes_dialog_title">Aggiornamenti</string>
     <string name="changes_dialog_error">Impossibile caricare le modifiche</string>
     <string name="changes_dialog_no_changes">Nessuna modifica trovata</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
+    <string name="changes_dialog_build_format">Versione Build #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">di %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">proprio ora</string>
+    <string name="time_just_now">adesso</string>
     <string name="time_minutes_ago">%d min fa</string>
     <string name="time_hours_ago">%d ore fa</string>
     <string name="time_days_ago">%d giorni fa</string>
@@ -108,7 +108,7 @@
     <string name="edit_label">Modifica</string>
     <string name="apply_label">Applica</string>
     <string name="delete_label">Elimina</string>
-    <string name="folder_list_note">Scorri verso sinistra per modificare, scorri verso destra per eliminare, o tocca per aggiornare gli elementi</string>
+    <string name="folder_list_note">Scorri verso sinistra per modificare, verso destra per eliminare; tocca per aggiornare gli elementi</string>
     <string name="apps_in_folder_label">Nascondi le app delle cartelle</string>
     <string name="apps_in_folder_description">Le app assegnate alle cartelle sono escluse dagli elenchi delle app</string>
     <string name="folders_filter_duplicates">Mostra solo app uniche</string>
@@ -126,7 +126,7 @@
     -->
     <string name="settings">Impostazioni</string>
     <string name="general_label">Generale</string>
-    <string name="general_description">Colori, Pacchetti Icone, Punti di notifica</string>
+    <string name="general_description">Colori, pacchetti icone, punti di notifica</string>
     <string name="home_screen_label">Schermata Home</string>
     <string name="home_screen_description">Feed, griglia, icone</string>
     <string name="dock_label">Dock</string>
@@ -147,7 +147,7 @@
     <string name="experimental_features_label">Funzionalità sperimentali</string>
     <!-- Experimental features -->
     <string name="font_picker_label">Personalizzazione dei font</string>
-    <string name="font_picker_description">Qualche testo rimane invariato</string>
+    <string name="font_picker_description">Un po\' di testo rimane invariato</string>
     <string name="smartspace_calendar_label">Personalizzazione del calendario di ‘A Colpo d\'Occhio’</string>
     <string name="smartspace_calendar_description">Consenti la visualizzazione della data in calendari non gregoriani</string>
     <string name="workspace_increase_max_grid_size_label">Aumenta il limite massimo della dimensione della griglia</string>
@@ -509,7 +509,7 @@
     <!-- Pause apps shortcut -->
     <string name="pause">Sospendi</string>
     <string name="pause_apps_dialog_title">Sospendere %1$s?</string>
-    <string name="pause_apps_dialog_message">Le notifiche di %1$s verranno sospese</string>
+    <string name="pause_apps_dialog_message">Le notifiche per %1$s verranno sospese</string>
     <string name="paused_apps_dialog_title">App sospesa</string>
     <string name="paused_apps_dialog_message">%1$s è stata sospesa direttamente dal launcher</string>
     <string name="paused_apps_drop_target_label">Sospendi app</string>
