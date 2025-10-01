@@ -34,7 +34,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
       - name: Write sign info
         id: sign-release-apk
         if: github.repository_owner == 'LawnchairLauncher'
