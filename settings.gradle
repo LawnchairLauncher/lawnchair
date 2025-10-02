@@ -13,7 +13,7 @@ pluginManagement {
 
 // https://docs.gradle.com/enterprise/gradle-plugin/
 plugins {
-    id "com.gradle.develocity" version "4.2"
+    id "com.gradle.develocity" version "4.2.1"
 }
 
 def isCI = providers.environmentVariable('CI').present
