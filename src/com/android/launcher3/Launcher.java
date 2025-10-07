@@ -531,6 +531,14 @@ public class Launcher extends StatefulActivity<LauncherState>
         initDragController();
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
+        mStateManager.addStateListener(new StateManager.StateListener<LauncherState>() {
+            @Override
+            public void onStateTransitionComplete(LauncherState finalState){
+                if(finalState == NORMAL && mAppsView!=null && mAppsView.isSearching()){
+                    mAppsView.post(()-> mAppsView.reset(false,true));
+                }
+            }
+        });
 
         setupViews();
         updateDisallowBack();
@@ -1127,6 +1135,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         mAppWidgetHolder.setActivityStarted(true);
         TraceHelper.INSTANCE.endSection();
+        TraceHelper.INSTANCE.endSection();
     }
 
     @Override
@@ -1628,7 +1637,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     if ((mPrevLauncherState == SPRING_LOADED || mPrevLauncherState == EDIT_MODE)
-                            && finalState == NORMAL) {
+                            && finalState == NORMAL) {  
                         AppWidgetResizeFrame.showForWidget(launcherHostView, cellLayout);
                         mStateManager.removeStateListener(this);
                     }
