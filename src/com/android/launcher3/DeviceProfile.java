@@ -378,9 +378,6 @@ public class DeviceProfile {
         mInfo = info;
         isTablet = info.isTablet(windowBounds);
         isPhone = !isTablet;
-        // Enable two-panel layout for multi-display devices (foldables)
-        // This ensures foldable devices like Pixel 9 Pro Fold use proper layout when unfolded
-        // even if they don't meet the traditional tablet width threshold (600dp)
         isTwoPanels = isMultiDisplay;
         boolean isTaskBarEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableTaskbarOnPhone());
         isTaskbarPresent = isTaskBarEnabled && (isTablet || (enableTinyTaskbar() && isGestureMode))
