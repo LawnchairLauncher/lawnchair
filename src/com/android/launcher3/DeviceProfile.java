@@ -1413,9 +1413,12 @@ public class DeviceProfile {
      * Updates the iconSize for allApps* variants.
      */
     private void updateAllAppsIconSize(float scale, Resources res) {
+        // For scalable grids, don't apply home screen scale to app drawer border spacing
+        // This prevents app drawer layout from being affected by home screen icon size changes
+        float borderScale = mIsScalableGrid ? 1.0f : scale;
         allAppsBorderSpacePx = new Point(
-                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics, scale),
-                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics, scale));
+                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics, borderScale),
+                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics, borderScale));
         // AllApps cells don't have real space between cells,
         // so we add the border space to the cell height
         allAppsCellHeightPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].y, mMetrics, allAppsCellHeightMultiplier)
@@ -1423,11 +1426,14 @@ public class DeviceProfile {
         // but width is just the cell,
         // the border is added in #updateAllAppsContainerWidth
         if (mIsScalableGrid) {
+            // For scalable grids, don't apply the home screen scale to app drawer icons
+            // This prevents app drawer from being affected by home screen icon size changes
             allAppsIconSizePx = pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
             allAppsIconTextSizePx = pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
             allAppsIconTextSizePx *= mTextFactors.getAllAppsIconTextSizeFactor();
             allAppsIconDrawablePaddingPx = getNormalizedIconDrawablePadding();
-            allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
+            // Also don't scale the cell width to maintain proper app drawer layout
+            allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics);
 
             if (allAppsCellWidthPx < allAppsIconSizePx) {
                 // If allAppsCellWidth no longer fit allAppsIconSize, reduce allAppsBorderSpace
