@@ -495,4 +495,5 @@ licensee {
     allowUrl("https://opensource.org/licenses/mit-license.php")
 
     bundleAndroidAsset = true
+    androidAssetReportPath = 'licenses.json'
 }
