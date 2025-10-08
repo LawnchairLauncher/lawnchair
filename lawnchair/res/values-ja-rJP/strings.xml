@@ -40,7 +40,7 @@
     <string name="action_done">完了</string>
     <string name="select_all">すべて選択</string>
     <string name="deselect_all">すべて選択解除</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="inverse_selection">選択を反転する</string>
     <string name="loading">読み込み中…</string>
     <string name="dismiss">無視</string>
     <string name="download_update">アップデートをダウンロード</string>
@@ -55,12 +55,12 @@
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">たった今</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_minutes_ago">%d分</string>
+    <string name="time_hours_ago">%d時間</string>
+    <string name="time_days_ago">%d日</string>
+    <string name="time_weeks_ago">%d週間</string>
+    <string name="time_months_ago">%d月</string>
+    <string name="time_years_ago">%d年</string>
     <string name="managed_by_lawnchair">Lawnchair に管理されています</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">設定</string>
@@ -87,7 +87,7 @@
     <string name="grid">グリッド</string>
     <string name="layout">レイアウト</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">壁紙を表示する</string>
     <string name="wallpaper">壁紙</string>
     <string name="style">スタイル</string>
     <string name="background_opacity">背景の透明度</string>
@@ -98,7 +98,7 @@
     <!-- Miscellaneous -->
     <string name="what_to_show">表示する項目</string>
     <string name="wallpapers">壁紙</string>
-    <string name="caddy_beta">Caddy (Beta)</string>
+    <string name="caddy_beta">Caddy(ベータ版)</string>
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">アプリドロワーのフォルダー</string>
     <string name="app_drawer_folder_settings">ドロワーフォルダー</string>
@@ -139,7 +139,7 @@
     <string name="folders_description">行と列の数</string>
     <string name="gestures_label">ジェスチャー</string>
     <string name="gestures_description">タップとスワイプ</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">タスク管理画面</string>
     <string name="quickstep_description">「すべてクリア」ボタン、角の丸み</string>
     <string name="about_label">このアプリについて</string>
     <string name="app_info_drop_target_label">アプリ情報</string>
@@ -154,9 +154,9 @@
     <string name="workspace_increase_max_grid_size_description">ホーム画面のグリッド数を 10 × 10 から 20 × 20 まで増やします</string>
     <string name="always_reload_icons_label">常にアイコンを再読み込みします</string>
     <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにします</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
-    <string name="show_deck_layout">Deck layout</string>
+    <string name="icon_swipe_gestures">アイコンのスワイプジェスチャー</string>
+    <string name="icon_swipe_gestures_description">アイコンを左右にスワイプした時にホーム画面の移動の代わりにアクションを実行します</string>
+    <string name="show_deck_layout">ドックのレイアウト</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
     <string name="recents_lock_unlock">ロック/ロック解除</string>
     <string name="recents_lock_unlock_description">「すべてクリア」を押したときに選択したアプリを閉じないようにします</string>
@@ -224,7 +224,7 @@
     <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_arch">アーチ</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">カスタムアイコン形状</string>
     <string name="custom_icon_shape_create">カスタムアイコン形状を作成します</string>
@@ -243,12 +243,12 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">アイコンパック</string>
     <string name="themed_icon_pack">テーマアイコンのソース</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">アクセントカラーで染色する</string>
     <string name="system_icons">システムアイコン</string>
     <string name="themed_icon_title">テーマアイコン</string>
     <string name="themed_icons_off_label">オフ</string>
     <string name="themed_icons_home_label">ホーム画面</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">ホーム画面とドロワー</string>
     <string name="lawnicons_not_installed_description">サポートされているアイコンパックがありません</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">フォントを追加</string>
@@ -373,8 +373,8 @@
     <string name="legal">法的事項</string>
     <string name="acknowledgements">謝辞</string>
     <string name="privacy_policy">プライバシーポリシー</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="contributor_status_active">アクティブ</string>
+    <string name="update_check_failed">アップデートの確認に失敗しました</string>
     <!--
 
     Backup and restore
@@ -401,18 +401,18 @@
     <string name="gesture_swipe_down">下にスワイプしたとき</string>
     <string name="gesture_home_tap">ホームボタンを押したとき</string>
     <string name="gesture_back_tap">戻るボタンを押したとき</string>
-    <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
+    <string name="gesture_swipe_left">左にスワイプしたとき</string>
+    <string name="gesture_swipe_right">右にスワイプしたとき</string>
     <string name="gesture_handler_no_op">何もしない</string>
     <string name="gesture_handler_sleep">スリープ状態にします</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">タスク管理画面を開く</string>
     <string name="gesture_handler_open_notifications">通知パネルを開く</string>
     <string name="gesture_handler_open_app_option">アプリを開く</string>
     <string name="gesture_handler_open_app_config">%1$s を開く</string>
     <string name="gesture_handler_open_app_drawer">アプリドロワーを開く</string>
     <string name="gesture_handler_open_app_search">アプリ検索を開く</string>
     <string name="gesture_handler_open_search">検索を開く</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant">アシスタントを起動する</string>
     <string name="pick_app_for_gesture">アプリを選択</string>
     <string name="dt2s_admin_hint_title">管理者権限が必要です</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
@@ -444,10 +444,10 @@
     <string name="home_screen_rotation_label">ホーム画面の回転</string>
     <string name="home_screen_rotation_description">デバイスが回転した際にホーム画面も回転します</string>
     <string name="wallpaper_blur">ぼやけた壁紙（実験的な機能）</string>
-    <string name="wallpaper_background_blur">Blur intensity</string>
+    <string name="wallpaper_background_blur">ぼかしの強さ</string>
     <string name="wallpaper_background_blur_factor">Factor threshold</string>
-    <string name="home_lawn_deck_label">Deck</string>
-    <string name="home_lawn_deck_label_beta">Deck (Beta)</string>
+    <string name="home_lawn_deck_label">ドック</string>
+    <string name="home_lawn_deck_label_beta">ドック(ベータ版)</string>
     <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
     <string name="auto_add_shortcuts_label">ホーム画面に新しいアプリを追加</string>
     <string name="minus_one_enable">フィードを表示</string>
@@ -474,7 +474,7 @@
     <string name="status_bar_label">ステータスバー</string>
     <string name="show_status_bar">ステータスバーを表示</string>
     <string name="dark_status_bar_label">ダークステータスバー</string>
-    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_label">ステータスバーの時計</string>
     <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">テキストの色</string>
     <string name="color_light">ライト</string>
@@ -582,7 +582,7 @@
     <string name="all_apps_search_market_message">アプリストアで検索</string>
     <string name="all_apps_search_on_web_message"><xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g>で検索</string>
     <string name="error_no_market_or_browser_installed">アプリストアかブラウザがインストールされていません</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">Web検索</string>
     <string name="clear_history">検索履歴を消去</string>
     <string name="search_input_action_clear_results">検索ボックスをクリア</string>
     <!-- Search settings -->
@@ -605,9 +605,9 @@
     <string name="search_algorithm_app_search">アプリ検索</string>
     <string name="search_algorithm_global_search_on_device">グローバル検索 (デバイス上)</string>
     <string name="search_algorithm_global_search_via_asi">グローバル検索 (ASI 経由)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
+    <string name="custom_search_label">検索エンジン名</string>
+    <string name="custom_search_url">検索エンジンのURL</string>
+    <string name="custom_search_suggestions_url">検索候補のURL</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
     <!-- Labels of each search result types -->
@@ -618,9 +618,9 @@
     <string name="search_pref_result_tips_title">Pixel のヒント</string>
     <string name="search_pref_result_settings_title">Android 設定</string>
     <string name="search_pref_result_files_title">ファイル</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
-    <string name="search_pref_result_audio_media_title">Audio files</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_visual_media_title">画像と動画</string>
+    <string name="search_pref_result_audio_media_title">音声ファイル</string>
+    <string name="search_pref_result_all_files_title">全てのファイル</string>
     <string name="search_pref_result_web_title">ウェブの提案</string>
     <string name="search_pref_result_history_title">検索履歴</string>
     <string name="all_apps_search_result_calculator">電卓</string>
@@ -638,7 +638,7 @@
     <string name="max_file_result_count_title">ファイルの表示件数</string>
     <string name="max_settings_entry_result_count_title">システム設定の表示件数</string>
     <string name="max_recent_result_count_title">検索履歴の表示件数</string>
-    <string name="max_suggestion_result_count_title">Maximum number of suggestions</string>
+    <string name="max_suggestion_result_count_title">候補の最大個数</string>
     <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
     <!-- Permission management -->
     <string name="missing_notification_access_label">通知へのアクセス権が必要です</string>
@@ -655,7 +655,7 @@
     <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
     <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
+    <string name="permissions_external_storage">外部ストレージへのアクセスが必要です</string>
     <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
     <string name="permissions_manage_storage">Manage storage access needed</string>
     <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
@@ -670,6 +670,6 @@
     <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
     <string name="open_permission_settings">設定を開く</string>
     <string name="grant_requested_permissions">権限の許可</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">権限が必要です</string>
+    <string name="grant_requested_permissions_tap">タップして権限を付与</string>
 </resources>

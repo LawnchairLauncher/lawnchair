@@ -14,7 +14,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version "2.1.10"
     id "com.google.devtools.ksp" version "2.1.10-1.0.31"
     id 'com.google.protobuf' version "0.9.5"
-    id 'app.cash.licensee' version "1.13.0"
+    id 'app.cash.licensee' version "1.14.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
     id 'com.diffplug.spotless' version '8.0.0'
 }
@@ -23,8 +23,12 @@ plugins {
 allprojects {
     plugins.withType(AndroidBasePlugin).configureEach {
         android {
-            buildToolsVersion "36.0.0"
-            compileSdk 36
+            buildToolsVersion "36.1.0"
+            compileSdk {
+                version = release(36) {
+                    minorApiLevel = 1
+                }
+            }
             defaultConfig {
                 minSdk 26
                 targetSdk 35
@@ -428,7 +432,7 @@ dependencies {
     def retrofitVersion = "3.0.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-kotlinx-serialization:$retrofitVersion"
-    implementation "com.squareup.okhttp3:okhttp:5.1.0"
+    implementation "com.squareup.okhttp3:okhttp:5.2.0"
 
     def roomVersion = '2.7.2'
     implementation "androidx.room:room-runtime:$roomVersion"
@@ -491,4 +495,5 @@ licensee {
     allowUrl("https://opensource.org/licenses/mit-license.php")
 
     bundleAndroidAsset = true
+    androidAssetReportPath = 'licenses.json'
 }

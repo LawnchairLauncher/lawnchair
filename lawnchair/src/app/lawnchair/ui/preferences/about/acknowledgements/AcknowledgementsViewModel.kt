@@ -45,7 +45,7 @@ class AcknowledgementsViewModel(
         )
 
     companion object {
-        private const val ACKNOWLEDGEMENTS_FILE_PATH = "app/cash/licensee/artifacts.json"
+        private const val ACKNOWLEDGEMENTS_FILE_PATH = "licenses.json"
         private const val TAG = "AcknowledgementsViewmModel"
     }
 }

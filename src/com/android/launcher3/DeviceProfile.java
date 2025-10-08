@@ -378,7 +378,7 @@ public class DeviceProfile {
         mInfo = info;
         isTablet = info.isTablet(windowBounds);
         isPhone = !isTablet;
-        isTwoPanels = isTablet && isMultiDisplay;
+        isTwoPanels = isMultiDisplay;
         boolean isTaskBarEnabled = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableTaskbarOnPhone());
         isTaskbarPresent = isTaskBarEnabled && (isTablet || (enableTinyTaskbar() && isGestureMode))
                 && WindowManagerProxy.INSTANCE.get(context).isTaskbarDrawnInProcess();
@@ -1410,9 +1410,10 @@ public class DeviceProfile {
      * Updates the iconSize for allApps* variants.
      */
     private void updateAllAppsIconSize(float scale, Resources res) {
+        float borderScale = mIsScalableGrid ? 1.0f : scale;
         allAppsBorderSpacePx = new Point(
-                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics, scale),
-                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics, scale));
+                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics, borderScale),
+                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics, borderScale));
         // AllApps cells don't have real space between cells,
         // so we add the border space to the cell height
         allAppsCellHeightPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].y, mMetrics, allAppsCellHeightMultiplier)
@@ -1424,7 +1425,7 @@ public class DeviceProfile {
             allAppsIconTextSizePx = pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
             allAppsIconTextSizePx *= mTextFactors.getAllAppsIconTextSizeFactor();
             allAppsIconDrawablePaddingPx = getNormalizedIconDrawablePadding();
-            allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
+            allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics);
 
             if (allAppsCellWidthPx < allAppsIconSizePx) {
                 // If allAppsCellWidth no longer fit allAppsIconSize, reduce allAppsBorderSpace
