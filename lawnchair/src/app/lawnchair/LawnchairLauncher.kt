@@ -137,9 +137,9 @@ class LawnchairLauncher : QuickstepLauncher() {
     }
     private val clearSearchStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionComplete(finalState: LauncherState) {
-            if (finalState == LauncherState.NORMAL && launcher.appsView?.isSearching() == true) {
-                launcher.appsView?.post {
-                    launcher.appsView?.reset(false, true)
+            if (finalState == LauncherState.NORMAL && mAppsView != null && mAppsView.isSearching) {
+                mAppsView?.post {
+                    mAppsView.reset(false, true)
                 }
             }
         }
