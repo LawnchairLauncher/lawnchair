@@ -135,6 +135,15 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
         override fun onStateTransitionComplete(finalState: LauncherState) {}
     }
+    private val clearSearchStateListener = object : StateManager.StateListener<LauncherState> {
+        override fun onStateTransitionComplete(finalState: LauncherState) {
+            if (finalState == LauncherState.NORMAL && launcher.appsView?.isSearching() == true) {
+                launcher.appsView?.post {
+                    launcher.appsView?.reset(false, true)
+                }
+            }
+        }
+    }
 
     private lateinit var colorScheme: ColorScheme
     private var hasBackGesture = false
@@ -158,6 +167,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         preferenceManager2.enableFeed.get().distinctUntilChanged().onEach { enable ->
             defaultOverlay.setEnableFeed(enable)
         }.launchIn(scope = lifecycleScope)
+        launcher.stateManager.addStateListener(clearSearchStateListener)
 
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {
