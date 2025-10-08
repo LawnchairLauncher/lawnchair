@@ -531,14 +531,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         initDragController();
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
-        mStateManager.addStateListener(new StateManager.StateListener<LauncherState>() {
-            @Override
-            public void onStateTransitionComplete(LauncherState finalState){
-                if(finalState == NORMAL && mAppsView!=null && mAppsView.isSearching()){
-                    mAppsView.post(()-> mAppsView.reset(false,true));
-                }
-            }
-        });
 
         setupViews();
         updateDisallowBack();
