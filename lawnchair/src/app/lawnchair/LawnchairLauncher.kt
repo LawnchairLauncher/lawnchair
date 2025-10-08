@@ -135,6 +135,14 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
         override fun onStateTransitionComplete(finalState: LauncherState) {}
     }
+    private val resetSearchStateListener = object : StateManager.StateListener<LauncherState>{
+        override fun onStateTransitionStart(toState: LauncherState?) { }
+        override fun onStateTransitionComplete(finalState: LauncherState?) {
+            if(finalState== LauncherState.NORMAL && mAppsView!= null && mAppsView.isSearching){
+                mAppsView.post { mAppsView.reset(false,true) }
+            }
+        }
+    }
 
     private lateinit var colorScheme: ColorScheme
     private var hasBackGesture = false
@@ -166,6 +174,9 @@ class LawnchairLauncher : QuickstepLauncher() {
                 } catch (_: RootNotAvailableException) {
                 }
             }
+        }
+        with(launcher.stateManager){
+            addStateListener(resetSearchStateListener)
         }
 
         preferenceManager2.showStatusBar.get().distinctUntilChanged().onEach {
