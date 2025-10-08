@@ -108,6 +108,7 @@
     <string name="wallpaper">Wallpaper</string>
     <string name="style">Style</string>
     <string name="background_opacity">Background opacity</string>
+    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
 
     <!-- Toast text and tips -->
     <string name="copied_toast">Copied to clipboard</string>
