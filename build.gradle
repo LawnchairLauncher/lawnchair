@@ -434,7 +434,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-kotlinx-serialization:$retrofitVersion"
     implementation "com.squareup.okhttp3:okhttp:5.2.0"
 
-    def roomVersion = '2.7.2'
+    def roomVersion = '2.8.2'
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "androidx.room:room-ktx:$roomVersion"
     ksp "androidx.room:room-compiler:$roomVersion"
