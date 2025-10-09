@@ -58,6 +58,7 @@
             android:id="@+id/folder_page_indicator"
             android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
+            android:layout_marginEnd="4dp"
             android:layout_height="wrap_content"
             android:elevation="1dp"
             />
