@@ -1,12 +1,14 @@
 package app.lawnchair.smartspace
 
 import android.content.Context
+import android.graphics.Color
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import app.lawnchair.smartspace.model.SmartspaceTarget
+import app.lawnchair.util.isWallpaperDark
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
 
@@ -71,7 +73,9 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
         val target = smartspaceTargets[viewHolder.position]
         val card = viewHolder.card
         card.setSmartspaceTarget(target, smartspaceTargets.size > 1)
-        card.setPrimaryTextColor(currentTextColor)
+        val isDark = isWallpaperDark(card.context)
+        val dynamicColors = if(isDark) Color.WHITE else Color.BLACK
+        card.setPrimaryTextColor(dynamicColors)
     }
 
     override fun getCount() = smartspaceTargets.size
