@@ -432,7 +432,7 @@ dependencies {
     def retrofitVersion = "3.0.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-kotlinx-serialization:$retrofitVersion"
-    implementation "com.squareup.okhttp3:okhttp:5.2.0"
+    implementation "com.squareup.okhttp3:okhttp:5.2.1"
 
     def roomVersion = '2.7.2'
     implementation "androidx.room:room-runtime:$roomVersion"
