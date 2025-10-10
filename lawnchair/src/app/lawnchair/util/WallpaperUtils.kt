@@ -20,5 +20,3 @@ fun isWallpaperDark(context: Context): Boolean {
         false
     }
 }
-
-

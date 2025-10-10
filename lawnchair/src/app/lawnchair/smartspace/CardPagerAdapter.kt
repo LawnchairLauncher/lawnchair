@@ -74,7 +74,7 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
         val card = viewHolder.card
         card.setSmartspaceTarget(target, smartspaceTargets.size > 1)
         val isDark = isWallpaperDark(card.context)
-        val dynamicColors = if(isDark) Color.WHITE else Color.BLACK
+        val dynamicColors = if (isDark) Color.WHITE else Color.BLACK
         card.setPrimaryTextColor(dynamicColors)
     }
 
