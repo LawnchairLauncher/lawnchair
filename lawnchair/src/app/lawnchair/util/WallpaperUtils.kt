@@ -14,4 +14,3 @@ fun isWallpaperDark(context: Context): Boolean {
         darkness >= 0.5
     } ?: false
 }
-
