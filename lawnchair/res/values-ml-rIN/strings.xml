@@ -91,6 +91,7 @@
     <string name="wallpaper">വാൾപേപ്പർ</string>
     <string name="style">ശൈലി</string>
     <string name="background_opacity">പശ്ചാത്തല അതാര്യത</string>
+    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി</string>
     <string name="calculator_search_result_copied_toast">ഫലം ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി</string>

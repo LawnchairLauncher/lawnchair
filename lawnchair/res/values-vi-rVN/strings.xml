@@ -91,6 +91,7 @@
     <string name="wallpaper">Hình nền</string>
     <string name="style">Phong cách</string>
     <string name="background_opacity">Độ mờ của nền</string>
+    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Đã sao chép</string>
     <string name="calculator_search_result_copied_toast">Kết quả đã sao chép vào bảng nhớ tạm</string>

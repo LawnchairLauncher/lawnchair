@@ -91,6 +91,7 @@
     <string name="wallpaper">ওয়ালপেপার</string>
     <string name="style">স্টাইল</string>
     <string name="background_opacity">ব্যাকগ্রাউন্ডের অস্বচ্ছতা</string>
+    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">ক্লিপবোর্ডের অস্বচ্ছতা</string>
     <string name="calculator_search_result_copied_toast">ফলাফল ক্লিপবোর্ডে কপি করা হয়েছে</string>

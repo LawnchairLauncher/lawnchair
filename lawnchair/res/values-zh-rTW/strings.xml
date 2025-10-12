@@ -91,6 +91,7 @@
     <string name="wallpaper">桌布</string>
     <string name="style">樣式</string>
     <string name="background_opacity">背景不透明度</string>
+    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">已複製至剪貼簿</string>
     <string name="calculator_search_result_copied_toast">已將結果複製至剪貼簿</string>

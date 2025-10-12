@@ -91,6 +91,7 @@
     <string name="wallpaper">Wallpaper</string>
     <string name="style">Gaya</string>
     <string name="background_opacity">Tingkat transparan latar belakang</string>
+    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Disalin ke papan klip</string>
     <string name="calculator_search_result_copied_toast">Hasil disalin ke papan klip</string>

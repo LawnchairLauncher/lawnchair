@@ -91,6 +91,7 @@
     <string name="wallpaper">சுவர்த்தாள்</string>
     <string name="style">Style</string>
     <string name="background_opacity">பின்னணி ஒளிபுகாநிலை</string>
+    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">நகலகத்தில் நகலெடுக்கப்பட்டது</string>
     <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>

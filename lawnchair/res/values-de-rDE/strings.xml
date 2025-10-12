@@ -91,6 +91,7 @@
     <string name="wallpaper">Hintergrund</string>
     <string name="style">Stil</string>
     <string name="background_opacity">Hintergrundtransparenz</string>
+    <string name="pref_all_apps_search_bar_background">Abgegrenzter Suchleisten-Hintergrund</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">In Zwischenablage kopiert</string>
     <string name="calculator_search_result_copied_toast">Ergebnis in Zwischenablage kopiert</string>

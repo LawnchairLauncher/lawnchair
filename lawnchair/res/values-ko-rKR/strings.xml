@@ -42,25 +42,25 @@
     <string name="deselect_all">모두 선택 해제</string>
     <string name="inverse_selection">선택 반전</string>
     <string name="loading">불러오는 중...</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">취소</string>
     <string name="download_update">업데이트 다운로드</string>
     <string name="install_update">업데이트 설치</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">변경사항 보기</string>
     <string name="pro_updated">최신 버전입니다!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">업데이트</string>
+    <string name="changes_dialog_error">변경 사항을 불러오는데 실패하였습니다.</string>
+    <string name="changes_dialog_no_changes">변경 사항이 없습니다</string>
+    <string name="changes_dialog_build_format">빌드 #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">%1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_just_now">방금</string>
+    <string name="time_minutes_ago">%d분</string>
+    <string name="time_hours_ago">%d시간</string>
+    <string name="time_days_ago">%d일</string>
+    <string name="time_weeks_ago">%d주</string>
+    <string name="time_months_ago">%d달</string>
+    <string name="time_years_ago">%d년</string>
     <string name="managed_by_lawnchair">Lawnchair에서 관리</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">설정</string>
@@ -87,10 +87,11 @@
     <string name="grid">그리드</string>
     <string name="layout">레이아웃</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">배경화면 보기</string>
     <string name="wallpaper">배경화면</string>
     <string name="style">스타일</string>
     <string name="background_opacity">배경 투명도</string>
+    <string name="pref_all_apps_search_bar_background">검색 창 배경 분리</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">클립보드에 복사했습니다</string>
     <string name="calculator_search_result_copied_toast">결과를 클립보드에 복사했습니다</string>
@@ -114,10 +115,10 @@
     <string name="folders_filter_duplicates">중복 앱 숨기기</string>
     <string name="my_folder_label">내 폴더</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">특정 액션들 (휴대전화 잠그기 같은 액션)을 제스처로 발동시키려면, Lawnchair 가 접근성 기능에 접근해야 합니다. \n\nLawnchair 는 접근성 기능을 필요로 하지만 사용자의 활동을 감시하지 않으며, 시스템에서 발송된 모든 이벤트는 삭제됩니다. \n\nLawnchair 는 휴대전화를 잠그거나 최근 앱을 보기 위해서 GlobalActionAccessbility 서비스를 사용합니다.</string>
+    <string name="accessibility_service_description">특정 액션들(휴대전화 잠그기 같은 액션)을 제스처로 발동시키려면, Lawnchair가 접근성 기능에 접근해야 합니다. \n\nLawnchair는 접근성 기능을 필요로 하지만 사용자의 활동을 감시하지 않으며, 시스템에서 발송된 모든 이벤트는 삭제됩니다. \n\nLawnchair는 휴대전화를 잠그거나 최근 앱을 보기 위해서 GlobalActionAccessbility 서비스를 사용합니다.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%1$s 및 %2$s</string>
+    <string name="x_and_y">%1$s &amp; %2$s</string>
     <string name="advanced">고급</string>
     <!--
 
@@ -143,7 +144,7 @@
     <string name="quickstep_description">모두 닫기 버튼, 가장자리 둥글기</string>
     <string name="about_label">더 보기</string>
     <string name="app_info_drop_target_label">앱 정보</string>
-    <string name="debug_restart_launcher">Lawnchair 재시작</string>
+    <string name="debug_restart_launcher">Lawnchair 다시 시작</string>
     <string name="experimental_features_label">실험적 기능</string>
     <!-- Experimental features -->
     <string name="font_picker_label">글꼴 사용자 정의</string>
@@ -222,9 +223,9 @@
     <string name="icon_shape_squircle">둥근 사각형</string>
     <string name="icon_shape_teardrop">물방울</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">사각형 쿠키</string>
+    <string name="icon_shape_seven_sided_cookie">칠각형 쿠키</string>
+    <string name="icon_shape_arch">아치</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">아이콘 모양 사용자 정의</string>
     <string name="custom_icon_shape_create">사용자 정의 아이콘 모양 만들기</string>
@@ -367,14 +368,14 @@
     <string name="quickswitch_maintenance">퀵 스위치 점검</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">지원 및 홍보</string>
-    <string name="community">Community</string>
-    <string name="telegram">Telegram</string>
+    <string name="community">커뮤니티</string>
+    <string name="telegram">텔레그램</string>
     <string name="news">뉴스</string>
     <string name="legal">Legal</string>
     <string name="acknowledgements">감사의 말</string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">개인정보 처리방침</string>
+    <string name="contributor_status_active">작동 중</string>
+    <string name="update_check_failed">업데이트를 확인하는데 실패하였습니다</string>
     <!--
 
     Backup and restore
@@ -572,7 +573,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">앱, 웹 등을 검색</string>
     <string name="all_apps_search_bar_hint">앱 검색</string>
     <string name="all_apps_no_search_results">\"<xliff:g example="Android" id="query">%1$s</xliff:g>\"(와)과 일치는 앱 없습니다.</string>
     <string name="all_apps_search_result_suggestions">웹으로부터</string>
@@ -605,11 +606,11 @@
     <string name="search_algorithm_app_search">앱 검색</string>
     <string name="search_algorithm_global_search_on_device">글로벌 검색(기기 내)</string>
     <string name="search_algorithm_global_search_via_asi">글로벌 검색 (ASI를 통해)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
+    <string name="custom_search_label">검색 엔진 이름</string>
+    <string name="custom_search_url">검색 엔진 URL</string>
+    <string name="custom_search_suggestions_url">검색 제안 URL</string>
     <string name="custom_search_input_hint">&#37;가 검색 쿼리로 대체됩니다</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_suggestions_hint">&#37;s는 검색어로 대체됩니다. 결과는 JSON OpenSearch 형식이어야 합니다.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">검색 결과에 보여주기</string>
     <string name="search_pref_result_apps_and_shortcuts_title">앱과 바로가기</string>
@@ -618,17 +619,17 @@
     <string name="search_pref_result_tips_title">Pixel 도움말</string>
     <string name="search_pref_result_settings_title">Android 설정</string>
     <string name="search_pref_result_files_title">파일</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
-    <string name="search_pref_result_audio_media_title">Audio files</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_visual_media_title">사진과 비디오</string>
+    <string name="search_pref_result_audio_media_title">오디오 파일</string>
+    <string name="search_pref_result_all_files_title">모든 파일</string>
     <string name="search_pref_result_web_title">웹 제안</string>
     <string name="search_pref_result_history_title">검색 기록</string>
     <string name="all_apps_search_result_calculator">계산기</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_title">검색 시작</string>
+    <string name="search_empty_state_no_history_subtitle">앱, 연락처 등을 찾아보세요. 최근 검색 결과가 여기에 표시됩니다.</string>
+    <string name="search_empty_state_history_disabled_subtitle">앱, 연락처 등을 검색</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">검색</string>
     <string name="search_pref_result_files_description">미디어, 파일 등</string>
     <string name="search_pref_result_contacts_description">연락처 등</string>
     <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g> 제공</string>
@@ -643,33 +644,33 @@
     <!-- Permission management -->
     <string name="missing_notification_access_label">알림 액세스가 필요합니다.</string>
     <string name="missing_notification_access_desc">알림 점을 표시하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 대한 앱 알림을 켜세요.</string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="warn_contact_permission_title">연락처 권한이 필요합니다</string>
+    <string name="warn_contact_permission_content">연락처를 검색하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 연락처 및 전화 권한을 부여하세요</string>
+    <string name="permissions_music_audio">음악과 오디오 권한이 필요합니다</string>
+    <string name="permissions_music_audio_description">음악 및 기타 오디오 파일을 검색하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 미디어 라이브러리에 대한 액세스 권한이 필요합니다.</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos">사진과 비디오 권한이 필요합니다</string>
+    <string name="permissions_photos_videos_description">사진 및 비디오 파일을 검색하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 미디어 라이브러리에 대한 액세스 권한이 필요합니다.</string>
+    <string name="permissions_photos_videos_full">전체 미디어 라이브러리에 액세스 하시겠습니까?</string>
+    <string name="permissions_photos_videos_full_description">모든 사진과 동영상을 검색하려면 <xliff:g id="name" example="my app">%1$s</xliff:g>에서 미디어 라이브러리에 대한 전체 액세스 권한이 필요합니다.</string>
+    <string name="permissions_photos_videos_grant_full">전체 미디어 권한</string>
+    <string name="permissions_photos_videos_manage_selected">선택한 항목 관리</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage">외부 스토리지 엑세스 권한이 필요합니다</string>
+    <string name="permissions_external_storage_description">파일을 검색하려면 <xliff:g id="name" example="My app">%1$s</xliff:g>에 기기의 외부 저장소에 대한 액세스 권한이 필요합니다.</string>
+    <string name="permissions_manage_storage">스토리지 관리 권한이 필요합니다</string>
+    <string name="permissions_manage_storage_description">검색 결과에 파일을 표시하려면 <xliff:g id="name" example="My app">%1$s</xliff:g>에 기기의 모든 파일을 관리할 수 있는 권한이 필요합니다. 이 권한은 파일 목록을 표시하는 데만 사용되며 개인 파일의 내용을 읽거나 변경하는 데는 사용되지 않습니다.</string>
+    <string name="permission_desc_wallpaper_base">배경화면 미리보기를 표시하고 백업에 포함하려면 <xliff:g id="name" example="my app">%1$s</xliff:g>에 %2$s 권한이 필요합니다. 이는 배경화면 데이터 접근에 대한 시스템 제한으로 인해 발생합니다.</string>
+    <string name="permission_desc_ending_read_all_files">기기의 모든 파일을 읽으려면</string>
+    <string name="permission_desc_ending_manage_all_files">기기의 모든 파일을 관리하려면</string>
+    <string name="permission_desc_wallpaper_multiple">여러 권한이 필요합니다</string>
+    <string name="permission_desc_wallpaper_multiple_desc">배경화면 미리보기를 표시하고 백업에 포함하려면 <xliff:g id="name" example="my app">%1$s</xliff:g>에 다음 권한이 필요합니다. 이는 배경화면 데이터 접근에 대한 시스템 제한으로 인해 발생합니다.</string>
+    <string name="permission_label_manage_all_files">기기의 모든 파일 관리</string>
+    <string name="permission_label_read_photos_videos">사진과 비디오 읽기</string>
+    <string name="manage_storage_access_denied_title">저장소 액세스 관리를 활성화할 수 없습니다</string>
+    <string name="manage_storage_access_denied_description">Play 스토어 정책으로 인해 <xliff:g id="name" example="My App">%1$s</xliff:g>은(는) 여기에서 전체 저장 공간 접근 권한을 요청할 수 없습니다. 모든 파일에 접근하려면 GitHub에서 <xliff:g id="name" example="My App">%1$s</xliff:g>을(를) 다운로드하세요. 또는 설정에서 사진, 동영상, 오디오 파일에 대한 접근 권한을 개별적으로 부여할 수 있습니다.</string>
     <string name="open_permission_settings">설정 열기</string>
     <string name="grant_requested_permissions">권한 부여</string>
-    <string name="permissions_needed">Permissions needed</string>
+    <string name="permissions_needed">권한이 필요합니다</string>
     <string name="grant_requested_permissions_tap">여기를 눌러 권한 허용</string>
 </resources>

@@ -91,6 +91,7 @@
     <string name="wallpaper">Taustakuva</string>
     <string name="style">Tyyli</string>
     <string name="background_opacity">Taustan läpinäkymättömyys</string>
+    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopioitu leikepöydälle</string>
     <string name="calculator_search_result_copied_toast">Tulos kopioitu leikepöydälle</string>

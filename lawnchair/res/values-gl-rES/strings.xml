@@ -91,6 +91,7 @@
     <string name="wallpaper">Fondo de pantalla</string>
     <string name="style">Estilo</string>
     <string name="background_opacity">Opacidade do fondo</string>
+    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiado ao portapapeis</string>
     <string name="calculator_search_result_copied_toast">Resultado copiado ao portapapeis</string>

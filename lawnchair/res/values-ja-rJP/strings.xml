@@ -91,6 +91,7 @@
     <string name="wallpaper">壁紙</string>
     <string name="style">スタイル</string>
     <string name="background_opacity">背景の透明度</string>
+    <string name="pref_all_apps_search_bar_background">検索バーの背景を区切る</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">クリップボードにコピーしました</string>
     <string name="calculator_search_result_copied_toast">結果をクリップボードにコピーしました</string>
@@ -114,7 +115,7 @@
     <string name="folders_filter_duplicates">固有のアプリのみ表示</string>
     <string name="my_folder_label">自分のフォルダー</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">ジェスチャー操作時に特定の操作（スマートフォンのロックなど）を実行するには、Lawnchair にユーザー補助機能へのアクセスが必要です。\n\nLawnchair はユーザーの操作を監視しませんが、すべてのユーザー補助サービスにはユーザー補助機能へのアクセス権限が必要です。Lawnchair はシステムから送信されたイベントをすべて破棄します。\n\nLawnchair はスマートフォンをロックしたり、「最近」画面を開いたりするために、performGlobalAction ユーザー補助機能サービスを使用します。</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -157,7 +158,7 @@
     <string name="icon_swipe_gestures">アイコンのスワイプジェスチャー</string>
     <string name="icon_swipe_gestures_description">アイコンを左右にスワイプした時にホーム画面の移動の代わりにアクションを実行します</string>
     <string name="show_deck_layout">ドックのレイアウト</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="show_deck_layout_description">アプリドロワーを非表示にし、自動的に新しいアプリをホーム画面に追加するためのレイアウトオプションを表示します</string>
     <string name="recents_lock_unlock">ロック/ロック解除</string>
     <string name="recents_lock_unlock_description">「すべてクリア」を押したときに選択したアプリを閉じないようにします</string>
     <!--Overlay-->
@@ -222,8 +223,8 @@
     <string name="icon_shape_squircle">丸みがかった正方形</string>
     <string name="icon_shape_teardrop">水滴型</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
+    <string name="icon_shape_four_sided_cookie">四面クッキー</string>
+    <string name="icon_shape_seven_sided_cookie">七面クッキー</string>
     <string name="icon_shape_arch">アーチ</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">カスタムアイコン形状</string>
@@ -341,7 +342,7 @@
     <string name="smartspacer_settings">Smartspacer の設定</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">タップでセットアップ</string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on Notification Dots.</string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>を使用するには、通知ドットをオンにします。</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">ホーム画面に表示します</string>
     <string name="smartspace_widget_toggle_description">スナップショットは、Lawnchairウィジェットを配置することでホーム画面に手動で追加できます</string>
@@ -387,7 +388,7 @@
     <string name="backup_create_success">バックアップの作成</string>
     <string name="backup_create_error">バックアップの作成に失敗しました</string>
     <string name="restore_backup">バックアップから復元</string>
-    <string name="what_to_restore">What to restore</string>
+    <string name="what_to_restore">復元する項目</string>
     <string name="backup_restore_success">バックアップの復元</string>
     <string name="backup_restore_error">バックアップの復元に失敗しました</string>
     <string name="invalid_backup_file">バックアップファイルが無効です</string>
@@ -415,12 +416,12 @@
     <string name="gesture_handler_open_assistant">アシスタントを起動する</string>
     <string name="pick_app_for_gesture">アプリを選択</string>
     <string name="dt2s_admin_hint_title">管理者権限が必要です</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_hint">ダブルタップでスリープ状態にするには、Lawnchair をデバイス管理者アプリとして設定します。「設定を開く」をタップし、「このデバイス管理者アプリを有効にする」をタップします。</string>
     <string name="dt2s_admin_warning">ダブルタップでスリープを解除します</string>
     <string name="d2ts_recents_a11y_hint_title">ユーザー補助サービスを ON にする</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">ダブルタップでスリープするには、Lawnchair アクセシビリティサービスをオンにします。「オープン設定」をタップし、「Lawnchair」を選択し、「Lawnchairを使用」をオンにします。\n\nLawnchair はこのアクションを実行するためにアクセシビリティの `performGlobalAction` メソッドを使用します。 これは他のアプリの監視を可能にする機密性の高い権限です。ただし、Lawnchair はその機能に対して設定されておらず、イベントを受信しません。</string>
     <string name="dt2s_recents_warning_open_settings">設定を開く</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">最近の画面を開くには、Lawnchair アクセシビリティサービスをオンにします。「設定を開く」をタップし、「Lawnchair」を選択して「Lawnchairを使用」をオンにします。\n\nLawnchair はこのアクションを実行するためにアクセシビリティの `performGlobalAction` メソッドを使用します。 これは他のアプリの監視を可能にする機密性の高い権限です。ただし、Lawnchair はその機能に対して設定されておらず、イベントを受信しません。</string>
     <!--
 
     Bug reporting
@@ -445,10 +446,10 @@
     <string name="home_screen_rotation_description">デバイスが回転した際にホーム画面も回転します</string>
     <string name="wallpaper_blur">ぼやけた壁紙（実験的な機能）</string>
     <string name="wallpaper_background_blur">ぼかしの強さ</string>
-    <string name="wallpaper_background_blur_factor">Factor threshold</string>
+    <string name="wallpaper_background_blur_factor">因子のしきい値</string>
     <string name="home_lawn_deck_label">ドック</string>
     <string name="home_lawn_deck_label_beta">ドック(ベータ版)</string>
-    <string name="home_lawn_deck_description">Effortlessly access your applications with Deck, the ultimate drawerless experience designed for simplicity and seamless organization</string>
+    <string name="home_lawn_deck_description">シンプルでシームレスな組織のために設計された究極のドロワーレスなエクスペリエンスであるデッキで、アプリケーションに簡単にアクセスできます</string>
     <string name="auto_add_shortcuts_label">ホーム画面に新しいアプリを追加</string>
     <string name="minus_one_enable">フィードを表示</string>
     <string name="minus_one_unavailable">フィードアプリがインストールされていません</string>
@@ -470,12 +471,12 @@
     <string name="popup_menu">ポップアップメニュー</string>
     <string name="popup_menu_items">ポップアップメニューの項目</string>
     <string name="edit_menu_items">ポップアップメニューの項目を編集</string>
-    <string name="wallpaper_quick_picker">Wallpaper quick picker</string>
+    <string name="wallpaper_quick_picker">壁紙クイックピッカー</string>
     <string name="status_bar_label">ステータスバー</string>
     <string name="show_status_bar">ステータスバーを表示</string>
     <string name="dark_status_bar_label">ダークステータスバー</string>
     <string name="status_bar_clock_label">ステータスバーの時計</string>
-    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
+    <string name="status_bar_clock_description">最初の画面でステータスバーの時計を動的に隠す</string>
     <string name="home_screen_text_color">テキストの色</string>
     <string name="color_light">ライト</string>
     <string name="color_dark">ダーク</string>
@@ -487,7 +488,7 @@
     <string name="widget_unlimited_size_description">ウィジェットの最小サイズと最大サイズ制限を削除する</string>
     <!-- Dock settings -->
     <string name="show_hotseat_title">ドックを表示</string>
-    <string name="enable_dock_to_access_qsb_settings">Search bar settings are available when the Dock is visible. Tap to show the Dock.</string>
+    <string name="enable_dock_to_access_qsb_settings">検索バーの設定は、Dock が表示されているときに利用できます。Dock を表示するにはタップしてください。</string>
     <string name="search_bar_label">検索バー</string>
     <string name="search_bar_settings">検索バーの設定</string>
     <string name="hotseat_mode_label">検索バーウィジェット</string>
@@ -507,22 +508,22 @@
     <string name="hotseat_bg_color_label">背景色</string>
     <string name="hotseat_bg_alpha">背景の透明度</string>
     <!-- Pause apps shortcut -->
-    <string name="pause">Pause</string>
-    <string name="pause_apps_dialog_title">Pause %1$s?</string>
-    <string name="pause_apps_dialog_message">Notifications for %1$s will be paused</string>
-    <string name="paused_apps_dialog_title">App paused</string>
-    <string name="paused_apps_dialog_message">%1$s was directly paused from the launcher</string>
-    <string name="paused_apps_drop_target_label">Pause app</string>
+    <string name="pause">一時停止</string>
+    <string name="pause_apps_dialog_title">%1$s を一時停止しますか？</string>
+    <string name="pause_apps_dialog_message">%1$s の通知は一時停止されます</string>
+    <string name="paused_apps_dialog_title">アプリを一時停止中</string>
+    <string name="paused_apps_dialog_message">%1$s はランチャーから直接一時停止しました</string>
+    <string name="paused_apps_drop_target_label">アプリを一時停止</string>
     <string name="dock_icons">ドックアイコン</string>
     <string name="hotseat_bottom_space_label">下の余白</string>
     <string name="page_indicator_height">ページインジケーターの高さ</string>
     <!-- Search providers -->
     <string name="search_provider_app_search">アプリ検索</string>
     <string name="search_provider_custom">カスタム</string>
-    <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
+    <string name="search_provider_sponsored_description">%1$s と Lawnchair は収益分配契約を持っています。\n\n %1$s で検索するとLawnchair をサポートすることができます。</string>
     <string name="app_label">アプリ</string>
     <string name="website_label">ウェブサイト</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="qsb_search_provider_app_required">アプリが必要</string>
     <!-- Dock search bar a11y -->
     <string name="label_search">検索</string>
     <string name="label_lens">Google レンズ</string>
@@ -551,9 +552,9 @@
     <string name="max_folder_columns">最大のフォルダー列数</string>
     <string name="max_folder_rows">フォルダーの行の最大値</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
-    <string name="quickstep_incompatible">Incompatible system integration</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s isn\'t compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system gesture provider.</string>
+    <string name="quickswitch_ignored_warning">Lawnchair がアプリ履歴画面のプロバイダーとして設定されていないため、これらの設定は無視されます</string>
+    <string name="quickstep_incompatible">互換性のないシステム統合</string>
+    <string name="quickstep_incompatible_description">お使いのデバイスは %1$s が提供するシステムジェスチャー ( Quickstep として知られています) が設定されていますが %1$s のこのバージョンはお使いの Android のバージョンと互換性がありません。デバイスを引き続き使用するには、%1$s の更新をアンインストールするか、システムジェスチャープロバイダとして %1$s を無効にしてください。</string>
     <string name="translucent_background">半透明の背景</string>
     <string name="translucent_background_alpha">背景の透明度</string>
     <string name="recents_actions_label">クイックアクション</string>
@@ -562,8 +563,8 @@
     <string name="recents_clear_all">すべてクリア</string>
     <string name="task_menu_force_stop">強制的に閉じる</string>
     <string name="window_corner_radius_label">画面の角の半径</string>
-    <string name="override_window_corner_radius_label">Custom screen corner radius</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="override_window_corner_radius_label">画面の角の半径</string>
+    <string name="window_corner_radius_description">アプリ履歴画面を開くために上にスワイプすると、現在のアプリは指に従ってカードに縮小します。 このスライダーを使用して、画面の角に合うようにカードの角の半径を調節します。</string>
     <string name="taskbar_label">タスクバー</string>
     <string name="enable_taskbar_experimental">タスクバーを表示(実験的な機能)</string>
     <!--
@@ -572,7 +573,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">アプリ、ウェブ、その他を検索</string>
     <string name="all_apps_search_bar_hint">アプリを検索</string>
     <string name="all_apps_no_search_results"><xliff:g example="Android" id="query">%1$s</xliff:g> と一致するアプリがありません</string>
     <string name="all_apps_search_result_suggestions">Web</string>
@@ -592,13 +593,13 @@
     <string name="fuzzy_search_title">あいまい検索</string>
     <string name="fuzzy_search_desc">アプリ検索でおおよその検索ができます</string>
     <string name="suggestion_pref_screen_title">サジェスト</string>
-    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at the top of the drawer</string>
+    <string name="show_suggested_apps_at_drawer_top">ドロワーの上部に提案されたアプリを表示</string>
     <string name="perform_wide_search_title">デバイスを探す</string>
-    <string name="perform_wide_search_description">Search your phone contacts, files, and settings</string>
+    <string name="perform_wide_search_description">連絡先、ファイル、設定を検索</string>
     <string name="show_hidden_apps_in_search_results">検索結果に非表示のアプリを表示する</string>
     <string name="hidden_apps_show_name_typed">完全一致で表示する</string>
-    <string name="allapps_web_suggestion_provider_label">Web suggestion provider</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_web_suggestion_provider_label">Web提案プロバイダー</string>
+    <string name="allapps_use_web_suggestion_icon_label">検索バーにウェブ提案プロバイダーのアイコンを表示する</string>
     <string name="allapps_match_qsb_style_label">ドック検索バーのアクションを一致させる</string>
     <string name="allapps_match_qsb_style_description">ドック検索バーをクリックすると、アプリドロワーの検索UIを開きます</string>
     <string name="app_search_algorithm">検索のアルゴリズム</string>
@@ -608,8 +609,8 @@
     <string name="custom_search_label">検索エンジン名</string>
     <string name="custom_search_url">検索エンジンのURL</string>
     <string name="custom_search_suggestions_url">検索候補のURL</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_input_hint">&#37;sは検索クエリに置き換えられます</string>
+    <string name="custom_search_suggestions_hint">&#37;s は検索クエリに置き換えられます。結果は JSON OpenSearch 形式である必要があります。</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">検索結果を表示</string>
     <string name="search_pref_result_apps_and_shortcuts_title">アプリとショートカット</string>
@@ -624,11 +625,11 @@
     <string name="search_pref_result_web_title">ウェブの提案</string>
     <string name="search_pref_result_history_title">検索履歴</string>
     <string name="all_apps_search_result_calculator">電卓</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_title">検索を開始</string>
+    <string name="search_empty_state_no_history_subtitle">アプリ、連絡先などを検索します。最近の検索はここに表示されます。</string>
+    <string name="search_empty_state_history_disabled_subtitle">アプリ、連絡先などを検索します。</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">検索するもの</string>
     <string name="search_pref_result_files_description">メディア、ファイル、その他</string>
     <string name="search_pref_result_contacts_description">連絡先やその他</string>
     <string name="search_pref_result_web_provider_description"><xliff:g id="web_search_provider">%1$s</xliff:g>で検索</string>
@@ -639,35 +640,35 @@
     <string name="max_settings_entry_result_count_title">システム設定の表示件数</string>
     <string name="max_recent_result_count_title">検索履歴の表示件数</string>
     <string name="max_suggestion_result_count_title">候補の最大個数</string>
-    <string name="max_web_suggestion_delay">Maximum web suggestion delay</string>
+    <string name="max_web_suggestion_delay">ウェブ提案の最大遅延</string>
     <!-- Permission management -->
     <string name="missing_notification_access_label">通知へのアクセス権が必要です</string>
     <string name="missing_notification_access_desc">通知ドットを表示するには、 <xliff:g id="name" example="My App">%1$s</xliff:g> のアプリ通知をオンにします。</string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="warn_contact_permission_title">連絡先へのアクセス権限が必要です</string>
+    <string name="warn_contact_permission_content">連絡先を検索するには、<xliff:g id="name" example="My App">%1$s</xliff:g> に連絡先と電話の権限を付与してください</string>
+    <string name="permissions_music_audio">音楽とオーディオのアクセスが必要です</string>
+    <string name="permissions_music_audio_description">音楽やその他のオーディオファイルを検索するには、 <xliff:g id="name" example="My App">%1$s</xliff:g> がメディアライブラリにアクセスする権限が必要です。</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos">写真とビデオへのアクセスが必要です</string>
+    <string name="permissions_photos_videos_description">音楽やその他のオーディオファイルを検索するには、 <xliff:g id="name" example="My App">%1$s</xliff:g> がメディアライブラリにアクセスする権限が必要です。</string>
+    <string name="permissions_photos_videos_full">全メディアライブラリにアクセスしますか？</string>
+    <string name="permissions_photos_videos_full_description">すべての写真とビデオを検索するには、 <xliff:g id="name" example="My App">%1$s</xliff:g> がメディアライブラリにフルアクセスする必要があります。</string>
+    <string name="permissions_photos_videos_grant_full">メディアの全権限を付与する</string>
+    <string name="permissions_photos_videos_manage_selected">選択したアイテムを管理</string>
     <!-- External storage -->
     <string name="permissions_external_storage">外部ストレージへのアクセスが必要です</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage_description">ファイルを検索するには、 <xliff:g id="name" example="My App">%1$s</xliff:g> がデバイスのストレージにアクセスする権限が必要です。</string>
+    <string name="permissions_manage_storage">ストレージへのアクセスが必要です</string>
+    <string name="permissions_manage_storage_description">検索結果にファイルを表示するには、 <xliff:g id="name" example="My App">%1$s</xliff:g> にデバイス上のすべてのファイルを管理する権限が必要です。 この権限はファイルを一覧表示するためにのみ使用され、個人ファイルの内容を読み取りまたは変更するために使用されません。</string>
+    <string name="permission_desc_wallpaper_base">壁紙のプレビューを表示し、バックアップに含めるには、 <xliff:g id="name" example="My App">%1$s</xliff:g> 権限 %2$sが必要です。 これは壁紙データにアクセスするシステムの制限によるものです。</string>
+    <string name="permission_desc_ending_read_all_files">デバイス上のすべてのファイルを読み込むために</string>
+    <string name="permission_desc_ending_manage_all_files">デバイス上のすべてのファイルを管理する</string>
+    <string name="permission_desc_wallpaper_multiple">複数の権限が必要です</string>
+    <string name="permission_desc_wallpaper_multiple_desc">壁紙のプレビューを表示し、バックアップに含めるには、 <xliff:g id="name" example="My App">%1$s</xliff:g> 権限 が必要です。 これは壁紙データにアクセスするシステムの制限によるものです。</string>
+    <string name="permission_label_manage_all_files">デバイス上のすべてのファイルを管理</string>
+    <string name="permission_label_read_photos_videos">写真や動画の読み取り</string>
+    <string name="manage_storage_access_denied_title">ストレージの管理権限を有効にできません</string>
+    <string name="manage_storage_access_denied_description">Playストアのポリシーにより、<xliff:g id="name" example="My App">%1$s</xliff:g> はここでストレージへのフルアクセスをリクエストできません。すべてのファイルにアクセスするには、GitHubから <xliff:g id="name" example="My App">%1$s</xliff:g> をダウンロードしてください。または、設定で写真、動画、音声ファイルへのアクセスを個別に許可することもできます。</string>
     <string name="open_permission_settings">設定を開く</string>
     <string name="grant_requested_permissions">権限の許可</string>
     <string name="permissions_needed">権限が必要です</string>

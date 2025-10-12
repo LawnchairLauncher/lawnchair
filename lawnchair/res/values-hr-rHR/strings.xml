@@ -91,6 +91,7 @@
     <string name="wallpaper">Pozadina</string>
     <string name="style">Stil</string>
     <string name="background_opacity">Prozirnost pozadine</string>
+    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopirano u međuspremnik</string>
     <string name="calculator_search_result_copied_toast">Odabir kopiran u međuspremnik</string>
