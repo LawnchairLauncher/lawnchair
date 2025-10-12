@@ -12,6 +12,7 @@ import android.graphics.drawable.PaintDrawable
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.descendants
@@ -105,6 +106,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         }
 
         if (supportsLens) setUpLensIcon()
+        setUpGoogleIcon()
 
         setOnClickListener {
             val launcher = context.launcher
@@ -113,7 +115,12 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                     launcher.appsView.searchUiManager.editText?.showKeyboard()
                     launcher.animateToAllApps()
                 } else {
-                    searchProvider.launch(launcher)
+                    val intent = getGoogleSearchIntent(context)
+                    if (intent != null) {
+                        context.startActivity(intent)
+                    } else {
+                        searchProvider.launch(launcher)
+                    }
                 }
             }
         }
@@ -173,6 +180,12 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             .firstOrNull()
             ?.pendingIntent
     }
+    private fun getGoogleSearchIntent(context: Context): Intent? {
+        val intent =
+            Intent(Google.action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                .setPackage(GOOGLE_APP_PACKAGE)
+        return if (intent.resolveActivity(context.packageManager) != null) intent else null
+    }
 
     private fun setUpLensIcon() {
         val lensIntent = getLensIntent(context) ?: return
@@ -184,7 +197,15 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             }
         }
     }
-
+    private fun setUpGoogleIcon() {
+        val googleIntent = getGoogleIntent(context) ?: return
+        with(gIcon) {
+            isVisible = true
+            setOnClickListener {
+                runCatching { context.startActivity(googleIntent) }
+            }
+        }
+    }
     private fun clipIconRipples() {
         val cornerRadius = getCornerRadius(context, preferenceManager)
         listOf(lensIcon, micIcon).forEach {
@@ -228,6 +249,9 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     companion object {
         private const val LENS_PACKAGE = "com.google.ar.lens"
         private const val LENS_ACTIVITY = "com.google.vr.apps.ornament.app.lens.LensLauncherActivity"
+        private const val GOOGLE_APP_PACKAGE = "com.google.android.googlequicksearchbox"
+        private const val GOOGLE_PACKAGE = "com.google.android.googlequicksearchbox"
+        private const val GOOGLE_ACTIVITY = "com.google.android.googlequicksearchbox.SearchActivity"
 
         fun getLensIntent(context: Context): Intent? {
             val lensIntent = Intent.makeMainActivity(ComponentName(LENS_PACKAGE, LENS_ACTIVITY))
@@ -235,6 +259,13 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             if (context.packageManager.resolveActivity(lensIntent, 0) == null) return null
 
             return lensIntent
+        }
+        fun getGoogleIntent(context: Context): Intent? {
+            val googleIntent =
+                Intent.makeMainActivity(ComponentName(GOOGLE_PACKAGE, GOOGLE_ACTIVITY))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+            if (context.packageManager.resolveActivity(googleIntent, 0) == null) return null
+            return googleIntent
         }
 
         fun getSearchProvider(
