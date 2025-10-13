@@ -2,12 +2,15 @@ package app.lawnchair.qsb.providers
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetHostView
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.core.view.descendants
+import androidx.core.view.isVisible
 import app.lawnchair.HeadlessWidgetsManager
 import app.lawnchair.qsb.ThemingMethod
+import app.lawnchair.smartspace.BcSmartSpaceUtil.setOnClickListener
 import app.lawnchair.util.pendingIntent
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
@@ -32,14 +35,11 @@ data object Google : QsbSearchProvider(
             val subscription = getSearchIntent(launcher)
             val pendingIntent = subscription.firstOrNull()
             if (pendingIntent != null) {
-                launcher.startIntentSender(
-                    pendingIntent.intentSender,
-                    null,
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-                    0,
-                )
-                return
+                val googleIntent = getGoogleSearchIntent(context = launcher)
+                if (googleIntent != null) {
+                    launcher.startActivity(googleIntent)
+                    return
+                }
             }
         }
         super.launch(launcher, forceWebsite)
@@ -62,5 +62,11 @@ data object Google : QsbSearchProvider(
             .sortedByDescending { it.measuredWidth * it.measuredHeight }
             .firstOrNull()
             ?.pendingIntent
+    }
+    private fun getGoogleSearchIntent(context: Context): Intent? {
+        val intent =
+            Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+                .setPackage("com.google.android.googlequicksearchbox")
+        return if (intent.resolveActivity(context.packageManager) != null) intent else null
     }
 }
