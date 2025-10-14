@@ -2,15 +2,12 @@ package app.lawnchair.qsb.providers
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetHostView
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.core.view.descendants
-import androidx.core.view.isVisible
 import app.lawnchair.HeadlessWidgetsManager
 import app.lawnchair.qsb.ThemingMethod
-import app.lawnchair.smartspace.BcSmartSpaceUtil.setOnClickListener
 import app.lawnchair.util.pendingIntent
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
@@ -66,7 +63,7 @@ data object Google : QsbSearchProvider(
     private fun getGoogleSearchIntent(context: Context): Intent? {
         val intent =
             Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-                .setPackage("com.google.android.googlequicksearchbox")
+                .setPackage(packageName)
         return if (intent.resolveActivity(context.packageManager) != null) intent else null
     }
 }

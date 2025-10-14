@@ -12,7 +12,6 @@ import android.graphics.drawable.PaintDrawable
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.descendants
@@ -106,6 +105,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         }
 
         if (supportsLens) setUpLensIcon()
+
         setOnClickListener {
             val launcher = context.launcher
             launcher.lifecycleScope.launch {
@@ -184,6 +184,7 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             }
         }
     }
+
     private fun clipIconRipples() {
         val cornerRadius = getCornerRadius(context, preferenceManager)
         listOf(lensIcon, micIcon).forEach {
