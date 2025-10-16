@@ -328,22 +328,11 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             revealData: ClipRevealData,
         ) {
             with(revealData) {
-                // Create reveal animator for the folder background
                 animatorSet.play(
                     shapeDelegate.createRevealAnimator(
                         folder,
                         backgroundStartRect,
                         backgroundEndRect,
-                        finalRadius,
-                        !isOpening,
-                    )
-                )
-                // animated contents of folder with the folder background
-                animatorSet.play(
-                    shapeDelegate.createRevealAnimator(
-                        folder.content,
-                        contentStart,
-                        contentEnd,
                         finalRadius,
                         !isOpening,
                     )
