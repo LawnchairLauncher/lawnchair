@@ -1138,34 +1138,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         setState(STATE_CLOSED);
         mContent.setCurrentPage(0);
 
-        // Expressive folder animations dim the workspace scrim and scale workspace/hotseat. When the
-        // folder is dismissed without running the close animation (e.g. launching an app), those
-        // effects are not cleared by FolderScrimAnimationListener — restore them here.
-        restoreLauncherAfterFolderDismissed();
-    }
-
-    /**
-     * Resets scrim and workspace/hotseat scale after folder is removed from the hierarchy.
-     */
-    private void restoreLauncherAfterFolderDismissed() {
-        if (!(mActivityContext instanceof Launcher launcher)) {
-            return;
-        }
-        ScrimView scrim = launcher.getScrimView();
-        if (scrim != null) {
-            scrim.setAlpha(1f);
-            scrim.setScrimColors(
-                    launcher.getStateManager().getState().getWorkspaceScrimColor(launcher));
-        }
-        SCALE_PROPERTY.set(launcher.getWorkspace(), 1f);
-        SCALE_PROPERTY.set(launcher.getHotseat(), 1f);
-        // Clear any stuck workspace/hotseat RenderEffect if we are not in a depth-blur state.
-        // Expressive folder open/close can race with All Apps depth blur and leave icons blurred.
-        if (Utilities.ATLEAST_S
-                && launcher.getStateManager().getState().getDepth(launcher) == 0f) {
-            for (View target : launcher.getDepthBlurTargets()) {
-                target.setRenderEffect(null);
-            }
+        if (Flags.enableExpressiveFolderExpansion()) {
+            FolderAnimationSpringBuilderManager.resetLauncherUi(mLauncherDelegate);
         }
     }
 
