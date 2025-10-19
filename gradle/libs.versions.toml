@@ -47,7 +47,7 @@ rikkaRefine = "4.4.0"
 slice = "1.1.0-alpha02"
 smartspacer = "1.1.2"
 uiautomator = "2.3.0"
-window = "1.4.0"
+window = "1.5.0"
 
 agp = "8.12.1"
 baselineprofile = "1.4.1"
