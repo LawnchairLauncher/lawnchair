@@ -39,22 +39,22 @@
     <string name="action_paste">Lim inn</string>
     <string name="action_done">Fullført</string>
     <string name="select_all">Velg alle</string>
-    <string name="deselect_all">Deselect all</string>
-    <string name="inverse_selection">Inverse selection</string>
+    <string name="deselect_all">Opphev all markering</string>
+    <string name="inverse_selection">Inverter valg</string>
     <string name="loading">Laster…</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="download_update">Download update</string>
-    <string name="install_update">Install update</string>
-    <string name="view_changes">View changes</string>
-    <string name="pro_updated">You\'re up-to-date!</string>
+    <string name="dismiss">Avvis</string>
+    <string name="download_update">Last ned oppdatering</string>
+    <string name="install_update">Installer oppdatering</string>
+    <string name="view_changes">Vis endringer</string>
+    <string name="pro_updated">Du er oppdatert!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">Oppdateringer</string>
+    <string name="changes_dialog_error">Kunne ikke laste endringer</string>
+    <string name="changes_dialog_no_changes">Ingen endringer funnet</string>
+    <string name="changes_dialog_build_format">Bygg #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">av %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">akkurat nå</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
@@ -72,7 +72,7 @@
     General "words" used throughout Lawnchair
 
     -->
-    <string name="others_category_label">Others</string>
+    <string name="others_category_label">Andre</string>
     <!-- Selection options -->
     <string name="dynamic">Dynamisk</string>
     <string name="presets">Forhåndsinstillinger</string>
@@ -87,39 +87,39 @@
     <string name="grid">Rutenett</string>
     <string name="layout">Oppsett</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Vis bakgrunnsbilde</string>
     <string name="wallpaper">Bakgrunn</string>
-    <string name="style">Style</string>
+    <string name="style">Stil</string>
     <string name="background_opacity">Bakgrunnens gjennomsiktighet</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">Separert bakgrunn i søkefeltet</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopiert til utklippstavle</string>
-    <string name="calculator_search_result_copied_toast">Result copied to clipboard</string>
+    <string name="calculator_search_result_copied_toast">Resultat kopiert til utklippstavlen</string>
     <string name="item_removed">Objekt fjernet</string>
     <!-- Miscellaneous -->
     <string name="what_to_show">Hva som skal vises</string>
-    <string name="wallpapers">Wallpapers</string>
+    <string name="wallpapers">Bakgrunnsbilder</string>
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
-    <string name="app_drawer_folder">App drawer folders</string>
-    <string name="app_drawer_folder_settings">Drawer folder</string>
-    <string name="add_folder">Create folder</string>
-    <string name="edit_folder">Edit folder</string>
-    <string name="add_label">Add</string>
-    <string name="edit_label">Edit</string>
+    <string name="app_drawer_folder">Applikasjonsskuffemapper</string>
+    <string name="app_drawer_folder_settings">Skuffemappe</string>
+    <string name="add_folder">Opprett mappe</string>
+    <string name="edit_folder">Rediger mappe</string>
+    <string name="add_label">Legg til</string>
+    <string name="edit_label">Rediger</string>
     <string name="apply_label">Bruk</string>
     <string name="delete_label">Slett</string>
-    <string name="folder_list_note">Swipe left to edit, swipe right to delete, or tap to update items</string>
-    <string name="apps_in_folder_label">Hide folder apps</string>
-    <string name="apps_in_folder_description">Apps assigned to folders are excluded from app lists</string>
-    <string name="folders_filter_duplicates">Only show unique apps</string>
-    <string name="my_folder_label">My folder</string>
+    <string name="folder_list_note">Sveip til venstre for å redigere, dra til høyre for å slette, eller trykk for å oppdatere elementer</string>
+    <string name="apps_in_folder_label">Skjul appene i mappen</string>
+    <string name="apps_in_folder_description">Apper tilordnet mapper er ekskludert fra applister</string>
+    <string name="folders_filter_duplicates">Vis kun unike apper</string>
+    <string name="my_folder_label">Min mappe</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">For å utføre visse handlinger (som å låse telefonen din) når du utfører en gest, krever Lawnchair tilgang på tilgjengelighetstjenester.\n\nLawnchair ser ingen brukerhandlinger, men rettighetene til å gjøre dette er nødvendig for alle tilgjengelighetstjenester. Lawnchair forkaster enhver hendelse som systemet sender.\n\nFor å låse telefonen din, eller for å åpne nylig-skjermen, anvender Lawnchair tjenesten performGlobalAction Accessibility</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
-    <string name="advanced">Advanced</string>
+    <string name="advanced">Avansert</string>
     <!--
 
     Preference Dashboard
@@ -140,7 +140,7 @@
     <string name="folders_description">Rad og kolonneantall</string>
     <string name="gestures_label">Bevegelser</string>
     <string name="gestures_description">Tapping og sveiping</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">Nylige-skjermen</string>
     <string name="quickstep_description">Fjern alt knapp, hjørneradius</string>
     <string name="about_label">Om</string>
     <string name="app_info_drop_target_label">App info</string>
@@ -155,18 +155,18 @@
     <string name="workspace_increase_max_grid_size_description">Øk maks antall ruter på hjemmeskjerm fra 10 x 10 til 20 x 20</string>
     <string name="always_reload_icons_label">Alltid last ikoner på nytt</string>
     <string name="always_reload_icons_description">Unngå å bruk buffrede ikoner fra ikonpakker</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="icon_swipe_gestures">Ikon-sveipegester</string>
+    <string name="icon_swipe_gestures_description">Utfør handlinger når du sveiper til venstre eller høyre på ikoner, i stedet for å flytte på hjemskjermen</string>
+    <string name="show_deck_layout">Kortoppsett</string>
+    <string name="show_deck_layout_description">Vis et oppsett-alternativ for å skjule appskuffen og automatisk legge til nye apper til startskjermen</string>
     <string name="recents_lock_unlock">Lås/lås opp</string>
     <string name="recents_lock_unlock_description">Forhindre at valgt app lukker seg når man trykker \"Tøm alle\"</string>
     <!--Overlay-->
-    <string name="overlay_fade_in">Fade In</string>
-    <string name="overlay_suck_in">Suck In</string>
-    <string name="app_closing_animation">App closing animation</string>
-    <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="overlay_fade_in">Falm inn</string>
+    <string name="overlay_suck_in">Sug inn</string>
+    <string name="app_closing_animation">App lukkeanimasjon</string>
+    <string name="overlay_label">Overlapp</string>
+    <string name="overlay_none">Ingen</string>
     <!--
 
     Notifications
@@ -223,9 +223,9 @@
     <string name="icon_shape_squircle">Sirkel</string>
     <string name="icon_shape_teardrop">Tåreform</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">Firesidet kjeks</string>
+    <string name="icon_shape_seven_sided_cookie">Syvsidet kjeks</string>
+    <string name="icon_shape_arch">Bue</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Tilpasset ikonform</string>
     <string name="custom_icon_shape_create">Lag tilpasset ikonform</string>
@@ -244,12 +244,12 @@
     <!-- Icon pack settings -->
     <string name="icon_pack">Ikonpakke</string>
     <string name="themed_icon_pack">Ikonkilde med tema</string>
-    <string name="themed_icon_pack_tint">Tint with accent color</string>
+    <string name="themed_icon_pack_tint">Fargelegge med aksentfarge</string>
     <string name="system_icons">Systemikoner</string>
     <string name="themed_icon_title">Ikoner med tema</string>
     <string name="themed_icons_off_label">Av</string>
     <string name="themed_icons_home_label">Hjemmeskjerm</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">Hjemskjerm og appskuffe</string>
     <string name="lawnicons_not_installed_description">Ikke støttet ikonpakke</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Legg til skrifttype</string>
@@ -325,7 +325,7 @@
     <string name="smartspace_widget_description">Hva som skal vises</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">Kalender</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">Dato og klokkeslett</string>
     <string name="smartspace_date">Dato</string>
     <string name="smartspace_time">Tid</string>
     <string name="smartspace_time_format">Tidsformat</string>
@@ -363,19 +363,19 @@
     <string name="translate">Oversett</string>
     <string name="donate">Doner</string>
     <string name="product">Produkt</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">Design og utvikling</string>
     <string name="development">Utvikling</string>
     <string name="quickswitch_maintenance">QuickSwitch vedlikehold</string>
     <string name="devops">Utvikler</string>
-    <string name="support_and_pr">Support and PR</string>
-    <string name="community">Community</string>
+    <string name="support_and_pr">Brukerstøtte og PR</string>
+    <string name="community">Fellesskap</string>
     <string name="telegram">Telegram</string>
     <string name="news">Nyheter</string>
-    <string name="legal">Legal</string>
+    <string name="legal">Juridisk</string>
     <string name="acknowledgements">Anerkjennelser</string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">Retningslinjer for personvern</string>
+    <string name="contributor_status_active">Aktiv</string>
+    <string name="update_check_failed">Kunne ikke se etter oppdateringer</string>
     <!--
 
     Backup and restore
@@ -402,18 +402,18 @@
     <string name="gesture_swipe_down">Sveip ned</string>
     <string name="gesture_home_tap">Hjemknapp</string>
     <string name="gesture_back_tap">Tilbaketast</string>
-    <string name="gesture_swipe_left">Swipe left</string>
+    <string name="gesture_swipe_left">Sveip til venstre</string>
     <string name="gesture_swipe_right">Swipe right</string>
     <string name="gesture_handler_no_op">Gjør ingenting</string>
     <string name="gesture_handler_sleep">Sov</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">Åpne nylig brukte skjermen</string>
     <string name="gesture_handler_open_notifications">Åpne varslingspanel</string>
     <string name="gesture_handler_open_app_option">Åpne app</string>
     <string name="gesture_handler_open_app_config">Åpne %1$s</string>
     <string name="gesture_handler_open_app_drawer">Åpne appskuff</string>
     <string name="gesture_handler_open_app_search">Åpne søkeapp</string>
     <string name="gesture_handler_open_search">Åpne søk</string>
-    <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_assistant">Åpne assistent</string>
     <string name="pick_app_for_gesture">Velg app</string>
     <string name="dt2s_admin_hint_title">Administratortilgang er nødvendig</string>
     <string name="dt2s_admin_hint">For å bruke dobbelt-tapping for å sove, sett Lawnchair som enhetsadministrator app. Trykk på \"åpne instillinger\", trykk på \"Aktiver denne app som enhetsadministrator\"</string>
@@ -421,7 +421,7 @@
     <string name="d2ts_recents_a11y_hint_title">Slå på tilgjengelighetsservice</string>
     <string name="dt2s_a11y_hint">For å bruke dobbelt-tapping for å sove, slå på tilgjengelighetstjenesten for Lawnchair. Trykk på \"Åpne innstillinger\", velg \"Lawnchair\" og slå på \"Bruk Lawnchair.\" \n\nLawnchair bruker tilgjengelighets \'performGlobalAction\'-metode for å utføre denne handlingen. Dette er en sensitiv tillatelse som gjør det mulig å overvåke andre apper. Lawnchair er imidlertid ikke konfigurert for denne funksjonaliteten og mottar ingen hendelser.</string>
     <string name="dt2s_recents_warning_open_settings">Åpne instillinger</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint"></string>
     <!--
 
     Bug reporting
@@ -609,7 +609,7 @@
     <string name="search_algorithm_global_search_via_asi">Globalt søk (via ASI)</string>
     <string name="custom_search_label">Search engine name</string>
     <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
+    <string name="custom_search_suggestions_url">Search suggestions URL</string>
     <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
     <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
     <!-- Labels of each search result types -->
@@ -653,25 +653,25 @@
     <string name="permissions_photos_videos">Photos and videos access needed</string>
     <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
     <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos_full_description">For å søke i alle bilder og videoer, trenger <xliff:g id="name" example="My App">%1$s</xliff:g> full tilgang til mediebiblioteket ditt.</string>
+    <string name="permissions_photos_videos_grant_full">Gi alle media-tillatelser</string>
+    <string name="permissions_photos_videos_manage_selected">Administrer valgte elementer</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage">Ekstern lagringstilgang er nødvendig</string>
+    <string name="permissions_external_storage_description">For å søke etter dine filer, trenger <xliff:g id="name" example="My App">%1$s</xliff:g> tilgang til din enhets eksterne lagring.</string>
+    <string name="permissions_manage_storage">Tilgang til ekstern lagring er nødvendig</string>
+    <string name="permissions_manage_storage_description">For å vise filer i søkeresultatene, <xliff:g id="name" example="My App">%1$s</xliff:g> kreves tillatelse til å administrere alle filene på enheten din. Denne tillatelsen brukes utelukkende til å liste filer og vil ikke bli brukt til å lese eller endre innholdet i dine personlige filer.</string>
+    <string name="permission_desc_wallpaper_base">For å vise bakgrunnsforvisning og inkludere dem i sikkerhetskopier, <xliff:g id="name" example="My App">%1$s</xliff:g> kreves tillatelse %2$s. Dette skyldes systembegrensninger for tilgang til bakgrunnsdata.</string>
+    <string name="permission_desc_ending_read_all_files">for å lese alle filene på enheten din</string>
+    <string name="permission_desc_ending_manage_all_files">for å administrere alle filer på enheten din</string>
+    <string name="permission_desc_wallpaper_multiple">Flere tillatelser kreves</string>
+    <string name="permission_desc_wallpaper_multiple_desc">For å vise bakgrunnsforvisning og inkludere dem i sikkerhetskopier, <xliff:g id="name" example="My App">%1$s</xliff:g> kreves følgende tillatelser. Dette skyldes systembegrensninger for tilgang til bakgrunnsdata.</string>
+    <string name="permission_label_manage_all_files">Administrere alle filer på enheten</string>
+    <string name="permission_label_read_photos_videos">Les bilder og videoer</string>
+    <string name="manage_storage_access_denied_title">Kan ikke aktivere \"administrere lagringstilgang\"</string>
+    <string name="manage_storage_access_denied_description">På grunn av Play Store-retningslinjer kan <xliff:g id="name" example="My App">%1$s</xliff:g> ikke be om full lagringstilgang her. Last ned <xliff:g id="name" example="My App">%1$s</xliff:g> fra GitHub, for å få tilgang til alle filer. Alternativt kan du gi tilgang til bilder, videoer og lydfiler individuelt i innstillinger.</string>
     <string name="open_permission_settings">Åpne instillinger</string>
     <string name="grant_requested_permissions">Gi tillatelser</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">Tillatelser nødvendig</string>
+    <string name="grant_requested_permissions_tap">Trykk for å gi tillatelser</string>
 </resources>

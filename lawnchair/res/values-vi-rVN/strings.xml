@@ -608,7 +608,7 @@
     <string name="search_algorithm_global_search_via_asi">Tìm kiếm toàn thiết bị (thông qua ASI)</string>
     <string name="custom_search_label">Tên công cụ tìm kiếm</string>
     <string name="custom_search_url">URL công cụ tìm kiếm</string>
-    <string name="custom_search_suggestions_url">URL gợi ý thân mến</string>
+    <string name="custom_search_suggestions_url">Search suggestions URL</string>
     <string name="custom_search_input_hint">&#37; sẽ được thay thế bằng truy vấn tìm kiếm</string>
     <string name="custom_search_suggestions_hint">&#37; sẽ được thay thế bằng truy vấn tìm kiếm. Kết quả phải ở định dạng JSON OpenSearch.</string>
     <!-- Labels of each search result types -->

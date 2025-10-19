@@ -42,25 +42,25 @@
     <string name="deselect_all">إلغاء تحديد الكل</string>
     <string name="inverse_selection">الاختيار العكسي</string>
     <string name="loading">جارٍ التحميل…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">تجاهل</string>
     <string name="download_update">تنزيل التحديث</string>
     <string name="install_update">تثبيت التحديث</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">اعرض التغييرات</string>
     <string name="pro_updated">لقد تم التحديث!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">التحديثات</string>
+    <string name="changes_dialog_error">فشل تطبيق التغييرات</string>
+    <string name="changes_dialog_no_changes">لم يتم العثور على تحديثات</string>
+    <string name="changes_dialog_build_format">إصدار #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">بواسطة %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
-    <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_just_now">الآن</string>
+    <string name="time_minutes_ago">منذ %dدقيقة</string>
+    <string name="time_hours_ago">%dساعة</string>
+    <string name="time_days_ago">%dيوم</string>
+    <string name="time_weeks_ago">%dأسبوع</string>
+    <string name="time_months_ago">%dشهر</string>
+    <string name="time_years_ago">%dعام</string>
     <string name="managed_by_lawnchair">تتم الإدارة بواسطة Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">التفضيلات</string>
@@ -87,11 +87,11 @@
     <string name="grid">شبكة</string>
     <string name="layout">التصميم أو التخطيط</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">عرض الخلفية</string>
     <string name="wallpaper">الخلفية</string>
     <string name="style">أسلوب</string>
     <string name="background_opacity">شفافية الخلفية</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">خلفية منفصلة لشريط بحث</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">تم النسخ إلى الحافظة</string>
     <string name="calculator_search_result_copied_toast">النتائج نسخت إلي الحافظة</string>
@@ -115,7 +115,7 @@
     <string name="folders_filter_duplicates">إظهار التطبيقات الفريدة فقط</string>
     <string name="my_folder_label">مجلدي</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">للقيام بإجراءات معينة (مثل غلق الهاتف) عند تنفيذ إيماءة، يتطلب Lawnchair منح الاذن إلى إمكانية الوصول.\n\nلا يراقب Lawnchair أي إجراء للمستخدم، على الرغم من ذلك فان الاذن مطلوب لجميع خدمات إمكانية الوصول. يتجاهل Lawnchair أي حدث يرسله النظام.\n\nلغلق هاتفك أو فتح \"التطبيقات الأخيرة\"، يستخدم Lawnchair خدمة إمكانية الوصول performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -140,7 +140,7 @@
     <string name="folders_description">عدد الصفوف والأعمدة</string>
     <string name="gestures_label">الإيماءات</string>
     <string name="gestures_description">النقرات والسحب</string>
-    <string name="quickstep_label">Recents screen</string>
+    <string name="quickstep_label">قائمة التطبيقات الأخيرة</string>
     <string name="quickstep_description">زر \"مسح الكل\"، نصف قطر الزاوية</string>
     <string name="about_label">حول التطبيق</string>
     <string name="app_info_drop_target_label">معلومات التطبيق</string>
@@ -155,10 +155,10 @@
     <string name="workspace_increase_max_grid_size_description">زيادة الحجم الأقصى المسموح به لشبكة الشاشة الرئيسية من 10 x 10 إلى 20 x 20</string>
     <string name="always_reload_icons_label">إعادة تحميل الأيقونات دائماً</string>
     <string name="always_reload_icons_description">تجنب استخدام الأيقونات المخزنة مؤقتًا من حزم الأيقونات</string>
-    <string name="icon_swipe_gestures">Icon swipe gestures</string>
-    <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="icon_swipe_gestures">إيماءات السحب للأيقونة</string>
+    <string name="icon_swipe_gestures_description">تنفيذ الإجراءات عند السحب لليسار أو لليمين على الأيقونات بدلاً من نقل الشاشة الرئيسية</string>
+    <string name="show_deck_layout">تخطيط المجموعة</string>
+    <string name="show_deck_layout_description">إظهار خيار التخطيط لإخفاء صفحة التطبيقات وإضافة التطبيقات الجديدة تلقائياً إلى الشاشة الرئيسية</string>
     <string name="recents_lock_unlock">قفل/فتح</string>
     <string name="recents_lock_unlock_description">منع إغلاق التطبيق المحدد عند الضغط على \"مسح الكل\"</string>
     <!--Overlay-->
@@ -223,9 +223,9 @@
     <string name="icon_shape_squircle">مربع دائري</string>
     <string name="icon_shape_teardrop">دمعة</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">أيقونة ذات أربع جوانب</string>
+    <string name="icon_shape_seven_sided_cookie">أيقونة ذات سبع جوانب</string>
+    <string name="icon_shape_arch">قوس</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">شكل أيقونة مخصص</string>
     <string name="custom_icon_shape_create">إنشاء شكل أيقونة مخصص</string>
@@ -249,7 +249,7 @@
     <string name="themed_icon_title">الأيقونات المخصصة</string>
     <string name="themed_icons_off_label">معطل</string>
     <string name="themed_icons_home_label">الشاشة الرئيسية</string>
-    <string name="themed_icons_home_and_drawer_label">Home screen and app drawer</string>
+    <string name="themed_icons_home_and_drawer_label">الشاشة الرئيسية و قائمة التطبيقات</string>
     <string name="lawnicons_not_installed_description">لا توجد حزم أيقونات مدعومة</string>
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">إضافة خطوط</string>
@@ -325,7 +325,7 @@
     <string name="smartspace_widget_description">ماذا تعرض</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">التقويم</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">التاريخ والوقت</string>
     <string name="smartspace_date">التاريخ</string>
     <string name="smartspace_time">الوقت</string>
     <string name="smartspace_time_format">تنسيق الوقت</string>
@@ -363,19 +363,19 @@
     <string name="translate">ترجمة</string>
     <string name="donate">تبرع</string>
     <string name="product">المنتج</string>
-    <string name="design_and_development">Design and development</string>
+    <string name="design_and_development">تصميم و تطوير</string>
     <string name="development">التطوير</string>
     <string name="quickswitch_maintenance">صيانة QuickSwitch</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Support and PR</string>
-    <string name="community">Community</string>
-    <string name="telegram">Telegram</string>
+    <string name="support_and_pr">الدعم والعلاقات العامة</string>
+    <string name="community">المجتمع</string>
+    <string name="telegram">تليجرام</string>
     <string name="news">الأخبار</string>
-    <string name="legal">Legal</string>
+    <string name="legal">قانوني</string>
     <string name="acknowledgements">الشكر والتقدير</string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="contributor_status_active">مفعل</string>
+    <string name="update_check_failed">فشل التحقق من وجود تحديثات</string>
     <!--
 
     Backup and restore
@@ -406,7 +406,7 @@
     <string name="gesture_swipe_right">اسحب لليمين</string>
     <string name="gesture_handler_no_op">لا تفعل شيئاً</string>
     <string name="gesture_handler_sleep">السكون</string>
-    <string name="gesture_handler_recents">Open Recents screen</string>
+    <string name="gesture_handler_recents">فتح قائمة التطبيقات الأخيرة</string>
     <string name="gesture_handler_open_notifications">فتح لوحة الإشعارات</string>
     <string name="gesture_handler_open_app_option">فتح التطبيق</string>
     <string name="gesture_handler_open_app_config">فتح %1$s</string>
@@ -421,7 +421,7 @@
     <string name="d2ts_recents_a11y_hint_title">تشغيل خدمة الوصول</string>
     <string name="dt2s_a11y_hint">لاستخدام ميزة النقر المزدوج للسكون، قم بتفعيل خدمة الوصول الخاصة بـ Lawnchair. اضغط على \"فتح الإعدادات\"، ثم اختر \"Lawnchair\" وقم بتفعيل \"استخدام Lawnchair\". يستخدم Lawnchair طريقة performGlobalAction من خدمات الوصول لتنفيذ هذا الإجراء. هذه إذن حساس يسمح بمراقبة التطبيقات الأخرى. ومع ذلك، لم يتم تكوين Lawnchair لهذه الوظيفة ولا يستقبل أي أحداث.</string>
     <string name="dt2s_recents_warning_open_settings">فتح الإعدادات</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="recents_a11y_hint">لاستخدام فتح التطبيقات الأخيرة، قم بتفعيل خدمة الوصول الخاصة بـ Lawnchair. اضغط على \"فتح الإعدادات\"، ثم اختر \"Lawnchair\" وقم بتفعيل \"استخدام Lawnchair\n\n.\"Lawnchair يستخدم خدمة وصول performGlobalAction لتنفيذ هذا الإجراء. هذا إذن ذو صلاحيات حساسة تسمح بمراقبة التطبيقات الأخرى. ومع ذلك، لم يتم تصميمLawnchair لهذه الوظيفة ولا يستقبل أي أحداث.</string>
     <!--
 
     Bug reporting
@@ -557,7 +557,7 @@
     <string name="max_folder_columns">أقصى عدد من الأعمدة في المجلد</string>
     <string name="max_folder_rows">أقصى عدد من الصفوف في المجلد</string>
     <!-- Quickstep settings -->
-    <string name="quickswitch_ignored_warning">These settings will be ignored as Lawnchair isn\'t set as the Recents screen provider</string>
+    <string name="quickswitch_ignored_warning">سيتم تجاهل هذه الإعدادات لأن Lawnchair لم يتم اختياره كمزود لقائمة التطبيقات الأخيرة</string>
     <string name="quickstep_incompatible">تكامل النظام غير متوافق</string>
     <string name="quickstep_incompatible_description">تم تكوين جهازك ليحتوي على إيماءات النظام (المعروفة باسم Quickstep) المقدمة بواسطة %1$s، ولكن هذا الإصدار من %1$s غير متوافق مع إصدار Android الخاص بك. لمتابعة استخدام جهازك، يرجى إلغاء تثبيت تحديثات %1$s أو تعطيل %1$s كمزود لإيماءات النظام.</string>
     <string name="translucent_background">خلفية شفافة</string>
@@ -569,7 +569,7 @@
     <string name="task_menu_force_stop">إيقاف إجباري</string>
     <string name="window_corner_radius_label">نصف قطر زوايا الشاشة</string>
     <string name="override_window_corner_radius_label">تخصيص نصف قطر زوايا الشاشة</string>
-    <string name="window_corner_radius_description">When you swipe up to open the Recents screen, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it\'s nearly full screen so it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">عند السحب لأعلى لفتح التطبيقات الأخيرة، يتبع التطبيق الحالي إصبعك، ويتغير إلى بطاقة صغيرة. استخدم شريط التمرير هذا لتعديل تحدب الزاوية في البطاقة عندما تكون ملء الشاشة تقريباً بحيث تطابق تحدب زوايا الشاشة.</string>
     <string name="taskbar_label">شريط المهام</string>
     <string name="enable_taskbar_experimental">إظهار شريط المهام (تجريبي)</string>
     <!--
@@ -578,7 +578,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">البحث في التطبيقات، شبكة الإنترنت، والمزيد</string>
     <string name="all_apps_search_bar_hint">البحث عن التطبيقات</string>
     <string name="all_apps_no_search_results">لم يتم العثور على تطبيقات مطابقة لـ \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">من الويب</string>
@@ -588,7 +588,7 @@
     <string name="all_apps_search_market_message">البحث عن المزيد من التطبيقات</string>
     <string name="all_apps_search_on_web_message">البحث على <xliff:g example="Startpage" id="web_search_provider">%1$s</xliff:g></string>
     <string name="error_no_market_or_browser_installed">لا يوجد متجر تطبيقات أو متصفح مثبت</string>
-    <string name="all_apps_search_on_web_general">Search on the web</string>
+    <string name="all_apps_search_on_web_general">البحث في الإنترنت</string>
     <string name="clear_history">مسح سجل البحث</string>
     <string name="search_input_action_clear_results">مسح مربع البحث</string>
     <!-- Search settings -->
@@ -611,30 +611,30 @@
     <string name="search_algorithm_app_search">بحث التطبيقات</string>
     <string name="search_algorithm_global_search_on_device">البحث العالمي (على الجهاز)</string>
     <string name="search_algorithm_global_search_via_asi">البحث العالمي (عبر ASI)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
-    <string name="custom_search_input_hint">&#37;s will be replaced with the search query</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_label">اسم محرك البحث</string>
+    <string name="custom_search_url">عنوان محرك البحث</string>
+    <string name="custom_search_suggestions_url">رابط محرك البحث عن اقتراحات</string>
+    <string name="custom_search_input_hint">&#37;s سيتم استبداله بعبارة البحث</string>
+    <string name="custom_search_suggestions_hint">&#37;s سيتم استبدالها بعبارة البحث. النتائج يجب أن تكون بتنسيق JSON Opensearch.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">إظهار في نتائج البحث</string>
-    <string name="search_pref_result_apps_and_shortcuts_title">Apps and shortcuts</string>
+    <string name="search_pref_result_apps_and_shortcuts_title">التطبيقات والاختصارات</string>
     <string name="search_pref_result_shortcuts_title">اختصارات التطبيقات</string>
     <string name="search_pref_result_people_title">الأشخاص</string>
     <string name="search_pref_result_tips_title">نصائح Pixel</string>
     <string name="search_pref_result_settings_title">إعدادات Android</string>
     <string name="search_pref_result_files_title">ملفات</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
-    <string name="search_pref_result_audio_media_title">Audio files</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_visual_media_title">الصور ومقاطع الفيديو</string>
+    <string name="search_pref_result_audio_media_title">الملفات الصوتية</string>
+    <string name="search_pref_result_all_files_title">كل الملفات</string>
     <string name="search_pref_result_web_title">اقتراحات الويب</string>
     <string name="search_pref_result_history_title">سجل البحث</string>
     <string name="all_apps_search_result_calculator">آلة حاسبة</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_title">بدء البحث</string>
+    <string name="search_empty_state_no_history_subtitle">البحث عن التطبيقات، وجهات الاتصال، والمزيد. ستظهر عمليات البحث الأخيرة هنا.</string>
+    <string name="search_empty_state_history_disabled_subtitle">البحث عن التطبيقات، وجهات الاتصال، والمزيد.</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">البحث عن</string>
     <string name="search_pref_result_files_description">الوسائط، الملفات، والمزيد</string>
     <string name="search_pref_result_contacts_description">جهات الاتصال والمزيد</string>
     <string name="search_pref_result_web_provider_description">عبر <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -649,33 +649,33 @@
     <!-- Permission management -->
     <string name="missing_notification_access_label">َلاحِيَة الوصول إلى الإشعارات مطلوبة</string>
     <string name="missing_notification_access_desc">لعرض نقاط الإشعارات، قم بتشغيل إشعارات التطبيقات لـ <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="warn_contact_permission_title">مطلوب إذن الوصول إلى جهات الاتصال</string>
+    <string name="warn_contact_permission_content">للبحث عن جهات الاتصال، امنح صَلاحِيَة الوصول إلى جهات الاتصال والهاتف ل <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">مطلوب الوصول إلى الملفات الصوتية</string>
+    <string name="permissions_music_audio_description">للبحث عن الملفات الصوتية، يحتاج <xliff:g id="name" example="My App">%1$s</xliff:g> إلى إذن للوصول إلى مكتبة الوسائط الخاصة بك.</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos">مطلوب منح صَلاحِيَة الوصول إلى الصور والفيديو</string>
+    <string name="permissions_photos_videos_description">للبحث عن الصور ومقاطع الفيديو، يحتاج <xliff:g id="name" example="My App">%1$s</xliff:g> إلى إذن للوصول إلى مكتبة الوسائط الخاصة بك.</string>
+    <string name="permissions_photos_videos_full">هل تمنح صَلاحِيَة الوصول إلى كامل مكتبة الوسائط الخاصة بك؟</string>
+    <string name="permissions_photos_videos_full_description">للبحث عن كل صورك ومقاطع الفيديو، يحتاج <xliff:g id="name" example="My App">%1$s</xliff:g> إلى الوصول الكامل لمكتبة الوسائط الخاصة بك.</string>
+    <string name="permissions_photos_videos_grant_full">منح أذونات الوسائط كاملة</string>
+    <string name="permissions_photos_videos_manage_selected">إدارة العناصر المحددة</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage">مطلوب الوصول إلى وحدة التخزين الخارجية</string>
+    <string name="permissions_external_storage_description">للبحث عن ملفاتك، يحتاج <xliff:g id="name" example="My App">%1$s</xliff:g> إلى إذن للوصول إلى وحدة التخزين الخارجية للجهاز.</string>
+    <string name="permissions_manage_storage">مطلوب الوصول إلى وحدة التخزين</string>
+    <string name="permissions_manage_storage_description">لعرض ملفاتك في نتائج البحث، يتطلب <xliff:g id="name" example="My App">%1$s</xliff:g> الإذن لإدارة جميع الملفات على جهازك. يستخدم هذا الإذن فقط لعرض الملفات ولن يستخدم لقراءة أو تغيير محتوى الملفات الخاصة بك.</string>
+    <string name="permission_desc_wallpaper_base">لعرض معاينة الخلفية وإدراجها في النسخ الاحتياطية، يتطلب <xliff:g id="name" example="My App">%1$s</xliff:g> الإذن %2$s. و ذلك بسبب تقييدات النظام المتعلقة بالوصول إلى بيانات خلفية الشاشة.</string>
+    <string name="permission_desc_ending_read_all_files">لقراءة جميع ملفات الجهاز</string>
+    <string name="permission_desc_ending_manage_all_files">لإدارة جميع ملفات الجهاز</string>
+    <string name="permission_desc_wallpaper_multiple">مطلوب العديد من الأذونات</string>
+    <string name="permission_desc_wallpaper_multiple_desc">لعرض معاينة الخلفية وإدراجها في النسخ الاحتياطية، يحتاج <xliff:g id="name" example="My App">%1$s</xliff:g> الأذونات التالية. وذلك بسبب القيود المفروضة من النظام للوصول إلى بيانات خلفية الشاشة.</string>
+    <string name="permission_label_manage_all_files">إدارة جميع ملفات الجهاز</string>
+    <string name="permission_label_read_photos_videos">إذن الوصول إلى الصور ومقاطع الفيديو</string>
+    <string name="manage_storage_access_denied_title">لم يتم منح صَلاحِيَة الوصول إلى وحدة التخزين</string>
+    <string name="manage_storage_access_denied_description">بسبب سياسة جوجل بلاي ، لا يمكن أن يطلب <xliff:g id="name" example="My App">%1$s</xliff:g> الوصول الكامل لوحدة التخزين هنا. للوصول إلى كل الملفات، الرجاء تنزيل <xliff:g id="name" example="My App">%1$s</xliff:g> من GitHub. بدلاً من ذلك، يمكنك منح الوصول إلى الصور و الفيديو والملفات الصوتية بشكل فردي في الإعدادات.</string>
     <string name="open_permission_settings">فتح الإعدادات</string>
     <string name="grant_requested_permissions">منح الأذونات</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">الأذونات مطلوبة</string>
+    <string name="grant_requested_permissions_tap">اضغط لمنح الأذونات</string>
 </resources>

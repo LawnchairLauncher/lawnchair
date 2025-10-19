@@ -42,19 +42,19 @@
     <string name="deselect_all">取消全选</string>
     <string name="inverse_selection">逆向全选</string>
     <string name="loading">正在加载…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">撤销</string>
     <string name="download_update">下载更新</string>
     <string name="install_update">安装更新</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">查看更新</string>
     <string name="pro_updated">你已经是最新版！</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
+    <string name="changes_dialog_title">更新</string>
     <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_no_changes">没有发现更改</string>
     <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
     <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">现在</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
@@ -87,7 +87,7 @@
     <string name="grid">网格</string>
     <string name="layout">布局</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">显示壁纸</string>
     <string name="wallpaper">壁纸</string>
     <string name="style">样式</string>
     <string name="background_opacity">背景不透明度</string>
@@ -368,7 +368,7 @@
     <string name="quickswitch_maintenance">QuickSwitch 维护</string>
     <string name="devops">运维</string>
     <string name="support_and_pr">支持和PR</string>
-    <string name="community">Community</string>
+    <string name="community">社区</string>
     <string name="telegram">Telegram</string>
     <string name="news">新闻</string>
     <string name="legal">Legal</string>
@@ -608,7 +608,7 @@
     <string name="search_algorithm_global_search_via_asi">全局搜索 (通过 ASI)</string>
     <string name="custom_search_label">Search engine name</string>
     <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
+    <string name="custom_search_suggestions_url">Search suggestions URL</string>
     <string name="custom_search_input_hint">&#37;s 将被替换为搜索内容</string>
     <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
     <!-- Labels of each search result types -->

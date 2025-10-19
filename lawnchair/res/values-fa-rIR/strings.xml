@@ -91,7 +91,7 @@
     <string name="wallpaper">کاغذ دیواری</string>
     <string name="style">سبک</string>
     <string name="background_opacity">شفافیت پس‌زمینه</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">پس‌زمینه نوار جستجو جدا شده</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">در کلیپ‌بورد کپی شد</string>
     <string name="calculator_search_result_copied_toast">نتیجه در کلیپ بورد کپی شد</string>
@@ -611,7 +611,7 @@
     <string name="custom_search_url">آدرس موتور جستجو</string>
     <string name="custom_search_suggestions_url">آدرس اینترنتی پیشنهادات جستجو</string>
     <string name="custom_search_input_hint">&#37; با عبارت جستجو جایگزین خواهد شد</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_suggestions_hint">&#37; با عبارت جستجو جایگزین می‌شوند. نتایج باید در قالب جستجو‌آزاد JSON باشند.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">نشان‌دادن در نتایج جستجو</string>
     <string name="search_pref_result_apps_and_shortcuts_title">برنامه‌ها و میانبرها</string>
@@ -646,30 +646,30 @@
     <string name="missing_notification_access_label">دسترسی به اعلان‌ها نیاز است</string>
     <string name="missing_notification_access_desc">برای نمایش نشان اعلان، اعلان‌های برنامه را برای <xliff:g id="name" example="My App">%1$s</xliff:g> روشن کنید</string>
     <string name="warn_contact_permission_title">مجوز مخاطبین مورد نیاز است</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="warn_contact_permission_content">برای جستجوی مخاطبین، مجوزهای مخاطبین و تلفن را به <xliff:g id="name" example="My App">%1$s</xliff:g> اعطا کنید</string>
+    <string name="permissions_music_audio">دسترسی به موسیقی و صدا لازم است</string>
+    <string name="permissions_music_audio_description">برای جستجوی موسیقی و سایر فایل‌های صوتی شما، <xliff:g id="name" example="My App">%1$s</xliff:g> به مجوز دسترسی به کتابخانه رسانه شما نیاز دارد.</string>
     <!-- Photos and videos -->
     <string name="permissions_photos_videos">دسترسی به عکس‌ها و ویدیوها الزامی است</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
+    <string name="permissions_photos_videos_description">برای جستجوی عکس‌ها و ویدیوهای شما، <xliff:g id="name" example="My App">%1$s</xliff:g> به مجوز دسترسی به کتابخانه رسانه شما نیاز دارد.</string>
+    <string name="permissions_photos_videos_full">به کتابخانه کامل رسانه خود دسترسی پیدا کنید؟</string>
+    <string name="permissions_photos_videos_full_description">برای جستجوی تمام عکس‌ها و ویدیوهای شما، <xliff:g id="name" example="My App">%1$s</xliff:g> نیاز به دسترسی کامل به کتابخانه رسانه‌های شما دارد.</string>
     <string name="permissions_photos_videos_grant_full">اعطای مجوز کامل رسانه</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos_manage_selected">مدیریت موارد انتخابی</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
+    <string name="permissions_external_storage">دسترسی به حافظه خارجی مورد نیاز است</string>
+    <string name="permissions_external_storage_description">برای جستجوی فایل‌های شما، <xliff:g id="name" example="My App">%1$s</xliff:g> به مجوز دسترسی به حافظه خارجی دستگاه شما نیاز دارد.</string>
+    <string name="permissions_manage_storage">دسترسی به حافظه مورد نیاز است</string>
+    <string name="permissions_manage_storage_description">برای نمایش فایل‌های شما در نتایج جستجو، <xliff:g id="name" example="My App">%1$s</xliff:g> به مجوز مدیریت تمام فایل‌های دستگاه شما نیاز دارد. این مجوز صرفاً برای فهرست کردن فایل‌ها استفاده می‌شود و برای خواندن یا تغییر محتوای فایل‌های شخصی شما استفاده نخواهد شد.</string>
+    <string name="permission_desc_wallpaper_base">برای نمایش پیش‌نمایش تصاویر پس‌زمینه و قرار دادن آنها در پشتیبان‌گیری‌ها، <xliff:g id="name" example="My App">%1$s</xliff:g> به مجوز %2$s نیاز دارد. این به دلیل محدودیت‌های سیستم برای دسترسی به داده‌های تصویر زمینه است.</string>
+    <string name="permission_desc_ending_read_all_files">برای خواندن تمام فایل‌های موجود در دستگاه شما</string>
+    <string name="permission_desc_ending_manage_all_files">برای مدیریت تمام فایل‌های موجود در دستگاه شما</string>
+    <string name="permission_desc_wallpaper_multiple">مجوزهای متعدد مورد نیاز است</string>
+    <string name="permission_desc_wallpaper_multiple_desc">برای نمایش پیش‌نمایش تصاویر پس‌زمینه و قرار دادن آنها در پشتیبان‌گیری‌ها، <xliff:g id="name" example="My App">%1$s</xliff:g> به مجوزهای زیر نیاز دارد. به دلیل محدودیت‌های سیستم برای دسترسی به داده‌های تصویر زمینه است.</string>
+    <string name="permission_label_manage_all_files">مدیریت فایل‌های دستگاه</string>
     <string name="permission_label_read_photos_videos">خواندن عکسها و ویدیو ها</string>
     <string name="manage_storage_access_denied_title">نمیتوان دسترسی مدیریت حافظه را فعال کرد</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="manage_storage_access_denied_description">به دلیل سیاست‌های فروشگاه Play، <xliff:g id="name" example="My App">%1$s</xliff:g> نمی‌تواند در اینجا درخواست دسترسی کامل به فضای ذخیره‌سازی را بدهد. برای دسترسی به همه فایل‌ها، لطفاً <xliff:g id="name" example="My App">%1$s</xliff:g> را از GitHub دانلود کنید. همچنین، می‌توانید در تنظیمات، دسترسی به عکس‌ها، ویدیوها و فایل‌های صوتی را به صورت جداگانه اعطا کنید.</string>
     <string name="open_permission_settings">بازکردن تنظیمات</string>
     <string name="grant_requested_permissions">اعطای مجوز</string>
     <string name="permissions_needed">مجوزهای مورد نیاز</string>

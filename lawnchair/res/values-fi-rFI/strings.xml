@@ -609,7 +609,7 @@
     <string name="search_algorithm_global_search_via_asi">Globaali haku (ASI:n kautta)</string>
     <string name="custom_search_label">Hakukoneen nimi</string>
     <string name="custom_search_url">Hakukoneen URL</string>
-    <string name="custom_search_suggestions_url">Hakuehdotusten URL-osoite</string>
+    <string name="custom_search_suggestions_url">Search suggestions URL</string>
     <string name="custom_search_input_hint">&#37;s tullaan korvaamaan haun kyselyllä</string>
     <string name="custom_search_suggestions_hint">&#37;s korvataan haun kyselyllä ja tulosten on oltava JSON OpenSearch -muodossa.</string>
     <!-- Labels of each search result types -->

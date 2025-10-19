@@ -227,7 +227,7 @@
     <string name="icon_shape_seven_sided_cookie">칠각형 쿠키</string>
     <string name="icon_shape_arch">아치</string>
     <!-- Custom icon shapes -->
-    <string name="custom_icon_shape">아이콘 모양 사용자 정의</string>
+    <string name="custom_icon_shape">사용자 정의 아이콘 모양</string>
     <string name="custom_icon_shape_create">사용자 정의 아이콘 모양 만들기</string>
     <string name="custom_icon_shape_edit">사용자 정의 아이콘 모양 편집</string>
     <string name="custom_icon_shape_corner">모서리 모양</string>
@@ -258,9 +258,9 @@
     <string name="font_label">폰트 (실험적 기능)</string>
     <string name="fontWorkspace">일반</string>
     <string name="fontHeading">제목</string>
-    <string name="fontHeadingMedium">제목(중간)</string>
+    <string name="fontHeadingMedium">제목 (medium)</string>
     <string name="fontBody">바디</string>
-    <string name="fontBodyMedium">바디(미디엄)</string>
+    <string name="fontBodyMedium">바디 (medium)</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">매우 얇음</string>
@@ -320,7 +320,7 @@
     <string name="smartspace_battery_charging">충전 중</string>
     <string name="smartspace_battery_full">충전 됨</string>
     <string name="smartspace_battery_low">배터리 부족</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s 후 충전완료"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — %2$s 후 충전 완료"</string>
     <string name="smartspace_widget">한눈에 보기</string>
     <string name="smartspace_widget_description">표시할 항목</string>
     <!-- Data and time format settings -->
@@ -372,7 +372,7 @@
     <string name="telegram">텔레그램</string>
     <string name="news">뉴스</string>
     <string name="legal">Legal</string>
-    <string name="acknowledgements">감사의 말</string>
+    <string name="acknowledgements">오픈소스 라이선스</string>
     <string name="privacy_policy">개인정보 처리방침</string>
     <string name="contributor_status_active">작동 중</string>
     <string name="update_check_failed">업데이트를 확인하는데 실패하였습니다</string>
@@ -615,12 +615,12 @@
     <string name="show_search_result_types">검색 결과에 보여주기</string>
     <string name="search_pref_result_apps_and_shortcuts_title">앱과 바로가기</string>
     <string name="search_pref_result_shortcuts_title">앱 바로가기</string>
-    <string name="search_pref_result_people_title">사람들</string>
+    <string name="search_pref_result_people_title">사람</string>
     <string name="search_pref_result_tips_title">Pixel 도움말</string>
     <string name="search_pref_result_settings_title">Android 설정</string>
     <string name="search_pref_result_files_title">파일</string>
     <string name="search_pref_result_visual_media_title">사진과 비디오</string>
-    <string name="search_pref_result_audio_media_title">오디오 파일</string>
+    <string name="search_pref_result_audio_media_title">오디오</string>
     <string name="search_pref_result_all_files_title">모든 파일</string>
     <string name="search_pref_result_web_title">웹 제안</string>
     <string name="search_pref_result_history_title">검색 기록</string>
@@ -645,7 +645,7 @@
     <string name="missing_notification_access_label">알림 액세스가 필요합니다.</string>
     <string name="missing_notification_access_desc">알림 점을 표시하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 대한 앱 알림을 켜세요.</string>
     <string name="warn_contact_permission_title">연락처 권한이 필요합니다</string>
-    <string name="warn_contact_permission_content">연락처를 검색하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 연락처 및 전화 권한을 부여하세요</string>
+    <string name="warn_contact_permission_content">연락처를 검색하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 연락처 권한을 부여하세요</string>
     <string name="permissions_music_audio">음악과 오디오 권한이 필요합니다</string>
     <string name="permissions_music_audio_description">음악 및 기타 오디오 파일을 검색하려면 <xliff:g id="name" example="My App">%1$s</xliff:g>에 미디어 라이브러리에 대한 액세스 권한이 필요합니다.</string>
     <!-- Photos and videos -->

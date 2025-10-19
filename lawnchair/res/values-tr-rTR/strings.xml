@@ -609,7 +609,7 @@
     <string name="search_algorithm_global_search_via_asi">Genel arama (ASI aracılığıyla)</string>
     <string name="custom_search_label">Makine ismi aratın</string>
     <string name="custom_search_url">Makine URL\'si aratın</string>
-    <string name="custom_search_suggestions_url">Önerilen URL\'leri aratın</string>
+    <string name="custom_search_suggestions_url">Search suggestions URL</string>
     <string name="custom_search_input_hint">&#37; arama sorgusu ile değiştirilecek</string>
     <string name="custom_search_suggestions_hint">&#37; arama sorgusu ile değiştirilecek. Sonuçlar JSON OpenSearch biçiminde olmalı.</string>
     <!-- Labels of each search result types -->
