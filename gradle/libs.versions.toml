@@ -1,6 +1,6 @@
 [versions]
 accompanist = "0.37.3"
-benchmarkMacroJunit4 = "1.4.0"
+benchmarkMacroJunit4 = "1.4.1"
 concurrentFutures = "1.3.0"
 coreAnimation = "1.0.0"
 coreKtx = "1.17.0"
