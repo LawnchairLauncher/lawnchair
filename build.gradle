@@ -79,9 +79,6 @@ allprojects {
 
     tasks.withType(KotlinCompile).configureEach {
         compilerOptions {
-            freeCompilerArgs.add(
-                "-Xjvm-default=all",
-            )
             jvmTarget = JvmTarget.JVM_17
         }
     }
