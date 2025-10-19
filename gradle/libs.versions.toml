@@ -8,7 +8,7 @@ error_prone_annotations = "2.41.0"
 espressoCore = "3.7.0"
 junit = "1.3.0"
 opto = "1.0.18"
-protocVersion = "4.32.0"
+protocVersion = "4.33.0"
 retrofit = "3.0.0"
 room = "2.7.2"
 
