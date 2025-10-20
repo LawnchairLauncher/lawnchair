@@ -19,7 +19,7 @@ import app.lawnchair.search.algorithms.engine.SearchSettingsSectionBuilder
 import app.lawnchair.search.algorithms.engine.SectionBuilder
 import app.lawnchair.search.algorithms.engine.SettingsSectionBuilder
 import app.lawnchair.search.algorithms.engine.WebSuggestionsSectionBuilder
-import app.lawnchair.search.algorithms.engine.provider.AppSearchProvider
+import app.lawnchair.search.algorithms.engine.provider.apps.AppSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.CalculatorSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.ContactsSearchProvider
 import app.lawnchair.search.algorithms.engine.provider.FileSearchProvider
