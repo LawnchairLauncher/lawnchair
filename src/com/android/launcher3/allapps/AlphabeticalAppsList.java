@@ -431,6 +431,21 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         return position;
     }
 
+
+    /**
+     * Checks if the provided list of apps are from the work/private profile.
+     */
+    protected boolean isWorkOrPrivateSpace(List<AppInfo> appList) {
+        PrivateProfileManager mPrivateProfileManager = getPrivateProfileManager();
+        if (appList.isEmpty()) {
+            return false;
+        }
+        return appList.stream().anyMatch(info ->
+                (mWorkProviderManager != null && mWorkProviderManager.getItemInfoMatcher().test(info))
+                        || (mPrivateProfileManager != null
+                        && mPrivateProfileManager.getItemInfoMatcher().test(info)));
+    }
+    
     /**
      * Determines the corner regions that should be rounded for a specific app icon based on its
      * position in a grid. Apps that should only be cared about rounding are the apps in the last
