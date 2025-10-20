@@ -84,7 +84,7 @@ class LawnchairAlphabeticalAppsList<T>(
         var position = startPosition
 
         // Show app drawer folders only on main profile, to prevent state complexity
-        if (!isWorkOrPrivateSpace(appList)) return super.addAppsWithSections(appList, position)
+        if (isWorkOrPrivateSpace(appList)) return super.addAppsWithSections(appList, position)
 
         if (!drawerListDefault) {
             val categorizedApps = potsManager.categorizeApps(appList)
