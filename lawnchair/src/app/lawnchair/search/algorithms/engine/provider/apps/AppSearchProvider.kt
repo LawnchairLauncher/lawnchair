@@ -47,20 +47,17 @@ object AppSearchProvider {
             .toList()
 
         return filteredApps
-            .asSequence()
-            .map { app ->
+            .mapNotNull { app ->
                 val matchResult = AppMatcher.match(app.title.toString(), queryTextLower)
-                Pair(app, matchResult)
+                if (matchResult.type == MatchType.NO_MATCH) null else Pair(app, matchResult)
             }
-            .filter { it.second.type != MatchType.NO_MATCH }
             .sortedWith(
                 compareBy(
                     { it.second.type.priority },
                     { -it.second.score },
                 ),
             )
-            .take(maxResultsCount)
             .map { it.first }
-            .toList()
+            .take(maxResultsCount)
     }
 }
