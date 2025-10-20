@@ -436,14 +436,13 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      * Checks if the provided list of apps are from the work/private profile.
      */
     protected boolean isWorkOrPrivateSpace(List<AppInfo> appList) {
-        PrivateProfileManager mPrivateProfileManager = getPrivateProfileManager();
         if (appList.isEmpty()) {
             return false;
         }
         return appList.stream().anyMatch(info ->
                 (mWorkProviderManager != null && mWorkProviderManager.getItemInfoMatcher().test(info))
-                        || (mPrivateProfileManager != null
-                        && mPrivateProfileManager.getItemInfoMatcher().test(info)));
+                        || (mPrivateProviderManager != null
+                        && mPrivateProviderManager.getItemInfoMatcher().test(info)));
     }
     
     /**
