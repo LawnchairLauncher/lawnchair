@@ -8,9 +8,8 @@
     ],
     packageRules: [
         {
-            groupName: 'Kotlin and KSP',
+            groupName: 'Kotlin',
             matchPackageNames: [
-                'com.google.devtools.ksp{/,}**',
                 '/org.jetbrains.kotlin.*/'
             ],
         },

@@ -51,7 +51,6 @@ window = "1.5.0"
 
 agp = "8.13.0"
 baselineprofile = "1.4.1"
-ksp = "2.1.10-1.0.31"
 kotlin = "2.1.10"
 protobuf = "0.9.5"
 licensee = "1.14.1"
@@ -68,7 +67,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+google-ksp = "com.google.devtools.ksp:2.3.0"
 google-protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }
 cash-licensee = { id = "app.cash.licensee", version.ref = "licensee" }
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
