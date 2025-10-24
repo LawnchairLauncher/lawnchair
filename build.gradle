@@ -1,22 +1,23 @@
 import app.cash.licensee.SpdxId
 import com.android.build.gradle.api.AndroidBasePlugin
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.13.0"
-    id 'com.android.library' version "8.13.0" apply false
-    id 'com.android.test' version '8.13.0' apply false
-    id 'androidx.baselineprofile' version '1.4.1'
-    id 'org.jetbrains.kotlin.android' version "2.1.10"
-    id 'org.jetbrains.kotlin.plugin.compose' version "2.1.10"
-    id 'org.jetbrains.kotlin.plugin.parcelize' version "2.1.10"
-    id 'org.jetbrains.kotlin.plugin.serialization' version "2.1.10"
-    id "com.google.devtools.ksp" version "2.1.10-1.0.31"
-    id 'com.google.protobuf' version "0.9.5"
-    id 'app.cash.licensee' version "1.14.1"
-    id 'dev.rikka.tools.refine' version "4.4.0"
-    id 'com.diffplug.spotless' version '8.0.0'
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.test) apply false
+    alias(libs.plugins.androidx.baselineprofile)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.cash.licensee)
+    alias(libs.plugins.rikka.refine)
+    alias(libs.plugins.diffplug.spotless)
 }
 
 
@@ -39,21 +40,20 @@ allprojects {
                 checkReleaseBuilds false
             }
             compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
+                sourceCompatibility = libs.versions.jdkRelease.get()
+                targetCompatibility = libs.versions.jdkRelease.get()
             }
         }
         dependencies {
-            implementation 'androidx.core:core-ktx:1.17.0'
+            implementation libs.androidx.core.ktx
         }
     }
 
     plugins.withId('com.google.protobuf') {
-        def protocVersion = '4.32.1'
         protobuf {
             // Configure the protoc executable
             protoc {
-                artifact = "com.google.protobuf:protoc:${protocVersion}"
+                artifact = "com.google.protobuf:protoc:${libs.versions.protocVersion.get()}"
             }
             generateProtoTasks {
                 all().configureEach { task ->
@@ -67,29 +67,35 @@ allprojects {
             }
         }
         dependencies {
-            implementation "com.google.protobuf:protobuf-javalite:$protocVersion"
+            implementation libs.protobuf.javalite
         }
     }
 
     plugins.withType(JavaBasePlugin).configureEach {
         java {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = libs.versions.jdkRelease.get()
+            targetCompatibility = libs.versions.jdkRelease.get()
         }
     }
 
     tasks.withType(KotlinCompile).configureEach {
         compilerOptions {
-            freeCompilerArgs.add(
-                "-Xjvm-default=all",
-            )
-            jvmTarget = JvmTarget.JVM_17
+            jvmDefault = JvmDefaultMode.ENABLE
+            jvmTarget = JvmTarget.fromTarget(libs.versions.jdkRelease.get())
+        }
+    }
+
+    configurations.configureEach {
+        resolutionStrategy.eachDependency {
+            // Fix duplicate class kotlinx.android.parcel.* found in these 2 dependencies.
+            if (requested.module == libs.kotlin.androidExtensionRuntime.get().module) {
+                useTarget(libs.kotlin.parcelizeRuntime)
+            }
         }
     }
 
     ext {
         FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-        daggerVersion = '2.55'
 
         addFrameworkJar = { String name ->
             def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
@@ -98,10 +104,12 @@ allprojects {
             }
             gradle.projectsEvaluated {
                 tasks.withType(JavaCompile).configureEach {
+                    // Make sure the frameworkJar is always first in the classpath.
                     classpath = files(frameworkJar, classpath)
                 }
                 tasks.withType(KotlinCompile).configureEach {
-                    libraries.from(files(frameworkJar))
+                    // Make sure the frameworkJar is always first in the classpath.
+                    libraries.setFrom files(frameworkJar, libraries)
                 }
             }
             dependencies {
@@ -343,9 +351,7 @@ android {
 
 composeCompiler {
     stabilityConfigurationFiles.addAll(
-        [
-            layout.projectDirectory.file("compose_compiler_config.conf"),
-        ]
+        layout.projectDirectory.file("compose_compiler_config.conf"),
     )
     reportsDestination = layout.buildDirectory.dir("compose_build_reports")
 }
@@ -378,91 +384,80 @@ dependencies {
     withQuickstepImplementation projects.compatLib.compatLibVV
     withQuickstepImplementation projects.wmshell
     withQuickstepImplementation projects.flags
-    implementation 'androidx.dynamicanimation:dynamicanimation:1.1.0'
+    implementation libs.androidx.dynamicanimation
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-15.jar')
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-15.jar')
     withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-15.jar')
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+    coreLibraryDesugaring libs.android.desugarJdkLibs
 
-    implementation 'androidx.profileinstaller:profileinstaller:1.4.1'
+    implementation libs.androidx.profileinstaller
     baselineProfile projects.baselineProfile
 
-    implementation "androidx.recyclerview:recyclerview:1.4.0"
-    implementation "androidx.preference:preference-ktx:1.2.1"
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.preference.ktx
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1'
-    implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
-    implementation 'dev.rikka.tools.refine:runtime:4.4.0'
+    implementation libs.kotlinx.coroutines.android
+    implementation libs.kotlinx.serialization.json
+    implementation libs.chickenhook.restrictionbypass
+    implementation libs.rikka.refine.runtime
 
-    implementation platform("androidx.compose:compose-bom:2025.10.00")
-    implementation "androidx.compose.ui:ui"
-    implementation "androidx.compose.ui:ui-util"
-    debugImplementation "androidx.compose.ui:ui-tooling"
-    implementation "androidx.compose.ui:ui-tooling-preview"
-    implementation "androidx.compose.ui:ui-text-google-fonts"
-    implementation "androidx.compose.foundation:foundation"
-    implementation "androidx.compose.material:material-icons-extended"
-    implementation "androidx.compose.material:material"
-    implementation "androidx.compose.runtime:runtime-livedata"
-    implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.compose.material3:material3-window-size-class'
-    implementation "androidx.activity:activity-compose:1.11.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4"
-    implementation "androidx.navigation:navigation-compose:2.9.5"
-    implementation "androidx.constraintlayout:constraintlayout:2.2.1"
-    implementation "androidx.palette:palette-ktx:1.0.0"
-    implementation "androidx.slice:slice-core:1.1.0-alpha02"
-    def accompanistVersion = '0.37.3'
-    implementation "com.google.accompanist:accompanist-adaptive:$accompanistVersion"
-    implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
-    implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
-    implementation "com.google.android.material:material:1.13.0"
-    implementation "io.github.fornewid:material-motion-compose-core:1.2.1"
-    implementation 'dev.kdrag0n:colorkt:1.0.5'
-    implementation 'io.coil-kt:coil-compose:2.7.0'
-    implementation 'me.xdrop:fuzzywuzzy:1.4.0'
-    def optoVersion = "1.0.18"
-    implementation "com.patrykmichalik.opto:domain:$optoVersion"
-    implementation "com.patrykmichalik.opto:core:$optoVersion"
-    implementation "com.patrykmichalik.opto:compose:$optoVersion"
-    implementation "androidx.datastore:datastore-preferences:1.1.7"
-    def retrofitVersion = "3.0.0"
-    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-kotlinx-serialization:$retrofitVersion"
-    implementation "com.squareup.okhttp3:okhttp:5.2.1"
+    implementation platform(libs.compose.bom)
+    implementation libs.compose.ui
+    implementation libs.compose.ui.util
+    debugImplementation libs.compose.ui.tooling
+    implementation libs.compose.ui.tooling.preview
+    implementation libs.compose.ui.google.fonts
+    implementation libs.compose.foundation
+    implementation libs.compose.material.icons
+    implementation libs.compose.material
+    implementation libs.compose.runtime.livedata
+    implementation libs.compose.material3
+    implementation libs.compose.material3.windowSizeClass
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.lifecycle.viewmodel.compose
+    implementation libs.androidx.navigation.compose
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.palette.ktx
+    implementation libs.androidx.slice.core
+    implementation libs.bundles.accompanist
+    implementation libs.google.material
+    implementation libs.material.motion.compose
+    implementation libs.kdrag0n.colorkt
+    implementation libs.coil.compose
+    implementation libs.xdrop.fuzzywuzzy
 
-    def roomVersion = '2.7.2'
-    implementation "androidx.room:room-runtime:$roomVersion"
-    implementation "androidx.room:room-ktx:$roomVersion"
-    ksp "androidx.room:room-compiler:$roomVersion"
+    implementation libs.bundles.opto
+    implementation libs.androidx.datastore.preferences
 
-    implementation "com.github.topjohnwu.libsu:service:6.0.0"
+    implementation libs.bundles.retrofit
+
+    implementation libs.bundles.room
+    ksp libs.room.compiler
+
+    implementation libs.libsu.service
 
     // Persian Date
-    implementation 'com.github.samanzamani:PersianDate:1.7.1'
+    implementation libs.persian.date
 
-    implementation 'com.airbnb.android:lottie:6.6.10'
+    implementation libs.airbnb.lottie
 
     // Compose drag and drop library
-    implementation 'sh.calvin.reorderable:reorderable:2.5.1'
+    implementation libs.reorderable
 
     // Smartspacer
-    implementation('com.kieronquinn.smartspacer:sdk-client:1.1.2') {
+    implementation(libs.smartspacer.sdk) {
         exclude group: "com.github.skydoves", module: "balloon"
     }
 
-    implementation 'io.github.hokofly:hoko-blur:1.5.5'
+    implementation libs.hoko.blur
 
-    implementation "androidx.window:window:1.5.0"
+    implementation libs.androidx.window
 }
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
-    arg("room.generateKotlin", "true")
-    arg("room.incremental", "true")
 }
 
 
@@ -488,8 +483,8 @@ licensee {
     allow(SpdxId.Apache_20)
     allow(SpdxId.BSD_3_Clause)
     allow(SpdxId.GPL_20_or_later)
-    allowDependency("com.github.topjohnwu.libsu", "core", "6.0.0")
-    allowDependency("com.github.topjohnwu.libsu", "service", "6.0.0")
+    allowDependency(libs.libsu.core)
+    allowDependency(libs.libsu.service)
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
     allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
     allowUrl("https://opensource.org/licenses/mit-license.php")

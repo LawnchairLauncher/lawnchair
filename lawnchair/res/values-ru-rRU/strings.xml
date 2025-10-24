@@ -42,19 +42,19 @@
     <string name="deselect_all">Снять все отметки</string>
     <string name="inverse_selection">Инвертировать выбор</string>
     <string name="loading">Загрузка…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">Отменить</string>
     <string name="download_update">Скачать обновление</string>
     <string name="install_update">Установить обновление</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">Просмотр изменений</string>
     <string name="pro_updated">Нет доступных обновлений!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">Обновления</string>
+    <string name="changes_dialog_error">Не удалось загрузить изменения</string>
+    <string name="changes_dialog_no_changes">Изменений не найдено</string>
+    <string name="changes_dialog_build_format">Сборка #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">от %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">только что</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
@@ -87,11 +87,11 @@
     <string name="grid">Сетка</string>
     <string name="layout">Макет</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Показать обои</string>
     <string name="wallpaper">На основе обоев</string>
     <string name="style">Стиль</string>
     <string name="background_opacity">Прозрачность фона</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">Фон отдельной строки поиска</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Скопировано в буфер обмена</string>
     <string name="calculator_search_result_copied_toast">Результат скопирован в буфер обмена</string>
@@ -157,8 +157,8 @@
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
     <string name="icon_swipe_gestures">Свайп-жесты по иконкам</string>
     <string name="icon_swipe_gestures_description">Выполнять действия при смахивании влево или вправо по иконкам вместо прокрутки экрана</string>
-    <string name="show_deck_layout">Deck layout</string>
-    <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="show_deck_layout">Стиль колоды</string>
+    <string name="show_deck_layout_description">Показывать опцию для скрытия Меню приложений и автоматического добавления новых приложений на главный экран</string>
     <string name="recents_lock_unlock">Блокировка/разблокировка</string>
     <string name="recents_lock_unlock_description">Запретить закрытие выбранного приложения при нажатии кнопки \"Очистить всё\"</string>
     <!--Overlay-->
@@ -223,9 +223,9 @@
     <string name="icon_shape_squircle">Квадратный круг</string>
     <string name="icon_shape_teardrop">Капля</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">4-сторонняя печенька</string>
+    <string name="icon_shape_seven_sided_cookie">7-сторонняя печенька</string>
+    <string name="icon_shape_arch">Арка</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Польз. форма иконок</string>
     <string name="custom_icon_shape_create">Создать свою форму иконок</string>
@@ -368,14 +368,14 @@
     <string name="quickswitch_maintenance">Поддержка QuickSwitch</string>
     <string name="devops">DevOps-инженер</string>
     <string name="support_and_pr">Служба поддержки и PR</string>
-    <string name="community">Community</string>
+    <string name="community">Сообщество</string>
     <string name="telegram">Telegram</string>
     <string name="news">Новости</string>
-    <string name="legal">Legal</string>
+    <string name="legal">Юридич. информация</string>
     <string name="acknowledgements">Выражаем благодарность</string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="contributor_status_active">Активные участники</string>
+    <string name="update_check_failed">Ошибка проверки обновлений</string>
     <!--
 
     Backup and restore
@@ -576,7 +576,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">Поиск приложений, веб-приложений и другого контента</string>
     <string name="all_apps_search_bar_hint">Поиск приложений</string>
     <string name="all_apps_no_search_results">Не найдено приложений по запросу \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">Из Интернета</string>
@@ -609,11 +609,11 @@
     <string name="search_algorithm_app_search">Поиск приложений</string>
     <string name="search_algorithm_global_search_on_device">Глобальный поиск (на устройстве)</string>
     <string name="search_algorithm_global_search_via_asi">Глобальный поиск (с помощью ASI)</string>
-    <string name="custom_search_label">Search engine name</string>
-    <string name="custom_search_url">Search engine URL</string>
-    <string name="custom_search_suggestions_url">Dearch suggestions URL</string>
+    <string name="custom_search_label">Имя поисковой системы</string>
+    <string name="custom_search_url">URL поисковой системы</string>
+    <string name="custom_search_suggestions_url">Search suggestions URL</string>
     <string name="custom_search_input_hint">&#37; будет заменен на поисковый запрос</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_suggestions_hint">&#37; будет заменен на поисковый запрос. Результаты должны быть в формате JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Показывать в результатах поиска</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Приложения и Ярлыки</string>
@@ -622,17 +622,17 @@
     <string name="search_pref_result_tips_title">Советы Pixel</string>
     <string name="search_pref_result_settings_title">Настройки Android</string>
     <string name="search_pref_result_files_title">Файл</string>
-    <string name="search_pref_result_visual_media_title">Photos and videos</string>
-    <string name="search_pref_result_audio_media_title">Audio files</string>
-    <string name="search_pref_result_all_files_title">All files</string>
+    <string name="search_pref_result_visual_media_title">Фото и видео</string>
+    <string name="search_pref_result_audio_media_title">Аудио-файлы</string>
+    <string name="search_pref_result_all_files_title">Все файлы</string>
     <string name="search_pref_result_web_title">Веб-подсказки</string>
     <string name="search_pref_result_history_title">История поиска</string>
     <string name="all_apps_search_result_calculator">Калькулятор</string>
-    <string name="search_empty_state_title">Start searching</string>
-    <string name="search_empty_state_no_history_subtitle">Find apps, contacts, and more. Your recent searches will appear here.</string>
-    <string name="search_empty_state_history_disabled_subtitle">Find apps, contacts, and more.</string>
+    <string name="search_empty_state_title">Начать поиск</string>
+    <string name="search_empty_state_no_history_subtitle">Запустите поиск приложений, контактов и другого контента. Ваши недавние поисковые запросы появятся здесь.</string>
+    <string name="search_empty_state_history_disabled_subtitle">Запустить поиск приложений, контактов и другого контента.</string>
     <!-- Description for each search result type -->
-    <string name="search_pref_files_search_on">Search on</string>
+    <string name="search_pref_files_search_on">Поиск по запросу: </string>
     <string name="search_pref_result_files_description">Медиа, файлы и другое</string>
     <string name="search_pref_result_contacts_description">Контакты и другое</string>
     <string name="search_pref_result_web_provider_description">Источник: <xliff:g id="web_search_provider">%1$s</xliff:g></string>
@@ -646,34 +646,34 @@
     <string name="max_web_suggestion_delay">Макс. задержка веб-подсказок</string>
     <!-- Permission management -->
     <string name="missing_notification_access_label">Необходимо разрешение доступа к уведомлениям</string>
-    <string name="missing_notification_access_desc">Для отображения Точек уведомлений, включите уведомления для приложения  <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="warn_contact_permission_title">Contacts permission needed</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="permissions_music_audio">Music and audio access needed</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="missing_notification_access_desc">Для отображения Точек уведомлений включите уведомления для приложения  <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="warn_contact_permission_title">Требуется доступ к контактам</string>
+    <string name="warn_contact_permission_content">Для поиска контактов предоставьте доступ к контактам и телефону приложению <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_music_audio">Необходим доступ к музыке и аудио-файлам</string>
+    <string name="permissions_music_audio_description">Для поиска музыки и аудио-файлов предоставьте доступ к библиотеке медиа-файлов приложению <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos">Необходим доступ к фото- и видео-файлам</string>
+    <string name="permissions_photos_videos_description">Для поиска фото- и видео-файлов предоставьте доступ к библиотеке медиа-файлов приложению <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_photos_videos_full">Разрешить полный доступ ко всей библиотеке медиа-файлов? </string>
+    <string name="permissions_photos_videos_full_description">Для поиска фото- и видео-файлов предоставьте полный доступ ко всей библиотеке медиа-файлов приложению <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="permissions_photos_videos_grant_full">Предоставить полный доступ к медиа-файлам</string>
+    <string name="permissions_photos_videos_manage_selected">Разрешить управлять выбранными элементами</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage">Необходим доступ к внешнему хранилищу</string>
+    <string name="permissions_external_storage_description">Для поиска файлов приложению <xliff:g id="name" example="My App">%1$s</xliff:g> требуется разрешение на доступ к внешнему хранилищу вашего устройства.</string>
+    <string name="permissions_manage_storage">Необходим доступ на управление хранилищем</string>
+    <string name="permissions_manage_storage_description">Для отображения файлов в результатах поиск приложению <xliff:g id="name" example="My App">%1$s</xliff:g> требуется разрешение на управление всеми файлами на устройстве. Это разрешение используется исключительно для составления списка файлов и не будет использоваться для чтения или изменения содержимого персональных файлов.</string>
+    <string name="permission_desc_wallpaper_base">Для отображения предпросмотра обоев и включения их в резервные копии приложению <xliff:g id="name" example="My App">%1$s</xliff:g> требуется соответствующее разрешение. Это обусловлено системным ограничением доступа к данным обоев.</string>
+    <string name="permission_desc_ending_read_all_files">на чтение всех файлов устройства</string>
+    <string name="permission_desc_ending_manage_all_files">на управление всеми файлами устройства</string>
+    <string name="permission_desc_wallpaper_multiple">Требуется выдача нескольких разрешений</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Для отображения предпросмотра обоев и включения их в резервные копии, приложению <xliff:g id="name" example="My App">%1$s</xliff:g> требуется соответствующее разрешение. Это обусловлено системным ограничением доступа к данным обоев.</string>
+    <string name="permission_label_manage_all_files">Разрешить управлять всеми файлами на устройстве</string>
+    <string name="permission_label_read_photos_videos">Разрешить просмотр фото- и видео-файлов</string>
+    <string name="manage_storage_access_denied_title">Не удается включить управление доступом к хранилищу</string>
+    <string name="manage_storage_access_denied_description">В соответствии с политикой Play Store, приложение <xliff:g id="name" example="My App">%1$s</xliff:g> не может запросить полный доступ к хранилищу. Для полного доступа ко всем файлам загрузите <xliff:g id="name" example="My App">%1$s</xliff:g> с GitHub. Кроме того, вы можете индивидуально предоставить доступ к фотографиям, видео и аудио файлам в настройках.</string>
     <string name="open_permission_settings">Открыть настройки</string>
     <string name="grant_requested_permissions">Предоставить доступ</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">Требуется выдача разрешений</string>
+    <string name="grant_requested_permissions_tap">Нажмите, чтобы предоставить разрешения</string>
 </resources>

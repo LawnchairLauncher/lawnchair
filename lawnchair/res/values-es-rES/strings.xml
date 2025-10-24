@@ -609,7 +609,7 @@
     <string name="search_algorithm_global_search_via_asi">Búsqueda global (a través de ASI)</string>
     <string name="custom_search_label">Nombre del buscador</string>
     <string name="custom_search_url">URL del buscador</string>
-    <string name="custom_search_suggestions_url">URL de sugerencias de búsqueda</string>
+    <string name="custom_search_suggestions_url">Search suggestions URL</string>
     <string name="custom_search_input_hint">&#37;s se reemplazará con la consulta de búsqueda</string>
     <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
     <!-- Labels of each search result types -->

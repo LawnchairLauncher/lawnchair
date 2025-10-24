@@ -609,7 +609,7 @@
     <string name="search_algorithm_global_search_via_asi">Algemeen zoeken (via ASI)</string>
     <string name="custom_search_label">Naam zoekmachine</string>
     <string name="custom_search_url">Zoekmachine URL</string>
-    <string name="custom_search_suggestions_url">Zoeksuggestie URL</string>
+    <string name="custom_search_suggestions_url">Zoeksuggesties URL</string>
     <string name="custom_search_input_hint">&#37;s zal worden vervangen door de zoekopdracht</string>
     <string name="custom_search_suggestions_hint">&#37;s wordt vervangen door de zoekopdracht. Resultaten moeten in JSON OpenSearch formaat zijn.</string>
     <!-- Labels of each search result types -->

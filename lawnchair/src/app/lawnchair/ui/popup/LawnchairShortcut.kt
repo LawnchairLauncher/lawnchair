@@ -94,19 +94,24 @@ class LawnchairShortcut {
             if (mItemInfo.screenId != NO_ID && icon is BitmapInfo.Extender) {
                 icon = icon.getThemedDrawable(launcher)
             }
-            val launcherActivityInfo = outObj[0] as LauncherActivityInfo
-            val defaultTitle = launcherActivityInfo.label.toString()
+            val launcherActivityInfo = outObj[0] as LauncherActivityInfo?
+            if (launcherActivityInfo != null) {
+                val defaultTitle = launcherActivityInfo.label.toString()
 
-            AbstractFloatingView.closeAllOpenViews(launcher)
-            ComposeBottomSheet.show(
-                context = launcher,
-                contentPaddings = PaddingValues(bottom = 64.dp),
-            ) {
-                CustomizeAppDialog(
-                    icon = icon,
-                    defaultTitle = defaultTitle,
-                    componentKey = appInfo.toComponentKey(),
-                ) { close(true) }
+                AbstractFloatingView.closeAllOpenViews(launcher)
+                ComposeBottomSheet.show(
+                    context = launcher,
+                    contentPaddings = PaddingValues(bottom = 64.dp),
+                ) {
+                    CustomizeAppDialog(
+                        icon = icon,
+                        defaultTitle = defaultTitle,
+                        componentKey = appInfo.toComponentKey(),
+                    ) { close(true) }
+                }
+            } else {
+                Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show()
+                AbstractFloatingView.closeAllOpenViews(launcher)
             }
         }
     }

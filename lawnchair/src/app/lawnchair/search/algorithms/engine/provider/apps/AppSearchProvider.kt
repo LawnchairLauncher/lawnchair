@@ -1,4 +1,4 @@
-package app.lawnchair.search.algorithms.engine.provider
+package app.lawnchair.search.algorithms.engine.provider.apps
 
 import android.content.Context
 import app.lawnchair.preferences2.PreferenceManager2
@@ -9,8 +9,6 @@ import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.search.StringMatcherUtility
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
-import me.xdrop.fuzzywuzzy.FuzzySearch
-import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 
 object AppSearchProvider {
 
@@ -47,15 +45,19 @@ object AppSearchProvider {
         val filteredApps = apps.asSequence()
             .filterHiddenApps(queryTextLower, hiddenApps, hiddenAppsInSearch)
             .toList()
-        val matches = FuzzySearch.extractSorted(
-            queryTextLower,
-            filteredApps,
-            { it.sectionName + it.title },
-            WeightedRatio(),
-            65,
-        )
 
-        return matches.take(maxResultsCount)
-            .map { it.referent }
+        return filteredApps
+            .mapNotNull { app ->
+                val matchResult = AppMatcher.match(app.title.toString(), queryTextLower)
+                if (matchResult.type == MatchType.NO_MATCH) null else Pair(app, matchResult)
+            }
+            .sortedWith(
+                compareBy(
+                    { it.second.type.priority },
+                    { -it.second.score },
+                ),
+            )
+            .map { it.first }
+            .take(maxResultsCount)
     }
 }

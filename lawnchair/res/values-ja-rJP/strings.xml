@@ -608,7 +608,7 @@
     <string name="search_algorithm_global_search_via_asi">グローバル検索 (ASI 経由)</string>
     <string name="custom_search_label">検索エンジン名</string>
     <string name="custom_search_url">検索エンジンのURL</string>
-    <string name="custom_search_suggestions_url">検索候補のURL</string>
+    <string name="custom_search_suggestions_url">Search suggestions URL</string>
     <string name="custom_search_input_hint">&#37;sは検索クエリに置き換えられます</string>
     <string name="custom_search_suggestions_hint">&#37;s は検索クエリに置き換えられます。結果は JSON OpenSearch 形式である必要があります。</string>
     <!-- Labels of each search result types -->
