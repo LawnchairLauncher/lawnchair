@@ -38,6 +38,14 @@ data object Google : QsbSearchProvider(
                     return
                 }
             }
+            val googleIntent = Intent(action).apply {
+                setPackage(packageName)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            if (googleIntent.resolveActivity(launcher.packageManager) != null) {
+                launcher.startActivity(googleIntent)
+                return
+            }
         }
         super.launch(launcher, forceWebsite)
     }
