@@ -1,4 +1,6 @@
 [versions]
+jdkRelease = "17"
+
 accompanist = "0.37.3"
 benchmarkMacroJunit4 = "1.4.1"
 concurrentFutures = "1.3.0"

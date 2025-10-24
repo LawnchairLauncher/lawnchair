@@ -40,8 +40,8 @@ allprojects {
                 checkReleaseBuilds false
             }
             compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
+                sourceCompatibility = libs.versions.jdkRelease.get()
+                targetCompatibility = libs.versions.jdkRelease.get()
             }
         }
         dependencies {
@@ -73,15 +73,15 @@ allprojects {
 
     plugins.withType(JavaBasePlugin).configureEach {
         java {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = libs.versions.jdkRelease.get()
+            targetCompatibility = libs.versions.jdkRelease.get()
         }
     }
 
     tasks.withType(KotlinCompile).configureEach {
         compilerOptions {
             jvmDefault = JvmDefaultMode.ENABLE
-            jvmTarget = JvmTarget.JVM_17
+            jvmTarget = JvmTarget.fromTarget(libs.versions.jdkRelease.get())
         }
     }
 
