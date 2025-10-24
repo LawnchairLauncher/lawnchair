@@ -37,6 +37,8 @@ import com.android.launcher3.Utilities.isDarkTheme
 import com.android.launcher3.anim.SpringAnimationBuilder
 import com.android.launcher3.apppairs.AppPairIcon
 import com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW
+import com.android.launcher3.util.MultiPropertyFactory
+import com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE
 
 /** Holder for Animators created from [FolderAnimationSpringBuilderManager] */
 class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
@@ -55,6 +57,7 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
         private const val DAMPING_ALPHA = 0.9f
         private const val STIFFNESS_LAUNCHER_SCRIM = 380f
         private const val DAMPING_LAUNCHER_SCRIM = 0.98f
+        private const val WALLPAPER_ZOOM = 0.125f
 
         /**
          * Factory method to take data calculated from [FolderAnimationSpringBuilderManager], and
@@ -78,6 +81,14 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
                 folderAnimData.isOpening,
                 launcherDelegate,
             )
+            launcherDelegate.launcher?.depthController?.folderZoom?.let {
+                addWallpaperZoomAnimator(
+                    folder.context,
+                    animatorSet,
+                    folderAnimData.isOpening,
+                    it,
+                )
+            }
             iconAnimData.forEach { addContentIconAnimators(folder.context, animatorSet, it) }
             return FolderSpringAnimatorSet(animatorSet)
         }
@@ -221,6 +232,27 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             // store clip variables
             animatorSet.addListener(
                 FolderOpenCloseAnimationListener(folder, animationData.isOpening)
+            )
+        }
+
+        private fun addWallpaperZoomAnimator(
+            context: Context,
+            animatorSet: AnimatorSet,
+            isOpening: Boolean,
+            property: MultiPropertyFactory<*>.MultiProperty,
+        ) {
+            playSpringAnimation(
+                context = context,
+                animatorSet = animatorSet,
+                isOpening = isOpening,
+                startDelay = 0,
+                stiffness = STIFFNESS_SHAPE_POSITION,
+                damping = DAMPING_SHAPE_POSITION,
+                startValue = 0f,
+                endValue = WALLPAPER_ZOOM,
+                minVisibleChange = MIN_VISIBLE_CHANGE_SCALE,
+                property = MULTI_PROPERTY_VALUE,
+                view = property,
             )
         }
 
