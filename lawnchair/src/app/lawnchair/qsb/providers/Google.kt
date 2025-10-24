@@ -38,6 +38,14 @@ data object Google : QsbSearchProvider(
                     return
                 }
             }
+            val fallbackIntent = Intent(action).apply {
+                setPackage(packageName)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            if (fallbackIntent.resolveActivity(launcher.packageManager) != null) {
+                launcher.startActivity(fallbackIntent)
+                return
+            }
         }
         super.launch(launcher, forceWebsite)
     }
