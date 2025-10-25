@@ -55,7 +55,7 @@ jobs:
         with:
           subject-path: ${{ github.event.inputs.artifactName }}
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Release APK
           path: ${{ github.event.inputs.artifactName }}
@@ -68,7 +68,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Download artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: Release APK
           path: artifacts/release-apk
@@ -88,7 +88,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Download artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: Release APK
           path: artifacts/release-apk
