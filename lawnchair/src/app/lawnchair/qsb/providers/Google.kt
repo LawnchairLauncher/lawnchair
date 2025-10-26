@@ -13,6 +13,7 @@ import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.qsb.QsbContainerView
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -41,12 +42,25 @@ data object Google : QsbSearchProvider(
         }
         super.launch(launcher, forceWebsite)
     }
-
     fun getSearchIntent(context: Context): Flow<PendingIntent?> {
-        val info = QsbContainerView.getSearchWidgetProviderInfo(context, Google.packageName) ?: return flowOf(null)
+        val info = QsbContainerView.getSearchWidgetProviderInfo(context, packageName)
+            ?: return flowOf(null)
         val headlessWidgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
-        return headlessWidgetsManager.subscribeUpdates(info, "hotseatWidgetId")
-            .map(::findSearchIntent)
+        return headlessWidgetsManager.subscribeUpdates(info, "hotseatWidgetId").map { view ->
+            var pending = findSearchIntent(view)
+            if (pending == null) {
+                try {
+                    val widget = headlessWidgetsManager.getWidget(info, "hotseatWidgetId")
+                    widget.bind()
+                    val updaterView =
+                        headlessWidgetsManager.subscribeUpdates(info, "hotseatWidgetId").first()
+                    pending = findSearchIntent(updaterView)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            pending
+        }
     }
 
     private fun findSearchIntent(view: AppWidgetHostView): PendingIntent? {
