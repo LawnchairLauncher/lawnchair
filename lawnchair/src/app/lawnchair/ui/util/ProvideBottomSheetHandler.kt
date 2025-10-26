@@ -16,9 +16,16 @@
 
 package app.lawnchair.ui.util
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -31,6 +38,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
@@ -47,6 +57,7 @@ val bottomSheetHandler: BottomSheetHandler
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProvideBottomSheetHandler(
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -78,9 +89,53 @@ fun ProvideBottomSheetHandler(
     }
 
     CompositionLocalProvider(LocalBottomSheetHandler provides bottomSheetHandler) {
-        content()
-
         val windowInsets = if (bottomSheetState.isVisible) WindowInsets.navigationBars else WindowInsets(0.dp)
+
+        var maxOffsetPx by remember(showBottomSheet) { mutableStateOf<Float?>(null) }
+
+        // Live Edit doesn't like that we call requireOffset(), rebuild it instead of update.
+        val currentOffsetPx = try {
+            bottomSheetState.requireOffset()
+        } catch (_: IllegalStateException) {
+            null
+        }
+        if (showBottomSheet && currentOffsetPx != null) {
+            maxOffsetPx = maxOf(maxOffsetPx ?: 0f, currentOffsetPx)
+        }
+
+        val rawFraction = when {
+            !showBottomSheet -> 0f
+            currentOffsetPx == null || maxOffsetPx == null || maxOffsetPx == 0f -> 1f
+            else -> 1f - (currentOffsetPx / maxOffsetPx!!)
+        }.coerceIn(0f, 1f)
+
+        val animatedFraction by animateFloatAsState(
+            targetValue = rawFraction,
+            animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+            label = "BottomSheetBlurFraction",
+        )
+
+        // See R.dimen.max_depth_blur_radius_enhanced
+        val blur = (34f * animatedFraction).dp
+        val scrimAlpha = 0.32f * animatedFraction
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .blur(blur),
+            ) {
+                content()
+            }
+
+            if (showBottomSheet) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = scrimAlpha)),
+                )
+            }
+        }
 
         if (showBottomSheet) {
             ModalBottomSheet(
@@ -91,6 +146,8 @@ fun ProvideBottomSheetHandler(
                 contentWindowInsets = {
                     windowInsets
                 },
+                // We render our own scrim to control the scrim's blur and alpha
+                scrimColor = Color.Transparent,
             ) {
                 bottomSheetContent.content()
             }

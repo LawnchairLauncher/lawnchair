@@ -9,8 +9,9 @@
 The latest version of Lawnchair is the only supported version.
 
 | Version        | Supported          |
-| -------------- | ------------------ |
+|----------------|--------------------|
 | Nightly build  | :white_check_mark: |
+| 16             | :white_check_mark: |
 | 15             | :white_check_mark: |
 | 14             | :x:                |
 | 13             | :x:                |

@@ -20,7 +20,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/taskbar_edu_title"
         style="@style/TextAppearance.TaskbarEduTooltip.Title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
 
         app:layout_constraintEnd_toEndOf="@id/splitscreen_text"
         app:layout_constraintStart_toStartOf="@id/splitscreen_text"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@id/taskbar_edu_title" />
 
     <TextView
         android:id="@+id/splitscreen_text"
@@ -72,7 +72,7 @@
 
         app:layout_constraintEnd_toEndOf="@id/pinning_text"
         app:layout_constraintStart_toStartOf="@id/pinning_text"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@id/taskbar_edu_title" />
 
     <TextView
         android:id="@+id/pinning_text"
@@ -96,7 +96,7 @@
 
         app:layout_constraintEnd_toEndOf="@id/suggestions_text"
         app:layout_constraintStart_toStartOf="@id/suggestions_text"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintTop_toBottomOf="@id/taskbar_edu_title" />
 
     <TextView
         android:id="@+id/suggestions_text"

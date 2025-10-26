@@ -27,7 +27,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController;
-import com.android.launcher3.util.DisplayController;
 
 import java.io.PrintWriter;
 
@@ -47,7 +46,7 @@ public class TaskbarSpringOnStashController implements LoggableTaskbarController
 
     public TaskbarSpringOnStashController(TaskbarActivityContext context) {
         mContext = context;
-        mIsTransientTaskbar = DisplayController.isTransientTaskbar(mContext);
+        mIsTransientTaskbar = context.isTransientTaskbar();
         mStartVelocityPxPerS = context.getResources()
                 .getDimension(R.dimen.transient_taskbar_stash_spring_velocity_dp_per_s);
     }

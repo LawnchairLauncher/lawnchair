@@ -15,15 +15,12 @@
  */
 package com.android.launcher3.widget;
 
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 
 import android.appwidget.AppWidgetHostView;
-import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 
@@ -32,16 +29,14 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.util.SandboxApplication;
 
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -52,12 +47,7 @@ public final class LauncherAppWidgetProviderInfoTest {
     private static final int NUM_OF_COLS = 4;
     private static final int NUM_OF_ROWS = 5;
 
-    private Context mContext;
-
-    @Before
-    public void setUp() {
-        mContext = getApplicationContext();
-    }
+    @Rule public SandboxApplication mContext = new SandboxApplication();
 
     @Test
     public void initSpans_minWidthSmallerThanCellWidth_shouldInitializeSpansToOne() {
@@ -256,8 +246,9 @@ public final class LauncherAppWidgetProviderInfoTest {
     }
 
     private InvariantDeviceProfile createIDP() {
-        DeviceProfile dp = LauncherAppState.getIDP(mContext)
-                .getDeviceProfile(mContext).copy(mContext);
+        InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(mContext);
+
+        DeviceProfile dp = idp.getDeviceProfile(mContext).copy(mContext);
         DeviceProfile profile = Mockito.spy(dp);
         doAnswer(i -> {
             ((Point) i.getArgument(0)).set(CELL_SIZE, CELL_SIZE);
@@ -267,10 +258,7 @@ public final class LauncherAppWidgetProviderInfoTest {
         profile.cellLayoutBorderSpacePx = new Point(SPACE_SIZE, SPACE_SIZE);
         profile.widgetPadding.setEmpty();
 
-        InvariantDeviceProfile idp = new InvariantDeviceProfile();
-        List<DeviceProfile> supportedProfiles = new ArrayList<>(idp.supportedProfiles);
-        supportedProfiles.add(profile);
-        idp.supportedProfiles = Collections.unmodifiableList(supportedProfiles);
+        idp.supportedProfiles = Collections.singletonList(profile);
         idp.numColumns = NUM_OF_COLS;
         idp.numRows = NUM_OF_ROWS;
         return idp;

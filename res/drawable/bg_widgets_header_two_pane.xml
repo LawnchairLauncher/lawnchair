@@ -14,13 +14,10 @@
      limitations under the License.
 -->
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:insetTop="@dimen/widget_list_entry_spacing" >
-    <ripple
-        android:color="@color/accent_ripple_color"
-        android:paddingTop="@dimen/widget_list_header_view_vertical_padding"
-        android:paddingBottom="@dimen/widget_list_header_view_vertical_padding" >
-        <item android:id="@android:id/mask"
-            android:drawable="@drawable/bg_widgets_header_states_two_pane" />
+    android:insetTop="@dimen/widget_list_entry_spacing">
+    <layer-list
+        android:paddingBottom="@dimen/widget_list_header_view_vertical_padding"
+        android:paddingTop="@dimen/widget_list_header_view_vertical_padding">
         <item android:drawable="@drawable/bg_widgets_header_states_two_pane" />
-    </ripple>
+    </layer-list>
 </inset>

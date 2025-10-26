@@ -20,16 +20,17 @@ import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR;
 import static com.android.launcher3.BuildConfigs.WIDGETS_ENABLED;
 import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
 import static com.android.launcher3.Utilities.allowBGLaunch;
-import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_PENDING_INTENT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -42,11 +43,11 @@ import android.os.IBinder;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
+import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
@@ -55,11 +56,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.savedstate.SavedStateRegistryOwner;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DropTargetHandler;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -77,39 +80,29 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.util.ActivityOptionsWrapper;
-import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.ApplicationInfoWrapper;
+import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.ViewCache;
+import com.android.launcher3.util.WeakCleanupSet;
+import com.android.launcher3.widget.picker.model.WidgetPickerDataProvider;
 
 import java.util.List;
 
 /**
- * An interface to be used along with a context for various activities in
- * Launcher. This allows a
+ * An interface to be used along with a context for various activities in Launcher. This allows a
  * generic class to depend on Context subclass instead of an Activity.
  */
-public interface ActivityContext {
+public interface ActivityContext extends SavedStateRegistryOwner {
 
     String TAG = "ActivityContext";
 
     default boolean finishAutoCancelActionMode() {
         return false;
-    }
-
-    default DotInfo getDotInfoForItem(ItemInfo info) {
-        return null;
-    }
-
-    /**
-     * For items with tree hierarchy, notifies the activity to invalidate the parent
-     * when a root
-     * is invalidated
-     * 
-     * @param info info associated with a root node.
-     */
-    default void invalidateParent(ItemInfo info) {
     }
 
     default AccessibilityDelegate getAccessibilityDelegate() {
@@ -121,29 +114,21 @@ public interface ActivityContext {
     }
 
     /**
-     * After calling {@link #getFolderBoundingBox()}, we calculate a (left, top)
-     * position for a
-     * Folder of size width x height to be within those bounds. However, the chosen
-     * position may
-     * not be visually ideal (e.g. uncanny valley of centeredness), so here's a
-     * chance to update it.
-     * 
-     * @param inOutPosition A 2-size array where the first element is the left
-     *                      position of the open
-     *                      folder and the second element is the top position.
-     *                      Should be updated in place if desired.
-     * @param bounds        The bounds that the open folder should fit inside.
-     * @param width         The width of the open folder.
-     * @param height        The height of the open folder.
+     * After calling {@link #getFolderBoundingBox()}, we calculate a (left, top) position for a
+     * Folder of size width x height to be within those bounds. However, the chosen position may
+     * not be visually ideal (e.g. uncanny valley of centeredness), so here's a chance to update it.
+     * @param inOutPosition A 2-size array where the first element is the left position of the open
+     *     folder and the second element is the top position. Should be updated in place if desired.
+     * @param bounds The bounds that the open folder should fit inside.
+     * @param width The width of the open folder.
+     * @param height The height of the open folder.
      */
     default void updateOpenFolderPosition(int[] inOutPosition, Rect bounds, int width, int height) {
     }
 
     /**
-     * Returns a LayoutInflater that is cloned in this Context, so that Views
-     * inflated by it will
-     * have the same Context. (i.e. {@link #lookupContext(Context)} will find this
-     * ActivityContext.)
+     * Returns a LayoutInflater that is cloned in this Context, so that Views inflated by it will
+     * have the same Context. (i.e. {@link #lookupContext(Context)} will find this ActivityContext.)
      */
     default LayoutInflater getLayoutInflater() {
         if (this instanceof Context) {
@@ -160,8 +145,7 @@ public interface ActivityContext {
     }
 
     /**
-     * @return {@code true} if user has selected the first split app and is in the
-     *         process of
+     * @return {@code true} if user has selected the first split app and is in the process of
      *         selecting the second
      */
     default boolean isSplitSelectionActive() {
@@ -173,10 +157,8 @@ public interface ActivityContext {
      * Handle user tapping on unsupported target when in split selection mode.
      * See {@link #isSplitSelectionActive()}
      *
-     * @return {@code true} if this method will handle the incorrect target
-     *         selection,
-     *         {@code false} if it could not be handled or if not possible to handle
-     *         based on
+     * @return {@code true} if this method will handle the incorrect target selection,
+     *         {@code false} if it could not be handled or if not possible to handle based on
      *         current split state
      */
     default boolean handleIncorrectSplitTargetSelection() {
@@ -184,10 +166,40 @@ public interface ActivityContext {
         return false;
     }
 
+    /** Returns the RootView */
+    default View getRootView() {
+        return getDragLayer();
+    }
+
     /**
      * The root view to support drag-and-drop and popup support.
      */
     BaseDragLayer getDragLayer();
+
+    /**
+     * @see Activity#getWindow()
+     * @return Window
+     */
+    @Nullable
+    default Window getWindow() {
+        return null;
+    }
+
+    /**
+     * @see Activity#getComponentName()
+     * @return ComponentName
+     */
+    default ComponentName getComponentName() {
+        return null;
+    }
+
+    /**
+     * Returns the primary content of this context
+     */
+    @NonNull
+    default LauncherBindableItemsContainer getContent() {
+        return op -> null;
+    }
 
     /**
      * The all apps container, if it exists in this context.
@@ -220,14 +232,17 @@ public interface ActivityContext {
         getOnDeviceProfileChangeListeners().remove(listener);
     }
 
-    default ViewCache getViewCache() {
-        return new ViewCache();
-    }
+    ViewCache getViewCache();
 
     /**
      * Controller for supporting item drag-and-drop
      */
     default <T extends DragController> T getDragController() {
+        return null;
+    }
+
+    @Nullable
+    default SystemUiController getSystemUiController() {
         return null;
     }
 
@@ -250,8 +265,7 @@ public interface ActivityContext {
     }
 
     /**
-     * Returns {@code true} if popups can use a range of color shades instead of a
-     * singular color.
+     * Returns {@code true} if popups can use a range of color shades instead of a singular color.
      */
     default boolean canUseMultipleShadesForPopup() {
         return true;
@@ -260,15 +274,7 @@ public interface ActivityContext {
     /**
      * Called just before logging the given item.
      */
-    default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) {
-    }
-
-    /**
-     * Returns {@code true} if items are currently being bound within this context.
-     */
-    default boolean isBindingItems() {
-        return false;
-    }
+    default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) { }
 
     default View.OnClickListener getItemOnClickListener() {
         return v -> {
@@ -281,8 +287,20 @@ public interface ActivityContext {
         return v -> false;
     }
 
-    @Nullable
+    @NonNull
     default PopupDataProvider getPopupDataProvider() {
+        return new PopupDataProvider(this);
+    }
+
+    default DotInfo getDotInfoForItem(ItemInfo info) {
+        return getPopupDataProvider().getDotInfoForItem(info);
+    }
+
+    /**
+     * Returns the {@link WidgetPickerDataProvider} that can be used to read widgets for display.
+     */
+    @Nullable
+    default WidgetPickerDataProvider getWidgetPickerDataProvider() {
         return null;
     }
 
@@ -299,29 +317,24 @@ public interface ActivityContext {
         if (root == null) {
             return;
         }
-        if (Utilities.ATLEAST_R) {
-            Preconditions.assertUIThread();
-            // Hide keyboard with WindowInsetsController if could. In case
-            // hideSoftInputFromWindow may get ignored by input connection being finished
-            // when the screen is off.
-            //
-            // In addition, inside IMF, the keyboards are closed asynchronously that
-            // launcher no
-            // longer need to post to the message queue.
-            final WindowInsetsController wic = root.getWindowInsetsController();
-            WindowInsets insets = root.getRootWindowInsets();
-            boolean isImeShown = insets != null && insets.isVisible(WindowInsets.Type.ime());
-            if (wic != null && isImeShown) {
-                StatsLogManager slm = getStatsLogManager();
-                slm.keyboardStateManager().setKeyboardState(HIDE);
-
+        Preconditions.assertUIThread();
+        // Hide keyboard with WindowInsetsController if could. In case hideSoftInputFromWindow may
+        // get ignored by input connection being finished when the screen is off.
+        //
+        // In addition, inside IMF, the keyboards are closed asynchronously that launcher no longer
+        // need to post to the message queue.
+        final WindowInsetsController wic = root.getWindowInsetsController();
+        WindowInsets insets = root.getRootWindowInsets();
+        boolean isImeShown = insets != null && insets.isVisible(WindowInsets.Type.ime());
+        if (wic != null) {
+            // Only hide the keyboard if it is actually showing.
+            if (isImeShown) {
                 // this method cannot be called cross threads
                 wic.hide(WindowInsets.Type.ime());
                 getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
             }
 
-            // If the WindowInsetsController is not null, we end here regardless of whether
-            // we hid
+            // If the WindowInsetsController is not null, we end here regardless of whether we hid
             // the keyboard or not.
             return;
         }
@@ -332,7 +345,8 @@ public interface ActivityContext {
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (imm.hideSoftInputFromWindow(token, 0)) {
                     // log keyboard close event only when keyboard is actually closed
-                    MAIN_EXECUTOR.execute(() -> getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED));
+                    MAIN_EXECUTOR.execute(() ->
+                            getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED));
                 }
             });
         }
@@ -342,12 +356,12 @@ public interface ActivityContext {
      * Returns if the connected keyboard is a hardware keyboard.
      */
     default boolean isHardwareKeyboard() {
-        return Configuration.KEYBOARD_QWERTY == ((Context) this).getResources().getConfiguration().keyboard;
+        return Configuration.KEYBOARD_QWERTY
+                == ((Context) this).getResources().getConfiguration().keyboard;
     }
 
     /**
-     * Returns if the software keyboard (including input toolbar) is hidden.
-     * Hardware
+     * Returns if the software keyboard (including input toolbar) is hidden. Hardware
      * keyboards do not display on screen by default.
      */
     default boolean isSoftwareKeyboardHidden() {
@@ -359,7 +373,8 @@ public interface ActivityContext {
             if (insets == null) {
                 return false;
             }
-            WindowInsetsCompat insetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets, dragLayer);
+            WindowInsetsCompat insetsCompat =
+                    WindowInsetsCompat.toWindowInsetsCompat(insets, dragLayer);
             return !insetsCompat.isVisible(WindowInsetsCompat.Type.ime());
         }
     }
@@ -367,11 +382,10 @@ public interface ActivityContext {
     /**
      * Sends a pending intent animating from a view.
      *
-     * @param v      View to animate.
+     * @param v View to animate.
      * @param intent The pending intent being launched.
-     * @param item   Item associated with the view.
-     * @return RunnableList for listening for animation finish if the activity was
-     *         properly
+     * @param item Item associated with the view.
+     * @return RunnableList for listening for animation finish if the activity was properly
      *         or started, {@code null} if the launch finished
      */
     default RunnableList sendPendingIntentWithAnimation(
@@ -396,18 +410,19 @@ public interface ActivityContext {
     /**
      * Safely starts an activity.
      *
-     * @param v      View starting the activity.
+     * @param v View starting the activity.
      * @param intent Base intent being launched.
-     * @param item   Item associated with the view.
-     * @return RunnableList for listening for animation finish if the activity was
-     *         properly
+     * @param item Item associated with the view.
+     * @return RunnableList for listening for animation finish if the activity was properly
      *         or started, {@code null} if the launch finished
      */
     default RunnableList startActivitySafely(
             View v, Intent intent, @Nullable ItemInfo item) {
         Preconditions.assertUIThread();
         Context context = (Context) this;
-        if (isAppBlockedForSafeMode() && !PackageManagerHelper.isSystemApp(context, intent)) {
+        
+        if (LauncherAppState.getInstance(context).isSafeModeEnabled()
+                && !new ApplicationInfoWrapper(context, intent).isSystem()) {
             Toast.makeText(context, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return null;
         }
@@ -420,8 +435,7 @@ public interface ActivityContext {
         }
         ActivityOptionsWrapper options = v != null ? getActivityLaunchOptions(v, item)
                 : makeDefaultActivityOptions(item != null && item.animationType == DEFAULT_NO_ICON
-                        ? SPLASH_SCREEN_STYLE_SOLID_COLOR
-                        : -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */);
+                        ? SPLASH_SCREEN_STYLE_SOLID_COLOR : -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */);
         UserHandle user = item == null ? null : item.user;
         Bundle optsBundle = options.toBundle();
         // Prepare intent
@@ -454,11 +468,6 @@ public interface ActivityContext {
         return null;
     }
 
-    /** Returns {@code true} if an app launch is blocked due to safe mode. */
-    default boolean isAppBlockedForSafeMode() {
-        return false;
-    }
-
     /**
      * Creates and logs a new app launch event.
      */
@@ -471,9 +480,10 @@ public interface ActivityContext {
     /**
      * Returns launch options for an Activity.
      *
-     * @param v    View initiating a launch.
+     * @param v View initiating a launch.
      * @param item Item associated with the view.
      */
+    @NonNull
     default ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
         int left = 0, top = 0;
         int width = v.getMeasuredWidth(), height = v.getMeasuredHeight();
@@ -488,7 +498,8 @@ public interface ActivityContext {
                 height = bounds.height();
             }
         }
-        ActivityOptions options = allowBGLaunch(ActivityOptions.makeClipRevealAnimation(v, left, top, width, height));
+        ActivityOptions options =
+                allowBGLaunch(ActivityOptions.makeClipRevealAnimation(v, left, top, width, height));
         options.setLaunchDisplayId(
                 (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
                         : Display.DEFAULT_DISPLAY);
@@ -497,8 +508,7 @@ public interface ActivityContext {
     }
 
     /**
-     * Creates a default activity option and we do not want association with any
-     * launcher element.
+     * Creates a default activity option and we do not want association with any launcher element.
      */
     default ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
         ActivityOptions options = allowBGLaunch(ActivityOptions.makeBasic());
@@ -513,6 +523,9 @@ public interface ActivityContext {
         return new CellPosMapper(dp.isVerticalBarLayout(), dp.numShownHotseatIcons);
     }
 
+    /** Set to manage objects that can be cleaned up along with the context */
+    WeakCleanupSet getOwnerCleanupSet();
+
     /** Whether bubbles are enabled. */
     default boolean isBubbleBarEnabled() {
         return false;
@@ -523,9 +536,13 @@ public interface ActivityContext {
         return false;
     }
 
+    /** Returns the current ActivityContext as context */
+    default Context asContext() {
+        return (Context) this;
+    }
+
     /**
-     * Returns the ActivityContext associated with the given Context, or throws an
-     * exception if
+     * Returns the ActivityContext associated with the given Context, or throws an exception if
      * the Context is not associated with any ActivityContext.
      */
     static <T extends Context & ActivityContext> T lookupContext(Context context) {
@@ -543,21 +560,10 @@ public interface ActivityContext {
     static <T extends Context & ActivityContext> T lookupContextNoThrow(Context context) {
         if (context instanceof ActivityContext) {
             return (T) context;
-        } else if (context instanceof ActivityContextDelegate acd) {
-            return (T) acd.mDelegate;
-        } else if (context instanceof ContextWrapper) {
-            return lookupContextNoThrow(((ContextWrapper) context).getBaseContext());
+        } else if (context instanceof ContextWrapper cw) {
+            return lookupContextNoThrow(cw.getBaseContext());
         } else {
             return null;
-        }
-    }
-
-    class ActivityContextDelegate extends ContextThemeWrapper {
-        public final ActivityContext mDelegate;
-
-        public ActivityContextDelegate(Context base, int themeResId, ActivityContext delegate) {
-            super(base, themeResId);
-            mDelegate = delegate;
         }
     }
 }

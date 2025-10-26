@@ -27,8 +27,10 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
 import com.android.launcher3.R
-import com.android.wm.shell.common.bubbles.BaseBubblePinController
-import com.android.wm.shell.common.bubbles.BubbleBarLocation
+import com.android.launcher3.taskbar.bubbles.BubbleBarController.BubbleBarLocationListener
+import com.android.launcher3.taskbar.bubbles.stashing.BubbleStashController
+import com.android.wm.shell.shared.bubbles.BaseBubblePinController
+import com.android.wm.shell.shared.bubbles.BubbleBarLocation
 
 /**
  * Controller to manage pinning bubble bar to left or right when dragging starts from the bubble bar
@@ -41,12 +43,17 @@ class BubbleBarPinController(
 
     private lateinit var bubbleBarViewController: BubbleBarViewController
     private lateinit var bubbleStashController: BubbleStashController
+    private lateinit var bubbleBarLocationListener: BubbleBarLocationListener
     private var exclRectWidth: Float = 0f
     private var exclRectHeight: Float = 0f
 
     private var dropTargetView: View? = null
 
-    fun init(bubbleControllers: BubbleControllers) {
+    fun init(
+        bubbleControllers: BubbleControllers,
+        bubbleBarLocationListener: BubbleBarLocationListener
+    ) {
+        this.bubbleBarLocationListener = bubbleBarLocationListener
         bubbleBarViewController = bubbleControllers.bubbleBarViewController
         bubbleStashController = bubbleControllers.bubbleStashController
         exclRectWidth = context.resources.getDimension(R.dimen.bubblebar_dismiss_zone_width)
@@ -85,6 +92,7 @@ class BubbleBarPinController(
 
         val bounds = bubbleBarViewController.bubbleBarBounds
         val horizontalMargin = bubbleBarViewController.horizontalMargin
+        bubbleBarLocationListener.onBubbleBarLocationAnimated(location)
         dropTargetView?.updateLayoutParams<FrameLayout.LayoutParams> {
             width = bounds.width()
             height = bounds.height()

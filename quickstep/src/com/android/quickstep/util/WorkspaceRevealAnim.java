@@ -30,6 +30,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.view.View;
 
 import com.android.app.animation.Interpolators;
@@ -50,6 +51,8 @@ import com.android.systemui.plugins.ResourceProvider;
  * This is used in conjunction with the swipe up to home animation.
  */
 public class WorkspaceRevealAnim {
+
+    private static final String TAG = "WorkspaceRevealAnim";
 
     // Should be used for animations running alongside this WorkspaceRevealAnim.
     public static final int DURATION_MS = 350;
@@ -97,6 +100,19 @@ public class WorkspaceRevealAnim {
 
         mAnimators.setDuration(DURATION_MS);
         mAnimators.setInterpolator(Interpolators.DECELERATED_EASE);
+        mAnimators.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                super.onAnimationCancel(animation);
+                Log.d(TAG, "onAnimationCancel");
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                Log.d(TAG, "onAnimationEnd: workspace alpha = " + workspace.getAlpha());
+            }
+        });
     }
 
     private <T extends View>  void addRevealAnimatorsForView(T v, FloatProperty<T> scaleProperty) {

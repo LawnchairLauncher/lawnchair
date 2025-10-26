@@ -17,10 +17,8 @@
 package com.android.launcher3.tapl;
 
 import static com.android.launcher3.testing.shared.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
-import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
 
 import android.graphics.Point;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import androidx.test.uiautomator.UiObject2;
@@ -115,10 +113,6 @@ public abstract class Launchable {
                 iconCenter.y - getStartDragThreshold());
 
         if (runToSpringLoadedState) {
-            Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
-                    "Launchable.startDrag: actionName: long-pressing and triggering drag start"
-                            + " iconCenter: " + iconCenter + " dragStartCenter: "
-                            + dragStartCenter);
             mLauncher.runToState(() -> movePointerForStartDrag(
                             downTime,
                             iconCenter,

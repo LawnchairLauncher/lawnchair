@@ -23,4 +23,11 @@
     <declare-styleable name="MessageState">
         <attr name="state_task_focused" format="boolean"/>
     </declare-styleable>
+
+    <declare-styleable name="HandleMenuActionButton">
+        <attr name="android:text" format="string" />
+        <attr name="android:textColor" format="color" />
+        <attr name="android:src" format="reference" />
+        <attr name="android:drawableTint" format="color" />
+    </declare-styleable>
 </resources>

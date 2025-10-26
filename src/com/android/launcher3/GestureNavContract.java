@@ -19,10 +19,13 @@ import static android.content.Intent.EXTRA_COMPONENT_NAME;
 import static android.content.Intent.EXTRA_USER;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
+import static com.android.launcher3.Utilities.ATLEAST_Q;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.RectF;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -71,7 +74,9 @@ public class GestureNavContract {
             @Nullable SurfaceControl surfaceControl) {
         Bundle result = new Bundle();
         result.putParcelable(EXTRA_ICON_POSITION, position);
-        result.putParcelable(EXTRA_ICON_SURFACE, surfaceControl);
+        if (ATLEAST_Q) {
+            result.putParcelable(EXTRA_ICON_SURFACE, surfaceControl);
+        }
         if (sMessageReceiver == null) {
             sMessageReceiver = new StaticMessageReceiver();
         }

@@ -48,6 +48,10 @@
 
         <option name="run-command" value="settings put system pointer_location 1" />
         <option name="run-command" value="settings put system show_touches 1" />
+
+        <option name="run-command" value="setprop pixel_legal_joint_permission_v2 true" />
+
+        <option name="run-command" value="settings put global verifier_verify_adb_installs 0" />
     </target_preparer>
 
     <target_preparer class="com.android.tradefed.targetprep.suite.SuiteApkInstaller">
@@ -58,6 +62,7 @@
 
     <metrics_collector class="com.android.tradefed.device.metric.FilePullerLogCollector">
         <option name="directory-keys" value="/data/user/0/com.android.launcher3/files" />
+        <option name="directory-keys" value="/data/user/10/com.android.launcher3/files" />
         <option name="collect-on-run-ended-only" value="true" />
     </metrics_collector>
 

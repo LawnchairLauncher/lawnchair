@@ -32,9 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.theme.dividerColor
 import app.lawnchair.ui.theme.preferenceGroupColor
 
 @Composable
@@ -47,7 +47,7 @@ fun PreferenceGroup(
     dividerStartIndent: Dp = 0.dp,
     dividerEndIndent: Dp = 0.dp,
     dividersToSkip: Int = 0,
-    dividerColor: Color = dividerColor(),
+    dividerColor: Color = MaterialTheme.colorScheme.surface,
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -56,7 +56,7 @@ fun PreferenceGroup(
         PreferenceGroupHeading(heading)
         Surface(
             modifier = Modifier.padding(horizontal = 16.dp),
-            shape = MaterialTheme.shapes.large,
+            shape = MaterialTheme.shapes.extraLarge,
             color = preferenceGroupColor(),
         ) {
             if (showDividers) {
@@ -93,6 +93,7 @@ fun PreferenceGroupHeading(
             Text(
                 text = heading,
                 style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.semantics { this.heading() },
             )

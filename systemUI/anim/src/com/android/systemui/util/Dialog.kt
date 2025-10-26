@@ -17,13 +17,11 @@
 package com.android.systemui.util
 
 import android.app.Dialog
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import android.window.OnBackInvokedDispatcher
-import androidx.annotation.RequiresApi
 import com.android.systemui.animation.back.BackAnimationSpec
 import com.android.systemui.animation.back.BackTransformation
 import com.android.systemui.animation.back.applyTo
@@ -37,7 +35,6 @@ import com.android.systemui.animation.view.LaunchableFrameLayout
  * The [BackTransformation] will be applied on the [targetView].
  */
 @JvmOverloads
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 fun Dialog.registerAnimationOnBackInvoked(
     targetView: View,
     backAnimationSpec: BackAnimationSpec =

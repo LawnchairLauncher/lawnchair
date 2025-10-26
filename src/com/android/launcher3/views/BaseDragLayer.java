@@ -107,7 +107,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     protected final RectF mSystemGestureRegion = new RectF();
     private int mTouchDispatchState = 0;
 
-    protected final T mActivity;
+    protected final T mContainer;
     private final MultiValueAlpha mMultiValueAlpha;
 
     // All the touch controllers for the view
@@ -121,7 +121,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     public BaseDragLayer(Context context, AttributeSet attrs, int alphaChannelCount) {
         super(context, attrs);
-        mActivity = ActivityContext.lookupContext(context);
+        mContainer = ActivityContext.lookupContext(context);
         mMultiValueAlpha = new MultiValueAlpha(this, alphaChannelCount);
     }
 
@@ -159,7 +159,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             }
             mTouchCompleteListener = null;
         } else if (action == MotionEvent.ACTION_DOWN) {
-            mActivity.finishAutoCancelActionMode();
+            mContainer.finishAutoCancelActionMode();
         }
         return findActiveController(ev);
     }
@@ -173,7 +173,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     private TouchController findControllerToHandleTouch(MotionEvent ev) {
-        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mContainer);
         if (topView != null
                 && (isEventWithinSystemGestureRegion(ev)
                 || topView.canInterceptEventsInSystemGestureRegion())
@@ -207,7 +207,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     @Override
     public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
         // Shortcuts can appear above folder
-        View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
+        View topView = AbstractFloatingView.getTopOpenViewWithType(mContainer,
                 AbstractFloatingView.TYPE_ACCESSIBLE);
         if (topView != null) {
             if (child == topView) {
@@ -222,7 +222,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public void addChildrenForAccessibility(ArrayList<View> childrenForAccessibility) {
-        View topView = AbstractFloatingView.getTopOpenViewWithType(mActivity,
+        View topView = AbstractFloatingView.getTopOpenViewWithType(mContainer,
                 AbstractFloatingView.TYPE_ACCESSIBLE);
         if (topView != null) {
             // Only add the top view as a child for accessibility when it is open
@@ -460,7 +460,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
-        View topView = AbstractFloatingView.getTopOpenView(mActivity);
+        View topView = AbstractFloatingView.getTopOpenView(mContainer);
         if (topView != null) {
             return topView.requestFocus(direction, previouslyFocusedRect);
         } else {
@@ -470,7 +470,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public void addFocusables(ArrayList<View> views, int direction, int focusableMode) {
-        View topView = AbstractFloatingView.getTopOpenView(mActivity);
+        View topView = AbstractFloatingView.getTopOpenView(mContainer);
         if (topView != null) {
             topView.addFocusables(views, direction);
         } else {
@@ -558,7 +558,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             Insets gestureInsets = insets.getMandatorySystemGestureInsets();
             int gestureInsetBottom = gestureInsets.bottom;
             Insets imeInset = insets.getInsets(WindowInsets.Type.ime());
-            DeviceProfile dp = mActivity.getDeviceProfile();
+            DeviceProfile dp = mContainer.getDeviceProfile();
             if (dp.isTaskbarPresent) {
                 // Ignore taskbar gesture insets to avoid interfering with TouchControllers.
                 gestureInsetBottom = ResourceUtils.getNavbarSize(

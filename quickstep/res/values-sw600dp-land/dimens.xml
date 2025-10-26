@@ -16,7 +16,7 @@
 -->
 <resources>
     <!-- All Set page -->
-    <dimen name="allset_page_margin_horizontal">48dp</dimen>
+    <dimen name="allset_page_padding_horizontal">48dp</dimen>
 
     <!-- Gesture Tutorial menu page -->
     <dimen name="gesture_tutorial_menu_padding_horizontal">48dp</dimen>
@@ -27,10 +27,6 @@
     <dimen name="gesture_tutorial_menu_done_button_top_spacing">40dp</dimen>
     <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">49dp</dimen>
 
-    <!-- Grid Only Overview -->
-    <!-- The top margin above the top row of tasks in grid only overview -->
-    <dimen name="overview_top_margin_grid_only">24dp</dimen>
-    <!-- The bottom margin above the bottom row of tasks in grid only overview -->
-    <dimen name="overview_bottom_margin_grid_only">40dp</dimen>
+    <dimen name="taskbar_suw_insets">24dp</dimen>
 
 </resources>

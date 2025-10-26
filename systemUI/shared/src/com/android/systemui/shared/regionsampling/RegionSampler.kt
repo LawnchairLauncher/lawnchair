@@ -136,9 +136,9 @@ constructor(
         val sampledRegionWithOffset = convertBounds(screenLocationBounds)
         if (
             sampledRegionWithOffset.left < 0.0 ||
-                sampledRegionWithOffset.right > 1.0 ||
-                sampledRegionWithOffset.top < 0.0 ||
-                sampledRegionWithOffset.bottom > 1.0
+            sampledRegionWithOffset.right > 1.0 ||
+            sampledRegionWithOffset.top < 0.0 ||
+            sampledRegionWithOffset.bottom > 1.0
         ) {
             if (DEBUG)
                 Log.d(
@@ -192,7 +192,7 @@ constructor(
         pw.println("screen width: ${displaySize.x}, screen height: ${displaySize.y}")
         pw.println(
             "sampledRegionWithOffset: ${convertBounds(
-                    calculateScreenLocation(sampledView) ?: RectF())}"
+                calculateScreenLocation(sampledView) ?: RectF())}"
         )
         pw.println(
             "initialSampling for ${if (isLockscreen) "lockscreen" else "homescreen" }" +

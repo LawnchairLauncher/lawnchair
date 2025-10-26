@@ -46,7 +46,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -67,10 +66,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.views.FloatingIconView;
-import com.android.launcher3.views.Snackbar;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.widget.PendingAddShortcutInfo;
-import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetManagerHelper;
@@ -127,15 +123,6 @@ public class ItemClickHandler {
             }
         } else if (tag instanceof ItemClickProxy) {
             ((ItemClickProxy) tag).onItemClicked(v);
-        } else if (tag instanceof PendingAddWidgetInfo) {
-            if (DEBUG) {
-                String targetPackage = ((PendingAddWidgetInfo) tag).getTargetPackage();
-                Log.d(TAG, "onClick: PendingAddWidgetInfo clicked for package=" + targetPackage);
-            }
-            CharSequence msg = Utilities.wrapForTts(
-                    launcher.getText(R.string.long_press_widget_to_add),
-                    launcher.getString(R.string.long_accessible_way_to_add));
-            Snackbar.show(launcher, msg, null);
         }
     }
 
@@ -241,10 +228,9 @@ public class ItemClickHandler {
     private static void onClickPendingAppItem(View v, Launcher launcher, String packageName,
             boolean downloadStarted) {
         ItemInfo item = (ItemInfo) v.getTag();
-        CompletableFuture<SessionInfo> siFuture;
-        siFuture = CompletableFuture.supplyAsync(() ->
-                        InstallSessionHelper.INSTANCE.get(launcher)
-                                .getActiveSessionInfo(item.user, packageName),
+        CompletableFuture<SessionInfo> siFuture = CompletableFuture.supplyAsync(() ->
+                InstallSessionHelper.INSTANCE.get(launcher)
+                        .getActiveSessionInfo(item.user, packageName),
                 UI_HELPER_EXECUTOR);
         Consumer<SessionInfo> marketLaunchAction = sessionInfo -> {
             if (sessionInfo != null) {
@@ -258,8 +244,8 @@ public class ItemClickHandler {
                 }
             }
             // Fallback to using custom market intent.
-            Intent intent = ApiWrapper.INSTANCE.get(launcher).getAppMarketActivityIntent(
-                    packageName, Process.myUserHandle());
+            Intent intent = ApiWrapper.INSTANCE.get(launcher).getMarketSearchIntent(
+                    packageName, item.user);
             launcher.startActivitySafely(v, intent, item);
         };
 
@@ -371,9 +357,7 @@ public class ItemClickHandler {
         // Check for abandoned promise
         if ((v instanceof BubbleTextView) && shortcut.hasPromiseIconUi()
                 && (!Flags.enableSupportForArchiving() || !shortcut.isArchived())) {
-            String packageName = shortcut.getIntent().getComponent() != null
-                    ? shortcut.getIntent().getComponent().getPackageName()
-                    : shortcut.getIntent().getPackage();
+            String packageName = shortcut.getTargetPackage();
             if (!TextUtils.isEmpty(packageName)) {
                 onClickPendingAppItem(
                         v,

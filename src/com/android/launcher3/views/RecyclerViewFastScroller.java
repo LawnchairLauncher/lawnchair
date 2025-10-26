@@ -20,6 +20,9 @@ import static android.view.HapticFeedbackConstants.CLOCK_TICK;
 
 import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
+import static com.android.launcher3.views.RecyclerViewFastScroller.FastScrollerLocation.ALL_APPS_SCROLLER;
+import static com.android.launcher3.views.RecyclerViewFastScroller.FastScrollerLocation.WIDGET_SCROLLER;
+
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -40,11 +43,15 @@ import android.view.ViewConfiguration;
 import android.view.WindowInsets;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.FastScrollRecyclerView;
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.LetterListTextView;
 import com.android.launcher3.graphics.FastScrollThumbDrawable;
 import com.android.launcher3.util.Themes;
 
@@ -57,6 +64,19 @@ import app.lawnchair.theme.color.tokens.ColorTokens;
  * The track and scrollbar that shows when you scroll the list.
  */
 public class RecyclerViewFastScroller extends View {
+
+    /** FastScrollerLocation describes what RecyclerView the fast scroller is dedicated to. */
+    public enum FastScrollerLocation {
+        UNKNOWN_SCROLLER(0),
+        ALL_APPS_SCROLLER(1),
+        WIDGET_SCROLLER(2);
+
+        public final int location;
+
+        FastScrollerLocation(int location) {
+            this.location = location;
+        }
+    }
     private static final String TAG = "RecyclerViewFastScroller";
     private static final boolean DEBUG = false;
     private static final int FASTSCROLL_THRESHOLD_MILLIS = 10;
@@ -108,6 +128,8 @@ public class RecyclerViewFastScroller extends View {
     private final Point mThumbDrawOffset = new Point();
 
     private final Paint mTrackPaint;
+    private final int mThumbColor;
+    private final int mThumbLetterScrollerColor;
 
     private float mLastTouchY;
     private boolean mIsDragging;
@@ -141,6 +163,7 @@ public class RecyclerViewFastScroller extends View {
     private int mDownX;
     private int mDownY;
     private int mLastY;
+    private FastScrollerLocation mFastScrollerLocation;
 
     public RecyclerViewFastScroller(Context context) {
         this(context, null);
@@ -153,13 +176,16 @@ public class RecyclerViewFastScroller extends View {
     public RecyclerViewFastScroller(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+        mFastScrollerLocation = FastScrollerLocation.UNKNOWN_SCROLLER;
         mTrackPaint = new Paint();
         mTrackPaint.setColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
         mTrackPaint.setAlpha(MAX_TRACK_ALPHA);
 
+        mThumbColor = Themes.getColorAccent(context);
+        mThumbLetterScrollerColor = context.getColor(R.color.materialColorSurfaceBright);
         mThumbPaint = new Paint();
         mThumbPaint.setAntiAlias(true);
-        mThumbPaint.setColor(Themes.getColorAccent(context));
+        mThumbPaint.setColor(mThumbColor);
         mThumbPaint.setStyle(Paint.Style.FILL);
 
         Resources res = getResources();
@@ -331,11 +357,26 @@ public class RecyclerViewFastScroller extends View {
         if (!sectionName.equals(mPopupSectionName)) {
             mPopupSectionName = sectionName;
             mPopupView.setText(sectionName);
-            performHapticFeedback(CLOCK_TICK);
+            // AllApps haptics are taken care of by AllAppsFastScrollHelper.
+            if (mFastScrollerLocation != ALL_APPS_SCROLLER) {
+                performHapticFeedback(CLOCK_TICK);
+            }
         }
         animatePopupVisibility(!TextUtils.isEmpty(sectionName));
         mLastTouchY = boundedY;
         setThumbOffsetY((int) mLastTouchY);
+        updateFastScrollerLetterList(y);
+    }
+
+    private void updateFastScrollerLetterList(int y) {
+        if (!shouldUseLetterFastScroller()) {
+            return;
+        }
+        ConstraintLayout mLetterList = mRv.getLetterList();
+        for (int i = 0; i < mLetterList.getChildCount(); i++) {
+            LetterListTextView currentLetter = (LetterListTextView) mLetterList.getChildAt(i);
+            currentLetter.animateBasedOnYPosition(y + mTouchOffsetY);
+        }
     }
 
     /** End any active fast scrolling touch handling, if applicable. */
@@ -361,15 +402,35 @@ public class RecyclerViewFastScroller extends View {
         mThumbDrawOffset.set(getWidth() / 2, mRv.getScrollBarTop());
         // Draw the track
         float halfW = mWidth / 2;
-        canvas.drawRoundRect(-halfW, 0, halfW, mRv.getScrollbarTrackHeight(),
-                mWidth, mWidth, mTrackPaint);
-
-        canvas.translate(0, mThumbOffsetY);
+        boolean useLetterFastScroller = shouldUseLetterFastScroller();
+        if (useLetterFastScroller) {
+            float translateX;
+            if (mIsDragging) {
+                // halfW * 3 is half circle.
+                translateX = halfW * 3;
+            } else {
+                translateX = halfW * 5;
+            }
+            canvas.translate(translateX, mThumbOffsetY);
+        } else {
+            canvas.drawRoundRect(-halfW, 0, halfW, mRv.getScrollbarTrackHeight(),
+                    mWidth, mWidth, mTrackPaint);
+            canvas.translate(0, mThumbOffsetY);
+        }
         mThumbDrawOffset.y += mThumbOffsetY;
+
+        /* Draw half circle */
         halfW += mThumbPadding;
         float r = getScrollThumbRadius();
-        mThumbBounds.set(-halfW, 0, halfW, mThumbHeight);
-        canvas.drawRoundRect(mThumbBounds, r, r, mThumbPaint);
+        if (useLetterFastScroller) {
+            mThumbPaint.setColor(mThumbLetterScrollerColor);
+            mThumbBounds.set(0, 0, 0, mThumbHeight);
+            canvas.drawCircle(-halfW, halfW, r * 2, mThumbPaint);
+        } else {
+            mThumbPaint.setColor(mThumbColor);
+            mThumbBounds.set(-halfW, 0, halfW, mThumbHeight);
+            canvas.drawRoundRect(mThumbBounds, r, r, mThumbPaint);
+        }
         mThumbBounds.roundOut(SYSTEM_GESTURE_EXCLUSION_RECT.get(0));
         // swiping very close to the thumb area (not just within it's bound)
         // will also prevent back gesture
@@ -382,6 +443,11 @@ public class RecyclerViewFastScroller extends View {
             setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
         }
         canvas.restoreToCount(saveCount);
+    }
+
+    boolean shouldUseLetterFastScroller() {
+        return Flags.letterFastScroller()
+                && getScrollerLocation() == FastScrollerLocation.ALL_APPS_SCROLLER;
     }
 
     @Override
@@ -429,19 +495,25 @@ public class RecyclerViewFastScroller extends View {
         return isNearThumb(x, y);
     }
 
-    /**
-     * Returns whether the specified x position is near the scroll bar.
-     */
-    public boolean isNearScrollBar(int x) {
-        return x >= (getWidth() - mMaxWidth) / 2 - mScrollbarLeftOffsetTouchDelegate
-                && x <= (getWidth() + mMaxWidth) / 2;
+    public FastScrollerLocation getScrollerLocation() {
+        return mFastScrollerLocation;
+    }
+
+    public void setFastScrollerLocation(@NonNull FastScrollerLocation location) {
+        mFastScrollerLocation = location;
     }
 
     private void animatePopupVisibility(boolean visible) {
         if (mPopupVisible != visible) {
             mPopupVisible = visible;
-            mPopupView.animate().cancel();
-            mPopupView.animate().alpha(visible ? 1f : 0f).setDuration(visible ? 200 : 150).start();
+            if (shouldUseLetterFastScroller()) {
+                mRv.getLetterList().animate().alpha(visible ? 1f : 0f)
+                        .setDuration(visible ? 200 : 150).start();
+            } else {
+                mPopupView.animate().cancel();
+                mPopupView.animate().alpha(visible ? 1f : 0f)
+                        .setDuration(visible ? 200 : 150).start();
+            }
         }
     }
 

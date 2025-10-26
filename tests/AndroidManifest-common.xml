@@ -183,6 +183,7 @@
         </activity>
         <activity-alias android:name="Activity2"
                         android:label="TestActivity2"
+                        android:icon="@drawable/test_icon"
                         android:exported="true"
                         android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
             <intent-filter>
@@ -192,6 +193,7 @@
         </activity-alias>
         <activity-alias android:name="Activity3"
                         android:label="TestActivity3"
+                        android:icon="@drawable/test_icon"
                         android:exported="true"
                         android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
             <intent-filter>
@@ -201,6 +203,7 @@
         </activity-alias>
         <activity-alias android:name="Activity4"
                         android:label="TestActivity4"
+                        android:icon="@drawable/test_icon"
                         android:exported="true"
                         android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
             <intent-filter>
@@ -210,6 +213,7 @@
         </activity-alias>
         <activity-alias android:name="Activity5"
                         android:label="TestActivity5"
+                        android:icon="@drawable/test_icon"
                         android:exported="true"
                         android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
             <intent-filter>
@@ -219,6 +223,7 @@
         </activity-alias>
         <activity-alias android:name="Activity6"
                         android:label="TestActivity6"
+                        android:icon="@drawable/test_icon"
                         android:exported="true"
                         android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
             <intent-filter>
@@ -228,6 +233,7 @@
         </activity-alias>
         <activity-alias android:name="Activity7"
                         android:label="TestActivity7"
+                        android:icon="@drawable/test_icon"
                         android:exported="true"
                         android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
             <intent-filter>
@@ -237,6 +243,7 @@
         </activity-alias>
         <activity-alias android:name="Activity8"
                         android:label="TestActivity8"
+                        android:icon="@drawable/test_icon"
                         android:exported="true"
                         android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
             <intent-filter>
@@ -246,6 +253,7 @@
         </activity-alias>
         <activity-alias android:name="Activity9" android:exported="true"
             android:label="TestActivity9"
+            android:icon="@drawable/test_icon"
             android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -254,6 +262,7 @@
         </activity-alias>
         <activity-alias android:name="Activity10" android:exported="true"
             android:label="TestActivity10"
+            android:icon="@drawable/test_icon"
             android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -262,6 +271,7 @@
         </activity-alias>
         <activity-alias android:name="Activity11" android:exported="true"
             android:label="TestActivity11"
+            android:icon="@drawable/test_icon"
             android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -270,6 +280,7 @@
         </activity-alias>
         <activity-alias android:name="Activity12" android:exported="true"
             android:label="TestActivity12"
+            android:icon="@drawable/test_icon"
             android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -278,6 +289,7 @@
         </activity-alias>
         <activity-alias android:name="Activity13" android:exported="true"
             android:label="TestActivity13"
+            android:icon="@drawable/test_icon"
             android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -286,6 +298,7 @@
         </activity-alias>
         <activity-alias android:name="Activity14" android:exported="true"
             android:label="TestActivity14"
+            android:icon="@drawable/test_icon"
             android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -363,7 +376,7 @@
         </activity>
         <activity android:name="com.android.launcher3.testcomponent.ImeTestActivity"
             android:label="ImeTestActivity"
-            android:icon="@drawable/test_theme_icon"
+            android:icon="@drawable/test_icon"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -406,6 +419,36 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity-alias android:name="AppIconActivity"
+            android:label="Application Icon"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="DiffIconActivity"
+            android:label="Different icon"
+            android:exported="true"
+            android:icon="@drawable/test_different_activity_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="WrongIconActivity"
+            android:label="Wrong icon"
+            android:exported="true"
+            android:icon="@drawable/test_wrong_activity_icon"
+            android:targetActivity="com.android.launcher3.testcomponent.BaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
 
         <!-- Disable eager initialization of Jetpack libraries. See bug 197780098. -->
         <provider

@@ -1,0 +1,22 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    buildToolsVersion "36.1.0"
+    namespace "com.android.systemui.utils"
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+        }
+    }
+}
+
+addFrameworkJar('framework-16.jar')
+compileOnlyCommonJars()
+
+dependencies {
+    compileOnly projects.flags
+    compileOnly projects.viewcapture
+}

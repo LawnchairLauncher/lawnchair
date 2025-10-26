@@ -118,7 +118,8 @@ jobs:
 
   nightly-release:
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && github.ref == 'refs/heads/15-dev'
+    if: false
+    # if: github.repository_owner == 'LawnchairLauncher' && github.event_name == 'push' && github.ref == 'refs/heads/15-dev'
     needs: build-debug-apk
     permissions:
       contents: write

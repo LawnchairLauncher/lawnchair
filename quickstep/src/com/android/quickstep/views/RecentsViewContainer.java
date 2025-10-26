@@ -16,7 +16,6 @@
 
 package com.android.quickstep.views;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.LocusId;
@@ -26,9 +25,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.logger.LauncherAtom;
-import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ScrimView;
 
@@ -41,7 +42,7 @@ public interface RecentsViewContainer extends ActivityContext {
      * Returns an instance of an implementation of RecentsViewContainer
      * @param context will find instance of recentsViewContainer from given context.
      */
-    static <T extends RecentsViewContainer> T containerFromContext(Context context) {
+    static <T extends Context & RecentsViewContainer> T containerFromContext(Context context) {
         if (context instanceof RecentsViewContainer) {
             return (T) context;
         } else if (context instanceof ContextWrapper) {
@@ -52,11 +53,6 @@ public interface RecentsViewContainer extends ActivityContext {
     }
 
     /**
-     * Returns {@link SystemUiController} to manage various window flags to control system UI.
-     */
-    SystemUiController getSystemUiController();
-
-    /**
      * Returns {@link ScrimView}
      */
     ScrimView getScrimView();
@@ -65,19 +61,6 @@ public interface RecentsViewContainer extends ActivityContext {
      * Returns the Overview Panel as a View
      */
     <T extends View> T getOverviewPanel();
-
-    /**
-     * Returns the RootView
-     */
-    View getRootView();
-
-    /**
-     * Dispatches a generic motion event to the view hierarchy.
-     * Returns the current RecentsViewContainer as context
-     */
-    default Context asContext() {
-        return (Context) this;
-    }
 
     /**
      * @see Window.Callback#dispatchGenericMotionEvent(MotionEvent)
@@ -92,7 +75,7 @@ public interface RecentsViewContainer extends ActivityContext {
     /**
      * Returns overview actions view as a view
      */
-    View getActionsView();
+    OverviewActionsView getActionsView();
 
     /**
      * @see BaseActivity#addForceInvisibleFlag(int)
@@ -140,12 +123,6 @@ public interface RecentsViewContainer extends ActivityContext {
     void runOnBindToTouchInteractionService(Runnable r);
 
     /**
-     * @see Activity#getWindow()
-     * @return Window
-     */
-    Window getWindow();
-
-    /**
      * @see
      * BaseActivity#addMultiWindowModeChangedListener(BaseActivity.MultiWindowModeChangedListener)
      * @param listener {@link BaseActivity.MultiWindowModeChangedListener}
@@ -174,6 +151,25 @@ public interface RecentsViewContainer extends ActivityContext {
     boolean isRecentsViewVisible();
 
     /**
+     * Begins transition to start home through container
+     */
+    default void startHome(){
+        // no op
+    }
+
+    /**
+     * Checks container to see if we can start home transition safely
+     */
+    boolean canStartHomeSafely();
+
+
+    /**
+     * Enter staged split directly from the current running app.
+     * @param leftOrTop if the staged split will be positioned left or top.
+     */
+    default void enterStageSplitFromRunningApp(boolean leftOrTop){}
+
+    /**
      * Overwrites any logged item in Launcher that doesn't have a container with the
      * {@link com.android.launcher3.touch.PagedOrientationHandler} in use for Overview.
      *
@@ -198,4 +194,8 @@ public interface RecentsViewContainer extends ActivityContext {
                                         .setOrientationHandler(orientationForLogging))
                         .build());
     }
+
+    void setTaskbarUIController(@Nullable TaskbarUIController taskbarUIController);
+
+    @Nullable TaskbarUIController getTaskbarUIController();
 }

@@ -49,10 +49,12 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.contextualeducation.GestureType;
 
 import java.util.function.BiConsumer;
 
@@ -208,10 +210,7 @@ public class NavBarToHomeTouchController implements TouchController,
                     mLauncher.getStateManager().addStateListener(listener);
                     onSwipeInteractionCompleted(mEndState);
                 };
-                new OverviewToHomeAnim(mLauncher, onReachedHome,
-                        FeatureFlags.enableSplitContextually()
-                                ? mCancelSplitRunnable
-                                : null)
+                new OverviewToHomeAnim(mLauncher, onReachedHome, mCancelSplitRunnable)
                         .animateWithVelocity(velocity);
             } else {
                 mLauncher.getStateManager().goToState(mEndState, true,
@@ -219,6 +218,8 @@ public class NavBarToHomeTouchController implements TouchController,
             }
             if (mStartState != mEndState) {
                 logHomeGesture();
+                SystemUiProxy.INSTANCE.get(mLauncher).updateContextualEduStats(
+                        mSwipeDetector.isTrackpadGesture(), GestureType.HOME);
             }
             AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(mLauncher);
             if (topOpenView != null) {

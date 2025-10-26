@@ -1,0 +1,95 @@
+// Copyright (C) 2024 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package {
+    // See: http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // all of the 'license_kinds' from "frameworks_base_license"
+    // to get the below license kinds:
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["frameworks_base_license"],
+    default_team: "trendy_team_multitasking_windowing",
+}
+
+java_library_static {
+    name: "wm_shell-shared-utils",
+    srcs: [
+        "src/com/android/wm/shell/shared/TransitionUtil.java",
+    ],
+}
+
+filegroup {
+    name: "wm_shell-shared-aidls",
+
+    srcs: [
+        "**/*.aidl",
+    ],
+
+    path: "src",
+}
+
+// NOTE: This shared lib is built with various apps and should not
+//       contain resources that can be overlaid, as they would need
+//       to be overlaid in each app individually.
+android_library {
+    name: "WindowManager-Shell-shared",
+
+    resource_dirs: [
+        "res",
+    ],
+    srcs: [
+        "**/*.java",
+        "**/*.kt",
+        ":wm_shell-shared-aidls",
+    ],
+    static_libs: [
+        "androidx.core_core-animation",
+        "androidx.dynamicanimation_dynamicanimation",
+        "com_android_wm_shell_flags_lib",
+        "jsr330",
+    ],
+    kotlincflags: ["-Xjvm-default=all"],
+    use_resource_processor: true,
+}
+
+// NOTE: This shared lib is built with various apps and should not
+//       contain resources that can be overlaid, as they would need
+//       to be overlaid in each app individually.
+java_library {
+    name: "WindowManager-Shell-shared-desktopMode",
+
+    srcs: [
+        "**/desktopmode/*.java",
+        "**/desktopmode/*.kt",
+    ],
+    static_libs: [
+        "WindowManager-Shell-shared-AOSP",
+        "com.android.window.flags.window-aconfig-java",
+        "wm_shell-shared-utils",
+    ],
+}
+
+// Things that can be shared with launcher3
+java_library {
+    name: "WindowManager-Shell-shared-AOSP",
+
+    sdk_version: "current",
+
+    srcs: [
+        "src/com/android/wm/shell/shared/bubbles/BubbleAnythingFlagHelper.java",
+    ],
+    static_libs: [
+        "com_android_wm_shell_flags_lib",
+    ],
+}

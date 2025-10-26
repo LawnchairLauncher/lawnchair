@@ -22,11 +22,13 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"పిన్ చేయండి"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"సంప్రదాయేతర"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"డెస్క్‌టాప్"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"ఎక్స్‌టర్నల్ డిస్‌ప్లేకు తరలించండి"</string>
+    <string name="recent_task_option_close" msgid="942942499021777264">"మూసివేయండి"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"డెస్క్‌టాప్"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"ఇటీవలి ఐటెమ్‌లు ఏవీ లేవు"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"యాప్ వినియోగ సెట్టింగ్‌లు"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"అన్నీ తీసివేయండి"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"ఇటీవలి యాప్‌లు"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"టాస్క్ మూసివేయబడింది"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 నిమిషం"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"నేటికి <xliff:g id="TIME">%1$s</xliff:g> మిగిలి ఉంది"</string>
@@ -45,6 +47,7 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"యాప్ సలహాలు ఎనేబుల్ చేయబడ్డాయి"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"యాప్ సూచ‌న‌లు డిజేబుల్‌ చేయబడ్డాయి"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"సూచించబడిన యాప్: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"సంజ్ఞ నావిగేషన్ ట్యుటోరియల్"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"మీ పరికరాన్ని రొటేట్ చేయండి"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"సంజ్ఞ నావిగేషన్ ట్యుటోరియల్‌ను పూర్తి చేయడానికి దయచేసి మీ పరికరాన్ని రొటేట్ చేయండి"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"కుడి వైపు చిట్ట చివరి లేదా ఎడమ వైపు చిట్ట చివరి అంచు నుండి స్వైప్ చేస్తున్నారని నిర్ధారించుకోండి"</string>
@@ -56,7 +59,6 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"వెనుక సంజ్ఞ సున్నితత్వం మార్చడానికి, సెట్టింగ్‌లకు వెళ్లండి"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"వెనుకకు వెళ్ళడం కోసం స్వైప్ చేయండి"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"మునుపటి స్క్రీన్‌కు తిరిగి వెళ్లడానికి, ఎడమ లేదా కుడి అంచు నుండి స్క్రీన్ మధ్యలోకి స్వయిప్ చేయండి."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"గత స్క్రీన్‌కు తిరిగి వెళ్లడానికి, ఎడమ లేదా కుడి అంచు నుండి స్క్రీన్ మధ్యలోకి 2 వేళ్లతో స్వైప్ చేయండి."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"వెనుకకు వెళ్లండి"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"ఎడమ లేదా కుడి అంచు నుండి స్క్రీన్ మధ్యకు స్వైప్ చేయండి"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"మీరు స్క్రీన్ దిగువ అంచు నుండి పైకి స్వైప్ చేశారని నిర్ధారించుకోండి"</string>
@@ -66,7 +68,6 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"మీరు మొదటి స్క్రీన్‌కు వెళ్లే సంజ్ఞను పూర్తి చేశారు"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"మొదటి స్క్రీన్‌కు వెళ్లడానికి స్వైప్ చేయండి"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"స్క్రీన్ కింది నుండి పైకి స్వైప్ చేయండి. ఈ సంజ్ఞ ఎప్పుడూ మిమ్మల్ని మొదటి స్క్రీన్‌కు తీసుకెళ్తుంది."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"స్క్రీన్ కింది నుండి 2 వేళ్లతో పైకి స్వైప్ చేయండి. సంజ్ఞ ఎల్లప్పుడూ మొదటి స్క్రీన్‌కు తీసుకెళ్తుంది."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"మొదటి ట్యాబ్‌కు వెళ్లండి"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"స్క్రీన్ కింది భాగం నుండి పైకి స్వైప్ చేయండి"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"బాగా చేశారు!"</string>
@@ -74,10 +75,9 @@
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"వేలిని రిలీజ్ చేయడానికి ముందు విండోను ఎక్కువసేపు నొక్కి, పట్టుకోవడానికి ట్రై చేయండి"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"స్క్రీన్‌పై నేరుగా పైకి స్వైప్ చేసి, ఆపై పాజ్ చేయండి"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"మీరు సంజ్ఞలను ఎలా ఉపయోగించాలో నేర్చుకున్నారు. సంజ్ఞలను ఆఫ్ చేయడానికి, సెట్టింగ్‌లకు వెళ్లండి."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"మీరు \'యాప్‌ల మధ్య మార్పు\' సంజ్ఞను పూర్తి చేశారు"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"మీరు \'యాప్‌ల మధ్య మారేందుకు సంజ్ఞ\' ట్యుటోరియల్‌ను పూర్తి చేశారు"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"యాప్‌ల మధ్య మార్చడం కోసం స్వైప్ చేయండి"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"యాప్‌ల మధ్య మారడానికి, మీ స్క్రీన్ కింది వైపు నుండి పైకి స్వైప్ చేసి, పట్టుకుని, తర్వాత వదలండి."</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"యాప్‌ల మధ్య మారడానికి, మీ స్క్రీన్ కింది నుండి 2 వేళ్లతో పైకి స్వైప్ చేసి, నొక్కి పట్టి, వదలండి."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"యాప్‌ల మధ్య స్విచ్ అవ్వండి"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"మీ స్క్రీన్ కింది వైపు నుండి పైకి స్వైప్ చేసి, పట్టుకుని, తర్వాత వదలండి"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"చాలా బాగా చేశారు!"</string>
@@ -99,7 +99,7 @@
     <string name="action_save_app_pair" msgid="5974823919237645229">"యాప్ పెయిర్‌ను సేవ్ చేయండి"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"స్ప్లిట్ స్క్రీన్ కోసం మరొక యాప్‌ను ట్యాప్ చేయండి"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"స్ప్లిట్ స్క్రీన్‌ను ఉపయోగించడానికి మరొక యాప్ ఎంచుకోండి"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"రద్దు చేయండి"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"రద్దు చేయండి"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"స్ప్లిట్ స్క్రీన్ ఎంపిక నుండి ఎగ్జిట్ అవ్వండి"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"స్ప్లిట్ స్క్రీన్ ఉపయోగానికి మరొక యాప్ ఎంచుకోండి"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ఈ చర్యను యాప్ గానీ, మీ సంస్థ గానీ అనుమతించవు"</string>
@@ -130,18 +130,37 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"క్విక్ సెట్టింగ్‌లు"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"టాస్క్‌బార్"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"టాస్క్‌బార్ చూపబడింది"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"టాస్క్‌బార్ దాచబడింది"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"టాస్క్‌బార్, బబుల్స్ ఎడమవైపున చూపబడ్డాయి"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"టాస్క్‌బార్, బబుల్స్ కుడివైపున చూపబడ్డాయి"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"నావిగేషన్ బార్"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"టాస్క్‌బార్‌ను నిరంతరం చూపండి"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"నావిగేషన్ మోడ్‌ను మార్చండి"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"టాస్క్‌బార్ డివైడర్"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="7960342079198820179">"టాస్క్‌బార్ ఓవర్‌ఫ్లో"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ఎగువ/ఎడమ వైపునకు తరలించండి"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"దిగువ/కుడి వైపునకు తరలించండి"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{మరో # యాప్‌ను చూడండి.}other{మరో # యాప్‌లను చూడండి.}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# డెస్క్‌టాప్ యాప్‌ను చూపండి.}other{# డెస్క్‌టాప్ యాప్‌లను చూపండి.}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"యాప్‌ను బబుల్‌లాగా తెరవండి"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"ఇటీవలి యాప్‌లు"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"ఇటీవలి యాప్ లిస్ట్"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{మరో యాప్‌}other{మరిన్ని యాప్‌లు}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"డెస్క్‌టాప్"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g>, <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="TOTAL_TASKS">%3$d</xliff:g>‌లో <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g>‌వ ఐటెమ్"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"ఎడమవైపునకు స్క్రోల్ చేయండి"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"కుడివైపునకు స్క్రోల్ చేయండి"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"బబుల్"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"ఓవర్‌ఫ్లో"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="APP_NAME">%2$s</xliff:g> నుండి <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g>, మరో <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g>"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"ఎడమ వైపుగా జరపండి"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"కుడి వైపుగా జరపండి"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"అన్నింటినీ విస్మరించండి"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>ను విస్తరించండి"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>ను కుదించండి"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"సెర్చ్ చేయడానికి సర్కిల్ గీయండి"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"యాప్ చిహ్నం"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"యాప్ టైటిల్"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"\'మూసివేయండి\' బటన్"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"టాస్క్‌బార్‌కు పిన్"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"టాస్క్‌బార్ అన్‌పిన్"</string>
 </resources>

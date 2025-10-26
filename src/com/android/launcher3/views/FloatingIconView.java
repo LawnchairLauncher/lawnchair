@@ -55,7 +55,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.FastBitmapDrawable;
-import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
@@ -463,11 +463,7 @@ public class FloatingIconView extends FrameLayout implements
         Rect bounds = new Rect(0, 0, (int) position.width() + blurSizeOutline,
                 (int) position.height() + blurSizeOutline);
         bounds.inset(blurSizeOutline / 2, blurSizeOutline / 2);
-
-        try (LauncherIcons li = LauncherIcons.obtain(l)) {
-            Utilities.scaleRectAboutCenter(bounds, li.getNormalizer().getScale(drawable, null,
-                    null, null));
-        }
+        Utilities.scaleRectAboutCenter(bounds, IconNormalizer.ICON_VISIBLE_AREA_FACTOR);
 
         bounds.inset(
                 (int) (-bounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),

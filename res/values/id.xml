@@ -19,6 +19,7 @@
     <item type="id" name="view_type_widgets_space" />
     <item type="id" name="view_type_widgets_list" />
     <item type="id" name="view_type_widgets_header" />
+    <item type="id" name="view_type_widgets_list_expand" />
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
@@ -78,6 +79,7 @@
 
     <item type="id" name="saved_clip_children_tag_id" />
     <item type="id" name="saved_clip_to_padding_tag_id" />
+    <item type="id" name="perform_a11y_action_on_launcher_state_normal_tag" />
 
     <item type="id" name="saved_floating_widget_foreground" />
     <item type="id" name="saved_floating_widget_background" />

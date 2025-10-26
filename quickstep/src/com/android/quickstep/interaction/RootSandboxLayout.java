@@ -15,16 +15,12 @@
  */
 package com.android.quickstep.interaction;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Insets;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.WindowInsets;
 import android.widget.RelativeLayout;
 
@@ -39,10 +35,6 @@ import com.android.launcher3.Utilities;
 /** Root layout that TutorialFragment uses to intercept motion events. */
 public class RootSandboxLayout extends RelativeLayout {
 
-    private final Rect mTempStepIndicatorBounds = new Rect();
-    private final Rect mTempInclusionBounds = new Rect();
-    private final Rect mTempExclusionBounds = new Rect();
-
     @ColorInt final int mColorSurfaceContainer;
     @ColorInt final int mColorOnSurfaceHome;
     @ColorInt final int mColorSurfaceHome;
@@ -53,11 +45,6 @@ public class RootSandboxLayout extends RelativeLayout {
     @ColorInt final int mColorOnSurfaceOverview;
     @ColorInt final int mColorSurfaceOverview;
     @ColorInt final int mColorSecondaryOverview;
-
-    private View mFeedbackView;
-    private View mTutorialStepView;
-    private View mSkipButton;
-    private View mDoneButton;
 
     public RootSandboxLayout(Context context) {
         this(context, null);
@@ -122,57 +109,5 @@ public class RootSandboxLayout extends RelativeLayout {
         Insets insets = getRootWindowInsets().getInsets(WindowInsets.Type.systemBars());
 
         return getHeight() + insets.top + insets.bottom;
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            return;
-        }
-        mFeedbackView = findViewById(R.id.gesture_tutorial_fragment_feedback_view);
-        mTutorialStepView =
-                mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_tutorial_step);
-        mSkipButton = mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_close_button);
-        mDoneButton = mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_action_button);
-
-        mFeedbackView.addOnLayoutChangeListener(
-                (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-                    if (mSkipButton.getVisibility() != VISIBLE
-                            && mDoneButton.getVisibility() != VISIBLE) {
-                        return;
-                    }
-                    // Either the skip or the done button is ever shown at once, never both.
-                    boolean showingSkipButton = mSkipButton.getVisibility() == VISIBLE;
-                    boolean isRTL = Utilities.isRtl(getContext().getResources());
-                    updateTutorialStepViewTranslation(
-                            showingSkipButton ? mSkipButton : mDoneButton,
-                            // Translate the step indicator away from whichever button is being
-                            // shown. The skip button in on the left in LTR or on the right in RTL.
-                            // The done button is on the right in LTR or left in RTL.
-                            (showingSkipButton && !isRTL) || (!showingSkipButton && isRTL));
-                });
-    }
-
-    private void updateTutorialStepViewTranslation(
-            @NonNull View anchorView, boolean translateToRight) {
-        mTempStepIndicatorBounds.set(
-                mTutorialStepView.getLeft(),
-                mTutorialStepView.getTop(),
-                mTutorialStepView.getRight(),
-                mTutorialStepView.getBottom());
-        mTempInclusionBounds.set(0, 0, mFeedbackView.getWidth(), mFeedbackView.getHeight());
-        mTempExclusionBounds.set(
-                anchorView.getLeft(),
-                anchorView.getTop(),
-                anchorView.getRight(),
-                anchorView.getBottom());
-
-        Utilities.translateOverlappingView(
-                mTutorialStepView,
-                mTempStepIndicatorBounds,
-                mTempInclusionBounds,
-                mTempExclusionBounds,
-                translateToRight ? Utilities.TRANSLATE_RIGHT : Utilities.TRANSLATE_LEFT);
     }
 }

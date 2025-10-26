@@ -17,8 +17,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/handle_menu"
     android:layout_width="@dimen/desktop_mode_handle_menu_width"
     android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingBottom="@dimen/desktop_mode_handle_menu_pill_elevation_padding"
+    android:paddingEnd="@dimen/desktop_mode_handle_menu_pill_elevation_padding"
     android:orientation="vertical">
 
     <LinearLayout
@@ -27,43 +32,32 @@
         android:layout_height="@dimen/desktop_mode_handle_menu_app_info_pill_height"
         android:layout_marginTop="@dimen/desktop_mode_handle_menu_margin_top"
         android:layout_marginStart="1dp"
-        android:elevation="1dp"
+        android:elevation="@dimen/desktop_mode_handle_menu_pill_elevation"
         android:orientation="horizontal"
         android:background="@drawable/desktop_mode_decor_handle_menu_background"
         android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/application_icon"
-            android:layout_width="@dimen/desktop_mode_caption_icon_radius"
-            android:layout_height="@dimen/desktop_mode_caption_icon_radius"
-            android:layout_marginStart="12dp"
+            android:layout_width="@dimen/desktop_mode_handle_menu_icon_radius"
+            android:layout_height="@dimen/desktop_mode_handle_menu_icon_radius"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="12dp"
-            android:contentDescription="@string/app_icon_text"/>
+            android:contentDescription="@string/app_icon_text" />
 
-        <TextView
+        <com.android.wm.shell.windowdecor.MarqueedTextView
             android:id="@+id/application_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             tools:text="Gmail"
-            android:textColor="?androidprv:attr/materialColorOnSurface"
-            android:textSize="14sp"
-            android:textFontWeight="500"
-            android:lineHeight="20dp"
-            android:textStyle="normal"
-            android:layout_weight="1"/>
+            style="@style/DesktopModeHandleMenuActionButtonTextView"/>
 
         <com.android.wm.shell.windowdecor.HandleMenuImageButton
             android:id="@+id/collapse_menu_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:padding="4dp"
-            android:layout_marginEnd="14dp"
-            android:layout_marginStart="14dp"
+            android:padding="16dp"
             android:contentDescription="@string/collapse_menu_text"
-            android:src="@drawable/ic_baseline_expand_more_24"
+            android:src="@drawable/ic_baseline_expand_more_16"
             android:rotation="180"
-            android:tint="?androidprv:attr/materialColorOnSurface"
-            android:background="?android:selectableItemBackgroundBorderless"/>
+            android:tint="?android:attr/textColorPrimary"
+            style="@style/DesktopModeHandleMenuWindowingButton"/>
     </LinearLayout>
 
     <LinearLayout
@@ -73,46 +67,61 @@
         android:layout_marginTop="@dimen/desktop_mode_handle_menu_pill_spacing_margin"
         android:layout_marginStart="1dp"
         android:orientation="horizontal"
-        android:elevation="1dp"
+        android:elevation="@dimen/desktop_mode_handle_menu_pill_elevation"
         android:background="@drawable/desktop_mode_decor_handle_menu_background"
         android:gravity="center_vertical">
 
         <ImageButton
             android:id="@+id/fullscreen_button"
-            android:layout_marginEnd="4dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="12dp"
             android:contentDescription="@string/fullscreen_text"
             android:src="@drawable/desktop_mode_ic_handle_menu_fullscreen"
-            android:tint="?androidprv:attr/materialColorOnSurface"
-            android:layout_weight="1"
+            android:tint="?android:attr/textColorPrimary"
             style="@style/DesktopModeHandleMenuWindowingButton"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <ImageButton
             android:id="@+id/split_screen_button"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
             android:contentDescription="@string/split_screen_text"
             android:src="@drawable/desktop_mode_ic_handle_menu_splitscreen"
-            android:tint="?androidprv:attr/materialColorOnSurface"
-            android:layout_weight="1"
+            android:tint="?android:attr/textColorPrimary"
             style="@style/DesktopModeHandleMenuWindowingButton"/>
+
+        <Space
+            android:id="@+id/floating_button_space"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <ImageButton
             android:id="@+id/floating_button"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
             android:contentDescription="@string/float_button_text"
             android:src="@drawable/desktop_mode_ic_handle_menu_floating"
-            android:tint="?androidprv:attr/materialColorOnSurface"
-            android:layout_weight="1"
+            android:tint="?android:attr/textColorPrimary"
             style="@style/DesktopModeHandleMenuWindowingButton"/>
+
+        <Space
+            android:id="@+id/desktop_button_space"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <ImageButton
             android:id="@+id/desktop_button"
-            android:layout_marginStart="4dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="16dp"
             android:contentDescription="@string/desktop_text"
             android:src="@drawable/desktop_mode_ic_handle_menu_desktop"
-            android:tint="?androidprv:attr/materialColorOnSurface"
-            android:layout_weight="1"
+            android:tint="?android:attr/textColorPrimary"
             style="@style/DesktopModeHandleMenuWindowingButton"/>
 
     </LinearLayout>
@@ -120,20 +129,77 @@
     <LinearLayout
         android:id="@+id/more_actions_pill"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/desktop_mode_handle_menu_more_actions_pill_height"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/desktop_mode_handle_menu_pill_spacing_margin"
         android:layout_marginStart="1dp"
         android:orientation="vertical"
-        android:elevation="1dp"
+        android:elevation="@dimen/desktop_mode_handle_menu_pill_elevation"
         android:background="@drawable/desktop_mode_decor_handle_menu_background">
 
-        <Button
+        <com.android.wm.shell.windowdecor.HandleMenuActionButton
             android:id="@+id/screenshot_button"
             android:contentDescription="@string/screenshot_text"
             android:text="@string/screenshot_text"
-            android:drawableStart="@drawable/desktop_mode_ic_handle_menu_screenshot"
-            android:drawableTint="?androidprv:attr/materialColorOnSurface"
+            android:src="@drawable/desktop_mode_ic_handle_menu_screenshot"
             style="@style/DesktopModeHandleMenuActionButton"/>
+
+        <com.android.wm.shell.windowdecor.HandleMenuActionButton
+            android:id="@+id/new_window_button"
+            android:contentDescription="@string/new_window_text"
+            android:text="@string/new_window_text"
+            android:src="@drawable/desktop_mode_ic_handle_menu_new_window"
+            style="@style/DesktopModeHandleMenuActionButton"/>
+
+        <com.android.wm.shell.windowdecor.HandleMenuActionButton
+            android:id="@+id/manage_windows_button"
+            android:contentDescription="@string/manage_windows_text"
+            android:text="@string/manage_windows_text"
+            android:src="@drawable/desktop_mode_ic_handle_menu_manage_windows"
+            style="@style/DesktopModeHandleMenuActionButton"/>
+
+        <com.android.wm.shell.windowdecor.HandleMenuActionButton
+            android:id="@+id/change_aspect_ratio_button"
+            android:contentDescription="@string/change_aspect_ratio_text"
+            android:text="@string/change_aspect_ratio_text"
+            android:src="@drawable/desktop_mode_ic_handle_menu_change_aspect_ratio"
+            style="@style/DesktopModeHandleMenuActionButton"/>
+
+        <com.android.wm.shell.windowdecor.HandleMenuActionButton
+            android:id="@+id/handle_menu_restart_button"
+            android:contentDescription="@string/handle_menu_restart_text"
+            android:text="@string/handle_menu_restart_text"
+            android:src="@drawable/desktop_mode_ic_handle_menu_restart"
+            style="@style/DesktopModeHandleMenuActionButton"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/open_in_app_or_browser_pill"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/desktop_mode_handle_menu_open_in_browser_pill_height"
+        android:layout_marginTop="@dimen/desktop_mode_handle_menu_pill_spacing_margin"
+        android:layout_marginStart="1dp"
+        android:orientation="horizontal"
+        android:elevation="@dimen/desktop_mode_handle_menu_pill_elevation"
+        android:background="@drawable/desktop_mode_decor_handle_menu_background">
+
+        <com.android.wm.shell.windowdecor.HandleMenuActionButton
+            android:id="@+id/open_in_app_or_browser_button"
+            android:contentDescription="@string/open_in_browser_text"
+            android:text="@string/open_in_browser_text"
+            android:src="@drawable/desktop_mode_ic_handle_menu_open_in_browser"
+            style="@style/DesktopModeHandleMenuActionButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:id="@+id/open_by_default_button"
+            android:layout_gravity="end|center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="16dp"
+            android:contentDescription="@string/open_by_default_settings_text"
+            android:src="@drawable/desktop_mode_ic_handle_menu_open_by_default_settings"
+            android:tint="?android:attr/textColorPrimary"
+            style="@style/DesktopModeHandleMenuWindowingButton"/>
     </LinearLayout>
 </LinearLayout>
 

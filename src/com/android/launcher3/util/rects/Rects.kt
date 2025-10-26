@@ -18,6 +18,24 @@ package com.android.launcher3.util.rects
 
 import android.graphics.Rect
 import android.view.View
+import com.android.launcher3.Utilities
+
+/**
+ * Linearly interpolate between two rectangles. The result is stored in the rect the function is
+ * called on.
+ *
+ * @param start the starting rectangle
+ * @param end the ending rectangle
+ * @param t the interpolation factor, where 0 is the start and 1 is the end
+ */
+fun Rect.lerpRect(start: Rect, end: Rect, t: Float) {
+    set(
+        Utilities.mapRange(t, start.left.toFloat(), end.left.toFloat()).toInt(),
+        Utilities.mapRange(t, start.top.toFloat(), end.top.toFloat()).toInt(),
+        Utilities.mapRange(t, start.right.toFloat(), end.right.toFloat()).toInt(),
+        Utilities.mapRange(t, start.bottom.toFloat(), end.bottom.toFloat()).toInt(),
+    )
+}
 
 /** Copy the coordinates of the [view] relative to its parent into this rectangle. */
 fun Rect.set(view: View) {

@@ -24,6 +24,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Definition for spring loaded state used during drag and drop.
@@ -41,7 +42,7 @@ public class SpringLoadedState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Context context, boolean isToState) {
+    public int getTransitionDuration(ActivityContext context, boolean isToState) {
         return 150;
     }
 

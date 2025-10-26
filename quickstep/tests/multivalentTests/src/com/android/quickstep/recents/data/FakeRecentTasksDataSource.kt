@@ -20,10 +20,12 @@ import com.android.quickstep.util.GroupTask
 import java.util.function.Consumer
 
 class FakeRecentTasksDataSource : RecentTasksDataSource {
-    var taskList: List<GroupTask> = listOf()
+    private var taskList: List<GroupTask> = listOf()
 
     override fun getTasks(callback: Consumer<List<GroupTask>>?): Int {
-        callback?.accept(taskList)
+        // Makes a copy of the GroupTask to create a new GroupTask instance and to simulate
+        // RecentsModel::getTasks behavior.
+        callback?.accept(taskList.map { it.copy() })
         return 0
     }
 

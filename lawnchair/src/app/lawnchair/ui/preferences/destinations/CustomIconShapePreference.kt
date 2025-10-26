@@ -17,6 +17,8 @@ import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +58,7 @@ import app.lawnchair.util.getClipboardContent
 import com.android.launcher3.R
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CustomIconShapePreference(
     modifier: Modifier = Modifier,
@@ -89,6 +92,7 @@ fun CustomIconShapePreference(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = 16.dp),
+                    shapes = ButtonDefaults.shapes(),
                 ) {
                     Text(
                         text = if (appliedIconShape != null) {
@@ -264,6 +268,7 @@ private fun IconShapeCornerPreference(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun CornerSlider(
     label: String,
@@ -337,7 +342,10 @@ private fun CornerSlider(
                             ModalBottomSheetContent(
                                 title = { Text(stringResource(id = R.string.custom_icon_shape_corner)) },
                                 buttons = {
-                                    OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
+                                    OutlinedButton(
+                                        onClick = { bottomSheetHandler.hide() },
+                                        shapes = ButtonDefaults.shapes(),
+                                    ) {
                                         Text(text = stringResource(id = android.R.string.cancel))
                                     }
                                 },

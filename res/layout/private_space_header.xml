@@ -43,6 +43,7 @@
             android:layout_height="@dimen/ps_header_image_height"
             android:background="@drawable/ps_settings_background"
             android:src="@drawable/ic_ps_settings"
+            android:visibility="gone"
             android:contentDescription="@string/ps_container_settings" />
         <LinearLayout
             android:id="@+id/ps_lock_unlock_button"
@@ -59,8 +60,8 @@
                 android:layout_marginTop="@dimen/ps_lock_icon_margin_top"
                 android:layout_marginBottom="@dimen/ps_lock_icon_margin_bottom"
                 android:importantForAccessibility="no"
-                android:src="@drawable/ic_pr_lock"
-                app:tint="@color/material_color_primary_fixed_dim"
+                android:src="@drawable/ic_lock"
+                app:tint="@color/materialColorPrimaryFixedDim"
                 android:scaleType="center"/>
             <TextView
                 android:id="@+id/lock_text"
@@ -68,10 +69,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/ps_lock_icon_text_margin_start_expanded"
                 android:layout_marginEnd="@dimen/ps_lock_icon_text_margin_end_expanded"
-                android:textColor="@color/material_color_on_primary_fixed"
+                android:textColor="@color/materialColorOnPrimaryFixed"
                 android:textSize="14sp"
                 android:text="@string/ps_container_lock_title"
+                android:maxLines="1"
                 android:visibility="gone"
+                android:alpha="0"
                 style="@style/TextHeadline"/>
         </LinearLayout>
     </LinearLayout>
@@ -97,6 +100,7 @@
         android:gravity="center_vertical"
         android:layout_marginStart="@dimen/ps_header_layout_margin"
         android:text="@string/ps_container_title"
+        android:maxLines="1"
         android:theme="@style/PrivateSpaceHeaderTextStyle"
         android:importantForAccessibility="no"/>
 

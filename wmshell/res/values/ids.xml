@@ -25,6 +25,7 @@
     <item type="id" name="action_move_tl_50" />
     <item type="id" name="action_move_tl_30" />
     <item type="id" name="action_move_rb_full" />
+    <item type="id" name="action_swap_apps" />
 
     <!-- For saving PhysicsAnimationLayout animations/animators as view tags. -->
     <item type="id" name="translation_x_dynamicanimation_tag"/>
@@ -42,6 +43,13 @@
     <item type="id" name="action_move_top_right"/>
     <item type="id" name="action_move_bottom_left"/>
     <item type="id" name="action_move_bottom_right"/>
+    <item type="id" name="action_move_bubble_bar_left"/>
+    <item type="id" name="action_move_bubble_bar_right"/>
 
     <item type="id" name="dismiss_view"/>
+
+    <!-- Accessibility actions for desktop windowing. -->
+    <item type="id" name="action_snap_left"/>
+    <item type="id" name="action_snap_right"/>
+    <item type="id" name="action_maximize_restore"/>
 </resources>

@@ -1,0 +1,68 @@
+// Copyright (C) 2024 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package {
+    default_team: "trendy_team_system_ui_please_use_a_more_specific_subteam_if_possible_",
+    // See: http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // all of the 'license_kinds' from "frameworks_base_packages_SystemUI_license"
+    // to get the below license kinds:
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["frameworks_base_packages_SystemUI_license"],
+}
+
+java_library {
+    name: "PlatformAnimationLib-server",
+    srcs: [
+        "src/com/android/systemui/animation/server/*.java",
+        ":PlatformAnimationLib-aidl",
+    ],
+    static_libs: [
+        "WindowManager-Shell-shared",
+    ],
+}
+
+// This is the core animation library written in java and can be depended by java sdk libraries.
+// Please don't introduce kotlin code in this target since kotlin is incompatible with sdk
+// libraries.
+java_library {
+    name: "PlatformAnimationLib-core",
+    srcs: [
+        "src/com/android/systemui/animation/*.java",
+        ":PlatformAnimationLib-aidl",
+    ],
+    static_libs: [
+        "WindowManager-Shell-shared",
+    ],
+}
+
+filegroup {
+    name: "PlatformAnimationLib-client-srcs",
+    srcs: [
+        "src/com/android/systemui/animation/OriginRemoteTransition.java",
+        "src/com/android/systemui/animation/OriginTransitionSession.java",
+        "src/com/android/systemui/animation/SurfaceUIComponent.java",
+        "src/com/android/systemui/animation/Transactions.java",
+        "src/com/android/systemui/animation/UIComponent.java",
+        "src/com/android/systemui/animation/ViewUIComponent.java",
+        ":PlatformAnimationLib-aidl",
+    ],
+}
+
+filegroup {
+    name: "PlatformAnimationLib-aidl",
+    srcs: [
+        "src/**/*.aidl",
+    ],
+}

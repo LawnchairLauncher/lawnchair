@@ -13,36 +13,25 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="?android:colorControlHighlight">
-
-    <item android:id="@android:id/mask">
-        <shape android:shape="rectangle">
-            <corners android:radius="@dimen/all_apps_header_pill_corner_radius" />
-            <solid android:color="@color/accent_ripple_color" />
-        </shape>
-    </item>
-
-    <item>
-        <selector android:enterFadeDuration="100">
-            <item
-                android:id="@+id/unselected"
-                android:state_selected="false">
-                <shape android:shape="rectangle">
-                    <corners android:radius="@dimen/all_apps_header_pill_corner_radius" />
-                    <solid android:color="@color/material_color_surface_bright" />
-                </shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/all_apps_tabs_background_unselected_focused" android:state_focused="true" android:state_selected="false" />
+    <item android:drawable="@drawable/all_apps_tabs_background_selected_focused" android:state_focused="true" android:state_selected="true" />
+    <item android:id="@+id/unselected" android:state_focused="false" android:state_selected="false">
+        <ripple android:color="@color/accent_ripple_color">
+            <item>
+                <selector android:enterFadeDuration="100">
+                    <item android:drawable="@drawable/all_apps_tabs_background_unselected" />
+                </selector>
             </item>
-
-            <item
-                android:id="@+id/selected"
-                android:state_selected="true">
-                <shape android:shape="rectangle">
-                    <corners android:radius="@dimen/all_apps_header_pill_corner_radius" />
-                    <solid android:color="@color/material_color_primary" />
-                </shape>
-            </item>
-        </selector>
+        </ripple>
     </item>
-
-</ripple>
+    <item android:id="@+id/selected" android:state_focused="false" android:state_selected="true">
+        <ripple android:color="@color/accent_ripple_color">
+            <item>
+                <selector android:enterFadeDuration="100">
+                    <item android:drawable="@drawable/all_apps_tabs_background_selected" />
+                </selector>
+            </item>
+        </ripple>
+    </item>
+</selector>

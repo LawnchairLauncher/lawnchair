@@ -17,14 +17,12 @@
 package com.android.systemui.animation.back
 
 import android.annotation.IntRange
-import android.os.Build
 import android.util.DisplayMetrics
 import android.view.View
 import android.window.BackEvent
 import android.window.OnBackAnimationCallback
 import android.window.OnBackInvokedDispatcher
-import android.window.OnBackInvokedDispatcher.Priority
-import androidx.annotation.RequiresApi
+import com.android.app.animation.Interpolators
 
 /**
  * Generates an [OnBackAnimationCallback] given a [backAnimationSpec]. [onBackProgressed] will be
@@ -34,7 +32,6 @@ import androidx.annotation.RequiresApi
  *
  * @sample com.android.systemui.util.registerAnimationOnBackInvoked
  */
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 fun onBackAnimationCallbackFrom(
     backAnimationSpec: BackAnimationSpec,
     displayMetrics: DisplayMetrics, // TODO(b/265060720): We could remove this
@@ -43,16 +40,16 @@ fun onBackAnimationCallbackFrom(
     onBackInvoked: () -> Unit = {},
     onBackCancelled: () -> Unit = {},
 ): OnBackAnimationCallback {
-    return object : OnBackAnimationCallback {
+    return object : FlingOnBackAnimationCallback(progressInterpolator = Interpolators.LINEAR) {
         private var initialY = 0f
         private val lastTransformation = BackTransformation()
 
-        override fun onBackStarted(backEvent: BackEvent) {
+        override fun onBackStartedCompat(backEvent: BackEvent) {
             initialY = backEvent.touchY
             onBackStarted(backEvent)
         }
 
-        override fun onBackProgressed(backEvent: BackEvent) {
+        override fun onBackProgressedCompat(backEvent: BackEvent) {
             val progressY = (backEvent.touchY - initialY) / displayMetrics.heightPixels
 
             backAnimationSpec.getBackTransformation(
@@ -64,11 +61,11 @@ fun onBackAnimationCallbackFrom(
             onBackProgressed(lastTransformation)
         }
 
-        override fun onBackInvoked() {
+        override fun onBackInvokedCompat() {
             onBackInvoked()
         }
 
-        override fun onBackCancelled() {
+        override fun onBackCancelledCompat() {
             onBackCancelled()
         }
     }
@@ -79,18 +76,17 @@ fun onBackAnimationCallbackFrom(
  *
  * @sample com.android.systemui.util.registerAnimationOnBackInvoked
  */
-@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 fun View.registerOnBackInvokedCallbackOnViewAttached(
     onBackInvokedDispatcher: OnBackInvokedDispatcher,
     onBackAnimationCallback: OnBackAnimationCallback,
-    @Priority @IntRange(from = 0) priority: Int = OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+    @OnBackInvokedDispatcher.Priority @IntRange(from = 0) priority: Int = OnBackInvokedDispatcher.PRIORITY_DEFAULT,
 ) {
     addOnAttachStateChangeListener(
         object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
                 onBackInvokedDispatcher.registerOnBackInvokedCallback(
                     priority,
-                    onBackAnimationCallback
+                    onBackAnimationCallback,
                 )
             }
 

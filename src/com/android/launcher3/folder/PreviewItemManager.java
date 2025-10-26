@@ -17,12 +17,14 @@
 package com.android.launcher3.folder;
 
 import static com.android.launcher3.BubbleTextView.DISPLAY_FOLDER;
+import static com.android.launcher3.LauncherSettings.Favorites.DESKTOP_ICON_FLAG;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ENTER_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.EXIT_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.FolderIcon.DROP_IN_ANIMATION_DURATION;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -42,17 +44,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Flags;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.apppairs.AppPairIconDrawingParams;
 import com.android.launcher3.apppairs.AppPairIconGraphic;
-import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
@@ -454,13 +456,10 @@ public class PreviewItemManager {
     @VisibleForTesting
     public void setDrawable(PreviewItemDrawingParams p, ItemInfo item) {
         if (item instanceof WorkspaceItemInfo wii) {
-            if (wii.hasPromiseIconUi() || (wii.runtimeStatusFlags
-                    & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
-                PreloadIconDrawable drawable = newPendingIcon(mContext, wii);
-                p.drawable = drawable;
+            if (isActivePendingIcon(wii)) {
+                p.drawable = newPendingIcon(mContext, wii);
             } else {
-                p.drawable = wii.newIcon(mContext,
-                        Themes.isThemedIconEnabled(mContext) ? FLAG_THEMED : 0);
+                p.drawable = wii.newIcon(mContext, FLAG_THEMED);
             }
             p.drawable.setBounds(0, 0, mIconSize, mIconSize);
         } else if (item instanceof AppPairInfo api) {
@@ -468,7 +467,7 @@ public class PreviewItemManager {
             p.drawable = AppPairIconGraphic.composeDrawable(api, appPairParams);
             p.drawable.setBounds(0, 0, mIconSize, mIconSize);
         } else if (item instanceof ItemInfoWithIcon withIcon){
-            var isThemed = PreferenceManager.getInstance(mContext).getDrawerThemedIcons().get();
+            var isThemed = PreferenceManager.getInstance(mContext).getDrawerThemedIcons().get() ? 0 : FLAG_THEMED;
             p.drawable = withIcon.newIcon(mContext, isThemed);
             p.drawable.setBounds(0, 0, mIconSize, mIconSize);
         }
@@ -477,5 +476,27 @@ public class PreviewItemManager {
         // Set the callback to FolderIcon as it is responsible to drawing the icon. The
         // callback will be released when the folder is opened.
         p.drawable.setCallback(mIcon);
+
+        // Verify high res
+        if (item instanceof ItemInfoWithIcon info
+                && info.getMatchingLookupFlag().isVisuallyLessThan(DESKTOP_ICON_FLAG)) {
+            LauncherAppState.getInstance(mContext).getIconCache().updateIconInBackground(
+                    newInfo -> {
+                        if (p.item == newInfo) {
+                            setDrawable(p, newInfo);
+                            mIcon.invalidate();
+                        }
+                    }, info);
+        }
+    }
+
+    /**
+     * Returns true if item is a Promise Icon or actively downloading, and the item is not an
+     * inactive archived app.
+     */
+    private boolean isActivePendingIcon(WorkspaceItemInfo item) {
+        return (item.hasPromiseIconUi()
+                || (item.runtimeStatusFlags & FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0)
+                && !(Flags.useNewIconForArchivedApps() && item.isInactiveArchive());
     }
 }

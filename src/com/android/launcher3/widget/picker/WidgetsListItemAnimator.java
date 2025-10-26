@@ -16,6 +16,8 @@
 
 package com.android.launcher3.widget.picker;
 
+import static android.animation.ValueAnimator.areAnimatorsEnabled;
+
 import static com.android.launcher3.widget.picker.WidgetsListAdapter.VIEW_TYPE_WIDGETS_LIST;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -25,6 +27,14 @@ public class WidgetsListItemAnimator extends DefaultItemAnimator {
     public static final int CHANGE_DURATION_MS = 90;
     public static final int MOVE_DURATION_MS = 90;
     public static final int ADD_DURATION_MS = 120;
+
+    // DefaultItemAnimator runs change and move animations before running add animations (i.e.
+    // before expanded list item's content start animating to become visible on screen).
+    public static final int WIDGET_LIST_ITEM_APPEARANCE_START_DELAY =
+            areAnimatorsEnabled() ? (CHANGE_DURATION_MS + MOVE_DURATION_MS) : 0;
+    // Delay after which all item animations are ran and list item's content is visible.
+    public static final int WIDGET_LIST_ITEM_APPEARANCE_DELAY =
+            WIDGET_LIST_ITEM_APPEARANCE_START_DELAY + ADD_DURATION_MS;
 
     public WidgetsListItemAnimator() {
         super();

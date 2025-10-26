@@ -43,6 +43,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ضبط حجم النافذة اليسرى ليكون ٥٠%"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ضبط حجم النافذة اليسرى ليكون ٣٠%"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"عرض النافذة اليمنى بملء الشاشة"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"تبديل التطبيق العلوي بالسفلي"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"تبديل التطبيق الأيسر بالأيمن"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"عرض النافذة العلوية بملء الشاشة"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"ضبط حجم النافذة العلوية ليكون ٧٠%"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"ضبط حجم النافذة العلوية ليكون ٥٠%"</string>
@@ -65,10 +67,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"الانتقال إلى أعلى اليسار"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"نقل إلى أسفل يمين الشاشة"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"نقل إلى أسفل اليسار"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"توسيع القائمة"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"تصغير القائمة"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"نقل لليسار"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"نقل لليمين"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"توسيع <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"تصغير <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"إعدادات <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"إغلاق فقاعة المحادثة"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"الانتقال إلى وضع ملء الشاشة"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"عدم عرض المحادثة كفقاعة محادثة"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"الدردشة باستخدام فقاعات المحادثات"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"تظهر المحادثات الجديدة كرموز عائمة أو كفقاعات. انقر لفتح فقاعة المحادثة، واسحبها لتحريكها."</string>
@@ -92,6 +99,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"هل هناك مشاكل في الكاميرا؟\nانقر لإعادة الضبط."</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"ألم يتم حل المشكلة؟\nانقر للعودة"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"أليس هناك مشاكل في الكاميرا؟ انقر للإغلاق."</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"يمكن العثور على قائمة التطبيقات هنا"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"يمكنك الدخول إلى وضع عرض المحتوى في النافذة الحالية على سطح المكتب لفتح عدة تطبيقات معًا"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"يمكنك الرجوع إلى وضع ملء الشاشة في أي وقت من قائمة التطبيقات"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"استخدام تطبيقات متعدّدة في وقت واحد"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"اسحب تطبيقًا آخر لاستخدام وضع تقسيم الشاشة."</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"انقر مرّتين خارج تطبيق لتغيير موضعه."</string>
@@ -103,22 +113,54 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"إعادة التشغيل"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"عدم عرض مربّع حوار التأكيد مجددًا"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"انقر مرّتَين لنقل\nهذا التطبيق."</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"تكبير"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"تصغير"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"إغلاق"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"تكبير \"<xliff:g id="APP_NAME">%1$s</xliff:g>\""</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"استعادة \"<xliff:g id="APP_NAME">%1$s</xliff:g>\""</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"تصغير \"<xliff:g id="APP_NAME">%1$s</xliff:g>\""</string>
+    <string name="close_button_text" msgid="4544839489310949894">"إغلاق \"<xliff:g id="APP_NAME">%1$s</xliff:g>\""</string>
     <string name="back_button_text" msgid="1469718707134137085">"رجوع"</string>
-    <string name="handle_text" msgid="1766582106752184456">"مقبض"</string>
+    <string name="handle_text" msgid="4419667835599523257">"مقبض التطبيق"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"رمز التطبيق"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"ملء الشاشة"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"وضع سطح المكتب"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"عرض المحتوى في النافذة الحالية على سطح المكتب"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"تقسيم الشاشة"</string>
     <string name="more_button_text" msgid="3655388105592893530">"المزيد"</string>
     <string name="float_button_text" msgid="9221657008391364581">"نافذة عائمة"</string>
     <string name="select_text" msgid="5139083974039906583">"اختيار"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"لقطة شاشة"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"الفتح في المتصفِّح"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"فتح في التطبيق"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"نافذة جديدة"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"إدارة النوافذ"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"تغيير نسبة العرض إلى الارتفاع"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"تحسين طريقة العرض"</string>
     <string name="close_text" msgid="4986518933445178928">"إغلاق"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"إغلاق القائمة"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"فتح القائمة"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"‫<xliff:g id="APP_NAME">%1$s</xliff:g> (عرض المحتوى في النافذة الحالية على سطح المكتب)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"تكبير الشاشة إلى أقصى حدّ"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"التقاط صورة للشاشة"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"تغيير الحجم"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"لا يمكن نقل التطبيق إلى هنا"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"مجسَّم"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"استعادة"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"تكبير"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"استعادة"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"المحاذاة إلى اليسار"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"المحاذاة إلى اليمين"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"تغيير حجم نافذة التطبيق بمحاذاتها إلى اليمين"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"تغيير حجم نافذة التطبيق بمحاذاتها إلى اليسار"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"تكبير حجم النافذة أو استعادته"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"فتح القائمة"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"تفعيل \"<xliff:g id="WINDOWING_MODE">%1$s</xliff:g>\""</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"تغيير حجم النافذة بمحاذاتها إلى اليمين"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"تغيير حجم النافذة بمحاذاتها إلى اليسار"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"تكبير حجم النافذة أو استعادته"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"تكبير نافذة التطبيق"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"استعادة حجم النافذة"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"تصغير نافذة التطبيق"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"إغلاق نافذة التطبيق"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"إعدادات الفتح تلقائيًا"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"اختيار طريقة فتح روابط الويب لهذا التطبيق"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"في التطبيق"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"في المتصفِّح"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"حسنًا"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"فتح التطبيقات بسرعة في المتصفِّح هنا"</string>
 </resources>

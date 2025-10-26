@@ -18,7 +18,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="notification_channel_tv_pip" msgid="2576686079160402435">"تصویر در تصویر"</string>
-    <string name="pip_notification_unknown_title" msgid="2729870284350772311">"(برنامه بدون عنوان)"</string>
+    <string name="pip_notification_unknown_title" msgid="2729870284350772311">"(برنامه بی‌عنوان)"</string>
     <string name="pip_close" msgid="2955969519031223530">"بستن"</string>
     <string name="pip_fullscreen" msgid="7278047353591302554">"تمام صفحه"</string>
     <string name="pip_move" msgid="158770205886688553">"انتقال"</string>

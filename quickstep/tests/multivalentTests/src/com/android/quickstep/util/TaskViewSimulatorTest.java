@@ -35,6 +35,9 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.dagger.LauncherAppComponent;
+import com.android.launcher3.dagger.LauncherAppSingleton;
+import com.android.launcher3.util.AllModulesMinusWMProxy;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.LauncherModelHelper;
@@ -45,6 +48,9 @@ import com.android.launcher3.util.window.CachedDisplayInfo;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.util.SurfaceTransaction.MockProperties;
+
+import dagger.BindsInstance;
+import dagger.Component;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -159,6 +165,11 @@ public class TaskViewSimulatorTest {
         void verifyNoTransforms() {
             LauncherModelHelper helper = new LauncherModelHelper();
             try {
+                DisplayController mockController = mock(DisplayController.class);
+
+                helper.sandboxContext.initDaggerComponent(
+                        DaggerTaskViewSimulatorTest_TaskViewSimulatorTestComponent.builder()
+                                .bindDisplayController(mockController));
                 int rotation = mDisplaySize.x > mDisplaySize.y
                         ? Surface.ROTATION_90 : Surface.ROTATION_0;
                 CachedDisplayInfo cdi = new CachedDisplayInfo(mDisplaySize, rotation);
@@ -192,17 +203,14 @@ public class TaskViewSimulatorTest {
 
                 DisplayController.Info info = new Info(
                         configurationContext, wmProxy, perDisplayBoundsCache);
-
-                DisplayController mockController = mock(DisplayController.class);
                 when(mockController.getInfo()).thenReturn(info);
-                helper.sandboxContext.putObject(DisplayController.INSTANCE, mockController);
 
                 mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(helper.sandboxContext)
                         .getBestMatch(mAppBounds.width(), mAppBounds.height(), rotation);
                 mDeviceProfile.updateInsets(mLauncherInsets);
 
                 TaskViewSimulator tvs = new TaskViewSimulator(helper.sandboxContext,
-                        FallbackActivityInterface.INSTANCE);
+                        FallbackActivityInterface.INSTANCE, false, 0);
                 tvs.setDp(mDeviceProfile);
 
                 int launcherRotation = info.rotation;
@@ -269,6 +277,20 @@ public class TaskViewSimulatorTest {
         @Override
         public void describeTo(Description description) {
             description.appendValue(mExpected);
+        }
+    }
+
+    @LauncherAppSingleton
+    @Component(modules = {AllModulesMinusWMProxy.class})
+    interface TaskViewSimulatorTestComponent extends LauncherAppComponent {
+
+        @Component.Builder
+        interface Builder extends LauncherAppComponent.Builder {
+
+            @BindsInstance
+            Builder bindDisplayController(DisplayController controller);
+
+            TaskViewSimulatorTestComponent build();
         }
     }
 }

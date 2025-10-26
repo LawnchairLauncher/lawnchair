@@ -1,0 +1,122 @@
+package: "com.android.launcher3"
+container: "system_ext"
+
+flag {
+    name: "enable_grid_only_overview"
+    namespace: "launcher_overview"
+    description: "Enable a grid-only overview without a focused task."
+    bug: "360204325"
+}
+
+flag {
+    name: "enable_overview_icon_menu"
+    namespace: "launcher_overview"
+    description: "Enable updated overview icon and menu within task."
+    bug: "360205084"
+}
+
+flag {
+    name: "enable_refactor_task_thumbnail"
+    namespace: "launcher_overview"
+    description: "Enables rewritten version of TaskThumbnailViews in Overview"
+    bug: "331753115"
+}
+
+flag {
+    name: "enable_hover_of_child_elements_in_taskview"
+    namespace: "launcher_overview"
+    description: "Enables child elements to receive hover events in TaskView and respond visually to those hover events."
+    bug: "342594235"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_large_desktop_windowing_tile"
+    namespace: "launcher_overview"
+    description: "Makes the desktop tiles larger and moves them to the front of the list in Overview."
+    bug: "357860832"
+}
+
+flag {
+    name: "enable_overview_command_helper_timeout"
+    namespace: "launcher_overview"
+    description: "Enables OverviewCommandHelper new version with a timeout to prevent the queue to be unresponsive."
+    bug: "351122926"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_desktop_windowing_carousel_detach"
+    namespace: "launcher_overview"
+    description: "Makes the desktop windowing task carousel detaches from fullscreen task carousel during quickswitch."
+    bug: "353947917"
+}
+
+flag {
+    name: "enable_desktop_exploded_view"
+    namespace: "launcher_overview"
+    description: "Enables the non-overlapping layout for desktop windows in Overview mode."
+    bug: "378011776"
+}
+
+flag {
+    name: "enable_use_top_visible_activity_for_exclude_from_recent_task"
+    namespace: "launcher_overview"
+    description: "Enables using the top visible activity for exclude from recent task instead of the activity indicies."
+    bug: "342627272"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_expressive_dismiss_task_motion"
+    namespace: "launcher_overview"
+    description: "Enables expressive motion and animations for dismissing a task in Overview."
+    bug: "381239462"
+}
+
+flag {
+    name: "enable_separate_external_display_tasks"
+    namespace: "launcher_overview"
+    description: "Enables separating external display tasks in Overview."
+    bug: "391311008"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_overview_on_connected_displays"
+    namespace: "launcher_overview"
+    description: "Enable overview on connected displays."
+    bug: "363251602"
+}
+
+flag {
+    name: "enable_overview_background_wallpaper_blur"
+    namespace: "launcher_overview"
+    description: "Enable wallpaper blur in overview."
+    bug: "369975912"
+}
+
+flag {
+    name: "enable_overview_desktop_tile_wallpaper_background"
+    namespace: "launcher_overview"
+    description: "Enable wallpaper background for desktop tasks in overview."
+    bug: "363257721"
+}
+
+flag {
+    name: "enable_show_enabled_shortcuts_in_accessibility_menu"
+    namespace: "launcher_overview"
+    description: "Enables showing the same shortcuts in the Task menu as well as the accessibility actions menu"
+    bug: "383662632"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}

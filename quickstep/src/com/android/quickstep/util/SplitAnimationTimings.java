@@ -17,6 +17,7 @@
 package com.android.quickstep.util;
 
 import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.STANDARD;
 
 import android.view.animation.Interpolator;
 
@@ -38,6 +39,8 @@ public interface SplitAnimationTimings {
     int TABLET_APP_PAIR_LAUNCH_DURATION = 998;
     /** Total duration (ms) for launching an app pair from its icon on phones. */
     int PHONE_APP_PAIR_LAUNCH_DURATION = 915;
+    /** Total duration (ms) for fading out desktop tasks in split mode. */
+    int DESKTOP_FADE_OUT_DURATION = 200;
 
     // Initialize timing classes so they can be accessed statically
     SplitAnimationTimings TABLET_OVERVIEW_TO_SPLIT = new TabletOverviewToSplitTimings();
@@ -83,6 +86,10 @@ public interface SplitAnimationTimings {
         return (float) getStagedRectSlideEnd() / getDuration();
     }
 
+    default float getDesktopFadeSplitAnimationEndOffset() {
+        return (float) DESKTOP_FADE_OUT_DURATION / getDuration();
+    }
+
     // DEFAULT VALUES: We define default values here so that SplitAnimationTimings can be used
     // flexibly in animation-running functions, e.g. a single function that handles 2 types of split
     // animations. The values are not intended to be used, and can safely be removed if refactoring
@@ -105,6 +112,10 @@ public interface SplitAnimationTimings {
     default Interpolator getGridSlidePrimaryInterpolator() { return LINEAR; }
     default Interpolator getGridSlideSecondaryInterpolator() { return LINEAR; }
 
+    default Interpolator getDesktopTaskFadeInterpolator() {
+        return LINEAR;
+    }
+
     // Defaults for HomeToSplit
     default float getScrimFadeInStartOffset() { return 0; }
     default float getScrimFadeInEndOffset() { return 0; }
@@ -120,5 +131,9 @@ public interface SplitAnimationTimings {
     default float getAppRevealEndOffset() { return 0; }
     default Interpolator getCellSplitInterpolator() { return LINEAR; }
     default Interpolator getIconFadeInterpolator() { return LINEAR; }
+
+    default Interpolator getDesktopTaskScaleInterpolator() {
+        return STANDARD;
+    }
 }
 

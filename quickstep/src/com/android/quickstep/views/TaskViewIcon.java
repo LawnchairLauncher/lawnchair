@@ -48,6 +48,11 @@ public interface TaskViewIcon {
     void setModalAlpha(float alpha);
 
     /**
+     * Sets the opacity of the view for flex split state.
+     */
+    void setFlexSplitAlpha(float alpha);
+
+    /**
      * Returns this icon view's drawable.
      */
     @Nullable Drawable getDrawable();

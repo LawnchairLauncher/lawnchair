@@ -43,4 +43,7 @@ public abstract class WidgetsListBaseEntry {
         this.mWidgets =
                 items.stream().sorted(new WidgetItemComparator()).collect(Collectors.toList());
     }
+
+
+    public abstract WidgetsListBaseEntry copy();
 }

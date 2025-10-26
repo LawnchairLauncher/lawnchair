@@ -16,7 +16,8 @@
  * limitations under the License.
  */
 -->
-<resources>
+<resources
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
     <color name="docked_divider_handle">#ffffff</color>
     <color name="split_divider_background">@color/taskbar_background_dark</color>
     <drawable name="forced_resizable_background">#59000000</drawable>
@@ -42,7 +43,7 @@
     <color name="compat_controls_text">@android:color/system_neutral1_50</color>
 
     <!-- Letterbox Education -->
-    <color name="letterbox_education_text_secondary">@android:color/system_neutral2_200</color>
+    <color name="letterbox_education_text_secondary">@android:color/system_secondary_light</color>
 
     <!-- Letterbox Dialog -->
     <color name="letterbox_dialog_background">@android:color/system_neutral1_900</color>
@@ -67,4 +68,6 @@
     <color name="desktop_mode_caption_button_on_hover_light">#11000000</color>
     <color name="desktop_mode_caption_button_on_hover_dark">#11FFFFFF</color>
     <color name="desktop_mode_caption_button">#00000000</color>
+    <color name="tiling_handle_background_light">#000000</color>
+    <color name="tiling_handle_background_dark">#FFFFFF</color>
 </resources>

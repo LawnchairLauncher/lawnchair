@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.interaction;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -175,11 +173,8 @@ public class AnimatedTaskView extends ConstraintLayout {
 
     void setFakeTaskViewFillColor(@ColorInt int colorResId) {
         mFullTaskView.setBackgroundColor(colorResId);
-
-        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()){
-            mTopTaskView.getBackground().setTint(colorResId);
-            mBottomTaskView.getBackground().setTint(colorResId);
-        }
+        mTopTaskView.getBackground().setTint(colorResId);
+        mBottomTaskView.getBackground().setTint(colorResId);
     }
 
     @Override

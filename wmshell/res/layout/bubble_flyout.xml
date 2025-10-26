@@ -49,7 +49,7 @@
                 android:fontFamily="@*android:string/config_bodyFontFamilyMedium"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textColor="?androidprv:attr/materialColorOnSurface"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textAppearance="@*android:style/TextAppearance.DeviceDefault.Body2"/>
 
             <TextView
@@ -59,7 +59,7 @@
                 android:fontFamily="@*android:string/config_bodyFontFamily"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:textColor="?androidprv:attr/materialColorOnSurfaceVariant"
+                android:textColor="?android:attr/textColorSecondary"
                 android:textAppearance="@*android:style/TextAppearance.DeviceDefault.Body2"/>
 
         </LinearLayout>

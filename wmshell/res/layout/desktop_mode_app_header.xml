@@ -31,40 +31,47 @@
         android:orientation="horizontal"
         android:clickable="true"
         android:focusable="true"
+        android:contentDescription="@string/desktop_mode_app_header_chip_text"
         android:layout_marginStart="12dp">
         <ImageView
             android:id="@+id/application_icon"
             android:layout_width="@dimen/desktop_mode_caption_icon_radius"
             android:layout_height="@dimen/desktop_mode_caption_icon_radius"
             android:layout_gravity="center_vertical"
-            android:contentDescription="@string/app_icon_text"
             android:layout_marginStart="6dp"
+            android:clickable="false"
+            android:focusable="false"
             android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/application_name"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:maxWidth="86dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Title"
+            android:layout_height="wrap_content"
+            android:maxWidth="130dp"
             android:textSize="14sp"
             android:textFontWeight="500"
-            android:lineHeight="20dp"
+            android:lineHeight="20sp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:clickable="false"
+            android:focusable="false"
             tools:text="Gmail"/>
 
         <ImageButton
             android:id="@+id/expand_menu_button"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:contentDescription="@string/expand_menu_text"
-            android:src="@drawable/ic_baseline_expand_more_24"
+            android:src="@drawable/ic_baseline_expand_more_16"
             android:background="@null"
             android:scaleType="fitCenter"
             android:clickable="false"
             android:focusable="false"
+            android:screenReaderFocusable="false"
+            android:importantForAccessibility="no"
+            android:contentDescription="@null"
             android:layout_marginHorizontal="8dp"
             android:layout_gravity="center_vertical"/>
 
@@ -76,12 +83,25 @@
         android:layout_height="40dp"
         android:layout_weight="1"/>
 
+    <ImageButton
+        android:id="@+id/minimize_window"
+        android:layout_width="44dp"
+        android:layout_height="40dp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="8dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/minimize_button_text"
+        android:src="@drawable/desktop_mode_header_ic_minimize"
+        android:scaleType="centerCrop"
+        android:gravity="end"/>
+
     <com.android.wm.shell.windowdecor.MaximizeButtonView
         android:id="@+id/maximize_button_view"
+        android:importantForAccessibility="no"
         android:layout_width="44dp"
         android:layout_height="40dp"
         android:layout_gravity="end"
-        android:layout_marginHorizontal="8dp"
+        android:layout_marginEnd="8dp"
         android:clickable="true"
         android:focusable="true"/>
 

@@ -25,34 +25,34 @@ interface TableLogBufferBase {
      *
      * For Java overloading.
      */
-    fun logChange(prefix: String, columnName: String, value: String?) {
+    fun logChange(prefix: String = "", columnName: String, value: String?) {
         logChange(prefix, columnName, value, isInitial = false)
     }
 
     /** Logs a String? change. */
-    fun logChange(prefix: String, columnName: String, value: String?, isInitial: Boolean)
+    fun logChange(prefix: String = "", columnName: String, value: String?, isInitial: Boolean)
 
     /**
      * Logs a Boolean change.
      *
      * For Java overloading.
      */
-    fun logChange(prefix: String, columnName: String, value: Boolean) {
+    fun logChange(prefix: String = "", columnName: String, value: Boolean) {
         logChange(prefix, columnName, value, isInitial = false)
     }
 
     /** Logs a Boolean change. */
-    fun logChange(prefix: String, columnName: String, value: Boolean, isInitial: Boolean)
+    fun logChange(prefix: String = "", columnName: String, value: Boolean, isInitial: Boolean)
 
     /**
      * Logs an Int? change.
      *
      * For Java overloading.
      */
-    fun logChange(prefix: String, columnName: String, value: Int?) {
+    fun logChange(prefix: String = "", columnName: String, value: Int?) {
         logChange(prefix, columnName, value, isInitial = false)
     }
 
     /** Logs an Int? change. */
-    fun logChange(prefix: String, columnName: String, value: Int?, isInitial: Boolean)
+    fun logChange(prefix: String = "", columnName: String, value: Int?, isInitial: Boolean)
 }

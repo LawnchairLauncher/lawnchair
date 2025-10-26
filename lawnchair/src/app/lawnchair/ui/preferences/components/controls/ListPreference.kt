@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -58,6 +60,7 @@ fun <T> ListPreference(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun <T> ListPreference(
     entries: List<ListPreferenceEntry<T>>,
@@ -89,7 +92,10 @@ fun <T> ListPreference(
                 ModalBottomSheetContent(
                     title = { Text(label) },
                     buttons = {
-                        OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
+                        OutlinedButton(
+                            onClick = { bottomSheetHandler.hide() },
+                            shapes = ButtonDefaults.shapes(),
+                        ) {
                             Text(text = stringResource(id = AndroidR.string.cancel))
                         }
                     },

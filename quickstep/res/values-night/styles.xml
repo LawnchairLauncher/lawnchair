@@ -14,16 +14,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources
-    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
-
-    <style name="AllSetTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar">
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:enforceNavigationBarContrast">false</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
+<resources>
 
     <style name="TextAppearance.GestureTutorial.MainTitle.Home"
         parent="TextAppearance.GestureTutorial.MainTitle">
@@ -82,16 +73,16 @@
     <style name="GestureTutorialActivity" parent="@style/AppTheme">
         <item name="background">@android:color/transparent</item>
         <item name="tutorialSubtitle">@android:color/white</item>
-        <item name="surfaceContainer">?attr/materialColorSurfaceContainer</item>
-        <item name="onSurfaceHome">?attr/materialColorPrimaryFixedDim</item>
-        <item name="surfaceHome">?attr/materialColorOnPrimaryFixedVariant</item>
-        <item name="secondaryHome">?attr/materialColorOnPrimaryFixed</item>
-        <item name="onSurfaceBack">?attr/materialColorTertiaryFixedDim</item>
-        <item name="surfaceBack">?attr/materialColorOnTertiaryFixedVariant</item>
-        <item name="secondaryBack">?attr/materialColorOnTertiaryFixed</item>
-        <item name="onSurfaceOverview">?attr/materialColorPrimaryFixed</item>
-        <item name="surfaceOverview">?attr/materialColorOnSecondaryFixedVariant</item>
-        <item name="secondaryOverview">?attr/materialColorOnSecondaryFixed</item>
+        <item name="surfaceContainer">@color/materialColorSurfaceContainer</item>
+        <item name="onSurfaceHome">@color/materialColorPrimaryFixedDim</item>
+        <item name="surfaceHome">@color/materialColorOnPrimaryFixedVariant</item>
+        <item name="secondaryHome">@color/materialColorOnPrimaryFixed</item>
+        <item name="onSurfaceBack">@color/materialColorTertiaryFixedDim</item>
+        <item name="surfaceBack">@color/materialColorOnTertiaryFixedVariant</item>
+        <item name="secondaryBack">@color/materialColorOnTertiaryFixed</item>
+        <item name="onSurfaceOverview">@color/materialColorPrimaryFixed</item>
+        <item name="surfaceOverview">@color/materialColorOnSecondaryFixedVariant</item>
+        <item name="secondaryOverview">@color/materialColorOnSecondaryFixed</item>
     </style>
 
 </resources>

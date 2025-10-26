@@ -5,7 +5,12 @@ plugins {
 }
 
 android {
-    namespace "com.android.app.viewcapture"
+    namespace = "com.android.app.viewcapture"
+    testNamespace = "com.android.app.viewcapture.test"
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
     sourceSets {
         main {
             java.srcDirs = ['src']
@@ -17,7 +22,11 @@ android {
             manifest.srcFile "tests/AndroidManifest.xml"
         }
     }
+    lint {
+        abortOnError false
+    }
+
 }
 
-addFrameworkJar('framework-15.jar')
+addFrameworkJar('framework-16.jar')
 compileOnlyCommonJars()

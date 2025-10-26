@@ -70,26 +70,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/letterbox_restart_dialog_description"
-                    android:textAlignment="center"/>
+                    android:gravity="start"/>
 
                 <LinearLayout
                     android:id="@+id/letterbox_restart_dialog_checkbox_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="14dp"
+                    android:paddingVertical="16dp"
                     android:orientation="horizontal"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="18dp">
+                    android:layout_marginVertical="16dp">
 
                     <CheckBox
                         android:id="@+id/letterbox_restart_dialog_checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
                         android:button="@drawable/letterbox_restart_checkbox_button"/>
 
                     <TextView
                         android:textAppearance="@style/RestartDialogCheckboxText"
-                        android:layout_marginStart="12dp"
+                        android:layout_marginStart="20dp"
                         android:id="@+id/letterbox_restart_dialog_checkbox_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -98,19 +99,22 @@
 
                 </LinearLayout>
 
-                <FrameLayout
+
+                <LinearLayout
                     android:minHeight="@dimen/letterbox_restart_dialog_button_height"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end">
 
                     <Button
                         android:textAppearance="@style/RestartDialogDismissButton"
                         android:id="@+id/letterbox_restart_dialog_dismiss_button"
+                        style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="8dp"
                         android:minWidth="@dimen/letterbox_restart_dialog_button_width"
                         android:minHeight="@dimen/letterbox_restart_dialog_button_height"
-                        android:layout_gravity="start"
                         android:background=
                             "@drawable/letterbox_restart_dismiss_button_background_ripple"
                         android:text="@string/letterbox_restart_cancel"
@@ -119,17 +123,17 @@
                     <Button
                         android:textAppearance="@style/RestartDialogConfirmButton"
                         android:id="@+id/letterbox_restart_dialog_restart_button"
+                        style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minWidth="@dimen/letterbox_restart_dialog_button_width"
                         android:minHeight="@dimen/letterbox_restart_dialog_button_height"
-                        android:layout_gravity="end"
                         android:background=
                             "@drawable/letterbox_restart_button_background_ripple"
                         android:text="@string/letterbox_restart_restart"
                         android:contentDescription="@string/letterbox_restart_restart"/>
 
-                </FrameLayout>
+                </LinearLayout>
 
             </LinearLayout>
 

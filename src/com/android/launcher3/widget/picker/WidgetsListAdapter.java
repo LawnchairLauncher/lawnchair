@@ -49,6 +49,7 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetListSpaceEntry;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.model.WidgetsListExpandActionEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.util.WidgetSizes;
 
@@ -82,6 +83,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public static final int VIEW_TYPE_WIDGETS_SPACE = R.id.view_type_widgets_space;
     public static final int VIEW_TYPE_WIDGETS_LIST = R.id.view_type_widgets_list;
     public static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
+    public static final int VIEW_TYPE_WIDGETS_EXPAND = R.id.view_type_widgets_list_expand;
 
     private final Context mContext;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
@@ -90,7 +92,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     @Nullable private WidgetsTwoPaneSheet.HeaderChangeListener mHeaderChangeListener;
 
     private final List<WidgetsListBaseEntry> mAllEntries = new ArrayList<>();
+    private final List<WidgetsListBaseEntry> mAllDefaultEntries = new ArrayList<>();
     private ArrayList<WidgetsListBaseEntry> mVisibleEntries = new ArrayList<>();
+
     @Nullable private PackageUserKey mWidgetsContentVisiblePackageUserKey = null;
 
     private Predicate<WidgetsListBaseEntry> mHeaderAndSelectedContentFilter = entry ->
@@ -99,12 +103,15 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                             .equals(mWidgetsContentVisiblePackageUserKey);
     @Nullable private Predicate<WidgetsListBaseEntry> mFilter = null;
     @Nullable private RecyclerView mRecyclerView;
-    @Nullable private PackageUserKey mPendingClickHeader;
+    @Nullable private PackageUserKey mHeaderPositionToMaintain;
     @Px private int mMaxHorizontalSpan;
+
+    private boolean mShowOnlyDefaultList = true;
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             IntSupplier emptySpaceHeightProvider, OnClickListener iconClickListener,
             OnLongClickListener iconLongClickListener,
+            ExpandButtonClickListener expandButtonClickListener,
             boolean isTwoPane) {
         mContext = context;
         mMaxHorizontalSpan = WidgetSizes.getWidgetSizePx(
@@ -123,6 +130,16 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_SPACE,
                 new WidgetsSpaceViewHolderBinder(emptySpaceHeightProvider));
+        mViewHolderBinders.put(VIEW_TYPE_WIDGETS_EXPAND,
+                new WidgetsListExpandActionViewHolderBinder(layoutInflater,
+                        expandButtonClickListener::onWidgetsListExpandButtonClick));
+    }
+
+    /**
+     * Copies state info from another adapter.
+     */
+    public void restoreState(WidgetsListAdapter adapter) {
+        mShowOnlyDefaultList = adapter.mShowOnlyDefaultList;
     }
 
     public void setHeaderChangeListener(WidgetsTwoPaneSheet.HeaderChangeListener
@@ -168,10 +185,21 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     }
 
     /** Updates the widget list based on {@code tempEntries}. */
-    public void setWidgets(List<WidgetsListBaseEntry> tempEntries) {
+    public void setWidgets(List<WidgetsListBaseEntry> tempEntries,
+            List<WidgetsListBaseEntry> tempDefaultEntries) {
         mAllEntries.clear();
         mAllEntries.add(new WidgetListSpaceEntry());
         tempEntries.stream().sorted(mRowComparator).forEach(mAllEntries::add);
+
+        mAllDefaultEntries.clear();
+
+        if (mShowOnlyDefaultList && !tempDefaultEntries.isEmpty()) {
+            mAllDefaultEntries.add(new WidgetListSpaceEntry());
+            tempDefaultEntries.stream().sorted(mRowComparator).forEach(mAllDefaultEntries::add);
+            // Include view all action when default entries exist.
+            mAllDefaultEntries.add(new WidgetsListExpandActionEntry());
+        }
+
         updateVisibleEntries();
     }
 
@@ -179,21 +207,23 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public void setWidgetsOnSearch(List<WidgetsListBaseEntry> searchResults) {
         // Forget the expanded package every time widget list is refreshed in search mode.
         mWidgetsContentVisiblePackageUserKey = null;
-        setWidgets(searchResults);
+        mShowOnlyDefaultList = false;
+        setWidgets(searchResults, /*tempDefaultEntries=*/ List.of());
     }
 
     private void updateVisibleEntries() {
         // Get the current top of the header with the matching key before adjusting the visible
         // entries.
         OptionalInt previousPositionForPackageUserKey =
-                getPositionForPackageUserKey(mPendingClickHeader);
+                getPositionForPackageUserKey(mHeaderPositionToMaintain);
         OptionalInt topForPackageUserKey =
                 getOffsetForPosition(previousPositionForPackageUserKey);
 
-        List<WidgetsListBaseEntry> newVisibleEntries = mAllEntries.stream()
+        List<WidgetsListBaseEntry> newVisibleEntries = getAllEntries().stream()
                 .filter(entry -> (((mFilter == null || mFilter.test(entry))
                         && mHeaderAndSelectedContentFilter.test(entry))
-                        || entry instanceof WidgetListSpaceEntry)
+                        || entry instanceof WidgetListSpaceEntry
+                        || entry instanceof WidgetsListExpandActionEntry)
                         && (mHeaderChangeListener == null
                         || !(entry instanceof WidgetsListContentEntry)))
                 .map(entry -> {
@@ -217,14 +247,21 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mVisibleEntries.addAll(newVisibleEntries);
         diffResult.dispatchUpdatesTo(this);
 
-        if (mPendingClickHeader != null) {
+        if (mHeaderPositionToMaintain != null && mRecyclerView != null) {
             // Get the position for the clicked header after adjusting the visible entries. The
             // position may have changed if another header had previously been expanded.
             OptionalInt positionForPackageUserKey =
-                    getPositionForPackageUserKey(mPendingClickHeader);
-            scrollToPositionAndMaintainOffset(positionForPackageUserKey, topForPackageUserKey);
-            mPendingClickHeader = null;
+                    getPositionForPackageUserKey(mHeaderPositionToMaintain);
+            // Post scroll updates to be applied after diff updates.
+            mRecyclerView.post(() -> scrollToPositionAndMaintainOffset(positionForPackageUserKey,
+                    topForPackageUserKey));
+            mHeaderPositionToMaintain = null;
         }
+    }
+
+    private List<WidgetsListBaseEntry> getAllEntries() {
+        return (mShowOnlyDefaultList && !mAllDefaultEntries.isEmpty()) ? mAllDefaultEntries
+                : mAllEntries;
     }
 
     /** Returns whether {@code entry} matches {@code key}. */
@@ -262,7 +299,13 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
         // The first entry has an empty space, count from second entries.
         int listPos = (pos > 1) ? POSITION_DEFAULT : POSITION_FIRST;
-        if (pos == (getItemCount() - 1)) {
+        int lastIndex = getItemCount() - 1;
+        // Last index may be the view all entry
+        int actualLastItemIndex = (mVisibleEntries.get(
+                lastIndex) instanceof WidgetsListExpandActionEntry) ? getItemCount() - 2
+                : getItemCount() - 1;
+
+        if (pos == (actualLastItemIndex)) {
             listPos |= POSITION_LAST;
         }
         viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos), listPos, payloads);
@@ -319,6 +362,8 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             return VIEW_TYPE_WIDGETS_HEADER;
         } else if (entry instanceof WidgetListSpaceEntry) {
             return VIEW_TYPE_WIDGETS_SPACE;
+        } else if (entry instanceof WidgetsListExpandActionEntry) {
+            return VIEW_TYPE_WIDGETS_EXPAND;
         }
         throw new UnsupportedOperationException("ViewHolderBinder not found for " + entry);
     }
@@ -341,7 +386,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
         // Store the header that was clicked so that its position will be maintained the next time
         // we update the entries.
-        mPendingClickHeader = packageUserKey;
+        mHeaderPositionToMaintain = packageUserKey;
 
         updateVisibleEntries();
 
@@ -396,15 +441,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         LinearLayoutManager layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
         if (layoutManager == null) return;
 
-        if (position == mVisibleEntries.size() - 2
-                && mVisibleEntries.get(mVisibleEntries.size() - 1)
-                instanceof WidgetsListContentEntry) {
-            // If the selected header is in the last position and its content is showing, then
-            // scroll to the final position so the last list of widgets will show.
-            layoutManager.scrollToPosition(mVisibleEntries.size() - 1);
-            return;
-        }
-
         // Scroll to the header view's current offset, accounting for the recycler view's padding.
         // If the header view couldn't be found, then it will appear at the top of the list.
         layoutManager.scrollToPositionWithOffset(
@@ -419,6 +455,33 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public void setMaxHorizontalSpansPxPerRow(@Px int maxHorizontalSpan) {
         mMaxHorizontalSpan = maxHorizontalSpan;
         updateVisibleEntries();
+    }
+
+    /**
+     * Returns the widget content {@link WidgetsListContentEntry} for a selected header.
+     */
+    public WidgetsListContentEntry getContentEntry(PackageUserKey selectedHeader) {
+        return getAllEntries().stream().filter(entry -> entry instanceof WidgetsListContentEntry)
+                .map(entry -> (WidgetsListContentEntry) entry)
+                .filter(entry -> PackageUserKey.fromPackageItemInfo(entry.mPkgItem).equals(
+                        selectedHeader)).findFirst().orElse(null);
+    }
+
+    /**
+     * Sets adapter to use expanded list when updating widgets.
+     */
+    public void useExpandedList() {
+        mShowOnlyDefaultList = false;
+        if (mWidgetsContentVisiblePackageUserKey != null) {
+            // Maintain selected header for the next update that expands the list.
+            mHeaderPositionToMaintain = mWidgetsContentVisiblePackageUserKey;
+        } else if (mVisibleEntries.size() > 2) {
+            // Maintain last visible header shown above expand button since there was no selected
+            // header.
+            mHeaderPositionToMaintain = PackageUserKey.fromPackageItemInfo(
+                    mVisibleEntries.get(mVisibleEntries.size() - 2).mPkgItem);
+        }
+
     }
 
     /** Comparator for sorting WidgetListRowEntry based on package title. */
@@ -438,5 +501,11 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             if (a.mPkgItem.user.equals(Process.myUserHandle())) return -1;
             return 1;
         }
+    }
+
+    /** Callback interface for the interaction with the expand button */
+    public interface ExpandButtonClickListener {
+        /** Called when user clicks the button at end of widget apps list to expand it. */
+        void onWidgetsListExpandButtonClick(View view);
     }
 }

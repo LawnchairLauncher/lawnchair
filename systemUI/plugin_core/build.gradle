@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    buildToolsVersion "36.1.0"
     namespace "com.android.systemui.plugin_core"
     buildFeatures {
         aidl true
@@ -17,5 +18,5 @@ android {
     }
 }
 
-addFrameworkJar('framework-15.jar')
+addFrameworkJar('framework-16.jar')
 compileOnlyCommonJars()

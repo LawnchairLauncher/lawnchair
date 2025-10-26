@@ -18,7 +18,6 @@ package com.android.quickstep;
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.FLOATING_SEARCH_BAR;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -40,9 +39,7 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
-import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
@@ -50,7 +47,6 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
-import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -79,29 +75,25 @@ public final class LauncherActivityInterface extends
                 && DisplayController.getNavigationMode(context) != NavigationMode.NO_BUTTON) {
             return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
         } else {
-            return LayoutUtils.getShelfTrackingDistance(context, dp, orientationHandler);
+            return LayoutUtils.getShelfTrackingDistance(context, dp, orientationHandler, this);
         }
     }
 
     @Override
-    public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {
+    public void onSwipeUpToHomeComplete() {
         QuickstepLauncher launcher = getCreatedContainer();
         if (launcher == null) {
             return;
         }
-        // When going to home, the state animator we use has SKIP_OVERVIEW because we
-        // assume that
-        // setRecentsAttachedToAppWindow() will handle animating Overview instead. Thus,
-        // at the end
-        // of the animation, we should ensure recents is at the correct position for
-        // NORMAL state.
-        // For example, when doing a long swipe to home, RecentsView may be scaled down.
-        // This is
+        // When going to home, the state animator we use has SKIP_OVERVIEW because we assume that
+        // setRecentsAttachedToAppWindow() will handle animating Overview instead. Thus, at the end
+        // of the animation, we should ensure recents is at the correct position for NORMAL state.
+        // For example, when doing a long swipe to home, RecentsView may be scaled down. This is
         // relatively expensive, so do it on the next frame instead of critical path.
         MAIN_EXECUTOR.getHandler().post(launcher.getStateManager()::reapplyState);
 
         launcher.getRootView().setForceHideBackArrow(false);
-        notifyRecentsOfOrientation(deviceState.getRotationTouchHelper());
+        notifyRecentsOfOrientation();
     }
 
     @Override
@@ -114,9 +106,9 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
+    public AnimationFactory prepareRecentsUI(
             boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback) {
-        notifyRecentsOfOrientation(deviceState.getRotationTouchHelper());
+        notifyRecentsOfOrientation();
         DefaultAnimationFactory factory = new DefaultAnimationFactory(callback) {
             @Override
             protected void createBackgroundToOverviewAnim(QuickstepLauncher activity,
@@ -141,8 +133,9 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public ActivityInitListener createActivityInitListener(Predicate<Boolean> onInitListener) {
-        return new LauncherInitListener((activity, alreadyOnHome) -> onInitListener.test(alreadyOnHome));
+    public LauncherInitListener createActivityInitListener(Predicate<Boolean> onInitListener) {
+        return new LauncherInitListener((activity, alreadyOnHome) ->
+                onInitListener.test(alreadyOnHome));
     }
 
     @Override
@@ -157,7 +150,7 @@ public final class LauncherActivityInterface extends
     @Nullable
     @Override
     public QuickstepLauncher getCreatedContainer() {
-        return QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
+        return QuickstepLauncher.ACTIVITY_TRACKER.getCreatedContext();
     }
 
     @Nullable
@@ -168,16 +161,6 @@ public final class LauncherActivityInterface extends
             return null;
         }
         return launcher.getDepthController();
-    }
-
-    @Nullable
-    @Override
-    public DesktopVisibilityController getDesktopVisibilityController() {
-        QuickstepLauncher launcher = getCreatedContainer();
-        if (launcher == null) {
-            return null;
-        }
-        return launcher.getDesktopVisibilityController();
     }
 
     @Nullable
@@ -194,9 +177,9 @@ public final class LauncherActivityInterface extends
     @Override
     public RecentsView getVisibleRecentsView() {
         QuickstepLauncher launcher = getVisibleLauncher();
-        RecentsView recentsView = launcher != null && launcher.getStateManager().getState().isRecentsViewVisible
-                ? launcher.getOverviewPanel()
-                : null;
+        RecentsView recentsView =
+                launcher != null && launcher.getStateManager().getState().isRecentsViewVisible
+                        ? launcher.getOverviewPanel() : null;
         if (recentsView == null || (!launcher.hasBeenResumed()
                 && recentsView.getRunningTaskViewId() == -1)) {
             // If live tile has ended, return null.
@@ -242,9 +225,11 @@ public final class LauncherActivityInterface extends
         return true;
     }
 
+
     @Override
-    public void onExitOverview(RotationTouchHelper deviceState, Runnable exitRunnable) {
-        final StateManager<LauncherState, Launcher> stateManager = getCreatedContainer().getStateManager();
+    public void onExitOverview(Runnable exitRunnable) {
+        final StateManager<LauncherState, Launcher> stateManager =
+                getCreatedContainer().getStateManager();
         stateManager.addStateListener(
                 new StateManager.StateListener<LauncherState>() {
                     @Override
@@ -252,36 +237,21 @@ public final class LauncherActivityInterface extends
                         // Are we going from Recents to Workspace?
                         if (toState == LauncherState.NORMAL) {
                             exitRunnable.run();
-                            notifyRecentsOfOrientation(deviceState);
+                            notifyRecentsOfOrientation();
                             stateManager.removeStateListener(this);
                         }
                     }
                 });
     }
 
-    private void notifyRecentsOfOrientation(RotationTouchHelper rotationTouchHelper) {
+    private void notifyRecentsOfOrientation() {
         // reset layout on swipe to home
-        RecentsView recentsView = getCreatedContainer().getOverviewPanel();
-        recentsView.setLayoutRotation(rotationTouchHelper.getCurrentActiveRotation(),
-                rotationTouchHelper.getDisplayRotation());
+        ((RecentsView) getCreatedContainer().getOverviewPanel()).reapplyActiveRotation();
     }
 
     @Override
     public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTarget target) {
         return homeBounds;
-    }
-
-    @Override
-    public boolean allowMinimizeSplitScreen() {
-        return true;
-    }
-
-    @Override
-    public boolean allowAllAppsFromOverview() {
-        return FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()
-                // If floating search bar would not show in overview, don't allow all apps
-                // gesture.
-                && OVERVIEW.areElementsVisible(getCreatedContainer(), FLOATING_SEARCH_BAR);
     }
 
     @Override
@@ -291,7 +261,8 @@ public final class LauncherActivityInterface extends
         return launcher != null
                 && launcher.getStateManager().getState() == OVERVIEW
                 && launcher.isStarted()
-                && TopTaskTracker.INSTANCE.get(launcher).getCachedTopTask(false).isHomeTask();
+                && TopTaskTracker.INSTANCE.get(launcher).getCachedTopTask(false,
+                launcher.getDisplayId()).isHomeTask();
     }
 
     private boolean isInMinusOne() {
@@ -300,7 +271,8 @@ public final class LauncherActivityInterface extends
         return launcher != null
                 && launcher.getStateManager().getState() == NORMAL
                 && !launcher.isStarted()
-                && TopTaskTracker.INSTANCE.get(launcher).getCachedTopTask(false).isHomeTask();
+                && TopTaskTracker.INSTANCE.get(launcher).getCachedTopTask(false,
+                launcher.getDisplayId()).isHomeTask();
     }
 
     @Override
@@ -320,8 +292,7 @@ public final class LauncherActivityInterface extends
             return;
         }
         LauncherOverlayManager om = launcher.getOverlayManager();
-        if (!SystemUiProxy.INSTANCE.get(launcher).getHomeVisibilityState().isHomeVisible()
-                || launcher.isForceInvisible()) {
+        if (!SystemUiProxy.INSTANCE.get(launcher).getHomeVisibilityState().isHomeVisible()) {
             om.hideOverlay(false /* animate */);
         } else {
             om.hideOverlay(150);
@@ -329,16 +300,16 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public @Nullable Animator getParallelAnimationToLauncher(GestureEndTarget endTarget,
+    public @Nullable Animator getParallelAnimationToGestureEndTarget(GestureEndTarget endTarget,
             long duration, RecentsAnimationCallbacks callbacks) {
         LauncherTaskbarUIController uiController = getTaskbarController();
-        Animator superAnimator = super.getParallelAnimationToLauncher(
+        Animator superAnimator = super.getParallelAnimationToGestureEndTarget(
                 endTarget, duration, callbacks);
         if (uiController == null || callbacks == null) {
             return superAnimator;
         }
-        LauncherState toState = stateFromGestureEndTarget(endTarget);
-        Animator taskbarAnimator = uiController.createAnimToLauncher(toState, callbacks, duration);
+        Animator taskbarAnimator = uiController.getParallelAnimationToGestureEndTarget(endTarget,
+                duration, callbacks);
         if (superAnimator == null) {
             return taskbarAnimator;
         } else {

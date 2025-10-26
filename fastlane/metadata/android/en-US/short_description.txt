@@ -1,1 +1,1 @@
-Homescreen based on on Launcher3 from AOSP
+Homescreen based on Launcher3 from AOSP

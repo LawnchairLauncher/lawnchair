@@ -16,6 +16,7 @@
 package com.android.launcher3.util
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.backedUpItem
 
@@ -26,7 +27,7 @@ object OnboardingPrefs {
         val sharedPrefKey: String,
         val maxCount: Int,
     ) {
-        private val prefItem = backedUpItem(sharedPrefKey, 0)
+        @VisibleForTesting val prefItem = backedUpItem(sharedPrefKey, 0)
 
         /** @return The number of times we have seen the given event. */
         fun get(c: Context): Int {

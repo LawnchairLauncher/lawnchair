@@ -17,7 +17,7 @@
 */
 -->
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="HomeSettings.Theme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:listPreferredItemPaddingEnd">16dp</item>
@@ -29,6 +29,7 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="preferenceTheme">@style/HomeSettings.PreferenceTheme</item>
+        <item name="android:fontFamily" android:featureFlag="com.android.launcher3.gsf_res">google-sans-flex</item>
     </style>
 
     <style name="HomeSettings.PreferenceTheme" parent="@style/PreferenceThemeOverlay">
@@ -80,11 +81,13 @@
 
     <style name="HomeSettings.CollapsedToolbarTitle"
             parent="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title">
-        <item name="android:fontFamily">google-sans</item>
+        <item name="android:fontFamily" android:featureFlag="!com.android.launcher3.gsf_res">google-sans</item>
+        <item name="android:fontFamily" android:featureFlag="com.android.launcher3.gsf_res">variable-title-large</item>
         <item name="android:textSize">20sp</item>
     </style>
 
     <style name="HomeSettings.ExpandedToolbarTitle" parent="HomeSettings.CollapsedToolbarTitle">
+        <item name="android:fontFamily" android:featureFlag="com.android.launcher3.gsf_res">variable-display-small</item>
         <item name="android:textSize">36sp</item>
     </style>
 </resources>

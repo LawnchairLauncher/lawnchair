@@ -36,36 +36,6 @@ import java.util.function.Consumer;
 public class RecentsTransition {
 
     /**
-     * Creates a new transition aspect scaled transition activity options.
-     */
-    public static ActivityOptions createAspectScaleAnimation(Context context, Handler handler,
-            boolean scaleUp, AppTransitionAnimationSpecsFuture animationSpecsFuture,
-            final Runnable animationStartCallback) {
-        final OnAnimationStartedListener animStartedListener = new OnAnimationStartedListener() {
-            private boolean mHandled;
-
-            @Override
-            public void onAnimationStarted(long elapsedRealTime) {
-                // OnAnimationStartedListener can be called numerous times, so debounce here to
-                // prevent multiple callbacks
-                if (mHandled) {
-                    return;
-                }
-                mHandled = true;
-
-                if (animationStartCallback != null) {
-                    animationStartCallback.run();
-                }
-            }
-        };
-        final ActivityOptions opts = ActivityOptions.makeMultiThumbFutureAspectScaleAnimation(
-                context, handler,
-                animationSpecsFuture != null ? animationSpecsFuture.getFuture() : null,
-                animStartedListener, scaleUp);
-        return opts;
-    }
-
-    /**
      * Wraps a animation-start callback in a binder that can be called from window manager.
      */
     public static IRemoteCallback wrapStartedListener(final Handler handler,

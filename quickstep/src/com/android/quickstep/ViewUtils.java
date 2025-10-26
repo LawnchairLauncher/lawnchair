@@ -23,6 +23,7 @@ import android.view.ViewRootImpl;
 
 import com.android.launcher3.Utilities;
 
+import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 
 import app.lawnchair.compat.LawnchairQuickstepCompat;
@@ -45,9 +46,6 @@ public class ViewUtils {
      */
     public static boolean postFrameDrawn(
             View view, Runnable onFinishRunnable, BooleanSupplier canceled) {
-        if (!LawnchairQuickstepCompat.ATLEAST_U) {
-            return new FrameHandlerVR(view, onFinishRunnable, canceled).schedule();
-        }
         return new FrameHandler(view, onFinishRunnable, canceled).schedule();
     }
 
@@ -135,50 +133,17 @@ public class ViewUtils {
         }
     }
 
-    private static class FrameHandlerVR implements HardwareRenderer.FrameDrawingCallback {
-
-        final ViewRootImpl mViewRoot;
-        final Runnable mFinishCallback;
-        final BooleanSupplier mCancelled;
-        final Handler mHandler;
-
-        int mDeferFrameCount = 1;
-
-        FrameHandlerVR(View view, Runnable finishCallback, BooleanSupplier cancelled) {
-            mViewRoot = view.getViewRootImpl();
-            mFinishCallback = finishCallback;
-            mCancelled = cancelled;
-            mHandler = new Handler();
-        }
-
-        @Override
-        public void onFrameDraw(long frame) {
-            Utilities.postAsyncCallback(mHandler, this::onFrame);
-        }
-
-        private void onFrame() {
-            if (mCancelled.getAsBoolean()) {
-                return;
-            }
-
-            if (mDeferFrameCount > 0) {
-                mDeferFrameCount--;
-                schedule();
-                return;
-            }
-
-            if (mFinishCallback != null) {
-                mFinishCallback.run();
-            }
-        }
-
-        private boolean schedule() {
-            if (mViewRoot != null && mViewRoot.getView() != null) {
-                mViewRoot.registerRtFrameCallback(this);
-                mViewRoot.getView().invalidate();
-                return true;
-            }
-            return false;
+    /**
+     * Adds the view to the list of accessible children.
+     *
+     * @param view The view to add.
+     * @param outChildren The list of accessible children.
+     */
+    public static void addAccessibleChildToList(View view, ArrayList<View> outChildren) {
+        if (view.includeForAccessibility()) {
+            outChildren.add(view);
+        } else {
+            view.addChildrenForAccessibility(outChildren);
         }
     }
 }

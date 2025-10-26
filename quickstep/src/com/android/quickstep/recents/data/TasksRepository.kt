@@ -16,99 +16,205 @@
 
 package com.android.quickstep.recents.data
 
-import com.android.quickstep.TaskIconCache
+import android.graphics.drawable.Drawable
+import android.util.Log
+import com.android.launcher3.util.coroutines.DispatcherProvider
+import com.android.quickstep.recents.data.TaskVisualsChangedDelegate.TaskIconChangedCallback
+import com.android.quickstep.recents.data.TaskVisualsChangedDelegate.TaskThumbnailChangedCallback
+import com.android.quickstep.task.thumbnail.data.TaskIconDataSource
 import com.android.quickstep.task.thumbnail.data.TaskThumbnailDataSource
-import com.android.quickstep.util.GroupTask
 import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.recents.model.ThumbnailData
-import kotlin.coroutines.resume
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class TasksRepository(
     private val recentsModel: RecentTasksDataSource,
     private val taskThumbnailDataSource: TaskThumbnailDataSource,
-    private val taskIconCache: TaskIconCache,
+    private val taskIconDataSource: TaskIconDataSource,
+    private val taskVisualsChangedDelegate: TaskVisualsChangedDelegate,
+    private val recentsCoroutineScope: CoroutineScope,
+    private val dispatcherProvider: DispatcherProvider,
 ) : RecentTasksRepository {
-    private val groupedTaskData = MutableStateFlow(emptyList<GroupTask>())
-    private val _taskData =
-        groupedTaskData.map { groupTaskList -> groupTaskList.flatMap { it.tasks } }
-    private val visibleTaskIds = MutableStateFlow(emptySet<Int>())
-
-    private val taskData: Flow<List<Task>> =
-        combine(_taskData, getThumbnailQueryResults()) { tasks, results ->
-            tasks.forEach { task ->
-                // Add retrieved thumbnails + remove unnecessary thumbnails
-                task.thumbnail = results[task.key.id]
-            }
-            tasks
-        }
+    private val tasks = MutableStateFlow(MapForStateFlow<Int, Task>(emptyMap()))
+    private val taskRequests = HashMap<Int, Pair<Task.TaskKey, Job>>()
 
     override fun getAllTaskData(forceRefresh: Boolean): Flow<List<Task>> {
         if (forceRefresh) {
-            recentsModel.getTasks { groupedTaskData.value = it }
+            recentsModel.getTasks { newTaskList ->
+                val recentTasks =
+                    newTaskList
+                        .flatMap { groupTask -> groupTask.tasks }
+                        .associateBy { it.key.id }
+                        .also { newTaskMap ->
+                            // Clean tasks that are not in the latest group tasks list.
+                            val tasksNoLongerVisible = tasks.value.keys.subtract(newTaskMap.keys)
+                            removeTasks(tasksNoLongerVisible)
+                        }
+                Log.d(
+                    TAG,
+                    "getAllTaskData: oldTasks ${tasks.value.keys}, newTasks: ${recentTasks.keys}",
+                )
+                tasks.value = MapForStateFlow(recentTasks)
+
+                // Request data for tasks to prevent stale data.
+                // This will prevent thumbnail and icon from being replaced and null due to
+                // race condition. The new request will hit the cache and return immediately.
+                taskRequests.keys.forEach(::requestTaskData)
+            }
         }
-        return taskData
+        return tasks.map { it.values.toList() }
     }
 
-    override fun getTaskDataById(taskId: Int): Flow<Task?> =
-        taskData.map { taskList -> taskList.firstOrNull { it.key.id == taskId } }
+    override fun getTaskDataById(taskId: Int) = tasks.map { it[taskId] }
 
-    override fun setVisibleTasks(visibleTaskIdList: List<Int>) {
-        this.visibleTaskIds.value = visibleTaskIdList.toSet()
+    override fun getThumbnailById(taskId: Int) =
+        getTaskDataById(taskId).map { it?.thumbnail }.distinctUntilChangedBy { it?.snapshotId }
+
+    override fun getCurrentThumbnailById(taskId: Int) = tasks.value[taskId]?.thumbnail
+
+    override fun setVisibleTasks(visibleTaskIdList: Set<Int>) {
+        val tasksNoLongerVisible = taskRequests.keys.subtract(visibleTaskIdList)
+        val newlyVisibleTasks = visibleTaskIdList.subtract(taskRequests.keys)
+        if (tasksNoLongerVisible.isNotEmpty() || newlyVisibleTasks.isNotEmpty()) {
+            Log.d(
+                TAG,
+                "setVisibleTasks to: $visibleTaskIdList, " +
+                    "removed: $tasksNoLongerVisible, added: $newlyVisibleTasks",
+            )
+        }
+
+        // Remove tasks are no longer visible
+        removeTasks(tasksNoLongerVisible)
+        // Add new tasks to be requested
+        newlyVisibleTasks.forEach { taskId -> requestTaskData(taskId) }
     }
 
-    /** Flow wrapper for [TaskThumbnailDataSource.updateThumbnailInBackground] api */
-    private fun getThumbnailDataRequest(task: Task): ThumbnailDataRequest =
-        flow {
-                emit(task.key.id to task.thumbnail)
-                val thumbnailDataResult: ThumbnailData? =
-                    suspendCancellableCoroutine { continuation ->
-                        val cancellableTask =
-                            taskThumbnailDataSource.updateThumbnailInBackground(task) {
-                                continuation.resume(it)
-                            }
-                        continuation.invokeOnCancellation { cancellableTask?.cancel() }
+    private fun requestTaskData(taskId: Int) {
+        val task = tasks.value[taskId] ?: return
+        taskRequests[taskId] =
+            Pair(
+                task.key,
+                recentsCoroutineScope.launch(dispatcherProvider.background) {
+                    Log.i(TAG, "requestTaskData: $taskId")
+                    val thumbnailFetchDeferred = async { fetchThumbnail(task) }
+                    val iconFetchDeferred = async { fetchIcon(task) }
+                    awaitAll(thumbnailFetchDeferred, iconFetchDeferred)
+                },
+            )
+    }
+
+    private fun removeTasks(tasksToRemove: Set<Int>) {
+        if (tasksToRemove.isEmpty()) return
+
+        Log.i(TAG, "removeTasks: $tasksToRemove")
+        tasksToRemove.forEach { taskId ->
+            val request = taskRequests.remove(taskId) ?: return
+            val (taskKey, job) = request
+            job.cancel()
+
+            // un-registering callbacks
+            taskVisualsChangedDelegate.unregisterTaskIconChangedCallback(taskKey)
+            taskVisualsChangedDelegate.unregisterTaskThumbnailChangedCallback(taskKey)
+
+            // Clearing Task to reduce memory footprint
+            tasks.value[taskId]?.apply {
+                thumbnail = null
+                icon = null
+                title = null
+                titleDescription = null
+            }
+        }
+        tasks.update { oldValue -> MapForStateFlow(oldValue) }
+    }
+
+    private suspend fun fetchIcon(task: Task) {
+        updateIcon(task.key.id, getIconFromDataSource(task)) // Fetch icon from cache
+        taskVisualsChangedDelegate.registerTaskIconChangedCallback(
+            task.key,
+            object : TaskIconChangedCallback {
+                override fun onTaskIconChanged() {
+                    recentsCoroutineScope.launch(dispatcherProvider.background) {
+                        updateIcon(task.key.id, getIconFromDataSource(task))
                     }
-                emit(task.key.id to thumbnailDataResult)
-            }
-            .distinctUntilChanged()
-
-    /**
-     * This is a Flow that makes a query for thumbnail data to the [taskThumbnailDataSource] for
-     * each visible task. It then collects the responses and returns them in a Map as soon as they
-     * are available.
-     */
-    private fun getThumbnailQueryResults(): Flow<Map<Int, ThumbnailData?>> {
-        val visibleTasks =
-            combine(_taskData, visibleTaskIds) { tasks, visibleIds ->
-                tasks.filter { it.key.id in visibleIds }
-            }
-        val visibleThumbnailDataRequests: Flow<List<ThumbnailDataRequest>> =
-            visibleTasks.map {
-                it.map { visibleTask ->
-                    val taskCopy = Task(visibleTask).apply { thumbnail = visibleTask.thumbnail }
-                    getThumbnailDataRequest(taskCopy)
                 }
-            }
-        return visibleThumbnailDataRequests.flatMapLatest {
-            thumbnailRequestFlows: List<ThumbnailDataRequest> ->
-            if (thumbnailRequestFlows.isEmpty()) {
-                flowOf(emptyMap())
-            } else {
-                combine(thumbnailRequestFlows) { it.toMap() }
-            }
-        }
+            },
+        )
     }
-}
 
-typealias ThumbnailDataRequest = Flow<Pair<Int, ThumbnailData?>>
+    private suspend fun fetchThumbnail(task: Task) {
+        updateThumbnail(task.key.id, getThumbnailFromDataSource(task))
+        taskVisualsChangedDelegate.registerTaskThumbnailChangedCallback(
+            task.key,
+            object : TaskThumbnailChangedCallback {
+                override fun onTaskThumbnailChanged(thumbnailData: ThumbnailData?) {
+                    updateThumbnail(task.key.id, thumbnailData)
+                }
+
+                override fun onHighResLoadingStateChanged(highResEnabled: Boolean) {
+                    val isTaskVisible = taskRequests.containsKey(task.key.id)
+                    if (!isTaskVisible) return
+
+                    val isCurrentThumbnailLowRes =
+                        tasks.value[task.key.id]?.thumbnail?.reducedResolution
+                    val isRequestedResHigherThanCurrent =
+                        isCurrentThumbnailLowRes == null ||
+                            (isCurrentThumbnailLowRes && highResEnabled)
+                    if (!isRequestedResHigherThanCurrent) return
+
+                    recentsCoroutineScope.launch(dispatcherProvider.background) {
+                        updateThumbnail(task.key.id, getThumbnailFromDataSource(task))
+                    }
+                }
+            },
+        )
+    }
+
+    private fun updateIcon(taskId: Int, iconData: IconData) {
+        val task = tasks.value[taskId] ?: return
+        task.icon = iconData.icon
+        task.titleDescription = iconData.contentDescription
+        task.title = iconData.title
+        tasks.update { oldValue -> MapForStateFlow(oldValue + (taskId to task)) }
+    }
+
+    private fun updateThumbnail(taskId: Int, thumbnail: ThumbnailData?) {
+        val task = tasks.value[taskId] ?: return
+        task.thumbnail = thumbnail
+        tasks.update { oldValue -> MapForStateFlow(oldValue + (taskId to task)) }
+    }
+
+    private suspend fun getThumbnailFromDataSource(task: Task) =
+        withContext(dispatcherProvider.background) { taskThumbnailDataSource.getThumbnail(task) }
+
+    private suspend fun getIconFromDataSource(task: Task) =
+        withContext(dispatcherProvider.background) {
+            val iconCacheEntry = taskIconDataSource.getIcon(task)
+            IconData(iconCacheEntry.icon, iconCacheEntry.contentDescription, iconCacheEntry.title)
+        }
+
+    companion object {
+        private const val TAG = "TasksRepository"
+    }
+
+    /** Helper class to support StateFlow emissions when using a Map with a MutableStateFlow. */
+    private data class MapForStateFlow<K, T>(
+        private val backingMap: Map<K, T>,
+        private val updated: Long = System.nanoTime(),
+    ) : Map<K, T> by backingMap
+
+    private data class IconData(
+        val icon: Drawable,
+        val contentDescription: String,
+        val title: String,
+    )
+}

@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.widget.picker.util;
 
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-
 import static com.android.launcher3.util.WidgetUtils.createAppWidgetProviderInfo;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -28,7 +26,6 @@ import static org.mockito.Mockito.when;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
@@ -39,15 +36,18 @@ import androidx.test.filters.SmallTest;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.cache.BaseIconCache;
+import com.android.launcher3.icons.cache.CachedObject;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.ActivityContextWrapper;
+import com.android.launcher3.util.SandboxApplication;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -67,6 +67,8 @@ public final class WidgetsTableUtilsTest {
     private static final int CELL_SIZE = 50;
     private static final int NUM_OF_COLS = 5;
     private static final int NUM_OF_ROWS = 5;
+
+    @Rule public SandboxApplication app = new SandboxApplication();
 
     @Mock
     private IconCache mIconCache;
@@ -89,9 +91,8 @@ public final class WidgetsTableUtilsTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        mContext = new ActivityContextWrapper(getApplicationContext());
-
-        mTestInvariantProfile = new InvariantDeviceProfile();
+        mContext = new ActivityContextWrapper(app);
+        mTestInvariantProfile = InvariantDeviceProfile.INSTANCE.get(app);
         mTestInvariantProfile.numColumns = NUM_OF_COLS;
         mTestInvariantProfile.numRows = NUM_OF_ROWS;
 
@@ -99,7 +100,7 @@ public final class WidgetsTableUtilsTest {
         initTestWidgets();
         initTestShortcuts();
 
-        doAnswer(invocation -> ((ComponentWithLabel) invocation.getArgument(0))
+        doAnswer(invocation -> ((CachedObject) invocation.getArgument(0))
                 .getComponent().getPackageName())
                 .when(mIconCache).getTitleNoCache(any());
     }
@@ -280,32 +281,31 @@ public final class WidgetsTableUtilsTest {
     }
 
     private void initTestShortcuts() {
-        PackageManager packageManager = mContext.getPackageManager();
         mShortcut1 = new WidgetItem(new TestShortcutConfigActivityInfo(
                 ComponentName.createRelative(TEST_PACKAGE, ".shortcut1"), UserHandle.CURRENT),
-                mIconCache, packageManager);
+                mIconCache);
         mShortcut2 = new WidgetItem(new TestShortcutConfigActivityInfo(
                 ComponentName.createRelative(TEST_PACKAGE, ".shortcut2"), UserHandle.CURRENT),
-                mIconCache, packageManager);
+                mIconCache);
         mShortcut3 = new WidgetItem(new TestShortcutConfigActivityInfo(
                 ComponentName.createRelative(TEST_PACKAGE, ".shortcut3"), UserHandle.CURRENT),
-                mIconCache, packageManager);
+                mIconCache);
 
     }
 
     private final class TestShortcutConfigActivityInfo extends ShortcutConfigActivityInfo {
 
         TestShortcutConfigActivityInfo(ComponentName componentName, UserHandle user) {
-            super(componentName, user);
+            super(componentName, user, mContext);
         }
 
         @Override
-        public Drawable getFullResIcon(IconCache cache) {
+        public Drawable getFullResIcon(BaseIconCache cache) {
             return null;
         }
 
         @Override
-        public CharSequence getLabel(PackageManager pm) {
+        public CharSequence getLabel() {
             return null;
         }
     }

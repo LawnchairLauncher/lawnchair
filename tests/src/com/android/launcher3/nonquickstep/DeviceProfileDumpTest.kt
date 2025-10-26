@@ -19,7 +19,7 @@ import androidx.test.filters.SmallTest
 import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Flags
-import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.util.rule.setFlags
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,17 +35,17 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
 
     @Before
     fun setUp() {
-        if (instance.decoupleDepth) {
-            setFlagsRule.enableFlags(Flags.FLAG_ENABLE_SCALING_REVEAL_HOME_ANIMATION)
-        } else {
-            setFlagsRule.disableFlags(Flags.FLAG_ENABLE_SCALING_REVEAL_HOME_ANIMATION)
-        }
+        setFlagsRule.setFlags(
+            instance.decoupleDepth,
+            Flags.FLAG_ENABLE_SCALING_REVEAL_HOME_ANIMATION,
+        )
+        setFlagsRule.setFlags(false, Flags.FLAG_ONE_GRID_SPECS)
     }
 
     @Test
     fun dumpPortraitGesture() {
         initializeDevice(instance.deviceName, isGestureMode = true, isLandscape = false)
-        val dp = getDeviceProfileForGrid(instance.gridName)
+        val dp = context.appComponent.idp.getDeviceProfile(context)
         dp.isTaskbarPresentInApps = instance.isTaskbarPresentInApps
 
         assertDump(dp, instance.filename("Portrait"))
@@ -54,7 +54,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
     @Test
     fun dumpPortrait3Button() {
         initializeDevice(instance.deviceName, isGestureMode = false, isLandscape = false)
-        val dp = getDeviceProfileForGrid(instance.gridName)
+        val dp = context.appComponent.idp.getDeviceProfile(context)
         dp.isTaskbarPresentInApps = instance.isTaskbarPresentInApps
 
         assertDump(dp, instance.filename("Portrait3Button"))
@@ -63,7 +63,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
     @Test
     fun dumpLandscapeGesture() {
         initializeDevice(instance.deviceName, isGestureMode = true, isLandscape = true)
-        val dp = getDeviceProfileForGrid(instance.gridName)
+        val dp = context.appComponent.idp.getDeviceProfile(context)
         dp.isTaskbarPresentInApps = instance.isTaskbarPresentInApps
 
         val testName =
@@ -78,7 +78,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
     @Test
     fun dumpLandscape3Button() {
         initializeDevice(instance.deviceName, isGestureMode = false, isLandscape = true)
-        val dp = getDeviceProfileForGrid(instance.gridName)
+        val dp = context.appComponent.idp.getDeviceProfile(context)
         dp.isTaskbarPresentInApps = instance.isTaskbarPresentInApps
 
         val testName =
@@ -100,24 +100,23 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     deviceSpecFolded = deviceSpecs["twopanel-phone"]!!,
                     isLandscape = isLandscape,
                     isGestureMode = isGestureMode,
+                    gridName = instance.gridName,
                 )
             "tablet" ->
                 initializeVarsForTablet(
                     deviceSpec = deviceSpec,
                     isLandscape = isLandscape,
-                    isGestureMode = isGestureMode
+                    isGestureMode = isGestureMode,
+                    gridName = instance.gridName,
                 )
             else ->
                 initializeVarsForPhone(
                     deviceSpec = deviceSpec,
                     isVerticalBar = isLandscape,
-                    isGestureMode = isGestureMode
+                    isGestureMode = isGestureMode,
+                    gridName = instance.gridName,
                 )
         }
-    }
-
-    private fun getDeviceProfileForGrid(gridName: String): DeviceProfile {
-        return InvariantDeviceProfile(context, gridName).getDeviceProfile(context)
     }
 
     private fun assertDump(dp: DeviceProfile, filename: String) {
@@ -136,7 +135,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "twopanel-tablet",
                     gridName = "4_by_4",
                     isTaskbarPresentInApps = true,
-                    decoupleDepth = true
+                    decoupleDepth = true,
                 ),
             )
         }
@@ -145,7 +144,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
             val deviceName: String,
             val gridName: String,
             val isTaskbarPresentInApps: Boolean = false,
-            val decoupleDepth: Boolean = false
+            val decoupleDepth: Boolean = false,
         ) {
             fun filename(testName: String = ""): String {
                 val device =

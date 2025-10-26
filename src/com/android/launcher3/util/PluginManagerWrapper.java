@@ -15,32 +15,39 @@
  */
 package com.android.launcher3.util;
 
-import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
+import androidx.annotation.AnyThread;
 
-import com.android.launcher3.R;
+import com.android.launcher3.dagger.LauncherAppSingleton;
+import com.android.launcher3.dagger.LauncherBaseAppComponent;
 import com.android.systemui.plugins.Plugin;
 import com.android.systemui.plugins.PluginListener;
 
 import java.io.PrintWriter;
 
-public class PluginManagerWrapper implements ResourceBasedOverride, SafeCloseable {
+import javax.inject.Inject;
 
-    public static final MainThreadInitializedObject<PluginManagerWrapper> INSTANCE =
-            forOverride(PluginManagerWrapper.class, R.string.plugin_manager_wrapper_class);
+@LauncherAppSingleton
+public class PluginManagerWrapper{
 
+    public static final DaggerSingletonObject<PluginManagerWrapper> INSTANCE =
+            new DaggerSingletonObject<>(LauncherBaseAppComponent::getPluginManagerWrapper);
+
+    @Inject
+    public PluginManagerWrapper() { }
+
+    @AnyThread
     public <T extends Plugin> void addPluginListener(
             PluginListener<T> listener, Class<T> pluginClass) {
         addPluginListener(listener, pluginClass, false);
     }
 
+    @AnyThread
     public <T extends Plugin> void addPluginListener(
             PluginListener<T> listener, Class<T> pluginClass, boolean allowMultiple) {
     }
 
+    @AnyThread
     public void removePluginListener(PluginListener<? extends Plugin> listener) { }
-
-    @Override
-    public void close() { }
 
     public void dump(PrintWriter pw) { }
 }

@@ -21,6 +21,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.launcher3.R;
@@ -53,13 +54,21 @@ public class FloatingMaskView extends ConstraintLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) getLayoutParams();
-        AllAppsRecyclerView allAppsContainerView =
-                mActivityContext.getAppsView().getActiveRecyclerView();
+        setParameters((ViewGroup.MarginLayoutParams) getLayoutParams(),
+                mActivityContext.getAppsView().getActiveRecyclerView());
+    }
+
+    @VisibleForTesting
+    void setParameters(ViewGroup.MarginLayoutParams lp, AllAppsRecyclerView recyclerView) {
         if (lp != null) {
-            lp.rightMargin = allAppsContainerView.getPaddingRight();
-            lp.leftMargin = allAppsContainerView.getPaddingLeft();
-            mBottomBox.setMinimumHeight(allAppsContainerView.getPaddingBottom());
+            lp.rightMargin = recyclerView.getPaddingRight();
+            lp.leftMargin = recyclerView.getPaddingLeft();
+            getBottomBox().setMinimumHeight(recyclerView.getPaddingBottom());
         }
+    }
+
+    @VisibleForTesting
+    ImageView getBottomBox() {
+        return mBottomBox;
     }
 }

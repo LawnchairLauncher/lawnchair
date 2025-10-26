@@ -23,10 +23,12 @@ import android.view.ViewGroup;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
-import com.android.quickstep.LauncherActivityInterface;
+import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.orientation.RecentsPagedOrientationHandler;
 
 public class LayoutUtils {
+
+    private static final float SQUARE_ASPECT_RATIO_TOLERANCE = 0.05f;
 
     /**
      * The height for the swipe up motion
@@ -39,11 +41,14 @@ public class LayoutUtils {
         return swipeHeight;
     }
 
-    public static int getShelfTrackingDistance(Context context, DeviceProfile dp,
-            RecentsPagedOrientationHandler orientationHandler) {
+    public static int getShelfTrackingDistance(
+            Context context,
+            DeviceProfile dp,
+            RecentsPagedOrientationHandler orientationHandler,
+            BaseContainerInterface<?, ?> baseContainerInterface) {
         // Track the bottom of the window.
         Rect taskSize = new Rect();
-        LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, taskSize,
+        baseContainerInterface.calculateTaskSize(context, dp, taskSize,
                 orientationHandler);
         return orientationHandler.getDistanceToBottomOfRect(dp, taskSize);
     }
@@ -60,5 +65,14 @@ public class LayoutUtils {
                 setViewEnabled(((ViewGroup) view).getChildAt(i), enabled);
             }
         }
+    }
+
+    /**
+     * Returns true iff the device's aspect ratio is within
+     * {@link LayoutUtils#SQUARE_ASPECT_RATIO_TOLERANCE} of 1:1
+     */
+    public static boolean isAspectRatioSquare(float aspectRatio) {
+        return Float.compare(aspectRatio, 1f - SQUARE_ASPECT_RATIO_TOLERANCE) >= 0
+                && Float.compare(aspectRatio, 1f + SQUARE_ASPECT_RATIO_TOLERANCE) <= 0;
     }
 }

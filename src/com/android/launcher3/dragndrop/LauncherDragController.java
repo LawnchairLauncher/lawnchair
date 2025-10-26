@@ -15,7 +15,10 @@
  */
 package com.android.launcher3.dragndrop;
 
+import static android.view.View.VISIBLE;
+
 import static com.android.launcher3.AbstractFloatingView.TYPE_DISCOVERY_BOUNCE;
+import static com.android.launcher3.Flags.removeAppsRefreshOnRightClick;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -25,6 +28,7 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.HapticFeedbackConstants;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -33,10 +37,13 @@ import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.TouchUtil;
 import com.android.launcher3.widget.util.WidgetDragScaleUtils;
 
 /**
@@ -46,6 +53,9 @@ public class LauncherDragController extends DragController<Launcher> {
 
     private static final boolean PROFILE_DRAWING_DURING_DRAG = false;
     private final FlingToDeleteHelper mFlingToDeleteHelper;
+
+    /** Whether or not the drag operation is triggered by mouse right click. */
+    private boolean mIsInMouseRightClick = false;
 
     public LauncherDragController(Launcher launcher) {
         super(launcher);
@@ -67,6 +77,28 @@ public class LauncherDragController extends DragController<Launcher> {
             DragOptions options) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
+        }
+
+        if (removeAppsRefreshOnRightClick() && mIsInMouseRightClick
+                && options.preDragCondition == null
+                && originalView instanceof View v) {
+            options.preDragCondition = new PreDragCondition() {
+
+                @Override
+                public boolean shouldStartDrag(double distanceDragged) {
+                    return false;
+                }
+
+                @Override
+                public void onPreDragStart(DragObject dragObject) {
+                    // Set it to visible so the text of FolderIcon would not flash (avoid it from
+                    // being invisible and then visible)
+                    v.setVisibility(VISIBLE);
+                }
+
+                @Override
+                public void onPreDragEnd(DragObject dragObject, boolean dragStarted) { }
+            };
         }
 
         mActivity.hideKeyboard();
@@ -119,6 +151,9 @@ public class LauncherDragController extends DragController<Launcher> {
                         initialDragViewScale,
                         dragViewScaleOnDrop,
                         scalePx);
+        // During a drag, we don't want to expose the descendendants of drag view to a11y users,
+        // since those decendents are not a valid position in the workspace.
+        dragView.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         dragView.setItemInfo(dragInfo);
         mDragObject.dragComplete = false;
 
@@ -188,7 +223,7 @@ public class LauncherDragController extends DragController<Launcher> {
 
     @Override
     protected void exitDrag() {
-        if (!mActivity.isInState(EDIT_MODE)) {
+        if (!mIsInPreDrag && !mActivity.isInState(EDIT_MODE)) {
             mActivity.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
         }
     }
@@ -214,5 +249,14 @@ public class LauncherDragController extends DragController<Launcher> {
         mActivity.getDragLayer().mapCoordInSelfToDescendant(mActivity.getWorkspace(),
                 dropCoordinates);
         return mActivity.getWorkspace();
+    }
+
+    /**
+     * Intercepts touch events from a drag source view.
+     */
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        mIsInMouseRightClick = TouchUtil.isMouseRightClickDownOrMove(ev);
+        return super.onControllerInterceptTouchEvent(ev);
     }
 }

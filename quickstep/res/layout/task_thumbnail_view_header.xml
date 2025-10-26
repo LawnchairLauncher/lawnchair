@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+     Copyright (C) 2025 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.quickstep.views.TaskThumbnailViewHeader
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/task_thumbnail_view_header"
+    android:background="@drawable/task_thumbnail_header_bg">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/task_thumbnail_header_height"
+        android:layout_marginStart="@dimen/task_thumbnail_header_margin_edge"
+        android:layout_marginEnd="@dimen/task_thumbnail_header_margin_edge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/header_app_icon"
+            android:contentDescription="@string/header_app_icon_description"
+            android:layout_width="@dimen/task_thumbnail_header_icon_size"
+            android:layout_height="@dimen/task_thumbnail_header_icon_size"
+            android:layout_marginEnd="@dimen/task_thumbnail_header_margin_between_views"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/header_app_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintVertical_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread_inside" />
+        <TextView
+            android:id="@+id/header_app_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/task_thumbnail_header_margin_between_views"
+            android:layout_marginEnd="@dimen/task_thumbnail_header_margin_between_views"
+            android:text="@string/header_default_app_title"
+            app:layout_constraintStart_toEndOf="@id/header_app_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintVertical_bias="0.5" />
+        <ImageButton
+            android:id="@+id/header_close_button"
+            android:contentDescription="@string/header_close_icon_description"
+            android:layout_width="@dimen/task_thumbnail_header_icon_size"
+            android:layout_height="@dimen/task_thumbnail_header_icon_size"
+            android:layout_marginStart="@dimen/task_thumbnail_header_margin_between_views"
+            android:src="@drawable/task_header_close_button"
+            android:tint="@android:color/darker_gray"
+            android:background="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintVertical_bias="0.5" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.android.quickstep.views.TaskThumbnailViewHeader>

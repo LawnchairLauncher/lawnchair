@@ -55,6 +55,12 @@ project(':searchuilib').projectDir = new File(rootDir, 'platform_frameworks_libs
 include ':animationlib'
 project(':animationlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/animationlib')
 
+include ':msdllib'
+project(':msdllib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/msdllib')
+
+include ':contextualeducationlib'
+project(':contextualeducationlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/contextualeducationlib')
+
 include ':hidden-api'
 
 include ':shared'
@@ -81,6 +87,9 @@ project(':unfold').projectDir = new File(rootDir, 'systemUI/unfold')
 include ':viewcapture'
 project(':viewcapture').projectDir = new File(rootDir, 'systemUI/viewcapture')
 
+include ':utils'
+project(':utils').projectDir = new File(rootDir, 'systemUI/utils')
+
 
 include ':compatLib'
 include ':compatLib:compatLibVQ'
@@ -89,6 +98,7 @@ include ':compatLib:compatLibVS'
 include ':compatLib:compatLibVT'
 include ':compatLib:compatLibVU'
 include ':compatLib:compatLibVV'
+include ':compatLib:compatLibVBaklava'
 
 include ':baseline-profile'
 

@@ -17,7 +17,6 @@
 package com.android.launcher3.util;
 
 import android.view.View;
-import android.view.Window;
 
 import androidx.annotation.IntDef;
 
@@ -54,11 +53,11 @@ public class SystemUiController {
     })
     public @interface SystemUiControllerFlags {}
 
-    private final Window mWindow;
+    private final View mView;
     private final int[] mStates = new int[5];
 
-    public SystemUiController(Window window) {
-        mWindow = window;
+    public SystemUiController(View view) {
+        mView = view;
     }
 
     public void updateUiState(int uiState, boolean isLight) {
@@ -72,14 +71,14 @@ public class SystemUiController {
         }
         mStates[uiState] = flags;
 
-        int oldFlags = mWindow.getDecorView().getSystemUiVisibility();
+        int oldFlags = mView.getSystemUiVisibility();
         // Apply the state flags in priority order
         int newFlags = oldFlags;
         for (int stateFlag : mStates) {
             newFlags = getSysUiVisibilityFlags(stateFlag, newFlags);
         }
         if (newFlags != oldFlags) {
-            mWindow.getDecorView().setSystemUiVisibility(newFlags);
+            mView.setSystemUiVisibility(newFlags);
         }
     }
 
@@ -88,7 +87,7 @@ public class SystemUiController {
      */
     public int getBaseSysuiVisibility() {
         return getSysUiVisibilityFlags(
-                mStates[UI_STATE_BASE_WINDOW], mWindow.getDecorView().getSystemUiVisibility());
+                mStates[UI_STATE_BASE_WINDOW], mView.getSystemUiVisibility());
     }
 
     private int getSysUiVisibilityFlags(int stateFlag, int currentVisibility) {

@@ -150,9 +150,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                 Drawable p = new FastBitmapDrawable(new DatabaseWidgetPreviewLoader(launcher)
                         .generateWidgetPreview(
                                 createWidgetInfo.info, maxWidth, previewSizeBeforeScale));
-                if (RoundedCornerEnforcement.isRoundedCornerEnabled()) {
-                    p = new RoundDrawableWrapper(p, mEnforcedRoundedCornersForWidget);
-                }
+                p = new RoundDrawableWrapper(p, mEnforcedRoundedCornersForWidget);
                 preview = p;
             }
 

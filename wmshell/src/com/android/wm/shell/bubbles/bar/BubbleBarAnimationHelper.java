@@ -47,7 +47,7 @@ import com.android.wm.shell.bubbles.BubbleOverflow;
 import com.android.wm.shell.bubbles.BubblePositioner;
 import com.android.wm.shell.bubbles.BubbleViewProvider;
 import com.android.wm.shell.bubbles.animation.AnimatableScaleMatrix;
-import com.android.wm.shell.common.magnetictarget.MagnetizedObject.MagneticTarget;
+import com.android.wm.shell.shared.magnetictarget.MagnetizedObject.MagneticTarget;
 import com.android.wm.shell.shared.animation.PhysicsAnimator;
 
 /**

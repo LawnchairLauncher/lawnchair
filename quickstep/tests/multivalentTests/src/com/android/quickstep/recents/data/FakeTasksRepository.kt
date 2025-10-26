@@ -16,25 +16,55 @@
 
 package com.android.quickstep.recents.data
 
+import android.graphics.drawable.Drawable
 import com.android.systemui.shared.recents.model.Task
 import com.android.systemui.shared.recents.model.ThumbnailData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 class FakeTasksRepository : RecentTasksRepository {
     private var thumbnailDataMap: Map<Int, ThumbnailData> = emptyMap()
+    private var taskIconDataMap: Map<Int, FakeIconData> = emptyMap()
     private var tasks: MutableStateFlow<List<Task>> = MutableStateFlow(emptyList())
-    private var visibleTasks: MutableStateFlow<List<Int>> = MutableStateFlow(emptyList())
+    private var visibleTasks: MutableStateFlow<Set<Int>> = MutableStateFlow(emptySet())
 
     override fun getAllTaskData(forceRefresh: Boolean): Flow<List<Task>> = tasks
 
     override fun getTaskDataById(taskId: Int): Flow<Task?> =
-        getAllTaskData().map { taskList -> taskList.firstOrNull { it.key.id == taskId } }
+        combine(getAllTaskData(), visibleTasks) { taskList, visibleTasks ->
+                taskList.filter { visibleTasks.contains(it.key.id) }
+            }
+            .map { taskList ->
+                val task = taskList.firstOrNull { it.key.id == taskId } ?: return@map null
+                Task(task).apply {
+                    thumbnail = task.thumbnail
+                    icon = task.icon
+                    titleDescription = task.titleDescription
+                    title = task.title
+                }
+            }
 
-    override fun setVisibleTasks(visibleTaskIdList: List<Int>) {
+    override fun getThumbnailById(taskId: Int): Flow<ThumbnailData?> =
+        getTaskDataById(taskId).map { it?.thumbnail }
+
+    override fun getCurrentThumbnailById(taskId: Int): ThumbnailData? =
+        tasks.value.firstOrNull { it.key.id == taskId }?.thumbnail
+
+    override fun setVisibleTasks(visibleTaskIdList: Set<Int>) {
         visibleTasks.value = visibleTaskIdList
-        tasks.value = tasks.value.map { it.apply { thumbnail = thumbnailDataMap[it.key.id] } }
+        tasks.value =
+            tasks.value.map {
+                it.apply {
+                    thumbnail = thumbnailDataMap[it.key.id]
+                    taskIconDataMap[it.key.id]?.let { data ->
+                        title = data.title
+                        titleDescription = data.titleDescription
+                        icon = data.icon
+                    }
+                }
+            }
     }
 
     fun seedTasks(tasks: List<Task>) {
@@ -44,4 +74,15 @@ class FakeTasksRepository : RecentTasksRepository {
     fun seedThumbnailData(thumbnailDataMap: Map<Int, ThumbnailData>) {
         this.thumbnailDataMap = thumbnailDataMap
     }
+
+    fun seedIconData(id: Int, title: String, contentDescription: String, icon: Drawable) {
+        val iconData = FakeIconData(icon, contentDescription, title)
+        this.taskIconDataMap = mapOf(id to iconData)
+    }
+
+    private data class FakeIconData(
+        val icon: Drawable,
+        val titleDescription: String,
+        val title: String,
+    )
 }

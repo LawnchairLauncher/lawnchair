@@ -23,29 +23,27 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.dot.DotInfo;
-import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
-import com.android.launcher3.widget.PendingAddWidgetInfo;
-import com.android.launcher3.widget.model.WidgetsListBaseEntry;
-import com.android.launcher3.widget.model.WidgetsListContentEntry;
-import com.android.launcher3.widget.picker.WidgetRecommendationCategory;
+import com.android.launcher3.views.ActivityContext;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
@@ -55,26 +53,45 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     private static final boolean LOGD = false;
     private static final String TAG = "PopupDataProvider";
 
-    private final Consumer<Predicate<PackageUserKey>> mNotificationDotsChangeListener;
+    private final ActivityContext mContext;
+
+    /** Maps packages to their DotInfo's . */
+    private final Map<PackageUserKey, DotInfo> mPackageUserToDotInfos = new HashMap<>();
 
     /** Maps launcher activity components to a count of how many shortcuts they have. */
     private HashMap<ComponentKey, Integer> mDeepShortcutMap = new HashMap<>();
-    /** Maps packages to their DotInfo's . */
-    private Map<PackageUserKey, DotInfo> mPackageUserToDotInfos = new HashMap<>();
 
-    /** All installed widgets. */
-    private List<WidgetsListBaseEntry> mAllWidgets = List.of();
-    /** Widgets that can be recommended to the users. */
-    private List<ItemInfo> mRecommendedWidgets = List.of();
-
-    private PopupDataChangeListener mChangeListener = PopupDataChangeListener.INSTANCE;
-
-    public PopupDataProvider(Consumer<Predicate<PackageUserKey>> notificationDotsChangeListener) {
-        mNotificationDotsChangeListener = notificationDotsChangeListener;
+    public PopupDataProvider(ActivityContext context) {
+        mContext = context;
     }
 
     private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
-        mNotificationDotsChangeListener.accept(updatedDots);
+        final PackageUserKey packageUserKey = new PackageUserKey(null, null);
+        Predicate<ItemInfo> matcher = info -> !packageUserKey.updateFromItemInfo(info)
+                || updatedDots.test(packageUserKey);
+
+        ItemOperator op = (info, v) -> {
+            if (v instanceof BubbleTextView && info != null && matcher.test(info)) {
+                ((BubbleTextView) v).applyDotState(info, true /* animate */);
+            } else if (v instanceof FolderIcon icon
+                    && info instanceof FolderInfo fi && fi.anyMatch(matcher)) {
+                icon.updateDotInfo();
+            }
+
+            // process all the shortcuts
+            return false;
+        };
+
+        mContext.getContent().mapOverItems(op);
+        Folder folder = Folder.getOpen(mContext);
+        if (folder != null) {
+            folder.mapOverItems(op);
+        }
+
+        ActivityAllAppsContainerView<?> appsView = mContext.getAppsView();
+        if (appsView != null) {
+            appsView.getAppsStore().updateNotificationDots(updatedDots);
+        }
     }
 
     @Override
@@ -183,102 +200,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         })) ? dotInfo : null;
     }
 
-    /**
-     * Sets a list of recommended widgets ordered by their order of appearance in the widgets
-     * recommendation UI.
-     */
-    public void setRecommendedWidgets(List<ItemInfo> recommendedWidgets) {
-        mRecommendedWidgets = recommendedWidgets;
-        mChangeListener.onRecommendedWidgetsBound();
-    }
-
-    public void setAllWidgets(List<WidgetsListBaseEntry> allWidgets) {
-        mAllWidgets = allWidgets;
-        mChangeListener.onWidgetsBound();
-    }
-
-    public void setChangeListener(PopupDataChangeListener listener) {
-        mChangeListener = listener == null ? PopupDataChangeListener.INSTANCE : listener;
-    }
-
-    public List<WidgetsListBaseEntry> getAllWidgets() {
-        return mAllWidgets;
-    }
-
-    /** Returns a list of recommended widgets. */
-    public List<WidgetItem> getRecommendedWidgets() {
-        HashMap<ComponentKey, WidgetItem> allWidgetItems = new HashMap<>();
-        mAllWidgets.stream()
-                .filter(entry -> entry instanceof WidgetsListContentEntry)
-                .forEach(entry -> ((WidgetsListContentEntry) entry).mWidgets
-                        .forEach(widget -> allWidgetItems.put(
-                                new ComponentKey(widget.componentName, widget.user), widget)));
-        return mRecommendedWidgets.stream()
-                .map(recommendedWidget -> allWidgetItems.get(
-                        new ComponentKey(recommendedWidget.getTargetComponent(),
-                                recommendedWidget.user)))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
-
-    /** Returns the recommended widgets mapped by their category. */
-    @NonNull
-    public Map<WidgetRecommendationCategory, List<WidgetItem>> getCategorizedRecommendedWidgets() {
-        Map<ComponentKey, WidgetItem> allWidgetItems = mAllWidgets.stream()
-                .filter(entry -> entry instanceof WidgetsListContentEntry)
-                .flatMap(entry -> entry.mWidgets.stream())
-                .distinct()
-                .collect(Collectors.toMap(
-                        widget -> new ComponentKey(widget.componentName, widget.user),
-                        Function.identity()
-                ));
-        return mRecommendedWidgets.stream()
-                .filter(itemInfo -> itemInfo instanceof PendingAddWidgetInfo
-                        && ((PendingAddWidgetInfo) itemInfo).recommendationCategory != null)
-                .collect(Collectors.groupingBy(
-                        it -> ((PendingAddWidgetInfo) it).recommendationCategory,
-                        Collectors.collectingAndThen(
-                                Collectors.toList(),
-                                list -> list.stream()
-                                        .map(it -> allWidgetItems.get(
-                                                new ComponentKey(it.getTargetComponent(),
-                                                        it.user)))
-                                        .filter(Objects::nonNull)
-                                        .collect(Collectors.toList())
-                        )
-                ));
-    }
-
-    public List<WidgetItem> getWidgetsForPackageUser(PackageUserKey packageUserKey) {
-        return mAllWidgets.stream()
-                .filter(row -> row instanceof WidgetsListContentEntry
-                        && row.mPkgItem.packageName.equals(packageUserKey.mPackageName))
-                .flatMap(row -> ((WidgetsListContentEntry) row).mWidgets.stream())
-                .filter(widget -> packageUserKey.mUser.equals(widget.user))
-                .collect(Collectors.toList());
-    }
-
-    /** Gets the WidgetsListContentEntry for the currently selected header. */
-    public WidgetsListContentEntry getSelectedAppWidgets(PackageUserKey packageUserKey) {
-        return (WidgetsListContentEntry) mAllWidgets.stream()
-                .filter(row -> row instanceof WidgetsListContentEntry
-                        && PackageUserKey.fromPackageItemInfo(row.mPkgItem).equals(packageUserKey))
-                .findAny()
-                .orElse(null);
-    }
-
     public void dump(String prefix, PrintWriter writer) {
         writer.println(prefix + "PopupDataProvider:");
         writer.println(prefix + "\tmPackageUserToDotInfos:" + mPackageUserToDotInfos);
-    }
-
-    public interface PopupDataChangeListener {
-
-        PopupDataChangeListener INSTANCE = new PopupDataChangeListener() { };
-
-        default void onWidgetsBound() { }
-
-        /** A callback to get notified when recommended widgets are bound. */
-        default void onRecommendedWidgetsBound() { }
     }
 }

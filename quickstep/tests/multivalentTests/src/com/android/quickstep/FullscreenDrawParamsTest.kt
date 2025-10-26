@@ -20,21 +20,17 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.FakeInvariantDeviceProfileTest
 import com.android.quickstep.util.TaskCornerRadius
-import com.android.quickstep.views.TaskView.FullscreenDrawParams
 import com.android.systemui.shared.system.QuickStepContract
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.doReturn
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.spy
+import org.mockito.kotlin.mock
 
-/** Test for FullscreenDrawParams class. */
+/** Test for [FullscreenDrawParams] class. */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
-
     private lateinit var params: FullscreenDrawParams
 
     @Before
@@ -46,115 +42,108 @@ class FullscreenDrawParamsTest : FakeInvariantDeviceProfileTest() {
     fun setStartProgress_correctCornerRadiusForTablet() {
         initializeVarsForTablet()
 
-        params.setProgress(
-            /* fullscreenProgress= */ 0f,
-            /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f
-        )
+        params.setProgress(fullscreenProgress = 0f, parentScale = 1.0f, taskViewScale = 1.0f)
 
         val expectedRadius = TaskCornerRadius.get(context)
-        assertThat(params.currentDrawnCornerRadius).isEqualTo(expectedRadius)
+        assertThat(params.currentCornerRadius).isEqualTo(expectedRadius)
     }
 
     @Test
     fun setFullProgress_correctCornerRadiusForTablet() {
         initializeVarsForTablet()
 
-        params.setProgress(
-            /* fullscreenProgress= */ 1.0f,
-            /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f
-        )
+        params.setProgress(fullscreenProgress = 1.0f, parentScale = 1f, taskViewScale = 1f)
 
         val expectedRadius = QuickStepContract.getWindowCornerRadius(context)
-        assertThat(params.currentDrawnCornerRadius).isEqualTo(expectedRadius)
+        assertThat(params.currentCornerRadius).isEqualTo(expectedRadius)
     }
 
     @Test
     fun setStartProgress_correctCornerRadiusForPhone() {
         initializeVarsForPhone()
 
-        params.setProgress(
-            /* fullscreenProgress= */ 0f,
-            /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f
-        )
+        params.setProgress(fullscreenProgress = 0f, parentScale = 1f, taskViewScale = 1f)
 
         val expectedRadius = TaskCornerRadius.get(context)
-        assertThat(params.currentDrawnCornerRadius).isEqualTo(expectedRadius)
+        assertThat(params.currentCornerRadius).isEqualTo(expectedRadius)
     }
 
     @Test
     fun setFullProgress_correctCornerRadiusForPhone() {
         initializeVarsForPhone()
 
-        params.setProgress(
-            /* fullscreenProgress= */ 1.0f,
-            /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f
-        )
+        params.setProgress(fullscreenProgress = 1.0f, parentScale = 1f, taskViewScale = 1f)
 
         val expectedRadius = QuickStepContract.getWindowCornerRadius(context)
-        assertThat(params.currentDrawnCornerRadius).isEqualTo(expectedRadius)
+        assertThat(params.currentCornerRadius).isEqualTo(expectedRadius)
     }
 
     @Test
     fun setStartProgress_correctCornerRadiusForMultiDisplay() {
-        val display1Context = context
-        val display2Context = mock(Context::class.java)
-        val spyParams = spy(params)
+        val display1Context = mock<Context>()
+        val display2Context = mock<Context>()
+        val display1TaskRadius = TASK_CORNER_RADIUS + 1
+        val display2TaskRadius = TASK_CORNER_RADIUS + 2
 
-        val display1TaskRadius = TaskCornerRadius.get(display1Context)
-        val display1WindowRadius = QuickStepContract.getWindowCornerRadius(display1Context)
-        val display2TaskRadius = display1TaskRadius * 2 + 1 // Arbitrarily different.
-        val display2WindowRadius = display1WindowRadius * 2 + 1 // Arbitrarily different.
-        doReturn(display2TaskRadius).`when`(spyParams).computeTaskCornerRadius(display2Context)
-        doReturn(display2WindowRadius).`when`(spyParams).computeWindowCornerRadius(display2Context)
+        val params =
+            FullscreenDrawParams(
+                context,
+                taskCornerRadiusProvider = { context ->
+                    when (context) {
+                        display1Context -> display1TaskRadius
+                        display2Context -> display2TaskRadius
+                        else -> TASK_CORNER_RADIUS
+                    }
+                },
+                windowCornerRadiusProvider = { 0f },
+            )
 
-        spyParams.updateCornerRadius(display1Context)
-        spyParams.setProgress(
-            /* fullscreenProgress= */ 0f,
-            /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f
-        )
-        assertThat(spyParams.currentDrawnCornerRadius).isEqualTo(display1TaskRadius)
+        params.setProgress(fullscreenProgress = 0f, parentScale = 1f, taskViewScale = 1f)
+        assertThat(params.currentCornerRadius).isEqualTo(TASK_CORNER_RADIUS)
 
-        spyParams.updateCornerRadius(display2Context)
-        spyParams.setProgress(
-            /* fullscreenProgress= */ 0f,
-            /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f
-        )
-        assertThat(spyParams.currentDrawnCornerRadius).isEqualTo(display2TaskRadius)
+        params.updateCornerRadius(display1Context)
+        params.setProgress(fullscreenProgress = 0f, parentScale = 1f, taskViewScale = 1f)
+        assertThat(params.currentCornerRadius).isEqualTo(display1TaskRadius)
+
+        params.updateCornerRadius(display2Context)
+        params.setProgress(fullscreenProgress = 0f, parentScale = 1f, taskViewScale = 1f)
+        assertThat(params.currentCornerRadius).isEqualTo(display2TaskRadius)
     }
 
     @Test
     fun setFullProgress_correctCornerRadiusForMultiDisplay() {
-        val display1Context = context
-        val display2Context = mock(Context::class.java)
-        val spyParams = spy(params)
+        val display1Context = mock<Context>()
+        val display2Context = mock<Context>()
+        val display1WindowRadius = WINDOW_CORNER_RADIUS + 1
+        val display2WindowRadius = WINDOW_CORNER_RADIUS + 2
 
-        val display1TaskRadius = TaskCornerRadius.get(display1Context)
-        val display1WindowRadius = QuickStepContract.getWindowCornerRadius(display1Context)
-        val display2TaskRadius = display1TaskRadius * 2 + 1 // Arbitrarily different.
-        val display2WindowRadius = display1WindowRadius * 2 + 1 // Arbitrarily different.
-        doReturn(display2TaskRadius).`when`(spyParams).computeTaskCornerRadius(display2Context)
-        doReturn(display2WindowRadius).`when`(spyParams).computeWindowCornerRadius(display2Context)
+        val params =
+            FullscreenDrawParams(
+                context,
+                taskCornerRadiusProvider = { 0f },
+                windowCornerRadiusProvider = { context ->
+                    when (context) {
+                        display1Context -> display1WindowRadius
+                        display2Context -> display2WindowRadius
+                        else -> WINDOW_CORNER_RADIUS
+                    }
+                },
+            )
 
-        spyParams.updateCornerRadius(display1Context)
-        spyParams.setProgress(
-            /* fullscreenProgress= */ 1.0f,
-            /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f
-        )
-        assertThat(spyParams.currentDrawnCornerRadius).isEqualTo(display1WindowRadius)
+        params.setProgress(fullscreenProgress = 1f, parentScale = 1f, taskViewScale = 1f)
+        assertThat(params.currentCornerRadius).isEqualTo(WINDOW_CORNER_RADIUS)
 
-        spyParams.updateCornerRadius(display2Context)
-        spyParams.setProgress(
-            /* fullscreenProgress= */ 1.0f,
-            /* parentScale= */ 1.0f,
-            /* taskViewScale= */ 1.0f,
-        )
-        assertThat(spyParams.currentDrawnCornerRadius).isEqualTo(display2WindowRadius)
+        params.updateCornerRadius(display1Context)
+        params.setProgress(fullscreenProgress = 1f, parentScale = 1f, taskViewScale = 1f)
+        assertThat(params.currentCornerRadius).isEqualTo(display1WindowRadius)
+
+        params.updateCornerRadius(display2Context)
+        params.setProgress(fullscreenProgress = 1f, parentScale = 1f, taskViewScale = 1f)
+        assertThat(params.currentCornerRadius).isEqualTo(display2WindowRadius)
+    }
+
+    companion object {
+        const val TASK_CORNER_RADIUS = 56f
+        const val WINDOW_CORNER_RADIUS = 32f
     }
 }

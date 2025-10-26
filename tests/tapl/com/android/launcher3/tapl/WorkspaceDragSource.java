@@ -15,10 +15,7 @@
  */
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
-
 import android.graphics.Point;
-import android.util.Log;
 
 import java.util.function.Supplier;
 
@@ -79,9 +76,6 @@ interface WorkspaceDragSource {
              LauncherInstrumentation.Closable c = launcher.addContextLayer(
                      String.format("want to drag the icon to cell(%d, %d)", cellX, cellY))) {
             final Supplier<Point> dest = () -> Workspace.getCellCenter(launcher, cellX, cellY);
-            Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
-                    "WorkspaceDragSource.dragToWorkspace: dragging icon to workspace | dest: "
-                            + dest.get());
             Workspace.dragIconToWorkspace(
                     launcher,
                     launchable,

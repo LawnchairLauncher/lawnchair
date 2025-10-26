@@ -22,11 +22,13 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Sancın"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Sərbəst rejim"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"Masaüstü"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"Xarici displeyə köçürün"</string>
+    <string name="recent_task_option_close" msgid="942942499021777264">"Bağlayın"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"Masaüstü"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Son elementlər yoxdur"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Tətbiq istifadə ayarları"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Hamısını silin"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Son tətbiqlər"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"Tapşırıq bağlanıb"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 dəq"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Bu gün <xliff:g id="TIME">%1$s</xliff:g> qaldı"</string>
@@ -45,6 +47,7 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Tətbiq təklifləri aktivdir"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Tətbiq təklifləri deaktivdir"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Proqnozlaşdırılan tətbiq: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"Jest naviqasiyası üçün öyrədici"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Cihazı fırladın"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Jest naviqasiyası təlimatını tamamlamaq üçün cihazı fırladın"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Ən sağ və ya sol kənardan sürüşdürün"</string>
@@ -56,7 +59,6 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri qayıtma jestinin həssaslığını dəyişmək üçün Ayarlara keçin"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri qayıtmaq üçün sürüşdürün"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Sonuncu ekrana qayıtmaq üçün ekranın sol, yaxud sağ kənarından mərkəzinə doğru sürüşdürün."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Sonuncu ekrana qayıtmaq üçün 2 barmaqla ekranın sol, yaxud sağ kənarından mərkəzinə doğru sürüşdürün."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Geri qayıdın"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Sol və ya sağ kənardan ekranın ortasına sürüşdürün"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Ekranın aşağı kənarından yuxarı sürüşdürün"</string>
@@ -66,8 +68,7 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Əsas ekrana keçid jestini tamamladınız"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Əsas səhifəyə keçmək üçün sürüşdürün"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Ekranın aşağısından yuxarısına sürüşdürün. Bu jest həmişə Əsas səhifəyə aparır."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 barmaqla ekranın aşağısından yuxarısına sürüşdürün. Bu jest həmişə Əsas səhifəyə aparır."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Əsas səhifəyə qayıdın"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Əsas səhifəyə keçin"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Ekranın aşağısından yuxarı sürüşdürün"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Əla!"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Ekranın aşağı kənarından yuxarı sürüşdürün"</string>
@@ -77,7 +78,6 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Tətbiqlər arasında keçid jestini tamamladınız"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Tətbiqi keçirmək üçün sürüşdürün"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Tətbiqlər arasında keçid üçün ekranın aşağısından yuxarı doğru sürüşdürüb saxlayın, sonra buraxın."</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Tətbiqlər arasında keçid üçün 2 barmaqla ekranın aşağısından yuxarı doğru sürüşdürüb saxlayın, sonra buraxın."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Tətbiqləri dəyişin"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Ekranın aşağısından yuxarı sürüşdürüb saxlayın, sonra buraxın"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Afərin!"</string>
@@ -99,7 +99,7 @@
     <string name="action_save_app_pair" msgid="5974823919237645229">"Tətbiq cütünü saxla"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Bölünmüş ekran üçün başqa tətbiqə toxunun"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Bölünmüş ekrandan istifadə üçün başqa tətbiq seçin"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"Ləğv edin"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"Ləğv edin"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Bölünmüş ekran seçimindən çıxın"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Bölünmüş ekrandan istifadə üçün başqa tətbiq seçin"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Bu əməliyyata tətbiq və ya təşkilatınız tərəfindən icazə verilmir"</string>
@@ -130,18 +130,37 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Sürətli Ayarlar"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Tapşırıq paneli"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"İşləmə paneli göstərilir"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"İşləmə paneli gizlədilib"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"İşləmə paneli, yumrucuqlar solda göstərilir"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"İşləmə paneli, yumrucuqlar sağda göstərilir"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Naviqasiya paneli"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"İşləmə paneli həmişə görünsün"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Naviqasiya rejimini dəyişin"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"İşləmə paneli ayırıcısı"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="7960342079198820179">"Tapşırıqlar Paneli üzrə əlavə menyu"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Yuxarı/sola köçürün"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Aşağı/sağa köçürün"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Daha # tətbiqi göstərin.}other{Daha # tətbiqi göstərin.}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# masaüstü tətbiqini göstərin.}other{# masaüstü tətbiqini göstərin.}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Tətbiqi yumrucuq kimi açın"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"Son tətbiqlər"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"Son tətbiq siyahısı"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{əlavə tətbiq}other{əlavə tətbiq}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"Masaüstü"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> və <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, element <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g>/<xliff:g id="TOTAL_TASKS">%3$d</xliff:g>"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"Sola sürüşdürün"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"Sağa sürüşdürün"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Yumrucuq"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"Kənara çıxma"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>, <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> və daha <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> yumrucuq"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"Sola köçürün"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"Sağa köçürün"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"Hamısını kənarlaşdırın"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"genişləndirin: <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"yığcamlaşdırın: <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"Dairəyə alaraq axtarın"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"Tətbiq ikonası"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"Tətbiq başlığı"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"Qapatma düyməsi"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"İşləmə panelinə bərkidin"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"İşləmə panelindən çıxarın"</string>
 </resources>

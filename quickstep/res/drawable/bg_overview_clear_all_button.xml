@@ -15,13 +15,12 @@
      limitations under the License.
 -->
 <ripple android:color="?android:attr/colorControlHighlight"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle"
             android:tint="?colorButtonNormal">
-            <corners android:radius="24dp" />
-            <solid android:color="?attr/materialColorSurfaceBright"/>
+            <corners android:radius="@dimen/recents_clear_all_outline_radius" />
+            <solid android:color="@color/materialColorSurfaceBright"/>
         </shape>
     </item>
 </ripple>

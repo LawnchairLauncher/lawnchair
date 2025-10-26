@@ -1,0 +1,12 @@
+package: "com.android.launcher3"
+container: "system_ext"
+
+flag {
+    name: "remove_exclude_from_screen_magnification_flag_usage"
+    namespace: "accessibility"
+    description: "Remove the WindowManager PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION flag usage in Launcher"
+    bug: "369019568"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}

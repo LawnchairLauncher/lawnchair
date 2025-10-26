@@ -20,7 +20,7 @@
     <string name="notification_channel_tv_pip" msgid="2576686079160402435">"ಚಿತ್ರದಲ್ಲಿ ಚಿತ್ರ"</string>
     <string name="pip_notification_unknown_title" msgid="2729870284350772311">"(ಶೀರ್ಷಿಕೆ ರಹಿತ ಕಾರ್ಯಕ್ರಮ)"</string>
     <string name="pip_close" msgid="2955969519031223530">"ಮುಚ್ಚಿರಿ"</string>
-    <string name="pip_fullscreen" msgid="7278047353591302554">"ಪೂರ್ಣ ಪರದೆ"</string>
+    <string name="pip_fullscreen" msgid="7278047353591302554">"ಫುಲ್ ಸ್ಕ್ರೀನ್"</string>
     <string name="pip_move" msgid="158770205886688553">"ಸರಿಸಿ"</string>
     <string name="pip_expand" msgid="1051966011679297308">"ವಿಸ್ತೃತಗೊಳಿಸಿ"</string>
     <string name="pip_collapse" msgid="3903295106641385962">"ಕುಗ್ಗಿಸಿ"</string>

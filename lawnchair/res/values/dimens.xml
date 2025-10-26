@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2021, Lawnchair
+  ~ Copyright 2025, Lawnchair
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -92,7 +92,7 @@
     <dimen name="page_indicator_dot_margin">3dp</dimen>
     <dimen name="page_indicator_dot_size">6dp</dimen>
     <dimen name="page_indicator_padding_start">2dp</dimen>
-    <dimen name="page_indicator_padding_top_bottom">8dp</dimen>
+    <dimen name="page_indicator_padding_top_bottom">10dp</dimen>
     <dimen name="page_indicator_width">16dp</dimen>
     <dimen name="smartspace_icon_shadow">1dp</dimen>
     <dimen name="status_bar_header_height_keyguard">40dp</dimen>

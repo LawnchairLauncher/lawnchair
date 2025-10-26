@@ -20,7 +20,7 @@ import android.os.Looper
 import android.util.ArrayMap
 import androidx.dynamicanimation.animation.FloatPropertyCompat
 import com.android.wm.shell.shared.animation.PhysicsAnimatorTestUtils.prepareForTest
-import java.util.*
+import java.util.ArrayDeque
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -74,13 +74,16 @@ object PhysicsAnimatorTestUtils {
 
     @JvmStatic
     fun tearDown() {
-        val latch = CountDownLatch(1)
-        animationThreadHandler.post {
+        if (Looper.myLooper() == animationThreadHandler.looper) {
             animatorTestHelpers.keys.forEach { it.cancel() }
-            latch.countDown()
+        } else {
+            val latch = CountDownLatch(1)
+            animationThreadHandler.post {
+                animatorTestHelpers.keys.forEach { it.cancel() }
+                latch.countDown()
+            }
+            latch.await(5, TimeUnit.SECONDS)
         }
-
-        latch.await()
 
         animatorTestHelpers.clear()
         animators.clear()
@@ -166,6 +169,16 @@ object PhysicsAnimatorTestUtils {
                 // properties.
             }
         }
+    }
+
+    /** Whether any animation is currently running. */
+    @JvmStatic
+    fun isAnyAnimationRunning(): Boolean {
+        for (target in allAnimatedObjects) {
+            val animator = PhysicsAnimator.getInstance(target)
+            if (animator.isRunning()) return true
+        }
+        return false
     }
 
     /**
@@ -338,8 +351,9 @@ object PhysicsAnimatorTestUtils {
      * Returns all of the values that have ever been reported to update listeners, per property.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getAnimationUpdateFrames(animator: PhysicsAnimator<T>):
-            UpdateFramesPerProperty<T> {
+    fun <T : Any> getAnimationUpdateFrames(
+        animator: PhysicsAnimator<T>
+    ): UpdateFramesPerProperty<T> {
         return animatorTestHelpers[animator]?.getUpdates() as UpdateFramesPerProperty<T>
     }
 

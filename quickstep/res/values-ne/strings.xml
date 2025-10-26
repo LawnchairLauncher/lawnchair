@@ -22,11 +22,13 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन गर्नुहोस्"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"फ्रिफर्म"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"डेस्कटप"</string>
-    <string name="recents_empty_message" msgid="7040467240571714191">"हालसालैको कुनै पनि वस्तु छैन"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"सारेर बाह्य डिस्प्लेमा लैजानुहोस्"</string>
+    <string name="recent_task_option_close" msgid="942942499021777264">"बन्द गर्नुहोस्"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"डेस्कटप"</string>
+    <string name="recents_empty_message" msgid="7040467240571714191">"हालसालैको कुनै पनि सामग्री छैन"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"एपको उपयोगका सेटिङहरू"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सबै मेटाउनुहोस्"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"हालसालैका एपहरू"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"कार्य बन्द गरियो"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; १ मिनेट"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"आज: <xliff:g id="TIME">%1$s</xliff:g> बाँकी"</string>
@@ -45,28 +47,27 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"सिफारिस गरिएका एप देखाउने सुविधा अन गरिएको छ"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"सिफारिस गरिएका एपहरू देखाउने सुविधा असक्षम पारिएको छ"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"पूर्वानुमान गरिएको एप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"जेस्चर नेभिगेसनसम्बन्धी ट्युटोरियल"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"आफ्नो डिभाइस रोटेट गर्नुहोस्"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"जेस्चर नेभिगेसनको ट्युटोरियल पूरा गर्न कृपया आफ्नो डिभाइस रोटेट गर्नुहोस्"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"स्क्रिनको सबैभन्दा दायाँ किनारा वा सबैभन्दा बायाँ किनाराबाट स्वाइप गर्नुहोस्"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"स्क्रिनको दायाँ वा बायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस् अनि औँला उठाउनुहोस्"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"तपाईंले स्क्रिनको दायाँ किनाराबाट स्वाइप गरेर अघिल्लो स्क्रिनमा फर्कने तरिका सिक्नुभयो। अब एउटा एपबाट अर्को एपमा जाने तरिका सिक्नुहोस्।"</string>
-    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"तपाईंले \'पछाडि जानुहोस्\' नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो। अब एउटा एपबाट अर्को एपमा जाने तरिका सिक्नुहोस्।"</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"तपाईंले \"पछाडि जानुहोस्\" नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो"</string>
+    <string name="back_gesture_feedback_complete_with_follow_up" msgid="8653374779579748392">"तपाईंले जेस्चर प्रयोग गरी पछाडि जाने तरिका सिक्नुभएको छ। अब एउटा एपबाट अर्को एपमा जाने तरिका सिक्नुहोस्।"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"तपाईंले जेस्चर प्रयोग गरी पछाडि जाने तरिका सिक्नुभएको छ"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"स्क्रिनको फेदको धेरै नजिकसम्म स्वाइप नगर्नुहोस्"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'पछाडि\' नामक इसाराको संवेदनशीलता बदल्न सेटिङमा जानुहोस्"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"पछाडि जान स्वाइप गर्नुहोस्"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"यसअघिको स्क्रिनमा फर्कन स्क्रिनको बायाँ वा दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्।"</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"तपाईं यसअघि जुन स्क्रिनमा हुनुहुन्थ्यो त्यही स्क्रिनमा फर्कन चाहनुहुन्छ भने २ वटा औँला प्रयोग गरी स्क्रिनको बायाँ वा दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्।"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"पछाडि जाने तरिका"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"स्क्रिनको बायाँ वा दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"औँला उठाउनुअघि नरोकिनुहोस्"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"सीधै माथितिर स्वाइप गर्नुहोस्"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"तपाईंले \"होम स्क्रिनमा जानुहोस्\" नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो। अब पछाडि जाने तरिका सिक्नुहोस्।"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"तपाईंले जेस्चर प्रयोग गरी होम स्क्रिनमा जाने तरिका सिक्नुभएको छ। अब पछाडि जाने तरिका सिक्नुहोस्।"</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"तपाईंले \"होम स्क्रिनमा जानुहोस्\" नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"होम स्क्रिनमा जान स्वाइप गर्नुहोस्"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्। यो इसारा प्रयोग गर्दा सधैँ होम स्क्रिन खुल्छ।"</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"२ वटा औँला प्रयोग गरी स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्। यो जेस्चर प्रयोग गर्दा सधैँ होम स्क्रिन खुल्छ।"</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"होम स्क्रिनमा जाने तरिका"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"अद्भुत!"</string>
@@ -77,7 +78,6 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"तपाईंले \"एउटा एपबाट अर्को एपमा जानुहोस्\" नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एउटा एपबाट अर्को एपमा जान स्वाइप गर्नुहोस्"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"एउटा एपबाट अर्कोमा जान स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"एउटा एपबाट अर्कोमा जान २ वटा औँला प्रयोग गरी स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"एउटा एपबाट अर्को एपमा जाने तरिका"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"स्याबास!"</string>
@@ -99,7 +99,7 @@
     <string name="action_save_app_pair" msgid="5974823919237645229">"एपको पेयर सेभ गर्नुहोस्"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"स्प्लिटस्क्रिन प्रयोग गर्न अर्को एपमा ट्याप गर्नु…"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"स्प्लिट स्क्रिन प्रयोग गर्न अर्को एप रोज्नुहोस्"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"रद्द गर्नुहोस्"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"रद्द गर्नुहोस्"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"स्प्लिट स्क्रिन मोडबाट बाहिरिनुहोस्"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"स्प्लिट स्क्रिन प्रयोग गर्न अर्को एप रोज्नुहोस्"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"यो एप वा तपाईंको सङ्गठनले यो कारबाही गर्ने अनुमति दिँदैन"</string>
@@ -126,22 +126,41 @@
     <string name="taskbar_button_back" msgid="8558862226461164514">"पछाडि जानुहोस्"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME स्विचर"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"हालसालैका बटनहरू"</string>
-    <string name="taskbar_button_notifications" msgid="7471740351507357318">"सूचनाहरू"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"नोटिफिकेसनहरू"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"द्रुत सेटिङ"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"टास्कबार"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"टास्कबार देखाइएको छ"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"टास्कबार लुकाइएको छ"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"टास्कबार र बबल बार बायाँतिर देखाइएका छन्"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"टास्कबार र बबल बार दायाँतिर देखाइएका छन्"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"नेभिगेसन बार"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"टास्कबार सधैँ देखाउनुहोस्"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"नेभिगेसन मोड बदल्नुहोस्"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"टास्कबार डिभाइडर"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="7960342079198820179">"टास्कबार ओभरफ्लो"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"सिरान/बायाँतिर सार्नुहोस्"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"फेद/दायाँतिर सार्नुहोस्"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{थप # एप देखाउनुहोस्।}other{थप # वटा एप देखाउनुहोस्।}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# डेस्कटप एप देखाउनुहोस्।}other{# वटा डेस्कटप एप देखाउनुहोस्।}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"एपलाई बबलका रूपमा खोल्नुहोस्"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"हालसालै चलाइएका एपहरू"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"हालसालै चलाइएको एपको सूची"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{थप एप}other{थप एपहरू}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"डेस्कटप"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> र <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="TOTAL_TASKS">%3$d</xliff:g> मध्ये <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g> औँ वस्तु"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"बायाँतिर स्क्रोल गर्नुहोस्"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"दायाँतिर स्क्रोल गर्नुहोस्"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"बबल"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"ओभरफ्लो"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="APP_NAME">%2$s</xliff:g> मा देखाइएका <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> र थप <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g>"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"बायाँतिर सार्नुहोस्"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"दायाँतिर सार्नुहोस्"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"सबै हटाउनुहोस्"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g> एक्स्पान्ड गर्नुहोस्"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"<xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g> कोल्याप्स गर्नुहोस्"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"खोज्न सर्कल बनाउनुहोस्"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"एप जनाउने आइकन"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"एपको शीर्षक"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"\"बन्द गर्नुहोस्\" बटन"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"टास्कबारमा पिन गर्नुहोस्"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"टास्कबारबाट पिन गर्नुहोस्"</string>
 </resources>

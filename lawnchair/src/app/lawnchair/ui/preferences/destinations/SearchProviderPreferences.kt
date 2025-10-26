@@ -4,6 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -201,6 +203,7 @@ private fun Options(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SponsorDisclaimer(
     sponsor: String,
@@ -209,7 +212,10 @@ private fun SponsorDisclaimer(
 ) {
     ModalBottomSheetContent(
         buttons = {
-            OutlinedButton(onClick = onAcknowledge) {
+            OutlinedButton(
+                onClick = onAcknowledge,
+                shapes = ButtonDefaults.shapes(),
+            ) {
                 Text(text = stringResource(id = android.R.string.ok))
             }
         },

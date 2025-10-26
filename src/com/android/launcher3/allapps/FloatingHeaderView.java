@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.allapps.FloatingHeaderRow.NO_ROWS;
+
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Point;
@@ -30,10 +32,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PluginManagerWrapper;
 import com.android.launcher3.views.ActivityContext;
 import com.android.systemui.plugins.AllAppsRow;
@@ -107,14 +109,16 @@ public class FloatingHeaderView extends LinearLayout implements
     private boolean mFloatingRowsCollapsed;
     // Total height of all current floating rows. Collapsed rows == 0 height.
     private int mFloatingRowsHeight;
+    // Offset of search bar. Adds to the floating view height when multi-line is supported.
+    private int mSearchBarOffset = 0;
 
     // This is initialized once during inflation and stays constant after that. Fixed views
     // cannot be added or removed dynamically.
-    private FloatingHeaderRow[] mFixedRows = FloatingHeaderRow.NO_ROWS;
+    private FloatingHeaderRow[] mFixedRows = NO_ROWS;
 
     // Array of all fixed rows and plugin rows. This is initialized every time a plugin is
     // enabled or disabled, and represent the current set of all rows.
-    private FloatingHeaderRow[] mAllRows = FloatingHeaderRow.NO_ROWS;
+    private FloatingHeaderRow[] mAllRows = NO_ROWS;
 
     private final PreferenceManager2 pref2;
 
@@ -184,6 +188,10 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public void onPluginConnected(AllAppsRow allAppsRowPlugin, Context context) {
+        if (mPluginRows.containsKey(allAppsRowPlugin)) {
+            // Plugin has already been connected
+            return;
+        }
         PluginHeaderRow headerRow = new PluginHeaderRow(allAppsRowPlugin, this);
         addView(headerRow.mView, indexOfChild(mTabLayout));
         mPluginRows.put(allAppsRowPlugin, headerRow);
@@ -204,9 +212,20 @@ public class FloatingHeaderView extends LinearLayout implements
         }
     }
 
+    /**
+     * Offset floating rows height by search bar
+     */
+    void updateSearchBarOffset(int offset) {
+        mSearchBarOffset = offset;
+        onHeightUpdated();
+    }
+
     @Override
     public void onPluginDisconnected(AllAppsRow plugin) {
         PluginHeaderRow row = mPluginRows.get(plugin);
+        if (row == null) {
+            return;
+        }
         removeView(row.mView);
         mPluginRows.remove(plugin);
         recreateAllRowsArray();
@@ -215,15 +234,12 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public View getFocusedChild() {
-        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-            for (FloatingHeaderRow row : mAllRows) {
-                if (row.hasVisibleContent() && row.isVisible()) {
-                    return row.getFocusedChild();
-                }
+        for (FloatingHeaderRow row : mAllRows) {
+            if (row.hasVisibleContent() && row.isVisible()) {
+                return row.getFocusedChild();
             }
-            return null;
         }
-        return super.getFocusedChild();
+        return null;
     }
 
     void setup(AllAppsRecyclerView mainRV, AllAppsRecyclerView workRV, SearchRecyclerView searchRV,
@@ -264,9 +280,18 @@ public class FloatingHeaderView extends LinearLayout implements
         mTabLayout.setVisibility(mTabsHidden ? GONE : visibility);
     }
 
+    /** Returns whether search bar has multi-line support, and is currently in multi-line state. */
+    private boolean isSearchBarMultiline() {
+        return Flags.multilineSearchBar() && mSearchBarOffset > 0;
+    }
+
     private void updateExpectedHeight() {
         updateFloatingRowsHeight();
         mMaxTranslation = 0;
+        boolean shouldAddSearchBarHeight = isSearchBarMultiline() && !Flags.floatingSearchBar();
+        if (shouldAddSearchBarHeight) {
+            mMaxTranslation += mSearchBarOffset;
+        }
         if (mFloatingRowsCollapsed) {
             return;
         }

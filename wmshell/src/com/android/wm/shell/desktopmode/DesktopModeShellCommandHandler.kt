@@ -16,7 +16,7 @@
 
 package com.android.wm.shell.desktopmode
 
-import com.android.wm.shell.common.desktopmode.DesktopModeTransitionSource.UNKNOWN
+import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource.UNKNOWN
 import com.android.wm.shell.sysui.ShellCommandHandler
 import java.io.PrintWriter
 

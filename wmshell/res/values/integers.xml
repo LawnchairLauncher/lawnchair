@@ -22,4 +22,16 @@
     <integer name="bubbles_overflow_columns">4</integer>
     <!-- Maximum number of bubbles we allow in overflow before we dismiss the oldest one. -->
     <integer name="bubbles_max_overflow">16</integer>
+    <!-- App Handle Education - Minimum number of times an app should have been launched, in order
+         to be eligible to show education in it -->
+    <integer name="desktop_windowing_education_min_app_launch_count">3</integer>
+    <!-- App Handle Education - Interval at which app usage stats should be queried and updated in
+         cache periodically -->
+    <integer name="desktop_windowing_education_app_usage_cache_interval_seconds">86400</integer>
+    <!-- App Handle Education - Time interval in seconds for which we'll analyze app usage
+         stats to determine if minimum usage requirements are met.  -->
+    <integer name="desktop_windowing_education_app_launch_interval_seconds">2592000</integer>
+    <!-- App Handle Education - Required time passed in seconds since device has been setup
+         in order to be eligible to show education -->
+    <integer name="desktop_windowing_education_required_time_since_setup_seconds">604800</integer>
 </resources>

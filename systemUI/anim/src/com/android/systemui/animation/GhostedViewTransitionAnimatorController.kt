@@ -36,6 +36,7 @@ import android.view.ViewGroupOverlay
 import android.widget.FrameLayout
 import com.android.internal.jank.Cuj.CujType
 import com.android.internal.jank.InteractionJankMonitor
+import com.android.systemui.Flags
 import java.util.LinkedList
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -58,7 +59,7 @@ open class GhostedViewTransitionAnimatorController
 @JvmOverloads
 constructor(
     /** The view that will be ghosted and from which the background will be extracted. */
-    private val ghostedView: View,
+    transitioningView: View,
 
     /** The [CujType] associated to this launch animation. */
     private val launchCujType: Int? = null,
@@ -67,13 +68,32 @@ constructor(
 
     /** The [CujType] associated to this return animation. */
     private val returnCujType: Int? = null,
+
+    /**
+     * Whether this controller should be invalidated after its first use, and whenever [ghostedView]
+     * is detached.
+     */
+    private val isEphemeral: Boolean = false,
     private var interactionJankMonitor: InteractionJankMonitor =
         InteractionJankMonitor.getInstance(),
+
+    /** [ViewTransitionRegistry] to store the mapping of transitioning view and its token */
+    private val transitionRegistry: IViewTransitionRegistry? =
+        if (Flags.decoupleViewControllerInAnimlib()) {
+            ViewTransitionRegistry.instance
+        } else {
+            null
+        },
 ) : ActivityTransitionAnimator.Controller {
     override val isLaunching: Boolean = true
 
     /** The container to which we will add the ghost view and expanding background. */
-    override var transitionContainer = ghostedView.rootView as ViewGroup
+    override var transitionContainer: ViewGroup
+        get() = ghostedView.rootView as ViewGroup
+        set(_) {
+            // empty, should never be set to avoid memory leak
+        }
+
     private val transitionContainerOverlay: ViewGroupOverlay
         get() = transitionContainer.overlay
 
@@ -119,9 +139,46 @@ constructor(
                 returnCujType
             }
 
+    /**
+     * Used to automatically clean up the internal state once [ghostedView] is detached from the
+     * hierarchy.
+     */
+    private val detachListener =
+        object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) {}
+
+            override fun onViewDetachedFromWindow(v: View) {
+                onDispose()
+            }
+        }
+
+    /** [ViewTransitionToken] to be used for storing transitioning view in [transitionRegistry] */
+    private val transitionToken =
+        if (Flags.decoupleViewControllerInAnimlib()) {
+            transitionRegistry?.register(transitioningView)
+        } else {
+            null
+        }
+
+    /** The view that will be ghosted and from which the background will be extracted */
+    private val ghostedView: View
+        get() =
+            if (Flags.decoupleViewControllerInAnimlib()) {
+                transitionToken?.let { token -> transitionRegistry?.getView(token) }
+            } else {
+                _ghostedView
+            }!!
+
+    private val _ghostedView =
+        if (Flags.decoupleViewControllerInAnimlib()) {
+            null
+        } else {
+            transitioningView
+        }
+
     init {
         // Make sure the View we launch from implements LaunchableView to avoid visibility issues.
-        if (ghostedView !is LaunchableView) {
+        if (transitioningView !is LaunchableView) {
             throw IllegalArgumentException(
                 "A GhostedViewLaunchAnimatorController was created from a View that does not " +
                     "implement LaunchableView. This can lead to subtle bugs where the visibility " +
@@ -155,6 +212,17 @@ constructor(
         }
 
         background = findBackground(ghostedView)
+
+        if (TransitionAnimator.returnAnimationsEnabled() && isEphemeral) {
+            ghostedView.addOnAttachStateChangeListener(detachListener)
+        }
+    }
+
+    override fun onDispose() {
+        if (TransitionAnimator.returnAnimationsEnabled()) {
+            ghostedView.removeOnAttachStateChangeListener(detachListener)
+        }
+        transitionToken?.let { token -> transitionRegistry?.unregister(token) }
     }
 
     /**
@@ -164,7 +232,7 @@ constructor(
     protected open fun setBackgroundCornerRadius(
         background: Drawable,
         topCornerRadius: Float,
-        bottomCornerRadius: Float
+        bottomCornerRadius: Float,
     ) {
         // By default, we rely on WrappedDrawable to set/restore the background radii before/after
         // each draw.
@@ -195,7 +263,7 @@ constructor(
         val state =
             TransitionAnimator.State(
                 topCornerRadius = getCurrentTopCornerRadius(),
-                bottomCornerRadius = getCurrentBottomCornerRadius()
+                bottomCornerRadius = getCurrentBottomCornerRadius(),
             )
         fillGhostedViewState(state)
         return state
@@ -208,7 +276,7 @@ constructor(
         val insets = backgroundInsets
         val boundCorrections: Rect =
             if (ghostedView is LaunchableView) {
-                ghostedView.getPaddingForLaunchAnimation()
+                (ghostedView as LaunchableView).getPaddingForLaunchAnimation()
             } else {
                 Rect()
             }
@@ -245,9 +313,17 @@ constructor(
         // visibility that is saved by `setShouldBlockVisibilityChanges()` for a later restoration.
         (ghostedView as? LaunchableView)?.setShouldBlockVisibilityChanges(true)
 
-        // Create a ghost of the view that will be moving and fading out. This allows to fade out
-        // the content before fading out the background.
-        ghostView = GhostView.addGhost(ghostedView, transitionContainer)
+        try {
+            // Create a ghost of the view that will be moving and fading out. This allows to fade
+            // out the content before fading out the background.
+            ghostView = GhostView.addGhost(ghostedView, transitionContainer)
+        } catch (e: Exception) {
+            // It is not 100% clear what conditions cause this exception to happen in practice, and
+            // we could never reproduce it, but it does show up extremely rarely. We already handle
+            // the scenario where ghostView is null, so we just avoid crashing and log the error.
+            // See b/315858472 for an investigation of the issue.
+            Log.e(TAG, "Failed to create ghostView", e)
+        }
 
         // [GhostView.addGhost], the result of which is our [ghostView], creates a [GhostView], and
         // adds it first to a [FrameLayout] container. It then adds _that_ container to an
@@ -269,7 +345,7 @@ constructor(
     override fun onTransitionAnimationProgress(
         state: TransitionAnimator.State,
         progress: Float,
-        linearProgress: Float
+        linearProgress: Float,
     ) {
         val ghostView = this.ghostView ?: return
         val backgroundView = this.backgroundView!!
@@ -317,11 +393,11 @@ constructor(
             scale,
             scale,
             ghostedViewState.centerX - transitionContainerLocation[0],
-            ghostedViewState.centerY - transitionContainerLocation[1]
+            ghostedViewState.centerY - transitionContainerLocation[1],
         )
         ghostViewMatrix.postTranslate(
             (leftChange + rightChange) / 2f,
-            (topChange + bottomChange) / 2f
+            (topChange + bottomChange) / 2f,
         )
         ghostView.animationMatrix = ghostViewMatrix
 
@@ -358,8 +434,8 @@ constructor(
 
         if (ghostedView is LaunchableView) {
             // Restore the ghosted view visibility.
-            ghostedView.setShouldBlockVisibilityChanges(false)
-            ghostedView.onActivityLaunchAnimationEnd()
+            (ghostedView as LaunchableView).setShouldBlockVisibilityChanges(false)
+            (ghostedView as LaunchableView).onActivityLaunchAnimationEnd()
         } else {
             // Make the ghosted view visible. We ensure that the view is considered VISIBLE by
             // accessibility by first making it INVISIBLE then VISIBLE (see b/204944038#comment17
@@ -367,6 +443,10 @@ constructor(
             ghostedView.visibility = View.INVISIBLE
             ghostedView.visibility = View.VISIBLE
             ghostedView.invalidate()
+        }
+
+        if (isEphemeral || Flags.decoupleViewControllerInAnimlib()) {
+            onDispose()
         }
     }
 
@@ -462,7 +542,7 @@ constructor(
         private fun updateRadii(
             radii: FloatArray,
             topCornerRadius: Float,
-            bottomCornerRadius: Float
+            bottomCornerRadius: Float,
         ) {
             radii[0] = topCornerRadius
             radii[1] = topCornerRadius

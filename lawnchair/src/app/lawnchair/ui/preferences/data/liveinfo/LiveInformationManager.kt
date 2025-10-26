@@ -8,13 +8,19 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.ui.preferences.data.liveinfo.model.AnnouncementId
 import app.lawnchair.ui.preferences.data.liveinfo.model.LiveInformation
-import app.lawnchair.util.MainThreadInitializedObject
 import com.android.launcher3.R
+import com.android.launcher3.dagger.ApplicationContext
+import com.android.launcher3.dagger.LauncherAppComponent
+import com.android.launcher3.dagger.LauncherAppSingleton
+import com.android.launcher3.util.DaggerSingletonObject
 import com.patrykmichalik.opto.core.PreferenceManager
-import kotlinx.serialization.encodeToString
+import javax.inject.Inject
 import kotlinx.serialization.json.Json
 
-class LiveInformationManager private constructor(context: Context) : PreferenceManager {
+@LauncherAppSingleton
+class LiveInformationManager@Inject constructor(
+    @ApplicationContext private val context: Context,
+) : PreferenceManager {
 
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
@@ -22,7 +28,7 @@ class LiveInformationManager private constructor(context: Context) : PreferenceM
         )
 
         @JvmField
-        val INSTANCE = MainThreadInitializedObject(::LiveInformationManager)
+        val INSTANCE = DaggerSingletonObject(LauncherAppComponent::getLiveInformationManager)
 
         @JvmStatic
         fun getInstance(context: Context) = INSTANCE.get(context)!!

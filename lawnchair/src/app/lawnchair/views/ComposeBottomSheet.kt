@@ -146,7 +146,7 @@ class ComposeBottomSheet<T>(context: Context) : AbstractSlideInView<T>(context, 
 
     private fun setSystemUiFlags(flags: Int) {
         if (mActivityContext is Launcher) {
-            mActivityContext.systemUiController.updateUiState(
+            mActivityContext.systemUiController?.updateUiState(
                 SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
                 flags,
             )

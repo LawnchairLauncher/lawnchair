@@ -50,7 +50,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
                 model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
-                launcherAppState.reloadIcons()
+                model.forceReload()
             }
         }
     }
@@ -70,7 +70,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                                 it.setResult(Activity.RESULT_OK)
                                 it.finish()
                                 model.onAppIconChanged(componentKey.componentName.packageName, componentKey.user)
-                                launcherAppState.reloadIcons()
+                                model.forceReload()
                             }
                         }
                     },

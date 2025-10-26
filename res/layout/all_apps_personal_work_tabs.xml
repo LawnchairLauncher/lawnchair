@@ -21,8 +21,6 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/all_apps_header_pill_height"
     android:layout_gravity="center_horizontal"
-    android:paddingTop="@dimen/all_apps_tabs_vertical_padding"
-    android:paddingBottom="@dimen/all_apps_tabs_vertical_padding"
     android:layout_marginTop="@dimen/all_apps_tabs_margin_top"
     android:orientation="horizontal"
     style="@style/TextHeadline"
@@ -36,6 +34,7 @@
         android:layout_weight="1"
         android:background="@drawable/all_apps_tabs_background"
         android:text="@string/all_apps_personal_tab"
+        android:contentDescription="@string/all_apps_personal_tab_content_description"
         android:textColor="@color/all_apps_tab_text"
         android:textSize="14sp"
         style="?android:attr/borderlessButtonStyle" />
@@ -48,6 +47,7 @@
         android:layout_weight="1"
         android:background="@drawable/all_apps_tabs_background"
         android:text="@string/all_apps_work_tab"
+        android:contentDescription="@string/all_apps_work_tab_content_description"
         android:textColor="@color/all_apps_tab_text"
         android:textSize="14sp"
         style="?android:attr/borderlessButtonStyle" />

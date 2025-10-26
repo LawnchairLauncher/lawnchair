@@ -43,6 +43,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ឆ្វេង 50%"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ឆ្វេង 30%"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"អេក្រង់ពេញខាងស្តាំ"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"ប្ដូរកម្មវិធីខាងលើគេទៅខាងក្រោម"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"ប្ដូរកម្មវិធីខាងឆ្វេងទៅខាងស្ដាំ"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"អេក្រង់ពេញខាងលើ"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"ខាងលើ 70%"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"ខាងលើ 50%"</string>
@@ -65,10 +67,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"ផ្លាស់ទីទៅផ្នែកខាងលើខាងស្ដាំ"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"ផ្លាស់ទីទៅផ្នែកខាងក្រោមខាងឆ្វេង​"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"ផ្លាស់ទីទៅផ្នែកខាងក្រោម​ខាងស្ដាំ"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"ពង្រីក​ម៉ឺនុយ"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"បង្រួម​ម៉ឺនុយ"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"ផ្លាស់ទី​ទៅ​ឆ្វេង"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"ផ្លាស់ទីទៅ​ស្តាំ"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"ពង្រីក <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"បង្រួម <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"ការកំណត់ <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"ច្រានចោល​ពពុះ"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"ផ្លាស់ទីទៅ​អេក្រង់​ពេញ"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"កុំបង្ហាញ​ការសន្ទនា​ជាពពុះ"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"ជជែក​ដោយប្រើ​ពពុះ"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"ការសន្ទនាថ្មីៗ​បង្ហាញជា​​ពពុះ ឬរូបអណ្ដែត។ ចុច ដើម្បីបើក​ពពុះ។ អូស ដើម្បី​ផ្លាស់ទី​ពពុះនេះ។"</string>
@@ -92,6 +99,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"មានបញ្ហា​ពាក់ព័ន្ធនឹង​កាមេរ៉ាឬ?\nចុចដើម្បី​ដោះស្រាយ"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"មិនបាន​ដោះស្រាយ​បញ្ហានេះទេឬ?\nចុចដើម្បី​ត្រឡប់"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"មិនមាន​បញ្ហាពាក់ព័ន្ធនឹង​កាមេរ៉ាទេឬ? ចុចដើម្បី​ច្រានចោល។"</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"អាចរកឃើញម៉ឺនុយកម្មវិធីនៅទីនេះ"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"ចូលមុខងារវិនដូកុំព្យូទ័រ ដើម្បីបើកកម្មវិធីច្រើនជាមួយគ្នា"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"ត្រឡប់ទៅអេក្រង់ពេញវិញនៅពេលណាក៏បានពីម៉ឺនុយកម្មវិធី"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"មើលឃើញ និងធ្វើបានកាន់តែច្រើន"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"អូស​កម្មវិធី​មួយ​ទៀត​ចូល ដើម្បី​ប្រើ​មុខងារ​បំបែកអេក្រង់"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"ចុចពីរដង​នៅ​ក្រៅ​កម្មវិធី ដើម្បី​ប្ដូរ​ទីតាំង​កម្មវិធី​នោះ"</string>
@@ -103,22 +113,54 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"ចាប់ផ្ដើម​ឡើង​វិញ"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"កុំ​បង្ហាញ​ម្ដង​ទៀត"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"ចុចពីរដងដើម្បី\nផ្លាស់ទីកម្មវិធីនេះ"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"ពង្រីក"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"បង្រួម"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"បិទ"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"ពង្រីក <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"ស្ដារ <xliff:g id="APP_NAME">%1$s</xliff:g> ឡើងវិញ"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"បង្រួម <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"បិទ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="back_button_text" msgid="1469718707134137085">"ថយក្រោយ"</string>
-    <string name="handle_text" msgid="1766582106752184456">"ឈ្មោះអ្នកប្រើប្រាស់"</string>
+    <string name="handle_text" msgid="4419667835599523257">"ឈ្មោះអ្នកប្រើប្រាស់កម្មវិធី"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"រូប​កម្មវិធី"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"អេក្រង់​ពេញ"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"មុខងារកុំព្យូទ័រ"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"មុខងារវិនដូកុំព្យូទ័រ"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"មុខងារ​បំបែក​អេក្រង់"</string>
     <string name="more_button_text" msgid="3655388105592893530">"ច្រើនទៀត"</string>
     <string name="float_button_text" msgid="9221657008391364581">"អណ្ដែត"</string>
     <string name="select_text" msgid="5139083974039906583">"ជ្រើសរើស"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"រូបថតអេក្រង់"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"បើកក្នុងកម្មវិធីរុករកតាមអ៊ីនធឺណិត"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"បើក​នៅ​ក្នុង​កម្មវិធី"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"វិនដូ​ថ្មី"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"គ្រប់គ្រង​វិនដូ"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"ប្ដូរ​​សមាមាត្រ"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"បង្កើនប្រសិទ្ធភាពការមើល"</string>
     <string name="close_text" msgid="4986518933445178928">"បិទ"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"បិទ​ម៉ឺនុយ"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"បើកម៉ឺនុយ"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (មុខងារវិនដូកុំព្យូទ័រ)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"ពង្រីកអេក្រង់"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"ថតអេក្រង់"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"ប្ដូរ​ទំហំ"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"មិនអាចផ្លាស់ទីកម្មវិធីមកទីនេះបានទេ"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"ជក់ចិត្ត"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"ស្ដារ"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"ពង្រីក"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"ស្ដារ"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"ផ្លាស់ទីទៅឆ្វេង"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"ផ្លាស់ទីទៅស្ដាំ"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"ប្ដូរទំហំវិនដូកម្មវិធីទៅឆ្វេង"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"ប្ដូរទំហំវិនដូកម្មវិធីទៅស្ដាំ"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"ស្ដារ ឬបង្កើនទំហំវិនដូជាអតិបរមា"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"បើកម៉ឺនុយ"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"ចូលទៅ<xliff:g id="WINDOWING_MODE">%1$s</xliff:g>"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"ប្ដូរទំហំវិនដូទៅឆ្វេង"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"ប្ដូរទំហំវិនដូទៅស្ដាំ"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"ស្ដារ ឬបង្កើនទំហំវិនដូជាអតិបរមា"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"ពង្រីកទំហំវិនដូកម្មវិធី"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"ស្ដារទំហំវិនដូ"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"បង្រួមវិនដូកម្មវិធី"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"បិទវិនដូកម្មវិធី"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"ការកំណត់បើកតាមលំនាំដើម"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"ជ្រើសរើសរបៀបបើកតំណបណ្ដាញសម្រាប់កម្មវិធីនេះ"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"នៅក្នុងកម្មវិធី"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"នៅក្នុង​កម្មវិធីរុករកតាម​អ៊ីនធឺណិត​របស់អ្នក"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"យល់ព្រម"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"បើកកម្មវិធីយ៉ាងរហ័សនៅក្នុងកម្មវិធីរុករកតាមអ៊ីនធឺណិតរបស់អ្នកនៅទីនេះ"</string>
 </resources>

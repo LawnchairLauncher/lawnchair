@@ -24,10 +24,10 @@
 
     <ImageView
         android:id="@+id/letterbox_education_dialog_action_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="12dp"/>
 
     <TextView
         android:fontFamily="@*android:string/config_bodyFontFamily"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:lineSpacingExtra="4sp"
         android:textAlignment="center"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="14sp"/>
 
 </LinearLayout>

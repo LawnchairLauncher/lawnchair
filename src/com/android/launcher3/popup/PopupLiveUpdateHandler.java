@@ -19,6 +19,8 @@ import android.content.Context;
 import android.view.View;
 
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.widget.picker.model.WidgetPickerDataProvider;
+import com.android.launcher3.widget.picker.model.WidgetPickerDataProvider.WidgetPickerDataChangeListener;
 
 /**
  * Utility class to handle updates while the popup is visible (like widgets and
@@ -27,7 +29,7 @@ import com.android.launcher3.views.ActivityContext;
  * @param <T> The activity on which the popup shows
  */
 public abstract class PopupLiveUpdateHandler<T extends Context & ActivityContext> implements
-        PopupDataProvider.PopupDataChangeListener, View.OnAttachStateChangeListener {
+        WidgetPickerDataChangeListener, View.OnAttachStateChangeListener {
 
     protected final T mContext;
     protected final PopupContainerWithArrow<T> mPopupContainerWithArrow;
@@ -40,19 +42,25 @@ public abstract class PopupLiveUpdateHandler<T extends Context & ActivityContext
 
     @Override
     public void onViewAttachedToWindow(View view) {
-        PopupDataProvider popupDataProvider = mContext.getPopupDataProvider();
+        WidgetPickerDataProvider widgetsDataProvider = mContext.getWidgetPickerDataProvider();
 
-        if (popupDataProvider != null) {
-            popupDataProvider.setChangeListener(this);
+        if (widgetsDataProvider != null) {
+            widgetsDataProvider.setChangeListener(this);
         }
     }
 
     @Override
     public void onViewDetachedFromWindow(View view) {
-        PopupDataProvider popupDataProvider = mContext.getPopupDataProvider();
+        WidgetPickerDataProvider widgetsDataProvider = mContext.getWidgetPickerDataProvider();
 
-        if (popupDataProvider != null) {
-            popupDataProvider.setChangeListener(null);
+        if (widgetsDataProvider != null) {
+            widgetsDataProvider.setChangeListener(null);
         }
     }
+
+    @Override
+    public void onWidgetsBound() {} // NO_OP
+
+    @Override
+    public void onRecommendedWidgetsBound() {} // NO_OP
 }

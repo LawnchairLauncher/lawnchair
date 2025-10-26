@@ -108,19 +108,28 @@ public class InputConsumerProxy {
             return false;
         }
 
+        final SimpleOrientationTouchTransformer touchTransformer =
+                SimpleOrientationTouchTransformer.INSTANCE.get(mContext);
+        final int viewRotation = mRotationSupplier.get();
+        final boolean needTransform = viewRotation != ev.getSurfaceRotation();
         if (action == ACTION_DOWN) {
             mTouchInProgress = true;
+            if (needTransform) {
+                touchTransformer.updateTouchingOrientation(viewRotation);
+            }
             initInputConsumerIfNeeded(/* isFromTouchDown= */ true);
         } else if (action == ACTION_CANCEL || action == ACTION_UP) {
             // Finish any pending actions
             mTouchInProgress = false;
+            touchTransformer.clearTouchingOrientation();
             if (mDestroyPending) {
                 destroy();
             }
         }
         if (mInputConsumer != null) {
-            SimpleOrientationTouchTransformer.INSTANCE.get(mContext).transform(ev,
-                    mRotationSupplier.get());
+            if (needTransform) {
+                touchTransformer.transform(ev, viewRotation);
+            }
             mInputConsumer.onMotionEvent(ev);
         }
 

@@ -1,5 +1,6 @@
 package com.android.launcher3.model
 
+import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.os.UserHandle
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -10,9 +11,12 @@ import com.android.launcher3.LauncherSettings.Favorites.TMP_TABLE
 import com.android.launcher3.LauncherSettings.Favorites.addTableToDb
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.LauncherDbUtils
+import com.android.launcher3.util.ModelTestExtensions
 import java.util.function.ToLongFunction
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -24,6 +28,19 @@ private const val ICON_RESOURCE = "iconResource"
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class DatabaseHelperTest {
+    val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+    // v30 - 21 columns
+    lateinit var db: SQLiteDatabase
+
+    @Before
+    fun setUp() {
+        db = ModelTestExtensions.createInMemoryDb(INSERTION_SQL)
+    }
+
+    @After
+    fun tearDown() {
+        db.close()
+    }
 
     /**
      * b/304687723 occurred when a return was accidentally added to a case statement in
@@ -33,13 +50,11 @@ class DatabaseHelperTest {
      */
     @Test
     fun onUpgrade_to_version_32_from_30() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
         val userSerialProvider =
             ToLongFunction<UserHandle> {
                 UserCache.INSTANCE.get(context).getSerialNumberForUser(it)
             }
         val dbHelper = DatabaseHelper(context, null, userSerialProvider) {}
-        val db = FactitiousDbController(context, INSERTION_SQL).inMemoryDb
 
         dbHelper.onUpgrade(db, 30, 32)
 
@@ -54,9 +69,6 @@ class DatabaseHelperTest {
      */
     @Test
     fun after_migrating_from_db_v30_to_v32_copy_table() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val db = FactitiousDbController(context, INSERTION_SQL).inMemoryDb // v30 - 21 columns
-
         addTableToDb(db, 1, true, TMP_TABLE)
         LauncherDbUtils.copyTable(db, TABLE_NAME, db, TMP_TABLE, context)
 

@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    buildToolsVersion "36.1.0"
     namespace "com.android.systemui.common"
 
     sourceSets {
@@ -14,4 +15,4 @@ android {
     }
 }
 
-addFrameworkJar('framework-15.jar')
+addFrameworkJar('framework-16.jar')

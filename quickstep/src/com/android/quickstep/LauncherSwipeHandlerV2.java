@@ -39,8 +39,10 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.MSDLPlayerWrapper;
 import com.android.launcher3.util.StableViewInfo;
 import com.android.launcher3.views.ClipIconView;
 import com.android.launcher3.views.FloatingIconView;
@@ -53,6 +55,8 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.animation.TransitionAnimator;
+import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.InputConsumerController;
 
 import java.util.Collections;
@@ -64,11 +68,11 @@ import java.util.List;
 public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
         QuickstepLauncher, RecentsView<QuickstepLauncher, LauncherState>, LauncherState> {
 
-    public LauncherSwipeHandlerV2(Context context, RecentsAnimationDeviceState deviceState,
-                                  TaskAnimationManager taskAnimationManager, GestureState gestureState, long touchTimeMs,
-                                  boolean continuingLastGesture, InputConsumerController inputConsumer) {
-        super(context, deviceState, taskAnimationManager, gestureState, touchTimeMs,
-                continuingLastGesture, inputConsumer);
+    public LauncherSwipeHandlerV2(Context context, TaskAnimationManager taskAnimationManager,
+            GestureState gestureState, long touchTimeMs, boolean continuingLastGesture,
+            InputConsumerController inputConsumer, MSDLPlayerWrapper msdlPlayerWrapper) {
+        super(context, taskAnimationManager, gestureState, touchTimeMs,
+                continuingLastGesture, inputConsumer, msdlPlayerWrapper);
     }
 
 
@@ -94,20 +98,22 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
         TaskView sourceTaskView = mRecentsView == null && targetTaskView == null
                 ? null
                 : targetTaskView == null
-                ? mRecentsView.getRunningTaskView()
-                : targetTaskView;
+                        ? mRecentsView.getRunningTaskView()
+                        : targetTaskView;
         final View workspaceView = findWorkspaceView(
                 targetTaskView == null ? launchCookies : Collections.emptyList(),
                 sourceTaskView);
         boolean canUseWorkspaceView = workspaceView != null
                 && workspaceView.isAttachedToWindow()
                 && workspaceView.getHeight() > 0
-                && (mContainer.getDesktopVisibilityController() == null
-                || !mContainer.getDesktopVisibilityController().areDesktopTasksVisible());
+                && !DesktopVisibilityController.INSTANCE.get(mContainer)
+                        .isInDesktopModeAndNotInOverview(mContainer.getDisplayId());
 
         mContainer.getRootView().setForceHideBackArrow(true);
 
-        if (!canUseWorkspaceView || appCanEnterPip || mIsSwipeForSplit) {
+        boolean handOffAnimation = TransitionAnimator.Companion.longLivedReturnAnimationsEnabled()
+                && mHandOffAnimationToHome;
+        if (handOffAnimation || !canUseWorkspaceView || appCanEnterPip || mIsSwipeForSplit) {
             return new LauncherHomeAnimationFactory() {
 
                 @Nullable
@@ -295,15 +301,17 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
             // Disable if swiping to PIP
             return null;
         }
-        if (sourceTaskView == null || sourceTaskView.getFirstTask().key.getComponent() == null) {
+        Task firstTask;
+        if (sourceTaskView == null || ((firstTask = sourceTaskView.getFirstTask()) == null)
+                || firstTask.key.getComponent() == null) {
             // Disable if it's an invalid task
             return null;
         }
 
-        return mContainer.getFirstMatchForAppClose(StableViewInfo.fromLaunchCookies(launchCookies),
+        return mContainer.getFirstHomeElementForAppClose(
+                StableViewInfo.fromLaunchCookies(launchCookies),
                 sourceTaskView.getFirstTask().key.getComponent().getPackageName(),
-                UserHandle.of(sourceTaskView.getFirstTask().key.userId),
-                false /* supportsAllAppsState */);
+                UserHandle.of(sourceTaskView.getFirstTask().key.userId));
     }
 
     @Override
@@ -326,7 +334,7 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
         protected void playScalingRevealAnimation() {
             if (mContainer != null) {
                 new ScalingWorkspaceRevealAnim(mContainer, mSiblingAnimation,
-                        getWindowTargetRect()).start();
+                        getWindowTargetRect(), true /* playAlphaReveal */).start();
             }
         }
 
@@ -376,7 +384,7 @@ public class LauncherSwipeHandlerV2 extends AbsSwipeUpHandler<
             if (mContainer != null) {
                 new ScalingWorkspaceRevealAnim(
                         mContainer, null /* siblingAnimation */,
-                        null /* windowTargetRect */).start();
+                        null /* windowTargetRect */, true /* playAlphaReveal */).start();
             }
         }
     }

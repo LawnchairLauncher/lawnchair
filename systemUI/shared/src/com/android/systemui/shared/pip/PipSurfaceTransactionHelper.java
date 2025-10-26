@@ -128,19 +128,20 @@ public class PipSurfaceTransactionHelper {
         mTmpDestinationRect.inset(insets);
         // Scale by the shortest edge and offset such that the top/left of the scaled inset
         // source rect aligns with the top/left of the destination bounds
-        final float scale = sourceBounds.width() <= sourceBounds.height()
-                ? (float) destinationBounds.width() / sourceBounds.width()
-                : (float) destinationBounds.height() / sourceBounds.height();
+        final float scale = Math.max((float) destinationBounds.width() / sourceBounds.width(),
+                (float) destinationBounds.height() / sourceBounds.height());
         mTmpTransform.setRotate(degree, 0, 0);
         mTmpTransform.postScale(scale, scale);
         final float cornerRadius = getScaledCornerRadius(mTmpDestinationRect, destinationBounds);
         // adjust the positions, take account also the insets
         final float adjustedPositionX, adjustedPositionY;
         if (degree < 0) {
-            adjustedPositionX = positionX + insets.top * scale;
+            // Counter-clockwise rotation.
+            adjustedPositionX = positionX - insets.top * scale;
             adjustedPositionY = positionY + insets.left * scale;
         } else {
-            adjustedPositionX = positionX - insets.top * scale;
+            // Clockwise rotation.
+            adjustedPositionX = positionX + insets.top * scale;
             adjustedPositionY = positionY - insets.left * scale;
         }
         tx.setMatrix(leash, mTmpTransform, mTmpFloat9)

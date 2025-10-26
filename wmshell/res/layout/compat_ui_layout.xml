@@ -21,38 +21,6 @@
     android:orientation="vertical"
     android:gravity="bottom|end">
 
-    <include android:id="@+id/camera_compat_hint"
-        android:visibility="gone"
-        android:layout_width="@dimen/camera_compat_hint_width"
-        android:layout_height="wrap_content"
-        layout="@layout/compat_mode_hint"/>
-
-    <LinearLayout
-        android:id="@+id/camera_compat_control"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:layout_marginEnd="@dimen/compat_button_margin"
-        android:layout_marginBottom="@dimen/compat_button_margin"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/camera_compat_treatment_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"/>
-
-        <ImageButton
-            android:id="@+id/camera_compat_dismiss_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/camera_compat_dismiss_ripple"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/camera_compat_dismiss_button_description"/>
-
-    </LinearLayout>
-
     <include android:id="@+id/size_compat_hint"
         android:visibility="gone"
         android:layout_width="@dimen/compat_hint_width"

@@ -54,14 +54,6 @@ public class ShortcutUtil {
                 ? ((WorkspaceItemInfo) info).getPersonKeys() : Utilities.EMPTY_STRING_ARRAY;
     }
 
-    /**
-     * Returns true if the item is a deep shortcut.
-     */
-    public static boolean isDeepShortcut(ItemInfo info) {
-        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                && info instanceof WorkspaceItemInfo;
-    }
-
     private static boolean isActive(ItemInfo info) {
         boolean isLoading = info instanceof WorkspaceItemInfo
                 && ((WorkspaceItemInfo) info).hasPromiseIconUi();

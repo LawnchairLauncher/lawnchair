@@ -20,7 +20,7 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
-    android:tint="?attr/materialColorOnSurface">
+    android:tint="@color/materialColorOnSurface">
 
     <group>
         <clip-path

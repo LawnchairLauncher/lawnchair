@@ -15,7 +15,6 @@
  */
 package com.android.quickstep.interaction;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.BACK_NAVIGATION;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.BACK_NAVIGATION_COMPLETE;
 
@@ -40,40 +39,29 @@ final class BackGestureTutorialController extends TutorialController {
     BackGestureTutorialController(BackGestureTutorialFragment fragment, TutorialType tutorialType) {
         super(fragment, tutorialType);
         // Set the Lottie animation colors specifically for the Back gesture
-        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            LottieAnimationColorUtils.updateToArgbColors(
-                    mAnimatedGestureDemonstration,
-                    Map.of(".onSurfaceBack", fragment.mRootView.mColorOnSurfaceBack,
-                            ".surfaceBack", fragment.mRootView.mColorSurfaceBack,
-                            ".secondaryBack", fragment.mRootView.mColorSecondaryBack));
+        LottieAnimationColorUtils.updateToArgbColors(
+                mAnimatedGestureDemonstration,
+                Map.of(".onSurfaceBack", fragment.mRootView.mColorOnSurfaceBack,
+                        ".surfaceBack", fragment.mRootView.mColorSurfaceBack,
+                        ".secondaryBack", fragment.mRootView.mColorSecondaryBack));
 
-            LottieAnimationColorUtils.updateToArgbColors(
-                    mCheckmarkAnimation,
-                    Map.of(".checkmark",
-                            Utilities.isDarkTheme(mContext)
-                                    ? fragment.mRootView.mColorOnSurfaceBack
-                                    : fragment.mRootView.mColorSecondaryBack,
-                            ".checkmarkBackground", fragment.mRootView.mColorSurfaceBack));
-        }
+        LottieAnimationColorUtils.updateToArgbColors(
+                mCheckmarkAnimation,
+                Map.of(".checkmark",
+                        Utilities.isDarkTheme(mContext)
+                                ? fragment.mRootView.mColorOnSurfaceBack
+                                : fragment.mRootView.mColorSecondaryBack,
+                        ".checkmarkBackground", fragment.mRootView.mColorSurfaceBack));
     }
 
     @Override
     public int getIntroductionTitle() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.string.back_gesture_tutorial_title
-                : R.string.back_gesture_intro_title;
+        return R.string.back_gesture_tutorial_title;
     }
 
     @Override
     public int getIntroductionSubtitle() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.string.back_gesture_tutorial_subtitle
-                : R.string.back_gesture_intro_subtitle;
-    }
-
-    @Override
-    public int getSpokenIntroductionSubtitle() {
-        return R.string.back_gesture_spoken_intro_subtitle;
+        return R.string.back_gesture_tutorial_subtitle;
     }
 
     @Override
@@ -85,9 +73,7 @@ final class BackGestureTutorialController extends TutorialController {
     public int getSuccessFeedbackSubtitle() {
         return mTutorialFragment.isAtFinalStep()
                 ? R.string.back_gesture_feedback_complete_without_follow_up
-                : ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                        ? R.string.back_gesture_feedback_complete_with_follow_up
-                        : R.string.back_gesture_feedback_complete_with_overview_follow_up;
+                : R.string.back_gesture_feedback_complete_with_follow_up;
     }
 
     @Override
@@ -128,20 +114,12 @@ final class BackGestureTutorialController extends TutorialController {
 
     @LayoutRes
     int getMockAppTaskCurrentPageLayoutResId() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.layout.back_gesture_tutorial_background
-                : mTutorialFragment.isLargeScreen()
-                        ? R.layout.gesture_tutorial_tablet_mock_conversation
-                        : R.layout.gesture_tutorial_mock_conversation;
+        return R.layout.back_gesture_tutorial_background;
     }
 
     @LayoutRes
     int getMockAppTaskPreviousPageLayoutResId() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.layout.back_gesture_tutorial_background
-                : mTutorialFragment.isLargeScreen()
-                        ? R.layout.gesture_tutorial_tablet_mock_conversation_list
-                        : R.layout.gesture_tutorial_mock_conversation_list;
+        return R.layout.back_gesture_tutorial_background;
     }
 
     @Override
@@ -156,7 +134,7 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
-        if (skipGestureAttempt()) {
+        if (isGestureCompleted()) {
             return;
         }
         switch (mTutorialType) {
@@ -174,7 +152,7 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public void onBackGestureProgress(float diffx, float diffy, boolean isLeftGesture) {
-        if (skipGestureAttempt()) {
+        if (isGestureCompleted()) {
             return;
         }
 
@@ -214,17 +192,13 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     private void handleBackAttempt(BackGestureResult result) {
-        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            resetViewsForBackGesture();
-        }
+        resetViewsForBackGesture();
 
         switch (result) {
             case BACK_COMPLETED_FROM_LEFT:
             case BACK_COMPLETED_FROM_RIGHT:
                 mTutorialFragment.releaseFeedbackAnimation();
-                if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-                    mExitingAppView.setVisibility(View.GONE);
-                }
+                mExitingAppView.setVisibility(View.GONE);
                 updateFakeAppTaskViewLayout(getMockAppTaskPreviousPageLayoutResId());
                 showSuccessFeedback();
                 break;
@@ -243,7 +217,7 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
-        if (skipGestureAttempt()) {
+        if (isGestureCompleted()) {
             return;
         }
         if (mTutorialType == BACK_NAVIGATION_COMPLETE) {

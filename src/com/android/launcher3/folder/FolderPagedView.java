@@ -18,12 +18,12 @@ package com.android.launcher3.folder;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_FOLDER;
+import static com.android.launcher3.folder.FolderGridOrganizer.createFolderGridOrganizer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Path;
-import android.graphics.drawable.Drawable;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -37,7 +37,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Item;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
@@ -49,6 +48,7 @@ import com.android.launcher3.model.data.AppPairInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pageindicators.Direction;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.Thunk;
@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
@@ -101,11 +102,24 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     // animating or is open.
     private boolean mViewsBound = false;
 
+    private boolean mCanAnnouncePageDescription;
+
     public FolderPagedView(Context context, AttributeSet attrs) {
+        this(
+                context,
+                attrs,
+                createFolderGridOrganizer(ActivityContext.lookupContext(context).getDeviceProfile())
+        );
+    }
+
+    public FolderPagedView(
+            Context context,
+            AttributeSet attrs,
+            FolderGridOrganizer folderGridOrganizer
+    ) {
         super(context, attrs);
         ActivityContext activityContext = ActivityContext.lookupContext(context);
-        DeviceProfile profile = activityContext.getDeviceProfile();
-        mOrganizer = FolderGridOrganizer.createFolderGridOrganizer(profile);
+        mOrganizer = folderGridOrganizer;
 
         mIsRtl = Utilities.isRtl(getResources());
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
@@ -117,6 +131,8 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     public void setFolder(Folder folder) {
         mFolder = folder;
         mPageIndicator = folder.findViewById(R.id.folder_page_indicator);
+        mPageIndicator.setArrowClickListener(direction -> snapToPageImmediately(
+                (Direction.END == direction) ? mCurrentPage + 1 : mCurrentPage - 1));
         initParentViews(folder);
     }
 
@@ -158,6 +174,19 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         }
         arrangeChildren(items.stream().map(this::createNewView).collect(Collectors.toList()));
         mViewsBound = true;
+    }
+
+    void setCanAnnouncePageDescriptionForFolder(boolean canAnnounce) {
+        mCanAnnouncePageDescription = canAnnounce;
+    }
+
+    private boolean canAnnouncePageDescriptionForFolder() {
+        return mCanAnnouncePageDescription;
+    }
+
+    @Override
+    protected boolean canAnnouncePageDescription() {
+        return super.canAnnouncePageDescription() && canAnnouncePageDescriptionForFolder();
     }
 
     /**
@@ -368,8 +397,9 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         // Update footer
         mPageIndicator.setVisibility(getPageCount() > 1 ? View.VISIBLE : View.GONE);
         // Set the gravity as LEFT or RIGHT instead of START, as START depends on the actual text.
-        mFolder.mFolderName.setGravity(getPageCount() > 1 ?
-                (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL);
+        int horizontalGravity = getPageCount() > 1
+                ? (mIsRtl ? Gravity.RIGHT : Gravity.LEFT) : Gravity.CENTER_HORIZONTAL;
+        mFolder.getFolderName().setGravity(horizontalGravity | Gravity.CENTER_VERTICAL);
     }
 
     public int getDesiredWidth() {
@@ -511,6 +541,16 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         verifyVisibleHighResIcons(getCurrentPage() + 1);
     }
 
+    int getTotalChildCount() {
+        AtomicInteger count = new AtomicInteger();
+        iterateOverItems((i, v) -> {
+            count.getAndIncrement();
+            return false;
+        });
+
+        return count.get();
+    }
+
     /**
      * Ensures that all the icons on the given page are of high-res
      */
@@ -520,19 +560,10 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
             ShortcutAndWidgetContainer parent = page.getShortcutsAndWidgets();
             for (int i = parent.getChildCount() - 1; i >= 0; i--) {
                 View iconView = parent.getChildAt(i);
-                Drawable d = null;
                 if (iconView instanceof BubbleTextView btv) {
                     btv.verifyHighRes();
-                    d = btv.getIcon();
                 } else if (iconView instanceof AppPairIcon api) {
                     api.verifyHighRes();
-                    d = api.getIconDrawableArea().getDrawable();
-                }
-
-                // Set the callback back to the actual icon, in case
-                // it was captured by the FolderIcon
-                if (d != null) {
-                    d.setCallback(iconView);
                 }
             }
         }

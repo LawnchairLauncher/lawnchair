@@ -88,18 +88,6 @@ public class TaskViewTest {
     }
 
     @Test
-    public void showBorderOnHoverEvent() {
-        mTaskView.setBorderEnabled(/* enabled= */ true);
-        MotionEvent event = MotionEvent.obtain(0, 0, MotionEvent.ACTION_HOVER_ENTER, 0.0f, 0.0f, 0);
-        mTaskView.onHoverEvent(MotionEvent.obtain(event));
-        verify(mHoverAnimator, times(1)).setBorderVisibility(/* visible= */ true, /* animated= */
-                true);
-        mTaskView.onFocusChanged(true, 0, new Rect());
-        verify(mFocusAnimator, times(1)).setBorderVisibility(/* visible= */ true, /* animated= */
-                true);
-    }
-
-    @Test
     public void showBorderOnBorderEnabled() {
         presetBorderStatus(/* enabled= */ false);
         mTaskView.setBorderEnabled(/* enabled= */ true);

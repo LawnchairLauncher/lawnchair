@@ -3,308 +3,1124 @@ package com.android.systemui;
 /** @hide */
 public interface FeatureFlags {
 
-    
+
+
+
     boolean activityTransitionUseLargestWindow();
-    
+
+
+
+    boolean addBlackBackgroundForWindowMagnifier();
+
+
+
+    boolean alwaysComposeQsUiFragment();
+
+
+
     boolean ambientTouchMonitorListenToDisplayChanges();
-    
+
+
+
     boolean appClipsBacklinks();
-    
+
+
+
+    boolean appShortcutRemovalFix();
+
+
+
+    boolean avalancheReplaceHunWhenCritical();
+
+
+
     boolean bindKeyguardMediaVisibility();
-    
-    boolean bpTalkback();
-    
+
+
+
+    boolean bouncerUiRevamp();
+
+
+
+    boolean bouncerUiRevamp2();
+
+
+
+    boolean bpColors();
+
+
+
     boolean brightnessSliderFocusState();
-    
-    boolean centralizedStatusBarHeightFix();
-    
+
+
+
+    boolean checkLockscreenGoneTransition();
+
+
+
+    boolean classicFlagsMultiUser();
+
+
+
+    boolean clipboardImageTimeout();
+
+
+
     boolean clipboardNoninteractiveOnLockscreen();
-    
-    boolean clockReactiveVariants();
-    
+
+
+
+    boolean clipboardOverlayMultiuser();
+
+
+
+    boolean clipboardSharedTransitions();
+
+
+
+    boolean clipboardUseDescriptionMimetype();
+
+
+
+    boolean clockFidgetAnimation();
+
+
+
     boolean communalBouncerDoNotModifyPluginOpen();
-    
+
+
+
+    boolean communalEditWidgetsActivityFinishFix();
+
+
+
     boolean communalHub();
-    
+
+
+
+    boolean communalHubUseThreadPoolForWidgets();
+
+
+
+    boolean communalResponsiveGrid();
+
+
+
+    boolean communalSceneKtfRefactor();
+
+
+
+    boolean communalStandaloneSupport();
+
+
+
+    boolean communalTimerFlickerFix();
+
+
+
+    boolean communalWidgetResizing();
+
+
+
+    boolean communalWidgetTrampolineFix();
+
+
+
     boolean composeBouncer();
-    
-    boolean composeLockscreen();
-    
+
+
+
     boolean confineNotificationTouchToViewWidth();
-    
-    boolean constraintBp();
-    
+
+
+
+    boolean contAuthPlugin();
+
+
+
     boolean contextualTipsAssistantDismissFix();
-    
+
+
+
     boolean coroutineTracing();
-    
+
+
+
     boolean createWindowlessWindowMagnifier();
-    
-    boolean dedicatedNotifInflationThread();
-    
+
+
+
+    boolean debugLiveUpdatesPromoteAll();
+
+
+
+    boolean decoupleViewControllerInAnimlib();
+
+
+
     boolean delayShowMagnificationButton();
-    
-    boolean delayedWakelockReleaseOnBackgroundThread();
-    
+
+
+
+    boolean desktopEffectsQsTile();
+
+
+
     boolean deviceEntryUdfpsRefactor();
-    
+
+
+
+    boolean disableBlurredShadeVisible();
+
+
+
     boolean disableContextualTipsFrequencyCheck();
-    
+
+
+
     boolean disableContextualTipsIosSwitcherCheck();
-    
-    boolean dozeuiSchedulingAlarmsBackgroundExecution();
-    
+
+
+
+    boolean disableShadeTrackpadTwoFingerSwipe();
+
+
+
+    boolean doubleTapToSleep();
+
+
+
     boolean dreamInputSessionPilferOnce();
-    
+
+
+
     boolean dreamOverlayBouncerSwipeDirectionFiltering();
-    
-    boolean dualShade();
-    
+
+
+
+    boolean dreamOverlayUpdatedFont();
+
+
+
     boolean edgeBackGestureHandlerThread();
-    
+
+
+
     boolean edgebackGestureHandlerGetRunningTasksBackground();
-    
+
+
+
     boolean enableBackgroundKeyguardOndrawnCallback();
-    
+
+
+
     boolean enableContextualTipForMuteVolume();
-    
+
+
+
     boolean enableContextualTipForPowerOff();
-    
+
+
+
     boolean enableContextualTipForTakeScreenshot();
-    
+
+
+
     boolean enableContextualTips();
-    
+
+
+
     boolean enableEfficientDisplayRepository();
-    
+
+
+
     boolean enableLayoutTracing();
-    
+
+
+
+    boolean enableUnderlay();
+
+
+
     boolean enableViewCaptureTracing();
-    
-    boolean enableWidgetPickerSizeFilter();
-    
+
+
+
     boolean enforceBrightnessBaseUserRestriction();
-    
+
+
+
     boolean exampleFlag();
-    
-    boolean fastUnlockTransition();
-    
+
+
+
+    boolean expandCollapsePrivacyDialog();
+
+
+
+    boolean expandHeadsUpOnInlineReply();
+
+
+
+    boolean expandedPrivacyIndicatorsOnLargeScreen();
+
+
+
+    boolean extendedAppsShortcutCategory();
+
+
+
+    boolean faceMessageDeferUpdate();
+
+
+
+    boolean faceScanningAnimationNpeFix();
+
+
+
+    boolean fasterUnlockTransition();
+
+
+
+    boolean fetchBookmarksXmlKeyboardShortcuts();
+
+
+
     boolean fixImageWallpaperCrashSurfaceAlreadyReleased();
-    
+
+
+
     boolean fixScreenshotActionDismissSystemWindows();
-    
+
+
+
     boolean floatingMenuAnimatedTuck();
-    
+
+
+
+    boolean floatingMenuDisplayCutoutSupport();
+
+
+
     boolean floatingMenuDragToEdit();
-    
+
+
+
     boolean floatingMenuDragToHide();
-    
+
+
+
+    boolean floatingMenuHearingDeviceStatusIcon();
+
+
+
     boolean floatingMenuImeDisplacementAnimation();
-    
+
+
+
     boolean floatingMenuNarrowTargetContentObserver();
-    
+
+
+
+    boolean floatingMenuNotifyTargetsChangedOnStrictDiff();
+
+
+
     boolean floatingMenuOverlapsNavBarsFlag();
-    
+
+
+
     boolean floatingMenuRadiiAnimation();
-    
-    boolean generatedPreviews();
-    
+
+
+
     boolean getConnectedDeviceNameUnsynchronized();
-    
+
+
+
     boolean glanceableHubAllowKeyguardWhenDreaming();
-    
-    boolean glanceableHubFullscreenSwipe();
-    
-    boolean glanceableHubGestureHandle();
-    
-    boolean glanceableHubShortcutButton();
-    
-    boolean hapticBrightnessSlider();
-    
-    boolean hapticVolumeSlider();
-    
+
+
+
+    boolean glanceableHubBlurredBackground();
+
+
+
+    boolean glanceableHubDirectEditMode();
+
+
+
+    boolean glanceableHubV2();
+
+
+
+    boolean glanceableHubV2Resources();
+
+
+
+    boolean hapticsForComposeSliders();
+
+
+
+    boolean hardwareColorStyles();
+
+
+
     boolean hearingAidsQsTileDialog();
-    
+
+
+
     boolean hearingDevicesDialogRelatedTools();
-    
+
+
+
+    boolean hideRingerButtonInSingleVolumeMode();
+
+
+
+    boolean homeControlsDreamHsum();
+
+
+
+    boolean hubEditModeTouchAdjustments();
+
+
+
+    boolean hubmodeFullscreenVerticalSwipe();
+
+
+
+    boolean hubmodeFullscreenVerticalSwipeFix();
+
+
+
+    boolean iconRefresh2025();
+
+
+
+    boolean ignoreTouchesNextToNotificationShelf();
+
+
+
+    boolean indicationTextA11yFix();
+
+
+
     boolean keyboardDockingIndicator();
-    
+
+
+
     boolean keyboardShortcutHelperRewrite();
-    
-    boolean keyguardBottomAreaRefactor();
-    
+
+
+
+    boolean keyboardShortcutHelperShortcutCustomizer();
+
+
+
+    boolean keyboardTouchpadContextualEducation();
+
+
+
+    boolean keyguardTransitionForceFinishOnScreenOff();
+
+
+
+    boolean keyguardWmReorderAtmsCalls();
+
+
+
     boolean keyguardWmStateRefactor();
-    
-    boolean lightRevealMigration();
-    
+
+
+
+    boolean lockscreenFont();
+
+
+
+    boolean lowLightClockDream();
+
+
+
+    boolean magneticNotificationSwipes();
+
+
+
+    boolean mediaControlsA11yColors();
+
+
+
+    boolean mediaControlsButtonMedia3();
+
+
+
+    boolean mediaControlsButtonMedia3Placement();
+
+
+
+    boolean mediaControlsDeviceManagerBackgroundExecution();
+
+
+
+    boolean mediaControlsDrawablesReuseBugfix();
+
+
+
     boolean mediaControlsLockscreenShadeBugFix();
-    
-    boolean mediaControlsRefactor();
-    
+
+
+
+    boolean mediaControlsUiUpdate();
+
+
+
+    boolean mediaControlsUmoInflationInBackground();
+
+
+
     boolean mediaControlsUserInitiatedDeleteintent();
-    
-    boolean migrateClocksToBlueprint();
-    
+
+
+
+    boolean mediaLoadMetadataViaMediaDataLoader();
+
+
+
+    boolean mediaLockscreenLaunchAnimation();
+
+
+
+    boolean mediaProjectionDialogBehindLockscreen();
+
+
+
+    boolean mediaProjectionGreyErrorText();
+
+
+
+    boolean mediaProjectionRequestAttributionFix();
+
+
+
+    boolean modesUiDialogPaging();
+
+
+
+    boolean moveTransitionAnimationLayer();
+
+
+
+    boolean msdlFeedback();
+
+
+
+    boolean multiuserWifiPickerTrackerSupport();
+
+
+
     boolean newAodTransition();
-    
-    boolean newTouchpadGesturesTutorial();
-    
+
+
+
     boolean newVolumePanel();
-    
+
+
+
+    boolean nonTouchscreenDevicesBypassFalsing();
+
+
+
+    boolean notesRoleQsTile();
+
+
+
+    boolean notificationAddXOnHoverToDismiss();
+
+
+
+    boolean notificationAmbientSuppressionAfterInflation();
+
+
+
+    boolean notificationAnimatedActionsTreatment();
+
+
+
+    boolean notificationAppearNonlinear();
+
+
+
     boolean notificationAsyncGroupHeaderInflation();
-    
+
+
+
     boolean notificationAsyncHybridViewInflation();
-    
+
+
+
     boolean notificationAvalancheSuppression();
-    
+
+
+
     boolean notificationAvalancheThrottleHun();
-    
+
+
+
     boolean notificationBackgroundTintOptimization();
-    
+
+
+
+    boolean notificationBundleUi();
+
+
+
     boolean notificationColorUpdateLogger();
-    
+
+
+
     boolean notificationContentAlphaOptimization();
-    
+
+
+
     boolean notificationFooterBackgroundTintOptimization();
-    
-    boolean notificationMediaManagerBackgroundExecution();
-    
-    boolean notificationMinimalismPrototype();
-    
+
+
+
     boolean notificationOverExpansionClippingFix();
-    
-    boolean notificationPulsingFix();
-    
+
+
+
+    boolean notificationReentrantDismiss();
+
+
+
+    boolean notificationRowAccessibilityExpanded();
+
+
+
     boolean notificationRowContentBinderRefactor();
-    
+
+
+
+    boolean notificationRowTransparency();
+
+
+
     boolean notificationRowUserContext();
-    
+
+
+
+    boolean notificationShadeBlur();
+
+
+
+    boolean notificationShadeUiThread();
+
+
+
+    boolean notificationSkipSilentUpdates();
+
+
+
+    boolean notificationTransparentHeaderFix();
+
+
+
     boolean notificationViewFlipperPausingV2();
-    
+
+
+
     boolean notificationsBackgroundIcons();
-    
-    boolean notificationsFooterViewRefactor();
-    
-    boolean notificationsHeadsUpRefactor();
-    
+
+
+
+    boolean notificationsFooterVisibilityFix();
+
+
+
     boolean notificationsHideOnDisplaySwitch();
-    
+
+
+
+    boolean notificationsHunSharedAnimationValues();
+
+
+
     boolean notificationsIconContainerRefactor();
-    
-    boolean notificationsImprovedHunAnimation();
-    
+
+
+
+    boolean notificationsLaunchRadius();
+
+
+
     boolean notificationsLiveDataStoreRefactor();
-    
+
+
+
+    boolean notificationsPinnedHunInShade();
+
+
+
+    boolean notificationsRedesignFooterView();
+
+
+
+    boolean notificationsRedesignGuts();
+
+
+
+    boolean notifyPasswordTextViewUserActivityInBackground();
+
+
+
     boolean notifyPowerManagerUserActivityBackground();
-    
+
+
+
+    boolean onlyShowMediaStreamSliderInSingleVolumeMode();
+
+
+
+    boolean outputSwitcherRedesign();
+
+
+
+    boolean overrideSuppressOverlayCondition();
+
+
+
+    boolean permissionHelperInlineUiRichOngoing();
+
+
+
+    boolean permissionHelperUiRichOngoing();
+
+
+
+    boolean physicalNotificationMovement();
+
+
+
     boolean pinInputFieldStyledFocusState();
-    
-    boolean predictiveBackAnimateBouncer();
-    
-    boolean predictiveBackAnimateDialogs();
-    
+
+
+
     boolean predictiveBackAnimateShade();
-    
-    boolean predictiveBackSysui();
-    
+
+
+
+    boolean predictiveBackDelayWmTransition();
+
+
+
     boolean priorityPeopleSection();
-    
-    boolean privacyDotUnfoldWrongCornerFix();
-    
-    boolean pssAppSelectorAbruptExitFix();
-    
+
+
+
+    boolean promoteNotificationsAutomatically();
+
+
+
     boolean pssAppSelectorRecentsSplitScreen();
-    
+
+
+
     boolean pssTaskSwitcher();
-    
+
+
+
     boolean qsCustomTileClickGuaranteedBugFix();
-    
-    boolean qsNewPipeline();
-    
+
+
+
     boolean qsNewTiles();
-    
+
+
+
     boolean qsNewTilesFuture();
-    
+
+
+
+    boolean qsQuickRebindActiveTiles();
+
+
+
+    boolean qsRegisterSettingObserverOnBgThread();
+
+
+
+    boolean qsTileDetailedView();
+
+
+
     boolean qsTileFocusState();
-    
+
+
+
     boolean qsUiRefactor();
-    
-    boolean quickSettingsVisualHapticsLongpress();
-    
+
+
+
+    boolean qsUiRefactorComposeFragment();
+
+
+
     boolean recordIssueQsTile();
-    
+
+
+
+    boolean redesignMagnificationWindowSize();
+
+
+
     boolean refactorGetCurrentUser();
-    
+
+
+
     boolean registerBatteryControllerReceiversInCorestartable();
-    
+
+
+
+    boolean registerContentObserversAsync();
+
+
+
     boolean registerNewWalletCardInBackground();
-    
+
+
+
     boolean registerWallpaperNotifierBackground();
-    
-    boolean registerZenModeContentObserverBackground();
-    
+
+
+
+    boolean relockWithPowerButtonImmediately();
+
+
+
     boolean removeDreamOverlayHideOnTouch();
-    
+
+
+
+    boolean removeUpdateListenerInQsIconViewImpl();
+
+
+
     boolean restToUnlock();
-    
+
+
+
     boolean restartDreamOnUnocclude();
-    
+
+
+
     boolean revampedBouncerMessages();
-    
+
+
+
     boolean runFingerprintDetectOnDismissibleKeyguard();
-    
+
+
+
     boolean saveAndRestoreMagnificationSettingsButtons();
-    
+
+
+
     boolean sceneContainer();
-    
+
+
+
     boolean screenshareNotificationHidingBugFix();
-    
+
+
+
     boolean screenshotActionDismissSystemWindows();
-    
-    boolean screenshotPrivateProfileAccessibilityAnnouncementFix();
-    
-    boolean screenshotPrivateProfileBehaviorFix();
-    
+
+
+
+    boolean screenshotMultidisplayFocusChange();
+
+
+
+    boolean screenshotPolicySplitAndDesktopMode();
+
+
+
     boolean screenshotScrollCropViewCrashFix();
-    
-    boolean screenshotShelfUi2();
-    
-    boolean shadeCollapseActivityLaunchFix();
-    
+
+
+
+    boolean screenshotUiControllerRefactor();
+
+
+
+    boolean secondaryUserWidgetHost();
+
+
+
+    boolean settingsExtRegisterContentObserverOnBgThread();
+
+
+
+    boolean shadeExpandsOnStatusBarLongPress();
+
+
+
+    boolean shadeHeaderFontUpdate();
+
+
+
+    boolean shadeLaunchAccessibility();
+
+
+
+    boolean shadeWindowGoesAround();
+
+
+
     boolean shaderlibLoadingEffectRefactor();
-    
+
+
+
+    boolean shortcutHelperKeyGlyph();
+
+
+
+    boolean showAudioSharingSliderInVolumePanel();
+
+
+
+    boolean showClipboardIndication();
+
+
+
+    boolean showLockedByYourWatchKeyguardIndicator();
+
+
+
+    boolean showToastWhenAppControlBrightness();
+
+
+
+    boolean simPinBouncerReset();
+
+
+
+    boolean simPinRaceConditionOnRestart();
+
+
+
+    boolean simPinUseSlotId();
+
+
+
+    boolean skipHideSensitiveNotifAnimation();
+
+
+
     boolean sliceBroadcastRelayInBackground();
-    
+
+
+
     boolean sliceManagerBinderCallBackground();
-    
+
+
+
     boolean smartspaceLockscreenViewmodel();
-    
+
+
+
     boolean smartspaceRelocateToBottom();
-    
-    boolean smartspaceRemoteviewsRendering();
-    
+
+
+
+    boolean smartspaceRemoteviewsRenderingFix();
+
+
+
+    boolean smartspaceSwipeEventLoggingFix();
+
+
+
+    boolean smartspaceViewpager2();
+
+
+
+    boolean sounddoseCustomization();
+
+
+
+    boolean spatialModelAppPushback();
+
+
+
+    boolean stabilizeHeadsUpGroupV2();
+
+
+
+    boolean statusBarAlwaysCheckUnderlyingNetworks();
+
+
+
+    boolean statusBarAutoStartScreenRecordChip();
+
+
+
+    boolean statusBarChipsModernization();
+
+
+
+    boolean statusBarChipsReturnAnimations();
+
+
+
+    boolean statusBarFontUpdates();
+
+
+
+    boolean statusBarMobileIconKairos();
+
+
+
     boolean statusBarMonochromeIconsFix();
-    
-    boolean statusBarScreenSharingChips();
-    
+
+
+
+    boolean statusBarNoHunBehavior();
+
+
+
+    boolean statusBarPopupChips();
+
+
+
+    boolean statusBarRootModernization();
+
+
+
+    boolean statusBarShowAudioOnlyProjectionChip();
+
+
+
+    boolean statusBarSignalPolicyRefactor();
+
+
+
+    boolean statusBarSignalPolicyRefactorEthernet();
+
+
+
     boolean statusBarStaticInoutIndicators();
-    
+
+
+
+    boolean statusBarStopUpdatingWindowHeight();
+
+
+
+    boolean statusBarSwipeOverChip();
+
+
+
+    boolean statusBarSwitchToSpnFromDataSpn();
+
+
+
+    boolean statusBarUiThread();
+
+
+
+    boolean statusBarWindowNoCustomTouch();
+
+
+
+    boolean stoppableFgsSystemApp();
+
+
+
     boolean switchUserOnBg();
-    
+
+
+
     boolean sysuiTeamfood();
-    
+
+
+
     boolean themeOverlayControllerWakefulnessDeprecation();
-    
+
+
+
+    boolean transitionRaceCondition();
+
+
+
     boolean translucentOccludingActivityFix();
-    
-    boolean truncatedStatusBarIconsFix();
-    
+
+
+
+    boolean tvGlobalActionsFocus();
+
+
+
     boolean udfpsViewPerformance();
-    
+
+
+
     boolean unfoldAnimationBackgroundProgress();
-    
+
+
+
+    boolean unfoldLatencyTrackingFix();
+
+
+
+    boolean updateCornerRadiusOnDisplayChanged();
+
+
+
     boolean updateUserSwitcherBackground();
-    
-    boolean validateKeyboardShortcutHelperIconUri();
-    
+
+
+
+    boolean updateWindowMagnifierBottomBoundary();
+
+
+
+    boolean useAadProxSensor();
+
+
+
+    boolean useNotifInflationThreadForFooter();
+
+
+
+    boolean useNotifInflationThreadForRow();
+
+
+
+    boolean useTransitionsForKeyguardOccluded();
+
+
+
+    boolean useVolumeController();
+
+
+
+    boolean userAwareSettingsRepositories();
+
+
+
+    boolean userEncryptedSource();
+
+
+
+    boolean userSwitcherAddSignOutOption();
+
+
+
     boolean visualInterruptionsRefactor();
+
+
+
+    boolean volumeRedesign();
 }

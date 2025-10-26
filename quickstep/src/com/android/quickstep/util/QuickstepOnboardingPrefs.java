@@ -106,7 +106,8 @@ public class QuickstepOnboardingPrefs {
                         return;
                     }
                     mShouldIncreaseCount = toState == HINT_STATE
-                            && launcher.getWorkspace().getNextPage() == Workspace.DEFAULT_PAGE;
+                            && launcher.getWorkspace().getNextPage() == Workspace.DEFAULT_PAGE
+                            && launcher.isCanShowAllAppsEducationView();
                 }
 
                 @Override

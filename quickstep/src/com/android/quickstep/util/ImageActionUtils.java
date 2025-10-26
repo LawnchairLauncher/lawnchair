@@ -54,7 +54,6 @@ import com.android.internal.util.ScreenshotRequest;
 import com.android.launcher3.BuildConfig;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
-import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,6 +61,7 @@ import java.io.IOException;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import com.topjohnwu.superuser.Shell;
 import app.lawnchair.compatlib.utils.BitmapUtil;
 
 /**
@@ -83,17 +83,19 @@ public class ImageActionUtils {
             Rect screenshotBounds, Insets visibleInsets, Task.TaskKey task) {
         try {
             ScreenshotRequest request =
-                    new ScreenshotRequest.Builder(TAKE_SCREENSHOT_PROVIDED_IMAGE, SCREENSHOT_OVERVIEW)
-                            .setTopComponent(task.sourceComponent)
-                            .setTaskId(task.id)
-                            .setUserId(task.userId)
-                            .setBitmap(screenshot)
-                            .setBoundsOnScreen(screenshotBounds)
-                            .setInsets(visibleInsets)
-                            .build();
+                new ScreenshotRequest.Builder(TAKE_SCREENSHOT_PROVIDED_IMAGE, SCREENSHOT_OVERVIEW)
+                    .setTopComponent(task.sourceComponent)
+                    .setTaskId(task.id)
+                    .setUserId(task.userId)
+                    .setBitmap(screenshot)
+                    .setBoundsOnScreen(screenshotBounds)
+                    .setInsets(visibleInsets)
+                    .setDisplayId(task.displayId)
+                    .build();
             systemUiProxy.takeScreenshot(request);
         } catch (Throwable t) {
             try {
+                // Lawnchair-TODO-Merge: LC disabled this, but no code is in 16r2
 //                systemUiProxy.handleImageBundleAsScreenshot(BitmapUtil.hardwareBitmapToBundle(screenshot),
 //                        screenshotBounds, visibleInsets, task);
             } catch (Throwable ee) {

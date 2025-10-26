@@ -17,7 +17,6 @@
 package com.android.launcher3.model.data
 
 import com.android.launcher3.LauncherSettings
-import com.android.launcher3.logger.LauncherAtom
 import com.android.launcher3.util.ContentWriter
 import java.util.function.Predicate
 
@@ -41,10 +40,5 @@ abstract class CollectionInfo : ItemInfo() {
     override fun onAddToDatabase(writer: ContentWriter) {
         super.onAddToDatabase(writer)
         writer.put(LauncherSettings.Favorites.TITLE, title)
-    }
-
-    /** Returns the collection wrapped as {@link LauncherAtom.ItemInfo} for logging. */
-    override fun buildProto(): LauncherAtom.ItemInfo {
-        return buildProto(null)
     }
 }

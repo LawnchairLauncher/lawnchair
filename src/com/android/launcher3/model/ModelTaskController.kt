@@ -16,27 +16,34 @@
 
 package com.android.launcher3.model
 
-import com.android.launcher3.LauncherAppState
+import android.content.Context
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.LauncherModel.CallbackTask
 import com.android.launcher3.celllayout.CellPosMapper
+import com.android.launcher3.dagger.ApplicationContext
+import com.android.launcher3.icons.IconCache
 import com.android.launcher3.model.BgDataModel.FixedContainerItems
 import com.android.launcher3.model.data.ItemInfo
-import com.android.launcher3.model.data.WorkspaceItemInfo
+import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.PackageUserKey
+import com.android.launcher3.widget.model.WidgetsListBaseEntriesBuilder
 import java.util.Objects
-import java.util.concurrent.Executor
 import java.util.function.Predicate
 import java.util.stream.Collectors
+import javax.inject.Inject
 
 /** Class with utility methods and properties for running a LauncherModel Task */
-class ModelTaskController(
-    val app: LauncherAppState,
+class ModelTaskController
+@Inject
+constructor(
+    @ApplicationContext val context: Context,
+    val iconCache: IconCache,
     val dataModel: BgDataModel,
     val allAppsList: AllAppsList,
-    private val model: LauncherModel,
-    private val uiExecutor: Executor
+    val model: LauncherModel,
 ) {
+
+    private val uiExecutor = MAIN_EXECUTOR
 
     /** Schedules a {@param task} to be executed on the current callbacks. */
     fun scheduleCallbackTask(task: CallbackTask) {
@@ -51,17 +58,17 @@ class ModelTaskController(
      */
     fun getModelWriter() = model.getWriter(false /* verifyChanges */, CellPosMapper.DEFAULT, null)
 
-    fun bindUpdatedWorkspaceItems(allUpdates: List<WorkspaceItemInfo>) {
+    fun bindUpdatedWorkspaceItems(allUpdates: Collection<ItemInfo>) {
         // Bind workspace items
-        val workspaceUpdates: MutableList<WorkspaceItemInfo> = allUpdates.stream().filter { info -> info.id != ItemInfo.NO_ID }.collect(Collectors.toList())
+        val workspaceUpdates = allUpdates.filter { it.id != ItemInfo.NO_ID }.toSet()
         if (workspaceUpdates.isNotEmpty()) {
-            scheduleCallbackTask { it.bindWorkspaceItemsChanged(workspaceUpdates) }
+            scheduleCallbackTask { it.bindItemsUpdated(workspaceUpdates) }
         }
 
         // Bind extra items if any
         allUpdates
             .stream()
-            .mapToInt { info: WorkspaceItemInfo -> info.container }
+            .mapToInt { it.container }
             .distinct()
             .mapToObj { dataModel.extraItems.get(it) }
             .filter { Objects.nonNull(it) }
@@ -78,8 +85,10 @@ class ModelTaskController(
     }
 
     fun bindUpdatedWidgets(dataModel: BgDataModel) {
-        val widgets = dataModel.widgetsModel.getWidgetsListForPicker(app.context)
-        scheduleCallbackTask { it.bindAllWidgets(widgets) }
+        val allWidgets =
+            WidgetsListBaseEntriesBuilder(context)
+                .build(dataModel.widgetsModel.widgetsByPackageItemForPicker)
+        scheduleCallbackTask { it.bindAllWidgets(allWidgets) }
     }
 
     fun deleteAndBindComponentsRemoved(matcher: Predicate<ItemInfo?>, reason: String?) {
@@ -96,7 +105,7 @@ class ModelTaskController(
             val packageUserKeyToUidMap =
                 apps.associateBy(
                     keySelector = { PackageUserKey(it.componentName!!.packageName, it.user) },
-                    valueTransform = { it.uid }
+                    valueTransform = { it.uid },
                 )
             scheduleCallbackTask { it.bindAllApplications(apps, flags, packageUserKeyToUidMap) }
         }

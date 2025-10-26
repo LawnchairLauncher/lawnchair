@@ -18,12 +18,11 @@ package com.android.launcher3.taskbar.overlay;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.dot.DotInfo;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.taskbar.BaseTaskbarContext;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
@@ -32,6 +31,7 @@ import com.android.launcher3.taskbar.TaskbarDragController;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView;
 import com.android.launcher3.taskbar.allapps.TaskbarSearchSessionController;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 
 /**
@@ -57,7 +57,7 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
             Context windowContext,
             TaskbarActivityContext taskbarContext,
             TaskbarControllers controllers) {
-        super(windowContext);
+        super(windowContext, taskbarContext.isPrimaryDisplay());
         mTaskbarContext = taskbarContext;
         mOverlayController = controllers.taskbarOverlayController;
         mDragController = new TaskbarDragController(this);
@@ -66,6 +66,12 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         mStashedTaskbarHeight = controllers.taskbarStashController.getStashedHeight();
 
         mUiController = controllers.uiController;
+        onViewCreated();
+    }
+
+    /** Called when the controller is destroyed. */
+    public void onDestroy() {
+        mDragController.onDestroy();
     }
 
     public @Nullable TaskbarSearchSessionController getSearchSessionController() {
@@ -120,11 +126,6 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     }
 
     @Override
-    public boolean isBindingItems() {
-        return mTaskbarContext.isBindingItems();
-    }
-
-    @Override
     public View.OnClickListener getItemOnClickListener() {
         return mTaskbarContext.getItemOnClickListener();
     }
@@ -134,6 +135,7 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         return mDragController::startDragOnLongClick;
     }
 
+    @NonNull
     @Override
     public PopupDataProvider getPopupDataProvider() {
         return mTaskbarContext.getPopupDataProvider();
@@ -145,8 +147,38 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     }
 
     @Override
-    public DotInfo getDotInfoForItem(ItemInfo info) {
-        return mTaskbarContext.getDotInfoForItem(info);
+    public boolean isTransientTaskbar() {
+        return mTaskbarContext.isTransientTaskbar();
+    }
+
+    @Override
+    public boolean isPinnedTaskbar() {
+        return mTaskbarContext.isPinnedTaskbar();
+    }
+
+    @Override
+    public NavigationMode getNavigationMode() {
+        return mTaskbarContext.getNavigationMode();
+    }
+
+    @Override
+    public boolean isInDesktopMode() {
+        return mTaskbarContext.isInDesktopMode();
+    }
+
+    @Override
+    public boolean showLockedTaskbarOnHome() {
+        return mTaskbarContext.showLockedTaskbarOnHome();
+    }
+
+    @Override
+    public boolean showDesktopTaskbarForFreeformDisplay() {
+        return mTaskbarContext.showDesktopTaskbarForFreeformDisplay();
+    }
+
+    @Override
+    public boolean isPrimaryDisplay() {
+        return mTaskbarContext.isPrimaryDisplay();
     }
 
     @Override

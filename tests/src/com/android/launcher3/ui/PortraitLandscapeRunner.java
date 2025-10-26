@@ -1,9 +1,13 @@
 package com.android.launcher3.ui;
 
+import static com.android.launcher3.LauncherPrefs.FIXED_LANDSCAPE_MODE;
+
 import android.util.Log;
 import android.view.Surface;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.util.rule.FailureWatcher;
 
@@ -67,10 +71,12 @@ public class PortraitLandscapeRunner<LAUNCHER_TYPE extends Launcher> implements 
                     Log.e(TAG, "Error", e);
                     throw e;
                 } finally {
+
                     mTest.mDevice.setOrientationNatural();
                     mTest.executeOnLauncher(launcher ->
                     {
                         if (launcher != null) {
+                            LauncherPrefs.get(launcher).put(FIXED_LANDSCAPE_MODE, false);
                             launcher.getRotationHelper().forceAllowRotationForTesting(false);
                         }
                     });
@@ -90,11 +96,19 @@ public class PortraitLandscapeRunner<LAUNCHER_TYPE extends Launcher> implements 
             }
 
             private void evaluateInLandscape() throws Throwable {
+                mTest.executeOnLauncher(launcher -> LauncherPrefs.get(launcher)
+                        .put(FIXED_LANDSCAPE_MODE, shouldHaveFixedLandscape(launcher)));
                 mTest.mDevice.setOrientationLeft();
                 mTest.mLauncher.setExpectedRotation(Surface.ROTATION_90);
                 AbstractLauncherUiTest.checkDetectedLeaks(mTest.mLauncher, true);
                 base.evaluate();
                 mTest.getDevice().pressHome();
+            }
+
+            private boolean shouldHaveFixedLandscape(Launcher launcher) {
+                return Flags.oneGridSpecs()
+                        && !launcher.getDeviceProfile().isTablet
+                        && !launcher.getDeviceProfile().isMultiDisplay;
             }
         };
     }

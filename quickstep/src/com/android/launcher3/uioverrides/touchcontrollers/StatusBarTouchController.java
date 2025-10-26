@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications copyright 2021, Lawnchair
+ * Modifications copyright 2025, Lawnchair
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
@@ -26,7 +26,6 @@ import static android.view.WindowManager.LayoutParams.FLAG_SLIPPERY;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadScroll;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN;
 
-import android.annotation.SuppressLint;
 import android.graphics.PointF;
 import android.util.SparseArray;
 import android.view.MotionEvent;
@@ -40,7 +39,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.TouchController;
-import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
 
 import java.io.PrintWriter;
@@ -50,10 +48,8 @@ import app.lawnchair.LawnchairAppKt;
 import app.lawnchair.util.CompatibilityKt;
 
 /**
- * TouchController for handling touch events that get sent to the StatusBar.
- * Once the
- * Once the event delta mDownY passes the touch slop, the events start getting
- * forwarded.
+ * TouchController for handling touch events that get sent to the StatusBar. Once the
+ * Once the event delta mDownY passes the touch slop, the events start getting forwarded.
  * All events are offset by initial Y value of the pointer.
  */
 public class StatusBarTouchController implements TouchController {
@@ -66,15 +62,8 @@ public class StatusBarTouchController implements TouchController {
     private int mLastAction;
     private final SparseArray<PointF> mDownEvents;
 
-    /*
-     * If {@code false}, this controller should not handle the input {@link
-     * MotionEvent}.
-     */
+    /* If {@code false}, this controller should not handle the input {@link MotionEvent}.*/
     private boolean mCanIntercept;
-
-    private boolean mExpanded;
-    private boolean mVibrated;
-    private boolean mIsTrackpadReverseScroll;
 
     public StatusBarTouchController(Launcher l) {
         mLauncher = l;
@@ -96,30 +85,6 @@ public class StatusBarTouchController implements TouchController {
         if (mSystemUiProxy.isActive()) {
             mLastAction = ev.getActionMasked();
             mSystemUiProxy.onStatusBarTouchEvent(ev);
-        } else if (!mExpanded) {
-            mExpanded = true;
-            expand();
-        }
-        if (!mVibrated) {
-            mVibrated = true;
-            vibrate();
-        }
-    }
-
-    @SuppressLint({"WrongConstant", "PrivateApi"})
-    private void expand() {
-        try {
-            Class.forName("android.app.StatusBarManager")
-                .getMethod("expandNotificationsPanel")
-                .invoke(mLauncher.getSystemService("statusbar"));
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void vibrate() {
-        if (!LawnchairAppKt.getLawnchairApp(mLauncher).isVibrateOnIconAnimation()) {
-            VibratorWrapper.INSTANCE.get(mLauncher).vibrate(VibratorWrapper.OVERVIEW_HAPTIC);
         }
     }
 
@@ -134,11 +99,7 @@ public class StatusBarTouchController implements TouchController {
                 return false;
             }
             mDownEvents.clear();
-            mExpanded = false;
-            mVibrated = false;
             mDownEvents.put(pid, new PointF(ev.getX(), ev.getY()));
-            mIsTrackpadReverseScroll = !mLauncher.isNaturalScrollingEnabled()
-                    && isTrackpadScroll(ev);
         } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
             // Check!! should only set it only when threshold is not entered.
             mDownEvents.put(pid, new PointF(ev.getX(idx), ev.getY(idx)));
@@ -152,9 +113,6 @@ public class StatusBarTouchController implements TouchController {
         if (action == ACTION_MOVE && mDownEvents.contains(pid)) {
             float dy = ev.getY(idx) - mDownEvents.get(pid).y;
             float dx = ev.getX(idx) - mDownEvents.get(pid).x;
-            if (mIsTrackpadReverseScroll) {
-                dy = -dy;
-            }
             // Currently input dispatcher will not do touch transfer if there are more than
             // one touch pointer. Hence, even if slope passed, only set the slippery flag
             // when there is single touch event. (context: InputDispatcher.cpp line 1445)
@@ -179,7 +137,6 @@ public class StatusBarTouchController implements TouchController {
             mLauncher.getStatsLogManager().logger()
                     .log(LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN);
             setWindowSlippery(false);
-            mIsTrackpadReverseScroll = false;
             return true;
         } else if (CompatibilityKt.isOnePlusStock() && action == ACTION_MOVE) {
             dispatchTouchEvent(ev);
@@ -208,9 +165,9 @@ public class StatusBarTouchController implements TouchController {
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
-        if (!mLauncher.isInState(LauncherState.NORMAL) ||
-                AbstractFloatingView.getTopOpenViewWithType(mLauncher,
-                        AbstractFloatingView.TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW) != null) {
+        if (isTrackpadScroll(ev) || !mLauncher.isInState(LauncherState.NORMAL)
+                || AbstractFloatingView.getTopOpenViewWithType(mLauncher,
+                AbstractFloatingView.TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW) != null) {
             return false;
         } else {
             // For NORMAL state, only listen if the event originated above the navbar height
@@ -219,6 +176,6 @@ public class StatusBarTouchController implements TouchController {
                 return false;
             }
         }
-        return true;
+        return SystemUiProxy.INSTANCE.get(mLauncher).isActive();
     }
 }

@@ -18,13 +18,16 @@ package com.android.systemui.shared.system;
 
 import static android.app.ActivityManager.LOCK_TASK_MODE_LOCKED;
 import static android.app.ActivityManager.LOCK_TASK_MODE_NONE;
+import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 import static android.app.ActivityTaskManager.getService;
+import static app.lawnchair.compat.LawnchairQuickstepCompat.ATLEAST_R;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Activity;
 import android.app.ActivityClient;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RecentTaskInfo;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.app.ActivityTaskManager;
@@ -38,7 +41,7 @@ import android.content.pm.UserInfo;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.DeadSystemException;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -46,8 +49,6 @@ import android.os.SystemClock;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
-import android.view.IRecentsAnimationController;
-import android.view.RemoteAnimationTarget;
 import android.window.TaskSnapshot;
 
 import com.android.internal.app.IVoiceInteractionManagerService;
@@ -58,11 +59,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
-
-import app.lawnchair.compat.LawnchairQuickstepCompat;
-import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
-import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 
 public class ActivityManagerWrapper {
 
@@ -87,13 +83,17 @@ public class ActivityManagerWrapper {
     /**
      * @return the current user's id.
      */
-    public int getCurrentUserId() {
+    public int getCurrentUserId() throws DeadSystemException {
         UserInfo ui;
         try {
             ui = ActivityManager.getService().getCurrentUser();
             return ui != null ? ui.id : 0;
         } catch (RemoteException e) {
-            throw e.rethrowFromSystemServer();
+            if (ATLEAST_R) {
+                throw e.rethrowFromSystemServer();
+            } else {
+                throw new DeadSystemException();
+            }
         }
     }
 
@@ -102,14 +102,6 @@ public class ActivityManagerWrapper {
      */
     public ActivityManager.RunningTaskInfo getRunningTask() {
         return getRunningTask(false /* filterVisibleRecents */);
-    }
-
-    /**
-     * @return a list of the recents tasks.
-     */
-    @NonNull
-    public List<ActivityManager.RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
-        return LawnchairQuickstepCompat.getActivityManagerCompat().getRecentTasks(numTasks, userId);
     }
 
     /**
@@ -220,96 +212,13 @@ public class ActivityManagerWrapper {
     }
 
     /**
-     * Starts the recents activity. The caller should manage the thread on which this is called.
+     * Preloads the recents activity. The caller should manage the thread on which this is called.
      */
-    public void startRecentsActivity(Intent intent, long eventTime,
-            final RecentsAnimationListener animationHandler, final Consumer<Boolean> resultCallback,
-            Handler resultCallbackHandler) {
-        boolean result = startRecentsActivity(intent, eventTime, animationHandler);
-        if (resultCallback != null && resultCallbackHandler != null) {
-            resultCallbackHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    resultCallback.accept(result);
-                }
-            });
-        }
-    }
-
-    /**
-     * Starts the recents activity. The caller should manage the thread on which this is called.
-     */
-    public boolean startRecentsActivity(
-            Intent intent, long eventTime, RecentsAnimationListener animationHandler) {
+    public void preloadRecentsActivity(Intent intent) {
         try {
-            RecentsAnimationRunnerCompat runner = null;
-            if (animationHandler != null) {
-                runner = new RecentsAnimationRunnerCompat() {
-                    @Override
-                    public void onAnimationStart(IRecentsAnimationController controller,
-                                                 RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-                                                 Rect homeContentInsets, Rect minimizedHomeBounds) {
-                        final RecentsAnimationControllerCompat controllerCompat =
-                                new RecentsAnimationControllerCompat(controller);
-                        animationHandler.onAnimationStart(controllerCompat, apps,
-                                wallpapers, homeContentInsets, minimizedHomeBounds, new Bundle());
-                    }
-
-                    @Override
-                    public void onAnimationCanceled(int[] taskIds, TaskSnapshot[] taskSnapshots) {
-                        animationHandler.onAnimationCanceled(
-                                ThumbnailData.wrap(taskIds, taskSnapshots));
-                    }
-
-
-                    /**
-                     * compat for android 12/11/10
-                     */
-                    public void onAnimationCanceled(Object taskSnapshot) {
-                        if (LawnchairQuickstepCompat.ATLEAST_S) {
-                            animationHandler.onAnimationCanceled(
-                                    ThumbnailData.wrap(new int[]{0}, new TaskSnapshot[]{(TaskSnapshot) taskSnapshot}));
-                        } else if (LawnchairQuickstepCompat.ATLEAST_R) {
-                            ActivityManagerCompatVR compat = (ActivityManagerCompatVR) LawnchairQuickstepCompat.getActivityManagerCompat();
-                            ActivityManagerCompatVR.ThumbnailData data = compat.convertTaskSnapshotToThumbnailData(taskSnapshot);
-                            HashMap<Integer, ThumbnailData> thumbnailDatas = new HashMap<>();
-                            if (data != null) {
-                                thumbnailDatas.put(0, new ThumbnailData());
-                            }
-                            animationHandler.onAnimationCanceled(thumbnailDatas);
-                        } else {
-                            animationHandler.onAnimationCanceled(new HashMap<>());
-                        }
-                    }
-
-                    /**
-                     * compat for android 12/11
-                     */
-                    public void onTaskAppeared(RemoteAnimationTarget app) {
-                        animationHandler.onTasksAppeared(new RemoteAnimationTarget[]{app});
-                    }
-
-                    @Override
-                    public void onTasksAppeared(RemoteAnimationTarget[] apps) {
-                        animationHandler.onTasksAppeared(apps);
-                    }
-                };
-            }
-            LawnchairQuickstepCompat.getActivityManagerCompat().startRecentsActivity(intent, eventTime, runner);
-            return true;
+            getService().preloadRecentsActivity(intent);
         } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * Cancels the remote recents animation started from {@link #startRecentsActivity}.
-     */
-    public void cancelRecentsAnimation(boolean restoreHomeRootTaskPosition) {
-        try {
-            getService().cancelRecentsAnimation(restoreHomeRootTaskPosition);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to cancel recents animation", e);
+            Log.w(TAG, "Failed to preload recents activity", e);
         }
     }
 
@@ -318,24 +227,6 @@ public class ActivityManagerWrapper {
      */
     public boolean startActivityFromRecents(Task.TaskKey taskKey, ActivityOptions options) {
         return startActivityFromRecents(taskKey.id, options);
-    }
-
-    /**
-     * Preloads the recents activity. The caller should manage the thread on which this is called.
-     */
-    public void preloadRecentsActivity(Intent intent) {
-        try {
-            Class<?> activityTaskManagerClass = Class.forName("android.app.ActivityTaskManager");
-            Method getServiceMethod = activityTaskManagerClass.getMethod("getService");
-            Object activityTaskManagerService = getServiceMethod.invoke(null);
-            Method preloadRecentsActivityMethod = activityTaskManagerService.getClass()
-                    .getMethod("preloadRecentsActivity", Intent.class);
-
-            preloadRecentsActivityMethod.invoke(activityTaskManagerService, intent);
-        } catch (Throwable e) {
-            Log.w(TAG, "Failed to preload recents activity", e);
-            startRecentsActivity(intent, 0, null, null, null);
-        }
     }
 
     /**
@@ -360,6 +251,17 @@ public class ActivityManagerWrapper {
             ActivityManager.getService().closeSystemDialogs(reason);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed to close system windows", e);
+        }
+    }
+
+    /**
+     * Sets whether or not the specified task is perceptible.
+     */
+    public boolean setTaskIsPerceptible(int taskId, boolean isPerceptible) {
+        try {
+            return getService().setTaskIsPerceptible(taskId, isPerceptible);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
         }
     }
 
@@ -419,7 +321,7 @@ public class ActivityManagerWrapper {
      * Shows a voice session identified by {@code token}
      * @return true if the session was shown, false otherwise
      */
-    public boolean showVoiceSession(@NonNull IBinder token, @NonNull Bundle args, int flags,
+    public boolean showVoiceSession(IBinder token, @NonNull Bundle args, int flags,
             @Nullable String attributionTag) {
         IVoiceInteractionManagerService service = IVoiceInteractionManagerService.Stub.asInterface(
                 ServiceManager.getService(Context.VOICE_INTERACTION_MANAGER_SERVICE));
@@ -453,5 +355,10 @@ public class ActivityManagerWrapper {
     public static boolean isHomeTask(RunningTaskInfo info) {
         return info.configuration.windowConfiguration.getActivityType()
                 == WindowConfiguration.ACTIVITY_TYPE_HOME;
+    }
+
+    public boolean isRunningInTestHarness() {
+        return ActivityManager.isRunningInTestHarness()
+                || ActivityManager.isRunningInUserTestHarness();
     }
 }
