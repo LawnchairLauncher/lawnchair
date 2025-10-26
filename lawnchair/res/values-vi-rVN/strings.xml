@@ -91,7 +91,7 @@
     <string name="wallpaper">Hình nền</string>
     <string name="style">Phong cách</string>
     <string name="background_opacity">Độ mờ của nền</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">Nền thanh tìm kiếm tách biệt</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Đã sao chép</string>
     <string name="calculator_search_result_copied_toast">Kết quả đã sao chép vào bảng nhớ tạm</string>
@@ -608,7 +608,7 @@
     <string name="search_algorithm_global_search_via_asi">Tìm kiếm toàn thiết bị (thông qua ASI)</string>
     <string name="custom_search_label">Tên công cụ tìm kiếm</string>
     <string name="custom_search_url">URL công cụ tìm kiếm</string>
-    <string name="custom_search_suggestions_url">Search suggestions URL</string>
+    <string name="custom_search_suggestions_url">URL gợi ý tìm kiếm</string>
     <string name="custom_search_input_hint">&#37; sẽ được thay thế bằng truy vấn tìm kiếm</string>
     <string name="custom_search_suggestions_hint">&#37; sẽ được thay thế bằng truy vấn tìm kiếm. Kết quả phải ở định dạng JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
