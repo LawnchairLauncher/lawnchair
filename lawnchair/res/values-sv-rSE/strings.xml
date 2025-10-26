@@ -91,6 +91,7 @@
     <string name="wallpaper">Bakgrundsbild</string>
     <string name="style">Stil</string>
     <string name="background_opacity">Bakgrundens opacitet</string>
+    <string name="pref_all_apps_search_bar_background">Separerad bakgrund för sökfältet</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Kopierad till urklipp</string>
     <string name="calculator_search_result_copied_toast">Resultat kopierat till urklipp</string>

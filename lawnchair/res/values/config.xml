@@ -119,6 +119,7 @@
     <bool name="config_default_show_status_bar">true</bool>
     <bool name="config_default_remember_position">false</bool>
     <bool name="config_default_dynamic_hide_status_bar_clock">false</bool>
+    <bool name="config_default_search_bar_background">true</bool>
     <bool name="config_default_show_scrollbar">true</bool>
     <bool name="config_default_show_top_shadow">true</bool>
     <bool name="config_default_lock_home_screen">false</bool>

@@ -1,6 +1,6 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -22,7 +22,7 @@ addFrameworkJar('framework-15.jar')
 compileOnlyCommonJars()
 
 dependencies {
-    implementation 'androidx.core:core-animation:1.0.0'
+    implementation libs.androidx.core.animation
     compileOnly projects.animationlib
     compileOnly projects.wmshell
     compileOnly projects.flags

@@ -1,6 +1,6 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -23,5 +23,5 @@ compileOnlyCommonJars()
 dependencies {
     compileOnly projects.plugincore
     compileOnly projects.common
-    implementation 'com.google.errorprone:error_prone_annotations:2.42.0'
+    implementation libs.error.prone.annotations
 }

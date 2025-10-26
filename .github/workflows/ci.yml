@@ -54,7 +54,7 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleLawnWithQuickstepGithubDebug assembleLawnWithQuickstepPlayDebug assembleLawnWithQuickstepNightlyRelease --no-configuration-cache
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Debug APK
           path: build/outputs/apk/**/*.apk
@@ -89,7 +89,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install gitpython requests
       - name: Download artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: Debug APK
           path: artifacts/debug-apk
@@ -124,7 +124,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: Debug APK
       # Note the # and () symbols are not supported in GitHub Release filenames, even manually
