@@ -28,7 +28,7 @@ class BatteryStatusProvider(context: Context) :
     private data class ChargingState(
         var lastBatteryLevel: Int = -1,
         var lastChargingTime: Long = -1,
-        val chargingRates: MutableList<Double> = mutableListOf()
+        val chargingRates: MutableList<Double> = mutableListOf(),
     )
     private val chargingState = ChargingState()
     private fun resetChargingTracking() = chargingState.apply {
@@ -59,8 +59,11 @@ class BatteryStatusProvider(context: Context) :
             level <= 15 -> context.getString(R.string.smartspace_battery_low)
             else -> return null
         }
-        val score = if (level <= 15) SmartspaceScores.SCORE_LOW_BATTERY
-        else SmartspaceScores.SCORE_BATTERY
+        val score = if (level <= 15) {
+            SmartspaceScores.SCORE_LOW_BATTERY
+        } else {
+            SmartspaceScores.SCORE_BATTERY
+        }
         val chargingTimeRemaining = computeChargeTimeRemaining()
         val subtitle = if (charging && chargingTimeRemaining > 0) {
             val chargingTime =
@@ -70,8 +73,9 @@ class BatteryStatusProvider(context: Context) :
                 level,
                 chargingTime,
             )
+        } else {
+            context.getString(R.string.n_percent, level)
         }
-        else context.getString(R.string.n_percent, level)
         val iconResId = if (charging) R.drawable.ic_charging else R.drawable.ic_battery_low
         return SmartspaceTarget(
             id = "batteryStatus",
