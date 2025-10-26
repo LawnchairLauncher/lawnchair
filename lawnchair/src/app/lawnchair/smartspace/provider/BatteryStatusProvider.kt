@@ -25,26 +25,26 @@ class BatteryStatusProvider(context: Context) :
 
     private val batteryManager = context.getSystemService<BatteryManager>()
     private val batteryContext = context
-    private var lastBatteryLevel: Int = -1
-    private var lastChargingTime: Long = -1
-    private var chargingRates = mutableListOf<Double>()
+    private data class ChargingState(
+        var lastBatteryLevel: Int = -1,
+        var lastChargingTime: Long = -1,
+        val chargingRates: MutableList<Double> = mutableListOf()
+    )
+    private val chargingState = ChargingState()
+    private fun resetChargingTracking() = chargingState.apply {
+        lastBatteryLevel = -1
+        lastChargingTime = -1
+        chargingRates.clear()
+    }
 
     override val internalTargets =
-        broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED)).map { intent ->
-            updateChargingEstimation(intent)
-            val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+        broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED)).map { _ ->
+            val level = getCurrentBatteryLevel()
+            updateChargingRate(level)
+            val status = getBatteryStatus()
             val charging = status == BatteryManager.BATTERY_STATUS_CHARGING
-            if (!charging) {
-                resetChargingTracking()
-            }
+            if (!charging) resetChargingTracking()
             val full = status == BatteryManager.BATTERY_STATUS_FULL
-            val level =
-                (
-                    100f * intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) / intent.getIntExtra(
-                        BatteryManager.EXTRA_SCALE,
-                        100,
-                    )
-                    ).toInt()
             listOfNotNull(getSmartspaceTarget(charging, full, level))
         }
 
@@ -59,11 +59,8 @@ class BatteryStatusProvider(context: Context) :
             level <= 15 -> context.getString(R.string.smartspace_battery_low)
             else -> return null
         }
-        val score = if (level <= 15) {
-            SmartspaceScores.SCORE_LOW_BATTERY
-        } else {
-            SmartspaceScores.SCORE_BATTERY
-        }
+        val score = if (level <= 15) SmartspaceScores.SCORE_LOW_BATTERY
+        else SmartspaceScores.SCORE_BATTERY
         val chargingTimeRemaining = computeChargeTimeRemaining()
         val subtitle = if (charging && chargingTimeRemaining > 0) {
             val chargingTime =
@@ -73,9 +70,8 @@ class BatteryStatusProvider(context: Context) :
                 level,
                 chargingTime,
             )
-        } else {
-            context.getString(R.string.n_percent, level)
         }
+        else context.getString(R.string.n_percent, level)
         val iconResId = if (charging) R.drawable.ic_charging else R.drawable.ic_battery_low
         return SmartspaceTarget(
             id = "batteryStatus",
@@ -90,30 +86,33 @@ class BatteryStatusProvider(context: Context) :
         )
     }
 
-    private fun updateChargingEstimation(intent: Intent) {
-        val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-        val charging = status == BatteryManager.BATTERY_STATUS_CHARGING
-        if (charging) {
-            val level =
-                (
-                    100f * intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) / intent.getIntExtra(
-                        BatteryManager.EXTRA_SCALE,
-                        100,
-                    )
-                    ).toInt()
-            calculateCurrentChargingRate(level)
+    private fun updateChargingRate(newLevel: Int) {
+        val now = System.currentTimeMillis()
+        with(chargingState) {
+            if (lastBatteryLevel != -1 && lastChargingTime != -1L) {
+                val levelDiff = newLevel - lastBatteryLevel
+                val mins = (now - lastChargingTime) / 60000.0
+                if (levelDiff > 0 && mins >= 0.5) {
+                    chargingRates.add(levelDiff / mins)
+                    if (chargingRates.size > 5) chargingRates.removeAt(0)
+                }
+            }
+            lastBatteryLevel = newLevel
+            lastChargingTime = now
         }
+    }
+    private fun getSmoothedRate(): Double {
+        val rates = chargingState.chargingRates
+        if (rates.isEmpty()) return -1.0
+        return rates.average()
     }
 
     private fun computeChargeTimeRemaining(): Long {
         if (!Utilities.ATLEAST_P) return -1
         return runCatching {
             val systemTimeRemaining = batteryManager?.computeChargeTimeRemaining() ?: -1
-            if (isReasonableChargingTime(systemTimeRemaining)) {
-                return@runCatching systemTimeRemaining
-            }
-            val custom = calculateCustomChargeTimeRemaining()
-            custom
+            if (isReasonableChargingTime(systemTimeRemaining)) return@runCatching systemTimeRemaining
+            calculateCustomChargeTimeRemaining()
         }.getOrDefault(-1)
     }
 
@@ -126,35 +125,9 @@ class BatteryStatusProvider(context: Context) :
     private fun calculateCustomChargeTimeRemaining(): Long {
         val batteryLevel = getCurrentBatteryLevel()
         if (batteryLevel == -1) return -1
-        val currentRate = calculateCurrentChargingRate(batteryLevel)
-        if (currentRate > 0) {
-            return calculateTimeFromRate(batteryLevel, currentRate)
-        }
+        val rate = getSmoothedRate()
+        if (rate > 0) return calculateTimeFromRate(batteryLevel, rate)
         return calculateFallbackTime(batteryLevel)
-    }
-
-    private fun calculateCurrentChargingRate(currentLevel: Int): Double {
-        val currentTime = System.currentTimeMillis()
-        if (lastBatteryLevel == -1 || lastChargingTime == -1L) {
-            lastBatteryLevel = currentLevel
-            lastChargingTime = currentTime
-            return -1.0
-        }
-        val levelDiff = currentLevel - lastBatteryLevel
-        val timeDiffMinutes = (currentTime - lastChargingTime) / (1000.0 * 60.0)
-        if (levelDiff > 0 && timeDiffMinutes >= 0.5) {
-            val rate = levelDiff / timeDiffMinutes
-            chargingRates.add(rate)
-            if (chargingRates.size > 5) {
-                chargingRates.removeAt(0)
-            }
-            val smoothedRate = chargingRates.mapIndexed { i, r -> r * (i + 1) }
-                .sum() / ((1..chargingRates.size).sum().toDouble())
-            lastBatteryLevel = currentLevel
-            lastChargingTime = currentTime
-            return smoothedRate
-        }
-        return -1.0
     }
 
     private fun calculateTimeFromRate(currentLevel: Int, ratePerMinute: Double): Long {
@@ -173,8 +146,7 @@ class BatteryStatusProvider(context: Context) :
             estimatedMinutes <= 30 -> ((estimatedMinutes / 5.0).roundToInt() * 5)
             else -> ((estimatedMinutes / 10.0).roundToInt() * 10)
         }.coerceAtLeast(1)
-        val result = (roundedMinutes * 60 * 1000).toLong()
-        return result
+        return (roundedMinutes * 60 * 1000).toLong()
     }
 
     private fun calculateFallbackTime(currentLevel: Int): Long {
@@ -188,50 +160,29 @@ class BatteryStatusProvider(context: Context) :
                     else -> remainingPercentage * 5.0
                 }
             }
-
             isNormalCharging() -> remainingPercentage * 2.5
             else -> remainingPercentage * 5.0
         }
         val roundedMinutes = ((estimatedMinutes / 5.0).roundToInt() * 5).coerceAtLeast(1)
-        val result = (roundedMinutes * 60 * 1000).toLong()
-        return result
+        return (roundedMinutes * 60 * 1000).toLong()
     }
 
-    private fun resetChargingTracking() {
-        lastBatteryLevel = -1
-        lastChargingTime = -1
-        chargingRates.clear()
-    }
+    private fun getPlugType(): Int? = runCatching {
+        batteryContext.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            ?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+    }.getOrNull()
+    private fun isFastCharging() = getPlugType() == BatteryManager.BATTERY_PLUGGED_AC
+    private fun isNormalCharging() = getPlugType() == BatteryManager.BATTERY_PLUGGED_USB
 
-    private fun isFastCharging(): Boolean {
-        return runCatching {
-            val batteryIntent =
-                batteryContext.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-            val plugType = batteryIntent?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
-            plugType == BatteryManager.BATTERY_PLUGGED_AC
-        }.getOrDefault(false)
-    }
-
-    private fun isNormalCharging(): Boolean {
-        return runCatching {
-            val batteryIntent =
-                batteryContext.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-            val plugType = batteryIntent?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
-            plugType == BatteryManager.BATTERY_PLUGGED_USB
-        }.getOrDefault(false)
-    }
-
-    private fun getCurrentBatteryLevel(): Int {
-        return runCatching {
-            val batteryIntent =
-                batteryContext.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-            val level = batteryIntent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
-            val scale = batteryIntent?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: -1
-            if (level >= 0 && scale > 0) {
-                (level * 100 / scale.toFloat()).toInt()
-            } else {
-                -1
-            }
-        }.getOrDefault(-1)
-    }
+    private fun getCurrentBatteryLevel(): Int = runCatching {
+        batteryContext.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))?.let {
+            val level = it.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            val scale = it.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+            if (level >= 0 && scale > 0) (level * 100 / scale.toFloat()).toInt() else -1
+        } ?: -1
+    }.getOrDefault(-1)
+    private fun getBatteryStatus(): Int = runCatching {
+        batteryContext.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            ?.getIntExtra(BatteryManager.EXTRA_STATUS, -1) ?: -1
+    }.getOrDefault(-1)
 }
