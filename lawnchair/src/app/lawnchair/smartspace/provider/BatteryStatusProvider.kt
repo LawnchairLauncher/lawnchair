@@ -41,18 +41,17 @@ class BatteryStatusProvider(context: Context) :
     }
 
     override val internalTargets =
-        broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED)).map { _ ->
-            val level = getCurrentBatteryLevel()
-            updateChargingRate(level)
-            val status = getBatteryStatus()
-            val charging = status == BatteryManager.BATTERY_STATUS_CHARGING
-            if (!charging) resetChargingTracking()
-            val full = status == BatteryManager.BATTERY_STATUS_FULL
+        broadcastReceiverFlow(context, IntentFilter(Intent.ACTION_BATTERY_CHANGED)).map { intent ->
             val level = (
                 100f *
                     intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
                     intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
                 ).toInt()
+            updateChargingRate(level)
+            val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN)
+            val charging = status == BatteryManager.BATTERY_STATUS_CHARGING
+            if (!charging) resetChargingTracking()
+            val full = status == BatteryManager.BATTERY_STATUS_FULL
             val wattage = getChargingWattage(intent)
             listOfNotNull(getSmartspaceTarget(charging, full, level, wattage))
         }
