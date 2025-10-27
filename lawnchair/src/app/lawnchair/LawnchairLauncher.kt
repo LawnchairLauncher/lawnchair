@@ -20,7 +20,6 @@ import android.animation.AnimatorSet
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -29,8 +28,6 @@ import android.view.Display
 import android.view.View
 import android.view.ViewTreeObserver
 import android.window.SplashScreen
-import androidx.activity.SystemBarStyle
-import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
@@ -38,7 +35,6 @@ import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.data.AppDatabase
 import app.lawnchair.data.wallpaper.service.WallpaperService
-import app.lawnchair.factory.LawnchairWidgetHolder
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -76,6 +72,7 @@ import com.android.launcher3.util.RunnableList
 import com.android.launcher3.util.SystemUiController.UI_STATE_BASE_WINDOW
 import com.android.launcher3.util.Themes
 import com.android.launcher3.util.TouchController
+import com.android.launcher3.util.WallpaperThemeManager
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.views.OptionsPopupView.OptionItem
@@ -97,7 +94,11 @@ class LawnchairLauncher : QuickstepLauncher() {
     private val defaultOverlay by unsafeLazy { OverlayCallbackImpl(this) }
     private val prefs by unsafeLazy { PreferenceManager.getInstance(this) }
     private val preferenceManager2 by unsafeLazy { PreferenceManager2.getInstance(this) }
-    private val insetsController by unsafeLazy { WindowInsetsControllerCompat(launcher.window, rootView) }
+    private val insetsController: WindowInsetsControllerCompat by lazy {
+        val window = launcher.window
+            ?: throw Exception("WindowInsetsControllerCompat not available.")
+        WindowInsetsControllerCompat(window, rootView)
+    }
     private val themeProvider by unsafeLazy { ThemeProvider.INSTANCE.get(this) }
     private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {
@@ -151,14 +152,6 @@ class LawnchairLauncher : QuickstepLauncher() {
     val gestureController by unsafeLazy { GestureController(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (!Utilities.ATLEAST_Q) {
-            enableEdgeToEdge(
-                navigationBarStyle = SystemBarStyle.auto(
-                    Color.TRANSPARENT,
-                    Color.TRANSPARENT,
-                ),
-            )
-        }
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         super.onCreate(savedInstanceState)
 
@@ -227,7 +220,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         }
         val isWorkspaceDarkText = Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)
         preferenceManager2.darkStatusBar.onEach(launchIn = lifecycleScope) { darkStatusBar ->
-            systemUiController.updateUiState(UI_STATE_BASE_WINDOW, isWorkspaceDarkText || darkStatusBar)
+            systemUiController?.updateUiState(UI_STATE_BASE_WINDOW, isWorkspaceDarkText || darkStatusBar)
         }
         preferenceManager2.backPressGestureHandler.onEach(launchIn = lifecycleScope) { handler ->
             hasBackGesture = handler !is GestureHandlerConfig.NoOp
@@ -266,11 +259,11 @@ class LawnchairLauncher : QuickstepLauncher() {
         ),
     )
 
-    override fun updateTheme() {
+    fun updateTheme() {
         if (themeProvider.colorScheme != colorScheme) {
             recreate()
         } else {
-            super.updateTheme()
+            WallpaperThemeManager(this).updateTheme()
         }
     }
 
@@ -360,7 +353,7 @@ class LawnchairLauncher : QuickstepLauncher() {
             view.iconView.setBackgroundDrawable(item.icon)
             view.bubbleText.text = item.label
             view.setOnClickListener(popup)
-            view.onLongClickListener = popup
+            view.setOnLongClickListener(popup)
             popup.mItemMap[view] = item
         }
 
@@ -368,15 +361,12 @@ class LawnchairLauncher : QuickstepLauncher() {
         return popup
     }
 
-    override fun createAppWidgetHolder(): LauncherWidgetHolder {
-        val factory = LauncherWidgetHolder.HolderFactory.newFactory(this) as LawnchairWidgetHolder.LawnchairHolderFactory
-        return factory.newInstance(
-            this,
-        ) { appWidgetId: Int ->
-            workspace.removeWidget(
-                appWidgetId,
-            )
+    fun createAppWidgetHolder(): LauncherWidgetHolder {
+        val holder = LauncherWidgetHolder.newInstance(this)
+        holder.setAppWidgetRemovedCallback { appWidgetId ->
+            workspace.removeWidget(appWidgetId)
         }
+        return holder
     }
 
     override fun makeDefaultActivityOptions(splashScreenStyle: Int): ActivityOptionsWrapper {
@@ -497,7 +487,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         if (
             preferenceManager2.alwaysReloadIcons.firstBlocking()
         ) {
-            LauncherAppState.getInstance(this).reloadIcons()
+            LauncherAppState.getInstance(this).model.reloadIfActive()
         }
     }
 
@@ -507,7 +497,7 @@ class LawnchairLauncher : QuickstepLauncher() {
 
         var sRestartFlags = 0
 
-        val instance get() = LauncherAppState.getInstanceNoCreate()?.launcher as? LawnchairLauncher
+        val instance get() = LauncherAppState.getInstance(LawnchairApp.instance) as? LawnchairLauncher
     }
 }
 

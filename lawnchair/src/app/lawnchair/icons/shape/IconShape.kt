@@ -25,8 +25,8 @@ import android.graphics.Path
 import android.graphics.PointF
 import android.util.Log
 import android.util.PathParser
-import app.lawnchair.util.unsafeLazy
 import com.android.launcher3.Utilities
+import com.android.launcher3.shapes.ShapesProvider
 
 open class IconShape(
     val topLeft: Corner,
@@ -470,6 +470,94 @@ open class IconShape(
     /**
      * Material 3 Expressive Shape
      */
+    object VerySunny : IconShape(
+        // Placeholder
+        Corner.fullArc,
+        Corner.fullArc,
+        Corner.fullArc,
+        Corner.fullArc,
+    ) {
+        private val parsedPath: Path = PathParser.createPathFromPathData("M42.3337 4.6379C45.5777 -0.914451 53.4223 -0.914461 56.6663 4.6379L60.3144 10.882C62.2063 14.12 65.9414 15.7068 69.5115 14.7892L76.396 13.0198C82.5178 11.4463 88.0648 17.1355 86.5307 23.4143L84.8055 30.4753C83.9108 34.137 85.4579 37.9679 88.615 39.9082L94.703 43.6499C100.117 46.977 100.117 55.0228 94.703 58.35L88.615 62.0917C85.4579 64.032 83.9108 67.8629 84.8055 71.5246L86.5307 78.5856C88.0648 84.8644 82.5178 90.5536 76.396 88.9801L69.5115 87.2107C65.9414 86.2931 62.2063 87.8798 60.3144 91.1179L56.6663 97.362C53.4223 102.914 45.5777 102.914 42.3337 97.362L38.6856 91.1179C36.7937 87.8798 33.0586 86.2931 29.4884 87.2107L22.604 88.9801C16.4822 90.5536 10.9352 84.8644 12.4693 78.5856L14.1945 71.5246C15.0892 67.8629 13.5421 64.032 10.3849 62.0917L4.29698 58.35C-1.11657 55.0229 -1.11658 46.9771 4.29697 43.6499L10.3849 39.9082C13.5421 37.9679 15.0892 34.137 14.1945 30.4753L12.4693 23.4143C10.9352 17.1355 16.4822 11.4463 22.604 13.0197L29.4884 14.7892C33.0586 15.7068 36.7937 14.12 38.6856 10.882L42.3337 4.6379Z")
+
+        private val matrix = Matrix()
+
+        override fun getMaskPath(): Path {
+            return Path().also { addToPath(it, 0f, 0f, 100f, 100f) }
+        }
+
+        override fun addToPath(
+            path: Path,
+            left: Float,
+            top: Float,
+            right: Float,
+            bottom: Float,
+            size: Float,
+            endSize: Float,
+            progress: Float,
+        ) {
+            matrix.reset()
+            val width = right - left
+            val height = bottom - top
+            matrix.setScale(width / 100f, height / 100f)
+            matrix.postTranslate(left, top)
+
+            val tempPath = Path(parsedPath)
+            tempPath.transform(matrix)
+            path.addPath(tempPath)
+        }
+
+        override fun toString(): String {
+            return "verysunny"
+        }
+    }
+
+    /**
+     * Material 3 Expressive Shape
+     */
+    object ComplexClover : IconShape(
+        // Placeholder
+        Corner.fullArc,
+        Corner.fullArc,
+        Corner.fullArc,
+        Corner.fullArc,
+    ) {
+        private val parsedPath: Path = PathParser.createPathFromPathData(ShapesProvider.FOLDER_COMPLEX_CLOVER_PATH)
+
+        private val matrix = Matrix()
+
+        override fun getMaskPath(): Path {
+            return Path().also { addToPath(it, 0f, 0f, 100f, 100f) }
+        }
+
+        override fun addToPath(
+            path: Path,
+            left: Float,
+            top: Float,
+            right: Float,
+            bottom: Float,
+            size: Float,
+            endSize: Float,
+            progress: Float,
+        ) {
+            matrix.reset()
+            val width = right - left
+            val height = bottom - top
+            matrix.setScale(width / 100f, height / 100f)
+            matrix.postTranslate(left, top)
+
+            val tempPath = Path(parsedPath)
+            tempPath.transform(matrix)
+            path.addPath(tempPath)
+        }
+
+        override fun toString(): String {
+            return "complexclover"
+        }
+    }
+
+    /**
+     * Material 3 Expressive Shape
+     */
     object FourSidedCookie : IconShape(
         // Placeholder
         Corner.fullArc,
@@ -477,15 +565,7 @@ open class IconShape(
         Corner.fullArc,
         Corner.fullArc,
     ) {
-        /**
-         * From AOSP Android 16.0.0_r2 ShapesProvider
-         */
-        private const val FOUR_SIDED_COOKIE_PATH =
-            "M39.888,4.517C46.338 7.319 53.662 7.319 60.112 4.517L63.605 3C84.733 -6.176 106.176 15.268 97 36.395L95.483 39.888C92.681 46.338 92.681 53.662 95.483 60.112L97 63.605C106.176 84.732 84.733 106.176 63.605 97L60.112 95.483C53.662 92.681 46.338 92.681 39.888 95.483L36.395 97C15.267 106.176 -6.176 84.732 3 63.605L4.517 60.112C7.319 53.662 7.319 46.338 4.517 39.888L3 36.395C -6.176 15.268 15.267 -6.176 36.395 3Z"
-
-        private val parsedPath by unsafeLazy {
-            PathParser.createPathFromPathData(FOUR_SIDED_COOKIE_PATH)
-        }
+        private val parsedPath: Path = PathParser.createPathFromPathData(ShapesProvider.FOUR_SIDED_COOKIE_PATH)
 
         private val matrix = Matrix()
 
@@ -526,15 +606,7 @@ open class IconShape(
         Corner.fullArc,
         Corner.fullArc,
     ) {
-        /**
-         * From AOSP Android 16.0.0_r2 ShapesProvider
-         */
-        private const val SEVEN_SIDED_COOKIE_PATH =
-            "M35.209 4.878C36.326 3.895 36.884 3.404 37.397 3.006 44.82 -2.742 55.18 -2.742 62.603 3.006 63.116 3.404 63.674 3.895 64.791 4.878 65.164 5.207 65.351 5.371 65.539 5.529 68.167 7.734 71.303 9.248 74.663 9.932 74.902 9.981 75.147 10.025 75.637 10.113 77.1 10.375 77.831 10.506 78.461 10.66 87.573 12.893 94.032 21.011 94.176 30.412 94.186 31.062 94.151 31.805 94.08 33.293 94.057 33.791 94.045 34.04 94.039 34.285 93.958 37.72 94.732 41.121 96.293 44.18 96.404 44.399 96.522 44.618 96.759 45.056 97.467 46.366 97.821 47.021 98.093 47.611 102.032 56.143 99.727 66.266 92.484 72.24 91.983 72.653 91.381 73.089 90.177 73.961 89.774 74.254 89.572 74.4 89.377 74.548 86.647 76.626 84.477 79.353 83.063 82.483 82.962 82.707 82.865 82.936 82.671 83.395 82.091 84.766 81.8 85.451 81.51 86.033 77.31 94.44 67.977 98.945 58.801 96.994 58.166 96.859 57.451 96.659 56.019 96.259 55.54 96.125 55.3 96.058 55.063 95.998 51.74 95.154 48.26 95.154 44.937 95.998 44.699 96.058 44.46 96.125 43.981 96.259 42.549 96.659 41.834 96.859 41.199 96.994 32.023 98.945 22.69 94.44 18.49 86.033 18.2 85.451 17.909 84.766 17.329 83.395 17.135 82.936 17.038 82.707 16.937 82.483 15.523 79.353 13.353 76.626 10.623 74.548 10.428 74.4 10.226 74.254 9.823 73.961 8.619 73.089 8.017 72.653 7.516 72.24 .273 66.266 -2.032 56.143 1.907 47.611 2.179 47.021 2.533 46.366 3.241 45.056 3.478 44.618 3.596 44.399 3.707 44.18 5.268 41.121 6.042 37.72 5.961 34.285 5.955 34.04 5.943 33.791 5.92 33.293 5.849 31.805 5.814 31.062 5.824 30.412 5.968 21.011 12.427 12.893 21.539 10.66 22.169 10.506 22.9 10.375 24.363 10.113 24.853 10.025 25.098 9.981 25.337 9.932 28.697 9.248 31.833 7.734 34.461 5.529 34.649 5.371 34.836 5.207 35.209 4.878Z"
-
-        private val parsedPath by unsafeLazy {
-            PathParser.createPathFromPathData(SEVEN_SIDED_COOKIE_PATH)
-        }
+        private val parsedPath: Path = PathParser.createPathFromPathData(ShapesProvider.SEVEN_SIDED_COOKIE_PATH)
 
         private val matrix = Matrix()
 
@@ -575,15 +647,7 @@ open class IconShape(
         Corner.fullArc,
         Corner.fullArc,
     ) {
-        /**
-         * From AOSP Android 16.0.0_r2 ShapesProvider
-         */
-        private const val ARCH_PATH =
-            "M50 0C77.614 0 100 22.386 100 50C100 85.471 100 86.476 99.9 87.321 99.116 93.916 93.916 99.116 87.321 99.9 86.476 100 85.471 100 83.46 100H16.54C14.529 100 13.524 100 12.679 99.9 6.084 99.116 .884 93.916 .1 87.321 0 86.476 0 85.471 0 83.46L0 50C0 22.386 22.386 0 50 0Z"
-
-        private val parsedPath by unsafeLazy {
-            PathParser.createPathFromPathData(ARCH_PATH)
-        }
+        private val parsedPath: Path = PathParser.createPathFromPathData(ShapesProvider.ARCH_PATH)
 
         private val matrix = Matrix()
 
@@ -644,6 +708,8 @@ open class IconShape(
             "hexagon" -> Hexagon
             "diamond" -> Diamond
             "egg" -> Egg
+            "verysunny" -> VerySunny
+            "complexclover" -> ComplexClover
             "foursidedcookie" -> FourSidedCookie
             "sevensidedcookie" -> SevenSidedCookie
             "arch" -> Arch

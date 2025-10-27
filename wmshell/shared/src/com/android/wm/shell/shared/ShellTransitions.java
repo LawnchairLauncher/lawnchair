@@ -22,6 +22,8 @@ import android.window.TransitionFilter;
 
 import com.android.wm.shell.shared.annotations.ExternalThread;
 
+import java.util.concurrent.Executor;
+
 /**
  * Interface to manage remote transitions.
  */
@@ -44,4 +46,15 @@ public interface ShellTransitions {
      * Unregisters a remote transition for all operations.
      */
     default void unregisterRemote(@NonNull RemoteTransition remoteTransition) {}
+
+    /**
+     * Sets listener that will receive callbacks about transitions involving focus switch.
+     */
+    default void setFocusTransitionListener(@NonNull FocusTransitionListener listener,
+            Executor executor) {}
+
+    /**
+     * Unsets listener that will receive callbacks about transitions involving focus switch.
+     */
+    default void unsetFocusTransitionListener(@NonNull FocusTransitionListener listener) {}
 }

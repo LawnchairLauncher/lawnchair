@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.view.View;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -145,4 +146,9 @@ public interface DropTarget {
 
     // These methods are implemented in Views
     void getHitRectRelativeToDragLayer(Rect outRect);
+
+    /** Returns the drop target view. By default, the implementor class is cast to the view. */
+    default View getDropView() {
+        return (View) this;
+    }
 }

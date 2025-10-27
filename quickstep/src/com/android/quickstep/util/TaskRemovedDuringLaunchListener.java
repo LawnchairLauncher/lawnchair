@@ -98,10 +98,7 @@ public class TaskRemovedDuringLaunchListener {
             final Runnable taskLaunchFailedCallback = mTaskLaunchFailedCallback;
             RecentsModel.INSTANCE.get(mContext).isTaskRemoved(mLaunchedTaskId, (taskRemoved) -> {
                 if (taskRemoved) {
-                    ActiveGestureLog.INSTANCE.addLog(
-                            new ActiveGestureLog.CompoundString("Launch failed, task (id=")
-                                    .append(launchedTaskId)
-                                    .append(") finished mid transition"));
+                    ActiveGestureProtoLogProxy.logTaskLaunchFailed(launchedTaskId);
                     taskLaunchFailedCallback.run();
                 }
             }, (task) -> true /* filter */);

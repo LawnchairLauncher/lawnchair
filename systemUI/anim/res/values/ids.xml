@@ -26,4 +26,7 @@
     <item type="id" name="tag_override_left"/>
     <item type="id" name="tag_override_right"/>
     <item type="id" name="tag_override_top"/>
+
+    <!-- ViewTransitionRegistry -->
+    <item type="id" name="tag_view_transition_token"/>
 </resources>

@@ -37,8 +37,7 @@ import java.util.ArrayList;
  * Controller for a search bar with an edit text and a cancel button.
  */
 public class WidgetsSearchBarController implements TextWatcher,
-        SearchCallback<WidgetsListBaseEntry>,  ExtendedEditText.OnBackKeyListener,
-        View.OnKeyListener {
+        SearchCallback<WidgetsListBaseEntry>, View.OnKeyListener {
     private static final String TAG = "WidgetsSearchBarController";
     private static final boolean DEBUG = false;
 
@@ -54,7 +53,6 @@ public class WidgetsSearchBarController implements TextWatcher,
         mSearchAlgorithm = algo;
         mInput = editText;
         mInput.addTextChangedListener(this);
-        mInput.setOnBackKeyListener(this);
         mInput.setOnKeyListener(this);
         mCancelButton = cancelButton;
         mCancelButton.setOnClickListener(v -> clearSearchResult());
@@ -105,12 +103,6 @@ public class WidgetsSearchBarController implements TextWatcher,
      */
     public void onDestroy() {
         mSearchAlgorithm.destroy();
-    }
-
-    @Override
-    public boolean onBackKey() {
-        clearFocus();
-        return true;
     }
 
     @Override

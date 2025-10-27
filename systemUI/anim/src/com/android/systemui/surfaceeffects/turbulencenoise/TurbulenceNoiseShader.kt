@@ -70,6 +70,19 @@ class TurbulenceNoiseShader(val baseType: Type = Type.SIMPLEX_NOISE) :
             }
         """
 
+        private const val SIMPLEX_SIMPLE_SHADER =
+            """
+            vec4 main(vec2 p) {
+                vec2 uv = p / in_size.xy;
+                uv.x *= in_aspectRatio;
+
+                // Compute turbulence effect with the uv distorted with simplex noise.
+                vec3 noisePos = vec3(uv + in_noiseMove.xy, in_noiseMove.z) * in_gridNum;
+                float mixFactor = simplex3d(noisePos) * 0.5 + 0.5;
+                return mix(in_color, in_screenColor, mixFactor);
+            }
+        """
+
         private const val FRACTAL_SHADER =
             """
             vec4 main(vec2 p) {
@@ -155,6 +168,8 @@ class TurbulenceNoiseShader(val baseType: Type = Type.SIMPLEX_NOISE) :
                 return sparkleLayer;
             }
         """
+        private const val SIMPLEX_NOISE_SIMPLE_SHADER =
+            ShaderUtilLibrary.SHADER_LIB + UNIFORMS + SIMPLEX_SIMPLE_SHADER
         private const val SIMPLEX_NOISE_SHADER =
             ShaderUtilLibrary.SHADER_LIB + UNIFORMS + COMMON_FUNCTIONS + SIMPLEX_SHADER
         private const val FRACTAL_NOISE_SHADER =
@@ -163,17 +178,20 @@ class TurbulenceNoiseShader(val baseType: Type = Type.SIMPLEX_NOISE) :
             ShaderUtilLibrary.SHADER_LIB + UNIFORMS + COMMON_FUNCTIONS + SIMPLEX_SPARKLE_SHADER
 
         enum class Type {
-            /** Effect with a simple color noise turbulence. */
+            /** Effect with a color noise turbulence with luma matte. */
             SIMPLEX_NOISE,
+            /** Effect with a noise interpolating between foreground and background colors. */
+            SIMPLEX_NOISE_SIMPLE,
             /** Effect with a simple color noise turbulence, with fractal. */
             SIMPLEX_NOISE_FRACTAL,
             /** Effect with color & sparkle turbulence with screen color layer. */
-            SIMPLEX_NOISE_SPARKLE
+            SIMPLEX_NOISE_SPARKLE,
         }
 
         fun getShader(type: Type): String {
             return when (type) {
                 Type.SIMPLEX_NOISE -> SIMPLEX_NOISE_SHADER
+                Type.SIMPLEX_NOISE_SIMPLE -> SIMPLEX_NOISE_SIMPLE_SHADER
                 Type.SIMPLEX_NOISE_FRACTAL -> FRACTAL_NOISE_SHADER
                 Type.SIMPLEX_NOISE_SPARKLE -> SPARKLE_NOISE_SHADER
             }
@@ -206,15 +224,15 @@ class TurbulenceNoiseShader(val baseType: Type = Type.SIMPLEX_NOISE) :
         setFloatUniform("in_pixelDensity", pixelDensity)
     }
 
-    /** Sets the noise color of the effect. Alpha is ignored. */
+    /**
+     * Sets the noise color of the effect. Alpha is ignored for all types except
+     * [Type.SIMPLEX_NOISE_SIMPLE].
+     */
     fun setColor(color: Int) {
         setColorUniform("in_color", color)
     }
 
-    /**
-     * Sets the color that is used for blending on top of the background color/image. Only relevant
-     * to [Type.SIMPLEX_NOISE_SPARKLE].
-     */
+    /** Sets the color that is used for blending on top of the background color/image. */
     fun setScreenColor(color: Int) {
         setColorUniform("in_screenColor", color)
     }
@@ -259,7 +277,7 @@ class TurbulenceNoiseShader(val baseType: Type = Type.SIMPLEX_NOISE) :
      */
     fun setLumaMatteFactors(
         lumaMatteBlendFactor: Float = 1f,
-        lumaMatteOverallBrightness: Float = 0f
+        lumaMatteOverallBrightness: Float = 0f,
     ) {
         setFloatUniform("in_lumaMatteBlendFactor", lumaMatteBlendFactor)
         setFloatUniform("in_lumaMatteOverallBrightness", lumaMatteOverallBrightness)
@@ -279,8 +297,10 @@ class TurbulenceNoiseShader(val baseType: Type = Type.SIMPLEX_NOISE) :
     /** Current noise movements in x, y, and z axes. */
     var noiseOffsetX: Float = 0f
         private set
+
     var noiseOffsetY: Float = 0f
         private set
+
     var noiseOffsetZ: Float = 0f
         private set
 

@@ -27,4 +27,7 @@
         @android:color/system_on_surface_dark</color>
     <color name="widget_cell_subtitle_color_dark">
         @android:color/system_on_surface_variant_dark</color>
+    <color name="widget_picker_menu_options_color_dark">
+        @android:color/system_on_surface_variant_dark
+    </color>
 </resources>

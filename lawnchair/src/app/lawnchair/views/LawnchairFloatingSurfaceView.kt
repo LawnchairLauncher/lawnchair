@@ -39,7 +39,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.MultiPropertyFactory
-import com.android.launcher3.util.window.RefreshRateTracker
+import com.android.launcher3.util.window.RefreshRateTracker.Companion.getSingleFrameMs
 import com.android.launcher3.views.FloatingIconView.getLocationBoundsForView
 import com.android.launcher3.views.FloatingIconViewCompanion.setPropertiesVisible
 import java.util.function.Consumer
@@ -89,7 +89,7 @@ class LawnchairFloatingSurfaceView @JvmOverloads constructor(
         // Remove after some time, to avoid flickering
         Executors.MAIN_EXECUTOR.handler.postDelayed(
             mRemoveViewRunnable,
-            RefreshRateTracker.getSingleFrameMs(mLauncher).toLong(),
+            mLauncher.getSingleFrameMs().toLong(),
         )
     }
 
@@ -218,11 +218,13 @@ class LawnchairFloatingSurfaceView @JvmOverloads constructor(
             duration = CONTENT_SCALE_DURATION.toLong() * 2
             interpolator = Interpolators.DECELERATE_2
             onEnd?.let {
-                addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        it()
-                    }
-                })
+                addListener(
+                    object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            it()
+                        }
+                    },
+                )
             }
         }
     }
@@ -238,11 +240,10 @@ class LawnchairFloatingSurfaceView @JvmOverloads constructor(
     }
 
     fun getIcon(): View? {
-        return mLauncher.getFirstMatchForAppClose(
+        return mLauncher.getFirstHomeElementForAppClose(
             null, /* StableViewInfo */
             mContract!!.componentName.packageName,
             mContract!!.user,
-            false, /* supportsAllAppsState */
         )
     }
 
@@ -405,15 +406,17 @@ class LawnchairFloatingSurfaceView @JvmOverloads constructor(
             view.mIsOpen = true
 
             val anim = AnimatorSet()
-            val startDelay = RefreshRateTracker.getSingleFrameMs(launcher)
+            val startDelay = launcher.getSingleFrameMs()
             val launcherContentAnimator: Pair<AnimatorSet?, Runnable?> =
                 view.getLauncherContentAnimator(startDelay)
             anim.playTogether(launcherContentAnimator.first, view.getBackgroundAnimator())
-            anim.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    launcherContentAnimator.second!!.run()
-                }
-            })
+            anim.addListener(
+                object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        launcherContentAnimator.second!!.run()
+                    }
+                },
+            )
 
             view.removeViewImmediate()
             launcher.dragLayer.addView(view)

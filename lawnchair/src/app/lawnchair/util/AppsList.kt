@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.android.launcher3.AppFilter
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
+import com.android.launcher3.icons.cache.CacheLookupFlag.Companion.DEFAULT_LOOKUP_FLAG
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.ComponentKey
@@ -70,7 +71,7 @@ class App(context: Context, private val info: LauncherActivityInfo) {
 
     init {
         val appInfo = AppInfo(context, info, info.user)
-        LauncherAppState.getInstance(context).iconCache.getTitleAndIcon(appInfo, false)
+        LauncherAppState.getInstance(context).iconCache.getTitleAndIcon(appInfo, DEFAULT_LOOKUP_FLAG)
         icon = appInfo.bitmap.icon
     }
 

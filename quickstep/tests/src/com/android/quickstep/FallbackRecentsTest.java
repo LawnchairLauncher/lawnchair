@@ -19,12 +19,11 @@ import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.Flags.enableFallbackOverviewInWindow;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.TestHelpers.getHomeIntentInPackage;
 import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
-import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_ACTIVITY_TIMEOUT;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_BROADCAST_TIMEOUT_SECS;
-import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.resolveSystemApp;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.startAppFast;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.startTestActivity;
@@ -56,6 +55,7 @@ import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ExtendedLongPressTimeoutRule;
 import com.android.launcher3.util.rule.FailureWatcher;
@@ -64,7 +64,10 @@ import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.TestIsolationRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.util.rule.ViewCaptureRule;
+import com.android.quickstep.OverviewComponentObserver.OverviewChangeListener;
+import com.android.quickstep.fallback.window.RecentsWindowManager;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.RecentsViewContainer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -142,7 +145,7 @@ public class FallbackRecentsTest {
         };
 
         final ViewCaptureRule viewCaptureRule = new ViewCaptureRule(
-                RecentsActivity.ACTIVITY_TRACKER::getCreatedActivity);
+                RecentsActivity.ACTIVITY_TRACKER::getCreatedContext);
         mOrderSensitiveRules = RuleChain
                 .outerRule(new SamplerRule())
                 .around(new TestStabilityRule())
@@ -192,29 +195,31 @@ public class FallbackRecentsTest {
     @Test
     public void goToOverviewFromApp() {
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
-        waitForRecentsActivityStop();
+        waitForRecentsClosed();
 
         mLauncher.getLaunchedAppState().switchToOverview();
     }
 
-    protected void executeOnRecents(Consumer<RecentsActivity> f) {
+    protected void executeOnRecents(Consumer<RecentsViewContainer> f) {
         getFromRecents(r -> {
             f.accept(r);
             return true;
         });
     }
 
-    protected <T> T getFromRecents(Function<RecentsActivity, T> f) {
+    protected <T> T getFromRecents(Function<RecentsViewContainer, T> f) {
         if (!TestHelpers.isInLauncherProcess()) return null;
         Object[] result = new Object[1];
         Wait.atMost("Failed to get from recents", () -> MAIN_EXECUTOR.submit(() -> {
-            RecentsActivity activity = RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
-            if (activity == null) {
+            RecentsViewContainer recentsViewContainer = enableFallbackOverviewInWindow()
+                    ? RecentsWindowManager.getRecentsWindowTracker().getCreatedContext()
+                    : RecentsActivity.ACTIVITY_TRACKER.getCreatedContext();
+            if (recentsViewContainer == null) {
                 return false;
             }
-            result[0] = f.apply(activity);
+            result[0] = f.apply(recentsViewContainer);
             return true;
-        }).get(), DEFAULT_UI_TIMEOUT, mLauncher);
+        }).get(), mLauncher);
         return (T) result[0];
     }
 
@@ -225,14 +230,19 @@ public class FallbackRecentsTest {
 
     private void pressHomeAndWaitForOverviewClose() {
         mDevice.pressHome();
-        waitForRecentsActivityStop();
+        waitForRecentsClosed();
     }
 
-    private void waitForRecentsActivityStop() {
+    private void waitForRecentsClosed() {
         try {
-            final boolean recentsActivityIsNull = MAIN_EXECUTOR.submit(
-                    () -> RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity() == null).get();
-            if (recentsActivityIsNull) {
+            final boolean isRecentsContainerNUll = MAIN_EXECUTOR.submit(() -> {
+                RecentsViewContainer recentsViewContainer = enableFallbackOverviewInWindow()
+                        ? RecentsWindowManager.getRecentsWindowTracker().getCreatedContext()
+                        : RecentsActivity.ACTIVITY_TRACKER.getCreatedContext();
+
+                return recentsViewContainer == null;
+            }).get();
+            if (isRecentsContainerNUll) {
                 // Null activity counts as a "stopped" one.
                 return;
             }
@@ -242,9 +252,9 @@ public class FallbackRecentsTest {
             throw new RuntimeException(e);
         }
 
-        Wait.atMost("Recents activity didn't stop",
+        Wait.atMost("Recents view container didn't close",
                 () -> getFromRecents(recents -> !recents.isStarted()),
-                DEFAULT_UI_TIMEOUT, mLauncher);
+                mLauncher);
     }
 
     @Test
@@ -252,9 +262,10 @@ public class FallbackRecentsTest {
         startAppFast(getAppPackageName());
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
-        waitForRecentsActivityStop();
+        waitForRecentsClosed();
         Wait.atMost("Expected three apps in the task list",
-                () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
+                () -> mLauncher.getRecentTasks().size() >= 3,
+                mLauncher);
 
         checkTestLauncher();
         BaseOverview overview = mLauncher.getLaunchedAppState().switchToOverview();
@@ -282,7 +293,7 @@ public class FallbackRecentsTest {
         assertNotNull("OverviewTask.open returned null", task.open());
         assertTrue("Test activity didn't open from Overview", TestHelpers.wait(Until.hasObject(
                 By.pkg(getAppPackageName()).text("TestActivity2")),
-                DEFAULT_UI_TIMEOUT));
+                TestUtil.DEFAULT_UI_TIMEOUT));
 
 
         // Test dismissing a task.
@@ -312,37 +323,39 @@ public class FallbackRecentsTest {
         );
     }
 
-    private int getCurrentOverviewPage(RecentsActivity recents) {
-        return recents.<RecentsView>getOverviewPanel().getCurrentPage();
+    private int getCurrentOverviewPage(RecentsViewContainer recentsViewContainer) {
+        return recentsViewContainer.<RecentsView>getOverviewPanel().getCurrentPage();
     }
 
-    private int getTaskCount(RecentsActivity recents) {
-        return recents.<RecentsView>getOverviewPanel().getTaskViewCount();
+    private int getTaskCount(RecentsViewContainer recentsViewContainer) {
+        return recentsViewContainer.<RecentsView>getOverviewPanel().getTaskViewCount();
     }
 
-    private class OverviewUpdateHandler {
+    private class OverviewUpdateHandler implements OverviewChangeListener {
 
-        final RecentsAnimationDeviceState mRads;
         final OverviewComponentObserver mObserver;
         final CountDownLatch mChangeCounter;
 
         OverviewUpdateHandler() {
             Context ctx = getInstrumentation().getTargetContext();
-            mRads = new RecentsAnimationDeviceState(ctx);
-            mObserver = new OverviewComponentObserver(ctx, mRads);
+            mObserver = OverviewComponentObserver.INSTANCE.get(ctx);
             mChangeCounter = new CountDownLatch(1);
             if (mObserver.getHomeIntent().getComponent()
                     .getPackageName().equals(mOtherLauncherActivity.packageName)) {
                 // Home already same
                 mChangeCounter.countDown();
             } else {
-                mObserver.setOverviewChangeListener(b -> mChangeCounter.countDown());
+                mObserver.addOverviewChangeListener(this);
             }
         }
 
+        @Override
+        public void onOverviewTargetChange(boolean isHomeAndOverviewSame) {
+            mChangeCounter.countDown();
+        }
+
         void destroy() {
-            mObserver.onDestroy();
-            mRads.destroy();
+            mObserver.removeOverviewChangeListener(this);
         }
     }
 }

@@ -18,31 +18,58 @@ package com.android.quickstep
 
 import android.app.PendingIntent
 import android.content.IIntentSender
+import android.provider.Settings
+import android.provider.Settings.Secure.USER_SETUP_COMPLETE
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
+import com.android.launcher3.dagger.LauncherAppComponent
+import com.android.launcher3.dagger.LauncherAppSingleton
+import com.android.launcher3.util.AllModulesForTest
 import com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR
+import com.android.launcher3.util.SandboxApplication
+import com.android.launcher3.util.SettingsCache
+import com.android.launcher3.util.SettingsCacheSandbox
 import com.android.launcher3.util.TestUtil
 import com.google.common.truth.Truth.assertThat
+import dagger.BindsInstance
+import dagger.Component
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit.SECONDS
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 private const val TIMEOUT = 5L
+private val USER_SETUP_COMPLETE_URI = Settings.Secure.getUriFor(USER_SETUP_COMPLETE)
 
 @RunWith(AndroidJUnit4::class)
 class AllAppsActionManagerTest {
     private val callbackSemaphore = Semaphore(0)
     private val bgExecutor = UI_HELPER_EXECUTOR
 
-    private val allAppsActionManager =
-        AllAppsActionManager(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            bgExecutor,
-        ) {
-            callbackSemaphore.release()
-            PendingIntent(IIntentSender.Default())
+    @get:Rule val context = SandboxApplication()
+
+    private val settingsCacheSandbox =
+        SettingsCacheSandbox().also { it[USER_SETUP_COMPLETE_URI] = 1 }
+
+    private val allAppsActionManager by
+        lazy(LazyThreadSafetyMode.NONE) {
+            AllAppsActionManager(context, bgExecutor) {
+                callbackSemaphore.release()
+                PendingIntent(IIntentSender.Default())
+            }
         }
+
+    @Before
+    fun initDaggerComponent() {
+        context.initDaggerComponent(
+            DaggerAllAppsActionManagerTestComponent.builder()
+                .bindSettingsCache(settingsCacheSandbox.cache)
+        )
+    }
+
+    @After fun destroyManager() = allAppsActionManager.onDestroy()
 
     @Test
     fun taskbarPresent_actionRegistered() {
@@ -87,5 +114,51 @@ class AllAppsActionManagerTest {
         allAppsActionManager.isHomeAndOverviewSame = true
         assertThat(callbackSemaphore.tryAcquire(TIMEOUT, SECONDS)).isTrue()
         assertThat(allAppsActionManager.isActionRegistered).isTrue()
+    }
+
+    @Test
+    fun taskbarPresent_userSetupIncomplete_actionUnregistered() {
+        settingsCacheSandbox[USER_SETUP_COMPLETE_URI] = 0
+        allAppsActionManager.isTaskbarPresent = true
+        assertThat(allAppsActionManager.isActionRegistered).isFalse()
+    }
+
+    @Test
+    fun taskbarPresent_setupUiVisible_actionUnregistered() {
+        allAppsActionManager.isSetupUiVisible = true
+        allAppsActionManager.isTaskbarPresent = true
+        assertThat(allAppsActionManager.isActionRegistered).isFalse()
+    }
+
+    @Test
+    fun taskbarPresent_userSetupCompleted_actionRegistered() {
+        settingsCacheSandbox[USER_SETUP_COMPLETE_URI] = 0
+        allAppsActionManager.isTaskbarPresent = true
+
+        settingsCacheSandbox[USER_SETUP_COMPLETE_URI] = 1
+        assertThat(callbackSemaphore.tryAcquire(TIMEOUT, SECONDS)).isTrue()
+        assertThat(allAppsActionManager.isActionRegistered).isTrue()
+    }
+
+    @Test
+    fun taskbarPresent_setupUiDismissed_actionRegistered() {
+        allAppsActionManager.isSetupUiVisible = true
+        allAppsActionManager.isTaskbarPresent = true
+
+        allAppsActionManager.isSetupUiVisible = false
+        assertThat(callbackSemaphore.tryAcquire(TIMEOUT, SECONDS)).isTrue()
+        assertThat(allAppsActionManager.isActionRegistered).isTrue()
+    }
+}
+
+@LauncherAppSingleton
+@Component(modules = [AllModulesForTest::class])
+interface AllAppsActionManagerTestComponent : LauncherAppComponent {
+
+    @Component.Builder
+    interface Builder : LauncherAppComponent.Builder {
+        @BindsInstance fun bindSettingsCache(settingsCache: SettingsCache): Builder
+
+        override fun build(): AllAppsActionManagerTestComponent
     }
 }

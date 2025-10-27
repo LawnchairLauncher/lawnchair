@@ -16,7 +16,6 @@
 
 package com.android.systemui.log
 
-import android.os.Trace
 import android.util.Log
 import com.android.systemui.common.buffer.RingBuffer
 import com.android.systemui.log.core.LogLevel
@@ -75,6 +74,7 @@ constructor(
     private val maxSize: Int,
     private val logcatEchoTracker: LogcatEchoTracker,
     private val systrace: Boolean = true,
+    private val systraceTrackName: String = DEFAULT_LOGBUFFER_TRACK_NAME,
 ) : MessageBuffer {
     private val buffer = RingBuffer(maxSize) { LogMessageImpl.create() }
 
@@ -193,7 +193,7 @@ constructor(
             logcatEchoTracker.isBufferLoggable(name, message.level) ||
                 logcatEchoTracker.isTagLoggable(message.tag, message.level)
 
-        val includeInSystrace = systrace && Trace.isTagEnabled(Trace.TRACE_TAG_APP)
+        val includeInSystrace = systrace && false
 
         if (includeInLogcat || includeInSystrace) {
             val strMessage = message.messagePrinter(message)
@@ -244,11 +244,7 @@ constructor(
     }
 
     private fun echoToSystrace(level: LogLevel, tag: String, strMessage: String) {
-        Trace.instantForTrack(
-            Trace.TRACE_TAG_APP,
-            "UI Events",
-            "$name - ${level.shortString} $tag: $strMessage"
-        )
+        return // LC-Ignored
     }
 
     private fun echoToLogcat(message: LogMessage, strMessage: String) {
@@ -260,6 +256,10 @@ constructor(
             LogLevel.ERROR -> Log.e(message.tag, strMessage, message.exception)
             LogLevel.WTF -> Log.wtf(message.tag, strMessage, message.exception)
         }
+    }
+
+    companion object {
+        const val DEFAULT_LOGBUFFER_TRACK_NAME = "UI Events"
     }
 }
 

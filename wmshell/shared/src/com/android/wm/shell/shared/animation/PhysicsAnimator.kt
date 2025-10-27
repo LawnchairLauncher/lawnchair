@@ -985,6 +985,11 @@ class PhysicsAnimator<T> private constructor (target: T) {
             return animators[target] as PhysicsAnimator<T>
         }
 
+        @JvmStatic
+        @Suppress("UNCHECKED_CAST")
+        fun <T: Any> getInstanceIfExists(target: T): PhysicsAnimator<T>? =
+            animators[target] as PhysicsAnimator<T>?
+
         /**
          * Set whether all physics animators should log a lot of information about animations.
          * Useful for debugging!

@@ -14,19 +14,18 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License
   -->
-<com.android.wm.shell.bubbles.bar.BubbleBarMenuView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.wm.shell.bubbles.bar.BubbleBarMenuView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
+    android:clipToPadding="false"
     android:minWidth="@dimen/bubble_bar_manage_menu_min_width"
     android:orientation="vertical"
-    android:elevation="@dimen/bubble_manage_menu_elevation"
-    android:paddingTop="@dimen/bubble_bar_manage_menu_padding_top"
-    android:paddingHorizontal="@dimen/bubble_bar_manage_menu_padding"
-    android:paddingBottom="@dimen/bubble_bar_manage_menu_padding"
-    android:clipToPadding="false">
+    android:visibility="invisible"
+    tools:visibility="visible">
 
     <LinearLayout
         android:id="@+id/bubble_bar_manage_menu_bubble_section"
@@ -52,7 +51,8 @@
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:textColor="?android:attr/textColorPrimary"
-            android:textAppearance="@*android:style/TextAppearance.DeviceDefault" />
+            android:textAppearance="@*android:style/TextAppearance.DeviceDefault"
+            android:textDirection="locale" />
 
         <ImageView
             android:id="@+id/bubble_bar_manage_menu_dismiss_icon"
@@ -71,6 +71,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="@dimen/bubble_bar_manage_menu_section_spacing"
+        android:clipChildren="true"
+        android:clipToOutline="true"
         android:background="@drawable/bubble_manage_menu_bg"
         android:elevation="@dimen/bubble_manage_menu_elevation" />
 

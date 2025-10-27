@@ -1,6 +1,12 @@
--keep,allowshrinking,allowoptimization class com.android.launcher3.** {
-  *;
-}
+
+-keep,allowshrinking,allowoptimization class com.android.launcher3.** {*;}
+-keepclasseswithmembernames class com.android.launcher3.** {*;}
+
+-keep,allowshrinking,allowoptimization class com.android.systemui.shared.** {*;}
+-keepclasseswithmembernames class com.android.systemui.shared.** {*;}
+
+-keep,allowshrinking,allowoptimization class com.android.quickstep.** {*;}
+-keepclasseswithmembernames class com.android.quickstep.** {*;}
 
 # The support library contains references to newer platform versions.
 # Don't warn about those in case this app is linking against an older
@@ -49,14 +55,7 @@
 # Ignore warnings for hidden utility classes referenced from the shared lib
 -dontwarn com.android.internal.util.**
 
-################ Do not optimize recents lib #############
--keep class com.android.systemui.shared.** {
-  *;
-}
 
-# This is generated automatically by the Android Gradle plugin.
--dontwarn androidx.dynamicanimation.animation.FrameCallbackScheduler
-
--keep class com.android.quickstep.** {
+-keep class com.android.internal.protolog.** {
   *;
 }

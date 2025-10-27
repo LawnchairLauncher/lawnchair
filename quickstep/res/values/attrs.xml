@@ -28,10 +28,16 @@
         <!-- Border color for a keyboard quick switch task views -->
         <attr name="focusBorderColor" format="color" />
         <attr name="hoverBorderColor" format="color" />
+        <attr name="focusBorderRadius" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="ClearAllButton">
         <!-- focus border color for overview clear all button views -->
+        <attr name="focusBorderColor" />
+    </declare-styleable>
+
+    <declare-styleable name="AddDesktopButton">
+        <!-- focus border color for overview add desktop button views -->
         <attr name="focusBorderColor" />
     </declare-styleable>
 

@@ -103,7 +103,7 @@ constructor(
 
                 if (displayId == display.displayId) {
                     val currentRotation = display.rotation
-                    if (lastRotation.compareAndSet(lastRotation.get(), currentRotation)) {
+                    if (lastRotation.getAndSet(currentRotation) != currentRotation) {
                         listeners.forEach { it.onRotationChanged(currentRotation) }
                     }
                 }

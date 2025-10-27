@@ -16,23 +16,63 @@
 
 package com.android.quickstep.inputconsumers;
 
+import static android.app.contextualsearch.ContextualSearchManager.ENTRYPOINT_LONG_PRESS_NAV_HANDLE;
+
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_LAUNCH_ASSISTANT_SUCCESSFUL_NAV_HANDLE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OMNI_GET_LONG_PRESS_RUNNABLE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_OMNI_RUNNABLE;
+
 import android.content.Context;
+import android.os.SystemClock;
+import android.util.Log;
+import android.view.ViewConfiguration;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.launcher3.util.VibratorWrapper;
+import com.android.quickstep.DeviceConfigWrapper;
 import com.android.quickstep.NavHandle;
+import com.android.quickstep.TopTaskTracker;
+import com.android.quickstep.util.ContextualSearchHapticManager;
+import com.android.quickstep.util.ContextualSearchInvoker;
+import com.android.quickstep.util.ContextualSearchStateManager;
 
 /**
  * Class for extending nav handle long press behavior
  */
 public class NavHandleLongPressHandler implements ResourceBasedOverride {
 
+    private static final String TAG = "NavHandleLongPressHandler";
+
+    protected final Context mContext;
+    protected final VibratorWrapper mVibratorWrapper;
+    protected final ContextualSearchHapticManager mContextualSearchHapticManager;
+    protected final ContextualSearchInvoker mContextualSearchInvoker;
+    protected final StatsLogManager mStatsLogManager;
+    private boolean mPendingInvocation;
+
+    public NavHandleLongPressHandler(Context context) {
+        mContext = context;
+        mStatsLogManager = StatsLogManager.newInstance(context);
+        mVibratorWrapper = VibratorWrapper.INSTANCE.get(mContext);
+        mContextualSearchHapticManager = ContextualSearchHapticManager.INSTANCE.get(context);
+        mContextualSearchInvoker = new ContextualSearchInvoker(mContext);
+    }
+
     /** Creates NavHandleLongPressHandler as specified by overrides */
     public static NavHandleLongPressHandler newInstance(Context context) {
         return Overrides.getObject(NavHandleLongPressHandler.class, context,
                 R.string.nav_handle_long_press_handler_class);
+    }
+
+    protected boolean isContextualSearchEntrypointEnabled(NavHandle navHandle) {
+        return DeviceConfigWrapper.get().getEnableLongPressNavHandle();
     }
 
     /**
@@ -46,8 +86,48 @@ public class NavHandleLongPressHandler implements ResourceBasedOverride {
      *
      * @param navHandle to handle this long press
      */
-    public @Nullable Runnable getLongPressRunnable(NavHandle navHandle) {
-        return null;
+    @Nullable
+    @VisibleForTesting
+    final Runnable getLongPressRunnable(NavHandle navHandle, int displayId) {
+        if (!isContextualSearchEntrypointEnabled(navHandle)) {
+            Log.i(TAG, "Contextual Search invocation failed: entry point disabled");
+            mVibratorWrapper.cancelVibrate();
+            return null;
+        }
+
+        if (!mContextualSearchInvoker.runContextualSearchInvocationChecksAndLogFailures()) {
+            Log.i(TAG, "Contextual Search invocation failed: precondition not satisfied");
+            mVibratorWrapper.cancelVibrate();
+            return null;
+        }
+
+        mPendingInvocation = true;
+        Log.i(TAG, "Contextual Search invocation: invocation runnable created");
+        InstanceId instanceId = new InstanceIdSequence().newInstanceId();
+        mStatsLogManager.logger().withInstanceId(instanceId).log(
+                LAUNCHER_OMNI_GET_LONG_PRESS_RUNNABLE);
+        long startTimeMillis = SystemClock.elapsedRealtime();
+        return () -> {
+            mStatsLogManager.latencyLogger().withInstanceId(instanceId).withLatency(
+                    SystemClock.elapsedRealtime() - startTimeMillis).log(
+                    LAUNCHER_LATENCY_OMNI_RUNNABLE);
+            if (mContextualSearchInvoker.invokeContextualSearchUncheckedWithHaptic(
+                    ENTRYPOINT_LONG_PRESS_NAV_HANDLE)) {
+                Log.i(TAG, "Contextual Search invocation successful");
+
+                String runningPackage = TopTaskTracker.INSTANCE.get(mContext).getCachedTopTask(
+                        /* filterOnlyVisibleRecents */ true, displayId).getPackageName();
+                mStatsLogManager.logger().withPackageName(runningPackage)
+                        .log(LAUNCHER_LAUNCH_ASSISTANT_SUCCESSFUL_NAV_HANDLE);
+            } else {
+                mVibratorWrapper.cancelVibrate();
+                if (DeviceConfigWrapper.get().getAnimateLpnh()
+                        && !DeviceConfigWrapper.get().getShrinkNavHandleOnPress()) {
+                    navHandle.animateNavBarLongPress(
+                            /*isTouchDown*/false, /*shrink*/ false, /*durationMs*/160);
+                }
+            }
+        };
     }
 
     /**
@@ -55,7 +135,15 @@ public class NavHandleLongPressHandler implements ResourceBasedOverride {
      *
      * @param navHandle to handle the animation for this touch
      */
-    public void onTouchStarted(NavHandle navHandle) {}
+    @VisibleForTesting
+    final void onTouchStarted(NavHandle navHandle) {
+        mPendingInvocation = false;
+        if (isContextualSearchEntrypointEnabled(navHandle)
+                && mContextualSearchInvoker.runContextualSearchInvocationChecksAndLogFailures()) {
+            Log.i(TAG, "Contextual Search invocation: touch started");
+            startNavBarAnimation(navHandle);
+        }
+    }
 
     /**
      * Called when nav handle gesture is finished by the user lifting their finger or the system
@@ -64,5 +152,46 @@ public class NavHandleLongPressHandler implements ResourceBasedOverride {
      * @param navHandle to handle the animation for this touch
      * @param reason why the touch ended
      */
-    public void onTouchFinished(NavHandle navHandle, String reason) {}
+    @VisibleForTesting
+    final void onTouchFinished(NavHandle navHandle, String reason) {
+        Log.i(TAG, "Contextual Search invocation: touch finished with reason: " + reason);
+
+        if (!DeviceConfigWrapper.get().getShrinkNavHandleOnPress() || !mPendingInvocation) {
+            mVibratorWrapper.cancelVibrate();
+        }
+
+        if (DeviceConfigWrapper.get().getAnimateLpnh()) {
+            if (DeviceConfigWrapper.get().getShrinkNavHandleOnPress()) {
+                navHandle.animateNavBarLongPress(
+                        /*isTouchDown*/false, /*shrink*/ true, /*durationMs*/200);
+            } else {
+                navHandle.animateNavBarLongPress(
+                        /*isTouchDown*/false, /*shrink*/ false, /*durationMs*/ 160);
+            }
+        }
+    }
+
+    @VisibleForTesting
+    final void startNavBarAnimation(NavHandle navHandle) {
+        mContextualSearchHapticManager.vibrateForSearchHint();
+
+        if (DeviceConfigWrapper.get().getAnimateLpnh()) {
+            if (DeviceConfigWrapper.get().getShrinkNavHandleOnPress()) {
+                navHandle.animateNavBarLongPress(
+                        /*isTouchDown*/ true, /*shrink*/true, /*durationMs*/200);
+            } else {
+                long longPressTimeout;
+                ContextualSearchStateManager contextualSearchStateManager =
+                        ContextualSearchStateManager.INSTANCE.get(mContext);
+                if (contextualSearchStateManager.getLPNHDurationMillis().isPresent()) {
+                    longPressTimeout =
+                            contextualSearchStateManager.getLPNHDurationMillis().get().intValue();
+                } else {
+                    longPressTimeout = ViewConfiguration.getLongPressTimeout();
+                }
+                navHandle.animateNavBarLongPress(
+                        /*isTouchDown*/ true, /*shrink*/ false, /*durationMs*/ longPressTimeout);
+            }
+        }
+    }
 }

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 package {
+    default_team: "trendy_team_launcher",
     default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
@@ -21,8 +22,8 @@ java_library {
     srcs: ["src/com/android/app/viewcapture/proto/*.proto"],
     proto: {
         type: "lite",
-        local_include_dirs:[
-            "src/com/android/app/viewcapture/proto"
+        local_include_dirs: [
+            "src/com/android/app/viewcapture/proto",
         ],
     },
     static_libs: ["libprotobuf-java-lite"],
@@ -33,7 +34,7 @@ android_library {
     name: "view_capture",
     manifest: "AndroidManifest.xml",
     platform_apis: true,
-    min_sdk_version: "26",
+    min_sdk_version: "30",
 
     static_libs: [
         "androidx.core_core",
@@ -42,7 +43,7 @@ android_library {
 
     srcs: [
         "src/**/*.java",
-        "src/**/*.kt"
+        "src/**/*.kt",
     ],
 }
 
@@ -50,7 +51,7 @@ android_test {
     name: "view_capture_tests",
     manifest: "tests/AndroidManifest.xml",
     platform_apis: true,
-    min_sdk_version: "26",
+    min_sdk_version: "30",
 
     static_libs: [
         "androidx.core_core",
@@ -58,16 +59,20 @@ android_test {
         "androidx.test.ext.junit",
         "androidx.test.rules",
         "testables",
+        "mockito-kotlin2",
         "mockito-target-extended-minus-junit4",
     ],
     srcs: [
         "**/*.java",
-        "**/*.kt"
+        "**/*.kt",
     ],
     libs: [
-        "android.test.runner",
-        "android.test.base",
-        "android.test.mock",
+        "android.test.runner.stubs.system",
+        "android.test.base.stubs.system",
+        "android.test.mock.stubs.system",
+    ],
+    jni_libs: [
+        "libdexmakerjvmtiagent",
     ],
     test_suites: ["device-tests"],
 }

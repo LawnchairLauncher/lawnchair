@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -28,6 +30,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreenGridPreferences(
     modifier: Modifier = Modifier,
@@ -96,6 +99,7 @@ fun HomeScreenGridPreferences(
                     .align(Alignment.CenterEnd)
                     .fillMaxWidth(),
                 enabled = columns.intValue != originalColumns || rows.intValue != originalRows,
+                shapes = ButtonDefaults.shapes(),
             ) {
                 Text(text = stringResource(id = R.string.action_apply))
             }

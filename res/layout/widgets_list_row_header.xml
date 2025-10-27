@@ -45,25 +45,19 @@
             android:id="@+id/app_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/WidgetListHeader.Title"
             android:layout_gravity="start|center_vertical"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="?attr/widgetPickerHeaderAppTitleColor"
-            android:textSize="@dimen/widget_picker_header_app_title_font_size"
-            android:textFontWeight="@integer/widget_picker_header_app_title_font_weight"
-            android:lineHeight="@dimen/widget_picker_header_app_title_line_height"
             tools:text="App name" />
 
         <TextView
             android:id="@+id/app_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/WidgetListHeader.SubTitle"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="?attr/widgetPickerHeaderAppSubtitleColor"
-            android:textSize="@dimen/widget_picker_header_app_subtitle_font_size"
-            android:textFontWeight="@integer/widget_picker_header_app_subtitle_font_weight"
-            android:lineHeight="@dimen/widget_picker_header_app_subtitle_line_height"
             tools:text="m widgets, n shortcuts" />
 
     </LinearLayout>

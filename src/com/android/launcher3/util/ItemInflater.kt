@@ -24,6 +24,7 @@ import android.view.View.OnClickListener
 import android.view.View.OnFocusChangeListener
 import android.view.ViewGroup
 import com.android.launcher3.BubbleTextView
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.R
 import com.android.launcher3.apppairs.AppPairIcon
@@ -46,10 +47,11 @@ class ItemInflater<T>(
     private val widgetHolder: LauncherWidgetHolder,
     private val clickListener: OnClickListener,
     private val focusListener: OnFocusChangeListener,
-    private val defaultParent: ViewGroup
+    private val defaultParent: ViewGroup,
 ) where T : Context, T : ActivityContext {
 
-    private val widgetInflater = WidgetInflater(context)
+    private val widgetInflater =
+        WidgetInflater(context, LauncherAppState.getInstance(context).isSafeModeEnabled)
 
     @JvmOverloads
     fun inflateItem(item: ItemInfo, writer: ModelWriter, nullableParent: ViewGroup? = null): View? {
@@ -75,7 +77,7 @@ class ItemInflater<T>(
                     R.layout.folder_icon,
                     context,
                     parent,
-                    item as FolderInfo
+                    item as FolderInfo,
                 )
             Favorites.ITEM_TYPE_APP_PAIR ->
                 return AppPairIcon.inflateIcon(
@@ -83,7 +85,7 @@ class ItemInflater<T>(
                     context,
                     parent,
                     item as AppPairInfo,
-                    BubbleTextView.DISPLAY_WORKSPACE
+                    BubbleTextView.DISPLAY_WORKSPACE,
                 )
             Favorites.ITEM_TYPE_APPWIDGET,
             Favorites.ITEM_TYPE_CUSTOM_APPWIDGET ->

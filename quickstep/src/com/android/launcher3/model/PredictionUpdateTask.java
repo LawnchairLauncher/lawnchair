@@ -18,6 +18,7 @@ package com.android.launcher3.model;
 import static com.android.launcher3.EncryptionType.ENCRYPTED;
 import static com.android.launcher3.LauncherPrefs.nonRestorableItem;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+import static com.android.launcher3.icons.cache.CacheLookupFlag.DEFAULT_LOOKUP_FLAG;
 import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
 import android.app.prediction.AppTarget;
@@ -31,9 +32,9 @@ import android.os.UserHandle;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.ConstantItem;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
 import com.android.launcher3.model.data.AppInfo;
@@ -64,8 +65,8 @@ public class PredictionUpdateTask implements ModelUpdateTask {
     @Override
     public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
             @NonNull AllAppsList apps) {
-        LauncherAppState app = taskController.getApp();
-        Context context = app.getContext();
+        IconCache iconCache = taskController.getIconCache();
+        Context context = taskController.getContext();
 
         // TODO: remove this
         LauncherPrefs.get(context).put(LAST_PREDICTION_ENABLED, !mTargets.isEmpty());
@@ -83,7 +84,7 @@ public class PredictionUpdateTask implements ModelUpdateTask {
             if (si != null) {
                 usersForChangedShortcuts.add(si.getUserHandle());
                 itemInfo = new WorkspaceItemInfo(si, context);
-                app.getIconCache().getShortcutIcon(itemInfo, si);
+                iconCache.getShortcutIcon(itemInfo, si);
             } else {
                 String className = target.getClassName();
                 if (COMPONENT_CLASS_MARKER.equals(className)) {
@@ -95,7 +96,7 @@ public class PredictionUpdateTask implements ModelUpdateTask {
                 itemInfo = apps.data.stream()
                         .filter(info -> user.equals(info.user) && cn.equals(info.componentName))
                         .map(ai -> {
-                            app.getIconCache().getTitleAndIcon(ai, false);
+                            iconCache.getTitleAndIcon(ai, mPredictorState.lookupFlag);
                             return ai.makeWorkspaceItem(context);
                         })
                         .findAny()
@@ -106,7 +107,7 @@ public class PredictionUpdateTask implements ModelUpdateTask {
                                 return null;
                             }
                             AppInfo ai = new AppInfo(context, lai, user);
-                            app.getIconCache().getTitleAndIcon(ai, lai, false);
+                            iconCache.getTitleAndIcon(ai, lai, DEFAULT_LOOKUP_FLAG);
                             return ai.makeWorkspaceItem(context);
                         });
 
@@ -122,8 +123,7 @@ public class PredictionUpdateTask implements ModelUpdateTask {
         FixedContainerItems fci = new FixedContainerItems(mPredictorState.containerId, items);
         dataModel.extraItems.put(fci.containerId, fci);
         taskController.bindExtraContainerItems(fci);
-        usersForChangedShortcuts.forEach(
-                u -> dataModel.updateShortcutPinnedState(app.getContext(), u));
+        usersForChangedShortcuts.forEach(u -> dataModel.updateShortcutPinnedState(context, u));
 
         // Save to disk
         mPredictorState.storage.write(context, fci.items);

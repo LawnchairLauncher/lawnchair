@@ -3,6 +3,7 @@ package com.android.launcher3.compat;
 import android.content.Context;
 import android.icu.text.AlphabeticIndex;
 import android.os.LocaleList;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -12,6 +13,9 @@ import java.util.Locale;
 
 public class AlphabeticIndexCompat {
 
+    // TODO(b/336947811): Set to false after root causing is done.
+    private static final boolean DEBUG = true;
+    private static final String TAG = "AlphabeticIndexCompat";
     private static final String MID_DOT = "\u2219";
     private final String mDefaultMiscLabel;
 
@@ -49,6 +53,9 @@ public class AlphabeticIndexCompat {
     public String computeSectionName(@NonNull CharSequence cs) {
         String s = Utilities.trim(cs);
         String sectionName = mBaseIndex.getBucket(mBaseIndex.getBucketIndex(s)).getLabel();
+        if (DEBUG) {
+            Log.d(TAG, "computeSectionName: cs: " + cs + " sectionName: " + sectionName);
+        }
         if (Utilities.trim(sectionName).isEmpty() && s.length() > 0) {
             int c = s.codePointAt(0);
             boolean startsWithDigit = Character.isDigit(c);

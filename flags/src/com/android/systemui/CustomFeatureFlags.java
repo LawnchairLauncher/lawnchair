@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-
 /** @hide */
 public class CustomFeatureFlags implements FeatureFlags {
 
@@ -17,924 +16,1973 @@ public class CustomFeatureFlags implements FeatureFlags {
         mGetValueImpl = getValueImpl;
     }
     @Override
+
     public boolean activityTransitionUseLargestWindow() {
         return getValue(Flags.FLAG_ACTIVITY_TRANSITION_USE_LARGEST_WINDOW,
-                FeatureFlags::activityTransitionUseLargestWindow);
+            FeatureFlags::activityTransitionUseLargestWindow);
     }
 
     @Override
+
+    public boolean addBlackBackgroundForWindowMagnifier() {
+        return getValue(Flags.FLAG_ADD_BLACK_BACKGROUND_FOR_WINDOW_MAGNIFIER,
+            FeatureFlags::addBlackBackgroundForWindowMagnifier);
+    }
+
+    @Override
+
+    public boolean alwaysComposeQsUiFragment() {
+        return getValue(Flags.FLAG_ALWAYS_COMPOSE_QS_UI_FRAGMENT,
+            FeatureFlags::alwaysComposeQsUiFragment);
+    }
+
+    @Override
+
     public boolean ambientTouchMonitorListenToDisplayChanges() {
         return getValue(Flags.FLAG_AMBIENT_TOUCH_MONITOR_LISTEN_TO_DISPLAY_CHANGES,
-                FeatureFlags::ambientTouchMonitorListenToDisplayChanges);
+            FeatureFlags::ambientTouchMonitorListenToDisplayChanges);
     }
 
     @Override
+
     public boolean appClipsBacklinks() {
         return getValue(Flags.FLAG_APP_CLIPS_BACKLINKS,
-                FeatureFlags::appClipsBacklinks);
+            FeatureFlags::appClipsBacklinks);
     }
 
     @Override
+
+    public boolean appShortcutRemovalFix() {
+        return getValue(Flags.FLAG_APP_SHORTCUT_REMOVAL_FIX,
+            FeatureFlags::appShortcutRemovalFix);
+    }
+
+    @Override
+
+    public boolean avalancheReplaceHunWhenCritical() {
+        return getValue(Flags.FLAG_AVALANCHE_REPLACE_HUN_WHEN_CRITICAL,
+            FeatureFlags::avalancheReplaceHunWhenCritical);
+    }
+
+    @Override
+
     public boolean bindKeyguardMediaVisibility() {
         return getValue(Flags.FLAG_BIND_KEYGUARD_MEDIA_VISIBILITY,
-                FeatureFlags::bindKeyguardMediaVisibility);
+            FeatureFlags::bindKeyguardMediaVisibility);
     }
 
     @Override
-    public boolean bpTalkback() {
-        return getValue(Flags.FLAG_BP_TALKBACK,
-                FeatureFlags::bpTalkback);
+
+    public boolean bouncerUiRevamp() {
+        return getValue(Flags.FLAG_BOUNCER_UI_REVAMP,
+            FeatureFlags::bouncerUiRevamp);
     }
 
     @Override
+
+    public boolean bouncerUiRevamp2() {
+        return getValue(Flags.FLAG_BOUNCER_UI_REVAMP_2,
+            FeatureFlags::bouncerUiRevamp2);
+    }
+
+    @Override
+
+    public boolean bpColors() {
+        return getValue(Flags.FLAG_BP_COLORS,
+            FeatureFlags::bpColors);
+    }
+
+    @Override
+
     public boolean brightnessSliderFocusState() {
         return getValue(Flags.FLAG_BRIGHTNESS_SLIDER_FOCUS_STATE,
-                FeatureFlags::brightnessSliderFocusState);
+            FeatureFlags::brightnessSliderFocusState);
     }
 
     @Override
-    public boolean centralizedStatusBarHeightFix() {
-        return getValue(Flags.FLAG_CENTRALIZED_STATUS_BAR_HEIGHT_FIX,
-                FeatureFlags::centralizedStatusBarHeightFix);
+
+    public boolean checkLockscreenGoneTransition() {
+        return getValue(Flags.FLAG_CHECK_LOCKSCREEN_GONE_TRANSITION,
+            FeatureFlags::checkLockscreenGoneTransition);
     }
 
     @Override
+
+    public boolean classicFlagsMultiUser() {
+        return getValue(Flags.FLAG_CLASSIC_FLAGS_MULTI_USER,
+            FeatureFlags::classicFlagsMultiUser);
+    }
+
+    @Override
+
+    public boolean clipboardImageTimeout() {
+        return getValue(Flags.FLAG_CLIPBOARD_IMAGE_TIMEOUT,
+            FeatureFlags::clipboardImageTimeout);
+    }
+
+    @Override
+
     public boolean clipboardNoninteractiveOnLockscreen() {
         return getValue(Flags.FLAG_CLIPBOARD_NONINTERACTIVE_ON_LOCKSCREEN,
-                FeatureFlags::clipboardNoninteractiveOnLockscreen);
+            FeatureFlags::clipboardNoninteractiveOnLockscreen);
     }
 
     @Override
-    public boolean clockReactiveVariants() {
-        return getValue(Flags.FLAG_CLOCK_REACTIVE_VARIANTS,
-                FeatureFlags::clockReactiveVariants);
+
+    public boolean clipboardOverlayMultiuser() {
+        return getValue(Flags.FLAG_CLIPBOARD_OVERLAY_MULTIUSER,
+            FeatureFlags::clipboardOverlayMultiuser);
     }
 
     @Override
+
+    public boolean clipboardSharedTransitions() {
+        return getValue(Flags.FLAG_CLIPBOARD_SHARED_TRANSITIONS,
+            FeatureFlags::clipboardSharedTransitions);
+    }
+
+    @Override
+
+    public boolean clipboardUseDescriptionMimetype() {
+        return getValue(Flags.FLAG_CLIPBOARD_USE_DESCRIPTION_MIMETYPE,
+            FeatureFlags::clipboardUseDescriptionMimetype);
+    }
+
+    @Override
+
+    public boolean clockFidgetAnimation() {
+        return getValue(Flags.FLAG_CLOCK_FIDGET_ANIMATION,
+            FeatureFlags::clockFidgetAnimation);
+    }
+
+    @Override
+
     public boolean communalBouncerDoNotModifyPluginOpen() {
         return getValue(Flags.FLAG_COMMUNAL_BOUNCER_DO_NOT_MODIFY_PLUGIN_OPEN,
-                FeatureFlags::communalBouncerDoNotModifyPluginOpen);
+            FeatureFlags::communalBouncerDoNotModifyPluginOpen);
     }
 
     @Override
+
+    public boolean communalEditWidgetsActivityFinishFix() {
+        return getValue(Flags.FLAG_COMMUNAL_EDIT_WIDGETS_ACTIVITY_FINISH_FIX,
+            FeatureFlags::communalEditWidgetsActivityFinishFix);
+    }
+
+    @Override
+
     public boolean communalHub() {
         return getValue(Flags.FLAG_COMMUNAL_HUB,
-                FeatureFlags::communalHub);
+            FeatureFlags::communalHub);
     }
 
     @Override
+
+    public boolean communalHubUseThreadPoolForWidgets() {
+        return getValue(Flags.FLAG_COMMUNAL_HUB_USE_THREAD_POOL_FOR_WIDGETS,
+            FeatureFlags::communalHubUseThreadPoolForWidgets);
+    }
+
+    @Override
+
+    public boolean communalResponsiveGrid() {
+        return getValue(Flags.FLAG_COMMUNAL_RESPONSIVE_GRID,
+            FeatureFlags::communalResponsiveGrid);
+    }
+
+    @Override
+
+    public boolean communalSceneKtfRefactor() {
+        return getValue(Flags.FLAG_COMMUNAL_SCENE_KTF_REFACTOR,
+            FeatureFlags::communalSceneKtfRefactor);
+    }
+
+    @Override
+
+    public boolean communalStandaloneSupport() {
+        return getValue(Flags.FLAG_COMMUNAL_STANDALONE_SUPPORT,
+            FeatureFlags::communalStandaloneSupport);
+    }
+
+    @Override
+
+    public boolean communalTimerFlickerFix() {
+        return getValue(Flags.FLAG_COMMUNAL_TIMER_FLICKER_FIX,
+            FeatureFlags::communalTimerFlickerFix);
+    }
+
+    @Override
+
+    public boolean communalWidgetResizing() {
+        return getValue(Flags.FLAG_COMMUNAL_WIDGET_RESIZING,
+            FeatureFlags::communalWidgetResizing);
+    }
+
+    @Override
+
+    public boolean communalWidgetTrampolineFix() {
+        return getValue(Flags.FLAG_COMMUNAL_WIDGET_TRAMPOLINE_FIX,
+            FeatureFlags::communalWidgetTrampolineFix);
+    }
+
+    @Override
+
     public boolean composeBouncer() {
         return getValue(Flags.FLAG_COMPOSE_BOUNCER,
-                FeatureFlags::composeBouncer);
+            FeatureFlags::composeBouncer);
     }
 
     @Override
-    public boolean composeLockscreen() {
-        return getValue(Flags.FLAG_COMPOSE_LOCKSCREEN,
-                FeatureFlags::composeLockscreen);
-    }
 
-    @Override
     public boolean confineNotificationTouchToViewWidth() {
         return getValue(Flags.FLAG_CONFINE_NOTIFICATION_TOUCH_TO_VIEW_WIDTH,
-                FeatureFlags::confineNotificationTouchToViewWidth);
+            FeatureFlags::confineNotificationTouchToViewWidth);
     }
 
     @Override
-    public boolean constraintBp() {
-        return getValue(Flags.FLAG_CONSTRAINT_BP,
-                FeatureFlags::constraintBp);
+
+    public boolean contAuthPlugin() {
+        return getValue(Flags.FLAG_CONT_AUTH_PLUGIN,
+            FeatureFlags::contAuthPlugin);
     }
 
     @Override
+
     public boolean contextualTipsAssistantDismissFix() {
         return getValue(Flags.FLAG_CONTEXTUAL_TIPS_ASSISTANT_DISMISS_FIX,
-                FeatureFlags::contextualTipsAssistantDismissFix);
+            FeatureFlags::contextualTipsAssistantDismissFix);
     }
 
     @Override
+
     public boolean coroutineTracing() {
         return getValue(Flags.FLAG_COROUTINE_TRACING,
-                FeatureFlags::coroutineTracing);
+            FeatureFlags::coroutineTracing);
     }
 
     @Override
+
     public boolean createWindowlessWindowMagnifier() {
         return getValue(Flags.FLAG_CREATE_WINDOWLESS_WINDOW_MAGNIFIER,
-                FeatureFlags::createWindowlessWindowMagnifier);
+            FeatureFlags::createWindowlessWindowMagnifier);
     }
 
     @Override
-    public boolean dedicatedNotifInflationThread() {
-        return getValue(Flags.FLAG_DEDICATED_NOTIF_INFLATION_THREAD,
-                FeatureFlags::dedicatedNotifInflationThread);
+
+    public boolean debugLiveUpdatesPromoteAll() {
+        return getValue(Flags.FLAG_DEBUG_LIVE_UPDATES_PROMOTE_ALL,
+            FeatureFlags::debugLiveUpdatesPromoteAll);
     }
 
     @Override
+
+    public boolean decoupleViewControllerInAnimlib() {
+        return getValue(Flags.FLAG_DECOUPLE_VIEW_CONTROLLER_IN_ANIMLIB,
+            FeatureFlags::decoupleViewControllerInAnimlib);
+    }
+
+    @Override
+
     public boolean delayShowMagnificationButton() {
         return getValue(Flags.FLAG_DELAY_SHOW_MAGNIFICATION_BUTTON,
-                FeatureFlags::delayShowMagnificationButton);
+            FeatureFlags::delayShowMagnificationButton);
     }
 
     @Override
-    public boolean delayedWakelockReleaseOnBackgroundThread() {
-        return getValue(Flags.FLAG_DELAYED_WAKELOCK_RELEASE_ON_BACKGROUND_THREAD,
-                FeatureFlags::delayedWakelockReleaseOnBackgroundThread);
+
+    public boolean desktopEffectsQsTile() {
+        return getValue(Flags.FLAG_DESKTOP_EFFECTS_QS_TILE,
+            FeatureFlags::desktopEffectsQsTile);
     }
 
     @Override
+
     public boolean deviceEntryUdfpsRefactor() {
         return getValue(Flags.FLAG_DEVICE_ENTRY_UDFPS_REFACTOR,
-                FeatureFlags::deviceEntryUdfpsRefactor);
+            FeatureFlags::deviceEntryUdfpsRefactor);
     }
 
     @Override
+
+    public boolean disableBlurredShadeVisible() {
+        return getValue(Flags.FLAG_DISABLE_BLURRED_SHADE_VISIBLE,
+            FeatureFlags::disableBlurredShadeVisible);
+    }
+
+    @Override
+
     public boolean disableContextualTipsFrequencyCheck() {
         return getValue(Flags.FLAG_DISABLE_CONTEXTUAL_TIPS_FREQUENCY_CHECK,
-                FeatureFlags::disableContextualTipsFrequencyCheck);
+            FeatureFlags::disableContextualTipsFrequencyCheck);
     }
 
     @Override
+
     public boolean disableContextualTipsIosSwitcherCheck() {
         return getValue(Flags.FLAG_DISABLE_CONTEXTUAL_TIPS_IOS_SWITCHER_CHECK,
-                FeatureFlags::disableContextualTipsIosSwitcherCheck);
+            FeatureFlags::disableContextualTipsIosSwitcherCheck);
     }
 
     @Override
-    public boolean dozeuiSchedulingAlarmsBackgroundExecution() {
-        return getValue(Flags.FLAG_DOZEUI_SCHEDULING_ALARMS_BACKGROUND_EXECUTION,
-                FeatureFlags::dozeuiSchedulingAlarmsBackgroundExecution);
+
+    public boolean disableShadeTrackpadTwoFingerSwipe() {
+        return getValue(Flags.FLAG_DISABLE_SHADE_TRACKPAD_TWO_FINGER_SWIPE,
+            FeatureFlags::disableShadeTrackpadTwoFingerSwipe);
     }
 
     @Override
+
+    public boolean doubleTapToSleep() {
+        return getValue(Flags.FLAG_DOUBLE_TAP_TO_SLEEP,
+            FeatureFlags::doubleTapToSleep);
+    }
+
+    @Override
+
     public boolean dreamInputSessionPilferOnce() {
         return getValue(Flags.FLAG_DREAM_INPUT_SESSION_PILFER_ONCE,
-                FeatureFlags::dreamInputSessionPilferOnce);
+            FeatureFlags::dreamInputSessionPilferOnce);
     }
 
     @Override
+
     public boolean dreamOverlayBouncerSwipeDirectionFiltering() {
         return getValue(Flags.FLAG_DREAM_OVERLAY_BOUNCER_SWIPE_DIRECTION_FILTERING,
-                FeatureFlags::dreamOverlayBouncerSwipeDirectionFiltering);
+            FeatureFlags::dreamOverlayBouncerSwipeDirectionFiltering);
     }
 
     @Override
-    public boolean dualShade() {
-        return getValue(Flags.FLAG_DUAL_SHADE,
-                FeatureFlags::dualShade);
+
+    public boolean dreamOverlayUpdatedFont() {
+        return getValue(Flags.FLAG_DREAM_OVERLAY_UPDATED_FONT,
+            FeatureFlags::dreamOverlayUpdatedFont);
     }
 
     @Override
+
     public boolean edgeBackGestureHandlerThread() {
         return getValue(Flags.FLAG_EDGE_BACK_GESTURE_HANDLER_THREAD,
-                FeatureFlags::edgeBackGestureHandlerThread);
+            FeatureFlags::edgeBackGestureHandlerThread);
     }
 
     @Override
+
     public boolean edgebackGestureHandlerGetRunningTasksBackground() {
         return getValue(Flags.FLAG_EDGEBACK_GESTURE_HANDLER_GET_RUNNING_TASKS_BACKGROUND,
-                FeatureFlags::edgebackGestureHandlerGetRunningTasksBackground);
+            FeatureFlags::edgebackGestureHandlerGetRunningTasksBackground);
     }
 
     @Override
+
     public boolean enableBackgroundKeyguardOndrawnCallback() {
         return getValue(Flags.FLAG_ENABLE_BACKGROUND_KEYGUARD_ONDRAWN_CALLBACK,
-                FeatureFlags::enableBackgroundKeyguardOndrawnCallback);
+            FeatureFlags::enableBackgroundKeyguardOndrawnCallback);
     }
 
     @Override
+
     public boolean enableContextualTipForMuteVolume() {
         return getValue(Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_MUTE_VOLUME,
-                FeatureFlags::enableContextualTipForMuteVolume);
+            FeatureFlags::enableContextualTipForMuteVolume);
     }
 
     @Override
+
     public boolean enableContextualTipForPowerOff() {
         return getValue(Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_POWER_OFF,
-                FeatureFlags::enableContextualTipForPowerOff);
+            FeatureFlags::enableContextualTipForPowerOff);
     }
 
     @Override
+
     public boolean enableContextualTipForTakeScreenshot() {
         return getValue(Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_TAKE_SCREENSHOT,
-                FeatureFlags::enableContextualTipForTakeScreenshot);
+            FeatureFlags::enableContextualTipForTakeScreenshot);
     }
 
     @Override
+
     public boolean enableContextualTips() {
         return getValue(Flags.FLAG_ENABLE_CONTEXTUAL_TIPS,
-                FeatureFlags::enableContextualTips);
+            FeatureFlags::enableContextualTips);
     }
 
     @Override
+
     public boolean enableEfficientDisplayRepository() {
         return getValue(Flags.FLAG_ENABLE_EFFICIENT_DISPLAY_REPOSITORY,
-                FeatureFlags::enableEfficientDisplayRepository);
+            FeatureFlags::enableEfficientDisplayRepository);
     }
 
     @Override
+
     public boolean enableLayoutTracing() {
         return getValue(Flags.FLAG_ENABLE_LAYOUT_TRACING,
-                FeatureFlags::enableLayoutTracing);
+            FeatureFlags::enableLayoutTracing);
     }
 
     @Override
+
+    public boolean enableUnderlay() {
+        return getValue(Flags.FLAG_ENABLE_UNDERLAY,
+            FeatureFlags::enableUnderlay);
+    }
+
+    @Override
+
     public boolean enableViewCaptureTracing() {
         return getValue(Flags.FLAG_ENABLE_VIEW_CAPTURE_TRACING,
-                FeatureFlags::enableViewCaptureTracing);
+            FeatureFlags::enableViewCaptureTracing);
     }
 
     @Override
-    public boolean enableWidgetPickerSizeFilter() {
-        return getValue(Flags.FLAG_ENABLE_WIDGET_PICKER_SIZE_FILTER,
-                FeatureFlags::enableWidgetPickerSizeFilter);
-    }
 
-    @Override
     public boolean enforceBrightnessBaseUserRestriction() {
         return getValue(Flags.FLAG_ENFORCE_BRIGHTNESS_BASE_USER_RESTRICTION,
-                FeatureFlags::enforceBrightnessBaseUserRestriction);
+            FeatureFlags::enforceBrightnessBaseUserRestriction);
     }
 
     @Override
+
     public boolean exampleFlag() {
         return getValue(Flags.FLAG_EXAMPLE_FLAG,
-                FeatureFlags::exampleFlag);
+            FeatureFlags::exampleFlag);
     }
 
     @Override
-    public boolean fastUnlockTransition() {
-        return getValue(Flags.FLAG_FAST_UNLOCK_TRANSITION,
-                FeatureFlags::fastUnlockTransition);
+
+    public boolean expandCollapsePrivacyDialog() {
+        return getValue(Flags.FLAG_EXPAND_COLLAPSE_PRIVACY_DIALOG,
+            FeatureFlags::expandCollapsePrivacyDialog);
     }
 
     @Override
+
+    public boolean expandHeadsUpOnInlineReply() {
+        return getValue(Flags.FLAG_EXPAND_HEADS_UP_ON_INLINE_REPLY,
+            FeatureFlags::expandHeadsUpOnInlineReply);
+    }
+
+    @Override
+
+    public boolean expandedPrivacyIndicatorsOnLargeScreen() {
+        return getValue(Flags.FLAG_EXPANDED_PRIVACY_INDICATORS_ON_LARGE_SCREEN,
+            FeatureFlags::expandedPrivacyIndicatorsOnLargeScreen);
+    }
+
+    @Override
+
+    public boolean extendedAppsShortcutCategory() {
+        return getValue(Flags.FLAG_EXTENDED_APPS_SHORTCUT_CATEGORY,
+            FeatureFlags::extendedAppsShortcutCategory);
+    }
+
+    @Override
+
+    public boolean faceMessageDeferUpdate() {
+        return getValue(Flags.FLAG_FACE_MESSAGE_DEFER_UPDATE,
+            FeatureFlags::faceMessageDeferUpdate);
+    }
+
+    @Override
+
+    public boolean faceScanningAnimationNpeFix() {
+        return getValue(Flags.FLAG_FACE_SCANNING_ANIMATION_NPE_FIX,
+            FeatureFlags::faceScanningAnimationNpeFix);
+    }
+
+    @Override
+
+    public boolean fasterUnlockTransition() {
+        return getValue(Flags.FLAG_FASTER_UNLOCK_TRANSITION,
+            FeatureFlags::fasterUnlockTransition);
+    }
+
+    @Override
+
+    public boolean fetchBookmarksXmlKeyboardShortcuts() {
+        return getValue(Flags.FLAG_FETCH_BOOKMARKS_XML_KEYBOARD_SHORTCUTS,
+            FeatureFlags::fetchBookmarksXmlKeyboardShortcuts);
+    }
+
+    @Override
+
     public boolean fixImageWallpaperCrashSurfaceAlreadyReleased() {
         return getValue(Flags.FLAG_FIX_IMAGE_WALLPAPER_CRASH_SURFACE_ALREADY_RELEASED,
-                FeatureFlags::fixImageWallpaperCrashSurfaceAlreadyReleased);
+            FeatureFlags::fixImageWallpaperCrashSurfaceAlreadyReleased);
     }
 
     @Override
+
     public boolean fixScreenshotActionDismissSystemWindows() {
         return getValue(Flags.FLAG_FIX_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS,
-                FeatureFlags::fixScreenshotActionDismissSystemWindows);
+            FeatureFlags::fixScreenshotActionDismissSystemWindows);
     }
 
     @Override
+
     public boolean floatingMenuAnimatedTuck() {
         return getValue(Flags.FLAG_FLOATING_MENU_ANIMATED_TUCK,
-                FeatureFlags::floatingMenuAnimatedTuck);
+            FeatureFlags::floatingMenuAnimatedTuck);
     }
 
     @Override
+
+    public boolean floatingMenuDisplayCutoutSupport() {
+        return getValue(Flags.FLAG_FLOATING_MENU_DISPLAY_CUTOUT_SUPPORT,
+            FeatureFlags::floatingMenuDisplayCutoutSupport);
+    }
+
+    @Override
+
     public boolean floatingMenuDragToEdit() {
         return getValue(Flags.FLAG_FLOATING_MENU_DRAG_TO_EDIT,
-                FeatureFlags::floatingMenuDragToEdit);
+            FeatureFlags::floatingMenuDragToEdit);
     }
 
     @Override
+
     public boolean floatingMenuDragToHide() {
         return getValue(Flags.FLAG_FLOATING_MENU_DRAG_TO_HIDE,
-                FeatureFlags::floatingMenuDragToHide);
+            FeatureFlags::floatingMenuDragToHide);
     }
 
     @Override
+
+    public boolean floatingMenuHearingDeviceStatusIcon() {
+        return getValue(Flags.FLAG_FLOATING_MENU_HEARING_DEVICE_STATUS_ICON,
+            FeatureFlags::floatingMenuHearingDeviceStatusIcon);
+    }
+
+    @Override
+
     public boolean floatingMenuImeDisplacementAnimation() {
         return getValue(Flags.FLAG_FLOATING_MENU_IME_DISPLACEMENT_ANIMATION,
-                FeatureFlags::floatingMenuImeDisplacementAnimation);
+            FeatureFlags::floatingMenuImeDisplacementAnimation);
     }
 
     @Override
+
     public boolean floatingMenuNarrowTargetContentObserver() {
         return getValue(Flags.FLAG_FLOATING_MENU_NARROW_TARGET_CONTENT_OBSERVER,
-                FeatureFlags::floatingMenuNarrowTargetContentObserver);
+            FeatureFlags::floatingMenuNarrowTargetContentObserver);
     }
 
     @Override
+
+    public boolean floatingMenuNotifyTargetsChangedOnStrictDiff() {
+        return getValue(Flags.FLAG_FLOATING_MENU_NOTIFY_TARGETS_CHANGED_ON_STRICT_DIFF,
+            FeatureFlags::floatingMenuNotifyTargetsChangedOnStrictDiff);
+    }
+
+    @Override
+
     public boolean floatingMenuOverlapsNavBarsFlag() {
         return getValue(Flags.FLAG_FLOATING_MENU_OVERLAPS_NAV_BARS_FLAG,
-                FeatureFlags::floatingMenuOverlapsNavBarsFlag);
+            FeatureFlags::floatingMenuOverlapsNavBarsFlag);
     }
 
     @Override
+
     public boolean floatingMenuRadiiAnimation() {
         return getValue(Flags.FLAG_FLOATING_MENU_RADII_ANIMATION,
-                FeatureFlags::floatingMenuRadiiAnimation);
-    }
-    
-    @Override
-    public boolean generatedPreviews() {
-        return getValue(Flags.FLAG_GENERATED_PREVIEWS,
-            FeatureFlags::generatedPreviews);
+            FeatureFlags::floatingMenuRadiiAnimation);
     }
 
     @Override
+
     public boolean getConnectedDeviceNameUnsynchronized() {
         return getValue(Flags.FLAG_GET_CONNECTED_DEVICE_NAME_UNSYNCHRONIZED,
-                FeatureFlags::getConnectedDeviceNameUnsynchronized);
+            FeatureFlags::getConnectedDeviceNameUnsynchronized);
     }
 
     @Override
+
     public boolean glanceableHubAllowKeyguardWhenDreaming() {
         return getValue(Flags.FLAG_GLANCEABLE_HUB_ALLOW_KEYGUARD_WHEN_DREAMING,
-                FeatureFlags::glanceableHubAllowKeyguardWhenDreaming);
+            FeatureFlags::glanceableHubAllowKeyguardWhenDreaming);
     }
 
     @Override
-    public boolean glanceableHubFullscreenSwipe() {
-        return getValue(Flags.FLAG_GLANCEABLE_HUB_FULLSCREEN_SWIPE,
-                FeatureFlags::glanceableHubFullscreenSwipe);
+
+    public boolean glanceableHubBlurredBackground() {
+        return getValue(Flags.FLAG_GLANCEABLE_HUB_BLURRED_BACKGROUND,
+            FeatureFlags::glanceableHubBlurredBackground);
     }
 
     @Override
-    public boolean glanceableHubGestureHandle() {
-        return getValue(Flags.FLAG_GLANCEABLE_HUB_GESTURE_HANDLE,
-                FeatureFlags::glanceableHubGestureHandle);
+
+    public boolean glanceableHubDirectEditMode() {
+        return getValue(Flags.FLAG_GLANCEABLE_HUB_DIRECT_EDIT_MODE,
+            FeatureFlags::glanceableHubDirectEditMode);
     }
 
     @Override
-    public boolean glanceableHubShortcutButton() {
-        return getValue(Flags.FLAG_GLANCEABLE_HUB_SHORTCUT_BUTTON,
-                FeatureFlags::glanceableHubShortcutButton);
+
+    public boolean glanceableHubV2() {
+        return getValue(Flags.FLAG_GLANCEABLE_HUB_V2,
+            FeatureFlags::glanceableHubV2);
     }
 
     @Override
-    public boolean hapticBrightnessSlider() {
-        return getValue(Flags.FLAG_HAPTIC_BRIGHTNESS_SLIDER,
-                FeatureFlags::hapticBrightnessSlider);
+
+    public boolean glanceableHubV2Resources() {
+        return getValue(Flags.FLAG_GLANCEABLE_HUB_V2_RESOURCES,
+            FeatureFlags::glanceableHubV2Resources);
     }
 
     @Override
-    public boolean hapticVolumeSlider() {
-        return getValue(Flags.FLAG_HAPTIC_VOLUME_SLIDER,
-                FeatureFlags::hapticVolumeSlider);
+
+    public boolean hapticsForComposeSliders() {
+        return getValue(Flags.FLAG_HAPTICS_FOR_COMPOSE_SLIDERS,
+            FeatureFlags::hapticsForComposeSliders);
     }
 
     @Override
+
+    public boolean hardwareColorStyles() {
+        return getValue(Flags.FLAG_HARDWARE_COLOR_STYLES,
+            FeatureFlags::hardwareColorStyles);
+    }
+
+    @Override
+
     public boolean hearingAidsQsTileDialog() {
         return getValue(Flags.FLAG_HEARING_AIDS_QS_TILE_DIALOG,
-                FeatureFlags::hearingAidsQsTileDialog);
+            FeatureFlags::hearingAidsQsTileDialog);
     }
 
     @Override
+
     public boolean hearingDevicesDialogRelatedTools() {
         return getValue(Flags.FLAG_HEARING_DEVICES_DIALOG_RELATED_TOOLS,
-                FeatureFlags::hearingDevicesDialogRelatedTools);
+            FeatureFlags::hearingDevicesDialogRelatedTools);
     }
 
     @Override
+
+    public boolean hideRingerButtonInSingleVolumeMode() {
+        return getValue(Flags.FLAG_HIDE_RINGER_BUTTON_IN_SINGLE_VOLUME_MODE,
+            FeatureFlags::hideRingerButtonInSingleVolumeMode);
+    }
+
+    @Override
+
+    public boolean homeControlsDreamHsum() {
+        return getValue(Flags.FLAG_HOME_CONTROLS_DREAM_HSUM,
+            FeatureFlags::homeControlsDreamHsum);
+    }
+
+    @Override
+
+    public boolean hubEditModeTouchAdjustments() {
+        return getValue(Flags.FLAG_HUB_EDIT_MODE_TOUCH_ADJUSTMENTS,
+            FeatureFlags::hubEditModeTouchAdjustments);
+    }
+
+    @Override
+
+    public boolean hubmodeFullscreenVerticalSwipe() {
+        return getValue(Flags.FLAG_HUBMODE_FULLSCREEN_VERTICAL_SWIPE,
+            FeatureFlags::hubmodeFullscreenVerticalSwipe);
+    }
+
+    @Override
+
+    public boolean hubmodeFullscreenVerticalSwipeFix() {
+        return getValue(Flags.FLAG_HUBMODE_FULLSCREEN_VERTICAL_SWIPE_FIX,
+            FeatureFlags::hubmodeFullscreenVerticalSwipeFix);
+    }
+
+    @Override
+
+    public boolean iconRefresh2025() {
+        return getValue(Flags.FLAG_ICON_REFRESH_2025,
+            FeatureFlags::iconRefresh2025);
+    }
+
+    @Override
+
+    public boolean ignoreTouchesNextToNotificationShelf() {
+        return getValue(Flags.FLAG_IGNORE_TOUCHES_NEXT_TO_NOTIFICATION_SHELF,
+            FeatureFlags::ignoreTouchesNextToNotificationShelf);
+    }
+
+    @Override
+
+    public boolean indicationTextA11yFix() {
+        return getValue(Flags.FLAG_INDICATION_TEXT_A11Y_FIX,
+            FeatureFlags::indicationTextA11yFix);
+    }
+
+    @Override
+
     public boolean keyboardDockingIndicator() {
         return getValue(Flags.FLAG_KEYBOARD_DOCKING_INDICATOR,
-                FeatureFlags::keyboardDockingIndicator);
+            FeatureFlags::keyboardDockingIndicator);
     }
 
     @Override
+
     public boolean keyboardShortcutHelperRewrite() {
         return getValue(Flags.FLAG_KEYBOARD_SHORTCUT_HELPER_REWRITE,
-                FeatureFlags::keyboardShortcutHelperRewrite);
+            FeatureFlags::keyboardShortcutHelperRewrite);
     }
 
     @Override
-    public boolean keyguardBottomAreaRefactor() {
-        return getValue(Flags.FLAG_KEYGUARD_BOTTOM_AREA_REFACTOR,
-                FeatureFlags::keyguardBottomAreaRefactor);
+
+    public boolean keyboardShortcutHelperShortcutCustomizer() {
+        return getValue(Flags.FLAG_KEYBOARD_SHORTCUT_HELPER_SHORTCUT_CUSTOMIZER,
+            FeatureFlags::keyboardShortcutHelperShortcutCustomizer);
     }
 
     @Override
+
+    public boolean keyboardTouchpadContextualEducation() {
+        return getValue(Flags.FLAG_KEYBOARD_TOUCHPAD_CONTEXTUAL_EDUCATION,
+            FeatureFlags::keyboardTouchpadContextualEducation);
+    }
+
+    @Override
+
+    public boolean keyguardTransitionForceFinishOnScreenOff() {
+        return getValue(Flags.FLAG_KEYGUARD_TRANSITION_FORCE_FINISH_ON_SCREEN_OFF,
+            FeatureFlags::keyguardTransitionForceFinishOnScreenOff);
+    }
+
+    @Override
+
+    public boolean keyguardWmReorderAtmsCalls() {
+        return getValue(Flags.FLAG_KEYGUARD_WM_REORDER_ATMS_CALLS,
+            FeatureFlags::keyguardWmReorderAtmsCalls);
+    }
+
+    @Override
+
     public boolean keyguardWmStateRefactor() {
         return getValue(Flags.FLAG_KEYGUARD_WM_STATE_REFACTOR,
-                FeatureFlags::keyguardWmStateRefactor);
+            FeatureFlags::keyguardWmStateRefactor);
     }
 
     @Override
-    public boolean lightRevealMigration() {
-        return getValue(Flags.FLAG_LIGHT_REVEAL_MIGRATION,
-                FeatureFlags::lightRevealMigration);
+
+    public boolean lockscreenFont() {
+        return getValue(Flags.FLAG_LOCKSCREEN_FONT,
+            FeatureFlags::lockscreenFont);
     }
 
     @Override
+
+    public boolean lowLightClockDream() {
+        return getValue(Flags.FLAG_LOW_LIGHT_CLOCK_DREAM,
+            FeatureFlags::lowLightClockDream);
+    }
+
+    @Override
+
+    public boolean magneticNotificationSwipes() {
+        return getValue(Flags.FLAG_MAGNETIC_NOTIFICATION_SWIPES,
+            FeatureFlags::magneticNotificationSwipes);
+    }
+
+    @Override
+
+    public boolean mediaControlsA11yColors() {
+        return getValue(Flags.FLAG_MEDIA_CONTROLS_A11Y_COLORS,
+            FeatureFlags::mediaControlsA11yColors);
+    }
+
+    @Override
+
+    public boolean mediaControlsButtonMedia3() {
+        return getValue(Flags.FLAG_MEDIA_CONTROLS_BUTTON_MEDIA3,
+            FeatureFlags::mediaControlsButtonMedia3);
+    }
+
+    @Override
+
+    public boolean mediaControlsButtonMedia3Placement() {
+        return getValue(Flags.FLAG_MEDIA_CONTROLS_BUTTON_MEDIA3_PLACEMENT,
+            FeatureFlags::mediaControlsButtonMedia3Placement);
+    }
+
+    @Override
+
+    public boolean mediaControlsDeviceManagerBackgroundExecution() {
+        return getValue(Flags.FLAG_MEDIA_CONTROLS_DEVICE_MANAGER_BACKGROUND_EXECUTION,
+            FeatureFlags::mediaControlsDeviceManagerBackgroundExecution);
+    }
+
+    @Override
+
+    public boolean mediaControlsDrawablesReuseBugfix() {
+        return getValue(Flags.FLAG_MEDIA_CONTROLS_DRAWABLES_REUSE_BUGFIX,
+            FeatureFlags::mediaControlsDrawablesReuseBugfix);
+    }
+
+    @Override
+
     public boolean mediaControlsLockscreenShadeBugFix() {
         return getValue(Flags.FLAG_MEDIA_CONTROLS_LOCKSCREEN_SHADE_BUG_FIX,
-                FeatureFlags::mediaControlsLockscreenShadeBugFix);
+            FeatureFlags::mediaControlsLockscreenShadeBugFix);
     }
 
     @Override
-    public boolean mediaControlsRefactor() {
-        return getValue(Flags.FLAG_MEDIA_CONTROLS_REFACTOR,
-                FeatureFlags::mediaControlsRefactor);
+
+    public boolean mediaControlsUiUpdate() {
+        return getValue(Flags.FLAG_MEDIA_CONTROLS_UI_UPDATE,
+            FeatureFlags::mediaControlsUiUpdate);
     }
 
     @Override
+
+    public boolean mediaControlsUmoInflationInBackground() {
+        return getValue(Flags.FLAG_MEDIA_CONTROLS_UMO_INFLATION_IN_BACKGROUND,
+            FeatureFlags::mediaControlsUmoInflationInBackground);
+    }
+
+    @Override
+
     public boolean mediaControlsUserInitiatedDeleteintent() {
         return getValue(Flags.FLAG_MEDIA_CONTROLS_USER_INITIATED_DELETEINTENT,
-                FeatureFlags::mediaControlsUserInitiatedDeleteintent);
+            FeatureFlags::mediaControlsUserInitiatedDeleteintent);
     }
 
     @Override
-    public boolean migrateClocksToBlueprint() {
-        return getValue(Flags.FLAG_MIGRATE_CLOCKS_TO_BLUEPRINT,
-                FeatureFlags::migrateClocksToBlueprint);
+
+    public boolean mediaLoadMetadataViaMediaDataLoader() {
+        return getValue(Flags.FLAG_MEDIA_LOAD_METADATA_VIA_MEDIA_DATA_LOADER,
+            FeatureFlags::mediaLoadMetadataViaMediaDataLoader);
     }
 
     @Override
+
+    public boolean mediaLockscreenLaunchAnimation() {
+        return getValue(Flags.FLAG_MEDIA_LOCKSCREEN_LAUNCH_ANIMATION,
+            FeatureFlags::mediaLockscreenLaunchAnimation);
+    }
+
+    @Override
+
+    public boolean mediaProjectionDialogBehindLockscreen() {
+        return getValue(Flags.FLAG_MEDIA_PROJECTION_DIALOG_BEHIND_LOCKSCREEN,
+            FeatureFlags::mediaProjectionDialogBehindLockscreen);
+    }
+
+    @Override
+
+    public boolean mediaProjectionGreyErrorText() {
+        return getValue(Flags.FLAG_MEDIA_PROJECTION_GREY_ERROR_TEXT,
+            FeatureFlags::mediaProjectionGreyErrorText);
+    }
+
+    @Override
+
+    public boolean mediaProjectionRequestAttributionFix() {
+        return getValue(Flags.FLAG_MEDIA_PROJECTION_REQUEST_ATTRIBUTION_FIX,
+            FeatureFlags::mediaProjectionRequestAttributionFix);
+    }
+
+    @Override
+
+    public boolean modesUiDialogPaging() {
+        return getValue(Flags.FLAG_MODES_UI_DIALOG_PAGING,
+            FeatureFlags::modesUiDialogPaging);
+    }
+
+    @Override
+
+    public boolean moveTransitionAnimationLayer() {
+        return getValue(Flags.FLAG_MOVE_TRANSITION_ANIMATION_LAYER,
+            FeatureFlags::moveTransitionAnimationLayer);
+    }
+
+    @Override
+
+    public boolean msdlFeedback() {
+        return getValue(Flags.FLAG_MSDL_FEEDBACK,
+            FeatureFlags::msdlFeedback);
+    }
+
+    @Override
+
+    public boolean multiuserWifiPickerTrackerSupport() {
+        return getValue(Flags.FLAG_MULTIUSER_WIFI_PICKER_TRACKER_SUPPORT,
+            FeatureFlags::multiuserWifiPickerTrackerSupport);
+    }
+
+    @Override
+
     public boolean newAodTransition() {
         return getValue(Flags.FLAG_NEW_AOD_TRANSITION,
-                FeatureFlags::newAodTransition);
+            FeatureFlags::newAodTransition);
     }
 
     @Override
-    public boolean newTouchpadGesturesTutorial() {
-        return getValue(Flags.FLAG_NEW_TOUCHPAD_GESTURES_TUTORIAL,
-                FeatureFlags::newTouchpadGesturesTutorial);
-    }
 
-    @Override
     public boolean newVolumePanel() {
         return getValue(Flags.FLAG_NEW_VOLUME_PANEL,
-                FeatureFlags::newVolumePanel);
+            FeatureFlags::newVolumePanel);
     }
 
     @Override
+
+    public boolean nonTouchscreenDevicesBypassFalsing() {
+        return getValue(Flags.FLAG_NON_TOUCHSCREEN_DEVICES_BYPASS_FALSING,
+            FeatureFlags::nonTouchscreenDevicesBypassFalsing);
+    }
+
+    @Override
+
+    public boolean notesRoleQsTile() {
+        return getValue(Flags.FLAG_NOTES_ROLE_QS_TILE,
+            FeatureFlags::notesRoleQsTile);
+    }
+
+    @Override
+
+    public boolean notificationAddXOnHoverToDismiss() {
+        return getValue(Flags.FLAG_NOTIFICATION_ADD_X_ON_HOVER_TO_DISMISS,
+            FeatureFlags::notificationAddXOnHoverToDismiss);
+    }
+
+    @Override
+
+    public boolean notificationAmbientSuppressionAfterInflation() {
+        return getValue(Flags.FLAG_NOTIFICATION_AMBIENT_SUPPRESSION_AFTER_INFLATION,
+            FeatureFlags::notificationAmbientSuppressionAfterInflation);
+    }
+
+    @Override
+
+    public boolean notificationAnimatedActionsTreatment() {
+        return getValue(Flags.FLAG_NOTIFICATION_ANIMATED_ACTIONS_TREATMENT,
+            FeatureFlags::notificationAnimatedActionsTreatment);
+    }
+
+    @Override
+
+    public boolean notificationAppearNonlinear() {
+        return getValue(Flags.FLAG_NOTIFICATION_APPEAR_NONLINEAR,
+            FeatureFlags::notificationAppearNonlinear);
+    }
+
+    @Override
+
     public boolean notificationAsyncGroupHeaderInflation() {
         return getValue(Flags.FLAG_NOTIFICATION_ASYNC_GROUP_HEADER_INFLATION,
-                FeatureFlags::notificationAsyncGroupHeaderInflation);
+            FeatureFlags::notificationAsyncGroupHeaderInflation);
     }
 
     @Override
+
     public boolean notificationAsyncHybridViewInflation() {
         return getValue(Flags.FLAG_NOTIFICATION_ASYNC_HYBRID_VIEW_INFLATION,
-                FeatureFlags::notificationAsyncHybridViewInflation);
+            FeatureFlags::notificationAsyncHybridViewInflation);
     }
 
     @Override
+
     public boolean notificationAvalancheSuppression() {
         return getValue(Flags.FLAG_NOTIFICATION_AVALANCHE_SUPPRESSION,
-                FeatureFlags::notificationAvalancheSuppression);
+            FeatureFlags::notificationAvalancheSuppression);
     }
 
     @Override
+
     public boolean notificationAvalancheThrottleHun() {
         return getValue(Flags.FLAG_NOTIFICATION_AVALANCHE_THROTTLE_HUN,
-                FeatureFlags::notificationAvalancheThrottleHun);
+            FeatureFlags::notificationAvalancheThrottleHun);
     }
 
     @Override
+
     public boolean notificationBackgroundTintOptimization() {
         return getValue(Flags.FLAG_NOTIFICATION_BACKGROUND_TINT_OPTIMIZATION,
-                FeatureFlags::notificationBackgroundTintOptimization);
+            FeatureFlags::notificationBackgroundTintOptimization);
     }
 
     @Override
+
+    public boolean notificationBundleUi() {
+        return getValue(Flags.FLAG_NOTIFICATION_BUNDLE_UI,
+            FeatureFlags::notificationBundleUi);
+    }
+
+    @Override
+
     public boolean notificationColorUpdateLogger() {
         return getValue(Flags.FLAG_NOTIFICATION_COLOR_UPDATE_LOGGER,
-                FeatureFlags::notificationColorUpdateLogger);
+            FeatureFlags::notificationColorUpdateLogger);
     }
 
     @Override
+
     public boolean notificationContentAlphaOptimization() {
         return getValue(Flags.FLAG_NOTIFICATION_CONTENT_ALPHA_OPTIMIZATION,
-                FeatureFlags::notificationContentAlphaOptimization);
+            FeatureFlags::notificationContentAlphaOptimization);
     }
 
     @Override
+
     public boolean notificationFooterBackgroundTintOptimization() {
         return getValue(Flags.FLAG_NOTIFICATION_FOOTER_BACKGROUND_TINT_OPTIMIZATION,
-                FeatureFlags::notificationFooterBackgroundTintOptimization);
+            FeatureFlags::notificationFooterBackgroundTintOptimization);
     }
 
     @Override
-    public boolean notificationMediaManagerBackgroundExecution() {
-        return getValue(Flags.FLAG_NOTIFICATION_MEDIA_MANAGER_BACKGROUND_EXECUTION,
-                FeatureFlags::notificationMediaManagerBackgroundExecution);
-    }
 
-    @Override
-    public boolean notificationMinimalismPrototype() {
-        return getValue(Flags.FLAG_NOTIFICATION_MINIMALISM_PROTOTYPE,
-                FeatureFlags::notificationMinimalismPrototype);
-    }
-
-    @Override
     public boolean notificationOverExpansionClippingFix() {
         return getValue(Flags.FLAG_NOTIFICATION_OVER_EXPANSION_CLIPPING_FIX,
-                FeatureFlags::notificationOverExpansionClippingFix);
+            FeatureFlags::notificationOverExpansionClippingFix);
     }
 
     @Override
-    public boolean notificationPulsingFix() {
-        return getValue(Flags.FLAG_NOTIFICATION_PULSING_FIX,
-                FeatureFlags::notificationPulsingFix);
+
+    public boolean notificationReentrantDismiss() {
+        return getValue(Flags.FLAG_NOTIFICATION_REENTRANT_DISMISS,
+            FeatureFlags::notificationReentrantDismiss);
     }
 
     @Override
+
+    public boolean notificationRowAccessibilityExpanded() {
+        return getValue(Flags.FLAG_NOTIFICATION_ROW_ACCESSIBILITY_EXPANDED,
+            FeatureFlags::notificationRowAccessibilityExpanded);
+    }
+
+    @Override
+
     public boolean notificationRowContentBinderRefactor() {
         return getValue(Flags.FLAG_NOTIFICATION_ROW_CONTENT_BINDER_REFACTOR,
-                FeatureFlags::notificationRowContentBinderRefactor);
+            FeatureFlags::notificationRowContentBinderRefactor);
     }
 
     @Override
+
+    public boolean notificationRowTransparency() {
+        return getValue(Flags.FLAG_NOTIFICATION_ROW_TRANSPARENCY,
+            FeatureFlags::notificationRowTransparency);
+    }
+
+    @Override
+
     public boolean notificationRowUserContext() {
         return getValue(Flags.FLAG_NOTIFICATION_ROW_USER_CONTEXT,
-                FeatureFlags::notificationRowUserContext);
+            FeatureFlags::notificationRowUserContext);
     }
 
     @Override
+
+    public boolean notificationShadeBlur() {
+        return getValue(Flags.FLAG_NOTIFICATION_SHADE_BLUR,
+            FeatureFlags::notificationShadeBlur);
+    }
+
+    @Override
+
+    public boolean notificationShadeUiThread() {
+        return getValue(Flags.FLAG_NOTIFICATION_SHADE_UI_THREAD,
+            FeatureFlags::notificationShadeUiThread);
+    }
+
+    @Override
+
+    public boolean notificationSkipSilentUpdates() {
+        return getValue(Flags.FLAG_NOTIFICATION_SKIP_SILENT_UPDATES,
+            FeatureFlags::notificationSkipSilentUpdates);
+    }
+
+    @Override
+
+    public boolean notificationTransparentHeaderFix() {
+        return getValue(Flags.FLAG_NOTIFICATION_TRANSPARENT_HEADER_FIX,
+            FeatureFlags::notificationTransparentHeaderFix);
+    }
+
+    @Override
+
     public boolean notificationViewFlipperPausingV2() {
         return getValue(Flags.FLAG_NOTIFICATION_VIEW_FLIPPER_PAUSING_V2,
-                FeatureFlags::notificationViewFlipperPausingV2);
+            FeatureFlags::notificationViewFlipperPausingV2);
     }
 
     @Override
+
     public boolean notificationsBackgroundIcons() {
         return getValue(Flags.FLAG_NOTIFICATIONS_BACKGROUND_ICONS,
-                FeatureFlags::notificationsBackgroundIcons);
+            FeatureFlags::notificationsBackgroundIcons);
     }
 
     @Override
-    public boolean notificationsFooterViewRefactor() {
-        return getValue(Flags.FLAG_NOTIFICATIONS_FOOTER_VIEW_REFACTOR,
-                FeatureFlags::notificationsFooterViewRefactor);
+
+    public boolean notificationsFooterVisibilityFix() {
+        return getValue(Flags.FLAG_NOTIFICATIONS_FOOTER_VISIBILITY_FIX,
+            FeatureFlags::notificationsFooterVisibilityFix);
     }
 
     @Override
-    public boolean notificationsHeadsUpRefactor() {
-        return getValue(Flags.FLAG_NOTIFICATIONS_HEADS_UP_REFACTOR,
-                FeatureFlags::notificationsHeadsUpRefactor);
-    }
 
-    @Override
     public boolean notificationsHideOnDisplaySwitch() {
         return getValue(Flags.FLAG_NOTIFICATIONS_HIDE_ON_DISPLAY_SWITCH,
-                FeatureFlags::notificationsHideOnDisplaySwitch);
+            FeatureFlags::notificationsHideOnDisplaySwitch);
     }
 
     @Override
+
+    public boolean notificationsHunSharedAnimationValues() {
+        return getValue(Flags.FLAG_NOTIFICATIONS_HUN_SHARED_ANIMATION_VALUES,
+            FeatureFlags::notificationsHunSharedAnimationValues);
+    }
+
+    @Override
+
     public boolean notificationsIconContainerRefactor() {
         return getValue(Flags.FLAG_NOTIFICATIONS_ICON_CONTAINER_REFACTOR,
-                FeatureFlags::notificationsIconContainerRefactor);
+            FeatureFlags::notificationsIconContainerRefactor);
     }
 
     @Override
-    public boolean notificationsImprovedHunAnimation() {
-        return getValue(Flags.FLAG_NOTIFICATIONS_IMPROVED_HUN_ANIMATION,
-                FeatureFlags::notificationsImprovedHunAnimation);
+
+    public boolean notificationsLaunchRadius() {
+        return getValue(Flags.FLAG_NOTIFICATIONS_LAUNCH_RADIUS,
+            FeatureFlags::notificationsLaunchRadius);
     }
 
     @Override
+
     public boolean notificationsLiveDataStoreRefactor() {
         return getValue(Flags.FLAG_NOTIFICATIONS_LIVE_DATA_STORE_REFACTOR,
-                FeatureFlags::notificationsLiveDataStoreRefactor);
+            FeatureFlags::notificationsLiveDataStoreRefactor);
     }
 
     @Override
+
+    public boolean notificationsPinnedHunInShade() {
+        return getValue(Flags.FLAG_NOTIFICATIONS_PINNED_HUN_IN_SHADE,
+            FeatureFlags::notificationsPinnedHunInShade);
+    }
+
+    @Override
+
+    public boolean notificationsRedesignFooterView() {
+        return getValue(Flags.FLAG_NOTIFICATIONS_REDESIGN_FOOTER_VIEW,
+            FeatureFlags::notificationsRedesignFooterView);
+    }
+
+    @Override
+
+    public boolean notificationsRedesignGuts() {
+        return getValue(Flags.FLAG_NOTIFICATIONS_REDESIGN_GUTS,
+            FeatureFlags::notificationsRedesignGuts);
+    }
+
+    @Override
+
+    public boolean notifyPasswordTextViewUserActivityInBackground() {
+        return getValue(Flags.FLAG_NOTIFY_PASSWORD_TEXT_VIEW_USER_ACTIVITY_IN_BACKGROUND,
+            FeatureFlags::notifyPasswordTextViewUserActivityInBackground);
+    }
+
+    @Override
+
     public boolean notifyPowerManagerUserActivityBackground() {
         return getValue(Flags.FLAG_NOTIFY_POWER_MANAGER_USER_ACTIVITY_BACKGROUND,
-                FeatureFlags::notifyPowerManagerUserActivityBackground);
+            FeatureFlags::notifyPowerManagerUserActivityBackground);
     }
 
     @Override
+
+    public boolean onlyShowMediaStreamSliderInSingleVolumeMode() {
+        return getValue(Flags.FLAG_ONLY_SHOW_MEDIA_STREAM_SLIDER_IN_SINGLE_VOLUME_MODE,
+            FeatureFlags::onlyShowMediaStreamSliderInSingleVolumeMode);
+    }
+
+    @Override
+
+    public boolean outputSwitcherRedesign() {
+        return getValue(Flags.FLAG_OUTPUT_SWITCHER_REDESIGN,
+            FeatureFlags::outputSwitcherRedesign);
+    }
+
+    @Override
+
+    public boolean overrideSuppressOverlayCondition() {
+        return getValue(Flags.FLAG_OVERRIDE_SUPPRESS_OVERLAY_CONDITION,
+            FeatureFlags::overrideSuppressOverlayCondition);
+    }
+
+    @Override
+
+    public boolean permissionHelperInlineUiRichOngoing() {
+        return getValue(Flags.FLAG_PERMISSION_HELPER_INLINE_UI_RICH_ONGOING,
+            FeatureFlags::permissionHelperInlineUiRichOngoing);
+    }
+
+    @Override
+
+    public boolean permissionHelperUiRichOngoing() {
+        return getValue(Flags.FLAG_PERMISSION_HELPER_UI_RICH_ONGOING,
+            FeatureFlags::permissionHelperUiRichOngoing);
+    }
+
+    @Override
+
+    public boolean physicalNotificationMovement() {
+        return getValue(Flags.FLAG_PHYSICAL_NOTIFICATION_MOVEMENT,
+            FeatureFlags::physicalNotificationMovement);
+    }
+
+    @Override
+
     public boolean pinInputFieldStyledFocusState() {
         return getValue(Flags.FLAG_PIN_INPUT_FIELD_STYLED_FOCUS_STATE,
-                FeatureFlags::pinInputFieldStyledFocusState);
+            FeatureFlags::pinInputFieldStyledFocusState);
     }
 
     @Override
-    public boolean predictiveBackAnimateBouncer() {
-        return getValue(Flags.FLAG_PREDICTIVE_BACK_ANIMATE_BOUNCER,
-                FeatureFlags::predictiveBackAnimateBouncer);
-    }
 
-    @Override
-    public boolean predictiveBackAnimateDialogs() {
-        return getValue(Flags.FLAG_PREDICTIVE_BACK_ANIMATE_DIALOGS,
-                FeatureFlags::predictiveBackAnimateDialogs);
-    }
-
-    @Override
     public boolean predictiveBackAnimateShade() {
         return getValue(Flags.FLAG_PREDICTIVE_BACK_ANIMATE_SHADE,
-                FeatureFlags::predictiveBackAnimateShade);
+            FeatureFlags::predictiveBackAnimateShade);
     }
 
     @Override
-    public boolean predictiveBackSysui() {
-        return getValue(Flags.FLAG_PREDICTIVE_BACK_SYSUI,
-                FeatureFlags::predictiveBackSysui);
+
+    public boolean predictiveBackDelayWmTransition() {
+        return getValue(Flags.FLAG_PREDICTIVE_BACK_DELAY_WM_TRANSITION,
+            FeatureFlags::predictiveBackDelayWmTransition);
     }
 
     @Override
+
     public boolean priorityPeopleSection() {
         return getValue(Flags.FLAG_PRIORITY_PEOPLE_SECTION,
-                FeatureFlags::priorityPeopleSection);
+            FeatureFlags::priorityPeopleSection);
     }
 
     @Override
-    public boolean privacyDotUnfoldWrongCornerFix() {
-        return getValue(Flags.FLAG_PRIVACY_DOT_UNFOLD_WRONG_CORNER_FIX,
-                FeatureFlags::privacyDotUnfoldWrongCornerFix);
+
+    public boolean promoteNotificationsAutomatically() {
+        return getValue(Flags.FLAG_PROMOTE_NOTIFICATIONS_AUTOMATICALLY,
+            FeatureFlags::promoteNotificationsAutomatically);
     }
 
     @Override
-    public boolean pssAppSelectorAbruptExitFix() {
-        return getValue(Flags.FLAG_PSS_APP_SELECTOR_ABRUPT_EXIT_FIX,
-                FeatureFlags::pssAppSelectorAbruptExitFix);
-    }
 
-    @Override
     public boolean pssAppSelectorRecentsSplitScreen() {
         return getValue(Flags.FLAG_PSS_APP_SELECTOR_RECENTS_SPLIT_SCREEN,
-                FeatureFlags::pssAppSelectorRecentsSplitScreen);
+            FeatureFlags::pssAppSelectorRecentsSplitScreen);
     }
 
     @Override
+
     public boolean pssTaskSwitcher() {
         return getValue(Flags.FLAG_PSS_TASK_SWITCHER,
-                FeatureFlags::pssTaskSwitcher);
+            FeatureFlags::pssTaskSwitcher);
     }
 
     @Override
+
     public boolean qsCustomTileClickGuaranteedBugFix() {
         return getValue(Flags.FLAG_QS_CUSTOM_TILE_CLICK_GUARANTEED_BUG_FIX,
-                FeatureFlags::qsCustomTileClickGuaranteedBugFix);
+            FeatureFlags::qsCustomTileClickGuaranteedBugFix);
     }
 
     @Override
-    public boolean qsNewPipeline() {
-        return getValue(Flags.FLAG_QS_NEW_PIPELINE,
-                FeatureFlags::qsNewPipeline);
-    }
 
-    @Override
     public boolean qsNewTiles() {
         return getValue(Flags.FLAG_QS_NEW_TILES,
-                FeatureFlags::qsNewTiles);
+            FeatureFlags::qsNewTiles);
     }
 
     @Override
+
     public boolean qsNewTilesFuture() {
         return getValue(Flags.FLAG_QS_NEW_TILES_FUTURE,
-                FeatureFlags::qsNewTilesFuture);
+            FeatureFlags::qsNewTilesFuture);
     }
 
     @Override
+
+    public boolean qsQuickRebindActiveTiles() {
+        return getValue(Flags.FLAG_QS_QUICK_REBIND_ACTIVE_TILES,
+            FeatureFlags::qsQuickRebindActiveTiles);
+    }
+
+    @Override
+
+    public boolean qsRegisterSettingObserverOnBgThread() {
+        return getValue(Flags.FLAG_QS_REGISTER_SETTING_OBSERVER_ON_BG_THREAD,
+            FeatureFlags::qsRegisterSettingObserverOnBgThread);
+    }
+
+    @Override
+
+    public boolean qsTileDetailedView() {
+        return getValue(Flags.FLAG_QS_TILE_DETAILED_VIEW,
+            FeatureFlags::qsTileDetailedView);
+    }
+
+    @Override
+
     public boolean qsTileFocusState() {
         return getValue(Flags.FLAG_QS_TILE_FOCUS_STATE,
-                FeatureFlags::qsTileFocusState);
+            FeatureFlags::qsTileFocusState);
     }
 
     @Override
+
     public boolean qsUiRefactor() {
         return getValue(Flags.FLAG_QS_UI_REFACTOR,
-                FeatureFlags::qsUiRefactor);
+            FeatureFlags::qsUiRefactor);
     }
 
     @Override
-    public boolean quickSettingsVisualHapticsLongpress() {
-        return getValue(Flags.FLAG_QUICK_SETTINGS_VISUAL_HAPTICS_LONGPRESS,
-                FeatureFlags::quickSettingsVisualHapticsLongpress);
+
+    public boolean qsUiRefactorComposeFragment() {
+        return getValue(Flags.FLAG_QS_UI_REFACTOR_COMPOSE_FRAGMENT,
+            FeatureFlags::qsUiRefactorComposeFragment);
     }
 
     @Override
+
     public boolean recordIssueQsTile() {
         return getValue(Flags.FLAG_RECORD_ISSUE_QS_TILE,
-                FeatureFlags::recordIssueQsTile);
+            FeatureFlags::recordIssueQsTile);
     }
 
     @Override
+
+    public boolean redesignMagnificationWindowSize() {
+        return getValue(Flags.FLAG_REDESIGN_MAGNIFICATION_WINDOW_SIZE,
+            FeatureFlags::redesignMagnificationWindowSize);
+    }
+
+    @Override
+
     public boolean refactorGetCurrentUser() {
         return getValue(Flags.FLAG_REFACTOR_GET_CURRENT_USER,
-                FeatureFlags::refactorGetCurrentUser);
+            FeatureFlags::refactorGetCurrentUser);
     }
 
     @Override
+
     public boolean registerBatteryControllerReceiversInCorestartable() {
         return getValue(Flags.FLAG_REGISTER_BATTERY_CONTROLLER_RECEIVERS_IN_CORESTARTABLE,
-                FeatureFlags::registerBatteryControllerReceiversInCorestartable);
+            FeatureFlags::registerBatteryControllerReceiversInCorestartable);
     }
 
     @Override
+
+    public boolean registerContentObserversAsync() {
+        return getValue(Flags.FLAG_REGISTER_CONTENT_OBSERVERS_ASYNC,
+            FeatureFlags::registerContentObserversAsync);
+    }
+
+    @Override
+
     public boolean registerNewWalletCardInBackground() {
         return getValue(Flags.FLAG_REGISTER_NEW_WALLET_CARD_IN_BACKGROUND,
-                FeatureFlags::registerNewWalletCardInBackground);
+            FeatureFlags::registerNewWalletCardInBackground);
     }
 
     @Override
+
     public boolean registerWallpaperNotifierBackground() {
         return getValue(Flags.FLAG_REGISTER_WALLPAPER_NOTIFIER_BACKGROUND,
-                FeatureFlags::registerWallpaperNotifierBackground);
+            FeatureFlags::registerWallpaperNotifierBackground);
     }
 
     @Override
-    public boolean registerZenModeContentObserverBackground() {
-        return getValue(Flags.FLAG_REGISTER_ZEN_MODE_CONTENT_OBSERVER_BACKGROUND,
-                FeatureFlags::registerZenModeContentObserverBackground);
+
+    public boolean relockWithPowerButtonImmediately() {
+        return getValue(Flags.FLAG_RELOCK_WITH_POWER_BUTTON_IMMEDIATELY,
+            FeatureFlags::relockWithPowerButtonImmediately);
     }
 
     @Override
+
     public boolean removeDreamOverlayHideOnTouch() {
         return getValue(Flags.FLAG_REMOVE_DREAM_OVERLAY_HIDE_ON_TOUCH,
-                FeatureFlags::removeDreamOverlayHideOnTouch);
+            FeatureFlags::removeDreamOverlayHideOnTouch);
     }
 
     @Override
+
+    public boolean removeUpdateListenerInQsIconViewImpl() {
+        return getValue(Flags.FLAG_REMOVE_UPDATE_LISTENER_IN_QS_ICON_VIEW_IMPL,
+            FeatureFlags::removeUpdateListenerInQsIconViewImpl);
+    }
+
+    @Override
+
     public boolean restToUnlock() {
         return getValue(Flags.FLAG_REST_TO_UNLOCK,
-                FeatureFlags::restToUnlock);
+            FeatureFlags::restToUnlock);
     }
 
     @Override
+
     public boolean restartDreamOnUnocclude() {
         return getValue(Flags.FLAG_RESTART_DREAM_ON_UNOCCLUDE,
-                FeatureFlags::restartDreamOnUnocclude);
+            FeatureFlags::restartDreamOnUnocclude);
     }
 
     @Override
+
     public boolean revampedBouncerMessages() {
         return getValue(Flags.FLAG_REVAMPED_BOUNCER_MESSAGES,
-                FeatureFlags::revampedBouncerMessages);
+            FeatureFlags::revampedBouncerMessages);
     }
 
     @Override
+
     public boolean runFingerprintDetectOnDismissibleKeyguard() {
         return getValue(Flags.FLAG_RUN_FINGERPRINT_DETECT_ON_DISMISSIBLE_KEYGUARD,
-                FeatureFlags::runFingerprintDetectOnDismissibleKeyguard);
+            FeatureFlags::runFingerprintDetectOnDismissibleKeyguard);
     }
 
     @Override
+
     public boolean saveAndRestoreMagnificationSettingsButtons() {
         return getValue(Flags.FLAG_SAVE_AND_RESTORE_MAGNIFICATION_SETTINGS_BUTTONS,
-                FeatureFlags::saveAndRestoreMagnificationSettingsButtons);
+            FeatureFlags::saveAndRestoreMagnificationSettingsButtons);
     }
 
     @Override
+
     public boolean sceneContainer() {
         return getValue(Flags.FLAG_SCENE_CONTAINER,
-                FeatureFlags::sceneContainer);
+            FeatureFlags::sceneContainer);
     }
 
     @Override
+
     public boolean screenshareNotificationHidingBugFix() {
         return getValue(Flags.FLAG_SCREENSHARE_NOTIFICATION_HIDING_BUG_FIX,
-                FeatureFlags::screenshareNotificationHidingBugFix);
+            FeatureFlags::screenshareNotificationHidingBugFix);
     }
 
     @Override
+
     public boolean screenshotActionDismissSystemWindows() {
         return getValue(Flags.FLAG_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS,
-                FeatureFlags::screenshotActionDismissSystemWindows);
+            FeatureFlags::screenshotActionDismissSystemWindows);
     }
 
     @Override
-    public boolean screenshotPrivateProfileAccessibilityAnnouncementFix() {
-        return getValue(Flags.FLAG_SCREENSHOT_PRIVATE_PROFILE_ACCESSIBILITY_ANNOUNCEMENT_FIX,
-                FeatureFlags::screenshotPrivateProfileAccessibilityAnnouncementFix);
+
+    public boolean screenshotMultidisplayFocusChange() {
+        return getValue(Flags.FLAG_SCREENSHOT_MULTIDISPLAY_FOCUS_CHANGE,
+            FeatureFlags::screenshotMultidisplayFocusChange);
     }
 
     @Override
-    public boolean screenshotPrivateProfileBehaviorFix() {
-        return getValue(Flags.FLAG_SCREENSHOT_PRIVATE_PROFILE_BEHAVIOR_FIX,
-                FeatureFlags::screenshotPrivateProfileBehaviorFix);
+
+    public boolean screenshotPolicySplitAndDesktopMode() {
+        return getValue(Flags.FLAG_SCREENSHOT_POLICY_SPLIT_AND_DESKTOP_MODE,
+            FeatureFlags::screenshotPolicySplitAndDesktopMode);
     }
 
     @Override
+
     public boolean screenshotScrollCropViewCrashFix() {
         return getValue(Flags.FLAG_SCREENSHOT_SCROLL_CROP_VIEW_CRASH_FIX,
-                FeatureFlags::screenshotScrollCropViewCrashFix);
+            FeatureFlags::screenshotScrollCropViewCrashFix);
     }
 
     @Override
-    public boolean screenshotShelfUi2() {
-        return getValue(Flags.FLAG_SCREENSHOT_SHELF_UI2,
-                FeatureFlags::screenshotShelfUi2);
+
+    public boolean screenshotUiControllerRefactor() {
+        return getValue(Flags.FLAG_SCREENSHOT_UI_CONTROLLER_REFACTOR,
+            FeatureFlags::screenshotUiControllerRefactor);
     }
 
     @Override
-    public boolean shadeCollapseActivityLaunchFix() {
-        return getValue(Flags.FLAG_SHADE_COLLAPSE_ACTIVITY_LAUNCH_FIX,
-                FeatureFlags::shadeCollapseActivityLaunchFix);
+
+    public boolean secondaryUserWidgetHost() {
+        return getValue(Flags.FLAG_SECONDARY_USER_WIDGET_HOST,
+            FeatureFlags::secondaryUserWidgetHost);
     }
 
     @Override
+
+    public boolean settingsExtRegisterContentObserverOnBgThread() {
+        return getValue(Flags.FLAG_SETTINGS_EXT_REGISTER_CONTENT_OBSERVER_ON_BG_THREAD,
+            FeatureFlags::settingsExtRegisterContentObserverOnBgThread);
+    }
+
+    @Override
+
+    public boolean shadeExpandsOnStatusBarLongPress() {
+        return getValue(Flags.FLAG_SHADE_EXPANDS_ON_STATUS_BAR_LONG_PRESS,
+            FeatureFlags::shadeExpandsOnStatusBarLongPress);
+    }
+
+    @Override
+
+    public boolean shadeHeaderFontUpdate() {
+        return getValue(Flags.FLAG_SHADE_HEADER_FONT_UPDATE,
+            FeatureFlags::shadeHeaderFontUpdate);
+    }
+
+    @Override
+
+    public boolean shadeLaunchAccessibility() {
+        return getValue(Flags.FLAG_SHADE_LAUNCH_ACCESSIBILITY,
+            FeatureFlags::shadeLaunchAccessibility);
+    }
+
+    @Override
+
+    public boolean shadeWindowGoesAround() {
+        return getValue(Flags.FLAG_SHADE_WINDOW_GOES_AROUND,
+            FeatureFlags::shadeWindowGoesAround);
+    }
+
+    @Override
+
     public boolean shaderlibLoadingEffectRefactor() {
         return getValue(Flags.FLAG_SHADERLIB_LOADING_EFFECT_REFACTOR,
-                FeatureFlags::shaderlibLoadingEffectRefactor);
+            FeatureFlags::shaderlibLoadingEffectRefactor);
     }
 
     @Override
+
+    public boolean shortcutHelperKeyGlyph() {
+        return getValue(Flags.FLAG_SHORTCUT_HELPER_KEY_GLYPH,
+            FeatureFlags::shortcutHelperKeyGlyph);
+    }
+
+    @Override
+
+    public boolean showAudioSharingSliderInVolumePanel() {
+        return getValue(Flags.FLAG_SHOW_AUDIO_SHARING_SLIDER_IN_VOLUME_PANEL,
+            FeatureFlags::showAudioSharingSliderInVolumePanel);
+    }
+
+    @Override
+
+    public boolean showClipboardIndication() {
+        return getValue(Flags.FLAG_SHOW_CLIPBOARD_INDICATION,
+            FeatureFlags::showClipboardIndication);
+    }
+
+    @Override
+
+    public boolean showLockedByYourWatchKeyguardIndicator() {
+        return getValue(Flags.FLAG_SHOW_LOCKED_BY_YOUR_WATCH_KEYGUARD_INDICATOR,
+            FeatureFlags::showLockedByYourWatchKeyguardIndicator);
+    }
+
+    @Override
+
+    public boolean showToastWhenAppControlBrightness() {
+        return getValue(Flags.FLAG_SHOW_TOAST_WHEN_APP_CONTROL_BRIGHTNESS,
+            FeatureFlags::showToastWhenAppControlBrightness);
+    }
+
+    @Override
+
+    public boolean simPinBouncerReset() {
+        return getValue(Flags.FLAG_SIM_PIN_BOUNCER_RESET,
+            FeatureFlags::simPinBouncerReset);
+    }
+
+    @Override
+
+    public boolean simPinRaceConditionOnRestart() {
+        return getValue(Flags.FLAG_SIM_PIN_RACE_CONDITION_ON_RESTART,
+            FeatureFlags::simPinRaceConditionOnRestart);
+    }
+
+    @Override
+
+    public boolean simPinUseSlotId() {
+        return getValue(Flags.FLAG_SIM_PIN_USE_SLOT_ID,
+            FeatureFlags::simPinUseSlotId);
+    }
+
+    @Override
+
+    public boolean skipHideSensitiveNotifAnimation() {
+        return getValue(Flags.FLAG_SKIP_HIDE_SENSITIVE_NOTIF_ANIMATION,
+            FeatureFlags::skipHideSensitiveNotifAnimation);
+    }
+
+    @Override
+
     public boolean sliceBroadcastRelayInBackground() {
         return getValue(Flags.FLAG_SLICE_BROADCAST_RELAY_IN_BACKGROUND,
-                FeatureFlags::sliceBroadcastRelayInBackground);
+            FeatureFlags::sliceBroadcastRelayInBackground);
     }
 
     @Override
+
     public boolean sliceManagerBinderCallBackground() {
         return getValue(Flags.FLAG_SLICE_MANAGER_BINDER_CALL_BACKGROUND,
-                FeatureFlags::sliceManagerBinderCallBackground);
+            FeatureFlags::sliceManagerBinderCallBackground);
     }
 
     @Override
+
     public boolean smartspaceLockscreenViewmodel() {
         return getValue(Flags.FLAG_SMARTSPACE_LOCKSCREEN_VIEWMODEL,
-                FeatureFlags::smartspaceLockscreenViewmodel);
+            FeatureFlags::smartspaceLockscreenViewmodel);
     }
 
     @Override
+
     public boolean smartspaceRelocateToBottom() {
         return getValue(Flags.FLAG_SMARTSPACE_RELOCATE_TO_BOTTOM,
-                FeatureFlags::smartspaceRelocateToBottom);
+            FeatureFlags::smartspaceRelocateToBottom);
     }
 
     @Override
-    public boolean smartspaceRemoteviewsRendering() {
-        return getValue(Flags.FLAG_SMARTSPACE_REMOTEVIEWS_RENDERING,
-                FeatureFlags::smartspaceRemoteviewsRendering);
+
+    public boolean smartspaceRemoteviewsRenderingFix() {
+        return getValue(Flags.FLAG_SMARTSPACE_REMOTEVIEWS_RENDERING_FIX,
+            FeatureFlags::smartspaceRemoteviewsRenderingFix);
     }
 
     @Override
+
+    public boolean smartspaceSwipeEventLoggingFix() {
+        return getValue(Flags.FLAG_SMARTSPACE_SWIPE_EVENT_LOGGING_FIX,
+            FeatureFlags::smartspaceSwipeEventLoggingFix);
+    }
+
+    @Override
+
+    public boolean smartspaceViewpager2() {
+        return getValue(Flags.FLAG_SMARTSPACE_VIEWPAGER2,
+            FeatureFlags::smartspaceViewpager2);
+    }
+
+    @Override
+
+    public boolean sounddoseCustomization() {
+        return getValue(Flags.FLAG_SOUNDDOSE_CUSTOMIZATION,
+            FeatureFlags::sounddoseCustomization);
+    }
+
+    @Override
+
+    public boolean spatialModelAppPushback() {
+        return getValue(Flags.FLAG_SPATIAL_MODEL_APP_PUSHBACK,
+            FeatureFlags::spatialModelAppPushback);
+    }
+
+    @Override
+
+    public boolean stabilizeHeadsUpGroupV2() {
+        return getValue(Flags.FLAG_STABILIZE_HEADS_UP_GROUP_V2,
+            FeatureFlags::stabilizeHeadsUpGroupV2);
+    }
+
+    @Override
+
+    public boolean statusBarAlwaysCheckUnderlyingNetworks() {
+        return getValue(Flags.FLAG_STATUS_BAR_ALWAYS_CHECK_UNDERLYING_NETWORKS,
+            FeatureFlags::statusBarAlwaysCheckUnderlyingNetworks);
+    }
+
+    @Override
+
+    public boolean statusBarAutoStartScreenRecordChip() {
+        return getValue(Flags.FLAG_STATUS_BAR_AUTO_START_SCREEN_RECORD_CHIP,
+            FeatureFlags::statusBarAutoStartScreenRecordChip);
+    }
+
+    @Override
+
+    public boolean statusBarChipsModernization() {
+        return getValue(Flags.FLAG_STATUS_BAR_CHIPS_MODERNIZATION,
+            FeatureFlags::statusBarChipsModernization);
+    }
+
+    @Override
+
+    public boolean statusBarChipsReturnAnimations() {
+        return getValue(Flags.FLAG_STATUS_BAR_CHIPS_RETURN_ANIMATIONS,
+            FeatureFlags::statusBarChipsReturnAnimations);
+    }
+
+    @Override
+
+    public boolean statusBarFontUpdates() {
+        return getValue(Flags.FLAG_STATUS_BAR_FONT_UPDATES,
+            FeatureFlags::statusBarFontUpdates);
+    }
+
+    @Override
+
+    public boolean statusBarMobileIconKairos() {
+        return getValue(Flags.FLAG_STATUS_BAR_MOBILE_ICON_KAIROS,
+            FeatureFlags::statusBarMobileIconKairos);
+    }
+
+    @Override
+
     public boolean statusBarMonochromeIconsFix() {
         return getValue(Flags.FLAG_STATUS_BAR_MONOCHROME_ICONS_FIX,
-                FeatureFlags::statusBarMonochromeIconsFix);
+            FeatureFlags::statusBarMonochromeIconsFix);
     }
 
     @Override
-    public boolean statusBarScreenSharingChips() {
-        return getValue(Flags.FLAG_STATUS_BAR_SCREEN_SHARING_CHIPS,
-                FeatureFlags::statusBarScreenSharingChips);
+
+    public boolean statusBarNoHunBehavior() {
+        return getValue(Flags.FLAG_STATUS_BAR_NO_HUN_BEHAVIOR,
+            FeatureFlags::statusBarNoHunBehavior);
     }
 
     @Override
+
+    public boolean statusBarPopupChips() {
+        return getValue(Flags.FLAG_STATUS_BAR_POPUP_CHIPS,
+            FeatureFlags::statusBarPopupChips);
+    }
+
+    @Override
+
+    public boolean statusBarRootModernization() {
+        return getValue(Flags.FLAG_STATUS_BAR_ROOT_MODERNIZATION,
+            FeatureFlags::statusBarRootModernization);
+    }
+
+    @Override
+
+    public boolean statusBarShowAudioOnlyProjectionChip() {
+        return getValue(Flags.FLAG_STATUS_BAR_SHOW_AUDIO_ONLY_PROJECTION_CHIP,
+            FeatureFlags::statusBarShowAudioOnlyProjectionChip);
+    }
+
+    @Override
+
+    public boolean statusBarSignalPolicyRefactor() {
+        return getValue(Flags.FLAG_STATUS_BAR_SIGNAL_POLICY_REFACTOR,
+            FeatureFlags::statusBarSignalPolicyRefactor);
+    }
+
+    @Override
+
+    public boolean statusBarSignalPolicyRefactorEthernet() {
+        return getValue(Flags.FLAG_STATUS_BAR_SIGNAL_POLICY_REFACTOR_ETHERNET,
+            FeatureFlags::statusBarSignalPolicyRefactorEthernet);
+    }
+
+    @Override
+
     public boolean statusBarStaticInoutIndicators() {
         return getValue(Flags.FLAG_STATUS_BAR_STATIC_INOUT_INDICATORS,
-                FeatureFlags::statusBarStaticInoutIndicators);
+            FeatureFlags::statusBarStaticInoutIndicators);
     }
 
     @Override
+
+    public boolean statusBarStopUpdatingWindowHeight() {
+        return getValue(Flags.FLAG_STATUS_BAR_STOP_UPDATING_WINDOW_HEIGHT,
+            FeatureFlags::statusBarStopUpdatingWindowHeight);
+    }
+
+    @Override
+
+    public boolean statusBarSwipeOverChip() {
+        return getValue(Flags.FLAG_STATUS_BAR_SWIPE_OVER_CHIP,
+            FeatureFlags::statusBarSwipeOverChip);
+    }
+
+    @Override
+
+    public boolean statusBarSwitchToSpnFromDataSpn() {
+        return getValue(Flags.FLAG_STATUS_BAR_SWITCH_TO_SPN_FROM_DATA_SPN,
+            FeatureFlags::statusBarSwitchToSpnFromDataSpn);
+    }
+
+    @Override
+
+    public boolean statusBarUiThread() {
+        return getValue(Flags.FLAG_STATUS_BAR_UI_THREAD,
+            FeatureFlags::statusBarUiThread);
+    }
+
+    @Override
+
+    public boolean statusBarWindowNoCustomTouch() {
+        return getValue(Flags.FLAG_STATUS_BAR_WINDOW_NO_CUSTOM_TOUCH,
+            FeatureFlags::statusBarWindowNoCustomTouch);
+    }
+
+    @Override
+
+    public boolean stoppableFgsSystemApp() {
+        return getValue(Flags.FLAG_STOPPABLE_FGS_SYSTEM_APP,
+            FeatureFlags::stoppableFgsSystemApp);
+    }
+
+    @Override
+
     public boolean switchUserOnBg() {
         return getValue(Flags.FLAG_SWITCH_USER_ON_BG,
-                FeatureFlags::switchUserOnBg);
+            FeatureFlags::switchUserOnBg);
     }
 
     @Override
+
     public boolean sysuiTeamfood() {
         return getValue(Flags.FLAG_SYSUI_TEAMFOOD,
-                FeatureFlags::sysuiTeamfood);
+            FeatureFlags::sysuiTeamfood);
     }
 
     @Override
+
     public boolean themeOverlayControllerWakefulnessDeprecation() {
         return getValue(Flags.FLAG_THEME_OVERLAY_CONTROLLER_WAKEFULNESS_DEPRECATION,
-                FeatureFlags::themeOverlayControllerWakefulnessDeprecation);
+            FeatureFlags::themeOverlayControllerWakefulnessDeprecation);
     }
 
     @Override
+
+    public boolean transitionRaceCondition() {
+        return getValue(Flags.FLAG_TRANSITION_RACE_CONDITION,
+            FeatureFlags::transitionRaceCondition);
+    }
+
+    @Override
+
     public boolean translucentOccludingActivityFix() {
         return getValue(Flags.FLAG_TRANSLUCENT_OCCLUDING_ACTIVITY_FIX,
-                FeatureFlags::translucentOccludingActivityFix);
+            FeatureFlags::translucentOccludingActivityFix);
     }
 
     @Override
-    public boolean truncatedStatusBarIconsFix() {
-        return getValue(Flags.FLAG_TRUNCATED_STATUS_BAR_ICONS_FIX,
-                FeatureFlags::truncatedStatusBarIconsFix);
+
+    public boolean tvGlobalActionsFocus() {
+        return getValue(Flags.FLAG_TV_GLOBAL_ACTIONS_FOCUS,
+            FeatureFlags::tvGlobalActionsFocus);
     }
 
     @Override
+
     public boolean udfpsViewPerformance() {
         return getValue(Flags.FLAG_UDFPS_VIEW_PERFORMANCE,
-                FeatureFlags::udfpsViewPerformance);
+            FeatureFlags::udfpsViewPerformance);
     }
 
     @Override
+
     public boolean unfoldAnimationBackgroundProgress() {
         return getValue(Flags.FLAG_UNFOLD_ANIMATION_BACKGROUND_PROGRESS,
-                FeatureFlags::unfoldAnimationBackgroundProgress);
+            FeatureFlags::unfoldAnimationBackgroundProgress);
     }
 
     @Override
+
+    public boolean unfoldLatencyTrackingFix() {
+        return getValue(Flags.FLAG_UNFOLD_LATENCY_TRACKING_FIX,
+            FeatureFlags::unfoldLatencyTrackingFix);
+    }
+
+    @Override
+
+    public boolean updateCornerRadiusOnDisplayChanged() {
+        return getValue(Flags.FLAG_UPDATE_CORNER_RADIUS_ON_DISPLAY_CHANGED,
+            FeatureFlags::updateCornerRadiusOnDisplayChanged);
+    }
+
+    @Override
+
     public boolean updateUserSwitcherBackground() {
         return getValue(Flags.FLAG_UPDATE_USER_SWITCHER_BACKGROUND,
-                FeatureFlags::updateUserSwitcherBackground);
+            FeatureFlags::updateUserSwitcherBackground);
     }
 
     @Override
-    public boolean validateKeyboardShortcutHelperIconUri() {
-        return getValue(Flags.FLAG_VALIDATE_KEYBOARD_SHORTCUT_HELPER_ICON_URI,
-                FeatureFlags::validateKeyboardShortcutHelperIconUri);
+
+    public boolean updateWindowMagnifierBottomBoundary() {
+        return getValue(Flags.FLAG_UPDATE_WINDOW_MAGNIFIER_BOTTOM_BOUNDARY,
+            FeatureFlags::updateWindowMagnifierBottomBoundary);
     }
 
     @Override
+
+    public boolean useAadProxSensor() {
+        return getValue(Flags.FLAG_USE_AAD_PROX_SENSOR,
+            FeatureFlags::useAadProxSensor);
+    }
+
+    @Override
+
+    public boolean useNotifInflationThreadForFooter() {
+        return getValue(Flags.FLAG_USE_NOTIF_INFLATION_THREAD_FOR_FOOTER,
+            FeatureFlags::useNotifInflationThreadForFooter);
+    }
+
+    @Override
+
+    public boolean useNotifInflationThreadForRow() {
+        return getValue(Flags.FLAG_USE_NOTIF_INFLATION_THREAD_FOR_ROW,
+            FeatureFlags::useNotifInflationThreadForRow);
+    }
+
+    @Override
+
+    public boolean useTransitionsForKeyguardOccluded() {
+        return getValue(Flags.FLAG_USE_TRANSITIONS_FOR_KEYGUARD_OCCLUDED,
+            FeatureFlags::useTransitionsForKeyguardOccluded);
+    }
+
+    @Override
+
+    public boolean useVolumeController() {
+        return getValue(Flags.FLAG_USE_VOLUME_CONTROLLER,
+            FeatureFlags::useVolumeController);
+    }
+
+    @Override
+
+    public boolean userAwareSettingsRepositories() {
+        return getValue(Flags.FLAG_USER_AWARE_SETTINGS_REPOSITORIES,
+            FeatureFlags::userAwareSettingsRepositories);
+    }
+
+    @Override
+
+    public boolean userEncryptedSource() {
+        return getValue(Flags.FLAG_USER_ENCRYPTED_SOURCE,
+            FeatureFlags::userEncryptedSource);
+    }
+
+    @Override
+
+    public boolean userSwitcherAddSignOutOption() {
+        return getValue(Flags.FLAG_USER_SWITCHER_ADD_SIGN_OUT_OPTION,
+            FeatureFlags::userSwitcherAddSignOutOption);
+    }
+
+    @Override
+
     public boolean visualInterruptionsRefactor() {
         return getValue(Flags.FLAG_VISUAL_INTERRUPTIONS_REFACTOR,
-                FeatureFlags::visualInterruptionsRefactor);
+            FeatureFlags::visualInterruptionsRefactor);
+    }
+
+    @Override
+
+    public boolean volumeRedesign() {
+        return getValue(Flags.FLAG_VOLUME_REDESIGN,
+            FeatureFlags::volumeRedesign);
     }
 
     public boolean isFlagReadOnlyOptimized(String flagName) {
         if (mReadOnlyFlagsSet.contains(flagName) &&
-                isOptimizationEnabled()) {
-            return true;
+            isOptimizationEnabled()) {
+                return true;
         }
         return false;
     }
+
 
     private boolean isOptimizationEnabled() {
         return false;
@@ -946,163 +1994,572 @@ public class CustomFeatureFlags implements FeatureFlags {
 
     public List<String> getFlagNames() {
         return Arrays.asList(
-                Flags.FLAG_ACTIVITY_TRANSITION_USE_LARGEST_WINDOW,
-                Flags.FLAG_AMBIENT_TOUCH_MONITOR_LISTEN_TO_DISPLAY_CHANGES,
-                Flags.FLAG_APP_CLIPS_BACKLINKS,
-                Flags.FLAG_BIND_KEYGUARD_MEDIA_VISIBILITY,
-                Flags.FLAG_BP_TALKBACK,
-                Flags.FLAG_BRIGHTNESS_SLIDER_FOCUS_STATE,
-                Flags.FLAG_CENTRALIZED_STATUS_BAR_HEIGHT_FIX,
-                Flags.FLAG_CLIPBOARD_NONINTERACTIVE_ON_LOCKSCREEN,
-                Flags.FLAG_CLOCK_REACTIVE_VARIANTS,
-                Flags.FLAG_COMMUNAL_BOUNCER_DO_NOT_MODIFY_PLUGIN_OPEN,
-                Flags.FLAG_COMMUNAL_HUB,
-                Flags.FLAG_COMPOSE_BOUNCER,
-                Flags.FLAG_COMPOSE_LOCKSCREEN,
-                Flags.FLAG_CONFINE_NOTIFICATION_TOUCH_TO_VIEW_WIDTH,
-                Flags.FLAG_CONSTRAINT_BP,
-                Flags.FLAG_CONTEXTUAL_TIPS_ASSISTANT_DISMISS_FIX,
-                Flags.FLAG_COROUTINE_TRACING,
-                Flags.FLAG_CREATE_WINDOWLESS_WINDOW_MAGNIFIER,
-                Flags.FLAG_DEDICATED_NOTIF_INFLATION_THREAD,
-                Flags.FLAG_DELAY_SHOW_MAGNIFICATION_BUTTON,
-                Flags.FLAG_DELAYED_WAKELOCK_RELEASE_ON_BACKGROUND_THREAD,
-                Flags.FLAG_DEVICE_ENTRY_UDFPS_REFACTOR,
-                Flags.FLAG_DISABLE_CONTEXTUAL_TIPS_FREQUENCY_CHECK,
-                Flags.FLAG_DISABLE_CONTEXTUAL_TIPS_IOS_SWITCHER_CHECK,
-                Flags.FLAG_DOZEUI_SCHEDULING_ALARMS_BACKGROUND_EXECUTION,
-                Flags.FLAG_DREAM_INPUT_SESSION_PILFER_ONCE,
-                Flags.FLAG_DREAM_OVERLAY_BOUNCER_SWIPE_DIRECTION_FILTERING,
-                Flags.FLAG_DUAL_SHADE,
-                Flags.FLAG_EDGE_BACK_GESTURE_HANDLER_THREAD,
-                Flags.FLAG_EDGEBACK_GESTURE_HANDLER_GET_RUNNING_TASKS_BACKGROUND,
-                Flags.FLAG_ENABLE_BACKGROUND_KEYGUARD_ONDRAWN_CALLBACK,
-                Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_MUTE_VOLUME,
-                Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_POWER_OFF,
-                Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_TAKE_SCREENSHOT,
-                Flags.FLAG_ENABLE_CONTEXTUAL_TIPS,
-                Flags.FLAG_ENABLE_EFFICIENT_DISPLAY_REPOSITORY,
-                Flags.FLAG_ENABLE_LAYOUT_TRACING,
-                Flags.FLAG_ENABLE_VIEW_CAPTURE_TRACING,
-                Flags.FLAG_ENABLE_WIDGET_PICKER_SIZE_FILTER,
-                Flags.FLAG_ENFORCE_BRIGHTNESS_BASE_USER_RESTRICTION,
-                Flags.FLAG_EXAMPLE_FLAG,
-                Flags.FLAG_FAST_UNLOCK_TRANSITION,
-                Flags.FLAG_FIX_IMAGE_WALLPAPER_CRASH_SURFACE_ALREADY_RELEASED,
-                Flags.FLAG_FIX_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS,
-                Flags.FLAG_FLOATING_MENU_ANIMATED_TUCK,
-                Flags.FLAG_FLOATING_MENU_DRAG_TO_EDIT,
-                Flags.FLAG_FLOATING_MENU_DRAG_TO_HIDE,
-                Flags.FLAG_FLOATING_MENU_IME_DISPLACEMENT_ANIMATION,
-                Flags.FLAG_FLOATING_MENU_NARROW_TARGET_CONTENT_OBSERVER,
-                Flags.FLAG_FLOATING_MENU_OVERLAPS_NAV_BARS_FLAG,
-                Flags.FLAG_FLOATING_MENU_RADII_ANIMATION,
-                Flags.FLAG_GET_CONNECTED_DEVICE_NAME_UNSYNCHRONIZED,
-                Flags.FLAG_GLANCEABLE_HUB_ALLOW_KEYGUARD_WHEN_DREAMING,
-                Flags.FLAG_GLANCEABLE_HUB_FULLSCREEN_SWIPE,
-                Flags.FLAG_GLANCEABLE_HUB_GESTURE_HANDLE,
-                Flags.FLAG_GLANCEABLE_HUB_SHORTCUT_BUTTON,
-                Flags.FLAG_HAPTIC_BRIGHTNESS_SLIDER,
-                Flags.FLAG_HAPTIC_VOLUME_SLIDER,
-                Flags.FLAG_HEARING_AIDS_QS_TILE_DIALOG,
-                Flags.FLAG_HEARING_DEVICES_DIALOG_RELATED_TOOLS,
-                Flags.FLAG_KEYBOARD_DOCKING_INDICATOR,
-                Flags.FLAG_KEYBOARD_SHORTCUT_HELPER_REWRITE,
-                Flags.FLAG_KEYGUARD_BOTTOM_AREA_REFACTOR,
-                Flags.FLAG_KEYGUARD_WM_STATE_REFACTOR,
-                Flags.FLAG_LIGHT_REVEAL_MIGRATION,
-                Flags.FLAG_MEDIA_CONTROLS_LOCKSCREEN_SHADE_BUG_FIX,
-                Flags.FLAG_MEDIA_CONTROLS_REFACTOR,
-                Flags.FLAG_MEDIA_CONTROLS_USER_INITIATED_DELETEINTENT,
-                Flags.FLAG_MIGRATE_CLOCKS_TO_BLUEPRINT,
-                Flags.FLAG_NEW_AOD_TRANSITION,
-                Flags.FLAG_NEW_TOUCHPAD_GESTURES_TUTORIAL,
-                Flags.FLAG_NEW_VOLUME_PANEL,
-                Flags.FLAG_NOTIFICATION_ASYNC_GROUP_HEADER_INFLATION,
-                Flags.FLAG_NOTIFICATION_ASYNC_HYBRID_VIEW_INFLATION,
-                Flags.FLAG_NOTIFICATION_AVALANCHE_SUPPRESSION,
-                Flags.FLAG_NOTIFICATION_AVALANCHE_THROTTLE_HUN,
-                Flags.FLAG_NOTIFICATION_BACKGROUND_TINT_OPTIMIZATION,
-                Flags.FLAG_NOTIFICATION_COLOR_UPDATE_LOGGER,
-                Flags.FLAG_NOTIFICATION_CONTENT_ALPHA_OPTIMIZATION,
-                Flags.FLAG_NOTIFICATION_FOOTER_BACKGROUND_TINT_OPTIMIZATION,
-                Flags.FLAG_NOTIFICATION_MEDIA_MANAGER_BACKGROUND_EXECUTION,
-                Flags.FLAG_NOTIFICATION_MINIMALISM_PROTOTYPE,
-                Flags.FLAG_NOTIFICATION_OVER_EXPANSION_CLIPPING_FIX,
-                Flags.FLAG_NOTIFICATION_PULSING_FIX,
-                Flags.FLAG_NOTIFICATION_ROW_CONTENT_BINDER_REFACTOR,
-                Flags.FLAG_NOTIFICATION_ROW_USER_CONTEXT,
-                Flags.FLAG_NOTIFICATION_VIEW_FLIPPER_PAUSING_V2,
-                Flags.FLAG_NOTIFICATIONS_BACKGROUND_ICONS,
-                Flags.FLAG_NOTIFICATIONS_FOOTER_VIEW_REFACTOR,
-                Flags.FLAG_NOTIFICATIONS_HEADS_UP_REFACTOR,
-                Flags.FLAG_NOTIFICATIONS_HIDE_ON_DISPLAY_SWITCH,
-                Flags.FLAG_NOTIFICATIONS_ICON_CONTAINER_REFACTOR,
-                Flags.FLAG_NOTIFICATIONS_IMPROVED_HUN_ANIMATION,
-                Flags.FLAG_NOTIFICATIONS_LIVE_DATA_STORE_REFACTOR,
-                Flags.FLAG_NOTIFY_POWER_MANAGER_USER_ACTIVITY_BACKGROUND,
-                Flags.FLAG_PIN_INPUT_FIELD_STYLED_FOCUS_STATE,
-                Flags.FLAG_PREDICTIVE_BACK_ANIMATE_BOUNCER,
-                Flags.FLAG_PREDICTIVE_BACK_ANIMATE_DIALOGS,
-                Flags.FLAG_PREDICTIVE_BACK_ANIMATE_SHADE,
-                Flags.FLAG_PREDICTIVE_BACK_SYSUI,
-                Flags.FLAG_PRIORITY_PEOPLE_SECTION,
-                Flags.FLAG_PRIVACY_DOT_UNFOLD_WRONG_CORNER_FIX,
-                Flags.FLAG_PSS_APP_SELECTOR_ABRUPT_EXIT_FIX,
-                Flags.FLAG_PSS_APP_SELECTOR_RECENTS_SPLIT_SCREEN,
-                Flags.FLAG_PSS_TASK_SWITCHER,
-                Flags.FLAG_QS_CUSTOM_TILE_CLICK_GUARANTEED_BUG_FIX,
-                Flags.FLAG_QS_NEW_PIPELINE,
-                Flags.FLAG_QS_NEW_TILES,
-                Flags.FLAG_QS_NEW_TILES_FUTURE,
-                Flags.FLAG_QS_TILE_FOCUS_STATE,
-                Flags.FLAG_QS_UI_REFACTOR,
-                Flags.FLAG_QUICK_SETTINGS_VISUAL_HAPTICS_LONGPRESS,
-                Flags.FLAG_RECORD_ISSUE_QS_TILE,
-                Flags.FLAG_REFACTOR_GET_CURRENT_USER,
-                Flags.FLAG_REGISTER_BATTERY_CONTROLLER_RECEIVERS_IN_CORESTARTABLE,
-                Flags.FLAG_REGISTER_NEW_WALLET_CARD_IN_BACKGROUND,
-                Flags.FLAG_REGISTER_WALLPAPER_NOTIFIER_BACKGROUND,
-                Flags.FLAG_REGISTER_ZEN_MODE_CONTENT_OBSERVER_BACKGROUND,
-                Flags.FLAG_REMOVE_DREAM_OVERLAY_HIDE_ON_TOUCH,
-                Flags.FLAG_REST_TO_UNLOCK,
-                Flags.FLAG_RESTART_DREAM_ON_UNOCCLUDE,
-                Flags.FLAG_REVAMPED_BOUNCER_MESSAGES,
-                Flags.FLAG_RUN_FINGERPRINT_DETECT_ON_DISMISSIBLE_KEYGUARD,
-                Flags.FLAG_SAVE_AND_RESTORE_MAGNIFICATION_SETTINGS_BUTTONS,
-                Flags.FLAG_SCENE_CONTAINER,
-                Flags.FLAG_SCREENSHARE_NOTIFICATION_HIDING_BUG_FIX,
-                Flags.FLAG_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS,
-                Flags.FLAG_SCREENSHOT_PRIVATE_PROFILE_ACCESSIBILITY_ANNOUNCEMENT_FIX,
-                Flags.FLAG_SCREENSHOT_PRIVATE_PROFILE_BEHAVIOR_FIX,
-                Flags.FLAG_SCREENSHOT_SCROLL_CROP_VIEW_CRASH_FIX,
-                Flags.FLAG_SCREENSHOT_SHELF_UI2,
-                Flags.FLAG_SHADE_COLLAPSE_ACTIVITY_LAUNCH_FIX,
-                Flags.FLAG_SHADERLIB_LOADING_EFFECT_REFACTOR,
-                Flags.FLAG_SLICE_BROADCAST_RELAY_IN_BACKGROUND,
-                Flags.FLAG_SLICE_MANAGER_BINDER_CALL_BACKGROUND,
-                Flags.FLAG_SMARTSPACE_LOCKSCREEN_VIEWMODEL,
-                Flags.FLAG_SMARTSPACE_RELOCATE_TO_BOTTOM,
-                Flags.FLAG_SMARTSPACE_REMOTEVIEWS_RENDERING,
-                Flags.FLAG_STATUS_BAR_MONOCHROME_ICONS_FIX,
-                Flags.FLAG_STATUS_BAR_SCREEN_SHARING_CHIPS,
-                Flags.FLAG_STATUS_BAR_STATIC_INOUT_INDICATORS,
-                Flags.FLAG_SWITCH_USER_ON_BG,
-                Flags.FLAG_SYSUI_TEAMFOOD,
-                Flags.FLAG_THEME_OVERLAY_CONTROLLER_WAKEFULNESS_DEPRECATION,
-                Flags.FLAG_TRANSLUCENT_OCCLUDING_ACTIVITY_FIX,
-                Flags.FLAG_TRUNCATED_STATUS_BAR_ICONS_FIX,
-                Flags.FLAG_UDFPS_VIEW_PERFORMANCE,
-                Flags.FLAG_UNFOLD_ANIMATION_BACKGROUND_PROGRESS,
-                Flags.FLAG_UPDATE_USER_SWITCHER_BACKGROUND,
-                Flags.FLAG_VALIDATE_KEYBOARD_SHORTCUT_HELPER_ICON_URI,
-                Flags.FLAG_VISUAL_INTERRUPTIONS_REFACTOR
+            Flags.FLAG_ACTIVITY_TRANSITION_USE_LARGEST_WINDOW,
+            Flags.FLAG_ADD_BLACK_BACKGROUND_FOR_WINDOW_MAGNIFIER,
+            Flags.FLAG_ALWAYS_COMPOSE_QS_UI_FRAGMENT,
+            Flags.FLAG_AMBIENT_TOUCH_MONITOR_LISTEN_TO_DISPLAY_CHANGES,
+            Flags.FLAG_APP_CLIPS_BACKLINKS,
+            Flags.FLAG_APP_SHORTCUT_REMOVAL_FIX,
+            Flags.FLAG_AVALANCHE_REPLACE_HUN_WHEN_CRITICAL,
+            Flags.FLAG_BIND_KEYGUARD_MEDIA_VISIBILITY,
+            Flags.FLAG_BOUNCER_UI_REVAMP,
+            Flags.FLAG_BOUNCER_UI_REVAMP_2,
+            Flags.FLAG_BP_COLORS,
+            Flags.FLAG_BRIGHTNESS_SLIDER_FOCUS_STATE,
+            Flags.FLAG_CHECK_LOCKSCREEN_GONE_TRANSITION,
+            Flags.FLAG_CLASSIC_FLAGS_MULTI_USER,
+            Flags.FLAG_CLIPBOARD_IMAGE_TIMEOUT,
+            Flags.FLAG_CLIPBOARD_NONINTERACTIVE_ON_LOCKSCREEN,
+            Flags.FLAG_CLIPBOARD_OVERLAY_MULTIUSER,
+            Flags.FLAG_CLIPBOARD_SHARED_TRANSITIONS,
+            Flags.FLAG_CLIPBOARD_USE_DESCRIPTION_MIMETYPE,
+            Flags.FLAG_CLOCK_FIDGET_ANIMATION,
+            Flags.FLAG_COMMUNAL_BOUNCER_DO_NOT_MODIFY_PLUGIN_OPEN,
+            Flags.FLAG_COMMUNAL_EDIT_WIDGETS_ACTIVITY_FINISH_FIX,
+            Flags.FLAG_COMMUNAL_HUB,
+            Flags.FLAG_COMMUNAL_HUB_USE_THREAD_POOL_FOR_WIDGETS,
+            Flags.FLAG_COMMUNAL_RESPONSIVE_GRID,
+            Flags.FLAG_COMMUNAL_SCENE_KTF_REFACTOR,
+            Flags.FLAG_COMMUNAL_STANDALONE_SUPPORT,
+            Flags.FLAG_COMMUNAL_TIMER_FLICKER_FIX,
+            Flags.FLAG_COMMUNAL_WIDGET_RESIZING,
+            Flags.FLAG_COMMUNAL_WIDGET_TRAMPOLINE_FIX,
+            Flags.FLAG_COMPOSE_BOUNCER,
+            Flags.FLAG_CONFINE_NOTIFICATION_TOUCH_TO_VIEW_WIDTH,
+            Flags.FLAG_CONT_AUTH_PLUGIN,
+            Flags.FLAG_CONTEXTUAL_TIPS_ASSISTANT_DISMISS_FIX,
+            Flags.FLAG_COROUTINE_TRACING,
+            Flags.FLAG_CREATE_WINDOWLESS_WINDOW_MAGNIFIER,
+            Flags.FLAG_DEBUG_LIVE_UPDATES_PROMOTE_ALL,
+            Flags.FLAG_DECOUPLE_VIEW_CONTROLLER_IN_ANIMLIB,
+            Flags.FLAG_DELAY_SHOW_MAGNIFICATION_BUTTON,
+            Flags.FLAG_DESKTOP_EFFECTS_QS_TILE,
+            Flags.FLAG_DEVICE_ENTRY_UDFPS_REFACTOR,
+            Flags.FLAG_DISABLE_BLURRED_SHADE_VISIBLE,
+            Flags.FLAG_DISABLE_CONTEXTUAL_TIPS_FREQUENCY_CHECK,
+            Flags.FLAG_DISABLE_CONTEXTUAL_TIPS_IOS_SWITCHER_CHECK,
+            Flags.FLAG_DISABLE_SHADE_TRACKPAD_TWO_FINGER_SWIPE,
+            Flags.FLAG_DOUBLE_TAP_TO_SLEEP,
+            Flags.FLAG_DREAM_INPUT_SESSION_PILFER_ONCE,
+            Flags.FLAG_DREAM_OVERLAY_BOUNCER_SWIPE_DIRECTION_FILTERING,
+            Flags.FLAG_DREAM_OVERLAY_UPDATED_FONT,
+            Flags.FLAG_EDGE_BACK_GESTURE_HANDLER_THREAD,
+            Flags.FLAG_EDGEBACK_GESTURE_HANDLER_GET_RUNNING_TASKS_BACKGROUND,
+            Flags.FLAG_ENABLE_BACKGROUND_KEYGUARD_ONDRAWN_CALLBACK,
+            Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_MUTE_VOLUME,
+            Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_POWER_OFF,
+            Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_TAKE_SCREENSHOT,
+            Flags.FLAG_ENABLE_CONTEXTUAL_TIPS,
+            Flags.FLAG_ENABLE_EFFICIENT_DISPLAY_REPOSITORY,
+            Flags.FLAG_ENABLE_LAYOUT_TRACING,
+            Flags.FLAG_ENABLE_UNDERLAY,
+            Flags.FLAG_ENABLE_VIEW_CAPTURE_TRACING,
+            Flags.FLAG_ENFORCE_BRIGHTNESS_BASE_USER_RESTRICTION,
+            Flags.FLAG_EXAMPLE_FLAG,
+            Flags.FLAG_EXPAND_COLLAPSE_PRIVACY_DIALOG,
+            Flags.FLAG_EXPAND_HEADS_UP_ON_INLINE_REPLY,
+            Flags.FLAG_EXPANDED_PRIVACY_INDICATORS_ON_LARGE_SCREEN,
+            Flags.FLAG_EXTENDED_APPS_SHORTCUT_CATEGORY,
+            Flags.FLAG_FACE_MESSAGE_DEFER_UPDATE,
+            Flags.FLAG_FACE_SCANNING_ANIMATION_NPE_FIX,
+            Flags.FLAG_FASTER_UNLOCK_TRANSITION,
+            Flags.FLAG_FETCH_BOOKMARKS_XML_KEYBOARD_SHORTCUTS,
+            Flags.FLAG_FIX_IMAGE_WALLPAPER_CRASH_SURFACE_ALREADY_RELEASED,
+            Flags.FLAG_FIX_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS,
+            Flags.FLAG_FLOATING_MENU_ANIMATED_TUCK,
+            Flags.FLAG_FLOATING_MENU_DISPLAY_CUTOUT_SUPPORT,
+            Flags.FLAG_FLOATING_MENU_DRAG_TO_EDIT,
+            Flags.FLAG_FLOATING_MENU_DRAG_TO_HIDE,
+            Flags.FLAG_FLOATING_MENU_HEARING_DEVICE_STATUS_ICON,
+            Flags.FLAG_FLOATING_MENU_IME_DISPLACEMENT_ANIMATION,
+            Flags.FLAG_FLOATING_MENU_NARROW_TARGET_CONTENT_OBSERVER,
+            Flags.FLAG_FLOATING_MENU_NOTIFY_TARGETS_CHANGED_ON_STRICT_DIFF,
+            Flags.FLAG_FLOATING_MENU_OVERLAPS_NAV_BARS_FLAG,
+            Flags.FLAG_FLOATING_MENU_RADII_ANIMATION,
+            Flags.FLAG_GET_CONNECTED_DEVICE_NAME_UNSYNCHRONIZED,
+            Flags.FLAG_GLANCEABLE_HUB_ALLOW_KEYGUARD_WHEN_DREAMING,
+            Flags.FLAG_GLANCEABLE_HUB_BLURRED_BACKGROUND,
+            Flags.FLAG_GLANCEABLE_HUB_DIRECT_EDIT_MODE,
+            Flags.FLAG_GLANCEABLE_HUB_V2,
+            Flags.FLAG_GLANCEABLE_HUB_V2_RESOURCES,
+            Flags.FLAG_HAPTICS_FOR_COMPOSE_SLIDERS,
+            Flags.FLAG_HARDWARE_COLOR_STYLES,
+            Flags.FLAG_HEARING_AIDS_QS_TILE_DIALOG,
+            Flags.FLAG_HEARING_DEVICES_DIALOG_RELATED_TOOLS,
+            Flags.FLAG_HIDE_RINGER_BUTTON_IN_SINGLE_VOLUME_MODE,
+            Flags.FLAG_HOME_CONTROLS_DREAM_HSUM,
+            Flags.FLAG_HUB_EDIT_MODE_TOUCH_ADJUSTMENTS,
+            Flags.FLAG_HUBMODE_FULLSCREEN_VERTICAL_SWIPE,
+            Flags.FLAG_HUBMODE_FULLSCREEN_VERTICAL_SWIPE_FIX,
+            Flags.FLAG_ICON_REFRESH_2025,
+            Flags.FLAG_IGNORE_TOUCHES_NEXT_TO_NOTIFICATION_SHELF,
+            Flags.FLAG_INDICATION_TEXT_A11Y_FIX,
+            Flags.FLAG_KEYBOARD_DOCKING_INDICATOR,
+            Flags.FLAG_KEYBOARD_SHORTCUT_HELPER_REWRITE,
+            Flags.FLAG_KEYBOARD_SHORTCUT_HELPER_SHORTCUT_CUSTOMIZER,
+            Flags.FLAG_KEYBOARD_TOUCHPAD_CONTEXTUAL_EDUCATION,
+            Flags.FLAG_KEYGUARD_TRANSITION_FORCE_FINISH_ON_SCREEN_OFF,
+            Flags.FLAG_KEYGUARD_WM_REORDER_ATMS_CALLS,
+            Flags.FLAG_KEYGUARD_WM_STATE_REFACTOR,
+            Flags.FLAG_LOCKSCREEN_FONT,
+            Flags.FLAG_LOW_LIGHT_CLOCK_DREAM,
+            Flags.FLAG_MAGNETIC_NOTIFICATION_SWIPES,
+            Flags.FLAG_MEDIA_CONTROLS_A11Y_COLORS,
+            Flags.FLAG_MEDIA_CONTROLS_BUTTON_MEDIA3,
+            Flags.FLAG_MEDIA_CONTROLS_BUTTON_MEDIA3_PLACEMENT,
+            Flags.FLAG_MEDIA_CONTROLS_DEVICE_MANAGER_BACKGROUND_EXECUTION,
+            Flags.FLAG_MEDIA_CONTROLS_DRAWABLES_REUSE_BUGFIX,
+            Flags.FLAG_MEDIA_CONTROLS_LOCKSCREEN_SHADE_BUG_FIX,
+            Flags.FLAG_MEDIA_CONTROLS_UI_UPDATE,
+            Flags.FLAG_MEDIA_CONTROLS_UMO_INFLATION_IN_BACKGROUND,
+            Flags.FLAG_MEDIA_CONTROLS_USER_INITIATED_DELETEINTENT,
+            Flags.FLAG_MEDIA_LOAD_METADATA_VIA_MEDIA_DATA_LOADER,
+            Flags.FLAG_MEDIA_LOCKSCREEN_LAUNCH_ANIMATION,
+            Flags.FLAG_MEDIA_PROJECTION_DIALOG_BEHIND_LOCKSCREEN,
+            Flags.FLAG_MEDIA_PROJECTION_GREY_ERROR_TEXT,
+            Flags.FLAG_MEDIA_PROJECTION_REQUEST_ATTRIBUTION_FIX,
+            Flags.FLAG_MODES_UI_DIALOG_PAGING,
+            Flags.FLAG_MOVE_TRANSITION_ANIMATION_LAYER,
+            Flags.FLAG_MSDL_FEEDBACK,
+            Flags.FLAG_MULTIUSER_WIFI_PICKER_TRACKER_SUPPORT,
+            Flags.FLAG_NEW_AOD_TRANSITION,
+            Flags.FLAG_NEW_VOLUME_PANEL,
+            Flags.FLAG_NON_TOUCHSCREEN_DEVICES_BYPASS_FALSING,
+            Flags.FLAG_NOTES_ROLE_QS_TILE,
+            Flags.FLAG_NOTIFICATION_ADD_X_ON_HOVER_TO_DISMISS,
+            Flags.FLAG_NOTIFICATION_AMBIENT_SUPPRESSION_AFTER_INFLATION,
+            Flags.FLAG_NOTIFICATION_ANIMATED_ACTIONS_TREATMENT,
+            Flags.FLAG_NOTIFICATION_APPEAR_NONLINEAR,
+            Flags.FLAG_NOTIFICATION_ASYNC_GROUP_HEADER_INFLATION,
+            Flags.FLAG_NOTIFICATION_ASYNC_HYBRID_VIEW_INFLATION,
+            Flags.FLAG_NOTIFICATION_AVALANCHE_SUPPRESSION,
+            Flags.FLAG_NOTIFICATION_AVALANCHE_THROTTLE_HUN,
+            Flags.FLAG_NOTIFICATION_BACKGROUND_TINT_OPTIMIZATION,
+            Flags.FLAG_NOTIFICATION_BUNDLE_UI,
+            Flags.FLAG_NOTIFICATION_COLOR_UPDATE_LOGGER,
+            Flags.FLAG_NOTIFICATION_CONTENT_ALPHA_OPTIMIZATION,
+            Flags.FLAG_NOTIFICATION_FOOTER_BACKGROUND_TINT_OPTIMIZATION,
+            Flags.FLAG_NOTIFICATION_OVER_EXPANSION_CLIPPING_FIX,
+            Flags.FLAG_NOTIFICATION_REENTRANT_DISMISS,
+            Flags.FLAG_NOTIFICATION_ROW_ACCESSIBILITY_EXPANDED,
+            Flags.FLAG_NOTIFICATION_ROW_CONTENT_BINDER_REFACTOR,
+            Flags.FLAG_NOTIFICATION_ROW_TRANSPARENCY,
+            Flags.FLAG_NOTIFICATION_ROW_USER_CONTEXT,
+            Flags.FLAG_NOTIFICATION_SHADE_BLUR,
+            Flags.FLAG_NOTIFICATION_SHADE_UI_THREAD,
+            Flags.FLAG_NOTIFICATION_SKIP_SILENT_UPDATES,
+            Flags.FLAG_NOTIFICATION_TRANSPARENT_HEADER_FIX,
+            Flags.FLAG_NOTIFICATION_VIEW_FLIPPER_PAUSING_V2,
+            Flags.FLAG_NOTIFICATIONS_BACKGROUND_ICONS,
+            Flags.FLAG_NOTIFICATIONS_FOOTER_VISIBILITY_FIX,
+            Flags.FLAG_NOTIFICATIONS_HIDE_ON_DISPLAY_SWITCH,
+            Flags.FLAG_NOTIFICATIONS_HUN_SHARED_ANIMATION_VALUES,
+            Flags.FLAG_NOTIFICATIONS_ICON_CONTAINER_REFACTOR,
+            Flags.FLAG_NOTIFICATIONS_LAUNCH_RADIUS,
+            Flags.FLAG_NOTIFICATIONS_LIVE_DATA_STORE_REFACTOR,
+            Flags.FLAG_NOTIFICATIONS_PINNED_HUN_IN_SHADE,
+            Flags.FLAG_NOTIFICATIONS_REDESIGN_FOOTER_VIEW,
+            Flags.FLAG_NOTIFICATIONS_REDESIGN_GUTS,
+            Flags.FLAG_NOTIFY_PASSWORD_TEXT_VIEW_USER_ACTIVITY_IN_BACKGROUND,
+            Flags.FLAG_NOTIFY_POWER_MANAGER_USER_ACTIVITY_BACKGROUND,
+            Flags.FLAG_ONLY_SHOW_MEDIA_STREAM_SLIDER_IN_SINGLE_VOLUME_MODE,
+            Flags.FLAG_OUTPUT_SWITCHER_REDESIGN,
+            Flags.FLAG_OVERRIDE_SUPPRESS_OVERLAY_CONDITION,
+            Flags.FLAG_PERMISSION_HELPER_INLINE_UI_RICH_ONGOING,
+            Flags.FLAG_PERMISSION_HELPER_UI_RICH_ONGOING,
+            Flags.FLAG_PHYSICAL_NOTIFICATION_MOVEMENT,
+            Flags.FLAG_PIN_INPUT_FIELD_STYLED_FOCUS_STATE,
+            Flags.FLAG_PREDICTIVE_BACK_ANIMATE_SHADE,
+            Flags.FLAG_PREDICTIVE_BACK_DELAY_WM_TRANSITION,
+            Flags.FLAG_PRIORITY_PEOPLE_SECTION,
+            Flags.FLAG_PROMOTE_NOTIFICATIONS_AUTOMATICALLY,
+            Flags.FLAG_PSS_APP_SELECTOR_RECENTS_SPLIT_SCREEN,
+            Flags.FLAG_PSS_TASK_SWITCHER,
+            Flags.FLAG_QS_CUSTOM_TILE_CLICK_GUARANTEED_BUG_FIX,
+            Flags.FLAG_QS_NEW_TILES,
+            Flags.FLAG_QS_NEW_TILES_FUTURE,
+            Flags.FLAG_QS_QUICK_REBIND_ACTIVE_TILES,
+            Flags.FLAG_QS_REGISTER_SETTING_OBSERVER_ON_BG_THREAD,
+            Flags.FLAG_QS_TILE_DETAILED_VIEW,
+            Flags.FLAG_QS_TILE_FOCUS_STATE,
+            Flags.FLAG_QS_UI_REFACTOR,
+            Flags.FLAG_QS_UI_REFACTOR_COMPOSE_FRAGMENT,
+            Flags.FLAG_RECORD_ISSUE_QS_TILE,
+            Flags.FLAG_REDESIGN_MAGNIFICATION_WINDOW_SIZE,
+            Flags.FLAG_REFACTOR_GET_CURRENT_USER,
+            Flags.FLAG_REGISTER_BATTERY_CONTROLLER_RECEIVERS_IN_CORESTARTABLE,
+            Flags.FLAG_REGISTER_CONTENT_OBSERVERS_ASYNC,
+            Flags.FLAG_REGISTER_NEW_WALLET_CARD_IN_BACKGROUND,
+            Flags.FLAG_REGISTER_WALLPAPER_NOTIFIER_BACKGROUND,
+            Flags.FLAG_RELOCK_WITH_POWER_BUTTON_IMMEDIATELY,
+            Flags.FLAG_REMOVE_DREAM_OVERLAY_HIDE_ON_TOUCH,
+            Flags.FLAG_REMOVE_UPDATE_LISTENER_IN_QS_ICON_VIEW_IMPL,
+            Flags.FLAG_REST_TO_UNLOCK,
+            Flags.FLAG_RESTART_DREAM_ON_UNOCCLUDE,
+            Flags.FLAG_REVAMPED_BOUNCER_MESSAGES,
+            Flags.FLAG_RUN_FINGERPRINT_DETECT_ON_DISMISSIBLE_KEYGUARD,
+            Flags.FLAG_SAVE_AND_RESTORE_MAGNIFICATION_SETTINGS_BUTTONS,
+            Flags.FLAG_SCENE_CONTAINER,
+            Flags.FLAG_SCREENSHARE_NOTIFICATION_HIDING_BUG_FIX,
+            Flags.FLAG_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS,
+            Flags.FLAG_SCREENSHOT_MULTIDISPLAY_FOCUS_CHANGE,
+            Flags.FLAG_SCREENSHOT_POLICY_SPLIT_AND_DESKTOP_MODE,
+            Flags.FLAG_SCREENSHOT_SCROLL_CROP_VIEW_CRASH_FIX,
+            Flags.FLAG_SCREENSHOT_UI_CONTROLLER_REFACTOR,
+            Flags.FLAG_SECONDARY_USER_WIDGET_HOST,
+            Flags.FLAG_SETTINGS_EXT_REGISTER_CONTENT_OBSERVER_ON_BG_THREAD,
+            Flags.FLAG_SHADE_EXPANDS_ON_STATUS_BAR_LONG_PRESS,
+            Flags.FLAG_SHADE_HEADER_FONT_UPDATE,
+            Flags.FLAG_SHADE_LAUNCH_ACCESSIBILITY,
+            Flags.FLAG_SHADE_WINDOW_GOES_AROUND,
+            Flags.FLAG_SHADERLIB_LOADING_EFFECT_REFACTOR,
+            Flags.FLAG_SHORTCUT_HELPER_KEY_GLYPH,
+            Flags.FLAG_SHOW_AUDIO_SHARING_SLIDER_IN_VOLUME_PANEL,
+            Flags.FLAG_SHOW_CLIPBOARD_INDICATION,
+            Flags.FLAG_SHOW_LOCKED_BY_YOUR_WATCH_KEYGUARD_INDICATOR,
+            Flags.FLAG_SHOW_TOAST_WHEN_APP_CONTROL_BRIGHTNESS,
+            Flags.FLAG_SIM_PIN_BOUNCER_RESET,
+            Flags.FLAG_SIM_PIN_RACE_CONDITION_ON_RESTART,
+            Flags.FLAG_SIM_PIN_USE_SLOT_ID,
+            Flags.FLAG_SKIP_HIDE_SENSITIVE_NOTIF_ANIMATION,
+            Flags.FLAG_SLICE_BROADCAST_RELAY_IN_BACKGROUND,
+            Flags.FLAG_SLICE_MANAGER_BINDER_CALL_BACKGROUND,
+            Flags.FLAG_SMARTSPACE_LOCKSCREEN_VIEWMODEL,
+            Flags.FLAG_SMARTSPACE_RELOCATE_TO_BOTTOM,
+            Flags.FLAG_SMARTSPACE_REMOTEVIEWS_RENDERING_FIX,
+            Flags.FLAG_SMARTSPACE_SWIPE_EVENT_LOGGING_FIX,
+            Flags.FLAG_SMARTSPACE_VIEWPAGER2,
+            Flags.FLAG_SOUNDDOSE_CUSTOMIZATION,
+            Flags.FLAG_SPATIAL_MODEL_APP_PUSHBACK,
+            Flags.FLAG_STABILIZE_HEADS_UP_GROUP_V2,
+            Flags.FLAG_STATUS_BAR_ALWAYS_CHECK_UNDERLYING_NETWORKS,
+            Flags.FLAG_STATUS_BAR_AUTO_START_SCREEN_RECORD_CHIP,
+            Flags.FLAG_STATUS_BAR_CHIPS_MODERNIZATION,
+            Flags.FLAG_STATUS_BAR_CHIPS_RETURN_ANIMATIONS,
+            Flags.FLAG_STATUS_BAR_FONT_UPDATES,
+            Flags.FLAG_STATUS_BAR_MOBILE_ICON_KAIROS,
+            Flags.FLAG_STATUS_BAR_MONOCHROME_ICONS_FIX,
+            Flags.FLAG_STATUS_BAR_NO_HUN_BEHAVIOR,
+            Flags.FLAG_STATUS_BAR_POPUP_CHIPS,
+            Flags.FLAG_STATUS_BAR_ROOT_MODERNIZATION,
+            Flags.FLAG_STATUS_BAR_SHOW_AUDIO_ONLY_PROJECTION_CHIP,
+            Flags.FLAG_STATUS_BAR_SIGNAL_POLICY_REFACTOR,
+            Flags.FLAG_STATUS_BAR_SIGNAL_POLICY_REFACTOR_ETHERNET,
+            Flags.FLAG_STATUS_BAR_STATIC_INOUT_INDICATORS,
+            Flags.FLAG_STATUS_BAR_STOP_UPDATING_WINDOW_HEIGHT,
+            Flags.FLAG_STATUS_BAR_SWIPE_OVER_CHIP,
+            Flags.FLAG_STATUS_BAR_SWITCH_TO_SPN_FROM_DATA_SPN,
+            Flags.FLAG_STATUS_BAR_UI_THREAD,
+            Flags.FLAG_STATUS_BAR_WINDOW_NO_CUSTOM_TOUCH,
+            Flags.FLAG_STOPPABLE_FGS_SYSTEM_APP,
+            Flags.FLAG_SWITCH_USER_ON_BG,
+            Flags.FLAG_SYSUI_TEAMFOOD,
+            Flags.FLAG_THEME_OVERLAY_CONTROLLER_WAKEFULNESS_DEPRECATION,
+            Flags.FLAG_TRANSITION_RACE_CONDITION,
+            Flags.FLAG_TRANSLUCENT_OCCLUDING_ACTIVITY_FIX,
+            Flags.FLAG_TV_GLOBAL_ACTIONS_FOCUS,
+            Flags.FLAG_UDFPS_VIEW_PERFORMANCE,
+            Flags.FLAG_UNFOLD_ANIMATION_BACKGROUND_PROGRESS,
+            Flags.FLAG_UNFOLD_LATENCY_TRACKING_FIX,
+            Flags.FLAG_UPDATE_CORNER_RADIUS_ON_DISPLAY_CHANGED,
+            Flags.FLAG_UPDATE_USER_SWITCHER_BACKGROUND,
+            Flags.FLAG_UPDATE_WINDOW_MAGNIFIER_BOTTOM_BOUNDARY,
+            Flags.FLAG_USE_AAD_PROX_SENSOR,
+            Flags.FLAG_USE_NOTIF_INFLATION_THREAD_FOR_FOOTER,
+            Flags.FLAG_USE_NOTIF_INFLATION_THREAD_FOR_ROW,
+            Flags.FLAG_USE_TRANSITIONS_FOR_KEYGUARD_OCCLUDED,
+            Flags.FLAG_USE_VOLUME_CONTROLLER,
+            Flags.FLAG_USER_AWARE_SETTINGS_REPOSITORIES,
+            Flags.FLAG_USER_ENCRYPTED_SOURCE,
+            Flags.FLAG_USER_SWITCHER_ADD_SIGN_OUT_OPTION,
+            Flags.FLAG_VISUAL_INTERRUPTIONS_REFACTOR,
+            Flags.FLAG_VOLUME_REDESIGN
         );
     }
 
     private Set<String> mReadOnlyFlagsSet = new HashSet<>(
-            Arrays.asList(
-                    ""
-            )
+        Arrays.asList(
+            Flags.FLAG_ACTIVITY_TRANSITION_USE_LARGEST_WINDOW,
+            Flags.FLAG_ADD_BLACK_BACKGROUND_FOR_WINDOW_MAGNIFIER,
+            Flags.FLAG_ALWAYS_COMPOSE_QS_UI_FRAGMENT,
+            Flags.FLAG_AMBIENT_TOUCH_MONITOR_LISTEN_TO_DISPLAY_CHANGES,
+            Flags.FLAG_APP_CLIPS_BACKLINKS,
+            Flags.FLAG_APP_SHORTCUT_REMOVAL_FIX,
+            Flags.FLAG_AVALANCHE_REPLACE_HUN_WHEN_CRITICAL,
+            Flags.FLAG_BIND_KEYGUARD_MEDIA_VISIBILITY,
+            Flags.FLAG_BOUNCER_UI_REVAMP,
+            Flags.FLAG_BOUNCER_UI_REVAMP_2,
+            Flags.FLAG_BP_COLORS,
+            Flags.FLAG_BRIGHTNESS_SLIDER_FOCUS_STATE,
+            Flags.FLAG_CHECK_LOCKSCREEN_GONE_TRANSITION,
+            Flags.FLAG_CLASSIC_FLAGS_MULTI_USER,
+            Flags.FLAG_CLIPBOARD_IMAGE_TIMEOUT,
+            Flags.FLAG_CLIPBOARD_NONINTERACTIVE_ON_LOCKSCREEN,
+            Flags.FLAG_CLIPBOARD_OVERLAY_MULTIUSER,
+            Flags.FLAG_CLIPBOARD_SHARED_TRANSITIONS,
+            Flags.FLAG_CLIPBOARD_USE_DESCRIPTION_MIMETYPE,
+            Flags.FLAG_CLOCK_FIDGET_ANIMATION,
+            Flags.FLAG_COMMUNAL_BOUNCER_DO_NOT_MODIFY_PLUGIN_OPEN,
+            Flags.FLAG_COMMUNAL_EDIT_WIDGETS_ACTIVITY_FINISH_FIX,
+            Flags.FLAG_COMMUNAL_HUB,
+            Flags.FLAG_COMMUNAL_HUB_USE_THREAD_POOL_FOR_WIDGETS,
+            Flags.FLAG_COMMUNAL_RESPONSIVE_GRID,
+            Flags.FLAG_COMMUNAL_SCENE_KTF_REFACTOR,
+            Flags.FLAG_COMMUNAL_STANDALONE_SUPPORT,
+            Flags.FLAG_COMMUNAL_TIMER_FLICKER_FIX,
+            Flags.FLAG_COMMUNAL_WIDGET_RESIZING,
+            Flags.FLAG_COMMUNAL_WIDGET_TRAMPOLINE_FIX,
+            Flags.FLAG_COMPOSE_BOUNCER,
+            Flags.FLAG_CONFINE_NOTIFICATION_TOUCH_TO_VIEW_WIDTH,
+            Flags.FLAG_CONT_AUTH_PLUGIN,
+            Flags.FLAG_CONTEXTUAL_TIPS_ASSISTANT_DISMISS_FIX,
+            Flags.FLAG_COROUTINE_TRACING,
+            Flags.FLAG_CREATE_WINDOWLESS_WINDOW_MAGNIFIER,
+            Flags.FLAG_DEBUG_LIVE_UPDATES_PROMOTE_ALL,
+            Flags.FLAG_DECOUPLE_VIEW_CONTROLLER_IN_ANIMLIB,
+            Flags.FLAG_DELAY_SHOW_MAGNIFICATION_BUTTON,
+            Flags.FLAG_DESKTOP_EFFECTS_QS_TILE,
+            Flags.FLAG_DEVICE_ENTRY_UDFPS_REFACTOR,
+            Flags.FLAG_DISABLE_BLURRED_SHADE_VISIBLE,
+            Flags.FLAG_DISABLE_CONTEXTUAL_TIPS_FREQUENCY_CHECK,
+            Flags.FLAG_DISABLE_CONTEXTUAL_TIPS_IOS_SWITCHER_CHECK,
+            Flags.FLAG_DISABLE_SHADE_TRACKPAD_TWO_FINGER_SWIPE,
+            Flags.FLAG_DOUBLE_TAP_TO_SLEEP,
+            Flags.FLAG_DREAM_INPUT_SESSION_PILFER_ONCE,
+            Flags.FLAG_DREAM_OVERLAY_BOUNCER_SWIPE_DIRECTION_FILTERING,
+            Flags.FLAG_DREAM_OVERLAY_UPDATED_FONT,
+            Flags.FLAG_EDGE_BACK_GESTURE_HANDLER_THREAD,
+            Flags.FLAG_EDGEBACK_GESTURE_HANDLER_GET_RUNNING_TASKS_BACKGROUND,
+            Flags.FLAG_ENABLE_BACKGROUND_KEYGUARD_ONDRAWN_CALLBACK,
+            Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_MUTE_VOLUME,
+            Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_POWER_OFF,
+            Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_TAKE_SCREENSHOT,
+            Flags.FLAG_ENABLE_CONTEXTUAL_TIPS,
+            Flags.FLAG_ENABLE_EFFICIENT_DISPLAY_REPOSITORY,
+            Flags.FLAG_ENABLE_LAYOUT_TRACING,
+            Flags.FLAG_ENABLE_UNDERLAY,
+            Flags.FLAG_ENABLE_VIEW_CAPTURE_TRACING,
+            Flags.FLAG_ENFORCE_BRIGHTNESS_BASE_USER_RESTRICTION,
+            Flags.FLAG_EXAMPLE_FLAG,
+            Flags.FLAG_EXPAND_COLLAPSE_PRIVACY_DIALOG,
+            Flags.FLAG_EXPAND_HEADS_UP_ON_INLINE_REPLY,
+            Flags.FLAG_EXPANDED_PRIVACY_INDICATORS_ON_LARGE_SCREEN,
+            Flags.FLAG_EXTENDED_APPS_SHORTCUT_CATEGORY,
+            Flags.FLAG_FACE_MESSAGE_DEFER_UPDATE,
+            Flags.FLAG_FACE_SCANNING_ANIMATION_NPE_FIX,
+            Flags.FLAG_FASTER_UNLOCK_TRANSITION,
+            Flags.FLAG_FETCH_BOOKMARKS_XML_KEYBOARD_SHORTCUTS,
+            Flags.FLAG_FIX_IMAGE_WALLPAPER_CRASH_SURFACE_ALREADY_RELEASED,
+            Flags.FLAG_FIX_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS,
+            Flags.FLAG_FLOATING_MENU_ANIMATED_TUCK,
+            Flags.FLAG_FLOATING_MENU_DISPLAY_CUTOUT_SUPPORT,
+            Flags.FLAG_FLOATING_MENU_DRAG_TO_EDIT,
+            Flags.FLAG_FLOATING_MENU_DRAG_TO_HIDE,
+            Flags.FLAG_FLOATING_MENU_HEARING_DEVICE_STATUS_ICON,
+            Flags.FLAG_FLOATING_MENU_IME_DISPLACEMENT_ANIMATION,
+            Flags.FLAG_FLOATING_MENU_NARROW_TARGET_CONTENT_OBSERVER,
+            Flags.FLAG_FLOATING_MENU_NOTIFY_TARGETS_CHANGED_ON_STRICT_DIFF,
+            Flags.FLAG_FLOATING_MENU_OVERLAPS_NAV_BARS_FLAG,
+            Flags.FLAG_FLOATING_MENU_RADII_ANIMATION,
+            Flags.FLAG_GET_CONNECTED_DEVICE_NAME_UNSYNCHRONIZED,
+            Flags.FLAG_GLANCEABLE_HUB_ALLOW_KEYGUARD_WHEN_DREAMING,
+            Flags.FLAG_GLANCEABLE_HUB_BLURRED_BACKGROUND,
+            Flags.FLAG_GLANCEABLE_HUB_DIRECT_EDIT_MODE,
+            Flags.FLAG_GLANCEABLE_HUB_V2,
+            Flags.FLAG_GLANCEABLE_HUB_V2_RESOURCES,
+            Flags.FLAG_HAPTICS_FOR_COMPOSE_SLIDERS,
+            Flags.FLAG_HARDWARE_COLOR_STYLES,
+            Flags.FLAG_HEARING_AIDS_QS_TILE_DIALOG,
+            Flags.FLAG_HEARING_DEVICES_DIALOG_RELATED_TOOLS,
+            Flags.FLAG_HIDE_RINGER_BUTTON_IN_SINGLE_VOLUME_MODE,
+            Flags.FLAG_HOME_CONTROLS_DREAM_HSUM,
+            Flags.FLAG_HUB_EDIT_MODE_TOUCH_ADJUSTMENTS,
+            Flags.FLAG_HUBMODE_FULLSCREEN_VERTICAL_SWIPE,
+            Flags.FLAG_HUBMODE_FULLSCREEN_VERTICAL_SWIPE_FIX,
+            Flags.FLAG_ICON_REFRESH_2025,
+            Flags.FLAG_IGNORE_TOUCHES_NEXT_TO_NOTIFICATION_SHELF,
+            Flags.FLAG_INDICATION_TEXT_A11Y_FIX,
+            Flags.FLAG_KEYBOARD_DOCKING_INDICATOR,
+            Flags.FLAG_KEYBOARD_SHORTCUT_HELPER_REWRITE,
+            Flags.FLAG_KEYBOARD_SHORTCUT_HELPER_SHORTCUT_CUSTOMIZER,
+            Flags.FLAG_KEYBOARD_TOUCHPAD_CONTEXTUAL_EDUCATION,
+            Flags.FLAG_KEYGUARD_TRANSITION_FORCE_FINISH_ON_SCREEN_OFF,
+            Flags.FLAG_KEYGUARD_WM_REORDER_ATMS_CALLS,
+            Flags.FLAG_KEYGUARD_WM_STATE_REFACTOR,
+            Flags.FLAG_LOCKSCREEN_FONT,
+            Flags.FLAG_LOW_LIGHT_CLOCK_DREAM,
+            Flags.FLAG_MAGNETIC_NOTIFICATION_SWIPES,
+            Flags.FLAG_MEDIA_CONTROLS_A11Y_COLORS,
+            Flags.FLAG_MEDIA_CONTROLS_BUTTON_MEDIA3,
+            Flags.FLAG_MEDIA_CONTROLS_BUTTON_MEDIA3_PLACEMENT,
+            Flags.FLAG_MEDIA_CONTROLS_DEVICE_MANAGER_BACKGROUND_EXECUTION,
+            Flags.FLAG_MEDIA_CONTROLS_DRAWABLES_REUSE_BUGFIX,
+            Flags.FLAG_MEDIA_CONTROLS_LOCKSCREEN_SHADE_BUG_FIX,
+            Flags.FLAG_MEDIA_CONTROLS_UI_UPDATE,
+            Flags.FLAG_MEDIA_CONTROLS_UMO_INFLATION_IN_BACKGROUND,
+            Flags.FLAG_MEDIA_CONTROLS_USER_INITIATED_DELETEINTENT,
+            Flags.FLAG_MEDIA_LOAD_METADATA_VIA_MEDIA_DATA_LOADER,
+            Flags.FLAG_MEDIA_LOCKSCREEN_LAUNCH_ANIMATION,
+            Flags.FLAG_MEDIA_PROJECTION_DIALOG_BEHIND_LOCKSCREEN,
+            Flags.FLAG_MEDIA_PROJECTION_GREY_ERROR_TEXT,
+            Flags.FLAG_MEDIA_PROJECTION_REQUEST_ATTRIBUTION_FIX,
+            Flags.FLAG_MODES_UI_DIALOG_PAGING,
+            Flags.FLAG_MOVE_TRANSITION_ANIMATION_LAYER,
+            Flags.FLAG_MSDL_FEEDBACK,
+            Flags.FLAG_MULTIUSER_WIFI_PICKER_TRACKER_SUPPORT,
+            Flags.FLAG_NEW_AOD_TRANSITION,
+            Flags.FLAG_NEW_VOLUME_PANEL,
+            Flags.FLAG_NON_TOUCHSCREEN_DEVICES_BYPASS_FALSING,
+            Flags.FLAG_NOTES_ROLE_QS_TILE,
+            Flags.FLAG_NOTIFICATION_ADD_X_ON_HOVER_TO_DISMISS,
+            Flags.FLAG_NOTIFICATION_AMBIENT_SUPPRESSION_AFTER_INFLATION,
+            Flags.FLAG_NOTIFICATION_ANIMATED_ACTIONS_TREATMENT,
+            Flags.FLAG_NOTIFICATION_APPEAR_NONLINEAR,
+            Flags.FLAG_NOTIFICATION_ASYNC_GROUP_HEADER_INFLATION,
+            Flags.FLAG_NOTIFICATION_ASYNC_HYBRID_VIEW_INFLATION,
+            Flags.FLAG_NOTIFICATION_AVALANCHE_SUPPRESSION,
+            Flags.FLAG_NOTIFICATION_AVALANCHE_THROTTLE_HUN,
+            Flags.FLAG_NOTIFICATION_BACKGROUND_TINT_OPTIMIZATION,
+            Flags.FLAG_NOTIFICATION_BUNDLE_UI,
+            Flags.FLAG_NOTIFICATION_COLOR_UPDATE_LOGGER,
+            Flags.FLAG_NOTIFICATION_CONTENT_ALPHA_OPTIMIZATION,
+            Flags.FLAG_NOTIFICATION_FOOTER_BACKGROUND_TINT_OPTIMIZATION,
+            Flags.FLAG_NOTIFICATION_OVER_EXPANSION_CLIPPING_FIX,
+            Flags.FLAG_NOTIFICATION_REENTRANT_DISMISS,
+            Flags.FLAG_NOTIFICATION_ROW_ACCESSIBILITY_EXPANDED,
+            Flags.FLAG_NOTIFICATION_ROW_CONTENT_BINDER_REFACTOR,
+            Flags.FLAG_NOTIFICATION_ROW_TRANSPARENCY,
+            Flags.FLAG_NOTIFICATION_ROW_USER_CONTEXT,
+            Flags.FLAG_NOTIFICATION_SHADE_BLUR,
+            Flags.FLAG_NOTIFICATION_SHADE_UI_THREAD,
+            Flags.FLAG_NOTIFICATION_SKIP_SILENT_UPDATES,
+            Flags.FLAG_NOTIFICATION_TRANSPARENT_HEADER_FIX,
+            Flags.FLAG_NOTIFICATION_VIEW_FLIPPER_PAUSING_V2,
+            Flags.FLAG_NOTIFICATIONS_BACKGROUND_ICONS,
+            Flags.FLAG_NOTIFICATIONS_FOOTER_VISIBILITY_FIX,
+            Flags.FLAG_NOTIFICATIONS_HIDE_ON_DISPLAY_SWITCH,
+            Flags.FLAG_NOTIFICATIONS_HUN_SHARED_ANIMATION_VALUES,
+            Flags.FLAG_NOTIFICATIONS_ICON_CONTAINER_REFACTOR,
+            Flags.FLAG_NOTIFICATIONS_LAUNCH_RADIUS,
+            Flags.FLAG_NOTIFICATIONS_LIVE_DATA_STORE_REFACTOR,
+            Flags.FLAG_NOTIFICATIONS_PINNED_HUN_IN_SHADE,
+            Flags.FLAG_NOTIFICATIONS_REDESIGN_FOOTER_VIEW,
+            Flags.FLAG_NOTIFICATIONS_REDESIGN_GUTS,
+            Flags.FLAG_NOTIFY_PASSWORD_TEXT_VIEW_USER_ACTIVITY_IN_BACKGROUND,
+            Flags.FLAG_NOTIFY_POWER_MANAGER_USER_ACTIVITY_BACKGROUND,
+            Flags.FLAG_ONLY_SHOW_MEDIA_STREAM_SLIDER_IN_SINGLE_VOLUME_MODE,
+            Flags.FLAG_OUTPUT_SWITCHER_REDESIGN,
+            Flags.FLAG_OVERRIDE_SUPPRESS_OVERLAY_CONDITION,
+            Flags.FLAG_PERMISSION_HELPER_INLINE_UI_RICH_ONGOING,
+            Flags.FLAG_PERMISSION_HELPER_UI_RICH_ONGOING,
+            Flags.FLAG_PHYSICAL_NOTIFICATION_MOVEMENT,
+            Flags.FLAG_PIN_INPUT_FIELD_STYLED_FOCUS_STATE,
+            Flags.FLAG_PREDICTIVE_BACK_ANIMATE_SHADE,
+            Flags.FLAG_PREDICTIVE_BACK_DELAY_WM_TRANSITION,
+            Flags.FLAG_PRIORITY_PEOPLE_SECTION,
+            Flags.FLAG_PROMOTE_NOTIFICATIONS_AUTOMATICALLY,
+            Flags.FLAG_PSS_APP_SELECTOR_RECENTS_SPLIT_SCREEN,
+            Flags.FLAG_PSS_TASK_SWITCHER,
+            Flags.FLAG_QS_CUSTOM_TILE_CLICK_GUARANTEED_BUG_FIX,
+            Flags.FLAG_QS_NEW_TILES,
+            Flags.FLAG_QS_NEW_TILES_FUTURE,
+            Flags.FLAG_QS_QUICK_REBIND_ACTIVE_TILES,
+            Flags.FLAG_QS_REGISTER_SETTING_OBSERVER_ON_BG_THREAD,
+            Flags.FLAG_QS_TILE_DETAILED_VIEW,
+            Flags.FLAG_QS_TILE_FOCUS_STATE,
+            Flags.FLAG_QS_UI_REFACTOR,
+            Flags.FLAG_QS_UI_REFACTOR_COMPOSE_FRAGMENT,
+            Flags.FLAG_RECORD_ISSUE_QS_TILE,
+            Flags.FLAG_REDESIGN_MAGNIFICATION_WINDOW_SIZE,
+            Flags.FLAG_REFACTOR_GET_CURRENT_USER,
+            Flags.FLAG_REGISTER_BATTERY_CONTROLLER_RECEIVERS_IN_CORESTARTABLE,
+            Flags.FLAG_REGISTER_CONTENT_OBSERVERS_ASYNC,
+            Flags.FLAG_REGISTER_NEW_WALLET_CARD_IN_BACKGROUND,
+            Flags.FLAG_REGISTER_WALLPAPER_NOTIFIER_BACKGROUND,
+            Flags.FLAG_RELOCK_WITH_POWER_BUTTON_IMMEDIATELY,
+            Flags.FLAG_REMOVE_DREAM_OVERLAY_HIDE_ON_TOUCH,
+            Flags.FLAG_REMOVE_UPDATE_LISTENER_IN_QS_ICON_VIEW_IMPL,
+            Flags.FLAG_REST_TO_UNLOCK,
+            Flags.FLAG_RESTART_DREAM_ON_UNOCCLUDE,
+            Flags.FLAG_REVAMPED_BOUNCER_MESSAGES,
+            Flags.FLAG_RUN_FINGERPRINT_DETECT_ON_DISMISSIBLE_KEYGUARD,
+            Flags.FLAG_SAVE_AND_RESTORE_MAGNIFICATION_SETTINGS_BUTTONS,
+            Flags.FLAG_SCENE_CONTAINER,
+            Flags.FLAG_SCREENSHARE_NOTIFICATION_HIDING_BUG_FIX,
+            Flags.FLAG_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS,
+            Flags.FLAG_SCREENSHOT_MULTIDISPLAY_FOCUS_CHANGE,
+            Flags.FLAG_SCREENSHOT_POLICY_SPLIT_AND_DESKTOP_MODE,
+            Flags.FLAG_SCREENSHOT_SCROLL_CROP_VIEW_CRASH_FIX,
+            Flags.FLAG_SCREENSHOT_UI_CONTROLLER_REFACTOR,
+            Flags.FLAG_SECONDARY_USER_WIDGET_HOST,
+            Flags.FLAG_SETTINGS_EXT_REGISTER_CONTENT_OBSERVER_ON_BG_THREAD,
+            Flags.FLAG_SHADE_EXPANDS_ON_STATUS_BAR_LONG_PRESS,
+            Flags.FLAG_SHADE_HEADER_FONT_UPDATE,
+            Flags.FLAG_SHADE_LAUNCH_ACCESSIBILITY,
+            Flags.FLAG_SHADE_WINDOW_GOES_AROUND,
+            Flags.FLAG_SHADERLIB_LOADING_EFFECT_REFACTOR,
+            Flags.FLAG_SHORTCUT_HELPER_KEY_GLYPH,
+            Flags.FLAG_SHOW_AUDIO_SHARING_SLIDER_IN_VOLUME_PANEL,
+            Flags.FLAG_SHOW_CLIPBOARD_INDICATION,
+            Flags.FLAG_SHOW_LOCKED_BY_YOUR_WATCH_KEYGUARD_INDICATOR,
+            Flags.FLAG_SHOW_TOAST_WHEN_APP_CONTROL_BRIGHTNESS,
+            Flags.FLAG_SIM_PIN_BOUNCER_RESET,
+            Flags.FLAG_SIM_PIN_RACE_CONDITION_ON_RESTART,
+            Flags.FLAG_SIM_PIN_USE_SLOT_ID,
+            Flags.FLAG_SKIP_HIDE_SENSITIVE_NOTIF_ANIMATION,
+            Flags.FLAG_SLICE_BROADCAST_RELAY_IN_BACKGROUND,
+            Flags.FLAG_SLICE_MANAGER_BINDER_CALL_BACKGROUND,
+            Flags.FLAG_SMARTSPACE_LOCKSCREEN_VIEWMODEL,
+            Flags.FLAG_SMARTSPACE_RELOCATE_TO_BOTTOM,
+            Flags.FLAG_SMARTSPACE_REMOTEVIEWS_RENDERING_FIX,
+            Flags.FLAG_SMARTSPACE_SWIPE_EVENT_LOGGING_FIX,
+            Flags.FLAG_SMARTSPACE_VIEWPAGER2,
+            Flags.FLAG_SOUNDDOSE_CUSTOMIZATION,
+            Flags.FLAG_SPATIAL_MODEL_APP_PUSHBACK,
+            Flags.FLAG_STABILIZE_HEADS_UP_GROUP_V2,
+            Flags.FLAG_STATUS_BAR_ALWAYS_CHECK_UNDERLYING_NETWORKS,
+            Flags.FLAG_STATUS_BAR_AUTO_START_SCREEN_RECORD_CHIP,
+            Flags.FLAG_STATUS_BAR_CHIPS_MODERNIZATION,
+            Flags.FLAG_STATUS_BAR_CHIPS_RETURN_ANIMATIONS,
+            Flags.FLAG_STATUS_BAR_FONT_UPDATES,
+            Flags.FLAG_STATUS_BAR_MOBILE_ICON_KAIROS,
+            Flags.FLAG_STATUS_BAR_MONOCHROME_ICONS_FIX,
+            Flags.FLAG_STATUS_BAR_NO_HUN_BEHAVIOR,
+            Flags.FLAG_STATUS_BAR_POPUP_CHIPS,
+            Flags.FLAG_STATUS_BAR_ROOT_MODERNIZATION,
+            Flags.FLAG_STATUS_BAR_SHOW_AUDIO_ONLY_PROJECTION_CHIP,
+            Flags.FLAG_STATUS_BAR_SIGNAL_POLICY_REFACTOR,
+            Flags.FLAG_STATUS_BAR_SIGNAL_POLICY_REFACTOR_ETHERNET,
+            Flags.FLAG_STATUS_BAR_STATIC_INOUT_INDICATORS,
+            Flags.FLAG_STATUS_BAR_STOP_UPDATING_WINDOW_HEIGHT,
+            Flags.FLAG_STATUS_BAR_SWIPE_OVER_CHIP,
+            Flags.FLAG_STATUS_BAR_SWITCH_TO_SPN_FROM_DATA_SPN,
+            Flags.FLAG_STATUS_BAR_UI_THREAD,
+            Flags.FLAG_STATUS_BAR_WINDOW_NO_CUSTOM_TOUCH,
+            Flags.FLAG_STOPPABLE_FGS_SYSTEM_APP,
+            Flags.FLAG_SWITCH_USER_ON_BG,
+            Flags.FLAG_SYSUI_TEAMFOOD,
+            Flags.FLAG_THEME_OVERLAY_CONTROLLER_WAKEFULNESS_DEPRECATION,
+            Flags.FLAG_TRANSITION_RACE_CONDITION,
+            Flags.FLAG_TRANSLUCENT_OCCLUDING_ACTIVITY_FIX,
+            Flags.FLAG_TV_GLOBAL_ACTIONS_FOCUS,
+            Flags.FLAG_UDFPS_VIEW_PERFORMANCE,
+            Flags.FLAG_UNFOLD_ANIMATION_BACKGROUND_PROGRESS,
+            Flags.FLAG_UNFOLD_LATENCY_TRACKING_FIX,
+            Flags.FLAG_UPDATE_CORNER_RADIUS_ON_DISPLAY_CHANGED,
+            Flags.FLAG_UPDATE_USER_SWITCHER_BACKGROUND,
+            Flags.FLAG_UPDATE_WINDOW_MAGNIFIER_BOTTOM_BOUNDARY,
+            Flags.FLAG_USE_AAD_PROX_SENSOR,
+            Flags.FLAG_USE_NOTIF_INFLATION_THREAD_FOR_FOOTER,
+            Flags.FLAG_USE_NOTIF_INFLATION_THREAD_FOR_ROW,
+            Flags.FLAG_USE_TRANSITIONS_FOR_KEYGUARD_OCCLUDED,
+            Flags.FLAG_USE_VOLUME_CONTROLLER,
+            Flags.FLAG_USER_AWARE_SETTINGS_REPOSITORIES,
+            Flags.FLAG_USER_ENCRYPTED_SOURCE,
+            Flags.FLAG_USER_SWITCHER_ADD_SIGN_OUT_OPTION,
+            Flags.FLAG_VISUAL_INTERRUPTIONS_REFACTOR,
+            Flags.FLAG_VOLUME_REDESIGN,
+            ""
+        )
     );
 }

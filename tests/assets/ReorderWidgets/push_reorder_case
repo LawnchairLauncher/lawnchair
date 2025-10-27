@@ -17,28 +17,28 @@
 #Test 5x5
 board: 5x5
 xxxxx
-bbbm-
+bbb--
 --ccc
 --ddd
------
-arguments: 2 1
+----m
+arguments: 2 2
 board: 5x5
 xxxxx
---m--
 bbb--
+--m--
 --ccc
 --ddd
 #6x5 Test
 board: 6x5
 xxxxxx
-bbbbm-
---aaa-
---ddd-
-------
-arguments: 2 1
-board: 6x5
-xxxxxx
---m---
 bbbb--
 --aaa-
 --ddd-
+-----m
+arguments: 2 2
+board: 6x5
+xxxxxx
+bbbb--
+--maaa
+--ddd-
+------

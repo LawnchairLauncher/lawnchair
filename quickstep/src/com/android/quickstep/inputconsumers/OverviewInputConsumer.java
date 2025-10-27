@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.statemanager.BaseState;
+import com.android.launcher3.statemanager.StatefulContainer;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.views.BaseDragLayer;
@@ -41,7 +42,8 @@ import com.android.systemui.shared.system.InputMonitorCompat;
 /**
  * Input consumer for handling touch on the recents/Launcher activity.
  */
-public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsViewContainer>
+public class OverviewInputConsumer<S extends BaseState<S>,
+        T extends RecentsViewContainer & StatefulContainer<S>>
         implements InputConsumer {
 
     private final T mContainer;
@@ -53,12 +55,16 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
     private final int[] mLocationOnScreen = new int[2];
 
     private final boolean mStartingInActivityBounds;
+
     private boolean mTargetHandledTouch;
     private boolean mHasSetTouchModeForFirstDPadEvent;
     private boolean mIsWaitingForAttachToWindow;
 
-    public OverviewInputConsumer(GestureState gestureState, T container,
-            @Nullable InputMonitorCompat inputMonitor, boolean startingInActivityBounds) {
+    public OverviewInputConsumer(
+            GestureState gestureState,
+            T container,
+            @Nullable InputMonitorCompat inputMonitor,
+            boolean startingInActivityBounds) {
         mContainer = container;
         mInputMonitor = inputMonitor;
         mStartingInActivityBounds = startingInActivityBounds;
@@ -72,6 +78,11 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends RecentsView
     @Override
     public int getType() {
         return TYPE_OVERVIEW;
+    }
+
+    @Override
+    public int getDisplayId() {
+        return mGestureState.getDisplayId();
     }
 
     @Override

@@ -21,13 +21,13 @@ import static com.android.launcher3.search.StringMatcherUtility.matches;
 import android.os.Handler;
 
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.search.SearchCallback;
 import com.android.launcher3.search.StringMatcherUtility.StringMatcher;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.picker.search.WidgetsSearchBar.WidgetsSearchDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +39,9 @@ import java.util.stream.Collectors;
 public final class SimpleWidgetsSearchAlgorithm implements SearchAlgorithm<WidgetsListBaseEntry> {
 
     private final Handler mResultHandler;
-    private final PopupDataProvider mDataProvider;
+    private final WidgetsSearchDataProvider mDataProvider;
 
-    public SimpleWidgetsSearchAlgorithm(PopupDataProvider dataProvider) {
+    public SimpleWidgetsSearchAlgorithm(WidgetsSearchDataProvider dataProvider) {
         mResultHandler = new Handler();
         mDataProvider = dataProvider;
     }
@@ -63,9 +63,9 @@ public final class SimpleWidgetsSearchAlgorithm implements SearchAlgorithm<Widge
      * Returns entries for all matched widgets
      */
     public static ArrayList<WidgetsListBaseEntry> getFilteredWidgets(
-            PopupDataProvider dataProvider, String input) {
+            WidgetsSearchDataProvider dataProvider, String input) {
         ArrayList<WidgetsListBaseEntry> results = new ArrayList<>();
-        dataProvider.getAllWidgets().stream()
+        dataProvider.getWidgets().stream()
                 .filter(entry -> entry instanceof WidgetsListHeaderEntry)
                 .forEach(headerEntry -> {
                     List<WidgetItem> matchedWidgetItems = filterWidgetItems(

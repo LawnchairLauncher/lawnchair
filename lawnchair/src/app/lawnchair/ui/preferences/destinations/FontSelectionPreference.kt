@@ -22,8 +22,10 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -202,6 +204,7 @@ fun FontSelection(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun FontSelectionItem(
     adapter: PreferenceAdapter<FontCache.Font>,
@@ -243,6 +246,7 @@ private fun FontSelectionItem(
                     IconButton(
                         onClick = onDelete,
                         modifier = Modifier.padding(end = 8.dp),
+                        shapes = IconButtonDefaults.shapes(),
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Delete,
@@ -273,6 +277,7 @@ private fun removeFamilyPrefix(
     return fontName.removePrefix(familyName).trim().toString()
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun VariantDropdown(
     adapter: PreferenceAdapter<FontCache.Font>,
@@ -300,6 +305,7 @@ private fun VariantDropdown(
             onClick = { showVariants = true },
             colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
             contentPadding = VariantButtonContentPadding,
+            shapes = ButtonDefaults.shapes(),
         ) {
             AndroidText(
                 modifier = Modifier.wrapContentWidth(),

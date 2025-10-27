@@ -13,11 +13,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.ripple
@@ -208,7 +216,7 @@ private fun ManageExternalStorageSetting(
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun VisualMediaSetting(
     accessState: FileAccessState,
@@ -283,6 +291,7 @@ private fun VisualMediaSetting(
                             showPartialAccessDialog = false
                         },
                         modifier = Modifier.fillMaxWidth(),
+                        shapes = ButtonDefaults.shapes(),
                     ) { Text(stringResource(R.string.permissions_photos_videos_grant_full)) }
 
                     TextButton(
@@ -291,11 +300,13 @@ private fun VisualMediaSetting(
                             showPartialAccessDialog = false
                         },
                         modifier = Modifier.fillMaxWidth(),
+                        shapes = ButtonDefaults.shapes(),
                     ) { Text(stringResource(R.string.permissions_photos_videos_manage_selected)) }
 
                     TextButton(
                         onClick = { showPartialAccessDialog = false },
                         modifier = Modifier.fillMaxWidth(),
+                        shapes = ButtonDefaults.shapes(),
                     ) { Text(stringResource(android.R.string.cancel)) }
                 }
             },
@@ -403,6 +414,21 @@ internal fun TwoTargetSwitchPreference(
                 onCheckedChange = onCheckedChange,
                 enabled = switchEnabled,
                 interactionSource = interactionSource,
+                thumbContent = {
+                    if (checked) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = null,
+                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                        )
+                    }
+                },
             )
         },
         enabled = enabled,
@@ -422,7 +448,7 @@ internal fun TwoTargetSwitchPreference(
  * @param rationale The rationale to show to the user.
  * @param onPermissionRequest Called when the permission is requested.
  */
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun FileAccessPermissionDialog(
     onDismiss: () -> Unit,
@@ -457,7 +483,10 @@ private fun FileAccessPermissionDialog(
                     Text(stringResource(R.string.manage_storage_access_denied_description, stringResource(id = R.string.derived_app_name)))
                 },
                 confirmButton = {
-                    FilledTonalButton(onClick = onDismiss) { Text(stringResource(R.string.dismiss)) }
+                    FilledTonalButton(
+                        onClick = onDismiss,
+                        shapes = ButtonDefaults.shapes(),
+                    ) { Text(stringResource(R.string.dismiss)) }
                 },
             )
         }

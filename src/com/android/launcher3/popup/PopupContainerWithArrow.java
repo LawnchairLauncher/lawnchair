@@ -16,12 +16,18 @@
 
 package com.android.launcher3.popup;
 
+import static android.multiuser.Flags.enableMovingContentIntoPrivateSpace;
+
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
+import static com.android.launcher3.Utilities.ATLEAST_BAKLAVA;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
+import static com.android.launcher3.allapps.AlphabeticalAppsList.PRIVATE_SPACE_PACKAGE;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
+import static com.android.launcher3.shortcuts.DeepShortcutTextView.GOOGLE_SANS_FLEX_LABEL_LARGE;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.wm.shell.Flags.enableGsf;
 
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -29,6 +35,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
@@ -40,7 +47,6 @@ import android.widget.ImageView;
 import androidx.annotation.LayoutRes;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
@@ -67,6 +73,7 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -209,7 +216,29 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                 R.layout.popup_container, launcher.getDragLayer(), false);
         container.configureForLauncher(launcher, item);
-        container.populateAndShowRows(icon, deepShortcutCount, systemShortcuts);
+        
+        /* LC-Note: Fix for missing flags and account for NCDFE */
+        boolean shouldHideSystemShortcuts;
+        if (ATLEAST_BAKLAVA) {
+            boolean enableMovingContentIntoPrivateSpace = false;
+            try {
+                /* LC-Note: Some devices (Android 16 QPR) doesn't have or expose this flag to user. 
+                 * Let's assume no, because (the flags) enableMovingContentIntoPrivateSpace seems 
+                 * to be False for R8 by default.
+                 * */
+                enableMovingContentIntoPrivateSpace = enableMovingContentIntoPrivateSpace();
+            } catch (NoClassDefFoundError e) {
+                /* LC-Ignored: we already set it false by default. */
+            }
+            
+            shouldHideSystemShortcuts = enableMovingContentIntoPrivateSpace
+                && Objects.equals(item.getTargetPackage(), PRIVATE_SPACE_PACKAGE);
+        } else {
+            shouldHideSystemShortcuts = false;
+        }
+        
+        container.populateAndShowRows(icon, deepShortcutCount,
+                shouldHideSystemShortcuts ? Collections.emptyList() : systemShortcuts);
         launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(item));
         container.requestFocus();
         return container;
@@ -235,7 +264,21 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
      * @param systemShortcuts List of SystemShortcuts to add to container
      */
     public void populateAndShowRows(final BubbleTextView originalIcon,
-                                    int deepShortcutCount, List<SystemShortcut> systemShortcuts) {
+            int deepShortcutCount, List<SystemShortcut> systemShortcuts) {
+        populateAndShowRows(originalIcon, (ItemInfo) originalIcon.getTag(), deepShortcutCount,
+                systemShortcuts);
+    }
+
+    /**
+     * Populate and show shortcuts for the Launcher U app shortcut design.
+     * Will inflate the container and shortcut View instances for the popup container.
+     * @param originalIcon App icon that the popup is shown for
+     * @param itemInfo The info that is used to load app shortcuts
+     * @param deepShortcutCount Number of DeepShortcutView instances to add to container
+     * @param systemShortcuts List of SystemShortcuts to add to container
+     */
+    public void populateAndShowRows(final BubbleTextView originalIcon, ItemInfo itemInfo,
+            int deepShortcutCount, List<SystemShortcut> systemShortcuts) {
 
         mOriginalIcon = originalIcon;
         mContainerWidth = getResources().getDimensionPixelSize(R.dimen.bg_popup_item_width);
@@ -248,7 +291,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                     R.layout.system_shortcut);
         }
         show();
-        loadAppShortcuts((ItemInfo) originalIcon.getTag());
+        loadAppShortcuts(itemInfo);
     }
 
     /**
@@ -274,7 +317,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
      * @param systemShortcuts List of SystemShortcuts
      */
     private void addAllShortcuts(int deepShortcutCount,
-                                 List<SystemShortcut> systemShortcuts) {
+            List<SystemShortcut> systemShortcuts) {
         if (deepShortcutCount + systemShortcuts.size() <= SHORTCUT_COLLAPSE_THRESHOLD) {
             // add all system shortcuts including widgets shortcut to same container
             addSystemShortcuts(systemShortcuts,
@@ -342,7 +385,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
      * @param systemShortcutLayout Layout Resource for the individual shortcut Views
      */
     private void addSystemShortcuts(List<SystemShortcut> systemShortcuts,
-                                    @LayoutRes int systemShortcutContainerLayout, @LayoutRes int systemShortcutLayout) {
+            @LayoutRes int systemShortcutContainerLayout, @LayoutRes int systemShortcutLayout) {
 
         if (systemShortcuts.size() == 0) {
             return;
@@ -457,11 +500,15 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
      * @return The view inflated for the SystemShortcut
      */
     protected View initializeSystemShortcut(int resId, ViewGroup container, SystemShortcut info,
-                                            boolean shouldAppendSpacer) {
+            boolean shouldAppendSpacer) {
         View view = inflateAndAdd(resId, container);
         if (view instanceof DeepShortcutView) {
             // System shortcut takes entire row with icon and text
             final DeepShortcutView shortcutView = (DeepShortcutView) view;
+            if (enableGsf()) {
+                shortcutView.getBubbleText().setTypeface(
+                        Typeface.create(GOOGLE_SANS_FLEX_LABEL_LARGE, Typeface.NORMAL));
+            }
             info.setIconAndLabelFor(shortcutView.getIconView(), shortcutView.getBubbleText());
         } else if (view instanceof ImageView) {
             // System shortcut is just an icon
@@ -582,7 +629,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
     /**
      * Dismisses the popup if it is no longer valid
      */
-    public static void dismissInvalidPopup(BaseDraggingActivity activity) {
+    public static <T extends Context & ActivityContext> void dismissInvalidPopup(T activity) {
         PopupContainerWithArrow popup = getOpen(activity);
         if (popup != null && (!popup.mOriginalIcon.isAttachedToWindow()
                 || !ShortcutUtil.supportsShortcuts((ItemInfo) popup.mOriginalIcon.getTag()))) {

@@ -23,62 +23,45 @@ import android.content.pm.ShortcutInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.R;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.dagger.ApplicationContext;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * Class to extend LauncherModel functionality to provide extra data
  */
-public class ModelDelegate implements ResourceBasedOverride {
-
-    /**
-     * Creates and initializes a new instance of the delegate
-     */
-    public static ModelDelegate newInstance(
-            Context context, LauncherAppState app, PackageManagerHelper pmHelper,
-            AllAppsList appsList, BgDataModel dataModel, boolean isPrimaryInstance) {
-        ModelDelegate delegate = Overrides.getObject(
-                ModelDelegate.class, context, R.string.model_delegate_class);
-        delegate.init(app, pmHelper, appsList, dataModel, isPrimaryInstance);
-        return delegate;
-    }
+public class ModelDelegate {
 
     protected final Context mContext;
-    protected PackageManagerHelper mPmHelper;
-    protected LauncherAppState mApp;
+    protected LauncherModel mModel;
     protected AllAppsList mAppsList;
     protected BgDataModel mDataModel;
-    protected boolean mIsPrimaryInstance;
 
-    public ModelDelegate(Context context) {
+    @Inject
+    public ModelDelegate(@ApplicationContext Context context) {
         mContext = context;
     }
 
     /**
      * Initializes the object with the given params.
      */
-    private void init(LauncherAppState app, PackageManagerHelper pmHelper, AllAppsList appsList,
-            BgDataModel dataModel, boolean isPrimaryInstance) {
-        this.mApp = app;
-        this.mPmHelper = pmHelper;
+    public void init(LauncherModel model, AllAppsList appsList, BgDataModel dataModel) {
+        this.mModel = model;
         this.mAppsList = appsList;
         this.mDataModel = dataModel;
-        this.mIsPrimaryInstance = isPrimaryInstance;
     }
 
     /** Called periodically to validate and update any data */
     @WorkerThread
     public void validateData() {
-        if (hasShortcutsPermission(mApp.getContext())
-                != mAppsList.hasShortcutHostPermission()) {
-            mApp.getModel().forceReload();
+        if (hasShortcutsPermission(mContext) != mAppsList.hasShortcutHostPermission()) {
+            mModel.forceReload();
         }
     }
 
@@ -122,6 +105,11 @@ public class ModelDelegate implements ResourceBasedOverride {
      */
     @WorkerThread
     public void modelLoadComplete() { }
+
+    /** Called when grid migration has completed as part of grid size refactor. */
+    @WorkerThread
+    public void gridMigrationComplete(
+            @NonNull DeviceGridState src, @NonNull DeviceGridState dest) { }
 
     /**
      * Called when the delegate is no loner needed

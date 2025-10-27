@@ -20,6 +20,7 @@ import android.view.SurfaceControl;
 import android.window.RemoteTransition;
 import android.window.TransitionFilter;
 
+import com.android.wm.shell.shared.IFocusTransitionListener;
 import com.android.wm.shell.shared.IHomeTransitionListener;
 
 /**
@@ -59,4 +60,9 @@ interface IShellTransitions {
      */
     oneway void registerRemoteForTakeover(in TransitionFilter filter,
             in RemoteTransition remoteTransition) = 6;
+
+    /**
+     * Set listener that will receive callbacks about transitions involving focus switch.
+     */
+    oneway void setFocusTransitionListener(in IFocusTransitionListener listener) = 7;
 }

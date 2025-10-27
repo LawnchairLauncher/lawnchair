@@ -22,11 +22,13 @@
     android:layout_width="@dimen/task_thumbnail_icon_menu_expanded_width"
     android:layout_height="@dimen/task_thumbnail_icon_menu_expanded_height"
     android:clipToOutline="true"
-    android:focusable="false"
+    android:focusable="true"
+    android:focusableInTouchMode="false"
     android:importantForAccessibility="no"
     android:autoMirrored="true"
     android:elevation="@dimen/task_thumbnail_icon_menu_elevation"
-    android:background="?attr/materialColorSurfaceBright">
+    android:foreground="@drawable/app_chip_fg"
+    android:background="@color/materialColorSurfaceBright">
 
     <!-- ignoring warning because the user of the anchor is a Rect where RTL is not needed -->
     <!-- This anchor's bounds is in the expected location after rotations and translations are
@@ -51,7 +53,7 @@
     <TextView
         android:id="@+id/icon_text_collapsed"
         android:layout_width="@dimen/task_thumbnail_icon_menu_text_collapsed_max_width"
-        android:layout_height="@dimen/task_thumbnail_icon_menu_app_icon_collapsed_size"
+        android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
         android:maxLines="1"
         android:ellipsize="end"
@@ -62,7 +64,7 @@
     <TextView
         android:id="@+id/icon_text_expanded"
         android:layout_width="@dimen/task_thumbnail_icon_menu_text_expanded_max_width"
-        android:layout_height="@dimen/task_thumbnail_icon_menu_app_icon_collapsed_size"
+        android:layout_height="wrap_content"
         android:gravity="start|center_vertical"
         android:maxLines="1"
         android:ellipsize="end"
@@ -77,4 +79,5 @@
         android:background="@drawable/icon_menu_arrow_background"
         android:src="@drawable/ic_chevron_down"
         android:importantForAccessibility="no" />
+
 </com.android.quickstep.views.IconAppChipView>

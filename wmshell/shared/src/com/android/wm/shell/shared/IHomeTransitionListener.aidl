@@ -18,6 +18,7 @@ package com.android.wm.shell.shared;
 
 import android.window.RemoteTransition;
 import android.window.TransitionFilter;
+import android.view.InsetsState;
 
 /**
  * Listener interface that Launcher attaches to SystemUI to get home activity transition callbacks
@@ -29,5 +30,10 @@ oneway interface IHomeTransitionListener {
      * Called when a transition changes the visibility of the home activity on the default display.
      */
     void onHomeVisibilityChanged(in boolean isVisible);
+
+    /**
+     * Called when the insets at display-level change.
+     */
+    void onDisplayInsetsChanged(in InsetsState insets);
 }
 

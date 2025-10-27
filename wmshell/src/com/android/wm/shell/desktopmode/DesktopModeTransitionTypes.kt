@@ -17,7 +17,7 @@
 package com.android.wm.shell.desktopmode
 
 import android.view.WindowManager.TransitionType
-import com.android.wm.shell.common.desktopmode.DesktopModeTransitionSource
+import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource
 import com.android.wm.shell.transition.Transitions.TRANSIT_DESKTOP_MODE_TYPES
 
 /**

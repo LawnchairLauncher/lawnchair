@@ -89,7 +89,7 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
         return if (!bitmap.isRecycled) {
             val newBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(newBitmap)
-            shadowGenerator.recreateIcon(bitmap, canvas)
+            shadowGenerator.drawShadow(bitmap, canvas)
             newBitmap
         } else {
             bitmap

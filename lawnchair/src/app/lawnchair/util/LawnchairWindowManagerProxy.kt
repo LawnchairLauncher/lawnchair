@@ -6,6 +6,7 @@ import android.graphics.Insets
 import android.graphics.Rect
 import android.hardware.display.DisplayManager
 import android.util.ArrayMap
+import android.util.Log
 import android.view.Display
 import android.view.Display.DEFAULT_DISPLAY
 import android.view.DisplayCutout
@@ -15,21 +16,41 @@ import android.view.WindowManager
 import androidx.annotation.Keep
 import androidx.annotation.VisibleForTesting
 import com.android.launcher3.Utilities
+import com.android.launcher3.dagger.LauncherAppSingleton
 import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.RotationUtils.deltaRotation
 import com.android.launcher3.util.RotationUtils.rotateRect
 import com.android.launcher3.util.WindowBounds
 import com.android.launcher3.util.window.CachedDisplayInfo
 import com.android.launcher3.util.window.WindowManagerProxy
+import javax.inject.Inject
 import kotlin.math.max
 
 @Keep
-class LawnchairWindowManagerProxy(context: Context) : WindowManagerProxy(Utilities.ATLEAST_T) {
+@LauncherAppSingleton
+class LawnchairWindowManagerProxy @Inject constructor() : WindowManagerProxy(Utilities.ATLEAST_T) {
+
+    @Suppress("PropertyName")
+    val TAG = "LC-WindowManagerProxy"
 
     override fun estimateInternalDisplayBounds(displayInfoContext: Context): ArrayMap<CachedDisplayInfo, List<WindowBounds>> {
+        // Lawnchair-TODO(Foldable): See estimateInternalDisplayBounds in [SystemWindowManagerProxy]
+        // Wait... If SWMP fallback to getMaximumWindowMetrics from [WindowManager] public APIs
+        // That means that we can combine getMaximumWindowMetrics with getCurrentWindowMetrics!
+        // Wait... but doesn't that only account for two screens? What if there were more than two
+        // Until then *this* is a good enough solutions
+        // Wait... Launcher calls eIDB every time you interact, what happened if you switched screen
+        //         to the screen with maximum window metrics screen? won't that cause duplicate with
+        //         getCurrentWindowMetrics?
+        //
+        // True... we duplicate it, and cache it? Is there a better way to do this?
+        // We can't just call [getPossibleMaximumWindowMetrics] because it's an internal apis,
+        // reflection won't work. Thanks @SystemApi
         val info = getDisplayInfo(displayInfoContext).normalize(this)
         val bounds = estimateWindowBounds(displayInfoContext, info)
-        return ArrayMap<CachedDisplayInfo, List<WindowBounds>>().apply { put(info, bounds) }
+        val result = ArrayMap<CachedDisplayInfo, List<WindowBounds>>().apply { put(info, bounds) }
+        Log.d(TAG, "estimateInternalDisplayBounds: $result")
+        return result
     }
 
     override fun getRealBounds(displayInfoContext: Context, info: CachedDisplayInfo): WindowBounds {

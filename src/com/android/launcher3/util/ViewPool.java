@@ -17,6 +17,7 @@ package com.android.launcher3.util;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import android.view.ViewGroup;
 import androidx.annotation.AnyThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.util.ViewPool.Reusable;
 
@@ -32,6 +34,7 @@ import com.android.launcher3.util.ViewPool.Reusable;
  * During initialization, views are inflated on the background thread.
  */
 public class ViewPool<T extends View & Reusable> {
+    private static final String TAG = ViewPool.class.getSimpleName();
 
     private final Object[] mPool;
 
@@ -41,11 +44,21 @@ public class ViewPool<T extends View & Reusable> {
 
     private int mCurrentSize = 0;
 
+    @Nullable
+    private Thread mViewPoolInitThread;
+
     public ViewPool(Context context, @Nullable ViewGroup parent,
+            int layoutId, int maxSize, int initialSize) {
+        this(LayoutInflater.from(context).cloneInContext(context),
+                parent, layoutId, maxSize, initialSize);
+    }
+
+    @VisibleForTesting
+    ViewPool(LayoutInflater inflater, @Nullable ViewGroup parent,
             int layoutId, int maxSize, int initialSize) {
         mLayoutId = layoutId;
         mParent = parent;
-        mInflater = LayoutInflater.from(context);
+        mInflater = inflater;
         mPool = new Object[maxSize];
 
         if (initialSize > 0) {
@@ -64,12 +77,15 @@ public class ViewPool<T extends View & Reusable> {
 
         // Inflate views on a non looper thread. This allows us to catch errors like calling
         // "new Handler()" in constructor easily.
-        new Thread(() -> {
+        mViewPoolInitThread = new Thread(() -> {
             for (int i = 0; i < initialSize; i++) {
                 T view = inflateNewView(inflater);
                 handler.post(() -> addToPool(view));
             }
-        }, "ViewPool-init").start();
+            Log.d(TAG, "initPool complete");
+            mViewPoolInitThread = null;
+        }, "ViewPool-init");
+        mViewPoolInitThread.start();
     }
 
     @UiThread
@@ -104,6 +120,12 @@ public class ViewPool<T extends View & Reusable> {
     @AnyThread
     private T inflateNewView(LayoutInflater inflater) {
         return (T) inflater.inflate(mLayoutId, mParent, false);
+    }
+
+    public void killOngoingInitializations() throws InterruptedException {
+        if (mViewPoolInitThread != null) {
+            mViewPoolInitThread.join();
+        }
     }
 
     /**

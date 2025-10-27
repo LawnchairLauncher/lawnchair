@@ -20,6 +20,14 @@ plugins {
     alias(libs.plugins.diffplug.spotless)
 }
 
+// LC-Build-TODO: addFrameworkJar() doesn't work, what???
+def localFrameworkJar = new File("$rootDir/prebuilts/libs", "framework-16.jar")
+tasks.withType(JavaCompile).configureEach {
+    classpath = files(localFrameworkJar)
+}
+tasks.withType(KotlinCompile).configureEach {
+    libraries.from(files(localFrameworkJar))
+}
 
 allprojects {
     plugins.withType(AndroidBasePlugin).configureEach {
@@ -32,7 +40,7 @@ allprojects {
             }
             defaultConfig {
                 minSdk 26
-                targetSdk 35
+                targetSdk 36
                 vectorDrawables.useSupportLibrary = true
             }
             lint {
@@ -46,6 +54,7 @@ allprojects {
         }
         dependencies {
             implementation libs.androidx.core.ktx
+            implementation libs.androidx.core.animation
         }
     }
 
@@ -119,9 +128,9 @@ allprojects {
 
         compileOnlyCommonJars = {
             dependencies {
-                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core.jar')
-                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
-                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-15.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core-16.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-16.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-16.jar')
 
                 compileOnly projects.compatLib
                 compileOnly projects.compatLib.compatLibVQ
@@ -130,6 +139,7 @@ allprojects {
                 compileOnly projects.compatLib.compatLibVT
                 compileOnly projects.compatLib.compatLibVU
                 compileOnly projects.compatLib.compatLibVV
+                compileOnly projects.compatLib.compatLibVBaklava
             }
         }
     }
@@ -144,20 +154,22 @@ final def ciRef = System.getenv("GITHUB_REF") ?: ""
 final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 final def isReleaseBuild = ciBuild && ciRef.contains("beta")
 final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
-final def version = "15"
-final def releaseName = "Beta 1"
+final def version = "16"
+final def releaseName = "Development 3 Release 0"
 final def versionDisplayName = "${version}.${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
 final def quickstepMinSdk = "29"
-final def quickstepMaxSdk = "35"
+final def quickstepMaxSdk = "36"
 
 android {
     namespace "com.android.launcher3"
     defaultConfig {
-        // Lawnchair Launcher 15.0 Beta 1
-        // See CONTRIBUTING.md#versioning-scheme
-        versionCode 15_00_02_01
+        /*
+         * Lawnchair Launcher 16.0 Development 3 Release 1
+         * see CONTRIBUTING.md#versioning-scheme
+         */
+        versionCode 16_00_01_03_01
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
@@ -245,12 +257,18 @@ android {
         debug {
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Lawnchair (Debug)")
+
+            manifestPlaceholders.quickstepMinSdk = "0"
+            manifestPlaceholders.quickstepMaxSdk = "100000"
+            buildConfigField "int", "QUICKSTEP_MIN_SDK", "0"
+            buildConfigField "int", "QUICKSTEP_MAX_SDK", "100000"
         }
 
         release {
             resValue("string", "derived_app_name", "Lawnchair")
             minifyEnabled true
             shrinkResources true
+            pseudoLocalesEnabled false
             proguardFiles proguardFilesFromAosp + "proguard.pro"
         }
     }
@@ -343,7 +361,7 @@ android {
 
         withQuickstep {
             res.srcDirs = ['quickstep/res', 'quickstep/recents_ui_overrides/res']
-            java.srcDirs = ['quickstep/src', 'quickstep/recents_ui_overrides/src']
+            java.srcDirs = ['quickstep/src', 'quickstep/dagger', 'quickstep/recents_ui_overrides/src', 'quickstep/src_protolog']
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
@@ -356,12 +374,14 @@ composeCompiler {
     reportsDestination = layout.buildDirectory.dir("compose_build_reports")
 }
 
-addFrameworkJar('framework-15.jar')
+addFrameworkJar('framework-16.jar')
 
 dependencies {
     implementation projects.iconloaderlib
     implementation projects.searchuilib
     implementation projects.animationlib
+    implementation projects.msdllib
+    implementation projects.contextualeducationlib
 
     // Recents lib dependency
     withQuickstepCompileOnly projects.hiddenApi
@@ -373,6 +393,7 @@ dependencies {
     withQuickstepCompileOnly projects.plugin
     withQuickstepImplementation projects.plugincore
     withQuickstepCompileOnly projects.common
+    withQuickstepCompileOnly projects.utils
 
     // QuickSwitch Compat
     withQuickstepImplementation projects.compatLib
@@ -382,13 +403,15 @@ dependencies {
     withQuickstepImplementation projects.compatLib.compatLibVT
     withQuickstepImplementation projects.compatLib.compatLibVU
     withQuickstepImplementation projects.compatLib.compatLibVV
+    withQuickstepImplementation projects.compatLib.compatLibVBaklava
     withQuickstepImplementation projects.wmshell
     withQuickstepImplementation projects.flags
     implementation libs.androidx.dynamicanimation
 
-    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-15.jar')
-    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-15.jar')
-    withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-15.jar')
+    implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd-16.jar')
+    withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-16.jar')
+    withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-16.jar')
+    baselineProfile projects.baselineProfile
 
     coreLibraryDesugaring libs.android.desugarJdkLibs
 
@@ -398,14 +421,21 @@ dependencies {
     implementation libs.androidx.recyclerview
     implementation libs.androidx.preference.ktx
 
+    implementation libs.javax.inject
     implementation libs.kotlinx.coroutines.android
     implementation libs.kotlinx.serialization.json
     implementation libs.chickenhook.restrictionbypass
     implementation libs.rikka.refine.runtime
 
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.datastore.preferences
+
     implementation platform(libs.compose.bom)
     implementation libs.compose.ui
     implementation libs.compose.ui.util
+    implementation libs.compose.ui.graphics
+    implementation libs.bundles.graphics
     debugImplementation libs.compose.ui.tooling
     implementation libs.compose.ui.tooling.preview
     implementation libs.compose.ui.google.fonts
@@ -454,10 +484,17 @@ dependencies {
     implementation libs.hoko.blur
 
     implementation libs.androidx.window
+
+    ksp libs.dagger.compiler
+    implementation libs.dagger.hilt.android
+    ksp libs.dagger.hilt.compiler
+
+    debugImplementation libs.leakcanary.android
 }
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
+    arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
 }
 
 

@@ -18,7 +18,7 @@ package com.android.wm.shell.desktopmode;
 
 import android.app.ActivityManager.RunningTaskInfo;
 import android.window.RemoteTransition;
-import com.android.wm.shell.common.desktopmode.DesktopModeTransitionSource;
+import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource;
 import com.android.wm.shell.desktopmode.IDesktopTaskListener;
 
 /**

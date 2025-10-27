@@ -16,7 +16,9 @@
 
 package com.android.launcher3.widget.picker.search;
 
-import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+
+import java.util.List;
 
 /**
  * Interface for a widgets picker search bar.
@@ -25,7 +27,7 @@ public interface WidgetsSearchBar {
     /**
      * Attaches a controller to the search bar which interacts with {@code searchModeListener}.
      */
-    void initialize(PopupDataProvider dataProvider, SearchModeListener searchModeListener);
+    void initialize(WidgetsSearchDataProvider dataProvider, SearchModeListener searchModeListener);
 
     /**
      * Clears search bar.
@@ -44,4 +46,15 @@ public interface WidgetsSearchBar {
      * Sets the vertical location, in pixels, of this search bar relative to its top position.
      */
     void setTranslationY(float translationY);
+
+
+    /**
+     * Provides corpus from which search results must be returned.
+     */
+    interface WidgetsSearchDataProvider {
+        /**
+         * Returns the widgets from which the search should return the results.
+         */
+        List<WidgetsListBaseEntry> getWidgets();
+    }
 }

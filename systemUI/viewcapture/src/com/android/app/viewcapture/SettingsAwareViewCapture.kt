@@ -19,11 +19,8 @@ package com.android.app.viewcapture
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.database.ContentObserver
-import android.os.Build
 import android.os.Handler
-import android.os.Looper
 import android.os.ParcelFileDescriptor
-import android.os.Process
 import android.provider.Settings
 import android.util.Log
 import android.window.IDumpCallback
@@ -38,12 +35,11 @@ private val TAG = SettingsAwareViewCapture::class.java.simpleName
  * WindowListeners accordingly. The Settings toggle is currently controlled by the Winscope
  * developer tile in the System developer options.
  */
-class SettingsAwareViewCapture
-@VisibleForTesting
-internal constructor(private val context: Context, executor: Executor)
-    : ViewCapture(DEFAULT_MEMORY_SIZE, DEFAULT_INIT_POOL_SIZE, executor) {
+internal class SettingsAwareViewCapture
+internal constructor(private val context: Context, executor: Executor) :
+    ViewCapture(DEFAULT_MEMORY_SIZE, DEFAULT_INIT_POOL_SIZE, executor) {
     /** Dumps all the active view captures to the wm trace directory via LauncherAppService */
-    private val mDumpCallback: IDumpCallback.Stub? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) object : IDumpCallback.Stub() {
+    private val mDumpCallback: IDumpCallback.Stub = object : IDumpCallback.Stub() {
         override fun onDump(out: ParcelFileDescriptor) {
             try {
                 ParcelFileDescriptor.AutoCloseOutputStream(out).use { os -> dumpTo(os, context) }
@@ -51,18 +47,20 @@ internal constructor(private val context: Context, executor: Executor)
                 Log.e(TAG, "failed to dump data to wm trace", e)
             }
         }
-    } else null
+    }
 
     init {
         enableOrDisableWindowListeners()
-        context.contentResolver.registerContentObserver(
-                Settings.Global.getUriFor(VIEW_CAPTURE_ENABLED),
-                false,
-                object : ContentObserver(Handler()) {
-                    override fun onChange(selfChange: Boolean) {
-                        enableOrDisableWindowListeners()
-                    }
-                })
+        mBgExecutor.execute {
+            context.contentResolver.registerContentObserver(
+                    Settings.Global.getUriFor(VIEW_CAPTURE_ENABLED),
+                    false,
+                    object : ContentObserver(Handler()) {
+                        override fun onChange(selfChange: Boolean) {
+                            enableOrDisableWindowListeners()
+                        }
+                    })
+        }
     }
 
     @AnyThread
@@ -74,34 +72,15 @@ internal constructor(private val context: Context, executor: Executor)
                 enableOrDisableWindowListeners(isEnabled)
             }
             val launcherApps = context.getSystemService(LauncherApps::class.java)
-            if (mDumpCallback != null) {
-                if (isEnabled) {
-                    launcherApps?.registerDumpCallback(mDumpCallback)
-                } else {
-                    launcherApps?.unRegisterDumpCallback(mDumpCallback)
-                }
+            if (isEnabled) {
+                //launcherApps?.registerDumpCallback(mDumpCallback)
+            } else {
+                //launcherApps?.unRegisterDumpCallback(mDumpCallback)
             }
         }
     }
 
     companion object {
         @VisibleForTesting internal const val VIEW_CAPTURE_ENABLED = "view_capture_enabled"
-
-        private var INSTANCE: ViewCapture? = null
-
-        @JvmStatic
-        fun getInstance(context: Context): ViewCapture = when {
-            INSTANCE != null -> INSTANCE!!
-            Looper.myLooper() == Looper.getMainLooper() -> SettingsAwareViewCapture(
-                    context.applicationContext,
-                    createAndStartNewLooperExecutor("SAViewCapture",
-                    Process.THREAD_PRIORITY_FOREGROUND)).also { INSTANCE = it }
-            else -> try {
-                MAIN_EXECUTOR.submit { getInstance(context) }.get()
-            } catch (e: Exception) {
-                throw e
-            }
-        }
-
     }
 }

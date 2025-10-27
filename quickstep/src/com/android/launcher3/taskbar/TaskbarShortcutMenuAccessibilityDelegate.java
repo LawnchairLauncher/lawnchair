@@ -22,6 +22,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventFo
 
 import android.content.Intent;
 import android.content.pm.LauncherApps;
+import android.content.pm.ShortcutInfo;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.LogUtils;
+import com.android.wm.shell.shared.bubbles.BubbleAnythingFlagHelper;
 
 import java.util.List;
 
@@ -50,6 +52,7 @@ public class TaskbarShortcutMenuAccessibilityDelegate
 
     public static final int MOVE_TO_TOP_OR_LEFT = R.id.action_move_to_top_or_left;
     public static final int MOVE_TO_BOTTOM_OR_RIGHT = R.id.action_move_to_bottom_or_right;
+    public static final int CREATE_APPLICATION_BUBBLE = R.id.action_create_application_bubble;
 
     private final LauncherApps mLauncherApps;
     private final StatsLogManager mStatsLogManager;
@@ -67,6 +70,9 @@ public class TaskbarShortcutMenuAccessibilityDelegate
                 MOVE_TO_BOTTOM_OR_RIGHT,
                 R.string.move_drop_target_bottom_or_right,
                 KeyEvent.KEYCODE_R));
+        mActions.put(CREATE_APPLICATION_BUBBLE, new LauncherAction(
+                CREATE_APPLICATION_BUBBLE, R.string.open_app_as_a_bubble,
+                KeyEvent.KEYCODE_L));
     }
 
     @Override
@@ -76,11 +82,27 @@ public class TaskbarShortcutMenuAccessibilityDelegate
         }
         out.add(mActions.get(MOVE_TO_TOP_OR_LEFT));
         out.add(mActions.get(MOVE_TO_BOTTOM_OR_RIGHT));
+        if (BubbleAnythingFlagHelper.enableCreateAnyBubble()) {
+            out.add(mActions.get(CREATE_APPLICATION_BUBBLE));
+        }
     }
 
     @Override
     protected boolean performAction(View host, ItemInfo item, int action, boolean fromKeyboard) {
-        if (item instanceof ItemInfoWithIcon
+        if (action == DEEP_SHORTCUTS) {
+            mContext.showPopupMenuForIcon((BubbleTextView) host);
+            return true;
+        } else if (action == CREATE_APPLICATION_BUBBLE) {
+            if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                    && item instanceof WorkspaceItemInfo) {
+                ShortcutInfo shortcutInfo = ((WorkspaceItemInfo) item).getDeepShortcutInfo();
+                SystemUiProxy.INSTANCE.get(mContext).showShortcutBubble(shortcutInfo);
+                return true;
+            } else if (item.getIntent() != null && item.getIntent().getPackage() != null) {
+                SystemUiProxy.INSTANCE.get(mContext).showAppBubble(item.getIntent(), item.user);
+                return true;
+            }
+        } else if (item instanceof ItemInfoWithIcon
                 && (action == MOVE_TO_TOP_OR_LEFT || action == MOVE_TO_BOTTOM_OR_RIGHT)) {
             ItemInfoWithIcon info = (ItemInfoWithIcon) item;
             int side = action == MOVE_TO_TOP_OR_LEFT
@@ -111,10 +133,6 @@ public class TaskbarShortcutMenuAccessibilityDelegate
                         item.user.getIdentifier(), new Intent(), side, null,
                         instanceIds.first);
             }
-            return true;
-        } else if (action == DEEP_SHORTCUTS) {
-            mContext.showPopupMenuForIcon((BubbleTextView) host);
-
             return true;
         }
         return false;

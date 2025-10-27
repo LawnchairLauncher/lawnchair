@@ -17,9 +17,15 @@
  */
 package com.android.launcher3.allapps;
 
+import static android.multiuser.Flags.enableMovingContentIntoPrivateSpace;
+
+import static com.android.launcher3.Utilities.ATLEAST_BAKLAVA;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_BOTTOM_VIEW_TO_SCROLL_TO;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_MASK_PRIVATE_SPACE_HEADER;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_LEFT;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_BOTTOM_RIGHT;
 import static com.android.launcher3.allapps.SectionDecorationInfo.ROUND_NOTHING;
+import static com.android.launcher3.icons.BitmapInfo.FLAG_NO_BADGE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_PREINSTALLED_APPS_COUNT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_PRIVATE_SPACE_USER_INSTALLED_APPS_COUNT;
 
@@ -27,6 +33,7 @@ import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -40,6 +47,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.LabelComparator;
 import com.android.launcher3.views.ActivityContext;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -59,6 +67,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         AllAppsStore.OnUpdateListener {
 
     public static final String TAG = "AlphabeticalAppsList";
+    public static final String PRIVATE_SPACE_PACKAGE = "com.android.privatespace";
 
     private final WorkProfileManager mWorkProviderManager;
 
@@ -74,10 +83,16 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         public final CharSequence sectionName;
         // The item position
         public final int position;
+        // The view id associated with this section
+        public int id = -1;
 
         public FastScrollSectionInfo(CharSequence sectionName, int position) {
             this.sectionName = sectionName;
             this.position = position;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
     }
 
@@ -100,6 +115,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     // The of ordered component names as a result of a search query
     private final ArrayList<AdapterItem> mSearchResults = new ArrayList<>();
     private final SpannableString mPrivateProfileAppScrollerBadge;
+    private final SpannableString mPrivateProfileDividerBadge;
     private BaseAllAppsAdapter<T> mAdapter;
     private AppInfoComparator mAppNameComparator;
     private int mNumAppsPerRowAllApps;
@@ -118,8 +134,13 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             mAllAppsStore.addUpdateListener(this);
         }
         mPrivateProfileAppScrollerBadge = new SpannableString(" ");
-        mPrivateProfileAppScrollerBadge.setSpan(new ImageSpan(context,
+        mPrivateProfileAppScrollerBadge.setSpan(new ImageSpan(context, Flags.letterFastScroller()
+                        ? R.drawable.ic_private_profile_letter_list_fast_scroller_badge :
                         R.drawable.ic_private_profile_app_scroller_badge, ImageSpan.ALIGN_CENTER),
+                0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mPrivateProfileDividerBadge = new SpannableString(" ");
+        mPrivateProfileDividerBadge.setSpan(new ImageSpan(context,
+                        R.drawable.ic_private_profile_divider_badge, ImageSpan.ALIGN_CENTER),
                 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
@@ -276,6 +297,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         List<AdapterItem> oldItems = new ArrayList<>(mAdapterItems);
         // Prepare to update the list of sections, filtered apps, etc.
         mFastScrollerSections.clear();
+        Log.d(TAG, "Clearing FastScrollerSections.");
         mAdapterItems.clear();
         mAccessibilityResultsCount = 0;
 
@@ -297,11 +319,21 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     mFastScrollerSections.add(new FastScrollSectionInfo(
                             mActivityContext.getResources().getString(
                                     R.string.work_profile_edu_section), 0));
+                    Log.d(TAG, "Adding FastScrollSection for work edu card.");
                 }
                 position = addAppsWithSections(mApps, position);
             }
             if (Flags.enablePrivateSpace()) {
                 position = addPrivateSpaceItems(position);
+            }
+            if (!mFastScrollerSections.isEmpty()) {
+                // After all the adapterItems are added, add a view to the bottom so that user can
+                // scroll all the way down.
+                mAdapterItems.add(new AdapterItem(VIEW_TYPE_BOTTOM_VIEW_TO_SCROLL_TO));
+                mFastScrollerSections.add(new FastScrollSectionInfo(
+                        mFastScrollerSections.get(mFastScrollerSections.size() - 1).sectionName,
+                        position++));
+                Log.d(TAG, "Adding FastScrollSection duplicate to scroll to the bottom.");
             }
         }
         mAccessibilityResultsCount = (int) mAdapterItems.stream()
@@ -346,6 +378,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                 && !mPrivateApps.isEmpty()) {
             // Always add PS Header if Space is present and visible.
             position = mPrivateProviderManager.addPrivateSpaceHeader(mAdapterItems);
+            Log.d(TAG, "Adding FastScrollSection for Private Space header. ");
             mFastScrollerSections.add(new FastScrollSectionInfo(
                     mPrivateProfileAppScrollerBadge, position));
             int privateSpaceState = mPrivateProviderManager.getCurrentState();
@@ -363,11 +396,35 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     }
 
     private int addPrivateSpaceApps(int position) {
-        // Add Install Apps Button first.
-        if (Flags.privateSpaceAppInstallerButton()) {
-            mPrivateProviderManager.addPrivateSpaceInstallAppButton(mAdapterItems);
-            position++;
+
+        /* LC-Note: Fix for missing flags and account for NCDFE */
+        boolean enableMovingContentIntoPrivateSpace = false;
+        if (ATLEAST_BAKLAVA) {
+            try {
+                /* LC-Note: Some devices (Android 16 QPR) doesn't have or expose this flag to user.
+                 * Let's assume no, because (the flags) enableMovingContentIntoPrivateSpace seems
+                 * to be False for R8 by default.
+                 * */
+                enableMovingContentIntoPrivateSpace = enableMovingContentIntoPrivateSpace();
+            } catch (NoClassDefFoundError e) {
+                /* LC-Ignored: we already set it false by default. */
+            }
         }
+        
+        // Add Install Apps Button first.
+        if (!ATLEAST_BAKLAVA) {
+            // LC: Baklava added a new behavior for the PS app button. (enableMovingContentIntoPrivateSpace)
+            if (Flags.privateSpaceAppInstallerButton() && !enableMovingContentIntoPrivateSpace) {
+                mPrivateProviderManager.addPrivateSpaceInstallAppButton(mAdapterItems);
+                position++;
+            }
+        } else {
+            if (Flags.privateSpaceAppInstallerButton()) {
+                mPrivateProviderManager.addPrivateSpaceInstallAppButton(mAdapterItems);
+                position++;
+            }
+        }
+
 
         // Split of private space apps into user-installed and system apps.
         Map<Boolean, List<AppInfo>> split = mPrivateApps.stream()
@@ -392,10 +449,40 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         // Add system apps separator.
         if (Flags.privateSpaceSysAppsSeparation()) {
             position = mPrivateProviderManager.addSystemAppsDivider(mAdapterItems);
+            if (Flags.letterFastScroller()) {
+                FastScrollSectionInfo sectionInfo =
+                        new FastScrollSectionInfo(mPrivateProfileDividerBadge, position);
+                mFastScrollerSections.add(sectionInfo);
+            }
         }
         // Add system apps.
         position = addAppsWithSections(split.get(false), position);
 
+        if (enableMovingContentIntoPrivateSpace) {
+            // Look for the private space app via package and move it after header.
+            int headerIndex = -1;
+            int privateSpaceAppIndex = -1;
+            for (int i = 0; i < mAdapterItems.size(); i++) {
+                BaseAllAppsAdapter.AdapterItem currentItem = mAdapterItems.get(i);
+                if (currentItem.viewType == VIEW_TYPE_MASK_PRIVATE_SPACE_HEADER) {
+                    headerIndex = i;
+                }
+                if (currentItem.itemInfo != null && Objects.equals(
+                        currentItem.itemInfo.getTargetPackage(), PRIVATE_SPACE_PACKAGE)) {
+                    currentItem.itemInfo.bitmap = mPrivateProviderManager.preparePSBitmapInfo();
+                    currentItem.itemInfo.bitmap.creationFlags |= FLAG_NO_BADGE;
+                    currentItem.itemInfo.contentDescription =
+                            mPrivateProviderManager.getPsAppContentDesc();
+                    privateSpaceAppIndex = i;
+                }
+            }
+            if (headerIndex != -1 && privateSpaceAppIndex != -1) {
+                BaseAllAppsAdapter.AdapterItem movedItem =
+                        mAdapterItems.remove(privateSpaceAppIndex);
+                // Move the icon after the header.
+                mAdapterItems.add(headerIndex + 1, movedItem);
+            }
+        }
         return position;
     }
 
@@ -407,14 +494,14 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             hasPrivateApps = appList.stream().
                     allMatch(mPrivateProviderManager.getItemInfoMatcher());
         }
+        Log.d(TAG, "Adding apps with sections. HasPrivateApps: " + hasPrivateApps);
         for (int i = 0; i < appList.size(); i++) {
             AppInfo info = appList.get(i);
             // Apply decorator to private apps.
             if (hasPrivateApps) {
                 mAdapterItems.add(AdapterItem.asAppWithDecorationInfo(info,
-                        new SectionDecorationInfo(mActivityContext.getApplicationContext(),
-                                getRoundRegions(i, appList.size()),
-                                true /* decorateTogether */)));
+                        new SectionDecorationInfo(mActivityContext,
+                                getRoundRegions(i, appList.size()), true /* decorateTogether */)));
             } else {
                 mAdapterItems.add(AdapterItem.asApp(info));
             }
@@ -422,9 +509,14 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             String sectionName = info.sectionName;
             // Create a new section if the section names do not match
             if (!sectionName.equals(lastSectionName)) {
+                Log.d(TAG, "addAppsWithSections: adding sectionName: " + sectionName
+                    + " with appInfoTitle: " + info.title);
                 lastSectionName = sectionName;
-                mFastScrollerSections.add(new FastScrollSectionInfo(hasPrivateApps ?
-                        mPrivateProfileAppScrollerBadge : sectionName, position));
+                boolean usePrivateAppScrollerBadge = !Flags.letterFastScroller() && hasPrivateApps;
+                FastScrollSectionInfo sectionInfo = new FastScrollSectionInfo(
+                        usePrivateAppScrollerBadge ?
+                                mPrivateProfileAppScrollerBadge : sectionName, position);
+                mFastScrollerSections.add(sectionInfo);
             }
             position++;
         }
@@ -484,6 +576,13 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
     public PrivateProfileManager getPrivateProfileManager() {
         return mPrivateProviderManager;
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "SectionInfo[] size: " + mFastScrollerSections.size());
+        for (int i = 0; i < mFastScrollerSections.size(); i++) {
+            writer.println("\tFastScrollSection: " + mFastScrollerSections.get(i).sectionName);
+        }
     }
 
     private static class MyDiffCallback extends DiffUtil.Callback {

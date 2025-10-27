@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.interaction;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
-
 import android.graphics.PointF;
 
 import com.android.launcher3.R;
@@ -34,47 +32,34 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
         super(fragment, tutorialType);
 
         // Set the Lottie animation colors specifically for the Home gesture
-        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            LottieAnimationColorUtils.updateToArgbColors(
-                    mAnimatedGestureDemonstration,
-                    Map.of(".onSurfaceHome", fragment.mRootView.mColorOnSurfaceHome,
-                            ".surfaceHome", fragment.mRootView.mColorSurfaceHome,
-                            ".secondaryHome", fragment.mRootView.mColorSecondaryHome));
+        LottieAnimationColorUtils.updateToArgbColors(
+                mAnimatedGestureDemonstration,
+                Map.of(".onSurfaceHome", fragment.mRootView.mColorOnSurfaceHome,
+                        ".surfaceHome", fragment.mRootView.mColorSurfaceHome,
+                        ".secondaryHome", fragment.mRootView.mColorSecondaryHome));
 
-            LottieAnimationColorUtils.updateToArgbColors(
-                    mCheckmarkAnimation,
-                    Map.of(".checkmark",
-                            Utilities.isDarkTheme(mContext)
-                                    ? fragment.mRootView.mColorOnSurfaceHome
-                                    : fragment.mRootView.mColorSecondaryHome,
-                            ".checkmarkBackground", fragment.mRootView.mColorSurfaceHome));
-        }
+        LottieAnimationColorUtils.updateToArgbColors(
+                mCheckmarkAnimation,
+                Map.of(".checkmark",
+                        Utilities.isDarkTheme(mContext)
+                                ? fragment.mRootView.mColorOnSurfaceHome
+                                : fragment.mRootView.mColorSecondaryHome,
+                        ".checkmarkBackground", fragment.mRootView.mColorSurfaceHome));
     }
 
     @Override
     public int getIntroductionTitle() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.string.home_gesture_tutorial_title
-                : R.string.home_gesture_intro_title;
+        return R.string.home_gesture_tutorial_title;
     }
 
     @Override
     public int getIntroductionSubtitle() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.string.home_gesture_tutorial_subtitle
-                : R.string.home_gesture_intro_subtitle;
-    }
-
-    @Override
-    public int getSpokenIntroductionSubtitle() {
-        return R.string.home_gesture_spoken_intro_subtitle;
+        return R.string.home_gesture_tutorial_subtitle;
     }
 
     @Override
     public int getSuccessFeedbackTitle() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.string.home_gesture_tutorial_success
-                : R.string.gesture_tutorial_nice;
+        return R.string.home_gesture_tutorial_success;
     }
 
     @Override
@@ -144,7 +129,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
-        if (skipGestureAttempt()) {
+        if (isGestureCompleted()) {
             return;
         }
         switch (mTutorialType) {
@@ -171,7 +156,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
-        if (skipGestureAttempt()) {
+        if (isGestureCompleted()) {
             return;
         }
         switch (mTutorialType) {

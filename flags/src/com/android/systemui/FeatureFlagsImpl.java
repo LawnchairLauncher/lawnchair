@@ -1,3178 +1,1965 @@
 package com.android.systemui;
 // TODO(b/303773055): Remove the annotation after access issue is resolved.
-
-import com.android.quickstep.util.DeviceConfigHelper;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 /** @hide */
 public final class FeatureFlagsImpl implements FeatureFlags {
-    private static final boolean isReadFromNew = Files.exists(Paths.get("/metadata/aconfig/boot/enable_only_new_storage"));
-    private static volatile boolean isCached = false;
-    private static volatile boolean accessibility_is_cached = false;
-    private static volatile boolean biometrics_framework_is_cached = false;
-    private static volatile boolean communal_is_cached = false;
-    private static volatile boolean systemui_is_cached = false;
-    private static boolean activityTransitionUseLargestWindow = true;
-    private static boolean ambientTouchMonitorListenToDisplayChanges = false;
-    private static boolean appClipsBacklinks = false;
-    private static boolean bindKeyguardMediaVisibility = true;
-    private static boolean bpTalkback = true;
-    private static boolean brightnessSliderFocusState = false;
-    private static boolean centralizedStatusBarHeightFix = true;
-    private static boolean clipboardNoninteractiveOnLockscreen = false;
-    private static boolean clockReactiveVariants = false;
-    private static boolean communalBouncerDoNotModifyPluginOpen = false;
-    private static boolean communalHub = true;
-    private static boolean composeBouncer = false;
-    private static boolean composeLockscreen = false;
-    private static boolean confineNotificationTouchToViewWidth = true;
-    private static boolean constraintBp = true;
-    private static boolean contextualTipsAssistantDismissFix = true;
-    private static boolean coroutineTracing = true;
-    private static boolean createWindowlessWindowMagnifier = true;
-    private static boolean dedicatedNotifInflationThread = true;
-    private static boolean delayShowMagnificationButton = true;
-    private static boolean delayedWakelockReleaseOnBackgroundThread = true;
-    private static boolean deviceEntryUdfpsRefactor = true;
-    private static boolean disableContextualTipsFrequencyCheck = true;
-    private static boolean disableContextualTipsIosSwitcherCheck = true;
-    private static boolean dozeuiSchedulingAlarmsBackgroundExecution = false;
-    private static boolean dreamInputSessionPilferOnce = false;
-    private static boolean dreamOverlayBouncerSwipeDirectionFiltering = true;
-    private static boolean dualShade = false;
-    private static boolean edgeBackGestureHandlerThread = false;
-    private static boolean edgebackGestureHandlerGetRunningTasksBackground = true;
-    private static boolean enableBackgroundKeyguardOndrawnCallback = true;
-    private static boolean enableContextualTipForMuteVolume = false;
-    private static boolean enableContextualTipForPowerOff = true;
-    private static boolean enableContextualTipForTakeScreenshot = true;
-    private static boolean enableContextualTips = true;
-    private static boolean enableEfficientDisplayRepository = false;
-    private static boolean enableLayoutTracing = false;
-    private static boolean enableViewCaptureTracing = false;
-    private static boolean enableWidgetPickerSizeFilter = false;
-    private static boolean enforceBrightnessBaseUserRestriction = true;
-    private static boolean exampleFlag = false;
-    private static boolean fastUnlockTransition = false;
-    private static boolean fixImageWallpaperCrashSurfaceAlreadyReleased = true;
-    private static boolean fixScreenshotActionDismissSystemWindows = true;
-    private static boolean floatingMenuAnimatedTuck = true;
-    private static boolean floatingMenuDragToEdit = true;
-    private static boolean floatingMenuDragToHide = false;
-    private static boolean floatingMenuImeDisplacementAnimation = true;
-    private static boolean floatingMenuNarrowTargetContentObserver = true;
-    private static boolean floatingMenuOverlapsNavBarsFlag = true;
-    private static boolean floatingMenuRadiiAnimation = true;
-    private static boolean generatedPreviews = true;
-    private static boolean getConnectedDeviceNameUnsynchronized = true;
-    private static boolean glanceableHubAllowKeyguardWhenDreaming = false;
-    private static boolean glanceableHubFullscreenSwipe = false;
-    private static boolean glanceableHubGestureHandle = false;
-    private static boolean glanceableHubShortcutButton = false;
-    private static boolean hapticBrightnessSlider = true;
-    private static boolean hapticVolumeSlider = true;
-    private static boolean hearingAidsQsTileDialog = true;
-    private static boolean hearingDevicesDialogRelatedTools = true;
-    private static boolean keyboardDockingIndicator = true;
-    private static boolean keyboardShortcutHelperRewrite = false;
-    private static boolean keyguardBottomAreaRefactor = true;
-    private static boolean keyguardWmStateRefactor = false;
-    private static boolean lightRevealMigration = true;
-    private static boolean mediaControlsLockscreenShadeBugFix = true;
-    private static boolean mediaControlsRefactor = true;
-    private static boolean mediaControlsUserInitiatedDeleteintent = true;
-    private static boolean migrateClocksToBlueprint = true;
-    private static boolean newAodTransition = true;
-    private static boolean newTouchpadGesturesTutorial = false;
-    private static boolean newVolumePanel = true;
-    private static boolean notificationAsyncGroupHeaderInflation = true;
-    private static boolean notificationAsyncHybridViewInflation = true;
-    private static boolean notificationAvalancheSuppression = true;
-    private static boolean notificationAvalancheThrottleHun = true;
-    private static boolean notificationBackgroundTintOptimization = true;
-    private static boolean notificationColorUpdateLogger = false;
-    private static boolean notificationContentAlphaOptimization = true;
-    private static boolean notificationFooterBackgroundTintOptimization = false;
-    private static boolean notificationMediaManagerBackgroundExecution = true;
-    private static boolean notificationMinimalismPrototype = false;
-    private static boolean notificationOverExpansionClippingFix = true;
-    private static boolean notificationPulsingFix = true;
-    private static boolean notificationRowContentBinderRefactor = false;
-    private static boolean notificationRowUserContext = true;
-    private static boolean notificationViewFlipperPausingV2 = true;
-    private static boolean notificationsBackgroundIcons = false;
-    private static boolean notificationsFooterViewRefactor = true;
-    private static boolean notificationsHeadsUpRefactor = true;
-    private static boolean notificationsHideOnDisplaySwitch = false;
-    private static boolean notificationsIconContainerRefactor = true;
-    private static boolean notificationsImprovedHunAnimation = true;
-    private static boolean notificationsLiveDataStoreRefactor = true;
-    private static boolean notifyPowerManagerUserActivityBackground = true;
-    private static boolean pinInputFieldStyledFocusState = true;
-    private static boolean predictiveBackAnimateBouncer = true;
-    private static boolean predictiveBackAnimateDialogs = true;
-    private static boolean predictiveBackAnimateShade = false;
-    private static boolean predictiveBackSysui = true;
-    private static boolean priorityPeopleSection = true;
-    private static boolean privacyDotUnfoldWrongCornerFix = true;
-    private static boolean pssAppSelectorAbruptExitFix = true;
-    private static boolean pssAppSelectorRecentsSplitScreen = true;
-    private static boolean pssTaskSwitcher = false;
-    private static boolean qsCustomTileClickGuaranteedBugFix = true;
-    private static boolean qsNewPipeline = true;
-    private static boolean qsNewTiles = false;
-    private static boolean qsNewTilesFuture = false;
-    private static boolean qsTileFocusState = true;
-    private static boolean qsUiRefactor = false;
-    private static boolean quickSettingsVisualHapticsLongpress = true;
-    private static boolean recordIssueQsTile = true;
-    private static boolean refactorGetCurrentUser = true;
-    private static boolean registerBatteryControllerReceiversInCorestartable = false;
-    private static boolean registerNewWalletCardInBackground = true;
-    private static boolean registerWallpaperNotifierBackground = true;
-    private static boolean registerZenModeContentObserverBackground = true;
-    private static boolean removeDreamOverlayHideOnTouch = true;
-    private static boolean restToUnlock = false;
-    private static boolean restartDreamOnUnocclude = false;
-    private static boolean revampedBouncerMessages = true;
-    private static boolean runFingerprintDetectOnDismissibleKeyguard = true;
-    private static boolean saveAndRestoreMagnificationSettingsButtons = false;
-    private static boolean sceneContainer = false;
-    private static boolean screenshareNotificationHidingBugFix = true;
-    private static boolean screenshotActionDismissSystemWindows = true;
-    private static boolean screenshotPrivateProfileAccessibilityAnnouncementFix = true;
-    private static boolean screenshotPrivateProfileBehaviorFix = true;
-    private static boolean screenshotScrollCropViewCrashFix = true;
-    private static boolean screenshotShelfUi2 = true;
-    private static boolean shadeCollapseActivityLaunchFix = false;
-    private static boolean shaderlibLoadingEffectRefactor = true;
-    private static boolean sliceBroadcastRelayInBackground = true;
-    private static boolean sliceManagerBinderCallBackground = true;
-    private static boolean smartspaceLockscreenViewmodel = true;
-    private static boolean smartspaceRelocateToBottom = false;
-    private static boolean smartspaceRemoteviewsRendering = false;
-    private static boolean statusBarMonochromeIconsFix = true;
-    private static boolean statusBarScreenSharingChips = true;
-    private static boolean statusBarStaticInoutIndicators = false;
-    private static boolean switchUserOnBg = true;
-    private static boolean sysuiTeamfood = true;
-    private static boolean themeOverlayControllerWakefulnessDeprecation = false;
-    private static boolean translucentOccludingActivityFix = false;
-    private static boolean truncatedStatusBarIconsFix = true;
-    private static boolean udfpsViewPerformance = true;
-    private static boolean unfoldAnimationBackgroundProgress = true;
-    private static boolean updateUserSwitcherBackground = true;
-    private static boolean validateKeyboardShortcutHelperIconUri = true;
-    private static boolean visualInterruptionsRefactor = true;
-
-
-    private void init() {
-        boolean foundPackage = true;
-
-        createWindowlessWindowMagnifier = foundPackage;
-
-
-        delayShowMagnificationButton = foundPackage;
-
-
-        floatingMenuAnimatedTuck = foundPackage;
-
-
-        floatingMenuDragToEdit = foundPackage;
-
-
-        floatingMenuDragToHide = foundPackage;
-
-
-        floatingMenuImeDisplacementAnimation = foundPackage;
-
-
-        floatingMenuNarrowTargetContentObserver = foundPackage;
-
-
-        floatingMenuOverlapsNavBarsFlag = foundPackage;
-
-
-        floatingMenuRadiiAnimation = foundPackage;
-
-
-        hearingDevicesDialogRelatedTools = foundPackage;
-
-        saveAndRestoreMagnificationSettingsButtons = foundPackage;
-        bpTalkback = foundPackage;
-        constraintBp = foundPackage;
-        communalHub = foundPackage;
-        enableWidgetPickerSizeFilter = foundPackage;
-        activityTransitionUseLargestWindow = foundPackage;
-        ambientTouchMonitorListenToDisplayChanges = foundPackage;
-        appClipsBacklinks = foundPackage;
-        bindKeyguardMediaVisibility = foundPackage;
-        brightnessSliderFocusState = foundPackage;
-        centralizedStatusBarHeightFix = foundPackage;
-        clipboardNoninteractiveOnLockscreen = foundPackage;
-        clockReactiveVariants = foundPackage;
-        communalBouncerDoNotModifyPluginOpen = foundPackage;
-        composeBouncer = foundPackage;
-        composeLockscreen = foundPackage;
-        confineNotificationTouchToViewWidth = foundPackage;
-        contextualTipsAssistantDismissFix = foundPackage;
-        coroutineTracing = foundPackage;
-        dedicatedNotifInflationThread = foundPackage;
-        delayedWakelockReleaseOnBackgroundThread = foundPackage;
-        deviceEntryUdfpsRefactor = foundPackage;
-        disableContextualTipsFrequencyCheck = foundPackage;
-        disableContextualTipsIosSwitcherCheck = foundPackage;
-        dozeuiSchedulingAlarmsBackgroundExecution = foundPackage;
-        dreamInputSessionPilferOnce = foundPackage;
-        dreamOverlayBouncerSwipeDirectionFiltering = foundPackage;
-        dualShade = foundPackage;
-        edgeBackGestureHandlerThread = foundPackage;
-        edgebackGestureHandlerGetRunningTasksBackground = foundPackage;
-        enableBackgroundKeyguardOndrawnCallback = foundPackage;
-        enableContextualTipForMuteVolume = foundPackage;
-        enableContextualTipForPowerOff = foundPackage;
-        enableContextualTipForTakeScreenshot = foundPackage;
-        enableContextualTips = foundPackage;
-        enableEfficientDisplayRepository = foundPackage;
-        enableLayoutTracing = foundPackage;
-        enableViewCaptureTracing = foundPackage;
-        enforceBrightnessBaseUserRestriction = foundPackage;
-        exampleFlag = foundPackage;
-        fastUnlockTransition = foundPackage;
-        fixImageWallpaperCrashSurfaceAlreadyReleased = foundPackage;
-        fixScreenshotActionDismissSystemWindows = foundPackage;
-        generatedPreviews = foundPackage;
-        getConnectedDeviceNameUnsynchronized = foundPackage;
-        glanceableHubAllowKeyguardWhenDreaming = foundPackage;
-        glanceableHubFullscreenSwipe = foundPackage;
-        glanceableHubGestureHandle = foundPackage;
-        glanceableHubShortcutButton = foundPackage;
-        hapticBrightnessSlider = foundPackage;
-        hapticVolumeSlider = foundPackage;
-        hearingAidsQsTileDialog = foundPackage;
-        keyboardDockingIndicator = foundPackage;
-        keyboardShortcutHelperRewrite = foundPackage;
-        keyguardBottomAreaRefactor = foundPackage;
-        keyguardWmStateRefactor = foundPackage;
-        lightRevealMigration = foundPackage;
-        mediaControlsLockscreenShadeBugFix = foundPackage;
-        mediaControlsRefactor = foundPackage;
-        mediaControlsUserInitiatedDeleteintent = foundPackage;
-        migrateClocksToBlueprint = foundPackage;
-        newAodTransition = foundPackage;
-        newTouchpadGesturesTutorial = foundPackage;
-        newVolumePanel = foundPackage;
-        notificationAsyncGroupHeaderInflation = foundPackage;
-        notificationAsyncHybridViewInflation = foundPackage;
-        notificationAvalancheSuppression = foundPackage;
-        notificationAvalancheThrottleHun = foundPackage;
-        notificationBackgroundTintOptimization = foundPackage;
-        notificationColorUpdateLogger = foundPackage;
-        notificationContentAlphaOptimization = foundPackage;
-        notificationFooterBackgroundTintOptimization = foundPackage;
-        notificationMediaManagerBackgroundExecution = foundPackage;
-        notificationMinimalismPrototype = foundPackage;
-        notificationOverExpansionClippingFix = foundPackage;
-        notificationPulsingFix = foundPackage;
-        notificationRowContentBinderRefactor = foundPackage;
-        notificationRowUserContext = foundPackage;
-        notificationViewFlipperPausingV2 = foundPackage;
-        notificationsBackgroundIcons = foundPackage;
-        notificationsFooterViewRefactor = foundPackage;
-        notificationsHeadsUpRefactor = foundPackage;
-        notificationsHideOnDisplaySwitch = foundPackage;
-        notificationsIconContainerRefactor = foundPackage;
-        notificationsImprovedHunAnimation = foundPackage;
-        notificationsLiveDataStoreRefactor = foundPackage;
-        notifyPowerManagerUserActivityBackground = foundPackage;
-        pinInputFieldStyledFocusState = foundPackage;
-        predictiveBackAnimateBouncer = foundPackage;
-        predictiveBackAnimateDialogs = foundPackage;
-        predictiveBackAnimateShade = foundPackage;
-        predictiveBackSysui = foundPackage;
-        priorityPeopleSection = foundPackage;
-        privacyDotUnfoldWrongCornerFix = foundPackage;
-        pssAppSelectorAbruptExitFix = foundPackage;
-        pssAppSelectorRecentsSplitScreen = foundPackage;
-        pssTaskSwitcher = foundPackage;
-        qsCustomTileClickGuaranteedBugFix = foundPackage;
-        qsNewPipeline = foundPackage;
-        qsNewTiles = foundPackage;
-        qsNewTilesFuture = foundPackage;
-        qsTileFocusState = foundPackage;
-        qsUiRefactor = foundPackage;
-        quickSettingsVisualHapticsLongpress = foundPackage;
-        recordIssueQsTile = foundPackage;
-        refactorGetCurrentUser = foundPackage;
-        registerBatteryControllerReceiversInCorestartable = foundPackage;
-        registerNewWalletCardInBackground = foundPackage;
-        registerWallpaperNotifierBackground = foundPackage;
-        registerZenModeContentObserverBackground = foundPackage;
-        removeDreamOverlayHideOnTouch = foundPackage;
-        restToUnlock = foundPackage;
-        restartDreamOnUnocclude = foundPackage;
-        revampedBouncerMessages = foundPackage;
-        runFingerprintDetectOnDismissibleKeyguard = foundPackage;
-        sceneContainer = foundPackage;
-        screenshareNotificationHidingBugFix = foundPackage;
-        screenshotActionDismissSystemWindows = foundPackage;
-        screenshotPrivateProfileAccessibilityAnnouncementFix = foundPackage;
-        screenshotPrivateProfileBehaviorFix = foundPackage;
-        screenshotScrollCropViewCrashFix = foundPackage;
-        screenshotShelfUi2 = foundPackage;
-        shadeCollapseActivityLaunchFix = foundPackage;
-        shaderlibLoadingEffectRefactor = foundPackage;
-        sliceBroadcastRelayInBackground = foundPackage;
-        sliceManagerBinderCallBackground = foundPackage;
-        smartspaceLockscreenViewmodel = foundPackage;
-        smartspaceRelocateToBottom = foundPackage;
-        smartspaceRemoteviewsRendering = foundPackage;
-
-
-        statusBarMonochromeIconsFix = foundPackage;
-
-
-        statusBarScreenSharingChips = foundPackage;
-
-
-        statusBarStaticInoutIndicators = foundPackage;
-
-
-        switchUserOnBg = foundPackage;
-
-
-        sysuiTeamfood = foundPackage;
-
-
-        themeOverlayControllerWakefulnessDeprecation = foundPackage;
-
-
-        translucentOccludingActivityFix = foundPackage;
-
-
-        truncatedStatusBarIconsFix = foundPackage;
-
-
-        udfpsViewPerformance = foundPackage;
-
-
-        unfoldAnimationBackgroundProgress = foundPackage;
-
-
-        updateUserSwitcherBackground = foundPackage;
-
-
-        validateKeyboardShortcutHelperIconUri = foundPackage;
-
-
-        visualInterruptionsRefactor = foundPackage;
-
-        isCached = true;
-    }
-
-
-
-
-    private void load_overrides_accessibility() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            createWindowlessWindowMagnifier =
-                    properties.getBoolean(Flags.FLAG_CREATE_WINDOWLESS_WINDOW_MAGNIFIER, true);
-            delayShowMagnificationButton =
-                    properties.getBoolean(Flags.FLAG_DELAY_SHOW_MAGNIFICATION_BUTTON, true);
-            floatingMenuAnimatedTuck =
-                    properties.getBoolean(Flags.FLAG_FLOATING_MENU_ANIMATED_TUCK, true);
-            floatingMenuDragToEdit =
-                    properties.getBoolean(Flags.FLAG_FLOATING_MENU_DRAG_TO_EDIT, true);
-            floatingMenuDragToHide =
-                    properties.getBoolean(Flags.FLAG_FLOATING_MENU_DRAG_TO_HIDE, false);
-            floatingMenuImeDisplacementAnimation =
-                    properties.getBoolean(Flags.FLAG_FLOATING_MENU_IME_DISPLACEMENT_ANIMATION, true);
-            floatingMenuNarrowTargetContentObserver =
-                    properties.getBoolean(Flags.FLAG_FLOATING_MENU_NARROW_TARGET_CONTENT_OBSERVER, true);
-            floatingMenuOverlapsNavBarsFlag =
-                    properties.getBoolean(Flags.FLAG_FLOATING_MENU_OVERLAPS_NAV_BARS_FLAG, true);
-            floatingMenuRadiiAnimation =
-                    properties.getBoolean(Flags.FLAG_FLOATING_MENU_RADII_ANIMATION, true);
-            hearingDevicesDialogRelatedTools =
-                    properties.getBoolean(Flags.FLAG_HEARING_DEVICES_DIALOG_RELATED_TOOLS, true);
-            saveAndRestoreMagnificationSettingsButtons =
-                    properties.getBoolean(Flags.FLAG_SAVE_AND_RESTORE_MAGNIFICATION_SETTINGS_BUTTONS, false);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace accessibility "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        }
-        accessibility_is_cached = true;
-    }
-
-    private void load_overrides_biometrics_framework() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            bpTalkback =
-                    properties.getBoolean(Flags.FLAG_BP_TALKBACK, true);
-            constraintBp =
-                    properties.getBoolean(Flags.FLAG_CONSTRAINT_BP, true);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace biometrics_framework "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        }
-        biometrics_framework_is_cached = true;
-    }
-
-    private void load_overrides_communal() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            communalHub =
-                    properties.getBoolean(Flags.FLAG_COMMUNAL_HUB, true);
-            enableWidgetPickerSizeFilter =
-                    properties.getBoolean(Flags.FLAG_ENABLE_WIDGET_PICKER_SIZE_FILTER, false);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace communal "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        }
-        communal_is_cached = true;
-    }
-
-    private void load_overrides_systemui() {
-        try {
-            var properties = DeviceConfigHelper.Companion.getPrefs();
-            activityTransitionUseLargestWindow =
-                    properties.getBoolean(Flags.FLAG_ACTIVITY_TRANSITION_USE_LARGEST_WINDOW, true);
-            ambientTouchMonitorListenToDisplayChanges =
-                    properties.getBoolean(Flags.FLAG_AMBIENT_TOUCH_MONITOR_LISTEN_TO_DISPLAY_CHANGES, false);
-            appClipsBacklinks =
-                    properties.getBoolean(Flags.FLAG_APP_CLIPS_BACKLINKS, false);
-            bindKeyguardMediaVisibility =
-                    properties.getBoolean(Flags.FLAG_BIND_KEYGUARD_MEDIA_VISIBILITY, true);
-            brightnessSliderFocusState =
-                    properties.getBoolean(Flags.FLAG_BRIGHTNESS_SLIDER_FOCUS_STATE, false);
-            centralizedStatusBarHeightFix =
-                    properties.getBoolean(Flags.FLAG_CENTRALIZED_STATUS_BAR_HEIGHT_FIX, true);
-            clipboardNoninteractiveOnLockscreen =
-                    properties.getBoolean(Flags.FLAG_CLIPBOARD_NONINTERACTIVE_ON_LOCKSCREEN, false);
-            clockReactiveVariants =
-                    properties.getBoolean(Flags.FLAG_CLOCK_REACTIVE_VARIANTS, false);
-            communalBouncerDoNotModifyPluginOpen =
-                    properties.getBoolean(Flags.FLAG_COMMUNAL_BOUNCER_DO_NOT_MODIFY_PLUGIN_OPEN, false);
-            composeBouncer =
-                    properties.getBoolean(Flags.FLAG_COMPOSE_BOUNCER, false);
-            composeLockscreen =
-                    properties.getBoolean(Flags.FLAG_COMPOSE_LOCKSCREEN, false);
-            confineNotificationTouchToViewWidth =
-                    properties.getBoolean(Flags.FLAG_CONFINE_NOTIFICATION_TOUCH_TO_VIEW_WIDTH, true);
-            contextualTipsAssistantDismissFix =
-                    properties.getBoolean(Flags.FLAG_CONTEXTUAL_TIPS_ASSISTANT_DISMISS_FIX, true);
-            coroutineTracing =
-                    properties.getBoolean(Flags.FLAG_COROUTINE_TRACING, true);
-            dedicatedNotifInflationThread =
-                    properties.getBoolean(Flags.FLAG_DEDICATED_NOTIF_INFLATION_THREAD, true);
-            delayedWakelockReleaseOnBackgroundThread =
-                    properties.getBoolean(Flags.FLAG_DELAYED_WAKELOCK_RELEASE_ON_BACKGROUND_THREAD, true);
-            deviceEntryUdfpsRefactor =
-                    properties.getBoolean(Flags.FLAG_DEVICE_ENTRY_UDFPS_REFACTOR, true);
-            disableContextualTipsFrequencyCheck =
-                    properties.getBoolean(Flags.FLAG_DISABLE_CONTEXTUAL_TIPS_FREQUENCY_CHECK, true);
-            disableContextualTipsIosSwitcherCheck =
-                    properties.getBoolean(Flags.FLAG_DISABLE_CONTEXTUAL_TIPS_IOS_SWITCHER_CHECK, true);
-            dozeuiSchedulingAlarmsBackgroundExecution =
-                    properties.getBoolean(Flags.FLAG_DOZEUI_SCHEDULING_ALARMS_BACKGROUND_EXECUTION, false);
-            dreamInputSessionPilferOnce =
-                    properties.getBoolean(Flags.FLAG_DREAM_INPUT_SESSION_PILFER_ONCE, false);
-            dreamOverlayBouncerSwipeDirectionFiltering =
-                    properties.getBoolean(Flags.FLAG_DREAM_OVERLAY_BOUNCER_SWIPE_DIRECTION_FILTERING, true);
-            dualShade =
-                    properties.getBoolean(Flags.FLAG_DUAL_SHADE, false);
-            edgeBackGestureHandlerThread =
-                    properties.getBoolean(Flags.FLAG_EDGE_BACK_GESTURE_HANDLER_THREAD, false);
-            edgebackGestureHandlerGetRunningTasksBackground =
-                    properties.getBoolean(Flags.FLAG_EDGEBACK_GESTURE_HANDLER_GET_RUNNING_TASKS_BACKGROUND, true);
-            enableBackgroundKeyguardOndrawnCallback =
-                    properties.getBoolean(Flags.FLAG_ENABLE_BACKGROUND_KEYGUARD_ONDRAWN_CALLBACK, true);
-            enableContextualTipForMuteVolume =
-                    properties.getBoolean(Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_MUTE_VOLUME, false);
-            enableContextualTipForPowerOff =
-                    properties.getBoolean(Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_POWER_OFF, true);
-            enableContextualTipForTakeScreenshot =
-                    properties.getBoolean(Flags.FLAG_ENABLE_CONTEXTUAL_TIP_FOR_TAKE_SCREENSHOT, true);
-            enableContextualTips =
-                    properties.getBoolean(Flags.FLAG_ENABLE_CONTEXTUAL_TIPS, true);
-            enableEfficientDisplayRepository =
-                    properties.getBoolean(Flags.FLAG_ENABLE_EFFICIENT_DISPLAY_REPOSITORY, false);
-            enableLayoutTracing =
-                    properties.getBoolean(Flags.FLAG_ENABLE_LAYOUT_TRACING, false);
-            enableViewCaptureTracing =
-                    properties.getBoolean(Flags.FLAG_ENABLE_VIEW_CAPTURE_TRACING, false);
-            enforceBrightnessBaseUserRestriction =
-                    properties.getBoolean(Flags.FLAG_ENFORCE_BRIGHTNESS_BASE_USER_RESTRICTION, true);
-            exampleFlag =
-                    properties.getBoolean(Flags.FLAG_EXAMPLE_FLAG, false);
-            fastUnlockTransition =
-                    properties.getBoolean(Flags.FLAG_FAST_UNLOCK_TRANSITION, false);
-            fixImageWallpaperCrashSurfaceAlreadyReleased =
-                    properties.getBoolean(Flags.FLAG_FIX_IMAGE_WALLPAPER_CRASH_SURFACE_ALREADY_RELEASED, true);
-            fixScreenshotActionDismissSystemWindows =
-                    properties.getBoolean(Flags.FLAG_FIX_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS, true);
-            generatedPreviews =
-                    properties.getBoolean(Flags.FLAG_GENERATED_PREVIEWS, true);
-            getConnectedDeviceNameUnsynchronized =
-                    properties.getBoolean(Flags.FLAG_GET_CONNECTED_DEVICE_NAME_UNSYNCHRONIZED, true);
-            glanceableHubAllowKeyguardWhenDreaming =
-                    properties.getBoolean(Flags.FLAG_GLANCEABLE_HUB_ALLOW_KEYGUARD_WHEN_DREAMING, false);
-            glanceableHubFullscreenSwipe =
-                    properties.getBoolean(Flags.FLAG_GLANCEABLE_HUB_FULLSCREEN_SWIPE, false);
-            glanceableHubGestureHandle =
-                    properties.getBoolean(Flags.FLAG_GLANCEABLE_HUB_GESTURE_HANDLE, false);
-            glanceableHubShortcutButton =
-                    properties.getBoolean(Flags.FLAG_GLANCEABLE_HUB_SHORTCUT_BUTTON, false);
-            hapticBrightnessSlider =
-                    properties.getBoolean(Flags.FLAG_HAPTIC_BRIGHTNESS_SLIDER, true);
-            hapticVolumeSlider =
-                    properties.getBoolean(Flags.FLAG_HAPTIC_VOLUME_SLIDER, true);
-            hearingAidsQsTileDialog =
-                    properties.getBoolean(Flags.FLAG_HEARING_AIDS_QS_TILE_DIALOG, true);
-            keyboardDockingIndicator =
-                    properties.getBoolean(Flags.FLAG_KEYBOARD_DOCKING_INDICATOR, true);
-            keyboardShortcutHelperRewrite =
-                    properties.getBoolean(Flags.FLAG_KEYBOARD_SHORTCUT_HELPER_REWRITE, false);
-            keyguardBottomAreaRefactor =
-                    properties.getBoolean(Flags.FLAG_KEYGUARD_BOTTOM_AREA_REFACTOR, true);
-            keyguardWmStateRefactor =
-                    properties.getBoolean(Flags.FLAG_KEYGUARD_WM_STATE_REFACTOR, false);
-            lightRevealMigration =
-                    properties.getBoolean(Flags.FLAG_LIGHT_REVEAL_MIGRATION, true);
-            mediaControlsLockscreenShadeBugFix =
-                    properties.getBoolean(Flags.FLAG_MEDIA_CONTROLS_LOCKSCREEN_SHADE_BUG_FIX, true);
-            mediaControlsRefactor =
-                    properties.getBoolean(Flags.FLAG_MEDIA_CONTROLS_REFACTOR, true);
-            mediaControlsUserInitiatedDeleteintent =
-                    properties.getBoolean(Flags.FLAG_MEDIA_CONTROLS_USER_INITIATED_DELETEINTENT, true);
-            migrateClocksToBlueprint =
-                    properties.getBoolean(Flags.FLAG_MIGRATE_CLOCKS_TO_BLUEPRINT, true);
-            newAodTransition =
-                    properties.getBoolean(Flags.FLAG_NEW_AOD_TRANSITION, true);
-            newTouchpadGesturesTutorial =
-                    properties.getBoolean(Flags.FLAG_NEW_TOUCHPAD_GESTURES_TUTORIAL, false);
-            newVolumePanel =
-                    properties.getBoolean(Flags.FLAG_NEW_VOLUME_PANEL, true);
-            notificationAsyncGroupHeaderInflation =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_ASYNC_GROUP_HEADER_INFLATION, true);
-            notificationAsyncHybridViewInflation =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_ASYNC_HYBRID_VIEW_INFLATION, true);
-            notificationAvalancheSuppression =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_AVALANCHE_SUPPRESSION, true);
-            notificationAvalancheThrottleHun =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_AVALANCHE_THROTTLE_HUN, true);
-            notificationBackgroundTintOptimization =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_BACKGROUND_TINT_OPTIMIZATION, true);
-            notificationColorUpdateLogger =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_COLOR_UPDATE_LOGGER, false);
-            notificationContentAlphaOptimization =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_CONTENT_ALPHA_OPTIMIZATION, true);
-            notificationFooterBackgroundTintOptimization =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_FOOTER_BACKGROUND_TINT_OPTIMIZATION, false);
-            notificationMediaManagerBackgroundExecution =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_MEDIA_MANAGER_BACKGROUND_EXECUTION, true);
-            notificationMinimalismPrototype =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_MINIMALISM_PROTOTYPE, false);
-            notificationOverExpansionClippingFix =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_OVER_EXPANSION_CLIPPING_FIX, true);
-            notificationPulsingFix =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_PULSING_FIX, true);
-            notificationRowContentBinderRefactor =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_ROW_CONTENT_BINDER_REFACTOR, false);
-            notificationRowUserContext =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_ROW_USER_CONTEXT, true);
-            notificationViewFlipperPausingV2 =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATION_VIEW_FLIPPER_PAUSING_V2, true);
-            notificationsBackgroundIcons =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATIONS_BACKGROUND_ICONS, false);
-            notificationsFooterViewRefactor =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATIONS_FOOTER_VIEW_REFACTOR, true);
-            notificationsHeadsUpRefactor =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATIONS_HEADS_UP_REFACTOR, true);
-            notificationsHideOnDisplaySwitch =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATIONS_HIDE_ON_DISPLAY_SWITCH, false);
-            notificationsIconContainerRefactor =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATIONS_ICON_CONTAINER_REFACTOR, true);
-            notificationsImprovedHunAnimation =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATIONS_IMPROVED_HUN_ANIMATION, true);
-            notificationsLiveDataStoreRefactor =
-                    properties.getBoolean(Flags.FLAG_NOTIFICATIONS_LIVE_DATA_STORE_REFACTOR, true);
-            notifyPowerManagerUserActivityBackground =
-                    properties.getBoolean(Flags.FLAG_NOTIFY_POWER_MANAGER_USER_ACTIVITY_BACKGROUND, true);
-            pinInputFieldStyledFocusState =
-                    properties.getBoolean(Flags.FLAG_PIN_INPUT_FIELD_STYLED_FOCUS_STATE, true);
-            predictiveBackAnimateBouncer =
-                    properties.getBoolean(Flags.FLAG_PREDICTIVE_BACK_ANIMATE_BOUNCER, true);
-            predictiveBackAnimateDialogs =
-                    properties.getBoolean(Flags.FLAG_PREDICTIVE_BACK_ANIMATE_DIALOGS, true);
-            predictiveBackAnimateShade =
-                    properties.getBoolean(Flags.FLAG_PREDICTIVE_BACK_ANIMATE_SHADE, false);
-            predictiveBackSysui =
-                    properties.getBoolean(Flags.FLAG_PREDICTIVE_BACK_SYSUI, true);
-            priorityPeopleSection =
-                    properties.getBoolean(Flags.FLAG_PRIORITY_PEOPLE_SECTION, true);
-            privacyDotUnfoldWrongCornerFix =
-                    properties.getBoolean(Flags.FLAG_PRIVACY_DOT_UNFOLD_WRONG_CORNER_FIX, true);
-            pssAppSelectorAbruptExitFix =
-                    properties.getBoolean(Flags.FLAG_PSS_APP_SELECTOR_ABRUPT_EXIT_FIX, true);
-            pssAppSelectorRecentsSplitScreen =
-                    properties.getBoolean(Flags.FLAG_PSS_APP_SELECTOR_RECENTS_SPLIT_SCREEN, true);
-            pssTaskSwitcher =
-                    properties.getBoolean(Flags.FLAG_PSS_TASK_SWITCHER, false);
-            qsCustomTileClickGuaranteedBugFix =
-                    properties.getBoolean(Flags.FLAG_QS_CUSTOM_TILE_CLICK_GUARANTEED_BUG_FIX, true);
-            qsNewPipeline =
-                    properties.getBoolean(Flags.FLAG_QS_NEW_PIPELINE, true);
-            qsNewTiles =
-                    properties.getBoolean(Flags.FLAG_QS_NEW_TILES, false);
-            qsNewTilesFuture =
-                    properties.getBoolean(Flags.FLAG_QS_NEW_TILES_FUTURE, false);
-            qsTileFocusState =
-                    properties.getBoolean(Flags.FLAG_QS_TILE_FOCUS_STATE, true);
-            qsUiRefactor =
-                    properties.getBoolean(Flags.FLAG_QS_UI_REFACTOR, false);
-            quickSettingsVisualHapticsLongpress =
-                    properties.getBoolean(Flags.FLAG_QUICK_SETTINGS_VISUAL_HAPTICS_LONGPRESS, true);
-            recordIssueQsTile =
-                    properties.getBoolean(Flags.FLAG_RECORD_ISSUE_QS_TILE, true);
-            refactorGetCurrentUser =
-                    properties.getBoolean(Flags.FLAG_REFACTOR_GET_CURRENT_USER, true);
-            registerBatteryControllerReceiversInCorestartable =
-                    properties.getBoolean(Flags.FLAG_REGISTER_BATTERY_CONTROLLER_RECEIVERS_IN_CORESTARTABLE, false);
-            registerNewWalletCardInBackground =
-                    properties.getBoolean(Flags.FLAG_REGISTER_NEW_WALLET_CARD_IN_BACKGROUND, true);
-            registerWallpaperNotifierBackground =
-                    properties.getBoolean(Flags.FLAG_REGISTER_WALLPAPER_NOTIFIER_BACKGROUND, true);
-            registerZenModeContentObserverBackground =
-                    properties.getBoolean(Flags.FLAG_REGISTER_ZEN_MODE_CONTENT_OBSERVER_BACKGROUND, true);
-            removeDreamOverlayHideOnTouch =
-                    properties.getBoolean(Flags.FLAG_REMOVE_DREAM_OVERLAY_HIDE_ON_TOUCH, true);
-            restToUnlock =
-                    properties.getBoolean(Flags.FLAG_REST_TO_UNLOCK, false);
-            restartDreamOnUnocclude =
-                    properties.getBoolean(Flags.FLAG_RESTART_DREAM_ON_UNOCCLUDE, false);
-            revampedBouncerMessages =
-                    properties.getBoolean(Flags.FLAG_REVAMPED_BOUNCER_MESSAGES, true);
-            runFingerprintDetectOnDismissibleKeyguard =
-                    properties.getBoolean(Flags.FLAG_RUN_FINGERPRINT_DETECT_ON_DISMISSIBLE_KEYGUARD, true);
-            sceneContainer =
-                    properties.getBoolean(Flags.FLAG_SCENE_CONTAINER, false);
-            screenshareNotificationHidingBugFix =
-                    properties.getBoolean(Flags.FLAG_SCREENSHARE_NOTIFICATION_HIDING_BUG_FIX, true);
-            screenshotActionDismissSystemWindows =
-                    properties.getBoolean(Flags.FLAG_SCREENSHOT_ACTION_DISMISS_SYSTEM_WINDOWS, true);
-            screenshotPrivateProfileAccessibilityAnnouncementFix =
-                    properties.getBoolean(Flags.FLAG_SCREENSHOT_PRIVATE_PROFILE_ACCESSIBILITY_ANNOUNCEMENT_FIX, true);
-            screenshotPrivateProfileBehaviorFix =
-                    properties.getBoolean(Flags.FLAG_SCREENSHOT_PRIVATE_PROFILE_BEHAVIOR_FIX, true);
-            screenshotScrollCropViewCrashFix =
-                    properties.getBoolean(Flags.FLAG_SCREENSHOT_SCROLL_CROP_VIEW_CRASH_FIX, true);
-            screenshotShelfUi2 =
-                    properties.getBoolean(Flags.FLAG_SCREENSHOT_SHELF_UI2, true);
-            shadeCollapseActivityLaunchFix =
-                    properties.getBoolean(Flags.FLAG_SHADE_COLLAPSE_ACTIVITY_LAUNCH_FIX, false);
-            shaderlibLoadingEffectRefactor =
-                    properties.getBoolean(Flags.FLAG_SHADERLIB_LOADING_EFFECT_REFACTOR, true);
-            sliceBroadcastRelayInBackground =
-                    properties.getBoolean(Flags.FLAG_SLICE_BROADCAST_RELAY_IN_BACKGROUND, true);
-            sliceManagerBinderCallBackground =
-                    properties.getBoolean(Flags.FLAG_SLICE_MANAGER_BINDER_CALL_BACKGROUND, true);
-            smartspaceLockscreenViewmodel =
-                    properties.getBoolean(Flags.FLAG_SMARTSPACE_LOCKSCREEN_VIEWMODEL, true);
-            smartspaceRelocateToBottom =
-                    properties.getBoolean(Flags.FLAG_SMARTSPACE_RELOCATE_TO_BOTTOM, false);
-            smartspaceRemoteviewsRendering =
-                    properties.getBoolean(Flags.FLAG_SMARTSPACE_REMOTEVIEWS_RENDERING, false);
-            statusBarMonochromeIconsFix =
-                    properties.getBoolean(Flags.FLAG_STATUS_BAR_MONOCHROME_ICONS_FIX, true);
-            statusBarScreenSharingChips =
-                    properties.getBoolean(Flags.FLAG_STATUS_BAR_SCREEN_SHARING_CHIPS, true);
-            statusBarStaticInoutIndicators =
-                    properties.getBoolean(Flags.FLAG_STATUS_BAR_STATIC_INOUT_INDICATORS, false);
-            switchUserOnBg =
-                    properties.getBoolean(Flags.FLAG_SWITCH_USER_ON_BG, true);
-            sysuiTeamfood =
-                    properties.getBoolean(Flags.FLAG_SYSUI_TEAMFOOD, true);
-            themeOverlayControllerWakefulnessDeprecation =
-                    properties.getBoolean(Flags.FLAG_THEME_OVERLAY_CONTROLLER_WAKEFULNESS_DEPRECATION, false);
-            translucentOccludingActivityFix =
-                    properties.getBoolean(Flags.FLAG_TRANSLUCENT_OCCLUDING_ACTIVITY_FIX, false);
-            truncatedStatusBarIconsFix =
-                    properties.getBoolean(Flags.FLAG_TRUNCATED_STATUS_BAR_ICONS_FIX, true);
-            udfpsViewPerformance =
-                    properties.getBoolean(Flags.FLAG_UDFPS_VIEW_PERFORMANCE, true);
-            unfoldAnimationBackgroundProgress =
-                    properties.getBoolean(Flags.FLAG_UNFOLD_ANIMATION_BACKGROUND_PROGRESS, true);
-            updateUserSwitcherBackground =
-                    properties.getBoolean(Flags.FLAG_UPDATE_USER_SWITCHER_BACKGROUND, true);
-            validateKeyboardShortcutHelperIconUri =
-                    properties.getBoolean(Flags.FLAG_VALIDATE_KEYBOARD_SHORTCUT_HELPER_ICON_URI, true);
-            visualInterruptionsRefactor =
-                    properties.getBoolean(Flags.FLAG_VISUAL_INTERRUPTIONS_REFACTOR, true);
-        } catch (NullPointerException e) {
-            throw new RuntimeException(
-                    "Cannot read value from namespace systemui "
-                            + "from DeviceConfig. It could be that the code using flag "
-                            + "executed before SettingsProvider initialization. Please use "
-                            + "fixed read-only flag by adding is_fixed_read_only: true in "
-                            + "flag declaration.",
-                    e
-            );
-        }
-        systemui_is_cached = true;
-    }
-
     @Override
-    
+
+
     public boolean activityTransitionUseLargestWindow() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return activityTransitionUseLargestWindow;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean addBlackBackgroundForWindowMagnifier() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean alwaysComposeQsUiFragment() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean ambientTouchMonitorListenToDisplayChanges() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return ambientTouchMonitorListenToDisplayChanges;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean appClipsBacklinks() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return appClipsBacklinks;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean appShortcutRemovalFix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean avalancheReplaceHunWhenCritical() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean bindKeyguardMediaVisibility() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return bindKeyguardMediaVisibility;
-
+        return true;
     }
 
     @Override
-    
-    public boolean bpTalkback() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!biometrics_framework_is_cached) {
-                load_overrides_biometrics_framework();
-            }
-        }
-        return bpTalkback;
 
+
+    public boolean bouncerUiRevamp() {
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean bouncerUiRevamp2() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean bpColors() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean brightnessSliderFocusState() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return brightnessSliderFocusState;
-
+        return false;
     }
 
     @Override
-    
-    public boolean centralizedStatusBarHeightFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return centralizedStatusBarHeightFix;
 
+
+    public boolean checkLockscreenGoneTransition() {
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean classicFlagsMultiUser() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean clipboardImageTimeout() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean clipboardNoninteractiveOnLockscreen() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return clipboardNoninteractiveOnLockscreen;
-
+        return true;
     }
 
     @Override
-    
-    public boolean clockReactiveVariants() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return clockReactiveVariants;
 
+
+    public boolean clipboardOverlayMultiuser() {
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean clipboardSharedTransitions() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean clipboardUseDescriptionMimetype() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean clockFidgetAnimation() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean communalBouncerDoNotModifyPluginOpen() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return communalBouncerDoNotModifyPluginOpen;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean communalEditWidgetsActivityFinishFix() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean communalHub() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!communal_is_cached) {
-                load_overrides_communal();
-            }
-        }
-        return communalHub;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean communalHubUseThreadPoolForWidgets() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean communalResponsiveGrid() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean communalSceneKtfRefactor() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean communalStandaloneSupport() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean communalTimerFlickerFix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean communalWidgetResizing() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean communalWidgetTrampolineFix() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean composeBouncer() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return composeBouncer;
-
+        return false;
     }
 
     @Override
-    
-    public boolean composeLockscreen() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return composeLockscreen;
 
-    }
 
-    @Override
-    
     public boolean confineNotificationTouchToViewWidth() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return confineNotificationTouchToViewWidth;
-
+        return false;
     }
 
     @Override
-    
-    public boolean constraintBp() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!biometrics_framework_is_cached) {
-                load_overrides_biometrics_framework();
-            }
-        }
-        return constraintBp;
 
+
+    public boolean contAuthPlugin() {
+        return false;
     }
 
     @Override
-    
+
+
     public boolean contextualTipsAssistantDismissFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return contextualTipsAssistantDismissFix;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean coroutineTracing() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return coroutineTracing;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean createWindowlessWindowMagnifier() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return createWindowlessWindowMagnifier;
-
+        return true;
     }
 
     @Override
-    
-    public boolean dedicatedNotifInflationThread() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return dedicatedNotifInflationThread;
 
+
+    public boolean debugLiveUpdatesPromoteAll() {
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean decoupleViewControllerInAnimlib() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean delayShowMagnificationButton() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return delayShowMagnificationButton;
-
+        return true;
     }
 
     @Override
-    
-    public boolean delayedWakelockReleaseOnBackgroundThread() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return delayedWakelockReleaseOnBackgroundThread;
 
+
+    public boolean desktopEffectsQsTile() {
+        return false;
     }
 
     @Override
-    
+
+
     public boolean deviceEntryUdfpsRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return deviceEntryUdfpsRefactor;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean disableBlurredShadeVisible() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean disableContextualTipsFrequencyCheck() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return disableContextualTipsFrequencyCheck;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean disableContextualTipsIosSwitcherCheck() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return disableContextualTipsIosSwitcherCheck;
-
+        return false;
     }
 
     @Override
-    
-    public boolean dozeuiSchedulingAlarmsBackgroundExecution() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return dozeuiSchedulingAlarmsBackgroundExecution;
 
+
+    public boolean disableShadeTrackpadTwoFingerSwipe() {
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean doubleTapToSleep() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean dreamInputSessionPilferOnce() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return dreamInputSessionPilferOnce;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean dreamOverlayBouncerSwipeDirectionFiltering() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return dreamOverlayBouncerSwipeDirectionFiltering;
-
+        return true;
     }
 
     @Override
-    
-    public boolean dualShade() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return dualShade;
 
+
+    public boolean dreamOverlayUpdatedFont() {
+        return false;
     }
 
     @Override
-    
+
+
     public boolean edgeBackGestureHandlerThread() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return edgeBackGestureHandlerThread;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean edgebackGestureHandlerGetRunningTasksBackground() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return edgebackGestureHandlerGetRunningTasksBackground;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean enableBackgroundKeyguardOndrawnCallback() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return enableBackgroundKeyguardOndrawnCallback;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean enableContextualTipForMuteVolume() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return enableContextualTipForMuteVolume;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean enableContextualTipForPowerOff() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return enableContextualTipForPowerOff;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean enableContextualTipForTakeScreenshot() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return enableContextualTipForTakeScreenshot;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean enableContextualTips() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return enableContextualTips;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean enableEfficientDisplayRepository() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return enableEfficientDisplayRepository;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean enableLayoutTracing() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return enableLayoutTracing;
-
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean enableUnderlay() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean enableViewCaptureTracing() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return enableViewCaptureTracing;
-
+        return false;
     }
 
     @Override
-    
-    public boolean enableWidgetPickerSizeFilter() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!communal_is_cached) {
-                load_overrides_communal();
-            }
-        }
-        return enableWidgetPickerSizeFilter;
 
-    }
 
-    @Override
-    
     public boolean enforceBrightnessBaseUserRestriction() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return enforceBrightnessBaseUserRestriction;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean exampleFlag() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return exampleFlag;
-
+        return false;
     }
 
     @Override
-    
-    public boolean fastUnlockTransition() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return fastUnlockTransition;
 
+
+    public boolean expandCollapsePrivacyDialog() {
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean expandHeadsUpOnInlineReply() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean expandedPrivacyIndicatorsOnLargeScreen() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean extendedAppsShortcutCategory() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean faceMessageDeferUpdate() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean faceScanningAnimationNpeFix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean fasterUnlockTransition() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean fetchBookmarksXmlKeyboardShortcuts() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean fixImageWallpaperCrashSurfaceAlreadyReleased() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return fixImageWallpaperCrashSurfaceAlreadyReleased;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean fixScreenshotActionDismissSystemWindows() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return fixScreenshotActionDismissSystemWindows;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean floatingMenuAnimatedTuck() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return floatingMenuAnimatedTuck;
-
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean floatingMenuDisplayCutoutSupport() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean floatingMenuDragToEdit() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return floatingMenuDragToEdit;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean floatingMenuDragToHide() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return floatingMenuDragToHide;
-
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean floatingMenuHearingDeviceStatusIcon() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean floatingMenuImeDisplacementAnimation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return floatingMenuImeDisplacementAnimation;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean floatingMenuNarrowTargetContentObserver() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return floatingMenuNarrowTargetContentObserver;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean floatingMenuNotifyTargetsChangedOnStrictDiff() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean floatingMenuOverlapsNavBarsFlag() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return floatingMenuOverlapsNavBarsFlag;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean floatingMenuRadiiAnimation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return floatingMenuRadiiAnimation;
-
-    }
-    
-    @Override
-    
-    public boolean generatedPreviews() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return generatedPreviews;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean getConnectedDeviceNameUnsynchronized() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return getConnectedDeviceNameUnsynchronized;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean glanceableHubAllowKeyguardWhenDreaming() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return glanceableHubAllowKeyguardWhenDreaming;
-
+        return false;
     }
 
     @Override
-    
-    public boolean glanceableHubFullscreenSwipe() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return glanceableHubFullscreenSwipe;
 
+
+    public boolean glanceableHubBlurredBackground() {
+        return false;
     }
 
     @Override
-    
-    public boolean glanceableHubGestureHandle() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return glanceableHubGestureHandle;
 
+
+    public boolean glanceableHubDirectEditMode() {
+        return false;
     }
 
     @Override
-    
-    public boolean glanceableHubShortcutButton() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return glanceableHubShortcutButton;
 
+
+    public boolean glanceableHubV2() {
+        return false;
     }
 
     @Override
-    
-    public boolean hapticBrightnessSlider() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return hapticBrightnessSlider;
 
+
+    public boolean glanceableHubV2Resources() {
+        return false;
     }
 
     @Override
-    
-    public boolean hapticVolumeSlider() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return hapticVolumeSlider;
 
+
+    public boolean hapticsForComposeSliders() {
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean hardwareColorStyles() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean hearingAidsQsTileDialog() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return hearingAidsQsTileDialog;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean hearingDevicesDialogRelatedTools() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return hearingDevicesDialogRelatedTools;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean hideRingerButtonInSingleVolumeMode() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean homeControlsDreamHsum() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean hubEditModeTouchAdjustments() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean hubmodeFullscreenVerticalSwipe() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean hubmodeFullscreenVerticalSwipeFix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean iconRefresh2025() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean ignoreTouchesNextToNotificationShelf() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean indicationTextA11yFix() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean keyboardDockingIndicator() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return keyboardDockingIndicator;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean keyboardShortcutHelperRewrite() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return keyboardShortcutHelperRewrite;
-
+        return true;
     }
 
     @Override
-    
-    public boolean keyguardBottomAreaRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return keyguardBottomAreaRefactor;
 
+
+    public boolean keyboardShortcutHelperShortcutCustomizer() {
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean keyboardTouchpadContextualEducation() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean keyguardTransitionForceFinishOnScreenOff() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean keyguardWmReorderAtmsCalls() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean keyguardWmStateRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return keyguardWmStateRefactor;
-
+        return false;
     }
 
     @Override
-    
-    public boolean lightRevealMigration() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return lightRevealMigration;
 
+
+    public boolean lockscreenFont() {
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean lowLightClockDream() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean magneticNotificationSwipes() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean mediaControlsA11yColors() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean mediaControlsButtonMedia3() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean mediaControlsButtonMedia3Placement() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean mediaControlsDeviceManagerBackgroundExecution() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean mediaControlsDrawablesReuseBugfix() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean mediaControlsLockscreenShadeBugFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return mediaControlsLockscreenShadeBugFix;
-
+        return true;
     }
 
     @Override
-    
-    public boolean mediaControlsRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return mediaControlsRefactor;
 
+
+    public boolean mediaControlsUiUpdate() {
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean mediaControlsUmoInflationInBackground() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean mediaControlsUserInitiatedDeleteintent() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return mediaControlsUserInitiatedDeleteintent;
-
+        return true;
     }
 
     @Override
-    
-    public boolean migrateClocksToBlueprint() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return migrateClocksToBlueprint;
 
+
+    public boolean mediaLoadMetadataViaMediaDataLoader() {
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean mediaLockscreenLaunchAnimation() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean mediaProjectionDialogBehindLockscreen() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean mediaProjectionGreyErrorText() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean mediaProjectionRequestAttributionFix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean modesUiDialogPaging() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean moveTransitionAnimationLayer() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean msdlFeedback() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean multiuserWifiPickerTrackerSupport() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean newAodTransition() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return newAodTransition;
-
+        return true;
     }
 
     @Override
-    
-    public boolean newTouchpadGesturesTutorial() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return newTouchpadGesturesTutorial;
 
-    }
 
-    @Override
-    
     public boolean newVolumePanel() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return newVolumePanel;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean nonTouchscreenDevicesBypassFalsing() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean notesRoleQsTile() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean notificationAddXOnHoverToDismiss() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean notificationAmbientSuppressionAfterInflation() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean notificationAnimatedActionsTreatment() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean notificationAppearNonlinear() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean notificationAsyncGroupHeaderInflation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationAsyncGroupHeaderInflation;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean notificationAsyncHybridViewInflation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationAsyncHybridViewInflation;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean notificationAvalancheSuppression() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationAvalancheSuppression;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean notificationAvalancheThrottleHun() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationAvalancheThrottleHun;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean notificationBackgroundTintOptimization() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationBackgroundTintOptimization;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean notificationBundleUi() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean notificationColorUpdateLogger() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationColorUpdateLogger;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean notificationContentAlphaOptimization() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationContentAlphaOptimization;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean notificationFooterBackgroundTintOptimization() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationFooterBackgroundTintOptimization;
-
+        return false;
     }
 
     @Override
-    
-    public boolean notificationMediaManagerBackgroundExecution() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationMediaManagerBackgroundExecution;
 
-    }
 
-    @Override
-    
-    public boolean notificationMinimalismPrototype() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationMinimalismPrototype;
-
-    }
-
-    @Override
-    
     public boolean notificationOverExpansionClippingFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationOverExpansionClippingFix;
-
+        return true;
     }
 
     @Override
-    
-    public boolean notificationPulsingFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationPulsingFix;
 
+
+    public boolean notificationReentrantDismiss() {
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean notificationRowAccessibilityExpanded() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean notificationRowContentBinderRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationRowContentBinderRefactor;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean notificationRowTransparency() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean notificationRowUserContext() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationRowUserContext;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean notificationShadeBlur() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean notificationShadeUiThread() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean notificationSkipSilentUpdates() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean notificationTransparentHeaderFix() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean notificationViewFlipperPausingV2() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationViewFlipperPausingV2;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean notificationsBackgroundIcons() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationsBackgroundIcons;
-
+        return true;
     }
 
     @Override
-    
-    public boolean notificationsFooterViewRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationsFooterViewRefactor;
 
+
+    public boolean notificationsFooterVisibilityFix() {
+        return true;
     }
 
     @Override
-    
-    public boolean notificationsHeadsUpRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationsHeadsUpRefactor;
 
-    }
 
-    @Override
-    
     public boolean notificationsHideOnDisplaySwitch() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationsHideOnDisplaySwitch;
-
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean notificationsHunSharedAnimationValues() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean notificationsIconContainerRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationsIconContainerRefactor;
-
+        return true;
     }
 
     @Override
-    
-    public boolean notificationsImprovedHunAnimation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationsImprovedHunAnimation;
 
+
+    public boolean notificationsLaunchRadius() {
+        return false;
     }
 
     @Override
-    
+
+
     public boolean notificationsLiveDataStoreRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notificationsLiveDataStoreRefactor;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean notificationsPinnedHunInShade() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean notificationsRedesignFooterView() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean notificationsRedesignGuts() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean notifyPasswordTextViewUserActivityInBackground() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean notifyPowerManagerUserActivityBackground() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return notifyPowerManagerUserActivityBackground;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean onlyShowMediaStreamSliderInSingleVolumeMode() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean outputSwitcherRedesign() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean overrideSuppressOverlayCondition() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean permissionHelperInlineUiRichOngoing() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean permissionHelperUiRichOngoing() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean physicalNotificationMovement() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean pinInputFieldStyledFocusState() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return pinInputFieldStyledFocusState;
-
+        return true;
     }
 
     @Override
-    
-    public boolean predictiveBackAnimateBouncer() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return predictiveBackAnimateBouncer;
 
-    }
 
-    @Override
-    
-    public boolean predictiveBackAnimateDialogs() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return predictiveBackAnimateDialogs;
-
-    }
-
-    @Override
-    
     public boolean predictiveBackAnimateShade() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return predictiveBackAnimateShade;
-
+        return false;
     }
 
     @Override
-    
-    public boolean predictiveBackSysui() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return predictiveBackSysui;
 
+
+    public boolean predictiveBackDelayWmTransition() {
+        return false;
     }
 
     @Override
-    
+
+
     public boolean priorityPeopleSection() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return priorityPeopleSection;
-
+        return true;
     }
 
     @Override
-    
-    public boolean privacyDotUnfoldWrongCornerFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return privacyDotUnfoldWrongCornerFix;
 
+
+    public boolean promoteNotificationsAutomatically() {
+        return false;
     }
 
     @Override
-    
-    public boolean pssAppSelectorAbruptExitFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return pssAppSelectorAbruptExitFix;
 
-    }
 
-    @Override
-    
     public boolean pssAppSelectorRecentsSplitScreen() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return pssAppSelectorRecentsSplitScreen;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean pssTaskSwitcher() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return pssTaskSwitcher;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean qsCustomTileClickGuaranteedBugFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return qsCustomTileClickGuaranteedBugFix;
-
+        return true;
     }
 
     @Override
-    
-    public boolean qsNewPipeline() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return qsNewPipeline;
 
-    }
 
-    @Override
-    
     public boolean qsNewTiles() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return qsNewTiles;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean qsNewTilesFuture() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return qsNewTilesFuture;
-
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean qsQuickRebindActiveTiles() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean qsRegisterSettingObserverOnBgThread() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean qsTileDetailedView() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean qsTileFocusState() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return qsTileFocusState;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean qsUiRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return qsUiRefactor;
-
+        return false;
     }
 
     @Override
-    
-    public boolean quickSettingsVisualHapticsLongpress() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return quickSettingsVisualHapticsLongpress;
 
+
+    public boolean qsUiRefactorComposeFragment() {
+        return false;
     }
 
     @Override
-    
+
+
     public boolean recordIssueQsTile() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return recordIssueQsTile;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean redesignMagnificationWindowSize() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean refactorGetCurrentUser() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return refactorGetCurrentUser;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean registerBatteryControllerReceiversInCorestartable() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return registerBatteryControllerReceiversInCorestartable;
-
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean registerContentObserversAsync() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean registerNewWalletCardInBackground() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return registerNewWalletCardInBackground;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean registerWallpaperNotifierBackground() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return registerWallpaperNotifierBackground;
-
+        return true;
     }
 
     @Override
-    
-    public boolean registerZenModeContentObserverBackground() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return registerZenModeContentObserverBackground;
 
+
+    public boolean relockWithPowerButtonImmediately() {
+        return true;
     }
 
     @Override
-    
+
+
     public boolean removeDreamOverlayHideOnTouch() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return removeDreamOverlayHideOnTouch;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean removeUpdateListenerInQsIconViewImpl() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean restToUnlock() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return restToUnlock;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean restartDreamOnUnocclude() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return restartDreamOnUnocclude;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean revampedBouncerMessages() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return revampedBouncerMessages;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean runFingerprintDetectOnDismissibleKeyguard() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return runFingerprintDetectOnDismissibleKeyguard;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean saveAndRestoreMagnificationSettingsButtons() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!accessibility_is_cached) {
-                load_overrides_accessibility();
-            }
-        }
-        return saveAndRestoreMagnificationSettingsButtons;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean sceneContainer() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return sceneContainer;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean screenshareNotificationHidingBugFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return screenshareNotificationHidingBugFix;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean screenshotActionDismissSystemWindows() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return screenshotActionDismissSystemWindows;
-
+        return false;
     }
 
     @Override
-    
-    public boolean screenshotPrivateProfileAccessibilityAnnouncementFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return screenshotPrivateProfileAccessibilityAnnouncementFix;
 
+
+    public boolean screenshotMultidisplayFocusChange() {
+        return false;
     }
 
     @Override
-    
-    public boolean screenshotPrivateProfileBehaviorFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return screenshotPrivateProfileBehaviorFix;
 
+
+    public boolean screenshotPolicySplitAndDesktopMode() {
+        return true;
     }
 
     @Override
-    
+
+
     public boolean screenshotScrollCropViewCrashFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return screenshotScrollCropViewCrashFix;
-
+        return true;
     }
 
     @Override
-    
-    public boolean screenshotShelfUi2() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return screenshotShelfUi2;
 
+
+    public boolean screenshotUiControllerRefactor() {
+        return true;
     }
 
     @Override
-    
-    public boolean shadeCollapseActivityLaunchFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return shadeCollapseActivityLaunchFix;
 
+
+    public boolean secondaryUserWidgetHost() {
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean settingsExtRegisterContentObserverOnBgThread() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean shadeExpandsOnStatusBarLongPress() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean shadeHeaderFontUpdate() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean shadeLaunchAccessibility() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean shadeWindowGoesAround() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean shaderlibLoadingEffectRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return shaderlibLoadingEffectRefactor;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean shortcutHelperKeyGlyph() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean showAudioSharingSliderInVolumePanel() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean showClipboardIndication() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean showLockedByYourWatchKeyguardIndicator() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean showToastWhenAppControlBrightness() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean simPinBouncerReset() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean simPinRaceConditionOnRestart() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean simPinUseSlotId() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean skipHideSensitiveNotifAnimation() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean sliceBroadcastRelayInBackground() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return sliceBroadcastRelayInBackground;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean sliceManagerBinderCallBackground() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return sliceManagerBinderCallBackground;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean smartspaceLockscreenViewmodel() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return smartspaceLockscreenViewmodel;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean smartspaceRelocateToBottom() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return smartspaceRelocateToBottom;
-
+        return false;
     }
 
     @Override
-    
-    public boolean smartspaceRemoteviewsRendering() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return smartspaceRemoteviewsRendering;
 
+
+    public boolean smartspaceRemoteviewsRenderingFix() {
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean smartspaceSwipeEventLoggingFix() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean smartspaceViewpager2() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean sounddoseCustomization() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean spatialModelAppPushback() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean stabilizeHeadsUpGroupV2() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean statusBarAlwaysCheckUnderlyingNetworks() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean statusBarAutoStartScreenRecordChip() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean statusBarChipsModernization() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean statusBarChipsReturnAnimations() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean statusBarFontUpdates() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean statusBarMobileIconKairos() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean statusBarMonochromeIconsFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return statusBarMonochromeIconsFix;
-
+        return true;
     }
 
     @Override
-    
-    public boolean statusBarScreenSharingChips() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return statusBarScreenSharingChips;
 
+
+    public boolean statusBarNoHunBehavior() {
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean statusBarPopupChips() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean statusBarRootModernization() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean statusBarShowAudioOnlyProjectionChip() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean statusBarSignalPolicyRefactor() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean statusBarSignalPolicyRefactorEthernet() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean statusBarStaticInoutIndicators() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return statusBarStaticInoutIndicators;
-
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean statusBarStopUpdatingWindowHeight() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean statusBarSwipeOverChip() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean statusBarSwitchToSpnFromDataSpn() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean statusBarUiThread() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean statusBarWindowNoCustomTouch() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean stoppableFgsSystemApp() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean switchUserOnBg() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return switchUserOnBg;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean sysuiTeamfood() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return sysuiTeamfood;
-
+        return false;
     }
 
     @Override
-    
+
+
     public boolean themeOverlayControllerWakefulnessDeprecation() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return themeOverlayControllerWakefulnessDeprecation;
-
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean transitionRaceCondition() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean translucentOccludingActivityFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return translucentOccludingActivityFix;
-
+        return true;
     }
 
     @Override
-    
-    public boolean truncatedStatusBarIconsFix() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return truncatedStatusBarIconsFix;
 
+
+    public boolean tvGlobalActionsFocus() {
+        return false;
     }
 
     @Override
-    
+
+
     public boolean udfpsViewPerformance() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return udfpsViewPerformance;
-
+        return true;
     }
 
     @Override
-    
+
+
     public boolean unfoldAnimationBackgroundProgress() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return unfoldAnimationBackgroundProgress;
-
+        return true;
     }
 
     @Override
-    
+
+
+    public boolean unfoldLatencyTrackingFix() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean updateCornerRadiusOnDisplayChanged() {
+        return true;
+    }
+
+    @Override
+
+
     public boolean updateUserSwitcherBackground() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return updateUserSwitcherBackground;
-
+        return true;
     }
 
     @Override
-    
-    public boolean validateKeyboardShortcutHelperIconUri() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return validateKeyboardShortcutHelperIconUri;
 
+
+    public boolean updateWindowMagnifierBottomBoundary() {
+        return false;
     }
 
     @Override
-    
+
+
+    public boolean useAadProxSensor() {
+        return false;
+    }
+
+    @Override
+
+
+    public boolean useNotifInflationThreadForFooter() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean useNotifInflationThreadForRow() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean useTransitionsForKeyguardOccluded() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean useVolumeController() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean userAwareSettingsRepositories() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean userEncryptedSource() {
+        return true;
+    }
+
+    @Override
+
+
+    public boolean userSwitcherAddSignOutOption() {
+        return false;
+    }
+
+    @Override
+
+
     public boolean visualInterruptionsRefactor() {
-        if (isReadFromNew) {
-            if (!isCached) {
-                init();
-            }
-        } else {
-            if (!systemui_is_cached) {
-                load_overrides_systemui();
-            }
-        }
-        return visualInterruptionsRefactor;
+        return true;
+    }
 
+    @Override
+
+
+    public boolean volumeRedesign() {
+        return false;
     }
 
 }
-

@@ -19,6 +19,8 @@ package com.android.launcher3.util;
 import android.util.SparseArray;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Extension of {@link SparseArray} with some utility methods.
@@ -41,6 +43,10 @@ public class IntSparseArrayMap<E> extends SparseArray<E> implements Iterable<E> 
     @Override
     public Iterator<E> iterator() {
         return new ValueIterator();
+    }
+
+    public Stream<E> stream() {
+        return StreamSupport.stream(spliterator(), false);
     }
 
     @Thunk class ValueIterator implements Iterator<E> {

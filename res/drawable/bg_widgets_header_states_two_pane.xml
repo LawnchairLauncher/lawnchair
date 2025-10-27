@@ -14,18 +14,16 @@
      limitations under the License.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:state_expanded="true">
-        <shape android:shape="rectangle">
-            <solid android:color="?attr/widgetPickerHeaderBackgroundColor" />
-            <corners android:radius="@dimen/widget_list_top_bottom_corner_radius" />
-        </shape>
+    <item android:state_expanded="true" android:state_focused="false">
+        <ripple android:color="@color/accent_ripple_color">
+            <item android:drawable="@drawable/bg_widgets_header_two_pane_expanded_unfocused" />
+        </ripple>
     </item>
-
-    <item android:state_expanded="false">
-        <shape android:shape="rectangle">
-            <solid android:color="@android:color/transparent" />
-            <corners android:radius="@dimen/widget_list_top_bottom_corner_radius" />
-        </shape>
+    <item android:state_expanded="false" android:state_focused="false">
+        <ripple android:color="@color/accent_ripple_color">
+            <item android:drawable="@drawable/bg_widgets_header_two_pane_unexpanded_unfocused" />
+        </ripple>
     </item>
+    <item android:drawable="@drawable/bg_widgets_header_two_pane_expanded_focused" android:state_expanded="true" android:state_focused="true" />
+    <item android:drawable="@drawable/bg_widgets_header_two_pane_unexpanded_focused" android:state_expanded="false" android:state_focused="true" />
 </selector>

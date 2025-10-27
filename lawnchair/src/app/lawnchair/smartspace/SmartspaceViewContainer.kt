@@ -34,7 +34,7 @@ class SmartspaceViewContainer @JvmOverloads constructor(
         val ctx = LawnchairLauncher.instance?.launcherNullable
         val dp = ctx?.deviceProfile
         val leftPadding = dp?.widgetPadding?.left
-        smartspaceView.setPadding(leftPadding ?: (left + 16), top, right, bottom)
+        smartspaceView.setPadding(leftPadding ?: (left + 48), top, right, bottom)
         setOnLongClickListener {
             openOptions()
             true

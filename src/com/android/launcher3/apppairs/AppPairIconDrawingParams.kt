@@ -64,6 +64,8 @@ class AppPairIconDrawingParams(val context: Context, container: Int) {
     var isLeftRightSplit: Boolean = true
     // The background paint color (based on container).
     var bgColor: Int = 0
+    // The scale of the icon background while hovered.
+    var hoverScale: Float = 1f
 
     init {
         val activity: ActivityContext = ActivityContext.lookupContext(context)

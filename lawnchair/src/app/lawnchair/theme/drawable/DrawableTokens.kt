@@ -186,7 +186,7 @@ object DrawableTokens {
 
     @JvmField
     val WorkCard = ResourceDrawableToken<GradientDrawable>(R.drawable.work_card)
-        .setColor(ColorTokens.Surface)
+        .setColor(ColorTokens.SurfaceContainerHighest)
 
     @JvmField
     val WidgetAddButtonBackground = ResourceDrawableToken<InsetDrawable>(R.drawable.widget_cell_add_button_background)

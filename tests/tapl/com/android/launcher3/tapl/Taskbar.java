@@ -52,7 +52,7 @@ public final class Taskbar {
 
         if (!mLauncher.isTransientTaskbar()) {
             Assert.assertEquals("Persistent taskbar should fill screen width",
-                    getVisibleBounds().width(), mLauncher.getRealDisplaySize().x);
+                    mLauncher.getRealDisplaySize().x, getVisibleBounds().width());
         }
     }
 
@@ -112,6 +112,23 @@ public final class Taskbar {
                     getAllAppsButtonSelector()));
 
             return getAllApps();
+        }
+    }
+
+    /**
+     *  Opens the Home all apps page by clicking the taskbar all apps icon. To be used to open all
+     *  apps when taskbar is visible on home.
+     */
+    public HomeAllApps openAllAppsOnHome() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to open home all apps from taskbar");
+             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+
+            mLauncher.clickLauncherObject(mLauncher.waitForObjectInContainer(
+                    mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
+                    getAllAppsButtonSelector()));
+
+            return mLauncher.getAllApps();
         }
     }
 

@@ -49,6 +49,7 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
         DISMISS(0),
         LAUNCH_LAST_APP(0),
         LAUNCH_SELECTED_APP(1),
+        DISMISS_WHEN_GOING_HOME(1),
         LAUNCH_OVERVIEW(KeyboardQuickSwitchController.MAX_TASKS - 1);
 
         private final int mNumAdditionalRunningTasks;
@@ -156,6 +157,11 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
         mLauncher.goHome().showQuickSwitchView().launchFocusedAppTask(CALCULATOR_APP_PACKAGE);
     }
 
+    @Test
+    public void testDismissedWhenGoingHome() {
+        runTest(TestSurface.LAUNCHED_APP, TestCase.DISMISS_WHEN_GOING_HOME);
+    }
+
     private void runTest(@NonNull TestSurface testSurface, @NonNull TestCase testCase) {
         for (int i = 0; i < testCase.mNumAdditionalRunningTasks; i++) {
             startTestActivity(3 + i);
@@ -196,6 +202,9 @@ public class TaplTestsKeyboardQuickSwitch extends AbstractQuickStepTest {
                     kqs.moveFocusForward();
                 }
                 kqs.launchFocusedAppTask(CALCULATOR_APP_PACKAGE);
+                break;
+            case DISMISS_WHEN_GOING_HOME:
+                kqs.dismissByGoingHome();
                 break;
             case LAUNCH_OVERVIEW:
                 kqs.moveFocusBackward();

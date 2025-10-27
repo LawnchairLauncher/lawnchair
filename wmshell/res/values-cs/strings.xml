@@ -43,6 +43,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"50 % vlevo"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"30 % vlevo"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"Pravá část na celou obrazovku"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"Prohodit horní a dolní aplikaci"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"Prohodit levou a pravou aplikaci"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"Horní část na celou obrazovku"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"70 % nahoře"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"50 % nahoře"</string>
@@ -65,10 +67,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"Přesunout vpravo nahoru"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"Přesunout vlevo dolů"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"Přesunout vpravo dolů"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"rozbalit nabídku"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"sbalit nabídku"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"Přesunout doleva"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"Přesunout doprava"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"rozbalit <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"sbalit <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"Nastavení <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"Zavřít bublinu"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"Přejít na celou obrazovku"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"Nezobrazovat konverzaci v bublinách"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"Chatujte pomocí bublin"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"Nové konverzace se zobrazují jako plovoucí ikony, neboli bubliny. Klepnutím bublinu otevřete. Přetažením ji posunete."</string>
@@ -92,6 +99,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"Problémy s fotoaparátem?\nKlepnutím vyřešíte"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"Nepomohlo to?\nKlepnutím se vrátíte"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"Žádné problémy s fotoaparátem? Klepnutím zavřete."</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"Najdete tu nabídku aplikace"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"Pokud chcete otevřít několik aplikací současně, přejděte do režimu s okny na ploše"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"Na celou obrazovku se můžete kdykoli vrátit z nabídky aplikace"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"Lepší zobrazení a více možností"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"Přetáhnutím druhé aplikace použijete rozdělenou obrazovku"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"Dvojitým klepnutím mimo aplikaci změníte její umístění"</string>
@@ -103,22 +113,54 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"Restartovat"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"Tuto zprávu příště nezobrazovat"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"Dvojitým klepnutím\npřesunete aplikaci"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"Maximalizovat"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"Minimalizovat"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"Zavřít"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"Maximalizovat aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"Obnovit aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"Minimalizovat aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"Zavřít aplikaci <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="back_button_text" msgid="1469718707134137085">"Zpět"</string>
-    <string name="handle_text" msgid="1766582106752184456">"Úchyt"</string>
+    <string name="handle_text" msgid="4419667835599523257">"Popisovač aplikace"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"Ikona aplikace"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"Celá obrazovka"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"Režim počítače"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"Okna na ploše"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"Rozdělená obrazovka"</string>
     <string name="more_button_text" msgid="3655388105592893530">"Více"</string>
     <string name="float_button_text" msgid="9221657008391364581">"Plovoucí"</string>
     <string name="select_text" msgid="5139083974039906583">"Vybrat"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"Snímek obrazovky"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"Otevřít v prohlížeči"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"Otevřít v aplikaci"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"Nové okno"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"Spravovat okna"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"Změnit poměr stran"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"Optimalizovat zobrazení"</string>
     <string name="close_text" msgid="4986518933445178928">"Zavřít"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"Zavřít nabídku"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"Otevřít nabídku"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (okna na ploše)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"Maximalizovat obrazovku"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"Rozpůlit obrazovku"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"Změnit velikost"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"Aplikaci sem nelze přesunout"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"Pohlcující"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"Obnovit"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"Maximalizovat"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"Obnovit"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"Přichytit vlevo"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"Přichytit vpravo"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"Změnit velikost okna aplikace vlevo"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"Změnit velikost okna aplikace vpravo"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"Maximalizovat nebo obnovit velikost okna"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"Otevřít nabídku"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"Přejít do režimu <xliff:g id="WINDOWING_MODE">%1$s</xliff:g>"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"Přichytit okno vlevo"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"Přichytit okno vpravo"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"Maximalizovat nebo obnovit velikost okna"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"Maximalizovat velikost okna aplikace"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"Obnovit velikost okna"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"Minimalizovat okno aplikace"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"Zavřít okno aplikace"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"Otevírat podle výchozího nastavení"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"Určete, jak se v této aplikaci mají otevírat webové odkazy"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"V aplikaci"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"V prohlížeči"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"OK"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"Odtud můžete v prohlížeči rychle otevírat aplikace"</string>
 </resources>

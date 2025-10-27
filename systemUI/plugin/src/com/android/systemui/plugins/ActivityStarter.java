@@ -16,6 +16,7 @@ package com.android.systemui.plugins;
 
 import android.annotation.Nullable;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.UserHandle;
@@ -23,6 +24,8 @@ import android.view.View;
 
 import com.android.systemui.animation.ActivityTransitionAnimator;
 import com.android.systemui.plugins.annotations.ProvidesInterface;
+
+import kotlinx.coroutines.CoroutineScope;
 
 /**
  * An interface to start activities. This is used as a callback from the views to
@@ -32,6 +35,23 @@ import com.android.systemui.plugins.annotations.ProvidesInterface;
 @ProvidesInterface(version = ActivityStarter.VERSION)
 public interface ActivityStarter {
     int VERSION = 2;
+
+    /**
+     * Registers the given {@link ActivityTransitionAnimator.ControllerFactory} for launching and
+     * closing transitions matching the {@link ActivityTransitionAnimator.TransitionCookie} and the
+     * {@link ComponentName} that it contains, within the given {@link CoroutineScope}.
+     */
+    void registerTransition(
+            ActivityTransitionAnimator.TransitionCookie cookie,
+            ActivityTransitionAnimator.ControllerFactory controllerFactory,
+            CoroutineScope scope);
+
+    /**
+     * Unregisters the {@link ActivityTransitionAnimator.ControllerFactory} previously registered
+     * containing the given {@link ActivityTransitionAnimator.TransitionCookie}. If no such
+     * registration exists, this is a no-op.
+     */
+    void unregisterTransition(ActivityTransitionAnimator.TransitionCookie cookie);
 
     void startPendingIntentDismissingKeyguard(PendingIntent intent);
 
@@ -84,14 +104,17 @@ public interface ActivityStarter {
      * Similar to {@link #startPendingIntentMaybeDismissingKeyguard(PendingIntent, Runnable,
      * ActivityTransitionAnimator.Controller)}, but also specifies a fill-in intent and extra
      * option that could be used to populate the pending intent and launch the activity. This also
-     * allows the caller to avoid dismissing the shade.
+     * allows the caller to avoid dismissing the shade. An optional custom message can be set as
+     * the unlock reason in the alternate bouncer.
      */
     void startPendingIntentMaybeDismissingKeyguard(PendingIntent intent,
             boolean dismissShade,
             @Nullable Runnable intentSentUiThreadCallback,
             @Nullable ActivityTransitionAnimator.Controller animationController,
             @Nullable Intent fillInIntent,
-            @Nullable Bundle extraOptions);
+            @Nullable Bundle extraOptions,
+            @Nullable String customMessage
+        );
 
     /**
      * The intent flag can be specified in startActivity().
@@ -120,6 +143,11 @@ public interface ActivityStarter {
     void postStartActivityDismissingKeyguard(Intent intent, int delay,
             @Nullable ActivityTransitionAnimator.Controller animationController,
             @Nullable String customMessage);
+    /** Posts a start activity intent that dismisses keyguard. */
+    void postStartActivityDismissingKeyguard(Intent intent, int delay,
+            @Nullable ActivityTransitionAnimator.Controller animationController,
+            @Nullable String customMessage,
+            @Nullable UserHandle userHandle);
     void postStartActivityDismissingKeyguard(PendingIntent intent);
 
     /**
@@ -134,14 +162,20 @@ public interface ActivityStarter {
     void dismissKeyguardThenExecute(OnDismissAction action, @Nullable Runnable cancel,
             boolean afterKeyguardGone);
 
-    /** Authenticates if needed and dismisses keyguard to execute an action. */
+    /**
+     * Authenticates if needed and dismisses keyguard to execute an action.
+     *
+     * TODO(b/348431835) Display the custom message in the new alternate bouncer, when the
+     * device_entry_udfps_refactor flag is enabled.
+     */
     void dismissKeyguardThenExecute(OnDismissAction action, @Nullable Runnable cancel,
             boolean afterKeyguardGone, @Nullable String customMessage);
 
     /** Starts an activity and dismisses keyguard. */
     void startActivityDismissingKeyguard(Intent intent,
             boolean onlyProvisioned,
-            boolean dismissShade);
+            boolean dismissShade,
+            @Nullable String customMessage);
 
     /** Starts an activity and dismisses keyguard. */
     void startActivityDismissingKeyguard(Intent intent,

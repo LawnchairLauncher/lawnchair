@@ -8,7 +8,7 @@ import app.lawnchair.FeedBridge
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.Launcher
-import com.android.launcher3.Utilities
+import com.android.launcher3.LauncherPrefs
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks
@@ -78,27 +78,27 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) :
         mClient.hideOverlay(duration)
     }
 
-    override fun onActivityCreated(activity: Activity, bundle: Bundle?) = Unit
+    fun onActivityCreated(activity: Activity, bundle: Bundle?) = Unit
 
-    override fun onActivityStarted(activity: Activity) {
+    override fun onActivityStarted() {
         mClient.onStart()
     }
 
-    override fun onActivityResumed(activity: Activity) {
+    override fun onActivityResumed() {
         mClient.onResume()
     }
 
-    override fun onActivityPaused(activity: Activity) {
+    override fun onActivityPaused() {
         mClient.onPause()
     }
 
-    override fun onActivityStopped(activity: Activity) {
+    override fun onActivityStopped() {
         mClient.onStop()
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) = Unit
+    fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) = Unit
 
-    override fun onActivityDestroyed(activity: Activity) {
+    override fun onActivityDestroyed() {
         mClient.onDestroy()
         mClient.mDestroyed = true
     }
@@ -139,7 +139,7 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) :
         if (newFlags != mFlags) {
             mFlagsChanged = true
             mFlags = newFlags
-            Utilities.getDevicePrefs(mLauncher).edit().putInt(PREF_PERSIST_FLAGS, newFlags).apply()
+            LauncherPrefs.getDevicePrefs(mLauncher).edit().putInt(PREF_PERSIST_FLAGS, newFlags).apply()
         }
     }
 

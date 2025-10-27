@@ -120,7 +120,19 @@ public class StickyHeaderLayout extends LinearLayout implements
     }
 
     private float getCurrentScroll() {
-        return mScrollOffset + (mCurrentEmptySpaceView == null ? 0 : mCurrentEmptySpaceView.getY());
+        float scroll;
+        if (mCurrentRecyclerView.getVisibility() != VISIBLE) {
+            // When no list is displayed, assume no scroll.
+            scroll = 0f;
+        } else if (mCurrentEmptySpaceView != null) {
+            // Otherwise use empty space view as reference to position.
+            scroll = mCurrentEmptySpaceView.getY();
+        } else {
+            // If there is no empty space view, but the list is visible, we are scrolled away
+            // completely, so assume all non-sticky children should also be scrolled away.
+            scroll = -mHeaderHeight;
+        }
+        return mScrollOffset + scroll;
     }
 
     @Override

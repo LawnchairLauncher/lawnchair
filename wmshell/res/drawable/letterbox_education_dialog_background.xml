@@ -17,6 +17,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
        android:shape="rectangle">
-    <solid android:color="?androidprv:attr/colorSurface"/>
+    <solid android:color="@androidprv:color/materialColorSurfaceContainerHigh"/>
     <corners android:radius="@dimen/letterbox_education_dialog_corner_radius"/>
 </shape>

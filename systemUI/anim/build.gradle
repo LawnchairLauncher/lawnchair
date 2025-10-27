@@ -1,9 +1,23 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
 
+// LC-Build-TODO: addFrameworkJar() doesn't work, what???
+def frameworkJar = new File("$rootDir/prebuilts/libs", "framework-16.jar")
+tasks.withType(JavaCompile).configureEach {
+    classpath = files(frameworkJar)
+}
+tasks.withType(KotlinCompile).configureEach {
+    libraries.from(files(frameworkJar))
+}
+compileOnlyCommonJars()
+
+// TODO: Pull out surfaceeffects outside of src and have separate build files there.
 android {
+    buildToolsVersion "36.1.0"
     namespace "com.android.systemui.animation"
     buildFeatures {
         aidl true
@@ -16,9 +30,17 @@ android {
             res.srcDirs = ['res']
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
+    tasks.lint.enabled = false
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
 }
 
-addFrameworkJar('framework-15.jar')
+addFrameworkJar('framework-16.jar')
 compileOnlyCommonJars()
 
 dependencies {

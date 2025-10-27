@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2023 The Android Open Source Project
+<!--
+     Copyright (C) 2023 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -18,6 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:accessibilityPaneTitle="@string/all_apps_label">
+
     <include
         android:id="@+id/apps_view"
         layout="@layout/taskbar_all_apps" />

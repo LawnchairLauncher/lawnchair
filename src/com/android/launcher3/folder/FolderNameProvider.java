@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
+
 import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -37,6 +39,7 @@ import com.android.launcher3.model.ModelTaskController;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.CollectionInfo;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.Preconditions;
@@ -197,9 +200,18 @@ public class FolderNameProvider implements ResourceBasedOverride {
         @Override
         public void execute(@NonNull ModelTaskController taskController,
                 @NonNull BgDataModel dataModel, @NonNull AllAppsList apps) {
-            mCollectionInfos = dataModel.collections.clone();
+            mCollectionInfos = getCollectionForSuggestions(dataModel);
             mAppInfos = Arrays.asList(apps.copyData());
         }
+    }
+
+    public static IntSparseArrayMap<CollectionInfo> getCollectionForSuggestions(
+            BgDataModel dataModel) {
+        IntSparseArrayMap<CollectionInfo> result = new IntSparseArrayMap<>();
+        dataModel.itemsIdMap.stream()
+                .filter(item -> item.itemType == ITEM_TYPE_FOLDER)
+                .forEach(item -> result.put(item.id, (FolderInfo) item));
+        return result;
     }
 
 }

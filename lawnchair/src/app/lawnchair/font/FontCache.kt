@@ -35,9 +35,13 @@ import app.lawnchair.util.getDisplayName
 import app.lawnchair.util.subscribeFiles
 import app.lawnchair.util.uiHelperHandler
 import com.android.launcher3.R
-import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.dagger.ApplicationContext
+import com.android.launcher3.dagger.LauncherAppComponent
+import com.android.launcher3.dagger.LauncherAppSingleton
+import com.android.launcher3.util.DaggerSingletonObject
 import com.android.launcher3.util.SafeCloseable
 import java.io.File
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.CoroutineName
@@ -50,7 +54,10 @@ import kotlinx.coroutines.plus
 import org.json.JSONArray
 import org.json.JSONObject
 
-class FontCache private constructor(private val context: Context) : SafeCloseable {
+@LauncherAppSingleton
+class FontCache @Inject constructor(
+    @ApplicationContext private val context: Context,
+) : SafeCloseable {
 
     private val scope = MainScope() + CoroutineName("FontCache")
 
@@ -513,7 +520,7 @@ class FontCache private constructor(private val context: Context) : SafeCloseabl
 
     companion object {
         @JvmField
-        val INSTANCE = MainThreadInitializedObject(::FontCache)
+        val INSTANCE = DaggerSingletonObject(LauncherAppComponent::getFontCache)
 
         private const val KEY_CLASS_NAME = "className"
         private const val KEY_FAMILY_NAME = "family"

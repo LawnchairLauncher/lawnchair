@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.dragging;
 
-import static com.android.launcher3.testing.shared.TestProtocol.TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE;
 import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.PHOTOS_APP_NAME;
@@ -65,6 +64,7 @@ public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
     @Test
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
+    @ScreenRecordRule.ScreenRecord // b/383917141
     public void testDragToFolder() {
         // TODO: add the use case to drag an icon to an existing folder. Currently it either fails
         // on tablets or phones due to difference in resolution.
@@ -174,13 +174,13 @@ public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
     public void testDragAndCancelAppIcon() {
         final HomeAppIcon homeAppIcon = createShortcutInCenterIfNotExist(GMAIL_APP_NAME);
         Point positionBeforeDrag =
-                mLauncher.getWorkspace().getWorkspaceIconsPositions().get(GMAIL_APP_NAME);
+                mLauncher.getWorkspace().getWorkspaceIconPosition(GMAIL_APP_NAME);
         assertNotNull("App not found in Workspace before dragging.", positionBeforeDrag);
 
         mLauncher.getWorkspace().dragAndCancelAppIcon(homeAppIcon);
 
         Point positionAfterDrag =
-                mLauncher.getWorkspace().getWorkspaceIconsPositions().get(GMAIL_APP_NAME);
+                mLauncher.getWorkspace().getWorkspaceIconPosition(GMAIL_APP_NAME);
         assertNotNull("App not found in Workspace after dragging.", positionAfterDrag);
         assertEquals("App not returned to same position in Workspace after drag & cancel",
                 positionBeforeDrag, positionAfterDrag);
@@ -195,7 +195,6 @@ public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
     @PlatinumTest(focusArea = "launcher")
     @Test
     @PortraitLandscape
-    @ScreenRecordRule.ScreenRecord // b/343953783
     public void testDragAppIcon() {
 
         final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
@@ -228,11 +227,6 @@ public class TaplDragTest extends AbstractLauncherUiTest<Launcher> {
         final HomeAppIcon launcherTestAppIcon = createShortcutInCenterIfNotExist(TEST_APP_NAME);
         for (Point target : targets) {
             startTime = SystemClock.uptimeMillis();
-            Log.d(TEST_DRAG_APP_ICON_TO_MULTIPLE_WORKSPACES_FAILURE,
-                    "TaplDragTest.java.testDragAppIconToMultipleWorkspaceCells: shortcut name: "
-                            + launcherTestAppIcon.getIconName()
-                            + " | target cell coordinates: (" + target.x + ", " + target.y
-                            + ") | start time: " + startTime);
             launcherTestAppIcon.dragToWorkspace(target.x, target.y);
             endTime = SystemClock.uptimeMillis();
             elapsedTime = endTime - startTime;

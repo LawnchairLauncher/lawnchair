@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    buildToolsVersion "36.1.0"
     namespace "app.lawnchair.compatlib"
 
     buildFeatures {

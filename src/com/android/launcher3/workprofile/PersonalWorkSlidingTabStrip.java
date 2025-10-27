@@ -18,6 +18,7 @@ package com.android.launcher3.workprofile;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.RippleDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -27,8 +28,11 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.pageindicators.Direction;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.views.ActivityContext;
+
+import java.util.function.Consumer;
 
 import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.color.tokens.ColorStateListTokens;
@@ -51,6 +55,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         typedArray.recycle();
     }
 
+    // Lawnchair: This function theme the work mode tab and toggle
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -59,8 +64,9 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         for (int i = 0; i < getChildCount(); i++) {
             Button tab = (Button) getChildAt(i);
             tab.setAllCaps(false);
-            RippleDrawable background = (RippleDrawable) tab.getBackground();
-            background.setDrawableByLayerId(android.R.id.mask, DrawableTokens.AllAppsTabsMaskDrawable.resolve(getContext()));
+            // Lawnchair-TODO: StateListDrawable
+//            RippleDrawable background = (RippleDrawable) tab.getBackground();
+//            background.setDrawableByLayerId(android.R.id.mask, DrawableTokens.AllAppsTabsMaskDrawable.resolve(getContext()));
             tab.setBackground(DrawableTokens.AllAppsTabsBackground.resolve(getContext()));
             tab.setTextColor(ColorStateListTokens.AllAppsTabText.resolve(getContext()));
             fontManager.setCustomFont(tab, R.id.font_body_medium);
@@ -99,6 +105,11 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     @Override
+    public void setArrowClickListener(Consumer<Direction> listener) {
+        // No-Op. All Apps doesn't need accessibility arrows for single click navigation.
+    }
+
+    @Override
     public boolean hasOverlappingRendering() {
         return false;
     }
@@ -124,8 +135,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     }
 
     /**
-     * Interface definition for a callback to be invoked when an active page has
-     * been changed.
+     * Interface definition for a callback to be invoked when an active page has been changed.
      */
     public interface OnActivePageChangedListener {
         /** Called when the active page has been changed. */

@@ -33,21 +33,6 @@ public class EdgeEffectCompat extends EdgeEffect {
         super(context);
     }
 
-    @Override
-    public float getDistance() {
-        return Utilities.ATLEAST_S ? super.getDistance() : 0;
-    }
-
-    @Override
-    public float onPullDistance(float deltaDistance, float displacement) {
-        if (Utilities.ATLEAST_S) {
-            return super.onPullDistance(deltaDistance, displacement);
-        } else {
-            onPull(deltaDistance, displacement);
-            return deltaDistance;
-        }
-    }
-
     public float onPullDistance(float deltaDistance, float displacement, MotionEvent ev) {
         return onPullDistance(deltaDistance, displacement);
     }

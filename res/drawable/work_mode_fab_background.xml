@@ -18,7 +18,10 @@
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/work_fab_radius" />
-            <solid android:color="@color/work_fab_bg_color" />
+            <solid android:color="@color/materialColorPrimary" />
+            <padding
+                android:left="@dimen/work_mode_fab_background_horizontal_padding"
+                android:right="@dimen/work_mode_fab_background_horizontal_padding"/>
         </shape>
     </item>
 </ripple>

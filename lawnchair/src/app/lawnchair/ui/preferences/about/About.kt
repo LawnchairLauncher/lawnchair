@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
@@ -73,6 +74,8 @@ fun About(
     val sheetState = rememberModalBottomSheetState(true)
     var openBottomSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+
+    val prefs: PreferenceManager = PreferenceManager.getInstance(context)
 
     if (openBottomSheet) {
         val updateState = uiState.updateState
@@ -135,7 +138,11 @@ fun About(
                 horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = BuildConfig.VERSION_DISPLAY_NAME,
+                    text = if (prefs.hideVersionInfo.get()) {
+                        prefs.pseudonymVersion.get() + " (pseudonym)"
+                    } else {
+                        BuildConfig.VERSION_DISPLAY_NAME
+                    },
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,

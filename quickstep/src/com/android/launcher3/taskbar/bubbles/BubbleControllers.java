@@ -15,22 +15,35 @@
  */
 package com.android.launcher3.taskbar.bubbles;
 
+import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_BUBBLE_BAR;
+
+import android.graphics.Rect;
+import android.view.View;
+
 import com.android.launcher3.taskbar.TaskbarControllers;
+import com.android.launcher3.taskbar.TaskbarSharedState;
+import com.android.launcher3.taskbar.bubbles.BubbleBarViewController.TaskbarViewPropertiesProvider;
+import com.android.launcher3.taskbar.bubbles.stashing.BubbleBarLocationOnDemandListener;
+import com.android.launcher3.taskbar.bubbles.stashing.BubbleStashController;
+import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.RunnableList;
 
-/**
- * Hosts various bubble controllers to facilitate passing between one another.
- */
+import java.io.PrintWriter;
+import java.util.Optional;
+
+/** Hosts various bubble controllers to facilitate passing between one another. */
 public class BubbleControllers {
 
     public final BubbleBarController bubbleBarController;
     public final BubbleBarViewController bubbleBarViewController;
     public final BubbleStashController bubbleStashController;
-    public final BubbleStashedHandleViewController bubbleStashedHandleViewController;
+    public final Optional<BubbleStashedHandleViewController> bubbleStashedHandleViewController;
     public final BubbleDragController bubbleDragController;
     public final BubbleDismissController bubbleDismissController;
     public final BubbleBarPinController bubbleBarPinController;
     public final BubblePinController bubblePinController;
+    public final Optional<BubbleBarSwipeController> bubbleBarSwipeController;
+    public final BubbleCreator bubbleCreator;
 
     private final RunnableList mPostInitRunnables = new RunnableList();
 
@@ -43,11 +56,13 @@ public class BubbleControllers {
             BubbleBarController bubbleBarController,
             BubbleBarViewController bubbleBarViewController,
             BubbleStashController bubbleStashController,
-            BubbleStashedHandleViewController bubbleStashedHandleViewController,
+            Optional<BubbleStashedHandleViewController> bubbleStashedHandleViewController,
             BubbleDragController bubbleDragController,
             BubbleDismissController bubbleDismissController,
             BubbleBarPinController bubbleBarPinController,
-            BubblePinController bubblePinController) {
+            BubblePinController bubblePinController,
+            Optional<BubbleBarSwipeController> bubbleBarSwipeController,
+            BubbleCreator bubbleCreator) {
         this.bubbleBarController = bubbleBarController;
         this.bubbleBarViewController = bubbleBarViewController;
         this.bubbleStashController = bubbleStashController;
@@ -56,6 +71,8 @@ public class BubbleControllers {
         this.bubbleDismissController = bubbleDismissController;
         this.bubbleBarPinController = bubbleBarPinController;
         this.bubblePinController = bubblePinController;
+        this.bubbleBarSwipeController = bubbleBarSwipeController;
+        this.bubbleCreator = bubbleCreator;
     }
 
     /**
@@ -65,16 +82,44 @@ public class BubbleControllers {
      * were created
      * in constructors for now, as some controllers may still be waiting for init().
      */
-    public void init(TaskbarControllers taskbarControllers) {
+    public void init(TaskbarSharedState taskbarSharedState, TaskbarControllers taskbarControllers) {
+        BubbleBarLocationCompositeListener bubbleBarLocationListeners =
+                new BubbleBarLocationCompositeListener(
+                        taskbarControllers.navbarButtonsViewController,
+                        taskbarControllers.taskbarViewController,
+                        new BubbleBarLocationOnDemandListener(() -> taskbarControllers.uiController)
+                );
         bubbleBarController.init(this,
-                taskbarControllers.navbarButtonsViewController::isImeVisible);
-        bubbleBarViewController.init(taskbarControllers, this);
-        bubbleStashedHandleViewController.init(taskbarControllers, this);
-        bubbleStashController.init(taskbarControllers, this);
+                bubbleBarLocationListeners,
+                taskbarSharedState);
+        bubbleStashedHandleViewController.ifPresent(
+                controller -> controller.init(/* bubbleControllers = */ this));
+        bubbleStashController.init(
+                taskbarControllers.taskbarInsetsController,
+                bubbleBarViewController,
+                bubbleStashedHandleViewController.orElse(null),
+                taskbarControllers::runAfterInit
+        );
+        bubbleBarViewController.init(taskbarControllers, /* bubbleControllers = */ this,
+                new TaskbarViewPropertiesProvider() {
+                    @Override
+                    public Rect getTaskbarViewBounds() {
+                        return taskbarControllers.taskbarViewController
+                                .getTransientTaskbarIconLayoutBoundsInParent();
+                    }
+
+                    @Override
+                    public MultiPropertyFactory<View>.MultiProperty getIconsAlpha() {
+                        return taskbarControllers.taskbarViewController
+                                .getTaskbarIconAlpha()
+                                .get(ALPHA_INDEX_BUBBLE_BAR);
+                    }
+                });
         bubbleDragController.init(/* bubbleControllers = */ this);
         bubbleDismissController.init(/* bubbleControllers = */ this);
-        bubbleBarPinController.init(this);
+        bubbleBarPinController.init(this, bubbleBarLocationListeners);
         bubblePinController.init(this);
+        bubbleBarSwipeController.ifPresent(c -> c.init(this));
 
         mPostInitRunnables.executeAllAndDestroy();
     }
@@ -96,7 +141,13 @@ public class BubbleControllers {
      * Cleans up all controllers.
      */
     public void onDestroy() {
-        bubbleStashedHandleViewController.onDestroy();
+        bubbleStashedHandleViewController.ifPresent(BubbleStashedHandleViewController::onDestroy);
         bubbleBarController.onDestroy();
+        bubbleBarViewController.onDestroy();
+    }
+
+    /** Dumps bubble controllers state. */
+    public void dump(PrintWriter pw) {
+        bubbleBarViewController.dump(pw);
     }
 }

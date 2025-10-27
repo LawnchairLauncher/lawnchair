@@ -1,0 +1,17 @@
+package {
+    default_team: "trendy_team_system_ui_please_use_a_more_specific_subteam_if_possible_",
+    // See: http://go/android-license-faq
+    // A large-scale-change added 'default_applicable_licenses' to import
+    // all of the 'license_kinds' from "frameworks_base_packages_SystemUI_license"
+    // to get the below license kinds:
+    //   SPDX-license-identifier-Apache-2.0
+    default_applicable_licenses: ["frameworks_base_packages_SystemUI_license"],
+}
+
+android_library {
+    name: "SystemUISharedLib-Keyguard",
+    srcs: [
+        "src/**/*.java",
+    ],
+    min_sdk_version: "current",
+}

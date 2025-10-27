@@ -23,10 +23,10 @@ import android.content.Context;
 
 import com.android.internal.jank.Cuj;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.util.BaseDepthController;
@@ -52,8 +52,7 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext> int getTransitionDuration(
-            DEVICE_PROFILE_CONTEXT context, boolean isToState) {
+    public int getTransitionDuration(ActivityContext context, boolean isToState) {
         return isToState
                 ? context.getDeviceProfile().allAppsOpenDuration
                 : context.getDeviceProfile().allAppsCloseDuration;
@@ -106,7 +105,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public int getTitle() {
-        return R.string.all_apps_label;
+        return R.string.all_apps_list_label;
     }
 
     @Override
@@ -122,7 +121,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
-        if (launcher.getDeviceProfile().isTablet) {
+        if (launcher.getDeviceProfile().shouldShowAllAppsOnSheet()) {
             return getWorkspaceScaleAndTranslation(launcher);
         } else {
             ScaleAndTranslation overviewScaleAndTranslation = LauncherState.OVERVIEW
@@ -135,9 +134,9 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    protected <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext> float getDepthUnchecked(
-            DEVICE_PROFILE_CONTEXT context) {
-        if (context.getDeviceProfile().isTablet) {
+    protected <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
+            float getDepthUnchecked(DEVICE_PROFILE_CONTEXT context) {
+        if (context.getDeviceProfile().shouldShowAllAppsOnSheet()) {
             return context.getDeviceProfile().bottomSheetDepth;
         } else {
             // The scrim fades in at approximately 50% of the swipe gesture.
@@ -158,7 +157,7 @@ public class AllAppsState extends LauncherState {
         return new PageAlphaProvider(DECELERATE_2) {
             @Override
             public float getPageAlpha(int pageIndex) {
-                return launcher.getDeviceProfile().isTablet
+                return isWorkspaceVisible(launcher.getDeviceProfile())
                         ? superPageAlphaProvider.getPageAlpha(pageIndex)
                         : 0;
             }
@@ -168,11 +167,15 @@ public class AllAppsState extends LauncherState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         int elements = ALL_APPS_CONTENT | FLOATING_SEARCH_BAR;
-        // Only add HOTSEAT_ICONS for tablets in ALL_APPS state.
-        if (launcher.getDeviceProfile().isTablet) {
+        if (isWorkspaceVisible(launcher.getDeviceProfile())) {
             elements |= HOTSEAT_ICONS;
         }
         return elements;
+    }
+
+    private static boolean isWorkspaceVisible(DeviceProfile deviceProfile) {
+        // Currently we hide the workspace with the all apps blur flag for simplicity.
+        return deviceProfile.isTablet && !Flags.allAppsBlur();
     }
 
     @Override
@@ -205,20 +208,16 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        if (!FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()) {
-            return super.getOverviewScaleAndOffset(launcher);
-        }
-        // This handles the case of returning to the previous app from Overview -> All Apps gesture.
-        // This is the start scale/offset of overview that will be used for that transition.
-        // TODO (b/283336332): Translate in Y direction (ideally with overview resistance).
-        return new float[] {0.5f /* scale */, NO_OFFSET};
-    }
-
-    @Override
     public int getWorkspaceScrimColor(Launcher launcher) {
-        return launcher.getDeviceProfile().isTablet 
-            ? launcher.getResources().getColor(android.R.color.transparent) 
-            : LawnchairUtilsKt.getAllAppsScrimColor(launcher);
+        if (!launcher.getDeviceProfile().shouldShowAllAppsOnSheet()) {
+            // Lawnchair-TODO-Colour: LawnchairUtilsKt.getAllAppsScrimColor(launcher) + allAppsScrimColor
+            return Themes.getAttrColor(launcher, R.attr.allAppsScrimColor);
+        }
+        if (Flags.allAppsBlur()) {
+            // Lawnchair-TODO-Colour: LawnchairUtilsKt.getAllAppsScrimColor(launcher) + allAppsScrimColorOverBlur
+            return Themes.getAttrColor(launcher, R.attr.allAppsScrimColorOverBlur);
+        }
+        // Lawnchair-TODO-Colour: LawnchairUtilsKt.getAllAppsScrimColor(launcher) + widgets_picker_scrim
+        return launcher.getResources().getColor(R.color.widgets_picker_scrim);
     }
 }

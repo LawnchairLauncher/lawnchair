@@ -26,8 +26,12 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.util.Log;
+import android.view.AttachedSurfaceControl;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.SurfaceControl;
+import android.view.ViewRootImpl;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 
@@ -35,8 +39,11 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
+import com.android.launcher3.R;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
+import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -51,12 +58,14 @@ import java.util.Optional;
  */
 public final class TaskbarOverlayController {
 
+    private static final String TAG = "TaskbarOverlayController";
     private static final String WINDOW_TITLE = "Taskbar Overlay";
 
     private final TaskbarActivityContext mTaskbarContext;
     private final Context mWindowContext;
     private final TaskbarOverlayProxyView mProxyView;
     private final LayoutParams mLayoutParams;
+    private final int mMaxBlurRadius;
 
     private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
         @Override
@@ -87,6 +96,8 @@ public final class TaskbarOverlayController {
     private DeviceProfile mLauncherDeviceProfile;
     private @Nullable TaskbarOverlayContext mOverlayContext;
     private TaskbarControllers mControllers; // Initialized in init.
+    // True if we have alerted surface flinger of an expensive call for blur.
+    private boolean mInEarlyWakeUp;
 
     public TaskbarOverlayController(
             TaskbarActivityContext taskbarContext, DeviceProfile launcherDeviceProfile) {
@@ -95,6 +106,8 @@ public final class TaskbarOverlayController {
         mProxyView = new TaskbarOverlayProxyView();
         mLayoutParams = createLayoutParams();
         mLauncherDeviceProfile = launcherDeviceProfile;
+        mMaxBlurRadius = mTaskbarContext.getResources().getDimensionPixelSize(
+                R.dimen.max_depth_blur_radius_enhanced);
     }
 
     /** Initialize the controller. */
@@ -149,9 +162,13 @@ public final class TaskbarOverlayController {
     /** Destroys the controller and any overlay window if present. */
     public void onDestroy() {
         TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskStackListener);
-        Optional.ofNullable(mOverlayContext)
-                .map(c -> c.getSystemService(WindowManager.class))
-                .ifPresent(m -> m.removeViewImmediate(mOverlayContext.getDragLayer()));
+        Optional.ofNullable(mOverlayContext).ifPresent(c -> {
+            c.onDestroy();
+            WindowManager wm = c.getSystemService(WindowManager.class);
+            if (wm != null) {
+                wm.removeViewImmediate(mOverlayContext.getDragLayer());
+            }
+        });
         mOverlayContext = null;
     }
 
@@ -183,7 +200,7 @@ public final class TaskbarOverlayController {
     private LayoutParams createLayoutParams() {
         LayoutParams layoutParams = new LayoutParams(
                 TYPE_APPLICATION_OVERLAY,
-                LayoutParams.FLAG_SPLIT_TOUCH,
+                /* flags = */ 0,
                 PixelFormat.TRANSLUCENT);
         layoutParams.setTitle(WINDOW_TITLE);
         layoutParams.gravity = Gravity.BOTTOM;
@@ -193,6 +210,73 @@ public final class TaskbarOverlayController {
         layoutParams.setSystemApplicationOverlay(true);
         layoutParams.privateFlags = PRIVATE_FLAG_CONSUME_IME_INSETS;
         return layoutParams;
+    }
+
+    /**
+     * Sets the blur radius for the overlay window.
+     *
+     * @param radius the blur radius in pixels. This will automatically change to {@code 0} if blurs
+     *               are unsupported on the device.
+     */
+    public void setBackgroundBlurRadius(int radius) {
+        if (!Flags.allAppsBlur()) {
+            return;
+        }
+        if (!BlurUtils.supportsBlursOnWindows()) {
+            Log.d(TAG, "setBackgroundBlurRadius: not supported, setting to 0");
+            radius = 0;
+            // intentionally falling through in case a non-0 blur was previously set.
+        }
+        if (mOverlayContext == null) {
+            Log.w(TAG, "setBackgroundBlurRadius: no overlay context");
+            return;
+        }
+        TaskbarOverlayDragLayer dragLayer = mOverlayContext.getDragLayer();
+        if (dragLayer == null) {
+            Log.w(TAG, "setBackgroundBlurRadius: no drag layer");
+            return;
+        }
+        ViewRootImpl dragLayerViewRoot = dragLayer.getViewRootImpl();
+        if (dragLayerViewRoot == null) {
+            Log.w(TAG, "setBackgroundBlurRadius: dragLayerViewRoot is null");
+            return;
+        }
+        AttachedSurfaceControl rootSurfaceControl = dragLayer.getRootSurfaceControl();
+        if (rootSurfaceControl == null) {
+            Log.w(TAG, "setBackgroundBlurRadius: rootSurfaceControl is null");
+            return;
+        }
+        SurfaceControl surfaceControl = dragLayerViewRoot.getSurfaceControl();
+        if (surfaceControl == null || !surfaceControl.isValid()) {
+            Log.w(TAG, "setBackgroundBlurRadius: surfaceControl is null or invalid");
+            return;
+        }
+        Log.v(TAG, "setBackgroundBlurRadius: " + radius);
+        SurfaceControl.Transaction transaction =
+                new SurfaceControl.Transaction().setBackgroundBlurRadius(surfaceControl, radius);
+
+        // Set early wake-up flags when we know we're executing an expensive operation, this way
+        // SurfaceFlinger will adjust its internal offsets to avoid jank.
+        boolean wantsEarlyWakeUp = radius > 0 && radius < mMaxBlurRadius;
+        if (wantsEarlyWakeUp && !mInEarlyWakeUp) {
+            Log.d(TAG, "setBackgroundBlurRadius: setting early wakeup");
+            try {
+                transaction.setEarlyWakeupStart();
+            } catch (NoSuchMethodError e) {
+                // LC-Ignored: wtf?
+            }
+            mInEarlyWakeUp = true;
+        } else if (!wantsEarlyWakeUp && mInEarlyWakeUp) {
+            Log.d(TAG, "setBackgroundBlurRadius: clearing early wakeup");
+            try {
+                transaction.setEarlyWakeupEnd();
+            } catch (NoSuchMethodError e) {
+                // LC-Ignored: wtf?
+            }
+            mInEarlyWakeUp = false;
+        }
+
+        rootSurfaceControl.applyTransactionOnDraw(transaction);
     }
 
     /**
@@ -216,6 +300,13 @@ public final class TaskbarOverlayController {
         @Override
         protected void handleClose(boolean animate) {
             if (!mIsOpen) return;
+            if (Flags.taskbarOverflow()) {
+                // Mark the view closed before attempting to remove it, so the drag layer does not
+                // schedule another call to close. Needed for taskbar overflow in case the KQS
+                // view shown for taskbar overflow needs to be reshown - delayed close call would
+                // would result in reshown KQS view getting hidden.
+                mIsOpen = false;
+            }
             mTaskbarContext.getDragLayer().removeView(this);
             Optional.ofNullable(mOverlayContext).ifPresent(c -> {
                 if (canCloseWindow()) {

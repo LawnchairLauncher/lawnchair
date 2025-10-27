@@ -19,8 +19,6 @@ package com.android.launcher3.util;
 import static app.lawnchair.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT;
 import static app.lawnchair.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME;
 
-import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -33,12 +31,12 @@ import android.view.ContextThemeWrapper;
 
 import androidx.annotation.ColorInt;
 
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.GraphicsUtils;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import com.android.launcher3.views.ActivityContext;
 
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.theme.color.ColorMode;
@@ -46,7 +44,6 @@ import app.lawnchair.theme.color.tokens.ColorTokens;
 import app.lawnchair.wallpaper.WallpaperColorsCompat;
 import app.lawnchair.wallpaper.WallpaperManagerCompat;
 import app.lawnchair.ui.theme.ColorKt;
-import com.android.launcher3.views.ActivityContext;
 
 /**
  * Various utility methods associated with theming.
@@ -54,12 +51,7 @@ import com.android.launcher3.views.ActivityContext;
 @SuppressWarnings("NewApi")
 public class Themes {
 
-    public static final String KEY_THEMED_ICONS = "themed_icons";
-
-    /**
-     * Gets the WallpaperColorHints and then uses those to get the correct activity
-     * theme res.
-     */
+    /** Gets the WallpaperColorHints and then uses those to get the correct activity theme res. */
     public static int getActivityThemeRes(Context context) {
         WallpaperColorsCompat colors = WallpaperManagerCompat.INSTANCE.get(context).getWallpaperColors();
         final int colorHints = colors != null ? colors.getColorHints() : 0;
@@ -110,7 +102,7 @@ public class Themes {
 
     public static String getDefaultBodyFont(Context context) {
         TypedArray ta = context.obtainStyledAttributes(android.R.style.TextAppearance_DeviceDefault,
-                new int[] { android.R.attr.fontFamily });
+                new int[]{android.R.attr.fontFamily});
         String value = ta.getString(0);
         ta.recycle();
         return value;
@@ -121,7 +113,7 @@ public class Themes {
     }
 
     public static float getDimension(Context context, int attr, float defaultValue) {
-        TypedArray ta = context.obtainStyledAttributes(new int[] { attr });
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
         float value = ta.getDimension(0, defaultValue);
         ta.recycle();
         return value;
@@ -146,38 +138,36 @@ public class Themes {
     }
 
     public static boolean getAttrBoolean(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[] { attr });
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
         boolean value = ta.getBoolean(0, false);
         ta.recycle();
         return value;
     }
 
     public static Drawable getAttrDrawable(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[] { attr });
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
         Drawable value = ta.getDrawable(0);
         ta.recycle();
         return value;
     }
 
     public static int getAttrInteger(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[] { attr });
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
         int value = ta.getInteger(0, 0);
         ta.recycle();
         return value;
     }
 
     /**
-     * Scales a color matrix such that, when applied to color R G B A, it produces
-     * R' G' B' A' where
+     * Scales a color matrix such that, when applied to color R G B A, it produces R' G' B' A' where
      * R' = r * R
      * G' = g * G
      * B' = b * B
      * A' = a * A
      *
-     * The matrix will, for instance, turn white into r g b a, and black will remain
-     * black.
+     * The matrix will, for instance, turn white into r g b a, and black will remain black.
      *
-     * @param color  The color r g b a
+     * @param color The color r g b a
      * @param target The ColorMatrix to scale
      */
     public static void setColorScaleOnMatrix(int color, ColorMatrix target) {
@@ -186,18 +176,15 @@ public class Themes {
     }
 
     /**
-     * Changes a color matrix such that, when applied to srcColor, it produces
-     * dstColor.
+     * Changes a color matrix such that, when applied to srcColor, it produces dstColor.
      *
-     * Note that values on the last column of target ColorMatrix can be negative,
-     * and may result in
-     * negative values when applied on a color. Such negative values will be
-     * automatically shifted
+     * Note that values on the last column of target ColorMatrix can be negative, and may result in
+     * negative values when applied on a color. Such negative values will be automatically shifted
      * up to 0 by the framework.
      *
      * @param srcColor The color to start from
      * @param dstColor The color to create by applying target on srcColor
-     * @param target   The ColorMatrix to transform the color
+     * @param target The ColorMatrix to transform the color
      */
     public static void setColorChangeOnMatrix(int srcColor, int dstColor, ColorMatrix target) {
         target.reset();
@@ -208,8 +195,7 @@ public class Themes {
     }
 
     /**
-     * Creates a map for attribute-name to value for all the values in
-     * {@param attrs} which can be
+     * Creates a map for attribute-name to value for all the values in {@param attrs} which can be
      * held in memory for later use.
      */
     public static SparseArray<TypedValue> createValueMap(Context context, AttributeSet attrSet,
@@ -233,10 +219,7 @@ public class Themes {
         return result;
     }
 
-    /**
-     * Returns the desired navigation bar scrim color depending on the
-     * {@code DeviceProfile}.
-     */
+    /** Returns the desired navigation bar scrim color depending on the {@code DeviceProfile}. */
     @ColorInt
     public static <T extends Context & ActivityContext> int getNavBarScrimColor(T context) {
         return context.getDeviceProfile().isTaskbarPresent

@@ -26,9 +26,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Process;
@@ -40,9 +40,10 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.icons.ComponentWithLabelAndIcon;
-import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.cache.BaseIconCache;
+import com.android.launcher3.icons.cache.CachedObject;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.util.ApplicationInfoWrapper;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
@@ -52,16 +53,26 @@ import java.util.List;
 /**
  * Wrapper class for representing a shortcut configure activity.
  */
-public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAndIcon {
+public abstract class ShortcutConfigActivityInfo implements CachedObject {
 
     private static final String TAG = "SCActivityInfo";
 
     private final ComponentName mCn;
     private final UserHandle mUser;
+    private final ApplicationInfoWrapper mInfoWrapper;
 
-    protected ShortcutConfigActivityInfo(ComponentName cn, UserHandle user) {
+    protected ShortcutConfigActivityInfo(
+            ComponentName cn, UserHandle user, ApplicationInfoWrapper infoWrapper) {
         mCn = cn;
         mUser = user;
+        mInfoWrapper = infoWrapper;
+    }
+
+    protected ShortcutConfigActivityInfo(
+            ComponentName cn, UserHandle user, Context context) {
+        mCn = cn;
+        mUser = user;
+        mInfoWrapper = new ApplicationInfoWrapper(context, cn.getPackageName(), user);
     }
 
     @Override
@@ -79,7 +90,7 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAn
     }
 
     @Override
-    public abstract Drawable getFullResIcon(IconCache cache);
+    public abstract Drawable getFullResIcon(BaseIconCache cache);
 
     /**
      * Return a WorkspaceItemInfo, if it can be created directly on drop, without requiring any
@@ -87,6 +98,12 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAn
      */
     public WorkspaceItemInfo createWorkspaceItemInfo() {
         return null;
+    }
+
+    @Nullable
+    @Override
+    public ApplicationInfo getApplicationInfo() {
+        return mInfoWrapper.getInfo();
     }
 
     public boolean startConfigActivity(Activity activity, int requestCode) {
@@ -107,7 +124,7 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAn
     }
 
     /**
-     * Returns true if various properties ({@link #getLabel(PackageManager)},
+     * Returns true if various properties ({@link #getLabel()},
      * {@link #getFullResIcon}) can be safely persisted.
      */
     public boolean isPersistable() {
@@ -120,18 +137,19 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAn
         private final LauncherActivityInfo mInfo;
 
         public ShortcutConfigActivityInfoVO(LauncherActivityInfo info) {
-            super(info.getComponentName(), info.getUser());
+            super(info.getComponentName(), info.getUser(),
+                    new ApplicationInfoWrapper(info.getApplicationInfo()));
             mInfo = info;
         }
 
         @Override
-        public CharSequence getLabel(PackageManager pm) {
+        public CharSequence getLabel() {
             return mInfo.getLabel();
         }
 
         @Override
-        public Drawable getFullResIcon(IconCache cache) {
-            return cache.getFullResIcon(mInfo);
+        public Drawable getFullResIcon(BaseIconCache cache) {
+            return cache.getFullResIcon(mInfo.getActivityInfo());
         }
 
         @Override

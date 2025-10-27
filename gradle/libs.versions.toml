@@ -1,5 +1,5 @@
 [versions]
-jdkRelease = "17"
+jdkRelease = "21"
 
 accompanist = "0.37.3"
 benchmarkMacroJunit4 = "1.4.1"
@@ -21,7 +21,7 @@ coil = "2.7.0"
 composeBom = "2025.10.01"
 compose = "1.9.4"
 composeMaterial = "1.9.4"
-composeMaterial3 = "1.4.0"
+composeMaterial3 = "1.5.0-alpha07"
 composeMaterialIcons = "1.7.8"
 constraintlayout = "2.2.1"
 dagger = "2.57.2"
@@ -29,13 +29,18 @@ datastore = "1.1.7"
 dynamicanimation = "1.1.0"
 fuzzywuzzy = "1.4.0"
 googleMaterial = "1.13.0"
+graphicsCore = "1.0.3"
+graphicsPath = "1.0.1"
+graphicsShapes = "1.1.0"
 hokoBlur = "1.5.5"
+javaxInject = "1"
 kdrag0nColorkt = "1.0.5"
 kotlinxCoroutines = "1.10.2"
 kotlinxSerialization = "1.9.0"
+leakcanaryAndroid = "2.14"
 libsu = "6.0.0"
 lifecycle = "2.9.4"
-materialMotionCompose = "1.2.1"
+materialMotionCompose = "2.0.1"
 navigationCompose = "2.9.5"
 okhttp = "5.2.1"
 palette = "1.0.0"
@@ -85,6 +90,9 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx"
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 androidx-dynamicanimation = { module = "androidx.dynamicanimation:dynamicanimation", version.ref = "dynamicanimation" }
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-graphics-core = { group = "androidx.graphics", name = "graphics-core", version.ref = "graphicsCore" }
+androidx-graphics-path = { group = "androidx.graphics", name = "graphics-path", version.ref = "graphicsPath" }
+androidx-graphics-shapes = { group = "androidx.graphics", name = "graphics-shapes", version.ref = "graphicsShapes" }
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
@@ -107,14 +115,14 @@ compose-material3-windowSizeClass = { group = "androidx.compose.material3", name
 compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
 compose-ui-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "compose" }
+compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "compose"}
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "compose" }
 compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "compose" }
 
-# Dagger & Hilt
-error_prone_annotations = { module = "com.google.errorprone:error_prone_annotations", version.ref = "error_prone_annotations" }
-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger" }
+dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
+dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger" }
+dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger" }
 
 # Accompanist
 accompanist-adaptive = { group = "com.google.accompanist", name = "accompanist-adaptive", version.ref = "accompanist" }
@@ -140,6 +148,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 # Kotlin
 kotlin-androidExtensionRuntime = { module = "org.jetbrains.kotlin:kotlin-android-extensions-runtime", version.ref = "kotlin" }
 kotlin-parcelizeRuntime = { module = "org.jetbrains.kotlin:kotlin-parcelize-runtime", version.ref = "kotlin" }
+kotlin-stdlib-jdk7 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlin" }
 # KotlinX
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
@@ -149,9 +158,12 @@ android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs
 airbnb-lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "airbnbLottie" }
 chickenhook-restrictionbypass = { group = "com.github.ChickenHook", name = "RestrictionBypass", version.ref = "restrictionBypass" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+google-errorprone-annotations = { module = "com.google.errorprone:error_prone_annotations", version.ref = "error_prone_annotations" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "googleMaterial" }
 hoko-blur = { group = "io.github.hokofly", name = "hoko-blur", version.ref = "hokoBlur" }
+javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javaxInject" }
 kdrag0n-colorkt = { group = "dev.kdrag0n", name = "colorkt", version.ref = "kdrag0nColorkt" }
+leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 libsu-core = { group = "com.github.topjohnwu.libsu", name = "core", version.ref = "libsu" }
 libsu-service = { group = "com.github.topjohnwu.libsu", name = "service", version.ref = "libsu" }
 material-motion-compose = { group = "io.github.fornewid", name = "material-motion-compose-core", version.ref = "materialMotionCompose" }
@@ -165,6 +177,7 @@ xdrop-fuzzywuzzy = { group = "me.xdrop", name = "fuzzywuzzy", version.ref = "fuz
 
 [bundles]
 accompanist = ["accompanist-adaptive", "accompanist-drawablepainter", "accompanist-permissions"]
+graphics = ["androidx-graphics-core", "androidx-graphics-path", "androidx-graphics-shapes"]
 opto = ["opto-domain", "opto-core", "opto-compose"]
 retrofit = ["retrofit-core", "retrofit-converter-kotlinx", "okhttp"]
 room = ["room-runtime", "room-ktx"]

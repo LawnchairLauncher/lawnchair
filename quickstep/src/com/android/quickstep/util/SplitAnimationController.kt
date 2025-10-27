@@ -27,8 +27,10 @@ import android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN
 import android.app.WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.view.RemoteAnimationTarget
 import android.view.SurfaceControl
@@ -40,16 +42,19 @@ import android.window.TransitionInfo
 import android.window.TransitionInfo.Change
 import android.window.WindowContainerToken
 import androidx.annotation.VisibleForTesting
+import androidx.core.util.component1
+import androidx.core.util.component2
 import com.android.app.animation.Interpolators
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Flags.enableOverviewIconMenu
+import com.android.launcher3.Flags.enableRefactorTaskThumbnail
 import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.QuickstepTransitionManager
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.anim.AnimatedFloat
 import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.apppairs.AppPairIcon
-import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.logging.StatsLogManager.EventEnum
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.statehandlers.DepthController
@@ -67,9 +72,9 @@ import com.android.quickstep.views.IconAppChipView
 import com.android.quickstep.views.RecentsView
 import com.android.quickstep.views.RecentsViewContainer
 import com.android.quickstep.views.SplitInstructionsView
+import com.android.quickstep.views.TaskContainer
 import com.android.quickstep.views.TaskThumbnailViewDeprecated
 import com.android.quickstep.views.TaskView
-import com.android.quickstep.views.TaskView.TaskContainer
 import com.android.quickstep.views.TaskViewIcon
 import com.android.wm.shell.shared.TransitionUtil
 import java.util.Optional
@@ -88,7 +93,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             val iconDrawable: Drawable,
             val fadeWithThumbnail: Boolean,
             val isStagedTask: Boolean,
-            val iconView: View?
+            val iconView: View?,
+            val contentDescription: CharSequence?,
         )
     }
 
@@ -98,7 +104,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
      */
     fun getFirstAnimInitViews(
         taskViewSupplier: Supplier<TaskView>,
-        splitSelectSourceSupplier: Supplier<SplitSelectSource?>
+        splitSelectSourceSupplier: Supplier<SplitSelectSource?>,
     ): SplitAnimInitProps {
         val splitSelectSource = splitSelectSourceSupplier.get()
         if (!splitSelectStateController.isAnimateCurrentTaskDismissal) {
@@ -109,7 +115,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 splitSelectSource.drawable,
                 fadeWithThumbnail = false,
                 isStagedTask = true,
-                iconView = null
+                iconView = null,
+                splitSelectSource.itemInfo.contentDescription,
             )
         } else if (splitSelectStateController.isDismissingFromSplitPair) {
             // Initiating split from overview, but on a split pair
@@ -118,31 +125,33 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 if (container.task.getKey().getId() == splitSelectStateController.initialTaskId) {
                     val drawable = getDrawable(container.iconView, splitSelectSource)
                     return SplitAnimInitProps(
-                        container.thumbnailViewDeprecated,
-                        container.thumbnailViewDeprecated.thumbnail,
-                        drawable!!,
+                        container.snapshotView,
+                        container.thumbnail,
+                        drawable,
                         fadeWithThumbnail = true,
                         isStagedTask = true,
-                        iconView = container.iconView.asView()
+                        iconView = container.iconView.asView(),
+                        container.task.titleDescription,
                     )
                 }
             }
             throw IllegalStateException(
                 "Attempting to init split from existing split pair " +
-                        "without a valid taskIdAttributeContainer"
+                    "without a valid taskIdAttributeContainer"
             )
         } else {
             // Initiating split from overview on fullscreen task TaskView
             val taskView = taskViewSupplier.get()
-            taskView.taskContainers.first().let {
+            taskView.firstTaskContainer!!.let {
                 val drawable = getDrawable(it.iconView, splitSelectSource)
                 return SplitAnimInitProps(
-                    it.thumbnailViewDeprecated,
-                    it.thumbnailViewDeprecated.thumbnail,
-                    drawable!!,
+                    it.snapshotView,
+                    it.thumbnail,
+                    drawable,
                     fadeWithThumbnail = true,
                     isStagedTask = true,
-                    iconView = it.iconView.asView()
+                    iconView = it.iconView.asView(),
+                    it.task.titleDescription,
                 )
             }
         }
@@ -151,65 +160,87 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
     /**
      * Returns the drawable that's provided in iconView, however if that is null it falls back to
      * the drawable that's in splitSelectSource. TaskView's icon drawable can be null if the
-     * TaskView is scrolled far enough off screen
+     * TaskView is scrolled far enough off screen.
      *
-     * @return [Drawable]
+     * @return the [Drawable] icon, or a translucent drawable if none was found
      */
-    fun getDrawable(iconView: TaskViewIcon, splitSelectSource: SplitSelectSource?): Drawable? {
-        if (iconView.drawable == null && splitSelectSource != null) {
-            return splitSelectSource.drawable
-        }
-        return iconView.drawable
+    fun getDrawable(iconView: TaskViewIcon, splitSelectSource: SplitSelectSource?): Drawable {
+        val drawable =
+            if (iconView.drawable == null && splitSelectSource != null) splitSelectSource.drawable
+            else iconView.drawable
+        return drawable ?: ColorDrawable(Color.TRANSPARENT)
     }
 
     /**
      * When selecting first app from split pair, second app's thumbnail remains. This animates the
      * second thumbnail by expanding it to take up the full taskViewWidth/Height and overlaying it
-     * with [TaskThumbnailViewDeprecated]'s splashView. Adds animations to the provided builder.
-     * Note: The app that **was not** selected as the first split app should be the container that's
-     * passed through.
+     * with [TaskContainer]'s splashView. Adds animations to the provided builder. Note: The app
+     * that **was not** selected as the first split app should be the container that's passed
+     * through.
      *
      * @param builder Adds animation to this
-     * @param taskIdAttributeContainer container of the app that **was not** selected
+     * @param taskContainer container of the app that **was not** selected
      * @param isPrimaryTaskSplitting if true, task that was split would be top/left in the pair
-     *   (opposite of that representing [taskIdAttributeContainer])
+     *   (opposite of that representing [taskContainer])
      */
     fun addInitialSplitFromPair(
-        taskIdAttributeContainer: TaskContainer,
+        taskContainer: TaskContainer,
         builder: PendingAnimation,
         deviceProfile: DeviceProfile,
         taskViewWidth: Int,
         taskViewHeight: Int,
-        isPrimaryTaskSplitting: Boolean
+        isPrimaryTaskSplitting: Boolean,
     ) {
-        val thumbnail = taskIdAttributeContainer.thumbnailViewDeprecated
-        val iconView: View = taskIdAttributeContainer.iconView.asView()
-        builder.add(ObjectAnimator.ofFloat(thumbnail, TaskThumbnailViewDeprecated.SPLASH_ALPHA, 1f))
-        thumbnail.setShowSplashForSplitSelection(true)
+        val snapshot = taskContainer.snapshotView
+        val iconView: View = taskContainer.iconView.asView()
+        if (enableRefactorTaskThumbnail()) {
+            builder.add(
+                AnimatedFloat { v -> taskContainer.taskView.splitSplashAlpha = v }
+                    .animateToValue(1f)
+            )
+        } else {
+            val thumbnailViewDeprecated = taskContainer.thumbnailViewDeprecated
+            builder.add(
+                ObjectAnimator.ofFloat(
+                    thumbnailViewDeprecated,
+                    TaskThumbnailViewDeprecated.SPLASH_ALPHA,
+                    1f,
+                )
+            )
+            thumbnailViewDeprecated.setShowSplashForSplitSelection(true)
+        }
         // With the new `IconAppChipView`, we always want to keep the chip pinned to the
         // top left of the task / thumbnail.
         if (enableOverviewIconMenu()) {
             builder.add(
                 ObjectAnimator.ofFloat(
-                    (iconView as IconAppChipView).splitTranslationX,
+                    (iconView as IconAppChipView).getSplitTranslationX(),
                     MULTI_PROPERTY_VALUE,
-                    0f
+                    0f,
                 )
             )
             builder.add(
-                ObjectAnimator.ofFloat(iconView.splitTranslationY, MULTI_PROPERTY_VALUE, 0f)
+                ObjectAnimator.ofFloat(iconView.getSplitTranslationY(), MULTI_PROPERTY_VALUE, 0f)
             )
         }
+
+        val splitBoundsConfig =
+            (taskContainer.taskView as? GroupedTaskView)?.splitBoundsConfig ?: return
+        val (primarySnapshotViewSize, secondarySnapshotViewSize) =
+            taskContainer.taskView.pagedOrientationHandler.getGroupedTaskViewSizes(
+                deviceProfile,
+                splitBoundsConfig,
+                taskViewWidth,
+                taskViewHeight,
+            )
+        val snapshotViewSize =
+            if (isPrimaryTaskSplitting) secondarySnapshotViewSize else primarySnapshotViewSize
         if (deviceProfile.isLeftRightSplit) {
             // Center view first so scaling happens uniformly, alternatively we can move pivotX to 0
-            val centerThumbnailTranslationX: Float = (taskViewWidth - thumbnail.width) / 2f
-            val finalScaleX: Float = taskViewWidth.toFloat() / thumbnail.width
+            val centerThumbnailTranslationX: Float = (taskViewWidth - snapshotViewSize.x) / 2f
+            val finalScaleX: Float = taskViewWidth.toFloat() / snapshotViewSize.x
             builder.add(
-                ObjectAnimator.ofFloat(
-                    thumbnail,
-                    TaskThumbnailViewDeprecated.SPLIT_SELECT_TRANSLATE_X,
-                    centerThumbnailTranslationX
-                )
+                ObjectAnimator.ofFloat(snapshot, View.TRANSLATION_X, centerThumbnailTranslationX)
             )
             if (!enableOverviewIconMenu()) {
                 // icons are anchored from Gravity.END, so need to use negative translation
@@ -218,21 +249,15 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                     ObjectAnimator.ofFloat(iconView, View.TRANSLATION_X, -centerIconTranslationX)
                 )
             }
-            builder.add(ObjectAnimator.ofFloat(thumbnail, View.SCALE_X, finalScaleX))
+            builder.add(ObjectAnimator.ofFloat(snapshot, View.SCALE_X, finalScaleX))
 
             // Reset other dimensions
             // TODO(b/271468547), can't set Y translate to 0, need to account for top space
-            thumbnail.scaleY = 1f
+            snapshot.scaleY = 1f
             val translateYResetVal: Float =
                 if (!isPrimaryTaskSplitting) 0f
                 else deviceProfile.overviewTaskThumbnailTopMarginPx.toFloat()
-            builder.add(
-                ObjectAnimator.ofFloat(
-                    thumbnail,
-                    TaskThumbnailViewDeprecated.SPLIT_SELECT_TRANSLATE_Y,
-                    translateYResetVal
-                )
-            )
+            builder.add(ObjectAnimator.ofFloat(snapshot, View.TRANSLATION_Y, translateYResetVal))
         } else {
             val thumbnailSize = taskViewHeight - deviceProfile.overviewTaskThumbnailTopMarginPx
             // Center view first so scaling happens uniformly, alternatively we can move pivotY to 0
@@ -247,36 +272,26 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             //  thumbnail needs to take that into account. We should migrate to only using
             //  translations otherwise this asymmetry causes problems..
             if (isPrimaryTaskSplitting) {
-                centerThumbnailTranslationY = (thumbnailSize - thumbnail.height) / 2f
+                centerThumbnailTranslationY = (thumbnailSize - snapshotViewSize.y) / 2f
                 centerThumbnailTranslationY +=
                     deviceProfile.overviewTaskThumbnailTopMarginPx.toFloat()
             } else {
-                centerThumbnailTranslationY = (thumbnailSize - thumbnail.height) / 2f
+                centerThumbnailTranslationY = (thumbnailSize - snapshotViewSize.y) / 2f
             }
-            val finalScaleY: Float = thumbnailSize.toFloat() / thumbnail.height
+            val finalScaleY: Float = thumbnailSize.toFloat() / snapshotViewSize.y
             builder.add(
-                ObjectAnimator.ofFloat(
-                    thumbnail,
-                    TaskThumbnailViewDeprecated.SPLIT_SELECT_TRANSLATE_Y,
-                    centerThumbnailTranslationY
-                )
+                ObjectAnimator.ofFloat(snapshot, View.TRANSLATION_Y, centerThumbnailTranslationY)
             )
 
             if (!enableOverviewIconMenu()) {
                 // icons are anchored from Gravity.END, so need to use negative translation
                 builder.add(ObjectAnimator.ofFloat(iconView, View.TRANSLATION_X, 0f))
             }
-            builder.add(ObjectAnimator.ofFloat(thumbnail, View.SCALE_Y, finalScaleY))
+            builder.add(ObjectAnimator.ofFloat(snapshot, View.SCALE_Y, finalScaleY))
 
             // Reset other dimensions
-            thumbnail.scaleX = 1f
-            builder.add(
-                ObjectAnimator.ofFloat(
-                    thumbnail,
-                    TaskThumbnailViewDeprecated.SPLIT_SELECT_TRANSLATE_X,
-                    0f
-                )
-            )
+            snapshot.scaleX = 1f
+            builder.add(ObjectAnimator.ofFloat(snapshot, View.TRANSLATION_X, 0f))
         }
     }
 
@@ -287,7 +302,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
     fun addScrimBehindAnim(
         pendingAnimation: PendingAnimation,
         container: RecentsViewContainer,
-        context: Context
+        context: Context,
     ): View {
         val scrim = View(context)
         val recentsView = container.getOverviewPanel<RecentsView<*, *>>()
@@ -315,8 +330,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             Interpolators.clampToProgress(
                 timings.backingScrimFadeInterpolator,
                 timings.backingScrimFadeInStartOffset,
-                timings.backingScrimFadeInEndOffset
-            )
+                timings.backingScrimFadeInEndOffset,
+            ),
         )
 
         return scrim
@@ -339,7 +354,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
     fun createPlaceholderDismissAnim(
         container: RecentsViewContainer,
         splitDismissEvent: EventEnum,
-        duration: Long?
+        duration: Long?,
     ): AnimatorSet {
         val animatorSet = AnimatorSet()
         duration?.let { animatorSet.duration = it }
@@ -356,7 +371,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             Rect(0, 0, floatingTask.width, floatingTask.height),
             false,
             null,
-            onScreenRectF
+            onScreenRectF,
         )
         // Get the part of the floatingTask that intersects with the DragLayer (i.e. the
         // on-screen portion)
@@ -364,7 +379,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             dragLayer.left.toFloat(),
             dragLayer.top.toFloat(),
             dragLayer.right.toFloat(),
-            dragLayer.bottom.toFloat()
+            dragLayer.bottom.toFloat(),
         )
         animatorSet.play(
             ObjectAnimator.ofFloat(
@@ -374,8 +389,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                     floatingTask,
                     onScreenRectF,
                     floatingTask.stagePosition,
-                    container.deviceProfile
-                )
+                    container.deviceProfile,
+                ),
             )
         )
         animatorSet.addListener(
@@ -384,7 +399,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                     splitSelectStateController.resetState()
                     safeRemoveViewFromDragLayer(
                         container,
-                        splitSelectStateController.splitInstructionsView
+                        splitSelectStateController.splitInstructionsView,
                     )
                 }
             }
@@ -410,8 +425,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             Interpolators.clampToProgress(
                 Interpolators.LINEAR,
                 timings.instructionsContainerFadeInStartOffset,
-                timings.instructionsContainerFadeInEndOffset
-            )
+                timings.instructionsContainerFadeInEndOffset,
+            ),
         )
         anim.addFloat(
             splitInstructionsView,
@@ -421,8 +436,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             Interpolators.clampToProgress(
                 Interpolators.EMPHASIZED_DECELERATE,
                 timings.instructionsUnfoldStartOffset,
-                timings.instructionsUnfoldEndOffset
-            )
+                timings.instructionsUnfoldEndOffset,
+            ),
         )
         return anim
     }
@@ -440,7 +455,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
     fun playAnimPlaceholderToFullscreen(
         container: RecentsViewContainer,
         view: View,
-        resetCallback: Optional<Runnable>
+        resetCallback: Optional<Runnable>,
     ) {
         val stagedTaskView = view as FloatingTaskView
 
@@ -462,16 +477,12 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             RectF(firstTaskStartingBounds),
             firstTaskEndingBounds,
             false /* fadeWithThumbnail */,
-            true /* isStagedTask */
+            true, /* isStagedTask */
         )
 
         pendingAnimation.addEndListener {
             splitSelectStateController.launchInitialAppFullscreen {
-                if (FeatureFlags.enableSplitContextually()) {
-                    splitSelectStateController.resetState()
-                } else if (resetCallback.isPresent) {
-                    resetCallback.get().run()
-                }
+                splitSelectStateController.resetState()
             }
         }
 
@@ -495,14 +506,15 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         depthController: DepthController?,
         info: TransitionInfo?,
         t: Transaction?,
-        finishCallback: Runnable
+        finishCallback: Runnable,
+        cornerRadius: Float,
     ) {
         if (info == null && t == null) {
             // (Legacy animation) Tapping a split tile in Overview
             // TODO (b/315490678): Ensure that this works with app pairs flow
             check(apps != null && wallpapers != null && nonApps != null) {
                 "trying to call composeRecentsSplitLaunchAnimatorLegacy, but encountered an " +
-                        "unexpected null"
+                    "unexpected null"
             }
 
             composeRecentsSplitLaunchAnimatorLegacy(
@@ -514,7 +526,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 nonApps,
                 stateManager,
                 depthController,
-                finishCallback
+                finishCallback,
             )
 
             return
@@ -532,7 +544,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 depthController,
                 info,
                 t,
-                finishCallback
+                finishCallback,
             )
         } else if (launchingIconView != null) {
             // Tapping an app pair icon
@@ -542,24 +554,37 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             val appPairLaunchingAppIndex = hasChangesForBothAppPairs(launchingIconView, info)
             if (appPairLaunchingAppIndex == -1) {
                 // Launch split app pair animation
-                composeIconSplitLaunchAnimator(launchingIconView, info, t, finishCallback)
+                composeIconSplitLaunchAnimator(
+                    launchingIconView,
+                    info,
+                    t,
+                    finishCallback,
+                    cornerRadius,
+                )
             } else {
                 composeFullscreenIconSplitLaunchAnimator(
                     launchingIconView,
                     info,
                     t,
                     finishCallback,
-                    appPairLaunchingAppIndex
+                    appPairLaunchingAppIndex,
                 )
             }
         } else {
             // Fallback case: simple fade-in animation
             check(info != null && t != null) {
                 "trying to call composeFadeInSplitLaunchAnimator, but encountered an " +
-                        "unexpected null"
+                    "unexpected null"
             }
 
-            composeFadeInSplitLaunchAnimator(initialTaskId, secondTaskId, info, t, finishCallback)
+            composeFadeInSplitLaunchAnimator(
+                initialTaskId,
+                secondTaskId,
+                info,
+                t,
+                finishCallback,
+                cornerRadius,
+            )
         }
     }
 
@@ -574,7 +599,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         depthController: DepthController?,
         info: TransitionInfo,
         t: Transaction,
-        finishCallback: Runnable
+        finishCallback: Runnable,
     ) {
         TaskViewUtils.composeRecentsSplitLaunchAnimator(
             launchingTaskView,
@@ -582,7 +607,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             depthController,
             info,
             t,
-            finishCallback
+            finishCallback,
         )
     }
 
@@ -600,7 +625,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         nonApps: Array<RemoteAnimationTarget>,
         stateManager: StateManager<*, *>,
         depthController: DepthController?,
-        finishCallback: Runnable
+        finishCallback: Runnable,
     ) {
         TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(
             launchingTaskView,
@@ -611,7 +636,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             nonApps,
             stateManager,
             depthController,
-            finishCallback
+            finishCallback,
         )
     }
 
@@ -622,7 +647,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
      */
     fun hasChangesForBothAppPairs(
         launchingIconView: AppPairIcon,
-        transitionInfo: TransitionInfo
+        transitionInfo: TransitionInfo,
     ): Int {
         val intent1 = launchingIconView.info.getFirstApp().intent.component?.packageName
         val intent2 = launchingIconView.info.getSecondApp().intent.component?.packageName
@@ -631,7 +656,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             val taskInfo: RunningTaskInfo = change.taskInfo ?: continue
             if (
                 TransitionUtil.isOpeningType(change.mode) &&
-                taskInfo.windowingMode == WINDOWING_MODE_FULLSCREEN
+                    taskInfo.windowingMode == WINDOWING_MODE_FULLSCREEN
             ) {
                 val baseIntent = taskInfo.baseIntent.component?.packageName
                 if (baseIntent == intent1) {
@@ -659,15 +684,15 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
      * To find the root shell leash that we want to fade in, we do the following: The Changes we
      * receive in transitionInfo are structured like this
      *
-     *     Root (grandparent)
+     *     (0) Root (grandparent)
      *     |
-     *     |--> Split Root 1 (left/top side parent) (WINDOWING_MODE_MULTI_WINDOW)
+     *     |--> (1) Split Root 1 (left/top side parent) (WINDOWING_MODE_MULTI_WINDOW)
      *     |   |
-     *     |    --> App 1 (left/top side child) (WINDOWING_MODE_MULTI_WINDOW)
+     *     |    --> (1a) App 1 (left/top side child) (WINDOWING_MODE_MULTI_WINDOW)
      *     |--> Divider
-     *     |--> Split Root 2 (right/bottom side parent) (WINDOWING_MODE_MULTI_WINDOW)
+     *     |--> (2) Split Root 2 (right/bottom side parent) (WINDOWING_MODE_MULTI_WINDOW)
      *         |
-     *          --> App 2 (right/bottom side child) (WINDOWING_MODE_MULTI_WINDOW)
+     *          --> (2a) App 2 (right/bottom side child) (WINDOWING_MODE_MULTI_WINDOW)
      *
      * We want to animate the Root (grandparent) so that it affects both apps and the divider. To do
      * this, we find one of the nodes with WINDOWING_MODE_MULTI_WINDOW (one of the left-side ones,
@@ -682,7 +707,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         launchingIconView: AppPairIcon,
         transitionInfo: TransitionInfo,
         t: Transaction,
-        finishCallback: Runnable
+        finishCallback: Runnable,
+        windowRadius: Float,
     ) {
         // If launching an app pair from Taskbar inside of an app context (no access to Launcher),
         // use the scale-up animation
@@ -691,7 +717,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 transitionInfo,
                 t,
                 finishCallback,
-                WINDOWING_MODE_MULTI_WINDOW
+                WINDOWING_MODE_MULTI_WINDOW,
             )
             return
         }
@@ -702,48 +728,28 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
 
         // Create an AnimatorSet that will run both shell and launcher transitions together
         val launchAnimation = AnimatorSet()
-        var rootCandidate: Change? = null
 
-        for (change in transitionInfo.changes) {
-            val taskInfo: RunningTaskInfo = change.taskInfo ?: continue
+        val splitRoots: Pair<Change, List<Change>>? =
+            SplitScreenUtils.extractTopParentAndChildren(transitionInfo)
+        check(splitRoots != null) { "Could not find split roots" }
 
-            // TODO (b/316490565): Replace this logic when SplitBounds is available to
-            //  startAnimation() and we can know the precise taskIds of launching tasks.
-            // Find a change that has WINDOWING_MODE_MULTI_WINDOW.
-            if (
-                taskInfo.windowingMode == WINDOWING_MODE_MULTI_WINDOW &&
-                (change.mode == TRANSIT_OPEN || change.mode == TRANSIT_TO_FRONT)
-            ) {
-                // Check if it is a left/top app.
-                val isLeftTopApp =
-                    (dp.isLeftRightSplit && change.endAbsBounds.left == 0) ||
-                            (!dp.isLeftRightSplit && change.endAbsBounds.top == 0)
-                if (isLeftTopApp) {
-                    // Found one!
-                    rootCandidate = change
-                    break
-                }
-            }
-        }
-
-        // If we could not find a proper root candidate, something went wrong.
-        check(rootCandidate != null) { "Could not find a split root candidate" }
+        // Will point to change (0) in diagram above
+        val mainRootCandidate = splitRoots.first
+        // Will contain changes (1) and (2) in diagram above
+        val leafRoots: List<Change> = splitRoots.second
+        // Don't rely on DP.isLeftRightSplit because if launcher is portrait apps could still
+        // launch in landscape if system auto-rotate is enabled and phone is held horizontally
+        val isLeftRightSplit = leafRoots.all { it.endAbsBounds.top == 0 }
 
         // Find the place where our left/top app window meets the divider (used for the
         // launcher side animation)
+        val leftTopApp =
+            leafRoots.single { change ->
+                (isLeftRightSplit && change.endAbsBounds.left <= 0) ||
+                    (!isLeftRightSplit && change.endAbsBounds.top <= 0)
+            }
         val dividerPos =
-            if (dp.isLeftRightSplit) rootCandidate.endAbsBounds.right
-            else rootCandidate.endAbsBounds.bottom
-
-        // Recurse up the tree until parent is null, then we've found our root.
-        var parentToken: WindowContainerToken? = rootCandidate.parent
-        while (parentToken != null) {
-            rootCandidate = transitionInfo.getChange(parentToken) ?: break
-            parentToken = rootCandidate.parent
-        }
-
-        // Make sure nothing weird happened, like getChange() returning null.
-        check(rootCandidate != null) { "Failed to find a root leash" }
+            if (isLeftRightSplit) leftTopApp.endAbsBounds.right else leftTopApp.endAbsBounds.bottom
 
         // Create a new floating view in Launcher, positioned above the launching icon
         val drawableArea = launchingIconView.iconDrawableArea
@@ -758,13 +764,30 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 drawableArea,
                 appIcon1,
                 appIcon2,
-                dividerPos
+                dividerPos,
             )
         floatingView.bringToFront()
 
-        launchAnimation.play(
-            getIconLaunchValueAnimator(t, dp, finishCallback, launcher, floatingView, rootCandidate)
+        val iconLaunchValueAnimator =
+            getIconLaunchValueAnimator(
+                t,
+                dp,
+                finishCallback,
+                launcher,
+                floatingView,
+                mainRootCandidate,
+            )
+        iconLaunchValueAnimator.addListener(
+            object : AnimatorListenerAdapter() {
+                override fun onAnimationStart(animation: Animator, isReverse: Boolean) {
+                    for (c in leafRoots) {
+                        t.setCornerRadius(c.leash, windowRadius)
+                        t.apply()
+                    }
+                }
+            }
         )
+        launchAnimation.play(iconLaunchValueAnimator)
         launchAnimation.start()
     }
 
@@ -778,7 +801,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         transitionInfo: TransitionInfo,
         t: Transaction,
         finishCallback: Runnable,
-        launchFullscreenIndex: Int
+        launchFullscreenIndex: Int,
     ) {
         // If launching an app pair from Taskbar inside of an app context (no access to Launcher),
         // use the scale-up animation
@@ -787,7 +810,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 transitionInfo,
                 t,
                 finishCallback,
-                WINDOWING_MODE_FULLSCREEN
+                WINDOWING_MODE_FULLSCREEN,
             )
             return
         }
@@ -808,8 +831,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             val baseIntent = taskInfo.baseIntent.component?.packageName
             if (
                 TransitionUtil.isOpeningType(change.mode) &&
-                taskInfo.windowingMode == WINDOWING_MODE_FULLSCREEN &&
-                baseIntent == intentToLaunch
+                    taskInfo.windowingMode == WINDOWING_MODE_FULLSCREEN &&
+                    baseIntent == intentToLaunch
             ) {
                 rootCandidate = change
             }
@@ -839,7 +862,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 drawableArea,
                 appIcon,
                 null /*appIcon2*/,
-                0 /*dividerPos*/
+                0, /*dividerPos*/
             )
         floatingView.bringToFront()
         launchAnimation.play(
@@ -854,7 +877,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         finishCallback: Runnable,
         launcher: QuickstepLauncher,
         floatingView: FloatingAppPairView,
-        rootCandidate: Change
+        rootCandidate: Change,
     ): ValueAnimator {
         val progressUpdater = ValueAnimator.ofFloat(0f, 1f)
         val timings = AnimUtils.getDeviceAppPairLaunchTimings(dp.isTablet)
@@ -868,7 +891,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                     Interpolators.LINEAR,
                     valueAnimator.animatedFraction,
                     timings.appRevealStartOffset,
-                    timings.appRevealEndOffset
+                    timings.appRevealEndOffset,
                 )
 
             // Set the alpha of the shell layer (2 apps + divider)
@@ -885,8 +908,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                         Interpolators.clampToProgress(
                             timings.getStagedRectXInterpolator(),
                             timings.stagedRectSlideStartOffset,
-                            timings.stagedRectSlideEndOffset
-                        )
+                            timings.stagedRectSlideEndOffset,
+                        ),
                     )
                 var mDy =
                     FloatProp(
@@ -895,8 +918,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                         Interpolators.clampToProgress(
                             Interpolators.EMPHASIZED,
                             timings.stagedRectSlideStartOffset,
-                            timings.stagedRectSlideEndOffset
-                        )
+                            timings.stagedRectSlideEndOffset,
+                        ),
                     )
                 var mScaleX =
                     FloatProp(
@@ -905,8 +928,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                         Interpolators.clampToProgress(
                             Interpolators.EMPHASIZED,
                             timings.stagedRectSlideStartOffset,
-                            timings.stagedRectSlideEndOffset
-                        )
+                            timings.stagedRectSlideEndOffset,
+                        ),
                     )
                 var mScaleY =
                     FloatProp(
@@ -915,8 +938,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                         Interpolators.clampToProgress(
                             Interpolators.EMPHASIZED,
                             timings.stagedRectSlideStartOffset,
-                            timings.stagedRectSlideEndOffset
-                        )
+                            timings.stagedRectSlideEndOffset,
+                        ),
                     )
 
                 override fun onUpdate(percent: Float, initOnly: Boolean) {
@@ -951,7 +974,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         transitionInfo: TransitionInfo,
         t: Transaction,
         finishCallback: Runnable,
-        windowingMode: Int
+        windowingMode: Int,
     ) {
         val launchAnimation = AnimatorSet()
         val progressUpdater = ValueAnimator.ofFloat(0f, 1f)
@@ -967,7 +990,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             //  startAnimation() and we can know the precise taskIds of launching tasks.
             if (
                 taskInfo.windowingMode == windowingMode &&
-                (change.mode == TRANSIT_OPEN || change.mode == TRANSIT_TO_FRONT)
+                    (change.mode == TRANSIT_OPEN || change.mode == TRANSIT_TO_FRONT)
             ) {
                 // Found one!
                 rootCandidate = change
@@ -994,10 +1017,10 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         val startingScale = 0.34f
         val startX =
             screenBounds.left +
-                    ((screenBounds.right - screenBounds.left) * ((1 - startingScale) / 2f))
+                ((screenBounds.right - screenBounds.left) * ((1 - startingScale) / 2f))
         val startY =
             screenBounds.top +
-                    ((screenBounds.bottom - screenBounds.top) * ((1 - startingScale) / 2f))
+                ((screenBounds.bottom - screenBounds.top) * ((1 - startingScale) / 2f))
         val endX = screenBounds.left
         val endY = screenBounds.top
 
@@ -1037,7 +1060,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         secondTaskId: Int,
         transitionInfo: TransitionInfo,
         t: Transaction,
-        finishCallback: Runnable
+        finishCallback: Runnable,
+        cornerRadius: Float,
     ) {
         var splitRoot1: Change? = null
         var splitRoot2: Change? = null
@@ -1102,7 +1126,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                     Interpolators.LINEAR,
                     valueAnimator.animatedFraction,
                     0.8f,
-                    1f
+                    1f,
                 )
             for (leash in openingTargets) {
                 animTransaction.setAlpha(leash, progress)
@@ -1115,6 +1139,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 override fun onAnimationStart(animation: Animator) {
                     for (leash in openingTargets) {
                         animTransaction.show(leash).setAlpha(leash, 0.0f)
+                        animTransaction.setCornerRadius(leash, cornerRadius)
                     }
                     animTransaction.apply()
                 }

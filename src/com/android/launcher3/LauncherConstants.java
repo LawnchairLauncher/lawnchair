@@ -67,5 +67,8 @@ public class LauncherConstants {
         static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
         // Type int[]
         static final String RUNTIME_STATE_CURRENT_SCREEN_IDS = "launcher.current_screen_ids";
+        // Type: boolean
+        public static final String RUNTIME_STATE_RECREATE_TO_UPDATE_THEME =
+                "launcher.recreate_to_update_theme";
     }
 }

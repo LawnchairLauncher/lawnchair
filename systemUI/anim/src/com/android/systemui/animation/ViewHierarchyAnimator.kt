@@ -48,7 +48,7 @@ class ViewHierarchyAnimator {
                 Bound.LEFT to createViewProperty(Bound.LEFT),
                 Bound.TOP to createViewProperty(Bound.TOP),
                 Bound.RIGHT to createViewProperty(Bound.RIGHT),
-                Bound.BOTTOM to createViewProperty(Bound.BOTTOM)
+                Bound.BOTTOM to createViewProperty(Bound.BOTTOM),
             )
 
         private fun createViewProperty(bound: Bound): IntProperty<View> {
@@ -89,7 +89,7 @@ class ViewHierarchyAnimator {
             interpolator: Interpolator = DEFAULT_INTERPOLATOR,
             duration: Long = DEFAULT_DURATION,
             animateChildren: Boolean = true,
-            excludedViews: Set<View> = emptySet()
+            excludedViews: Set<View> = emptySet(),
         ): Boolean {
             return animate(
                 rootView,
@@ -97,7 +97,7 @@ class ViewHierarchyAnimator {
                 duration,
                 ephemeral = false,
                 animateChildren = animateChildren,
-                excludedViews = excludedViews
+                excludedViews = excludedViews,
             )
         }
 
@@ -111,7 +111,7 @@ class ViewHierarchyAnimator {
             interpolator: Interpolator = DEFAULT_INTERPOLATOR,
             duration: Long = DEFAULT_DURATION,
             animateChildren: Boolean = true,
-            excludedViews: Set<View> = emptySet()
+            excludedViews: Set<View> = emptySet(),
         ): Boolean {
             return animate(
                 rootView,
@@ -119,7 +119,7 @@ class ViewHierarchyAnimator {
                 duration,
                 ephemeral = true,
                 animateChildren = animateChildren,
-                excludedViews = excludedViews
+                excludedViews = excludedViews,
             )
         }
 
@@ -129,7 +129,7 @@ class ViewHierarchyAnimator {
             duration: Long,
             ephemeral: Boolean,
             animateChildren: Boolean,
-            excludedViews: Set<View> = emptySet()
+            excludedViews: Set<View> = emptySet(),
         ): Boolean {
             if (
                 !occupiesSpace(
@@ -137,7 +137,7 @@ class ViewHierarchyAnimator {
                     rootView.left,
                     rootView.top,
                     rootView.right,
-                    rootView.bottom
+                    rootView.bottom,
                 )
             ) {
                 return false
@@ -149,7 +149,7 @@ class ViewHierarchyAnimator {
                 listener,
                 recursive = true,
                 animateChildren = animateChildren,
-                excludedViews = excludedViews
+                excludedViews = excludedViews,
             )
             return true
         }
@@ -164,7 +164,7 @@ class ViewHierarchyAnimator {
         private fun createUpdateListener(
             interpolator: Interpolator,
             duration: Long,
-            ephemeral: Boolean
+            ephemeral: Boolean,
         ): View.OnLayoutChangeListener {
             return createListener(interpolator, duration, ephemeral)
         }
@@ -196,9 +196,9 @@ class ViewHierarchyAnimator {
          *
          * @param includeFadeIn true if the animator should also fade in the view and child views.
          * @param fadeInInterpolator the interpolator to use when fading in the view. Unused if
-         *     [includeFadeIn] is false.
-         * @param onAnimationEnd an optional runnable that will be run once the animation
-         *    finishes successfully. Will not be run if the animation is cancelled.
+         *   [includeFadeIn] is false.
+         * @param onAnimationEnd an optional runnable that will be run once the animation finishes,
+         *   regardless of whether the animation is cancelled or finishes successfully.
          */
         @JvmOverloads
         fun animateAddition(
@@ -217,7 +217,7 @@ class ViewHierarchyAnimator {
                     rootView.left,
                     rootView.top,
                     rootView.right,
-                    rootView.bottom
+                    rootView.bottom,
                 )
             ) {
                 return false
@@ -241,7 +241,10 @@ class ViewHierarchyAnimator {
                 // First, fade in the container view
                 val containerDuration = duration / 6
                 createAndStartFadeInAnimator(
-                    rootView, containerDuration, startDelay = 0, interpolator = fadeInInterpolator
+                    rootView,
+                    containerDuration,
+                    startDelay = 0,
+                    interpolator = fadeInInterpolator,
                 )
 
                 // Then, fade in the child views
@@ -253,7 +256,7 @@ class ViewHierarchyAnimator {
                         childDuration,
                         // Wait until the container fades in before fading in the children
                         startDelay = containerDuration,
-                        interpolator = fadeInInterpolator
+                        interpolator = fadeInInterpolator,
                     )
                 }
                 // For now, we don't recursively fade in additional sub views (e.g. grandchild
@@ -264,7 +267,7 @@ class ViewHierarchyAnimator {
                     rootView,
                     duration / 2,
                     startDelay = 0,
-                    interpolator = fadeInInterpolator
+                    interpolator = fadeInInterpolator,
                 )
             }
 
@@ -323,7 +326,7 @@ class ViewHierarchyAnimator {
                     previousLeft: Int,
                     previousTop: Int,
                     previousRight: Int,
-                    previousBottom: Int
+                    previousBottom: Int,
                 ) {
                     if (view == null) return
 
@@ -353,14 +356,14 @@ class ViewHierarchyAnimator {
                             startTop,
                             startRight,
                             startBottom,
-                            ignorePreviousValues
+                            ignorePreviousValues,
                         )
                     val endValues =
                         mapOf(
                             Bound.LEFT to left,
                             Bound.TOP to top,
                             Bound.RIGHT to right,
-                            Bound.BOTTOM to bottom
+                            Bound.BOTTOM to bottom,
                         )
 
                     val boundsToAnimate = mutableSetOf<Bound>()
@@ -396,8 +399,8 @@ class ViewHierarchyAnimator {
          * added on the side(s) of the [destination], the translation of those margins can be
          * included by specifying [includeMargins].
          *
-         * @param onAnimationEnd an optional runnable that will be run once the animation finishes
-         *    successfully. Will not be run if the animation is cancelled.
+         * @param onAnimationEnd an optional runnable that will be run once the animation finishes,
+         *   regardless of whether the animation is cancelled or finishes successfully.
          */
         @JvmOverloads
         fun animateRemoval(
@@ -414,7 +417,7 @@ class ViewHierarchyAnimator {
                     rootView.left,
                     rootView.top,
                     rootView.right,
-                    rootView.bottom
+                    rootView.bottom,
                 )
             ) {
                 return false
@@ -458,7 +461,7 @@ class ViewHierarchyAnimator {
                     Bound.LEFT to rootView.left,
                     Bound.TOP to rootView.top,
                     Bound.RIGHT to rootView.right,
-                    Bound.BOTTOM to rootView.bottom
+                    Bound.BOTTOM to rootView.bottom,
                 )
             val endValues =
                 processEndValuesForRemoval(
@@ -550,7 +553,7 @@ class ViewHierarchyAnimator {
             destination: Hotspot,
             endValues: Map<Bound, Int>,
             interpolator: Interpolator,
-            duration: Long
+            duration: Long,
         ) {
             for (i in 0 until rootView.childCount) {
                 val child = rootView.getChildAt(i)
@@ -559,7 +562,7 @@ class ViewHierarchyAnimator {
                         Bound.LEFT to child.left,
                         Bound.TOP to child.top,
                         Bound.RIGHT to child.right,
-                        Bound.BOTTOM to child.bottom
+                        Bound.BOTTOM to child.bottom,
                     )
                 val childEndValues =
                     processChildEndValuesForRemoval(
@@ -569,7 +572,7 @@ class ViewHierarchyAnimator {
                         child.right,
                         child.bottom,
                         endValues.getValue(Bound.RIGHT) - endValues.getValue(Bound.LEFT),
-                        endValues.getValue(Bound.BOTTOM) - endValues.getValue(Bound.TOP)
+                        endValues.getValue(Bound.BOTTOM) - endValues.getValue(Bound.TOP),
                     )
 
                 val boundsToAnimate = mutableSetOf<Bound>()
@@ -587,7 +590,7 @@ class ViewHierarchyAnimator {
                     childEndValues,
                     interpolator,
                     duration,
-                    ephemeral = true
+                    ephemeral = true,
                 )
             }
         }
@@ -601,7 +604,7 @@ class ViewHierarchyAnimator {
             left: Int,
             top: Int,
             right: Int,
-            bottom: Int
+            bottom: Int,
         ): Boolean {
             return visibility != View.GONE && left != right && top != bottom
         }
@@ -616,6 +619,7 @@ class ViewHierarchyAnimator {
          * not newly introduced margins are included.
          *
          * Base case
+         *
          * ```
          *     1) origin=TOP
          *         x---------x    x---------x    x---------x    x---------x    x---------x
@@ -636,9 +640,11 @@ class ViewHierarchyAnimator {
          *                                         x-----x       x-------x     |         |
          *                                                                     x---------x
          * ```
+         *
          * In case the start and end values differ in the direction of the origin, and
          * [ignorePreviousValues] is false, the previous values are used and a translation is
          * included in addition to the view expansion.
+         *
          * ```
          *     origin=TOP_LEFT - (0,0,0,0) -> (30,30,70,70)
          *         x
@@ -660,7 +666,7 @@ class ViewHierarchyAnimator {
             previousTop: Int,
             previousRight: Int,
             previousBottom: Int,
-            ignorePreviousValues: Boolean
+            ignorePreviousValues: Boolean,
         ): Map<Bound, Int> {
             val startLeft = if (ignorePreviousValues) newLeft else previousLeft
             val startTop = if (ignorePreviousValues) newTop else previousTop
@@ -727,7 +733,7 @@ class ViewHierarchyAnimator {
                 Bound.LEFT to left,
                 Bound.TOP to top,
                 Bound.RIGHT to right,
-                Bound.BOTTOM to bottom
+                Bound.BOTTOM to bottom,
             )
         }
 
@@ -777,18 +783,17 @@ class ViewHierarchyAnimator {
             includeMargins: Boolean = false,
         ): Map<Bound, Int> {
             val marginAdjustment =
-                if (includeMargins &&
-                    (rootView.layoutParams is ViewGroup.MarginLayoutParams)) {
+                if (includeMargins && (rootView.layoutParams is ViewGroup.MarginLayoutParams)) {
                     val marginLp = rootView.layoutParams as ViewGroup.MarginLayoutParams
                     DimenHolder(
                         left = marginLp.leftMargin,
                         top = marginLp.topMargin,
                         right = marginLp.rightMargin,
-                        bottom = marginLp.bottomMargin
+                        bottom = marginLp.bottomMargin,
                     )
-            } else {
-                DimenHolder(0, 0, 0, 0)
-            }
+                } else {
+                    DimenHolder(0, 0, 0, 0)
+                }
 
             // These are the end values to use *if* this bound is part of the destination.
             val endLeft = left - marginAdjustment.left
@@ -805,60 +810,69 @@ class ViewHierarchyAnimator {
             //  - If destination=BOTTOM_LEFT, then endBottom == endTop AND endLeft == endRight.
 
             return when (destination) {
-                Hotspot.TOP -> mapOf(
-                    Bound.TOP to endTop,
-                    Bound.BOTTOM to endTop,
-                    Bound.LEFT to left,
-                    Bound.RIGHT to right,
-                )
-                Hotspot.TOP_RIGHT -> mapOf(
-                    Bound.TOP to endTop,
-                    Bound.BOTTOM to endTop,
-                    Bound.RIGHT to endRight,
-                    Bound.LEFT to endRight,
-                )
-                Hotspot.RIGHT -> mapOf(
-                    Bound.RIGHT to endRight,
-                    Bound.LEFT to endRight,
-                    Bound.TOP to top,
-                    Bound.BOTTOM to bottom,
-                )
-                Hotspot.BOTTOM_RIGHT -> mapOf(
-                    Bound.BOTTOM to endBottom,
-                    Bound.TOP to endBottom,
-                    Bound.RIGHT to endRight,
-                    Bound.LEFT to endRight,
-                )
-                Hotspot.BOTTOM -> mapOf(
-                    Bound.BOTTOM to endBottom,
-                    Bound.TOP to endBottom,
-                    Bound.LEFT to left,
-                    Bound.RIGHT to right,
-                )
-                Hotspot.BOTTOM_LEFT -> mapOf(
-                    Bound.BOTTOM to endBottom,
-                    Bound.TOP to endBottom,
-                    Bound.LEFT to endLeft,
-                    Bound.RIGHT to endLeft,
-                )
-                Hotspot.LEFT -> mapOf(
-                    Bound.LEFT to endLeft,
-                    Bound.RIGHT to endLeft,
-                    Bound.TOP to top,
-                    Bound.BOTTOM to bottom,
-                )
-                Hotspot.TOP_LEFT -> mapOf(
-                    Bound.TOP to endTop,
-                    Bound.BOTTOM to endTop,
-                    Bound.LEFT to endLeft,
-                    Bound.RIGHT to endLeft,
-                )
-                Hotspot.CENTER -> mapOf(
-                    Bound.LEFT to (endLeft + endRight) / 2,
-                    Bound.RIGHT to (endLeft + endRight) / 2,
-                    Bound.TOP to (endTop + endBottom) / 2,
-                    Bound.BOTTOM to (endTop + endBottom) / 2,
-                )
+                Hotspot.TOP ->
+                    mapOf(
+                        Bound.TOP to endTop,
+                        Bound.BOTTOM to endTop,
+                        Bound.LEFT to left,
+                        Bound.RIGHT to right,
+                    )
+                Hotspot.TOP_RIGHT ->
+                    mapOf(
+                        Bound.TOP to endTop,
+                        Bound.BOTTOM to endTop,
+                        Bound.RIGHT to endRight,
+                        Bound.LEFT to endRight,
+                    )
+                Hotspot.RIGHT ->
+                    mapOf(
+                        Bound.RIGHT to endRight,
+                        Bound.LEFT to endRight,
+                        Bound.TOP to top,
+                        Bound.BOTTOM to bottom,
+                    )
+                Hotspot.BOTTOM_RIGHT ->
+                    mapOf(
+                        Bound.BOTTOM to endBottom,
+                        Bound.TOP to endBottom,
+                        Bound.RIGHT to endRight,
+                        Bound.LEFT to endRight,
+                    )
+                Hotspot.BOTTOM ->
+                    mapOf(
+                        Bound.BOTTOM to endBottom,
+                        Bound.TOP to endBottom,
+                        Bound.LEFT to left,
+                        Bound.RIGHT to right,
+                    )
+                Hotspot.BOTTOM_LEFT ->
+                    mapOf(
+                        Bound.BOTTOM to endBottom,
+                        Bound.TOP to endBottom,
+                        Bound.LEFT to endLeft,
+                        Bound.RIGHT to endLeft,
+                    )
+                Hotspot.LEFT ->
+                    mapOf(
+                        Bound.LEFT to endLeft,
+                        Bound.RIGHT to endLeft,
+                        Bound.TOP to top,
+                        Bound.BOTTOM to bottom,
+                    )
+                Hotspot.TOP_LEFT ->
+                    mapOf(
+                        Bound.TOP to endTop,
+                        Bound.BOTTOM to endTop,
+                        Bound.LEFT to endLeft,
+                        Bound.RIGHT to endLeft,
+                    )
+                Hotspot.CENTER ->
+                    mapOf(
+                        Bound.LEFT to (endLeft + endRight) / 2,
+                        Bound.RIGHT to (endLeft + endRight) / 2,
+                        Bound.TOP to (endTop + endBottom) / 2,
+                        Bound.BOTTOM to (endTop + endBottom) / 2,
+                    )
             }
         }
 
@@ -887,7 +901,7 @@ class ViewHierarchyAnimator {
             right: Int,
             bottom: Int,
             parentWidth: Int,
-            parentHeight: Int
+            parentHeight: Int,
         ): Map<Bound, Int> {
             val halfWidth = (right - left) / 2
             val halfHeight = (bottom - top) / 2
@@ -945,7 +959,7 @@ class ViewHierarchyAnimator {
                 Bound.LEFT to endLeft,
                 Bound.TOP to endTop,
                 Bound.RIGHT to endRight,
-                Bound.BOTTOM to endBottom
+                Bound.BOTTOM to endBottom,
             )
         }
 
@@ -954,7 +968,7 @@ class ViewHierarchyAnimator {
             listener: View.OnLayoutChangeListener,
             recursive: Boolean = false,
             animateChildren: Boolean = true,
-            excludedViews: Set<View> = emptySet()
+            excludedViews: Set<View> = emptySet(),
         ) {
             if (excludedViews.contains(view)) return
 
@@ -973,7 +987,7 @@ class ViewHierarchyAnimator {
                         listener,
                         recursive = true,
                         animateChildren = animateChildren,
-                        excludedViews = excludedViews
+                        excludedViews = excludedViews,
                     )
                 }
             }
@@ -1027,7 +1041,7 @@ class ViewHierarchyAnimator {
                                 PropertyValuesHolder.ofInt(
                                     PROPERTIES[bound],
                                     startValues.getValue(bound),
-                                    endValues.getValue(bound)
+                                    endValues.getValue(bound),
                                 )
                             )
                         }
@@ -1056,9 +1070,10 @@ class ViewHierarchyAnimator {
                             // listener.
                             recursivelyRemoveListener(view)
                         }
-                        if (!cancelled) {
-                            onAnimationEnd?.run()
-                        }
+                        // Run the end runnable regardless of whether the animation was cancelled or
+                        // not - this ensures critical actions (like removing a window) always occur
+                        // (see b/344049884).
+                        onAnimationEnd?.run()
                     }
 
                     override fun onAnimationCancel(animation: Animator) {
@@ -1077,17 +1092,19 @@ class ViewHierarchyAnimator {
             view: View,
             duration: Long,
             startDelay: Long,
-            interpolator: Interpolator
+            interpolator: Interpolator,
         ) {
             val animator = ObjectAnimator.ofFloat(view, "alpha", 1f)
             animator.startDelay = startDelay
             animator.duration = duration
             animator.interpolator = interpolator
-            animator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    view.setTag(R.id.tag_alpha_animator, null /* tag */)
+            animator.addListener(
+                object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        view.setTag(R.id.tag_alpha_animator, null /* tag */)
+                    }
                 }
-            })
+            )
 
             (view.getTag(R.id.tag_alpha_animator) as? ObjectAnimator)?.cancel()
             view.setTag(R.id.tag_alpha_animator, animator)
@@ -1105,7 +1122,7 @@ class ViewHierarchyAnimator {
         RIGHT,
         BOTTOM_RIGHT,
         BOTTOM,
-        BOTTOM_LEFT
+        BOTTOM_LEFT,
     }
 
     private enum class Bound(val label: String, val overrideTag: Int) {
@@ -1147,14 +1164,10 @@ class ViewHierarchyAnimator {
         };
 
         abstract fun setValue(view: View, value: Int)
+
         abstract fun getValue(view: View): Int
     }
 
     /** Simple data class to hold a set of dimens for left, top, right, bottom. */
-    private data class DimenHolder(
-        val left: Int,
-        val top: Int,
-        val right: Int,
-        val bottom: Int,
-    )
+    private data class DimenHolder(val left: Int, val top: Int, val right: Int, val bottom: Int)
 }

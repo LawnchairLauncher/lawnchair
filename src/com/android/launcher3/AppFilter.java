@@ -7,11 +7,16 @@ import android.os.Process;
 import com.android.launcher3.util.ComponentKey;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
+import com.android.launcher3.dagger.ApplicationContext;
+
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import app.lawnchair.preferences2.PreferenceManager2;
+
 /**
  * Utility class to filter out components from various lists
  */
@@ -19,7 +24,8 @@ public class AppFilter {
 
     private final Set<ComponentName> mFilteredComponents;
 
-    public AppFilter(Context context) {
+    @Inject
+    public AppFilter(@ApplicationContext Context context) {
         mFilteredComponents = Arrays.stream(
                 context.getResources().getStringArray(R.array.filtered_components))
                 .map(ComponentName::unflattenFromString)

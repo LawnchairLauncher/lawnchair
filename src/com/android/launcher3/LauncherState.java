@@ -72,6 +72,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int WORKSPACE_PAGE_INDICATOR = 1 << 5;
     public static final int SPLIT_PLACHOLDER_VIEW = 1 << 6;
     public static final int FLOATING_SEARCH_BAR = 1 << 7;
+    public static final int ADD_DESK_BUTTON = 1 << 8;
 
     // Flag indicating workspace has multiple pages visible.
     public static final int FLAG_MULTI_PAGE = BaseState.getFlag(0);
@@ -120,7 +121,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             LAUNCHER_STATE_HOME,
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HAS_SYS_UI_SCRIM) {
         @Override
-        public int getTransitionDuration(Context context, boolean isToState) {
+        public int getTransitionDuration(ActivityContext context, boolean isToState) {
             // Arbitrary duration, when going to NORMAL we use the state we're coming from instead.
             return 0;
         }
@@ -355,7 +356,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public final  <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
             float getDepth(DEVICE_PROFILE_CONTEXT context) {
         return getDepth(context,
-                BaseDraggingActivity.fromContext(context).getDeviceProfile().isMultiWindowMode);
+                ActivityContext.lookupContext(context).getDeviceProfile().isMultiWindowMode);
     }
 
     /**
@@ -385,8 +386,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
-        if ((this != NORMAL && this != HINT_STATE)
-                || !launcher.getDeviceProfile().shouldFadeAdjacentWorkspaceScreens()) {
+        DeviceProfile dp = launcher.getDeviceProfile();
+        boolean shouldFadeAdjacentScreens = (this == NORMAL || this == HINT_STATE)
+                && dp.shouldFadeAdjacentWorkspaceScreens();
+        // Avoid showing adjacent screens behind handheld All Apps sheet.
+        if (Flags.allAppsSheetForHandheld() && dp.isPhone && this == ALL_APPS) {
+            shouldFadeAdjacentScreens = true;
+        }
+        if (!shouldFadeAdjacentScreens) {
             return DEFAULT_ALPHA_PROVIDER;
         }
         final int centerPage = launcher.getWorkspace().getNextPage();

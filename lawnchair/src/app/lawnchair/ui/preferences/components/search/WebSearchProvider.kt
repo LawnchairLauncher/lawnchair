@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -79,6 +81,7 @@ fun WebSearchProvider(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SearchPopupPreference(
     title: String,
@@ -101,6 +104,7 @@ fun SearchPopupPreference(
                         showPopup = false
                         onConfirm(value.text)
                     },
+                    shapes = ButtonDefaults.shapes(),
                 ) {
                     Text(text = stringResource(id = android.R.string.ok))
                 }
@@ -110,6 +114,7 @@ fun SearchPopupPreference(
                     onClick = {
                         showPopup = false
                     },
+                    shapes = ButtonDefaults.shapes(),
                 ) {
                     Text(text = stringResource(id = android.R.string.cancel))
                 }

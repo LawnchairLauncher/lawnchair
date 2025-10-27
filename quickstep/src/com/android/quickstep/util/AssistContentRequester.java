@@ -81,7 +81,7 @@ public class AssistContentRequester {
             try {
                 mActivityTaskManager.requestAssistDataForTask(
                         new AssistDataReceiver(callback, this), taskId, mPackageName,
-                        mAttributionTag);
+                        mAttributionTag, false /* fetchStructure */);
             } catch (RemoteException e) {
                 Log.e(TAG, "Requesting assist content failed for task: " + taskId, e);
             }

@@ -24,6 +24,7 @@ import android.app.smartspace.uitemplatedata.TapAction;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
@@ -84,6 +85,10 @@ public interface BcSmartspaceDataPlugin extends Plugin {
         throw new UnsupportedOperationException("Not implemented by " + getClass());
     }
 
+    default SmartspaceView getLargeClockView(ViewGroup parent) {
+        throw new UnsupportedOperationException("Not implemented by " + getClass());
+    }
+
     /**
      * As the smartspace view becomes available, allow listeners to receive an event.
      */
@@ -100,6 +105,15 @@ public interface BcSmartspaceDataPlugin extends Plugin {
     interface SmartspaceTargetListener {
         /** Each Parcelable is a SmartspaceTarget that represents a card. */
         void onSmartspaceTargetsUpdated(List<? extends Parcelable> targets);
+    }
+
+    /**
+     * Sets {@link BcSmartspaceConfigPlugin}.
+     *
+     * TODO: b/259566300 - Remove once isViewPager2Enabled is fully rolled out
+     */
+    default void registerConfigProvider(BcSmartspaceConfigPlugin configProvider) {
+        throw new UnsupportedOperationException("Not implemented by " + getClass());
     }
 
     /** View to which this plugin can be registered, in order to get updates. */
@@ -122,6 +136,9 @@ public interface BcSmartspaceDataPlugin extends Plugin {
          * Set the UI surface for the cards. Should be called immediately after the view is created.
          */
         void setUiSurface(String uiSurface);
+
+        /** Set background handler to make binder calls. */
+        void setBgHandler(Handler bgHandler);
 
         /**
          * Range [0.0 - 1.0] when transitioning from Lockscreen to/from AOD
@@ -198,6 +215,13 @@ public interface BcSmartspaceDataPlugin extends Plugin {
          * card.
          */
         default int getCurrentCardTopPadding() {
+            throw new UnsupportedOperationException("Not implemented by " + getClass());
+        }
+
+        /**
+         * Set the horizontal paddings for applicable children inside the SmartspaceView.
+         */
+        default void setHorizontalPaddings(int horizontalPadding) {
             throw new UnsupportedOperationException("Not implemented by " + getClass());
         }
     }

@@ -23,6 +23,9 @@ import static android.view.WindowInsets.Type.statusBars;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ClipData;
@@ -33,32 +36,40 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.window.BackEvent;
+import android.window.OnBackAnimationCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.dragndrop.SimpleDragLayer;
+import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetPredictionsRequester;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.popup.PopupDataProvider;
-import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.widget.BaseWidgetSheet;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.widget.WidgetCell;
+import com.android.launcher3.widget.model.WidgetsListBaseEntriesBuilder;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
-import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.picker.WidgetCategoryFilter;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
+import com.android.launcher3.widget.picker.model.WidgetPickerDataProvider;
+import com.android.systemui.animation.back.FlingOnBackAnimationCallback;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /** An Activity that can host Launcher's widget picker. */
-public class WidgetPickerActivity extends BaseActivity {
+public class WidgetPickerActivity extends BaseActivity implements
+        WidgetPredictionsRequester.WidgetPredictionsListener {
     private static final String TAG = "WidgetPickerActivity";
     /**
      * Name of the extra that indicates that a widget being dragged.
@@ -72,11 +83,24 @@ public class WidgetPickerActivity extends BaseActivity {
     // the intent, then widgets will not be filtered for size.
     private static final String EXTRA_DESIRED_WIDGET_WIDTH = "desired_widget_width";
     private static final String EXTRA_DESIRED_WIDGET_HEIGHT = "desired_widget_height";
+    // Unlike the AppWidgetManager.EXTRA_CATEGORY_FILTER, this filter removes certain categories.
+    // Filter is ignore if it is not a negative value.
+    // Example usage: WIDGET_CATEGORY_HOME_SCREEN.inv() and WIDGET_CATEGORY_NOT_KEYGUARD.inv()
+    private static final String EXTRA_CATEGORY_EXCLUSION_FILTER = "category_exclusion_filter";
     /**
      * Widgets currently added by the user in the UI surface.
      * <p>This allows widget picker to exclude existing widgets from suggestions.</p>
      */
     private static final String EXTRA_ADDED_APP_WIDGETS = "added_app_widgets";
+    /**
+     * Intent extra for the string representing the title displayed within the picker header.
+     */
+    private static final String EXTRA_PICKER_TITLE = "picker_title";
+    /**
+     * Intent extra for the string representing the description displayed within the picker header.
+     */
+    private static final String EXTRA_PICKER_DESCRIPTION = "picker_description";
+
     /**
      * A unique identifier of the surface hosting the widgets;
      * <p>"widgets" is reserved for home screen surface.</p>
@@ -85,20 +109,52 @@ public class WidgetPickerActivity extends BaseActivity {
     private static final String EXTRA_UI_SURFACE = "ui_surface";
     private static final Pattern UI_SURFACE_PATTERN =
             Pattern.compile("^(widgets|widgets_hub)$");
+
+    /**
+     * User ids that should be filtered out of the widget lists created by this activity.
+     */
+    private static final String EXTRA_USER_ID_FILTER = "filtered_user_ids";
+
     private SimpleDragLayer<WidgetPickerActivity> mDragLayer;
     private WidgetsModel mModel;
     private LauncherAppState mApp;
+    private StringCache mStringCache;
     private WidgetPredictionsRequester mWidgetPredictionsRequester;
-    private final PopupDataProvider mPopupDataProvider = new PopupDataProvider(i -> {});
+    private WidgetPickerDataProvider mWidgetPickerDataProvider;
 
     private int mDesiredWidgetWidth;
     private int mDesiredWidgetHeight;
-    private int mWidgetCategoryFilter;
+    private WidgetCategoryFilter mWidgetCategoryInclusionFilter;
+    private WidgetCategoryFilter mWidgetCategoryExclusionFilter;
     @Nullable
     private String mUiSurface;
     // Widgets existing on the host surface.
     @NonNull
     private List<AppWidgetProviderInfo> mAddedWidgets = new ArrayList<>();
+    @Nullable
+    private String mTitle;
+    @Nullable
+    private String mDescription;
+
+    /** A set of user ids that should be filtered out from the selected widgets. */
+    @NonNull
+    Set<Integer> mFilteredUserIds = new HashSet<>();
+
+    @Nullable
+    private WidgetsFullSheet mWidgetSheet;
+
+    private final Predicate<WidgetItem> mNoShortcutsFilter = widget -> {
+        final WidgetAcceptabilityVerdict verdict =
+                isWidgetAcceptable(widget, /* applySizeFilter=*/ false);
+        verdict.maybeLogVerdict();
+        return verdict.isAcceptable;
+    };
+    private final Predicate<WidgetItem> mHostSizeAndNoShortcutsFilter = widget -> {
+        final WidgetAcceptabilityVerdict verdict =
+                isWidgetAcceptable(widget, /* applySizeFilter=*/ true);
+        verdict.maybeLogVerdict();
+        return verdict.isAcceptable;
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +166,8 @@ public class WidgetPickerActivity extends BaseActivity {
         mApp = LauncherAppState.getInstance(this);
         InvariantDeviceProfile idp = mApp.getInvariantDeviceProfile();
         mDeviceProfile = idp.getDeviceProfile(this);
-        mModel = new WidgetsModel();
+        mModel = new WidgetsModel(mApp.getContext());
+        mWidgetPickerDataProvider = new WidgetPickerDataProvider(this);
 
         setContentView(R.layout.widget_picker_activity);
         mDragLayer = findViewById(R.id.drag_layer);
@@ -119,15 +176,21 @@ public class WidgetPickerActivity extends BaseActivity {
         WindowInsetsController wc = mDragLayer.getWindowInsetsController();
         wc.hide(navigationBars() + statusBars());
 
-        BaseWidgetSheet widgetSheet = WidgetsFullSheet.show(this, true);
-        widgetSheet.disableNavBarScrim(true);
-        widgetSheet.addOnCloseListener(this::finish);
-
         parseIntentExtras();
         refreshAndBindWidgets();
     }
 
+    @Override
+    protected void registerBackDispatcher() {
+        getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                new BackAnimationCallback());
+    }
+
     private void parseIntentExtras() {
+        mTitle = getIntent().getStringExtra(EXTRA_PICKER_TITLE);
+        mDescription = getIntent().getStringExtra(EXTRA_PICKER_DESCRIPTION);
+
         // A value of 0 for either size means that no filtering will occur in that dimension. If
         // both values are 0, then no size filtering will occur.
         mDesiredWidgetWidth =
@@ -136,8 +199,19 @@ public class WidgetPickerActivity extends BaseActivity {
                 getIntent().getIntExtra(EXTRA_DESIRED_WIDGET_HEIGHT, 0);
 
         // Defaults to '0' to indicate that there isn't a category filter.
-        mWidgetCategoryFilter =
-                getIntent().getIntExtra(AppWidgetManager.EXTRA_CATEGORY_FILTER, 0);
+        // Negative value indicates it's an exclusion filter (e.g. NOT_KEYGUARD_CATEGORY.inv())
+        // Positive value indicates it's inclusion filter (e.g. HOME_SCREEN or KEYGUARD)
+        // Note: A filter can either be inclusion or exclusion filter; not both.
+        int inclusionFilter = getIntent().getIntExtra(AppWidgetManager.EXTRA_CATEGORY_FILTER, 0);
+        if (inclusionFilter < 0) {
+            Log.w(TAG, "Invalid EXTRA_CATEGORY_FILTER: " + inclusionFilter);
+        }
+        mWidgetCategoryInclusionFilter = new WidgetCategoryFilter(max(0, inclusionFilter));
+        int exclusionFilter = getIntent().getIntExtra(EXTRA_CATEGORY_EXCLUSION_FILTER, 0);
+        if (exclusionFilter > 0) {
+            Log.w(TAG, "Invalid EXTRA_CATEGORY_EXCLUSION_FILTER: " + exclusionFilter);
+        }
+        mWidgetCategoryExclusionFilter = new WidgetCategoryFilter(min(0 , exclusionFilter));
 
         String uiSurfaceParam = getIntent().getStringExtra(EXTRA_UI_SURFACE);
         if (uiSurfaceParam != null && UI_SURFACE_PATTERN.matcher(uiSurfaceParam).matches()) {
@@ -150,12 +224,18 @@ public class WidgetPickerActivity extends BaseActivity {
                 mAddedWidgets = addedWidgets;
             }
         }
+        ArrayList<Integer> filteredUsers = getIntent().getIntegerArrayListExtra(
+                EXTRA_USER_ID_FILTER);
+        mFilteredUserIds.clear();
+        if (filteredUsers != null) {
+            mFilteredUserIds.addAll(filteredUsers);
+        }
     }
 
     @NonNull
     @Override
-    public PopupDataProvider getPopupDataProvider() {
-        return mPopupDataProvider;
+    public WidgetPickerDataProvider getWidgetPickerDataProvider() {
+        return mWidgetPickerDataProvider;
     }
 
     @Override
@@ -225,121 +305,213 @@ public class WidgetPickerActivity extends BaseActivity {
         };
     }
 
-    /** Updates the model with widgets and provides them after applying the provided filter. */
+    /**
+     * Updates the model with widgets, applies filters and launches the widgets sheet once
+     * widgets are available
+     */
     private void refreshAndBindWidgets() {
         MODEL_EXECUTOR.execute(() -> {
-            LauncherAppState app = LauncherAppState.getInstance(this);
-            mModel.update(app, null);
-            final List<WidgetsListBaseEntry> allWidgets =
-                    mModel.getFilteredWidgetsListForPicker(
-                            app.getContext(),
-                            /*widgetItemFilter=*/ widget -> {
-                                final WidgetAcceptabilityVerdict verdict =
-                                        isWidgetAcceptable(widget);
-                                verdict.maybeLogVerdict();
-                                return verdict.isAcceptable;
-                            }
-                    );
-            bindWidgets(allWidgets);
+            mModel.update(null);
+
+            StringCache stringCache = new StringCache();
+            stringCache.loadStrings(this);
+
+            bindStringCache(stringCache);
+            bindWidgets(mModel.getWidgetsByPackageItemForPicker());
+            // Open sheet once widgets are available, so that it doesn't interrupt the open
+            // animation.
+            openWidgetsSheet();
             if (mUiSurface != null) {
-                Map<PackageUserKey, List<WidgetItem>> allWidgetsMap = allWidgets.stream()
-                        .filter(WidgetsListHeaderEntry.class::isInstance)
-                        .collect(Collectors.toMap(
-                                entry -> PackageUserKey.fromPackageItemInfo(entry.mPkgItem),
-                                entry -> entry.mWidgets)
-                        );
-                mWidgetPredictionsRequester = new WidgetPredictionsRequester(app.getContext(),
-                        mUiSurface, allWidgetsMap);
-                mWidgetPredictionsRequester.request(mAddedWidgets, this::bindRecommendedWidgets);
+                mWidgetPredictionsRequester = new WidgetPredictionsRequester(
+                        getApplicationContext(), mUiSurface,
+                        mModel.getWidgetsByComponentKeyForPicker());
+                mWidgetPredictionsRequester.request(mAddedWidgets, this);
             }
         });
     }
 
-    private void bindWidgets(List<WidgetsListBaseEntry> widgets) {
-        MAIN_EXECUTOR.execute(() -> mPopupDataProvider.setAllWidgets(widgets));
+    private void bindStringCache(final StringCache stringCache) {
+        MAIN_EXECUTOR.execute(() -> mStringCache = stringCache);
     }
 
-    private void bindRecommendedWidgets(List<ItemInfo> recommendedWidgets) {
-        MAIN_EXECUTOR.execute(() -> mPopupDataProvider.setRecommendedWidgets(recommendedWidgets));
+    private void bindWidgets(Map<PackageItemInfo, List<WidgetItem>> widgets) {
+        WidgetsListBaseEntriesBuilder builder = new WidgetsListBaseEntriesBuilder(
+                mApp.getContext());
+        final List<WidgetsListBaseEntry> allWidgets = builder.build(widgets, mNoShortcutsFilter);
+
+        // Default list is shown if host has additionally enforced size filtering.
+        @Nullable Predicate<WidgetItem> defaultListFilter =
+                hasHostSizeFilters() ? mHostSizeAndNoShortcutsFilter : null;
+
+        MAIN_EXECUTOR.execute(() -> {
+            mWidgetPickerDataProvider.setHostSpecifiedDefaultWidgetsFilter(defaultListFilter);
+            mWidgetPickerDataProvider.setWidgets(allWidgets);
+        });
+    }
+
+    private void openWidgetsSheet() {
+        MAIN_EXECUTOR.execute(() -> {
+            mWidgetSheet = WidgetsFullSheet.show(this, true);
+            mWidgetSheet.mayUpdateTitleAndDescription(mTitle, mDescription);
+            mWidgetSheet.disableNavBarScrim(true);
+            mWidgetSheet.addOnCloseListener(this::finish);
+        });
+    }
+
+    @Override
+    public void onPredictionsAvailable(List<ItemInfo> recommendedWidgets) {
+        // Bind recommendations once picker has finished open animation.
+        MAIN_EXECUTOR.getHandler().postDelayed(
+                () -> mWidgetPickerDataProvider.setWidgetRecommendations(recommendedWidgets),
+                mDeviceProfile.bottomSheetOpenDuration);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mWidgetPickerDataProvider.destroy();
         if (mWidgetPredictionsRequester != null) {
             mWidgetPredictionsRequester.clear();
         }
     }
 
-    private WidgetAcceptabilityVerdict isWidgetAcceptable(WidgetItem widget) {
+    @Nullable
+    @Override
+    public StringCache getStringCache() {
+        return mStringCache;
+    }
+
+    /**
+     * Animation callback for different predictive back animation states for the widget picker.
+     */
+    private class BackAnimationCallback extends FlingOnBackAnimationCallback {
+        @Nullable
+        OnBackAnimationCallback mActiveOnBackAnimationCallback;
+
+        @Override
+        public void onBackStartedCompat(@NonNull BackEvent backEvent) {
+            if (mActiveOnBackAnimationCallback != null) {
+                mActiveOnBackAnimationCallback.onBackCancelled();
+            }
+            if (mWidgetSheet != null) {
+                mActiveOnBackAnimationCallback = mWidgetSheet;
+                mActiveOnBackAnimationCallback.onBackStarted(backEvent);
+            }
+        }
+
+        @Override
+        public void onBackInvokedCompat() {
+            if (mActiveOnBackAnimationCallback == null) {
+                return;
+            }
+            mActiveOnBackAnimationCallback.onBackInvoked();
+            mActiveOnBackAnimationCallback = null;
+        }
+
+        @Override
+        public void onBackProgressedCompat(@NonNull BackEvent backEvent) {
+            if (mActiveOnBackAnimationCallback == null) {
+                return;
+            }
+            mActiveOnBackAnimationCallback.onBackProgressed(backEvent);
+        }
+
+        @Override
+        public void onBackCancelledCompat() {
+            if (mActiveOnBackAnimationCallback == null) {
+                return;
+            }
+            mActiveOnBackAnimationCallback.onBackCancelled();
+            mActiveOnBackAnimationCallback = null;
+        }
+    }
+
+    private boolean hasHostSizeFilters() {
+        // If optional filters such as size filter are present, we display them as default widgets.
+        return mDesiredWidgetWidth != 0 || mDesiredWidgetHeight != 0;
+    }
+
+    private WidgetAcceptabilityVerdict isWidgetAcceptable(WidgetItem widget,
+            boolean applySizeFilter) {
         final AppWidgetProviderInfo info = widget.widgetInfo;
         if (info == null) {
             return rejectWidget(widget, "shortcut");
         }
 
-        if (mWidgetCategoryFilter > 0 && (info.widgetCategory & mWidgetCategoryFilter) == 0) {
+        if (mFilteredUserIds.contains(widget.user.getIdentifier())) {
             return rejectWidget(
                     widget,
-                    "doesn't match category filter [filter=%d, widget=%d]",
-                    mWidgetCategoryFilter,
+                    "widget user: %d is being filtered",
+                    widget.user.getIdentifier());
+        }
+
+        if (!mWidgetCategoryInclusionFilter.matches(info.widgetCategory)
+                || !mWidgetCategoryExclusionFilter.matches(info.widgetCategory)) {
+            return rejectWidget(
+                    widget,
+                    "doesn't match category filter [inclusion=%d, exclusion=%d, widget=%d]",
+                    mWidgetCategoryInclusionFilter.getCategoryMask(),
+                    mWidgetCategoryExclusionFilter.getCategoryMask(),
                     info.widgetCategory);
         }
 
-        if (mDesiredWidgetWidth == 0 && mDesiredWidgetHeight == 0) {
-            // Accept the widget if the desired dimensions are unspecified.
-            return acceptWidget(widget);
-        }
-
-        final boolean isHorizontallyResizable =
-                (info.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
-        if (mDesiredWidgetWidth > 0 && isHorizontallyResizable) {
-            if (info.maxResizeWidth > 0
-                    && info.maxResizeWidth >= info.minWidth
-                    && info.maxResizeWidth < mDesiredWidgetWidth) {
-                return rejectWidget(
-                        widget,
-                        "maxResizeWidth[%d] < mDesiredWidgetWidth[%d]",
-                        info.maxResizeWidth,
-                        mDesiredWidgetWidth);
+        if (applySizeFilter) {
+            if (mDesiredWidgetWidth == 0 && mDesiredWidgetHeight == 0) {
+                // Accept the widget if the desired dimensions are unspecified.
+                return acceptWidget(widget);
             }
 
-            final int minWidth = Math.min(info.minResizeWidth, info.minWidth);
-            if (minWidth > mDesiredWidgetWidth) {
-                return rejectWidget(
-                        widget,
-                        "min(minWidth[%d], minResizeWidth[%d]) > mDesiredWidgetWidth[%d]",
-                        info.minWidth,
-                        info.minResizeWidth,
-                        mDesiredWidgetWidth);
-            }
-        }
+            final boolean isHorizontallyResizable =
+                    (info.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
+            if (mDesiredWidgetWidth > 0 && isHorizontallyResizable) {
+                if (info.maxResizeWidth > 0
+                        && info.maxResizeWidth >= info.minWidth
+                        && info.maxResizeWidth < mDesiredWidgetWidth) {
+                    return rejectWidget(
+                            widget,
+                            "maxResizeWidth[%d] < mDesiredWidgetWidth[%d]",
+                            info.maxResizeWidth,
+                            mDesiredWidgetWidth);
+                }
 
-        final boolean isVerticallyResizable =
-                (info.resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
-        if (mDesiredWidgetHeight > 0 && isVerticallyResizable) {
-            if (info.maxResizeHeight > 0
-                    && info.maxResizeHeight >= info.minHeight
-                    && info.maxResizeHeight < mDesiredWidgetHeight) {
-                return rejectWidget(
-                        widget,
-                        "maxResizeHeight[%d] < mDesiredWidgetHeight[%d]",
-                        info.maxResizeHeight,
-                        mDesiredWidgetHeight);
+                final int minWidth = min(info.minResizeWidth, info.minWidth);
+                if (minWidth > mDesiredWidgetWidth) {
+                    return rejectWidget(
+                            widget,
+                            "min(minWidth[%d], minResizeWidth[%d]) > mDesiredWidgetWidth[%d]",
+                            info.minWidth,
+                            info.minResizeWidth,
+                            mDesiredWidgetWidth);
+                }
             }
 
-            final int minHeight = Math.min(info.minResizeHeight, info.minHeight);
-            if (minHeight > mDesiredWidgetHeight) {
-                return rejectWidget(
-                        widget,
-                        "min(minHeight[%d], minResizeHeight[%d]) > mDesiredWidgetHeight[%d]",
-                        info.minHeight,
-                        info.minResizeHeight,
-                        mDesiredWidgetHeight);
-            }
-        }
+            final boolean isVerticallyResizable =
+                    (info.resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
+            if (mDesiredWidgetHeight > 0 && isVerticallyResizable) {
+                if (info.maxResizeHeight > 0
+                        && info.maxResizeHeight >= info.minHeight
+                        && info.maxResizeHeight < mDesiredWidgetHeight) {
+                    return rejectWidget(
+                            widget,
+                            "maxResizeHeight[%d] < mDesiredWidgetHeight[%d]",
+                            info.maxResizeHeight,
+                            mDesiredWidgetHeight);
+                }
 
-        if (!isHorizontallyResizable || !isVerticallyResizable) {
-            return rejectWidget(widget, "not resizeable");
+                final int minHeight = min(info.minResizeHeight, info.minHeight);
+                if (minHeight > mDesiredWidgetHeight) {
+                    return rejectWidget(
+                            widget,
+                            "min(minHeight[%d], minResizeHeight[%d]) > mDesiredWidgetHeight[%d]",
+                            info.minHeight,
+                            info.minResizeHeight,
+                            mDesiredWidgetHeight);
+                }
+            }
+
+            if (!isHorizontallyResizable || !isVerticallyResizable) {
+                return rejectWidget(widget, "not resizeable");
+            }
         }
 
         return acceptWidget(widget);

@@ -43,6 +43,8 @@
     <string name="accessibility_action_divider_left_50" msgid="3488317024557521561">"ซ้าย 50%"</string>
     <string name="accessibility_action_divider_left_30" msgid="6023611335723838727">"ซ้าย 30%"</string>
     <string name="accessibility_action_divider_right_full" msgid="3408505054325944903">"เต็มหน้าจอทางขวา"</string>
+    <string name="accessibility_action_divider_swap_vertical" msgid="3644891227133372072">"สลับแอปด้านบนกับด้านล่าง"</string>
+    <string name="accessibility_action_divider_swap_horizontal" msgid="2722197605446631628">"สลับแอปด้านซ้ายกับด้านขวา"</string>
     <string name="accessibility_action_divider_top_full" msgid="3495871951082107594">"เต็มหน้าจอด้านบน"</string>
     <string name="accessibility_action_divider_top_70" msgid="1779164068887875474">"ด้านบน 70%"</string>
     <string name="accessibility_action_divider_top_50" msgid="8649582798829048946">"ด้านบน 50%"</string>
@@ -65,10 +67,15 @@
     <string name="bubble_accessibility_action_move_top_right" msgid="5864594920870245525">"ย้ายไปด้านขวาบน"</string>
     <string name="bubble_accessibility_action_move_bottom_left" msgid="850271002773745634">"ย้ายไปด้านซ้ายล่าง"</string>
     <string name="bubble_accessibility_action_move_bottom_right" msgid="2107626346109206352">"ย้ายไปด้านขวาล่าง"</string>
+    <string name="bubble_accessibility_action_expand_menu" msgid="8637233525952938845">"ขยายเมนู"</string>
+    <string name="bubble_accessibility_action_collapse_menu" msgid="2975310870146231463">"ยุบเมนู"</string>
+    <string name="bubble_accessibility_action_move_bar_left" msgid="4803535120353716759">"ย้ายไปทางซ้าย"</string>
+    <string name="bubble_accessibility_action_move_bar_right" msgid="7686542531917510421">"ย้ายไปทางขวา"</string>
     <string name="bubble_accessibility_announce_expand" msgid="5388792092888203776">"ขยาย <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_accessibility_announce_collapse" msgid="3178806224494537097">"ยุบ <xliff:g id="BUBBLE_TITLE">%1$s</xliff:g>"</string>
     <string name="bubbles_app_settings" msgid="3617224938701566416">"การตั้งค่า <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_dismiss_text" msgid="8816558050659478158">"ปิดบับเบิล"</string>
+    <string name="bubble_fullscreen_text" msgid="1006758103218086231">"เปลี่ยนเป็นแบบเต็มหน้าจอ"</string>
     <string name="bubbles_dont_bubble_conversation" msgid="310000317885712693">"ไม่ต้องแสดงการสนทนาเป็นบับเบิล"</string>
     <string name="bubbles_user_education_title" msgid="2112319053732691899">"แชทโดยใช้บับเบิล"</string>
     <string name="bubbles_user_education_description" msgid="4215862563054175407">"การสนทนาใหม่ๆ จะปรากฏเป็นไอคอนแบบลอยหรือบับเบิล แตะเพื่อเปิดบับเบิล ลากเพื่อย้ายที่"</string>
@@ -92,6 +99,9 @@
     <string name="camera_compat_treatment_suggested_button_description" msgid="8103916969024076767">"หากพบปัญหากับกล้อง\nแตะเพื่อแก้ไข"</string>
     <string name="camera_compat_treatment_applied_button_description" msgid="2944157113330703897">"หากไม่ได้แก้ไข\nแตะเพื่อเปลี่ยนกลับ"</string>
     <string name="camera_compat_dismiss_button_description" msgid="2795364433503817511">"หากไม่พบปัญหากับกล้อง แตะเพื่อปิด"</string>
+    <string name="windowing_app_handle_education_tooltip" msgid="2929643449849791854">"ดูเมนูแอปที่นี่ได้"</string>
+    <string name="windowing_desktop_mode_image_button_education_tooltip" msgid="7171915734817051666">"เข้าสู่หน้าต่างเดสก์ท็อปเพื่อเปิดหลายแอปพร้อมกัน"</string>
+    <string name="windowing_desktop_mode_exit_education_tooltip" msgid="5225660258192054132">"กลับไปที่โหมดเต็มหน้าจอได้ทุกเมื่อจากเมนูแอป"</string>
     <string name="letterbox_education_dialog_title" msgid="7739895354143295358">"รับชมและทำสิ่งต่างๆ ได้มากขึ้น"</string>
     <string name="letterbox_education_split_screen_text" msgid="449233070804658627">"ลากไปไว้ในแอปอื่นเพื่อแยกหน้าจอ"</string>
     <string name="letterbox_education_reposition_text" msgid="4589957299813220661">"แตะสองครั้งด้านนอกแอปเพื่อเปลี่ยนตำแหน่ง"</string>
@@ -103,22 +113,54 @@
     <string name="letterbox_restart_restart" msgid="8529976234412442973">"รีสตาร์ท"</string>
     <string name="letterbox_restart_dialog_checkbox_title" msgid="5252918008140768386">"ไม่ต้องแสดงข้อความนี้อีก"</string>
     <string name="letterbox_reachability_reposition_text" msgid="3522042240665748268">"แตะสองครั้ง\nเพื่อย้ายแอปนี้"</string>
-    <string name="maximize_button_text" msgid="1650859196290301963">"ขยายใหญ่สุด"</string>
-    <string name="minimize_button_text" msgid="271592547935841753">"ย่อ"</string>
-    <string name="close_button_text" msgid="2913281996024033299">"ปิด"</string>
+    <string name="maximize_button_text" msgid="8106849394538234709">"ขยาย <xliff:g id="APP_NAME">%1$s</xliff:g> ให้ใหญ่สุด"</string>
+    <string name="restore_button_text" msgid="5377571986086775288">"คืนค่า <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <string name="minimize_button_text" msgid="5213953162664451152">"ย่อ <xliff:g id="APP_NAME">%1$s</xliff:g> ให้เล็กสุด"</string>
+    <string name="close_button_text" msgid="4544839489310949894">"ปิด <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="back_button_text" msgid="1469718707134137085">"กลับ"</string>
-    <string name="handle_text" msgid="1766582106752184456">"แฮนเดิล"</string>
+    <string name="handle_text" msgid="4419667835599523257">"แฮนเดิลแอป"</string>
     <string name="app_icon_text" msgid="2823268023931811747">"ไอคอนแอป"</string>
     <string name="fullscreen_text" msgid="1162316685217676079">"เต็มหน้าจอ"</string>
-    <string name="desktop_text" msgid="1077633567027630454">"โหมดเดสก์ท็อป"</string>
+    <string name="desktop_text" msgid="9058641752519570266">"หน้าต่างเดสก์ท็อป"</string>
     <string name="split_screen_text" msgid="1396336058129570886">"แยกหน้าจอ"</string>
     <string name="more_button_text" msgid="3655388105592893530">"เพิ่มเติม"</string>
     <string name="float_button_text" msgid="9221657008391364581">"ล่องลอย"</string>
     <string name="select_text" msgid="5139083974039906583">"เลือก"</string>
     <string name="screenshot_text" msgid="1477704010087786671">"ภาพหน้าจอ"</string>
+    <string name="open_in_browser_text" msgid="9181692926376072904">"เปิดในเบราว์เซอร์"</string>
+    <string name="open_in_app_text" msgid="2874590745116268525">"เปิดในแอป"</string>
+    <string name="new_window_text" msgid="6318648868380652280">"หน้าต่างใหม่"</string>
+    <string name="manage_windows_text" msgid="5567366688493093920">"จัดการหน้าต่าง"</string>
+    <string name="change_aspect_ratio_text" msgid="9104456064548212806">"เปลี่ยนสัดส่วนการแสดงผล"</string>
+    <string name="handle_menu_restart_text" msgid="3907767216238298098">"เพิ่มประสิทธิภาพมุมมอง"</string>
     <string name="close_text" msgid="4986518933445178928">"ปิด"</string>
     <string name="collapse_menu_text" msgid="7515008122450342029">"ปิดเมนู"</string>
-    <string name="expand_menu_text" msgid="3847736164494181168">"เปิดเมนู"</string>
+    <string name="desktop_mode_app_header_chip_text" msgid="7617377295944971651">"<xliff:g id="APP_NAME">%1$s</xliff:g> (หน้าต่างเดสก์ท็อป)"</string>
     <string name="desktop_mode_maximize_menu_maximize_text" msgid="3275717276171114411">"ขยายหน้าจอให้ใหญ่สุด"</string>
-    <string name="desktop_mode_maximize_menu_snap_text" msgid="2065251022783880154">"สแนปหน้าจอ"</string>
+    <string name="desktop_mode_maximize_menu_snap_text" msgid="5673738963174074006">"ปรับขนาด"</string>
+    <string name="desktop_mode_non_resizable_snap_text" msgid="3771776422751387878">"ย้ายแอปมาที่นี่ไม่ได้"</string>
+    <string name="desktop_mode_maximize_menu_immersive_button_text" msgid="559492223133829481">"สมจริง"</string>
+    <string name="desktop_mode_maximize_menu_immersive_restore_button_text" msgid="4900114367354709257">"คืนค่า"</string>
+    <string name="desktop_mode_maximize_menu_maximize_button_text" msgid="3090199175564175845">"ขยายใหญ่สุด"</string>
+    <string name="desktop_mode_maximize_menu_restore_button_text" msgid="4234449220944704387">"คืนค่า"</string>
+    <string name="desktop_mode_maximize_menu_snap_left_button_text" msgid="8077452201179893424">"จัดพอดีกับทางซ้าย"</string>
+    <string name="desktop_mode_maximize_menu_snap_right_button_text" msgid="7117751068945657304">"จัดพอดีกับทางขวา"</string>
+    <string name="desktop_mode_a11y_action_snap_left" msgid="2932955411661734668">"ปรับขนาดหน้าต่างแอปไปทางซ้าย"</string>
+    <string name="desktop_mode_a11y_action_snap_right" msgid="4577032451624261787">"ปรับขนาดหน้าต่างแอปไปทางขวา"</string>
+    <string name="desktop_mode_a11y_action_maximize_restore" msgid="8026037983417986686">"ขยายหรือคืนค่าขนาดหน้าต่าง"</string>
+    <string name="app_handle_chip_accessibility_announce" msgid="499881698947450536">"เปิดเมนู"</string>
+    <string name="app_handle_menu_accessibility_announce" msgid="7928858564852785398">"เข้าสู่ <xliff:g id="WINDOWING_MODE">%1$s</xliff:g>"</string>
+    <string name="maximize_menu_talkback_action_snap_left_text" msgid="500309467459084564">"ปรับขนาดหน้าต่างไปทางซ้าย"</string>
+    <string name="maximize_menu_talkback_action_snap_right_text" msgid="7010831426654467163">"ปรับขนาดหน้าต่างไปทางขวา"</string>
+    <string name="maximize_menu_talkback_action_maximize_restore_text" msgid="4942610897847934859">"ขยายหรือคืนค่าขนาดหน้าต่าง"</string>
+    <string name="app_header_talkback_action_maximize_button_text" msgid="8776156791095878638">"ขยายขนาดหน้าต่างแอปให้ใหญ่สุด"</string>
+    <string name="app_header_talkback_action_restore_button_text" msgid="2153022340772980863">"คืนค่าขนาดหน้าต่าง"</string>
+    <string name="app_header_talkback_action_minimize_button_text" msgid="7491054416186901764">"ย่อหน้าต่างแอปให้เล็กสุด"</string>
+    <string name="app_header_talkback_action_close_button_text" msgid="5159612596378268926">"ปิดหน้าต่างแอป"</string>
+    <string name="open_by_default_settings_text" msgid="2526548548598185500">"เปิดตามการตั้งค่าเริ่มต้น"</string>
+    <string name="open_by_default_dialog_subheader_text" msgid="1729599730664063881">"เลือกวิธีเปิดเว็บลิงก์สำหรับแอปนี้"</string>
+    <string name="open_by_default_dialog_in_app_text" msgid="6978022419634199806">"ในแอป"</string>
+    <string name="open_by_default_dialog_in_browser_text" msgid="8042769465958497081">"ในเบราว์เซอร์"</string>
+    <string name="open_by_default_dialog_dismiss_button_text" msgid="3487238795534582291">"ตกลง"</string>
+    <string name="desktop_windowing_app_to_web_education_text" msgid="1599668769538703570">"เปิดแอปในเบราว์เซอร์ได้อย่างรวดเร็วที่นี่"</string>
 </resources>

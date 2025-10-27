@@ -77,7 +77,7 @@ import com.android.wm.shell.common.LaunchAdjacentController
 import com.android.wm.shell.common.MultiInstanceHelper
 import com.android.wm.shell.common.ShellExecutor
 import com.android.wm.shell.common.SyncTransactionQueue
-import com.android.wm.shell.common.desktopmode.DesktopModeTransitionSource.UNKNOWN
+import com.android.wm.shell.shared.desktopmode.DesktopModeTransitionSource.UNKNOWN
 import com.android.wm.shell.common.split.SplitScreenConstants
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.Companion.createFreeformTask
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.Companion.createFullscreenTask

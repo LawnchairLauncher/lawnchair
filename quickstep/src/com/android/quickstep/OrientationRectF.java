@@ -69,13 +69,15 @@ public class OrientationRectF extends RectF {
     }
 
     public boolean applyTransform(MotionEvent event, int deltaRotation, boolean forceTransform) {
+        if (deltaRotation == 0) {
+            return contains(event.getX(), event.getY());
+        }
         mTmpMatrix.reset();
         postDisplayRotation(deltaRotation, mHeight, mWidth, mTmpMatrix);
         if (forceTransform) {
             if (DEBUG) {
                 Log.d(TAG, "Transforming rotation due to forceTransform, "
                         + "deltaRotation: " + deltaRotation
-                        + "mRotation: " + mRotation
                         + " this: " + this);
             }
             if (Utilities.ATLEAST_S) {

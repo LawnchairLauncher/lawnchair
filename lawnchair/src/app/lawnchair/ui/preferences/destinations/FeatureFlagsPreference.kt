@@ -18,7 +18,7 @@ import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.navigation.CreateBackup
-import com.android.launcher3.Utilities
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT
 import com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_COUNT
 import com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN
@@ -65,7 +65,7 @@ fun FeatureFlagsPreference(modifier: Modifier = Modifier) {
             OnboardingPreference(
                 title = item.title,
                 onEdit = {
-                    Utilities.getPrefs(context)
+                    LauncherPrefs.getPrefs(context)
                         .edit {
                             item.keys.forEach { key -> remove(key) }
                         }

@@ -77,6 +77,8 @@ DeviceProfile:
 	hotseatBarBottomSpacePx: 80.0px (40.0dp)
 	mHotseatBarEdgePaddingPx: 0.0px (0.0dp)
 	mHotseatBarWorkspaceSpacePx: 0.0px (0.0dp)
+	inlineNavButtonsEndSpacingPx: 0.0px (0.0dp)
+	navButtonsLayoutWidthPx: 0.0px (0.0dp)
 	hotseatBarEndOffset: 0.0px (0.0dp)
 	hotseatQsbSpace: 0.0px (0.0dp)
 	hotseatQsbHeight: 0.0px (0.0dp)

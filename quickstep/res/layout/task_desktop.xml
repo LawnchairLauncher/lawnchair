@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2022 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,40 +14,33 @@
      limitations under the License.
 -->
 
-<com.android.quickstep.views.DesktopTaskView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.quickstep.views.DesktopTaskView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/task_view_desktop"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="true"
-    android:clipToOutline="true"
+    android:contentDescription="@string/recent_task_desktop"
     android:defaultFocusHighlightEnabled="false"
     android:focusable="true"
-    launcher:focusBorderColor="?attr/materialColorOutline"
-    launcher:hoverBorderColor="?attr/materialColorPrimary">
+    launcher:focusBorderColor="@color/materialColorOutline"
+    launcher:hoverBorderColor="@color/materialColorPrimary">
 
-    <View
-        android:id="@+id/background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <!--
-         TODO(b249371338): DesktopTaskView extends from TaskView. TaskView expects TaskThumbnailView
-         and IconView with these ids to be present. Need to refactor RecentsView to accept child
-         views that do not inherint from TaskView only or create a generic TaskView that have
-         N number of tasks.
-     -->
-    <com.android.quickstep.views.TaskThumbnailViewDeprecated
-        android:id="@+id/snapshot"
+    <ViewStub
+        android:id="@+id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:inflatedId="@id/icon" />
 
-    <com.android.quickstep.views.IconView
-        android:id="@+id/icon"
-        android:layout_width="@dimen/task_thumbnail_icon_size"
-        android:layout_height="@dimen/task_thumbnail_icon_size"
-        android:focusable="false"
-        android:importantForAccessibility="no" />
+    <com.android.quickstep.views.DesktopTaskContentView
+        android:id="@+id/desktop_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.android.quickstep.views.DesktopTaskContentView>
 
 </com.android.quickstep.views.DesktopTaskView>

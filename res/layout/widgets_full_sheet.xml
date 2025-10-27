@@ -21,12 +21,10 @@
     android:orientation="vertical"
     android:theme="?attr/widgetsTheme">
 
-    <app.lawnchair.ui.StretchRecyclerViewContainer
+    <com.android.launcher3.views.SpringRelativeLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:importantForAccessibility="no">
+        android:layout_height="match_parent">
 
         <View
             android:id="@+id/collapse_handle"
@@ -73,5 +71,5 @@
             android:visibility="gone"
             android:clipToPadding="false" />
 
-    </app.lawnchair.ui.StretchRecyclerViewContainer>
+    </com.android.launcher3.views.SpringRelativeLayout>
 </com.android.launcher3.widget.picker.WidgetsFullSheet>

@@ -52,6 +52,23 @@ filegroup {
         "tests/src/com/android/quickstep/TaplOverviewIconTest.java",
         "tests/src/com/android/quickstep/TaplTestsQuickstep.java",
         "tests/src/com/android/quickstep/TaplTestsSplitscreen.java",
-        "tests/src/com/android/launcher3/testcomponent/ExcludeFromRecentsTestActivity.java"
+        "tests/src/com/android/quickstep/util/SplitScreenTestUtils.kt",
+        "tests/src/com/android/launcher3/testcomponent/ExcludeFromRecentsTestActivity.java",
+    ],
+}
+
+filegroup {
+    name: "launcher3-quickstep-screenshot-tests-src",
+    path: "tests/multivalentScreenshotTests",
+    srcs: [
+        "tests/multivalentScreenshotTests/src/**/*.kt",
+    ],
+}
+
+filegroup {
+    name: "launcher3-quickstep-testing",
+    path: "testing",
+    srcs: [
+        "testing/**/*.kt",
     ],
 }

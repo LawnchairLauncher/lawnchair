@@ -22,11 +22,13 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Sabitle"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Serbest çalışma"</string>
     <string name="recent_task_option_desktop" msgid="8280879717125435668">"Masaüstü"</string>
+    <string name="recent_task_option_external_display" msgid="4533840664313389484">"Harici ekrana taşı"</string>
+    <string name="recent_task_option_close" msgid="942942499021777264">"Kapat"</string>
+    <string name="recent_task_desktop" msgid="8081113562549637334">"Masaüstü"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Yeni öğe yok"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Uygulama kullanım ayarları"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Tümünü temizle"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Son uygulamalar"</string>
-    <string name="task_view_closed" msgid="9170038230110856166">"Görev Kapatıldı"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 dk."</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Bugün <xliff:g id="TIME">%1$s</xliff:g> kaldı"</string>
@@ -45,6 +47,7 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Uygulama önerileri etkinleştirildi"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Uygulama önerileri devre dışı bırakıldı"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Tahmin edilen uygulama: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_title" msgid="2750751261768388354">"Hareketle Gezinme Eğitimi"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Cihazınızı döndürün"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Hareketle gezinme eğitimini tamamlamak için lütfen cihazınızı döndürün"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"En sağ veya en sol kenardan kaydırdığınızdan emin olun"</string>
@@ -56,7 +59,6 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri hareketinin hassasiyetini değiştirmek için Ayarlar\'a gidin"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri dönmek için kaydırma"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Son ekrana geri gitmek için sol veya sağ kenardan ekranın ortasına doğru kaydırın."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Son ekrana geri gitmek için sol veya sağ kenardan ekranın ortasına doğru 2 parmağınızla kaydırın."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Geri dönme"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Sol veya sağ kenardan ekranın ortasına doğru kaydırın"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Ekranın alt kenarından yukarı kaydırdığınızdan emin olun"</string>
@@ -66,7 +68,6 @@
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Ana ekrana git hareketini tamamladınız"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Ana ekrana gitmek için kaydırma"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Ekranın alt kısmından yukarıya doğru kaydırın. Bu hareket sizi her zaman Ana ekrana götürür."</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Ekranın alt kısmından 2 parmağınızla yukarı kaydırın. Bu hareket sizi her zaman Ana ekrana götürür."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ana sayfaya gitme"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Parmağınızı ekranın alt kısmından yukarıya doğru kaydırın"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Tebrikler!"</string>
@@ -77,7 +78,6 @@
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Uygulamalar arasında geçiş yapma hareketini tamamladınız"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Uygulamalar arasında geçiş yapmak için kaydırma"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Uygulamalar arasında geçiş yapmak için ekranınızın altından yukarı kaydırıp basılı tutun ve sonra bırakın."</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Uygulamalara geçiş yapmak için ekranın altından 2 parmakla yukarı kaydırıp basılı tutun ve bırakın."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Uygulamalar arasında geçiş yapma"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Ekranınızın alt tarafından yukarı doğru kaydırın, tutun ve sonra bırakın"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Tebrikler!"</string>
@@ -87,10 +87,10 @@
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Tekrar deneyin"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Güzel!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Eğitim <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
-    <string name="allset_title" msgid="5021126669778966707">"İşlem tamam!"</string>
+    <string name="allset_title" msgid="5021126669778966707">"Kurulum tamamlandı"</string>
     <string name="allset_hint" msgid="459504134589971527">"Ana ekrana gitmek için yukarı kaydırın"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Ana ekranınıza gitmek için ana sayfa düğmesine dokunun"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> cihazınızı kullanmaya hazırsınız"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Artık <xliff:g id="DEVICE">%1$s</xliff:g> kullanılmak için hazır"</string>
     <string name="default_device_name" msgid="6660656727127422487">"cihaz"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Sistem gezinme ayarları"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Paylaş"</string>
@@ -99,7 +99,7 @@
     <string name="action_save_app_pair" msgid="5974823919237645229">"Uygulama çiftini kaydet"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"Bölünmüş ekran için başka bir uygulamaya dokunun"</string>
     <string name="toast_contextual_split_select_app" msgid="433510957123687090">"Bölünmüş ekran kullanmak için başka bir uygulama seçin"</string>
-    <string name="toast_split_select_app_cancel" msgid="1532690483356445639"><b>"İptal"</b></string>
+    <string name="toast_split_select_app_cancel" msgid="1939025102486630426">"İptal"</string>
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Bölünmüş ekran seçiminden çıkın"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Bölünmüş ekran kullanmak için başka bir uygulama seçin"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Uygulamanız veya kuruluşunuz bu işleme izin vermiyor"</string>
@@ -130,18 +130,37 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Hızlı Ayarlar"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Görev çubuğu."</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Görev çubuğu gösteriliyor"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Görev çubuğu gizlendi"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_left_title" msgid="4242431789851790046">"Görev çubuğu ve baloncuklar solda gösteriliyor"</string>
+    <string name="taskbar_a11y_shown_with_bubbles_right_title" msgid="8219065376188180113">"Görev çubuğu ve baloncuklar sağda gösteriliyor"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Gezinme çubuğu"</string>
     <string name="always_show_taskbar" msgid="3608801276107751229">"Görev çubuğunu daima göster"</string>
     <string name="change_navigation_mode" msgid="9088393078736808968">"Gezinme modunu değiştir"</string>
     <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Görev Çubuğu Ayırıcısı"</string>
+    <string name="taskbar_overflow_a11y_title" msgid="7960342079198820179">"Görev Çubuğu Taşması"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Sol üste taşı"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Sağ alta taşı"</string>
-    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{# uygulama daha göster.}other{# uygulama daha göster}}"</string>
-    <string name="quick_switch_desktop" msgid="4834587349322698616">"{count,plural, =1{# masaüstü uygulamasını göster.}other{# masaüstü uygulamasını göster.}}"</string>
+    <string name="open_app_as_a_bubble" msgid="6642626287247807473">"Uygulamayı balon olarak aç"</string>
+    <string name="quick_switch_pane_title" msgid="4677158207760585812">"Son uygulamalar"</string>
+    <string name="quick_switch_content_description" msgid="2851244536728720005">"Son uygulama listesi"</string>
+    <string name="quick_switch_overflow" msgid="3679780650881041632">"{count,plural, =1{uygulama daha}other{uygulama daha}}"</string>
+    <string name="quick_switch_desktop" msgid="8393802056024499749">"Masaüstü"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ve <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <string name="quick_switch_task_with_position_in_parent" msgid="4968670948331508951">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="INDEX_IN_PARENT">%2$d</xliff:g>/<xliff:g id="TOTAL_TASKS">%3$d</xliff:g> öğe"</string>
+    <string name="quick_switch_scroll_arrow_left" msgid="6527033155534184309">"Sola kaydır"</string>
+    <string name="quick_switch_scroll_arrow_right" msgid="7319779291086916348">"Sağa kaydır"</string>
     <string name="bubble_bar_bubble_fallback_description" msgid="7811684548953452009">"Balon"</string>
     <string name="bubble_bar_overflow_description" msgid="8617628132733151708">"Taşma"</string>
     <string name="bubble_bar_bubble_description" msgid="1882466152448446446">"<xliff:g id="APP_NAME">%2$s</xliff:g> uygulamasından <xliff:g id="NOTIFICATION_TITLE">%1$s</xliff:g>"</string>
     <string name="bubble_bar_description_multiple_bubbles" msgid="3922207715357143648">"<xliff:g id="BUBBLE_BAR_BUBBLE_DESCRIPTION">%1$s</xliff:g> ve <xliff:g id="BUBBLE_COUNT">%2$d</xliff:g> tane daha"</string>
+    <string name="bubble_bar_action_move_left" msgid="3306922475737714758">"Sola taşı"</string>
+    <string name="bubble_bar_action_move_right" msgid="3455099638571411251">"Sağa taşı"</string>
+    <string name="bubble_bar_action_dismiss_all" msgid="3290722022983403060">"Tümünü kapat"</string>
+    <string name="bubble_bar_accessibility_announce_expand" msgid="1503192695527477102">"genişlet: <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="bubble_bar_accessibility_announce_collapse" msgid="928284600086798791">"daralt: <xliff:g id="BUBBLE_DESCRIPTION">%1$s</xliff:g>"</string>
+    <string name="search_gesture_feature_title" msgid="1294044108313175306">"Seçerek Arat"</string>
+    <string name="header_app_icon_description" msgid="2184625881433608027">"Uygulama simgesi"</string>
+    <string name="header_default_app_title" msgid="8308052350689531566">"Uygulama başlığı"</string>
+    <string name="header_close_icon_description" msgid="5400033616675911319">"Kapat düğmesi"</string>
+    <string name="pin_to_taskbar" msgid="6607778046321626950">"Çubuğa sabitle"</string>
+    <string name="unpin_from_taskbar" msgid="2178811773165572676">"Çubuktan kaldır"</string>
 </resources>

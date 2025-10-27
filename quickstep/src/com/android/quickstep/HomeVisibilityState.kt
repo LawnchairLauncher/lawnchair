@@ -18,6 +18,10 @@ package com.android.quickstep
 
 import android.os.RemoteException
 import android.util.Log
+import android.view.InsetsState
+import android.view.WindowInsets
+
+import com.android.launcher3.Utilities
 import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.util.Executors
 import com.android.wm.shell.shared.IHomeTransitionListener.Stub
@@ -28,6 +32,8 @@ class HomeVisibilityState {
 
     var isHomeVisible = true
         private set
+
+    @Volatile var navbarInsetPosition = 0
 
     private var listeners = mutableSetOf<VisibilityChangeListener>()
 
@@ -41,10 +47,18 @@ class HomeVisibilityState {
             transitions?.setHomeTransitionListener(
                 object : Stub() {
                     override fun onHomeVisibilityChanged(isVisible: Boolean) {
-                        Executors.MAIN_EXECUTOR.execute {
-                            isHomeVisible = isVisible
-                            listeners.forEach { it.onHomeVisibilityChanged(isVisible) }
-                        }
+                        Utilities.postAsyncCallback(
+                            Executors.MAIN_EXECUTOR.handler,
+                            {
+                                isHomeVisible = isVisible
+                                listeners.forEach { it.onHomeVisibilityChanged(isVisible) }
+                            },
+                        )
+                    }
+                    override fun onDisplayInsetsChanged(insetsState: InsetsState) {
+                        val bottomInset = insetsState.calculateInsets(insetsState.displayFrame,
+                                WindowInsets.Type.navigationBars(), false).bottom
+                        navbarInsetPosition = insetsState.displayFrame.bottom - bottomInset
                     }
                 }
             )

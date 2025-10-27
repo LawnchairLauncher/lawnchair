@@ -15,10 +15,21 @@
  */
 package com.android.launcher3;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED;
+
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.allapps.AllAppsRecyclerView;
+import com.android.launcher3.allapps.SearchRecyclerView;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
@@ -26,11 +37,62 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import java.util.List;
 
 public class QuickstepAccessibilityDelegate extends LauncherAccessibilityDelegate {
+    private QuickstepLauncher mLauncher;
 
     public QuickstepAccessibilityDelegate(QuickstepLauncher launcher) {
         super(launcher);
+        mLauncher = launcher;
         mActions.put(PIN_PREDICTION, new LauncherAction(
                 PIN_PREDICTION, R.string.pin_prediction, KeyEvent.KEYCODE_P));
+    }
+
+    @Override
+    public void onPopulateAccessibilityEvent(View view, AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(view, event);
+        // Scroll to the position if focused view in main allapps list and not completely visible.
+        // Gate based on TYPE_VIEW_ACCESSIBILITY_FOCUSED for unintended scrolling with external
+        // mouse.
+        if (event.getEventType() == TYPE_VIEW_ACCESSIBILITY_FOCUSED) {
+            scrollToPositionIfNeeded(view);
+        }
+    }
+
+    private void scrollToPositionIfNeeded(View view) {
+        if (!Flags.accessibilityScrollOnAllapps()) {
+            return;
+        }
+        AllAppsRecyclerView contentView = mLauncher.getAppsView().getActiveRecyclerView();
+        if (contentView instanceof SearchRecyclerView) {
+            return;
+        }
+        LinearLayoutManager layoutManager = (LinearLayoutManager) contentView.getLayoutManager();
+        if (layoutManager == null) {
+            return;
+        }
+        RecyclerView.ViewHolder vh = contentView.findContainingViewHolder(view);
+        if (vh == null) {
+            return;
+        }
+        int itemPosition = vh.getBindingAdapterPosition();
+        if (itemPosition == NO_POSITION) {
+            return;
+        }
+        int firstCompletelyVisible = layoutManager.findFirstCompletelyVisibleItemPosition();
+        int lastCompletelyVisible = layoutManager.findLastCompletelyVisibleItemPosition();
+        boolean itemCompletelyVisible = firstCompletelyVisible <= itemPosition
+                && lastCompletelyVisible >= itemPosition;
+        if (itemCompletelyVisible) {
+            return;
+        }
+        RecyclerView.SmoothScroller smoothScroller =
+                new LinearSmoothScroller(mLauncher.asContext()) {
+                    @Override
+                    protected int getVerticalSnapPreference() {
+                        return LinearSmoothScroller.SNAP_TO_ANY;
+                    }
+                };
+        smoothScroller.setTargetPosition(itemPosition);
+        layoutManager.startSmoothScroll(smoothScroller);
     }
 
     @Override

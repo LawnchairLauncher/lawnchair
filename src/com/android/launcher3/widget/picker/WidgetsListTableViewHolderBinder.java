@@ -15,10 +15,7 @@
  */
 package com.android.launcher3.widget.picker;
 
-import static com.android.launcher3.widget.picker.WidgetsListItemAnimator.CHANGE_DURATION_MS;
-import static com.android.launcher3.widget.picker.WidgetsListItemAnimator.MOVE_DURATION_MS;
-
-import static android.animation.ValueAnimator.areAnimatorsEnabled;
+import static com.android.launcher3.widget.picker.WidgetsListItemAnimator.WIDGET_LIST_ITEM_APPEARANCE_START_DELAY;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -115,19 +112,46 @@ public final class WidgetsListTableViewHolderBinder
         // Bind the widget items.
         for (int i = 0; i < widgetItemsTable.size(); i++) {
             List<WidgetItem> widgetItemsPerRow = widgetItemsTable.get(i);
-            for (int j = 0; j < widgetItemsPerRow.size(); j++) {
-                WidgetTableRow row = (WidgetTableRow) table.getChildAt(i);
-                row.setVisibility(View.VISIBLE);
-                WidgetCell widget = (WidgetCell) row.getChildAt(j);
-                widget.clear();
-                widget.addPreviewReadyListener(row);
-                WidgetItem widgetItem = widgetItemsPerRow.get(j);
-                widget.setVisibility(View.VISIBLE);
+            WidgetTableRow row = (WidgetTableRow) table.getChildAt(i);
 
-                widget.applyFromCellItem(widgetItem);
-                widget.requestLayout();
+            if (areRowItemsUnchanged(row, widgetItemsPerRow)) {  // Just show widgets in row as is
+                row.setVisibility(View.VISIBLE);
+                for (int j = 0; j < widgetItemsPerRow.size(); j++) {
+                    WidgetCell widget = (WidgetCell) row.getChildAt(j);
+                    widget.setVisibility(View.VISIBLE);
+                }
+            } else {
+                for (int j = 0; j < widgetItemsPerRow.size(); j++) {
+                    row.setVisibility(View.VISIBLE);
+                    WidgetCell widget = (WidgetCell) row.getChildAt(j);
+                    widget.clear();
+                    WidgetItem widgetItem = widgetItemsPerRow.get(j);
+                    widget.addPreviewReadyListener(row);
+                    widget.setVisibility(View.VISIBLE);
+
+                    widget.applyFromCellItem(widgetItem);
+                    widget.requestLayout();
+                }
             }
         }
+    }
+
+    private boolean areRowItemsUnchanged(WidgetTableRow row, List<WidgetItem> widgetItemsPerRow) {
+        // NOTE: on rotation or fold / unfold, we bind different view holders
+        // so, we don't any special handling for that case.
+        if (row.getChildCount() != widgetItemsPerRow.size()) { // Items not equal
+            return false;
+        }
+
+        for (int j = 0; j < widgetItemsPerRow.size(); j++) {
+            WidgetCell widgetCell = (WidgetCell) row.getChildAt(j);
+            WidgetItem widgetItem = widgetItemsPerRow.get(j);
+            if (widgetCell.getWidgetItem() == null
+                    || !widgetCell.getWidgetItem().equals(widgetItem)) {
+                return false; // Items at given position in row aren't same.
+            }
+        }
+        return true;
     }
 
     /**
@@ -154,27 +178,31 @@ public final class WidgetsListTableViewHolderBinder
                 tableRow.setGravity(Gravity.TOP);
                 table.addView(tableRow);
             }
-            // Pass resize delay to let the "move" and "change" animations run before resizing the
-            // row.
-            tableRow.setupRow(widgetItems.size(),
-                    /*resizeDelayMs=*/
-                    areAnimatorsEnabled() ? (CHANGE_DURATION_MS + MOVE_DURATION_MS) : 0);
-            if (tableRow.getChildCount() > widgetItems.size()) {
-                for (int j = widgetItems.size(); j < tableRow.getChildCount(); j++) {
-                    tableRow.getChildAt(j).setVisibility(View.GONE);
-                }
-            } else {
-                for (int j = tableRow.getChildCount(); j < widgetItems.size(); j++) {
-                    WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
-                            R.layout.widget_cell, tableRow, false);
-                    // set up touch.
-                    widget.setOnClickListener(mIconClickListener);
-                    widget.addPreviewReadyListener(tableRow);
-                    View preview = widget.findViewById(R.id.widget_preview_container);
-                    preview.setOnClickListener(mIconClickListener);
-                    preview.setOnLongClickListener(mIconLongClickListener);
-                    widget.setAnimatePreview(false);
-                    tableRow.addView(widget);
+
+            // If the row items are unchanged, we don't need to re-setup the row or the items;
+            // we can just show the row as is.
+            if (!areRowItemsUnchanged(tableRow, widgetItems)) {
+                // Pass resize delay to let the "move" and "change" animations run before resizing
+                // the row.
+                tableRow.setupRow(widgetItems.size(),
+                        /*resizeDelayMs=*/ WIDGET_LIST_ITEM_APPEARANCE_START_DELAY);
+                if (tableRow.getChildCount() > widgetItems.size()) {
+                    for (int j = widgetItems.size(); j < tableRow.getChildCount(); j++) {
+                        tableRow.getChildAt(j).setVisibility(View.GONE);
+                    }
+                } else {
+                    for (int j = tableRow.getChildCount(); j < widgetItems.size(); j++) {
+                        WidgetCell widget = (WidgetCell) mLayoutInflater.inflate(
+                                R.layout.widget_cell, tableRow, false);
+                        // set up touch.
+                        widget.setOnClickListener(mIconClickListener);
+                        widget.addPreviewReadyListener(tableRow);
+                        View preview = widget.findViewById(R.id.widget_preview_container);
+                        preview.setOnClickListener(mIconClickListener);
+                        preview.setOnLongClickListener(mIconLongClickListener);
+                        widget.setAnimatePreview(false);
+                        tableRow.addView(widget);
+                    }
                 }
             }
         }

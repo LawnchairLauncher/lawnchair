@@ -4,8 +4,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.icons.R
 
 fun PackageManager.isPackageInstalled(packageName: String): Boolean = try {
     getPackageInfo(packageName, 0)

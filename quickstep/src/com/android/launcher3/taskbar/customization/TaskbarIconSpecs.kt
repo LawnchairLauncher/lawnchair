@@ -19,23 +19,35 @@ package com.android.launcher3.taskbar.customization
 /** Taskbar Icon Specs */
 object TaskbarIconSpecs {
 
-    val iconSize40dp = TaskbarIconSize(40)
-    val iconSize44dp = TaskbarIconSize(44)
-    val iconSize48dp = TaskbarIconSize(48)
-    val iconSize52dp = TaskbarIconSize(52)
+    // Mapping of visual icon size to icon specs value http://b/235886078
+    val iconSize40dp = TaskbarIconSize(44)
+    val iconSize44dp = TaskbarIconSize(48)
+    val iconSize48dp = TaskbarIconSize(52)
+    val iconSize52dp = TaskbarIconSize(57)
 
     val transientTaskbarIconSizes = arrayOf(iconSize44dp, iconSize48dp, iconSize52dp)
 
     val defaultPersistentIconSize = iconSize40dp
     val defaultTransientIconSize = iconSize44dp
 
-    // defined as row, columns
+    val minimumIconSize = iconSize40dp
+
+    val defaultPersistentIconMargin = TaskbarIconMarginSize(6)
+    val defaultTransientIconMargin = TaskbarIconMarginSize(12)
+
+    val minimumTaskbarIconTouchSize = TaskbarIconSize(48)
+
+    val transientOrPinnedTaskbarIconPaddingSize = iconSize52dp
+
     val transientTaskbarIconSizeByGridSize =
         mapOf(
-            Pair(6, 5) to iconSize52dp,
-            Pair(4, 5) to iconSize48dp,
-            Pair(5, 4) to iconSize48dp,
-            Pair(4, 4) to iconSize48dp,
-            Pair(5, 6) to iconSize44dp,
+            TransientTaskbarIconSizeKey(6, 5, false) to iconSize52dp,
+            TransientTaskbarIconSizeKey(6, 5, true) to iconSize52dp,
+            TransientTaskbarIconSizeKey(4, 4, false) to iconSize48dp,
+            TransientTaskbarIconSizeKey(4, 4, true) to iconSize52dp,
+            TransientTaskbarIconSizeKey(4, 5, false) to iconSize48dp,
+            TransientTaskbarIconSizeKey(4, 5, true) to iconSize48dp,
+            TransientTaskbarIconSizeKey(5, 5, false) to iconSize44dp,
+            TransientTaskbarIconSizeKey(5, 5, true) to iconSize44dp,
         )
 }

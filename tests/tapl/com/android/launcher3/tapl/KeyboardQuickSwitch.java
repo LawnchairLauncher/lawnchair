@@ -163,6 +163,32 @@ public final class KeyboardQuickSwitch {
     }
 
     /**
+     * Dismisses the Keyboard Quick Switch view by going home. After the Keyboard Quick Switch view
+     * gets hidden, it unpresses ALT key, which is generally used to keep the view visible.
+     */
+    public Workspace dismissByGoingHome() {
+        try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                "verifying keyboard quick switch view is shown")) {
+            mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
+        }
+
+        mLauncher.goHome();
+
+        try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                "waiting for keyboard quick switch dismissal");
+             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.waitUntilLauncherObjectGone(KEYBOARD_QUICK_SWITCH_RES_ID);
+        }
+
+        try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
+                "get workspace after releasing ALT key")) {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_HOME_ALT_LEFT_UP);
+            mLauncher.unpressKeyCode(KeyEvent.KEYCODE_ALT_LEFT, 0);
+            return mLauncher.getWorkspace();
+        }
+    }
+
+    /**
      * Launches the currently-focused app task.
      * <p>
      * This method should only be used if the focused task is for a recent running app, otherwise

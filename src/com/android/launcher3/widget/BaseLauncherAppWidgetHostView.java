@@ -61,6 +61,8 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
     };
 
     private boolean mIsCornerRadiusEnforced;
+    
+    // Lawnchair: LocalColorExtractor
     private final LocalColorExtractor mColorExtractor;
 
     public BaseLauncherAppWidgetHostView(Context context) {
@@ -118,13 +120,13 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
 
     @UiThread
     private void enforceRoundedCorners() {
-        if (mEnforcedCornerRadius <= 0 || !RoundedCornerEnforcement.isRoundedCornerEnabled()) {
+        if (mEnforcedCornerRadius <= 0) {
             resetRoundedCorners();
             return;
         }
         View background = RoundedCornerEnforcement.findBackground(this);
         if (background == null
-                || RoundedCornerEnforcement.hasAppWidgetOptedOut(this, background)) {
+                || RoundedCornerEnforcement.hasAppWidgetOptedOut(background)) {
             resetRoundedCorners();
             return;
         }

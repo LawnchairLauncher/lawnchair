@@ -15,33 +15,40 @@
  */
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static android.appwidget.AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.widget.LauncherAppWidgetProviderInfo.fromProviderInfo;
+
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Handler;
 import android.os.Process;
 import android.util.Log;
 import android.util.Size;
+import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.os.BuildCompat;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.icons.ShadowGenerator;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.CancellableTask;
@@ -53,20 +60,19 @@ import com.android.launcher3.widget.util.WidgetSizes;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-/** Utility class to load widget previews */
+/**
+ * Utility class to generate widget previews
+ *
+ * Note that it no longer uses database, all previews are freshly generated
+ */
 public class DatabaseWidgetPreviewLoader {
 
     private static final String TAG = "WidgetPreviewLoader";
 
     private final Context mContext;
-    private final float mPreviewBoxCornerRadius;
 
     public DatabaseWidgetPreviewLoader(Context context) {
         mContext = context;
-        float previewCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
-        mPreviewBoxCornerRadius = previewCornerRadius > 0
-                ? previewCornerRadius
-                : mContext.getResources().getDimension(R.dimen.widget_preview_corner_radius);
     }
 
     /**
@@ -78,10 +84,10 @@ public class DatabaseWidgetPreviewLoader {
     public CancellableTask loadPreview(
             @NonNull WidgetItem item,
             @NonNull Size previewSize,
-            @NonNull Consumer<Bitmap> callback) {
+            @NonNull Consumer<WidgetPreviewInfo> callback) {
         Handler handler = getLoaderExecutor().getHandler();
-        CancellableTask<Bitmap> request = new CancellableTask<>(
-                () -> generatePreview(item, previewSize.getWidth(), previewSize.getHeight()),
+        CancellableTask<WidgetPreviewInfo> request = new CancellableTask<>(
+                () -> generatePreviewInfoBg(item, previewSize.getWidth(), previewSize.getHeight()),
                 MAIN_EXECUTOR,
                 callback);
         Utilities.postAsyncCallback(handler, request);
@@ -92,6 +98,41 @@ public class DatabaseWidgetPreviewLoader {
     @NonNull
     public static LooperExecutor getLoaderExecutor() {
         return Executors.UI_HELPER_EXECUTOR;
+    }
+
+    /** Generated the preview object. This method must be called on a background thread */
+    @VisibleForTesting
+    @NonNull
+    public WidgetPreviewInfo generatePreviewInfoBg(
+            WidgetItem item, int previewWidth, int previewHeight) {
+        WidgetPreviewInfo result = new WidgetPreviewInfo();
+
+        AppWidgetProviderInfo widgetInfo = item.widgetInfo;
+        if (BuildCompat.isAtLeastV() && Flags.enableGeneratedPreviews() && widgetInfo != null
+                && ((widgetInfo.generatedPreviewCategories & WIDGET_CATEGORY_HOME_SCREEN) != 0)) {
+            result.remoteViews = new WidgetManagerHelper(mContext)
+                    .loadGeneratedPreview(widgetInfo, WIDGET_CATEGORY_HOME_SCREEN);
+            if (result.remoteViews != null) {
+                result.providerInfo = widgetInfo;
+            }
+        }
+
+        if (Utilities.ATLEAST_S) {
+            if (result.providerInfo == null && widgetInfo != null
+                    && widgetInfo.previewLayout != Resources.ID_NULL) {
+                result.providerInfo = fromProviderInfo(mContext, widgetInfo.clone());
+                // A hack to force the initial layout to be the preview layout since there is no API for
+                // rendering a preview layout for work profile apps yet. For non-work profile layout, a
+                // proper solution is to use RemoteViews(PackageName, LayoutId).
+                result.providerInfo.initialLayout = item.widgetInfo.previewLayout;
+            }
+        }
+
+        if (result.providerInfo == null) {
+            // fallback to bitmap preview
+            result.previewBitmap = generatePreview(item, previewWidth, previewHeight);
+        }
+        return result;
     }
 
     /**
@@ -184,19 +225,14 @@ public class DatabaseWidgetPreviewLoader {
 
                 // Draw horizontal and vertical lines to represent individual columns.
                 final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+                boxRect = new RectF(/* left= */ 0, /* top= */ 0, /* right= */
+                        previewWidthF, /* bottom= */ previewHeightF);
 
-                if (Utilities.ATLEAST_S) {
-                    boxRect = new RectF(/* left= */ 0, /* top= */ 0, /* right= */
-                            previewWidthF, /* bottom= */ previewHeightF);
-
-                    p.setStyle(Paint.Style.FILL);
-                    p.setColor(Color.WHITE);
-                    float roundedCorner = mContext.getResources().getDimension(
-                            android.R.dimen.system_app_widget_background_radius);
-                    c.drawRoundRect(boxRect, roundedCorner, roundedCorner, p);
-                } else {
-                    boxRect = drawBoxWithShadow(c, previewWidthF, previewHeightF);
-                }
+                p.setStyle(Paint.Style.FILL);
+                p.setColor(Color.WHITE);
+                float roundedCorner = mContext.getResources().getDimension(
+                        android.R.dimen.system_app_widget_background_radius);
+                c.drawRoundRect(boxRect, roundedCorner, roundedCorner, p);
 
                 p.setStyle(Paint.Style.STROKE);
                 p.setStrokeWidth(mContext.getResources()
@@ -219,8 +255,8 @@ public class DatabaseWidgetPreviewLoader {
 
                 // Draw icon in the center.
                 try {
-                    Drawable icon = LauncherAppState.getInstance(mContext).getIconCache()
-                            .getFullResIcon(info.provider.getPackageName(), info.icon);
+                    Drawable icon = info.getFullResIcon(
+                            LauncherAppState.getInstance(mContext).getIconCache());
                     if (icon != null) {
                         int appIconSize = dp.iconSizePx;
                         int iconSize = (int) Math.min(appIconSize * scale,
@@ -236,21 +272,6 @@ public class DatabaseWidgetPreviewLoader {
                 }
             }
         });
-    }
-
-    private RectF drawBoxWithShadow(Canvas c, int width, int height) {
-        Resources res = mContext.getResources();
-
-        ShadowGenerator.Builder builder = new ShadowGenerator.Builder(Color.WHITE);
-        builder.shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
-        builder.radius = mPreviewBoxCornerRadius;
-        builder.keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
-
-        builder.bounds.set(builder.shadowBlur, builder.shadowBlur,
-                width - builder.shadowBlur,
-                height - builder.shadowBlur - builder.keyShadowDistance);
-        builder.drawShadow(c);
-        return builder.bounds;
     }
 
     private Bitmap generateShortcutPreview(
@@ -285,5 +306,16 @@ public class DatabaseWidgetPreviewLoader {
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Simple class to hold preview information
+     */
+    public static class WidgetPreviewInfo {
+
+        public AppWidgetProviderInfo providerInfo;
+        public RemoteViews remoteViews;
+
+        public Bitmap previewBitmap;
     }
 }

@@ -27,15 +27,15 @@ import android.view.View
 import android.window.TransitionInfo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.launcher3.apppairs.AppPairIcon
+import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.quickstep.views.GroupedTaskView
 import com.android.quickstep.views.IconView
-import com.android.quickstep.views.TaskThumbnailViewDeprecated
+import com.android.quickstep.views.TaskContainer
 import com.android.quickstep.views.TaskView
-import com.android.quickstep.views.TaskView.TaskContainer
 import com.android.systemui.shared.recents.model.Task
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -59,7 +59,7 @@ class SplitAnimationControllerTest {
     private val mockSplitSelectStateController: SplitSelectStateController = mock()
     // TaskView
     private val mockTaskView: TaskView = mock()
-    private val mockThumbnailView: TaskThumbnailViewDeprecated = mock()
+    private val mockSnapshotView: View = mock()
     private val mockBitmap: Bitmap = mock()
     private val mockIconView: IconView = mock()
     private val mockTaskViewDrawable: Drawable = mock()
@@ -77,6 +77,7 @@ class SplitAnimationControllerTest {
     private val splitSelectSource: SplitConfigurationOptions.SplitSelectSource = mock()
     private val mockSplitSourceDrawable: Drawable = mock()
     private val mockSplitSourceView: View = mock()
+    private val mockItemInfo: ItemInfo = mock()
 
     private val stateManager: StateManager<*, *> = mock()
     private val depthController: DepthController = mock()
@@ -87,14 +88,17 @@ class SplitAnimationControllerTest {
 
     @Before
     fun setup() {
-        whenever(mockTaskContainer.thumbnailViewDeprecated).thenReturn(mockThumbnailView)
-        whenever(mockThumbnailView.thumbnail).thenReturn(mockBitmap)
+        whenever(mockTaskContainer.snapshotView).thenReturn(mockSnapshotView)
+        whenever(mockTaskContainer.thumbnail).thenReturn(mockBitmap)
         whenever(mockTaskContainer.iconView).thenReturn(mockIconView)
+        whenever(mockTaskContainer.task).thenReturn(mockTask)
         whenever(mockIconView.drawable).thenReturn(mockTaskViewDrawable)
         whenever(mockTaskView.taskContainers).thenReturn(List(1) { mockTaskContainer })
+        whenever(mockTaskView.firstTaskContainer).thenReturn(mockTaskContainer)
 
         whenever(splitSelectSource.drawable).thenReturn(mockSplitSourceDrawable)
         whenever(splitSelectSource.view).thenReturn(mockSplitSourceView)
+        whenever(splitSelectSource.itemInfo).thenReturn(mockItemInfo)
 
         splitAnimationController = SplitAnimationController(mockSplitSelectStateController)
     }
@@ -114,7 +118,7 @@ class SplitAnimationControllerTest {
         assertEquals(
             "Did not fallback to use splitSource icon drawable",
             mockSplitSourceDrawable,
-            splitAnimInitProps.iconDrawable
+            splitAnimInitProps.iconDrawable,
         )
     }
 
@@ -130,7 +134,7 @@ class SplitAnimationControllerTest {
         assertEquals(
             "Did not use taskView icon drawable",
             mockTaskViewDrawable,
-            splitAnimInitProps.iconDrawable
+            splitAnimInitProps.iconDrawable,
         )
     }
 
@@ -149,7 +153,7 @@ class SplitAnimationControllerTest {
         assertEquals(
             "Did not use taskView icon drawable",
             mockTaskViewDrawable,
-            splitAnimInitProps.iconDrawable
+            splitAnimInitProps.iconDrawable,
         )
     }
 
@@ -165,7 +169,7 @@ class SplitAnimationControllerTest {
         assertEquals(
             "Did not use splitSource icon drawable",
             mockSplitSourceDrawable,
-            splitAnimInitProps.iconDrawable
+            splitAnimInitProps.iconDrawable,
         )
     }
 
@@ -180,7 +184,6 @@ class SplitAnimationControllerTest {
 
         whenever(mockTaskContainer.task).thenReturn(mockTask)
         whenever(mockTaskContainer.iconView).thenReturn(mockIconView)
-        whenever(mockTaskContainer.thumbnailViewDeprecated).thenReturn(mockThumbnailView)
         whenever(mockTask.getKey()).thenReturn(mockTaskKey)
         whenever(mockTaskKey.getId()).thenReturn(taskId)
         whenever(mockSplitSelectStateController.initialTaskId).thenReturn(taskId)
@@ -188,13 +191,13 @@ class SplitAnimationControllerTest {
         val splitAnimInitProps: SplitAnimationController.Companion.SplitAnimInitProps =
             splitAnimationController.getFirstAnimInitViews(
                 { mockGroupedTaskView },
-                { splitSelectSource }
+                { splitSelectSource },
             )
 
         assertEquals(
             "Did not use splitSource icon drawable",
             mockSplitSourceDrawable,
-            splitAnimInitProps.iconDrawable
+            splitAnimInitProps.iconDrawable,
         )
     }
 
@@ -212,7 +215,7 @@ class SplitAnimationControllerTest {
                 any(),
                 any(),
                 any(),
-                any()
+                any(),
             )
 
         spySplitAnimationController.playSplitLaunchAnimation(
@@ -227,7 +230,8 @@ class SplitAnimationControllerTest {
             depthController,
             null /* info */,
             null /* t */,
-            {} /* finishCallback */
+            {} /* finishCallback */,
+            1f, /* cornerRadius */
         )
 
         verify(spySplitAnimationController)
@@ -240,7 +244,7 @@ class SplitAnimationControllerTest {
                 any(),
                 any(),
                 any(),
-                any()
+                any(),
             )
     }
 
@@ -263,7 +267,8 @@ class SplitAnimationControllerTest {
             depthController,
             transitionInfo,
             transaction,
-            {} /* finishCallback */
+            {} /* finishCallback */,
+            1f, /* cornerRadius */
         )
 
         verify(spySplitAnimationController)
@@ -276,7 +281,7 @@ class SplitAnimationControllerTest {
         whenever(mockAppPairIcon.context).thenReturn(mockContextThemeWrapper)
         doNothing()
             .whenever(spySplitAnimationController)
-            .composeIconSplitLaunchAnimator(any(), any(), any(), any())
+            .composeIconSplitLaunchAnimator(any(), any(), any(), any(), any())
         doReturn(-1).whenever(spySplitAnimationController).hasChangesForBothAppPairs(any(), any())
 
         spySplitAnimationController.playSplitLaunchAnimation(
@@ -291,11 +296,12 @@ class SplitAnimationControllerTest {
             depthController,
             transitionInfo,
             transaction,
-            {} /* finishCallback */
+            {} /* finishCallback */,
+            1f, /* cornerRadius */
         )
 
         verify(spySplitAnimationController)
-            .composeIconSplitLaunchAnimator(any(), any(), any(), any())
+            .composeIconSplitLaunchAnimator(any(), any(), any(), any(), any())
     }
 
     @Test
@@ -319,7 +325,8 @@ class SplitAnimationControllerTest {
             depthController,
             transitionInfo,
             transaction,
-            {} /* finishCallback */
+            {} /* finishCallback */,
+            1f, /* cornerRadius */
         )
 
         verify(spySplitAnimationController)
@@ -346,7 +353,8 @@ class SplitAnimationControllerTest {
             depthController,
             transitionInfo,
             transaction,
-            {} /* finishCallback */
+            {} /* finishCallback */,
+            1f, /* cornerRadius */
         )
 
         verify(spySplitAnimationController)
@@ -373,7 +381,8 @@ class SplitAnimationControllerTest {
             depthController,
             transitionInfo,
             transaction,
-            {} /* finishCallback */
+            {} /* finishCallback */,
+            1f, /* cornerRadius */
         )
 
         verify(spySplitAnimationController)
@@ -385,7 +394,7 @@ class SplitAnimationControllerTest {
         val spySplitAnimationController = spy(splitAnimationController)
         doNothing()
             .whenever(spySplitAnimationController)
-            .composeFadeInSplitLaunchAnimator(any(), any(), any(), any(), any())
+            .composeFadeInSplitLaunchAnimator(any(), any(), any(), any(), any(), any())
 
         spySplitAnimationController.playSplitLaunchAnimation(
             null /* launchingTaskView */,
@@ -399,10 +408,11 @@ class SplitAnimationControllerTest {
             depthController,
             transitionInfo,
             transaction,
-            {} /* finishCallback */
+            {} /* finishCallback */,
+            1f, /* cornerRadius */
         )
 
         verify(spySplitAnimationController)
-            .composeFadeInSplitLaunchAnimator(any(), any(), any(), any(), any())
+            .composeFadeInSplitLaunchAnimator(any(), any(), any(), any(), any(), any())
     }
 }

@@ -1,5 +1,7 @@
 package com.android.launcher3.folder;
 
+import com.android.launcher3.Flags;
+
 public class ClippedFolderIconLayoutRule {
 
     public static final int MAX_NUM_ITEMS_IN_PREVIEW = 4;
@@ -7,9 +9,12 @@ public class ClippedFolderIconLayoutRule {
 
     private static final float MIN_SCALE = 0.44f;
     private static final float MAX_SCALE = 0.51f;
+    // TODO: figure out exact radius for different icons
+    private static final float MAX_RADIUS_DILATION_SHAPES = 0.15f;
     private static final float MAX_RADIUS_DILATION = 0.25f;
     // The max amount of overlap the preview items can go outside of the background bounds.
     public static final float ICON_OVERLAP_FACTOR = 1 + (MAX_RADIUS_DILATION / 2f);
+    public static final float ICON_OVERLAP_FACTOR_SHAPES = 1f;
     private static final float ITEM_RADIUS_SCALE_FACTOR = 1.15f;
 
     public static final int EXIT_INDEX = -2;
@@ -28,7 +33,7 @@ public class ClippedFolderIconLayoutRule {
         mRadius = ITEM_RADIUS_SCALE_FACTOR * availableSpace / 2f;
         mIconSize = intrinsicIconSize;
         mIsRtl = rtl;
-        mBaselineIconScale = availableSpace / (intrinsicIconSize * 1f);
+        mBaselineIconScale = availableSpace / intrinsicIconSize;
     }
 
     public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
@@ -48,6 +53,20 @@ public class ClippedFolderIconLayoutRule {
         } else if (index >= MAX_NUM_ITEMS_IN_PREVIEW) {
             // Items beyond those displayed in the preview are animated to the center
             mTmpPoint[0] = mTmpPoint[1] = mAvailableSpace / 2 - (mIconSize * totalScale) / 2;
+        } else if (Flags.enableLauncherIconShapes()) {
+            if (index == 0) {
+                // top left
+                getGridPosition(0, 0, mTmpPoint);
+            } else if (index == 1) {
+                // top right
+                getGridPosition(0, 1, mTmpPoint);
+            } else if (index == 2) {
+                // bottom left
+                getGridPosition(1, 0, mTmpPoint);
+            } else if (index == 3) {
+                // bottom right
+                getGridPosition(1, 1, mTmpPoint);
+            }
         } else {
             getPosition(index, curNumItems, mTmpPoint);
         }
@@ -84,6 +103,7 @@ public class ClippedFolderIconLayoutRule {
         result[1] = top + (row * dy);
     }
 
+    // b/392610664 TODO: Change positioning from circular geometry to square / grid-based.
     private void getPosition(int index, int curNumItems, float[] result) {
         // The case of two items is homomorphic to the case of one.
         curNumItems = Math.max(curNumItems, 2);
@@ -113,8 +133,10 @@ public class ClippedFolderIconLayoutRule {
         }
 
         // We bump the radius up between 0 and MAX_RADIUS_DILATION % as the number of items increase
-        float radius = mRadius * (1 + MAX_RADIUS_DILATION * (curNumItems -
-                MIN_NUM_ITEMS_IN_PREVIEW) / (MAX_NUM_ITEMS_IN_PREVIEW - MIN_NUM_ITEMS_IN_PREVIEW));
+        float radiusDilation = Flags.enableLauncherIconShapes() ? MAX_RADIUS_DILATION_SHAPES
+                : MAX_RADIUS_DILATION;
+        float radius = mRadius * (1 + radiusDilation * (curNumItems - MIN_NUM_ITEMS_IN_PREVIEW)
+                / (MAX_NUM_ITEMS_IN_PREVIEW - MIN_NUM_ITEMS_IN_PREVIEW));
         double theta = theta0 + index * (2 * Math.PI / curNumItems) * direction;
 
         float halfIconSize = (mIconSize * scaleForItem(curNumItems)) / 2;
@@ -130,7 +152,7 @@ public class ClippedFolderIconLayoutRule {
     public float scaleForItem(int numItems) {
         // Scale is determined by the number of items in the preview.
         final float scale;
-        if (numItems <= 3) {
+        if (numItems <= 3 && !Flags.enableLauncherIconShapes()) {
             scale = MAX_SCALE;
         } else {
             scale = MIN_SCALE;
@@ -140,5 +162,16 @@ public class ClippedFolderIconLayoutRule {
 
     public float getIconSize() {
         return mIconSize;
+    }
+
+    /**
+     * Gets correct constant for icon overlap.
+     */
+    public static float getIconOverlapFactor() {
+        if (Flags.enableLauncherIconShapes()) {
+            return ICON_OVERLAP_FACTOR_SHAPES;
+        } else {
+            return ICON_OVERLAP_FACTOR;
+        }
     }
 }

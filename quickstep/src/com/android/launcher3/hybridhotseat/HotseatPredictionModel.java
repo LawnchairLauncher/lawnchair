@@ -17,7 +17,6 @@ package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.model.PredictionHelper.getAppTargetFromItemInfo;
-import static com.android.launcher3.model.PredictionHelper.isTrackedForHotseatPrediction;
 import static com.android.launcher3.model.PredictionHelper.wrapAppTargetWithItemLocation;
 
 import android.app.prediction.AppTarget;
@@ -27,9 +26,12 @@ import android.os.Bundle;
 
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
+import com.android.launcher3.model.PredictionHelper;
 import com.android.launcher3.model.data.ItemInfo;
 
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Model helper for app predictions in workspace
@@ -43,13 +45,18 @@ public class HotseatPredictionModel {
      */
     public static Bundle convertDataModelToAppTargetBundle(Context context, BgDataModel dataModel) {
         Bundle bundle = new Bundle();
-        ArrayList<AppTargetEvent> events = new ArrayList<>();
-        ArrayList<ItemInfo> workspaceItems = dataModel.getAllWorkspaceItems();
-        for (ItemInfo item : workspaceItems) {
-            AppTarget target = getAppTargetFromItemInfo(context, item);
-            if (target != null && !isTrackedForHotseatPrediction(item)) continue;
-            events.add(wrapAppTargetWithItemLocation(target, AppTargetEvent.ACTION_PIN, item));
-        }
+        ArrayList<AppTargetEvent> events = dataModel.itemsIdMap
+                .stream()
+                .filter(PredictionHelper::isTrackedForHotseatPrediction)
+                .map(item -> {
+                    AppTarget target = getAppTargetFromItemInfo(context, item);
+                    return target != null
+                            ? wrapAppTargetWithItemLocation(target, AppTargetEvent.ACTION_PIN, item)
+                            : null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(ArrayList::new));
+
         ArrayList<AppTarget> currentTargets = new ArrayList<>();
         FixedContainerItems hotseatItems = dataModel.extraItems.get(CONTAINER_HOTSEAT_PREDICTION);
         if (hotseatItems != null) {

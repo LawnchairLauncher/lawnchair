@@ -15,19 +15,20 @@
 -->
 <com.android.launcher3.taskbar.KeyboardQuickSwitchTaskView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/keyboard_quick_switch_taskview_width"
-    android:layout_height="@dimen/keyboard_quick_switch_taskview_height"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:importantForAccessibility="yes"
-    android:background="@drawable/keyboard_quick_switch_task_view_background"
-    android:clipToOutline="true"
-    launcher:borderColor="?attr/materialColorOutline">
+    launcher:focusBorderColor="@color/materialColorSecondary">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/keyboard_quick_switch_taskview_width"
+        android:layout_height="@dimen/keyboard_quick_switch_taskview_height"
+        android:background="@drawable/keyboard_quick_switch_task_view_background"
+        android:clipToOutline="true"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -51,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:visibility="gone"
-            android:layout_marginTop="@dimen/keyboard_quick_switch_split_view_spacing"
+            android:layout_marginTop="@dimen/keyboard_quick_switch_view_small_spacing"
 
             app:layout_constraintTop_toBottomOf="@id/thumbnail_1"
             app:layout_constraintBottom_toBottomOf="parent"

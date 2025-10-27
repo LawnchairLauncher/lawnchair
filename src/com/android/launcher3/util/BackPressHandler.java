@@ -15,12 +15,15 @@
  */
 package com.android.launcher3.util;
 
+import android.os.Build.VERSION_CODES;
 import android.window.OnBackAnimationCallback;
+import androidx.annotation.RequiresApi;
 
 /**
  * Extension of {@link OnBackAnimationCallback} that allows a check to determine
  * if this callback supports handling back or not
  */
+@RequiresApi(api = VERSION_CODES.UPSIDE_DOWN_CAKE)
 public interface BackPressHandler extends OnBackAnimationCallback {
     boolean canHandleBack();
 }

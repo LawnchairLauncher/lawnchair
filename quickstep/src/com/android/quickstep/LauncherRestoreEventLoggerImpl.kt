@@ -5,6 +5,7 @@ import android.app.backup.BackupRestoreEventLogger
 import android.app.backup.BackupRestoreEventLogger.BackupRestoreDataType
 import android.app.backup.BackupRestoreEventLogger.BackupRestoreError
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import com.android.launcher3.Flags.enableLauncherBrMetricsFixed
 import com.android.launcher3.LauncherSettings.Favorites
 import com.android.launcher3.Utilities

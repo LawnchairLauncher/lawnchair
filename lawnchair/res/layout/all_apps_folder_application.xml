@@ -19,5 +19,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     style="@style/BaseIcon"
+    android:textColor="?attr/folderTextColor"
     android:includeFontPadding="false"
-    launcher:iconDisplay="drawer_folder" />
+    android:hapticFeedbackEnabled="false"
+    launcher:iconDisplay="drawer_folder"
+    launcher:centerVertically="true" />

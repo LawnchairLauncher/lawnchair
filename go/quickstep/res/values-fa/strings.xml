@@ -5,7 +5,7 @@
     <string name="action_listen" msgid="2370304050784689486">"گوش دادن"</string>
     <string name="action_translate" msgid="8028378961867277746">"ترجمه"</string>
     <string name="action_search" msgid="6269564710943755464">"لنز"</string>
-    <string name="dialog_acknowledge" msgid="2804025517675853172">"متوجه‌ام"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"متوجهم"</string>
     <string name="dialog_cancel" msgid="6464336969134856366">"لغو"</string>
     <string name="dialog_settings" msgid="6564397136021186148">"تنظیمات"</string>
     <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"ترجمه نوشتار روی صفحه‌نمایش یا گوش دادن به آن"</string>

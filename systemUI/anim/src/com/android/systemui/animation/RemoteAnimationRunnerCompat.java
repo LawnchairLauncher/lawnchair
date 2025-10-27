@@ -22,7 +22,15 @@ import static android.view.WindowManager.TRANSIT_OLD_NONE;
 import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.view.WindowManager.TRANSIT_TO_BACK;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
+import static android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_EXIT_BY_MINIMIZE_TRANSITION_BUGFIX;
+import static android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_EXIT_TRANSITIONS_BUGFIX;
 import static android.window.TransitionInfo.FLAG_IS_WALLPAPER;
+
+import static com.android.internal.util.Preconditions.checkArgument;
+import static com.android.wm.shell.shared.TransitionUtil.FLAG_IS_DESKTOP_WALLPAPER_ACTIVITY;
+import static com.android.wm.shell.shared.TransitionUtil.isClosingMode;
+import static com.android.wm.shell.shared.TransitionUtil.isClosingType;
+import static com.android.wm.shell.shared.TransitionUtil.isOpeningMode;
 
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -38,7 +46,6 @@ import android.window.IRemoteTransition;
 import android.window.IRemoteTransitionFinishedCallback;
 import android.window.RemoteTransitionStub;
 import android.window.TransitionInfo;
-import android.window.WindowAnimationState;
 
 import com.android.wm.shell.shared.CounterRotator;
 
@@ -46,15 +53,15 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
     private static final String TAG = "RemoteAnimRunnerCompat";
 
     public abstract void onAnimationStart(@WindowManager.TransitionOldType int transit,
-                                          RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-                                          RemoteAnimationTarget[] nonApps, Runnable finishedCallback);
+            RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+            RemoteAnimationTarget[] nonApps, Runnable finishedCallback);
 
     @Override
     public final void onAnimationStart(@TransitionOldType int transit,
-                                       RemoteAnimationTarget[] apps,
-                                       RemoteAnimationTarget[] wallpapers,
-                                       RemoteAnimationTarget[] nonApps,
-                                       final IRemoteAnimationFinishedCallback finishedCallback) {
+            RemoteAnimationTarget[] apps,
+            RemoteAnimationTarget[] wallpapers,
+            RemoteAnimationTarget[] nonApps,
+            final IRemoteAnimationFinishedCallback finishedCallback) {
 
         onAnimationStart(transit, apps, wallpapers,
                 nonApps, () -> {
@@ -66,46 +73,19 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 });
     }
 
-    // Called only in R
-    public void onAnimationStart(RemoteAnimationTarget[] appTargets,
-                                 RemoteAnimationTarget[] wallpaperTargets, IRemoteAnimationFinishedCallback finishedCallback) {
-        onAnimationStart(0 /* transit */, appTargets, wallpaperTargets,
-                new RemoteAnimationTarget[0], finishedCallback);
+    public IRemoteTransition toRemoteTransition() {
+        return wrap(this);
     }
-
-    // Called only in Q
-    public void onAnimationStart(RemoteAnimationTarget[] appTargets,
-                                 IRemoteAnimationFinishedCallback finishedCallback) {
-        onAnimationStart(appTargets, new RemoteAnimationTarget[0], finishedCallback);
-    }
-
-    public void onAnimationCancelled(boolean isKeyguardOccluded) {
-        onAnimationCancelled();
-    }
-
-    // Called only in S+
-    public void onAnimationCancelled() {}
 
     /** Wraps a remote animation runner in a remote-transition. */
     public static RemoteTransitionStub wrap(IRemoteAnimationRunner runner) {
         return new RemoteTransitionStub() {
-            @Override
-            public void startAnimation(IBinder token , TransitionInfo info , SurfaceControl.Transaction t , IRemoteTransitionFinishedCallback finishCallback) throws RemoteException {
-
-            }
-        };
-    }
-
-    public IRemoteTransition toRemoteTransition() {
-        return new IRemoteTransition.Stub() {
             final ArrayMap<IBinder, Runnable> mFinishRunnables = new ArrayMap<>();
-
-            public void onTransitionConsumed(IBinder transition, boolean aborted) {}
 
             @Override
             public void startAnimation(IBinder token, TransitionInfo info,
-                                       SurfaceControl.Transaction t,
-                                       IRemoteTransitionFinishedCallback finishCallback) {
+                    SurfaceControl.Transaction t,
+                    IRemoteTransitionFinishedCallback finishCallback) throws RemoteException {
                 final ArrayMap<SurfaceControl, SurfaceControl> leashMap = new ArrayMap<>();
                 final RemoteAnimationTarget[] apps =
                         RemoteAnimationTargetCompat.wrapApps(info, t, leashMap);
@@ -185,13 +165,14 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                         t.show(wallpapers[i].leash);
                         t.setAlpha(wallpapers[i].leash, 1.f);
                     }
+                    if (ENABLE_DESKTOP_WINDOWING_EXIT_TRANSITIONS_BUGFIX.isTrue()) {
+                        resetLauncherAlphaOnDesktopExit(info, launcherTask, leashMap, t);
+                    }
                 } else {
                     if (launcherTask != null) {
                         counterLauncher.addChild(t, leashMap.get(launcherTask.getLeash()));
                     }
                     if (wallpaper != null && rotateDelta != 0 && wallpaper.getParent() != null) {
-                        counterWallpaper.setup(t, info.getChange(wallpaper.getParent()).getLeash(),
-                                rotateDelta, displayW, displayH);
                         final TransitionInfo.Change parent = info.getChange(wallpaper.getParent());
                         if (parent != null) {
                             counterWallpaper.setup(t, parent.getLeash(), rotateDelta, displayW,
@@ -230,7 +211,7 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                     mFinishRunnables.put(token, animationFinishedCallback);
                 }
                 // TODO(bc-unlcok): Pass correct transit type.
-                onAnimationStart(TRANSIT_OLD_NONE,
+                runner.onAnimationStart(TRANSIT_OLD_NONE,
                         apps, wallpapers, nonApps, new IRemoteAnimationFinishedCallback() {
                             @Override
                             public void onAnimationFinished() {
@@ -249,8 +230,8 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
 
             @Override
             public void mergeAnimation(IBinder token, TransitionInfo info,
-                                       SurfaceControl.Transaction t, IBinder mergeTarget,
-                                       IRemoteTransitionFinishedCallback finishCallback) throws RemoteException {
+                    SurfaceControl.Transaction t, IBinder mergeTarget,
+                    IRemoteTransitionFinishedCallback finishCallback) throws RemoteException {
                 // TODO: hook up merge to recents onTaskAppeared if applicable. Until then, adapt
                 //       to legacy cancel.
                 final Runnable finishRunnable;
@@ -261,14 +242,52 @@ public abstract class RemoteAnimationRunnerCompat extends IRemoteAnimationRunner
                 t.close();
                 info.releaseAllSurfaces();
                 if (finishRunnable == null) return;
-                onAnimationCancelled(false /* isKeyguardOccluded */);
+                runner.onAnimationCancelled();
                 finishRunnable.run();
             }
 
             @Override
-            public void takeOverAnimation(IBinder transition , TransitionInfo info , SurfaceControl.Transaction t , IRemoteTransitionFinishedCallback finishCallback , WindowAnimationState[] states) throws RemoteException {
-
+            public void onTransitionConsumed(IBinder transition, boolean aborted)
+                    throws RemoteException {
+                // Notify the remote runner that the transition has been canceled if the transition
+                // was merged into another transition or aborted
+                synchronized (mFinishRunnables) {
+                    mFinishRunnables.remove(transition);
+                }
+                runner.onAnimationCancelled();
             }
         };
+    }
+
+    /**
+     * Reset the alpha of the Launcher leash to give the Launcher time to hide its Views before the
+     * exit-desktop animation starts.
+     *
+     * This method should only be called if the current transition is opening Launcher, otherwise we
+     * might not be exiting Desktop Mode.
+     */
+    private static void resetLauncherAlphaOnDesktopExit(
+            TransitionInfo info,
+            TransitionInfo.Change launcherChange,
+            ArrayMap<SurfaceControl, SurfaceControl> leashMap,
+            SurfaceControl.Transaction startTransaction
+    ) {
+        checkArgument(isOpeningMode(launcherChange.getMode()));
+        if (!isClosingType(info.getType())
+                && !ENABLE_DESKTOP_WINDOWING_EXIT_BY_MINIMIZE_TRANSITION_BUGFIX.isTrue()) {
+            return;
+        }
+        for (int i = info.getChanges().size() - 1; i >= 0; --i) {
+            final TransitionInfo.Change change = info.getChanges().get(i);
+            // skip changes that we didn't wrap
+            if (!leashMap.containsKey(change.getLeash())) continue;
+            // Only make the update if we are closing Desktop tasks.
+            if (change.getTaskInfo() != null && (change.getTaskInfo().isFreeform()
+                    || change.hasFlags(FLAG_IS_DESKTOP_WALLPAPER_ACTIVITY))
+                    && isClosingMode(change.getMode())) {
+                startTransaction.setAlpha(leashMap.get(launcherChange.getLeash()), 0f);
+                return;
+            }
+        }
     }
 }

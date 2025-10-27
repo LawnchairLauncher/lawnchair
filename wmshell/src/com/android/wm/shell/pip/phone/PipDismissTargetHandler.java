@@ -37,7 +37,7 @@ import com.android.wm.shell.bubbles.DismissViewUtils;
 import com.android.wm.shell.common.ShellExecutor;
 import com.android.wm.shell.common.bubbles.DismissCircleView;
 import com.android.wm.shell.common.bubbles.DismissView;
-import com.android.wm.shell.common.magnetictarget.MagnetizedObject;
+import com.android.wm.shell.shared.magnetictarget.MagnetizedObject;
 import com.android.wm.shell.common.pip.PipUiEventLogger;
 
 import kotlin.Unit;

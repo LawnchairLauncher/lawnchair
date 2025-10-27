@@ -15,11 +15,11 @@
  */
 package com.android.launcher3;
 
-import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.util.ContextInitListener;
 
 import java.util.function.BiPredicate;
 
-public class LauncherInitListener extends ActivityInitListener<Launcher> {
+public class LauncherInitListener extends ContextInitListener<Launcher> {
 
     /**
      * @param onInitListener a callback made when the activity is initialized. The callback should
@@ -31,8 +31,8 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
     }
 
     @Override
-    public boolean handleInit(Launcher launcher, boolean alreadyOnHome) {
+    public boolean handleInit(Launcher launcher, boolean isHomeStarted) {
         launcher.deferOverlayCallbacksUntilNextResumeOrStop();
-        return super.handleInit(launcher, alreadyOnHome);
+        return super.handleInit(launcher, isHomeStarted);
     }
 }

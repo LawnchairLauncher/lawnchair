@@ -17,14 +17,51 @@ package com.android.launcher3;
 
 import android.app.Application;
 
+import com.android.launcher3.dagger.DaggerLauncherAppComponent;
+import com.android.launcher3.dagger.LauncherAppComponent;
+import com.android.launcher3.dagger.LauncherBaseAppComponent;
+import com.android.launcher3.util.TraceHelper;
+
 /**
  * Main application class for Launcher
  */
 public class LauncherApplication extends Application {
 
+    private volatile LauncherBaseAppComponent mAppComponent;
     @Override
     public void onCreate() {
         super.onCreate();
         MainProcessInitializer.initialize(this);
+    }
+
+    public LauncherAppComponent getAppComponent() {
+        if (mAppComponent == null) {
+            synchronized (this) {
+                // Check for null again, as it may have been assigned on a different thread. This
+                // avoids holding synchronization locks everytime.
+                if (mAppComponent == null) {
+                    // Initialize the dagger component on demand as content providers can get
+                    // accessed before the Launcher application (b/36917845#comment4)
+                    initDaggerComponent(DaggerLauncherAppComponent.builder()
+                            .iconsDbName(LauncherFiles.APP_ICONS_DB));
+                }
+            }
+        }
+        // Since supertype setters will return a supertype.builder and @Component.Builder types
+        // must not have any generic types.
+        // We need to cast mAppComponent to {@link LauncherAppComponent} since appContext()
+        // method is defined in the super class LauncherBaseComponent#Builder.
+        return (LauncherAppComponent) mAppComponent;
+    }
+
+    /**
+     * Init with the desired dagger component.
+     */
+    public void initDaggerComponent(LauncherBaseAppComponent.Builder componentBuilder) {
+        mAppComponent = componentBuilder
+                .appContext(this)
+                .setSafeModeEnabled(TraceHelper.allowIpcs(
+                        "isSafeMode", () -> getPackageManager().isSafeMode()))
+                .build();
     }
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2024 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <dimen name="floating_dismiss_icon_size">32dp</dimen>
+    <dimen name="floating_dismiss_background_size">96dp</dimen>
+
+    <!-- Bubble drag zone dimensions -->
+    <dimen name="drag_zone_dismiss_fold">140dp</dimen>
+    <dimen name="drag_zone_dismiss_tablet">200dp</dimen>
+    <dimen name="drag_zone_bubble_fold">140dp</dimen>
+    <dimen name="drag_zone_bubble_tablet">200dp</dimen>
+    <dimen name="drag_zone_full_screen_width">512dp</dimen>
+    <dimen name="drag_zone_full_screen_height">44dp</dimen>
+    <dimen name="drag_zone_desktop_window_width">880dp</dimen>
+    <dimen name="drag_zone_desktop_window_height">300dp</dimen>
+    <dimen name="drag_zone_desktop_window_expanded_view_width">200dp</dimen>
+    <dimen name="drag_zone_desktop_window_expanded_view_height">350dp</dimen>
+    <dimen name="drag_zone_split_from_bubble_height">100dp</dimen>
+    <dimen name="drag_zone_split_from_bubble_width">60dp</dimen>
+    <dimen name="drag_zone_h_split_from_app_width_fold">140dp</dimen>
+    <dimen name="drag_zone_h_split_from_expanded_view_width">60dp</dimen>
+    <dimen name="drag_zone_v_split_from_expanded_view_width">200dp</dimen>
+    <dimen name="drag_zone_v_split_from_expanded_view_height_tablet">285dp</dimen>
+    <dimen name="drag_zone_v_split_from_expanded_view_height_fold_tall">150dp</dimen>
+    <dimen name="drag_zone_v_split_from_expanded_view_height_fold_short">100dp</dimen>
+
+    <!-- Bubble drop target dimensions -->
+    <dimen name="drop_target_elevation">2dp</dimen>
+    <dimen name="drop_target_radius">28dp</dimen>
+    <dimen name="drop_target_stroke">2dp</dimen>
+    <dimen name="drop_target_full_screen_padding">20dp</dimen>
+    <dimen name="drop_target_desktop_window_padding_small">100dp</dimen>
+    <dimen name="drop_target_desktop_window_padding_large">130dp</dimen>
+    <dimen name="drop_target_expanded_view_width">330</dimen>
+    <dimen name="drop_target_expanded_view_height">578</dimen>
+    <dimen name="drop_target_expanded_view_padding_bottom">108</dimen>
+    <dimen name="drop_target_expanded_view_padding_horizontal">24</dimen>
+
+    <!-- The corner radius of freeform tasks in desktop windowing. -->
+    <dimen name="desktop_windowing_freeform_rounded_corner_radius">16dp</dimen>
+</resources>

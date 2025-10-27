@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.pageindicators;
 
+import java.util.function.Consumer;
+
 /**
  * Base class for a page indicator.
  */
@@ -25,6 +27,14 @@ public interface PageIndicator {
     void setActiveMarker(int activePage);
 
     void setMarkersCount(int numMarkers);
+
+    /**
+     * This is only going to be used by the FolderPagedView's PageIndicator. A refactor is planned
+     * to separate the two purposes of this class, but in the meantime, this indicator will serve to
+     * let the folder snap to the page of its click, and also tell the PageIndicator not to draw
+     * arrows if the click listener is null (at least until after this is refactored).
+     */
+    void setArrowClickListener(Consumer<Direction> listener);
 
     /**
      * Sets a flag indicating whether to pause scroll.
