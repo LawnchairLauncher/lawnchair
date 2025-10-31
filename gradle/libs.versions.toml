@@ -15,7 +15,7 @@ retrofit = "3.0.0"
 room = "2.8.3"
 
 activityCompose = "1.11.0"
-airbnbLottie = "6.7.0"
+airbnbLottie = "6.7.1"
 androidDesugar = "2.1.5"
 coil = "2.7.0"
 composeBom = "2025.10.01"
