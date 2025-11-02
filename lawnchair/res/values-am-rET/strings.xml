@@ -21,8 +21,8 @@
     Actions and Verbs
 
     -->
-    <string name="preview_label">Preview</string>
-    <string name="action_create">Create</string>
+    <string name="preview_label">ቅድመ ዕይታ</string>
+    <string name="action_create">ፍጠር</string>
     <string name="action_backup">Backup</string>
     <string name="action_restore">Restore</string>
     <string name="action_delete">Delete</string>

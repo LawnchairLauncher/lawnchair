@@ -466,7 +466,7 @@
     <string name="home_screen_lock_description">Evita cambiar sin querer la disposición de la pantalla de inicio</string>
     <string name="show_dot_pagination_label">Mostrar paginación de puntos</string>
     <string name="show_dot_pagination_description">Usar puntos en vez de líneas para mostrar el número de página</string>
-    <string name="show_material_u_popup_label">Usar el nuevo estilo del menú emergente</string>
+    <string name="show_material_u_popup_label">Usar nuevo estilo de ventana emergente</string>
     <string name="show_material_u_popup_description">Usar el estilo de «Material You» animado y minimalista para los menús emergentes</string>
     <string name="popup_menu">Menú emergente</string>
     <string name="popup_menu_items">Elementos del menú emergente</string>
