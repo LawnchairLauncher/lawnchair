@@ -19,6 +19,9 @@ import android.animation.AnimatorSet
 import android.graphics.Color
 import android.view.View
 import com.android.launcher3.BubbleTextView
+import com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY
+import com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_FOLDER_ANIM
+import com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY
 import com.android.launcher3.Utilities
 import com.android.launcher3.apppairs.AppPairIcon
 import com.android.launcher3.folder.ClipRevealData.Factory.getClipRevealData
@@ -44,7 +47,7 @@ class FolderAnimationSpringBuilderManager(
     override fun createAnimatorSet(isOpening: Boolean): AnimatorSet {
         // Since we scale down workspace/hotseat when opening folder,
         // need to have initial values to find starting folder icon location
-        resetLauncherUi(launcherDelegate)
+        resetLauncherScale(launcherDelegate)
         val folderAnimData: FolderAnimationData = folder.getAnimationData(isOpening)
         val clipRevealData: ClipRevealData = folder.getClipRevealData(shapeDelegate, folderAnimData)
         val iconAnimData: List<IconAnimationData> = folder.getIconAnimationDataList(folderAnimData)
@@ -59,21 +62,23 @@ class FolderAnimationSpringBuilderManager(
     }
 
     companion object {
-        /** Resets the scale of the launcher components and the scrim. */
+        /** Resets the scale of the launcher workspace. Used to prepare for folder calculations. */
         @JvmStatic
-        fun resetLauncherUi(launcherDelegate: LauncherDelegate) {
+        fun resetLauncherScale(launcherDelegate: LauncherDelegate) {
             val launcher = launcherDelegate.launcher ?: return
             val workspace = launcher.workspace
             val hotseat = launcher.hotseat
-            val scrim = launcher.scrimView
-
             // Used to match the translation of the scaling between hotseat and workspace.
             workspace.setPivotToScaleWithSelf(hotseat)
-            workspace.scaleX = 1f
-            workspace.scaleY = 1f
-            hotseat.scaleX = 1f
-            hotseat.scaleY = 1f
+            WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_FOLDER_ANIM).set(workspace, 1f)
+            HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_FOLDER_ANIM).set(hotseat, 1f)
+        }
 
+        /** Resets the scrim and wallpaper zoom, which are changed by the folder animation. */
+        @JvmStatic
+        fun resetScrimAndZoom(launcherDelegate: LauncherDelegate) {
+            val launcher = launcherDelegate.launcher ?: return
+            val scrim = launcher.scrimView
             launcherDelegate.launcher?.depthController?.folderZoom?.value = 0f
             scrim.alpha = 1f
             scrim.setBackgroundColor(Color.TRANSPARENT)

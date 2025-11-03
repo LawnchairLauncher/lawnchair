@@ -1139,7 +1139,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mContent.setCurrentPage(0);
 
         if (Flags.enableExpressiveFolderExpansion()) {
-            FolderAnimationSpringBuilderManager.resetLauncherUi(mLauncherDelegate);
+            FolderAnimationSpringBuilderManager.resetLauncherScale(mLauncherDelegate);
+            FolderAnimationSpringBuilderManager.resetScrimAndZoom(mLauncherDelegate);
         }
     }
 

@@ -88,6 +88,7 @@ public class LauncherAnimUtils {
     public static final int SCALE_INDEX_WORKSPACE_STATE = 2;
     public static final int SCALE_INDEX_REVEAL_ANIM = 3;
     public static final int SCALE_INDEX_WIDGET_TRANSITION = 4;
+    public static final int SCALE_INDEX_FOLDER_ANIM = 5;
 
     /** Increase the duration if we prevented the fling, as we are going against a high velocity. */
     public static int blockedFlingDurationFactor(float velocity) {

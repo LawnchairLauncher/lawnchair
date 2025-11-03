@@ -31,8 +31,12 @@ import androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_P
 import androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_SCALE
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherAnimUtils
+import com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY
+import com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_FOLDER_ANIM
 import com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY
+import com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY
 import com.android.launcher3.LauncherState
+import com.android.launcher3.R
 import com.android.launcher3.Utilities.isDarkTheme
 import com.android.launcher3.anim.SpringAnimationBuilder
 import com.android.launcher3.apppairs.AppPairIcon
@@ -75,19 +79,14 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             addFolderScaleAndTranslateAnimators(folder, animatorSet, folderAnimData)
             addClipRevealAnimators(folder, animatorSet, clipRevealData)
             addAlphaAndColorAnimators(folder, animatorSet, folderAnimData)
-            addScrimAnimators(
+            addWorkspaceAnimators(
                 folder.context,
                 animatorSet,
                 folderAnimData.isOpening,
                 launcherDelegate,
             )
             launcherDelegate.launcher?.depthController?.folderZoom?.let {
-                addWallpaperZoomAnimator(
-                    folder.context,
-                    animatorSet,
-                    folderAnimData.isOpening,
-                    it,
-                )
+                addWallpaperZoomAnimator(folder.context, animatorSet, folderAnimData.isOpening, it)
             }
             iconAnimData.forEach { addContentIconAnimators(folder.context, animatorSet, it) }
             return FolderSpringAnimatorSet(animatorSet)
@@ -352,7 +351,7 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             }
         }
 
-        private fun addScrimAnimators(
+        private fun addWorkspaceAnimators(
             context: Context,
             animatorSet: AnimatorSet,
             isOpening: Boolean,
@@ -367,6 +366,8 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             val scrimView = launcher.scrimView
             val workspace = launcher.workspace
             val hotseat = launcher.hotseat
+            val workspaceScale = WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_FOLDER_ANIM)
+            val hotseatScale = HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_FOLDER_ANIM)
             val finalScrimAlpha = if (isDarkTheme(context)) 0.32f else 0.2f
             scrimView.setBackgroundColor(Color.BLACK)
             playSpringAnimation(
@@ -392,7 +393,7 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
                 startValue = 1f,
                 endValue = LAUNCHER_SCALE,
                 minVisibleChange = MIN_VISIBLE_CHANGE_SCALE,
-                property = SCALE_PROPERTY,
+                property = workspaceScale,
                 view = workspace,
             )
             playSpringAnimation(
@@ -405,7 +406,7 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
                 startValue = 1f,
                 endValue = LAUNCHER_SCALE,
                 minVisibleChange = MIN_VISIBLE_CHANGE_SCALE,
-                property = SCALE_PROPERTY,
+                property = hotseatScale,
                 view = hotseat,
             )
             animatorSet.addListener(FolderScrimAnimationListener(scrimView, isOpening, launcher))
