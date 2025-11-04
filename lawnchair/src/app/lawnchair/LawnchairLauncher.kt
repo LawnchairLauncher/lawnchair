@@ -24,6 +24,8 @@ import android.graphics.Color
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.SystemClock
+import android.util.Log
 import android.util.Pair
 import android.view.Display
 import android.view.View
@@ -443,6 +445,12 @@ class LawnchairLauncher : QuickstepLauncher() {
         return ActivityOptionsWrapper(options, callback)
     }
 
+    fun restartActivity() {
+        val intent = Intent(this, LawnchairLauncher::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
     override fun onResume() {
         super.onResume()
         restartIfPending()
@@ -464,6 +472,45 @@ class LawnchairLauncher : QuickstepLauncher() {
                 }
             },
         )
+
+        window.decorView.postDelayed({
+            val mDisplayState = getViewRootDisplayState()
+            val now = SystemClock.elapsedRealtime()
+
+            if (mDisplayState == Display.STATE_OFF && now - lastRestartTime > 5000) {
+                Log.w("LawnchairLauncher", "Renderer appears frozen, restarting activity")
+                lastRestartTime = now
+                restartActivity()
+            }
+            Log.d("LawnchairLauncher", "lastRestartTime: $lastRestartTime")
+        }, 500)
+    }
+
+    private fun getViewRootDisplayState(): Int {
+        return try {
+            val decorView = window.decorView
+
+            // Get ViewRootImpl from decorView
+            val viewRootImplMethod = View::class.java.getDeclaredMethod("getViewRootImpl")
+            viewRootImplMethod.isAccessible = true
+            val viewRootImpl = viewRootImplMethod.invoke(decorView) ?: return -1
+
+            // Now access ViewRootImpl.mAttachInfo
+            val attachInfoField = viewRootImpl.javaClass.getDeclaredField("mAttachInfo")
+            attachInfoField.isAccessible = true
+            val attachInfo = attachInfoField.get(viewRootImpl) ?: return -1
+
+            // Access AttachInfo.mDisplayState
+            val displayStateField = attachInfo.javaClass.getDeclaredField("mDisplayState")
+            displayStateField.isAccessible = true
+            val displayState = displayStateField.getInt(attachInfo)
+
+            Log.d("LawnchairLauncher", "ViewRootImpl.mAttachInfo.mDisplayState = $displayState")
+            displayState
+        } catch (e: Exception) {
+            Log.e("LawnchairLauncher", "Failed to read mAttachInfo.mDisplayState", e)
+            -1
+        }
     }
 
     override fun onDestroy() {
@@ -504,6 +551,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     companion object {
         private const val FLAG_RECREATE = 1 shl 0
         private const val FLAG_RESTART = 1 shl 1
+        private var lastRestartTime = 0L
 
         var sRestartFlags = 0
 
