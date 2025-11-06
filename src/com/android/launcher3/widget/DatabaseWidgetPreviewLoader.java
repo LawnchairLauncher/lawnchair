@@ -28,7 +28,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.Process;
 import android.util.Log;
 import android.util.Size;
 

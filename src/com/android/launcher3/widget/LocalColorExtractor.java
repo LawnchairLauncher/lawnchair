@@ -19,9 +19,7 @@ package com.android.launcher3.widget;
 import android.app.WallpaperColors;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.SparseIntArray;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 

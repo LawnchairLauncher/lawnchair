@@ -23,7 +23,6 @@ import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;

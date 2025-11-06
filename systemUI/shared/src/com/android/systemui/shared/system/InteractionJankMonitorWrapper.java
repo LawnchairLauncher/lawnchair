@@ -16,7 +16,6 @@
 
 package com.android.systemui.shared.system;
 
-import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 

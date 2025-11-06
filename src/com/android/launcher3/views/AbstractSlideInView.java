@@ -42,7 +42,6 @@ import android.view.ViewOutlineProvider;
 import android.view.animation.Interpolator;
 import android.window.BackEvent;
 
-import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;

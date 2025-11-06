@@ -19,8 +19,6 @@ package com.android.launcher3.util;
 import static app.lawnchair.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT;
 import static app.lawnchair.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME;
 
-import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -33,7 +31,6 @@ import android.view.ContextThemeWrapper;
 
 import androidx.annotation.ColorInt;
 
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.GraphicsUtils;

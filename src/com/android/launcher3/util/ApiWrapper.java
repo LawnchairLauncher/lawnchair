@@ -36,7 +36,6 @@ import android.os.UserManager;
 import android.util.ArrayMap;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Launcher;

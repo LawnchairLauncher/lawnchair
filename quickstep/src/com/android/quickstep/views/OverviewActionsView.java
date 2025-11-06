@@ -45,8 +45,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
-import app.lawnchair.preferences.PreferenceManager;
-
 /**
  * View for showing action buttons in Overview
  */

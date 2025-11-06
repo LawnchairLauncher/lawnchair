@@ -65,8 +65,6 @@ import com.android.launcher3.util.Themes;
 
 import java.util.List;
 
-import app.lawnchair.theme.color.tokens.ColorTokens;
-
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         implements OnClickListener, ItemInfoUpdateReceiver {
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;

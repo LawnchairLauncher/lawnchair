@@ -31,7 +31,6 @@ import android.view.View;
 import android.widget.TableLayout;
 
 import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
 import androidx.annotation.Px;
 
 import com.android.launcher3.DeviceProfile;
@@ -43,8 +42,6 @@ import com.android.launcher3.widget.picker.util.WidgetPreviewContainerSize;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import app.lawnchair.theme.drawable.DrawableTokens;
 
 /** A {@link TableLayout} for showing recommended widgets. */
 public final class WidgetsRecommendationTableLayout extends TableLayout {

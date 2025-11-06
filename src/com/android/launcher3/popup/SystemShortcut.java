@@ -11,7 +11,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Process;
 import android.os.UserHandle;
 import android.view.View;
@@ -40,13 +39,9 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.WidgetsBottomSheet;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
-
-import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Represents a system shortcut for a given app. The shortcut should have a

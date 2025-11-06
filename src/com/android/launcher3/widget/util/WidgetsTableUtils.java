@@ -21,7 +21,6 @@ import android.util.Size;
 import androidx.annotation.Px;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.widget.picker.util.WidgetPreviewContainerSize;
 

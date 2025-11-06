@@ -23,7 +23,6 @@ import android.app.ActivityTaskManager;
 import android.app.IActivityTaskManagerHidden;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.util.Pair;
@@ -31,13 +30,11 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.window.SplashScreen;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
-import app.lawnchair.LawnchairApp;
 import dev.rikka.tools.refine.Refine;
 
 /**

@@ -21,7 +21,6 @@ import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.widget.EdgeEffect;
 
-import com.android.launcher3.BuildConfig;
 import com.android.launcher3.BuildConfigs;
 import com.android.launcher3.Utilities;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayTouchProxy;

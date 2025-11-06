@@ -19,7 +19,6 @@ import android.graphics.Rect;
 import android.view.View;
 
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;

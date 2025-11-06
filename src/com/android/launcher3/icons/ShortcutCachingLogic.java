@@ -16,15 +16,12 @@
 
 package com.android.launcher3.icons;
 
-import static com.android.launcher3.BuildConfigs.WIDGETS_ENABLED;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInfo;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
-import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,7 +32,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.util.Themes;
 
 import app.lawnchair.icons.CustomAdaptiveIconDrawable;
 

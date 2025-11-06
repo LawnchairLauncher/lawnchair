@@ -17,10 +17,6 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.core.util.Consumer;
 
 import com.android.launcher3.views.RecyclerViewFastScroller;
 

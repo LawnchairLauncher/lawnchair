@@ -20,8 +20,6 @@ import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_2BUTTON;
 import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_3BUTTON;
 import static android.view.WindowManagerPolicyConstants.NAV_BAR_MODE_GESTURAL;
 
-import static com.android.systemui.shared.Flags.shadeAllowBackGesture;
-
 import android.annotation.LongDef;
 import android.content.Context;
 import android.content.res.Resources;

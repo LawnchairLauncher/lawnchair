@@ -20,10 +20,8 @@ import static android.content.ClipDescription.MIMETYPE_APPLICATION_ACTIVITY;
 import static android.content.ClipDescription.MIMETYPE_APPLICATION_SHORTCUT;
 import static android.content.ClipDescription.MIMETYPE_APPLICATION_TASK;
 
-import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.pm.ActivityInfo;
-import android.view.DragEvent;
 
 import androidx.annotation.Nullable;
 

@@ -29,8 +29,6 @@ import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 
 import android.animation.ObjectAnimator;
-import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -72,15 +70,12 @@ import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
-
-import app.lawnchair.compat.LawnchairQuickstepCompat;
 
 /**
  * Handles the navigation gestures when a 3rd party launcher is the default home activity.

@@ -21,10 +21,8 @@ import static android.view.View.VISIBLE;
 import static com.android.app.animation.Interpolators.DECELERATE_1_7;
 import static com.android.app.animation.Interpolators.INSTANT;
 import static com.android.app.animation.Interpolators.clampToProgress;
-import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 
-import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.view.View;
 import android.view.animation.Interpolator;

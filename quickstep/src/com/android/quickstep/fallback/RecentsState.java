@@ -25,7 +25,6 @@ import android.graphics.Color;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.quickstep.RecentsActivity;
-import com.android.launcher3.util.Themes;
 import com.android.quickstep.views.RecentsViewContainer;
 
 import app.lawnchair.theme.color.tokens.ColorTokens;

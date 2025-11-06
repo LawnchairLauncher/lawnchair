@@ -50,7 +50,6 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_T
 import android.app.ActivityTaskManager;
 import android.content.Context;
 import android.graphics.Region;
-import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.os.SystemProperties;

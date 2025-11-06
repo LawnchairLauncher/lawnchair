@@ -31,7 +31,6 @@ import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.graphics.Color;
 import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;

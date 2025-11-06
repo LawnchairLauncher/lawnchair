@@ -21,7 +21,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.util.Property;
-import android.view.View;
 
 import com.android.launcher3.util.Thunk;
 

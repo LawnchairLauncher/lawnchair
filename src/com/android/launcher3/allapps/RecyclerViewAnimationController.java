@@ -31,7 +31,6 @@ import android.util.FloatProperty;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Utilities;

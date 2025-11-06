@@ -17,10 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -34,18 +31,13 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.allapps.ActivityAllAppsContainerView;
-import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
-import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
-import com.android.launcher3.util.OnColorHintListener;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.util.WallpaperColorHints;
 import com.android.launcher3.util.WindowBounds;
 
 import app.lawnchair.wallpaper.WallpaperManagerCompat;

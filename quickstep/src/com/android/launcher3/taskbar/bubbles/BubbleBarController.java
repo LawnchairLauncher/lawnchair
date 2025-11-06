@@ -52,7 +52,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
-import android.os.Process;
 import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.util.ArrayMap;

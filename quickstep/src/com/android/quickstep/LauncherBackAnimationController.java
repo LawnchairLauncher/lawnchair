@@ -53,7 +53,6 @@ import android.window.BackProgressAnimator;
 import android.window.IOnBackInvokedCallback;
 
 import com.android.app.animation.Interpolators;
-import com.android.internal.policy.SystemBarUtils;
 import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;

@@ -65,8 +65,6 @@ import android.content.res.Resources;
 import android.graphics.Insets;
 import android.os.RemoteException;
 import android.view.DisplayInfo;
-import android.view.DragEvent;
-import android.view.View;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -76,7 +74,6 @@ import com.android.wm.shell.ShellTestCase;
 import com.android.wm.shell.common.DisplayLayout;
 import com.android.wm.shell.draganddrop.DragAndDropPolicy.Target;
 import com.android.wm.shell.splitscreen.SplitScreenController;
-import com.android.wm.shell.startingsurface.TaskSnapshotWindow;
 
 import org.junit.After;
 import org.junit.Before;

@@ -16,8 +16,6 @@
 
 package com.android.launcher3.popup;
 
-import static androidx.core.content.ContextCompat.getColorStateList;
-
 import static com.android.app.animation.Interpolators.ACCELERATED_EASE;
 import static com.android.app.animation.Interpolators.DECELERATED_EASE;
 import static com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE;

@@ -17,7 +17,6 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.InvariantDeviceProfile.DeviceType;
-import static com.android.launcher3.InvariantDeviceProfile.TYPE_PHONE;
 import static com.android.launcher3.LauncherPrefs.DB_FILE;
 import static com.android.launcher3.LauncherPrefs.DEVICE_TYPE;
 import static com.android.launcher3.LauncherPrefs.HOTSEAT_COUNT;

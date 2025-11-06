@@ -28,7 +28,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.R;
-import com.android.launcher3.util.Themes;
 
 public class SectionDecorationHandler {
 

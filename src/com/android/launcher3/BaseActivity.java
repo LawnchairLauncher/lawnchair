@@ -22,7 +22,6 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;

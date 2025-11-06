@@ -29,9 +29,6 @@ import android.content.pm.ResolveInfo;
 import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.BuildConfigs;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.launcher3.BuildConfig;
 import com.android.launcher3.util.PluginManagerWrapper;
 import com.android.systemui.plugins.Plugin;
 import com.android.systemui.plugins.PluginListener;

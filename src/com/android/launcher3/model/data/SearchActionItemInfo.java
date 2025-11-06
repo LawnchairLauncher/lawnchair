@@ -25,7 +25,6 @@ import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.icons.LauncherIcons;

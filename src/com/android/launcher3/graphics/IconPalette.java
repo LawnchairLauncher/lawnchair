@@ -28,8 +28,6 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 
-import java.lang.IllegalArgumentException;
-
 /**
  * Contains colors based on the dominant color of an icon.
  */

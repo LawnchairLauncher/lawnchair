@@ -26,8 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;

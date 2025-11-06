@@ -20,7 +20,6 @@ import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LO
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 

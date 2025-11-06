@@ -17,8 +17,6 @@ package com.android.quickstep;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Looper;
-import android.os.Trace;
 import android.os.UserManager;
 import android.util.Log;
 import android.view.ThreadedRenderer;

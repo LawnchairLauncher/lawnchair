@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
@@ -59,7 +58,6 @@ import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.os.IRemoteCallback;
 import android.os.Process;
-import android.os.Trace;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
