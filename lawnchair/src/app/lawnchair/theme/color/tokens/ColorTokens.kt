@@ -110,6 +110,7 @@ object ColorTokens {
         ),
         SwatchColorToken(Swatch.Accent2, Shade.S700),
     )
+
     @JvmField val FolderIconBorderColor = ColorPrimary
 
     @JvmField val FolderPaginationColor = DayNightColorToken(Accent1_600, Accent2_100)
