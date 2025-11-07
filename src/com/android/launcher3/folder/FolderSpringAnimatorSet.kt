@@ -328,15 +328,29 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             revealData: ClipRevealData,
         ) {
             with(revealData) {
+                // Clip reveal for folder background.
                 animatorSet.play(
                     shapeDelegate.createRevealAnimator(
-                        folder,
-                        backgroundStartRect,
-                        backgroundEndRect,
-                        finalRadius,
-                        !isOpening,
+                        target = folder,
+                        startRect = backgroundStartRect,
+                        endRect = backgroundEndRect,
+                        endRadius = finalRadius,
+                        isReversed = !isOpening,
                     )
                 )
+                if (!isOpening) {
+                    // Clip reveal for folder content icons.
+                    // Only necessary while closing, where content is not affected by clipPath.
+                    animatorSet.play(
+                        shapeDelegate.createRevealAnimator(
+                            target = folder.content,
+                            startRect = contentStart,
+                            endRect = contentEnd,
+                            endRadius = finalRadius,
+                            isReversed = true,
+                        )
+                    )
+                }
             }
         }
 

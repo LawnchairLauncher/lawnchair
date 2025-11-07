@@ -2022,14 +2022,17 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Override
     protected void dispatchDraw(Canvas canvas) {
         if (mClipPath != null) {
+            // clipPath is non-null while clip reveal animation is playing
             int count = canvas.save();
             canvas.clipPath(mClipPath);
             mBackground.draw(canvas);
-            if (Flags.enableExpressiveFolderExpansion()) {
+            if (!mIsAnimatingClosed) {
+                // If animating open, clip the content to the clip path to keep in bounds.
                 super.dispatchDraw(canvas);
-                canvas.restoreToCount(count);
-            } else {
-                canvas.restoreToCount(count);
+            }
+            canvas.restoreToCount(count);
+            if (mIsAnimatingClosed) {
+                // If animating closed, avoid clipping content as preview items protrude past clip.
                 super.dispatchDraw(canvas);
             }
         } else {
