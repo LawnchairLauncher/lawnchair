@@ -92,7 +92,6 @@ fun HiddenAppsPreferences(
                     preferenceGroupItems(
                         items = apps,
                         isFirstChild = true,
-                        dividerStartIndent = 40.dp,
                     ) { _, app ->
                         AppItem(
                             app = app,
@@ -110,7 +109,6 @@ fun HiddenAppsPreferences(
                     preferenceGroupItems(
                         count = 20,
                         isFirstChild = true,
-                        dividerStartIndent = 40.dp,
                     ) {
                         AppItemPlaceholder {
                             Spacer(Modifier.width(24.dp))

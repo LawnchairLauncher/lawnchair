@@ -196,9 +196,9 @@ fun About(
         }
         preferenceGroupItems(
             items = uiState.coreTeam,
-            key = { _, it -> it.name },
             isFirstChild = false,
             heading = { stringResource(id = R.string.product) },
+            key = { _, it -> it.name },
         ) { _, it ->
             ContributorRow(
                 member = it,
@@ -206,9 +206,9 @@ fun About(
         }
         preferenceGroupItems(
             items = uiState.supportAndPr,
-            key = { _, it -> it.name },
             isFirstChild = false,
             heading = { stringResource(id = R.string.support_and_pr) },
+            key = { _, it -> it.name },
         ) { _, it ->
             ContributorRow(
                 member = it,
@@ -216,9 +216,9 @@ fun About(
         }
         preferenceGroupItems(
             items = uiState.bottomLinks,
-            key = { _, it -> it.labelResId },
             isFirstChild = false,
             heading = { stringResource(id = R.string.community) },
+            key = { _, it -> it.labelResId },
         ) { _, it ->
             HorizontalLawnchairLink(
                 iconResId = it.iconResId,
@@ -243,11 +243,13 @@ fun About(
             }
         }
         item {
+            Spacer(Modifier.height(3.dp))
+        }
+        item {
             PreferenceGroupItem(
                 cutTop = true,
-                cutBottom = true,
+                cutBottom = false,
             ) {
-                PreferenceDivider()
                 ClickablePreference(
                     label = stringResource(id = R.string.privacy_policy),
                     onClick = {

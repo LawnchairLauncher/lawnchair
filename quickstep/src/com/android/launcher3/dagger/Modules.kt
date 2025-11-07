@@ -16,6 +16,7 @@
 
 package com.android.launcher3.dagger
 
+import app.lawnchair.factory.LawnchairWidgetHolder
 import app.lawnchair.util.LawnchairWindowManagerProxy
 import com.android.launcher3.uioverrides.QuickstepWidgetHolder.QuickstepWidgetHolderFactory
 import com.android.launcher3.uioverrides.SystemApiWrapper
@@ -47,7 +48,7 @@ abstract class ApiWrapperModule {
 abstract class WidgetModule {
 
     @Binds
-    abstract fun bindWidgetHolderFactory(factor: QuickstepWidgetHolderFactory): WidgetHolderFactory
+    abstract fun bindWidgetHolderFactory(factor: LawnchairWidgetHolder.Factory): WidgetHolderFactory
 }
 
 @Module

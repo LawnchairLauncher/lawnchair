@@ -1,4 +1,4 @@
 [submodule "platform_frameworks_libs_systemui"]
 	path = platform_frameworks_libs_systemui
-	url = https://github.com/BoringExperiments/platform_frameworks_libs_systemui
+	url = https://github.com/LawnchairLauncher/platform_frameworks_libs_systemui
     branch = 16-dev

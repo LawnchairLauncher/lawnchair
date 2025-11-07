@@ -955,57 +955,62 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
 
     @Override
     protected void registerBackDispatcher() {
-        getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-                OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-                new FlingOnBackAnimationCallback() {
+        if (Utilities.ATLEAST_T) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    new FlingOnBackAnimationCallback() {
 
-                    @Nullable OnBackAnimationCallback mActiveOnBackAnimationCallback;
-
-                    @Override
-                    public void onBackStartedCompat(@NonNull BackEvent backEvent) {
-                        if (mActiveOnBackAnimationCallback != null) {
-                            mActiveOnBackAnimationCallback.onBackCancelled();
-                        }
-                        mActiveOnBackAnimationCallback = getOnBackAnimationCallback();
-                        mActiveOnBackAnimationCallback.onBackStarted(backEvent);
-                    }
-
-                    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-                    @Override
-                    public void onBackInvokedCompat() {
-                        // Recreate mActiveOnBackAnimationCallback if necessary to avoid NPE
-                        // because:
-                        // 1. b/260636433: In 3-button-navigation mode, onBackStarted() is not
-                        // called on ACTION_DOWN before onBackInvoked() is called in ACTION_UP.
-                        // 2. Launcher#onBackPressed() will call onBackInvoked() without calling
-                        // onBackInvoked() beforehand.
-                        if (mActiveOnBackAnimationCallback == null) {
+                        @Nullable OnBackAnimationCallback mActiveOnBackAnimationCallback;
+    
+                        @RequiresApi(api = VERSION_CODES.UPSIDE_DOWN_CAKE)
+                        @Override
+                        public void onBackStartedCompat(@NonNull BackEvent backEvent) {
+                            if (mActiveOnBackAnimationCallback != null) {
+                                mActiveOnBackAnimationCallback.onBackCancelled();
+                            }
                             mActiveOnBackAnimationCallback = getOnBackAnimationCallback();
+                            mActiveOnBackAnimationCallback.onBackStarted(backEvent);
                         }
-                        mActiveOnBackAnimationCallback.onBackInvoked();
-                        mActiveOnBackAnimationCallback = null;
-                        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
-                    }
 
-                    @Override
-                    public void onBackProgressedCompat(@NonNull BackEvent backEvent) {
-                        if (!FeatureFlags.IS_STUDIO_BUILD
-                                && mActiveOnBackAnimationCallback == null) {
-                            return;
+                        @RequiresApi(VERSION_CODES.UPSIDE_DOWN_CAKE)
+                        @Override
+                        public void onBackInvokedCompat() {
+                            // Recreate mActiveOnBackAnimationCallback if necessary to avoid NPE
+                            // because:
+                            // 1. b/260636433: In 3-button-navigation mode, onBackStarted() is not
+                            // called on ACTION_DOWN before onBackInvoked() is called in ACTION_UP.
+                            // 2. Launcher#onBackPressed() will call onBackInvoked() without calling
+                            // onBackInvoked() beforehand.
+                            if (mActiveOnBackAnimationCallback == null) {
+                                mActiveOnBackAnimationCallback = getOnBackAnimationCallback();
+                            }
+                            mActiveOnBackAnimationCallback.onBackInvoked();
+                            mActiveOnBackAnimationCallback = null;
+                            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
                         }
-                        mActiveOnBackAnimationCallback.onBackProgressed(backEvent);
-                    }
 
-                    @Override
-                    public void onBackCancelledCompat() {
-                        if (!FeatureFlags.IS_STUDIO_BUILD
-                                && mActiveOnBackAnimationCallback == null) {
-                            return;
+                        @RequiresApi(api = VERSION_CODES.UPSIDE_DOWN_CAKE)
+                        @Override
+                        public void onBackProgressedCompat(@NonNull BackEvent backEvent) {
+                            if (!FeatureFlags.IS_STUDIO_BUILD
+                                    && mActiveOnBackAnimationCallback == null) {
+                                return;
+                            }
+                            mActiveOnBackAnimationCallback.onBackProgressed(backEvent);
                         }
-                        mActiveOnBackAnimationCallback.onBackCancelled();
-                        mActiveOnBackAnimationCallback = null;
-                    }
-                });
+
+                        @RequiresApi(api = VERSION_CODES.UPSIDE_DOWN_CAKE)
+                        @Override
+                        public void onBackCancelledCompat() {
+                            if (!FeatureFlags.IS_STUDIO_BUILD
+                                    && mActiveOnBackAnimationCallback == null) {
+                                return;
+                            }
+                            mActiveOnBackAnimationCallback.onBackCancelled();
+                            mActiveOnBackAnimationCallback = null;
+                        }
+                    });
+        }
     }
 
     private void onTaskbarInAppDisplayProgressUpdate(float progress, int flag) {

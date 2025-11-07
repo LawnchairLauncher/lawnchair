@@ -51,8 +51,9 @@ jobs:
             echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
             echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
           fi
+        # Release variant is disabled due to build conflict | assembleLawnWithQuickstepNightlyRelease
       - name: Build debug APK
-        run: ./gradlew assembleLawnWithQuickstepGithubDebug assembleLawnWithQuickstepPlayDebug assembleLawnWithQuickstepNightlyRelease --no-configuration-cache
+        run: ./gradlew assembleLawnWithQuickstepGithubDebug assembleLawnWithQuickstepPlayDebug --no-configuration-cache
       - name: Upload artifact
         uses: actions/upload-artifact@v5
         with:

@@ -51,6 +51,7 @@ import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
+import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
@@ -112,7 +113,7 @@ fun PreferencesDashboard(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        PreferenceCategoryGroup {
+        PreferenceGroup {
             PreferenceCategory(
                 label = stringResource(R.string.general_label),
                 description = stringResource(R.string.general_description),
@@ -198,28 +199,6 @@ fun PreferencesDashboard(
                 isSelected = currentRoute is About,
             )
         }
-    }
-}
-
-@Composable
-fun PreferenceCategoryGroup(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
-    val color = preferenceGroupColor()
-
-    Surface(
-        modifier = modifier.padding(horizontal = 16.dp),
-        shape = MaterialTheme.shapes.extraLarge,
-        color = color,
-        tonalElevation = if (isSelectedThemeDark) 1.dp else 0.dp,
-    ) {
-        DividerColumn(
-            content = content,
-            startIndent = (-16).dp,
-            endIndent = (-16).dp,
-            color = MaterialTheme.colorScheme.surface,
-        )
     }
 }
 

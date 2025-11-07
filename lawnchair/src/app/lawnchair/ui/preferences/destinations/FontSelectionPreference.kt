@@ -193,7 +193,6 @@ fun FontSelection(
                 isFirstChild = false,
                 key = { _, family -> family.toString() },
                 contentType = { ContentType.FONT },
-                dividerStartIndent = 40.dp,
             ) { _, family ->
                 FontSelectionItem(
                     adapter = adapter,

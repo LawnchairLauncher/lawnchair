@@ -78,9 +78,9 @@ fun SelectIconPreference(componentKey: ComponentKey) {
             }
         }
         preferenceGroupItems(
-            heading = { stringResource(id = R.string.pick_icon_from_label) },
             items = iconPacks,
             isFirstChild = !hasOverride,
+            heading = { stringResource(id = R.string.pick_icon_from_label) },
         ) { _, iconPack ->
             AppItem(
                 label = iconPack.name,

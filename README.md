@@ -9,6 +9,13 @@
 [![GitHub Downloads](https://img.shields.io/github/downloads/LawnchairLauncher/lawnchair/total.svg?label=GitHub%20Downloads&logo=github)](https://github.com/LawnchairLauncher/lawnchair/releases)
 [![Play Store Installs](https://img.shields.io/endpoint?color=green&logo=googleplay&logoColor=green&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dapp.lawnchair.play%26l%3DPlay%2520Store%2520Installs%26m%3D%24shortinstalls)](https://play.google.com/store/apps/details?id=app.lawnchair.play)
 
+> [!WARNING]
+> This branch contains major changes from the rebase of Launcher3, including breaking changes and refactors that can cause Lawnchair to break.
+> 
+> If you wish to contribute, read our [contributing guidelines](CONTRIBUTING.md). Note that this branch will undergo many changes as we slowly refactor our codebase, so the `16-dev` branch may be particularly unfriendly to new contributors. It is still possible to submit changes to `15-dev`, but new feature development will be focused on this branch.
+> 
+> For regular users, we recommend staying on `15-dev` for stability purposes.
+
 <picture>
     <!-- Avoid image being clickable with slight workaround -->
     <!-- ❤️ Credit to Raine for the original mockup on the Lawnchair Discord -->
@@ -21,7 +28,7 @@
 
 Lawnchair is a free, open-source home app for Android. Taking Launcher3—Android’s default home app—as a starting point, it ports Pixel Launcher features and introduces rich customization options.
 
-This branch houses the codebase of Lawnchair 16, which is currently in beta and is based on Launcher3 from Android 16. For Lawnchair 9 to 15, see the branches with the `9-` to `15-` prefixes, respectively.
+This branch houses the codebase of Lawnchair 16, which is currently in development and is based on Launcher3 from Android 16. For Lawnchair 9 to 15, see the branches with the `9-` to `15-` prefixes, respectively.
 
 ## Features
 

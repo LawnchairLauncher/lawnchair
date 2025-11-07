@@ -182,9 +182,11 @@ public class WidgetPickerActivity extends BaseActivity implements
 
     @Override
     protected void registerBackDispatcher() {
-        getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-                OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-                new BackAnimationCallback());
+        if (Utilities.ATLEAST_T) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    new BackAnimationCallback());
+        }
     }
 
     private void parseIntentExtras() {
