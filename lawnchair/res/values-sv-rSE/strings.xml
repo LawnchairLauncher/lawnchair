@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Starta om Lawnchair</string>
     <string name="experimental_features_label">Experimentella funktioner</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Anpassning av typsnitt</string>
     <string name="font_picker_description">En del text förblir oförändrad</string>
     <string name="smartspace_calendar_label">Anpassning av snabböversiktskalender</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Utöka maximalt tillåten storlek på startskärmsrutnätet från 10 x 10 till 20 x 20</string>
     <string name="always_reload_icons_label">Ladda alltid om ikoner</string>
     <string name="always_reload_icons_description">Undvik att använda cachade ikoner från ikonpaket</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Svepgester för ikoner</string>
     <string name="icon_swipe_gestures_description">Utför åtgärder när du sveper åt vänster eller höger på ikoner i stället för att flytta startskärmen</string>
     <string name="show_deck_layout">Kortlekslayout</string>
     <string name="show_deck_layout_description">Visa ett layoutalternativ för att dölja applådan och automatiskt lägga till nya appar på startskärmen</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Lås/lås upp</string>
     <string name="recents_lock_unlock_description">Förhindra att vald app stängs när \"Rensa alla\" används</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">Kvadrat</string>
     <string name="icon_shape_squircle">Kvirkel</string>
     <string name="icon_shape_teardrop">Droppe</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Fyrsidig kaka</string>
     <string name="icon_shape_seven_sided_cookie">Sjusidig kaka</string>
     <string name="icon_shape_arch">Valvbåge</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriansk</string>
     <string name="smartspace_calendar_persian">Persisk</string>
+    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Laddar</string>
     <string name="smartspace_battery_full">Laddat</string>
     <string name="smartspace_battery_low">Lågt batteri</string>
@@ -408,6 +423,7 @@
     <string name="gesture_handler_sleep">Vila</string>
     <string name="gesture_handler_recents">Öppna Senaste-skärm</string>
     <string name="gesture_handler_open_notifications">Öppna aviseringspanel</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Öppna app</string>
     <string name="gesture_handler_open_app_config">Öppna %1$s</string>
     <string name="gesture_handler_open_app_drawer">Öppna applåda</string>
@@ -416,12 +432,15 @@
     <string name="gesture_handler_open_assistant">Öppna assistent</string>
     <string name="pick_app_for_gesture">Välj app</string>
     <string name="dt2s_admin_hint_title">Adminbehörigheter krävs</string>
-    <string name="dt2s_admin_hint">För att använda Dubbeltryck för att vila, ange Lawnchair som en enhetsadminapp. Tryck på \"Öppna inställningar\", tryck sedan på \"Aktivera denna enhetsadminapp\".</string>
-    <string name="dt2s_admin_warning">Dubbeltryck för att vila kommer att inaktiveras.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Aktivera tillgänglighetstjänst</string>
-    <string name="dt2s_a11y_hint">För att använda Dubbeltryck för att vila, aktivera Lawnchairs tillgänglighetstjänst. Tryck på \"Öppna inställningar\", välj \"Lawnchair\" och aktivera \"Använd Lawnchair\".\n\nLawnchair använder Tillgänglighets `performGlobalAction`-metod för att utföra denna åtgärd. Detta är en känslig behörighet som tillåter övervakning av andra appar. Lawnchair är dock inte konfigurerad för den funktionen och tar inte emot några händelser.</string>
-    <string name="dt2s_recents_warning_open_settings">Öppna inställningar</string>
-    <string name="recents_a11y_hint">För att använda Öppna Senaste-skärm, aktivera Lawnchairs tillgänglighetstjänst. Tryck på \"Öppna inställningar\", välj \"Lawnchair\" och aktivera \"Använd Lawnchair\".\n\nLawnchair använder Tillgänglighets `performGlobalAction`-metod för att utföra denna åtgärd. Detta är en känslig behörighet som tillåter övervakning av andra appar. Lawnchair är dock inte konfigurerad för den funktionen och tar inte emot några händelser.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -464,10 +483,6 @@
     <string name="home_screen_unlock">Lås upp startskärm</string>
     <string name="home_screen_locked">Startskärmen är låst</string>
     <string name="home_screen_lock_description">Förhindra ändringar av startskärmens layout</string>
-    <string name="show_dot_pagination_label">Visa prickpaginering</string>
-    <string name="show_dot_pagination_description">Använd prickar i stället för linjer för att visa sidnummer</string>
-    <string name="show_material_u_popup_label">Använd ny popup-stil</string>
-    <string name="show_material_u_popup_description">Använd Material Yous studsiga och något tätare popup-stil</string>
     <string name="popup_menu">Snabbmeny</string>
     <string name="popup_menu_items">Objekt i snabbmenyn</string>
     <string name="edit_menu_items">Redigera objekt i snabbmenyn</string>

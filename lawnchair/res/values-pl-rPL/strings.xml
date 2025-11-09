@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Zrestartuj Lawnchair</string>
     <string name="experimental_features_label">Funkcje eksperymentalne</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Dostosowanie czcionki</string>
     <string name="font_picker_description">Niektóre teksty pozostają bez zmian</string>
     <string name="smartspace_calendar_label">Dostosowanie kalendarza w Szybkim Podglądzie</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Zwiększ limit maksymalnego rozmiaru siatki z 10 × 10 do 20 × 20</string>
     <string name="always_reload_icons_label">Zawsze przeładowuj ikony</string>
     <string name="always_reload_icons_description">Unikaj korzystania z buforowanych ikon z zestawów ikon</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Gesty przeciągania ikon</string>
     <string name="icon_swipe_gestures_description">Przesuwaj w lewo lub w prawo po ikonach, aby wykonać akcję zamiast zmienić ekran główny</string>
     <string name="show_deck_layout">Układ talii</string>
     <string name="show_deck_layout_description">Pokaż opcję układu, aby ukryć szufladę aplikacji i automatycznie dodać nowe aplikacje do ekranu głównego</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Zablokuj/Odblokuj</string>
     <string name="recents_lock_unlock_description">Zapobiegaj zamknięciu wybranej aplikacji przez opcję \"Wyczyść wszystko\"</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">Kwadrat</string>
     <string name="icon_shape_squircle">Kwadratokrąg</string>
     <string name="icon_shape_teardrop">Łza</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Czterostronne ciasteczko</string>
     <string name="icon_shape_seven_sided_cookie">Siedmiostronne ciasteczko</string>
     <string name="icon_shape_arch">Łuk</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriański</string>
     <string name="smartspace_calendar_persian">Perski</string>
+    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Ładowanie</string>
     <string name="smartspace_battery_full">Naładowano</string>
     <string name="smartspace_battery_low">Niski poziom baterii</string>
@@ -408,6 +423,7 @@
     <string name="gesture_handler_sleep">Uśpij</string>
     <string name="gesture_handler_recents">Otwórz ekran ostatnich aplikacji</string>
     <string name="gesture_handler_open_notifications">Otwórz panel powiadomień</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Otwórz aplikację</string>
     <string name="gesture_handler_open_app_config">Otwórz %1$s</string>
     <string name="gesture_handler_open_app_drawer">Otwórz szufladę aplikacji</string>
@@ -416,12 +432,15 @@
     <string name="gesture_handler_open_assistant">Otwórz asystenta</string>
     <string name="pick_app_for_gesture">Wybierz aplikację</string>
     <string name="dt2s_admin_hint_title">Wymagane uprawnienia administratora</string>
-    <string name="dt2s_admin_hint">Aby użyć opcji usypiania przy podwójnym naciśnięciu, ustaw Lawnchair jako aplikację administrującą urządzeniem. Naciśnij \"Otwórz ustawienia\", następnie naciśnij \"Aktywuj tę aplikację do administrowania urządzeniem.\"</string>
-    <string name="dt2s_admin_warning">Opcja \"Dotknij dwa razy aby uśpić\" zostanie wyłączona.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Włącz usługę dostępności</string>
-    <string name="dt2s_a11y_hint">Aby użyć opcji usypiania przy podwójnym naciśnięciu, włącz usługę dostępności Lawnchair i kliknij \"Otwórz ustawienia\", wybierz \"Lawnchair\" i włącz \"Użyj Lawnchair.\n\nLawnchair używa metody `performGlobalAction` Dostępności do wykonania tej czynności. To jest wrażliwe uprawnienie, które pozwala na monitorowanie innych aplikacji. Lawnchair nie jest jednak skonfigurowany dla tej funkcjonalności i nie otrzymuje żadnych zdarzeń.</string>
-    <string name="dt2s_recents_warning_open_settings">Otwórz ustawienia</string>
-    <string name="recents_a11y_hint">Aby korzystać z funkcji otwierania ekranu Ostatnich aplikacji, włącz usługę ułatwień dostępu Lawnchair. Dotknij „Otwórz ustawienia”, wybierz „Lawnchair” i włącz opcję „Używaj Lawnchair”.\n\nDo wykonania tej czynności Lawnchair używa metody performGlobalAction z usług ułatwień dostępu. Jest to wrażliwe uprawnienie, które może pozwalać na monitorowanie innych aplikacji. Lawnchair nie jest jednak skonfigurowany do używania tej funkcji i nie odbiera żadnych zdarzeń systemowych.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -464,10 +483,6 @@
     <string name="home_screen_unlock">Odblokuj ekran główny</string>
     <string name="home_screen_locked">Ekran główny jest zablokowany</string>
     <string name="home_screen_lock_description">Zapobiegaj zmianom w układzie ekranu głównego</string>
-    <string name="show_dot_pagination_label">Pokaż numerowanie stron kropkami</string>
-    <string name="show_dot_pagination_description">Użyj kropek zamiast linii, aby pokazać numer strony</string>
-    <string name="show_material_u_popup_label">Używaj nowego stylu wyskakującego menu</string>
-    <string name="show_material_u_popup_description">Używaj sprężystego i bardziej kompaktowego stylu wyskakującego menu Material You</string>
     <string name="popup_menu">Wyskakujące menu</string>
     <string name="popup_menu_items">Elementy wyskakującego menu</string>
     <string name="edit_menu_items">Edytuj elementy wyskakującego menu</string>

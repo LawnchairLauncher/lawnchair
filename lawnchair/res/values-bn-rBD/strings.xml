@@ -42,19 +42,19 @@
     <string name="deselect_all">সবগুলো অনির্বাচন করুন</string>
     <string name="inverse_selection">বিপরীত নির্বাচন</string>
     <string name="loading">লোড হচ্ছে…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">খারিজ করুন</string>
     <string name="download_update">আপডেট ডাউনলোড করুন</string>
     <string name="install_update">আপডেট ইনস্টল করুন</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">পরিবর্তন দেখুন</string>
     <string name="pro_updated">আপনি আপ-টু-ডেট!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_title">আপডেট</string>
+    <string name="changes_dialog_error">পরিবর্তনগুলি লোড করতে ব্যর্থ হয়েছে</string>
+    <string name="changes_dialog_no_changes">কোন পরিবর্তন পাওয়া যায়নি</string>
+    <string name="changes_dialog_build_format">বিল্ড %1$d %2$d</string>
+    <string name="changes_dialog_commit_info">দ্বারা %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">এখনই</string>
     <string name="time_minutes_ago">%dm</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
@@ -87,11 +87,11 @@
     <string name="grid">গ্রিড</string>
     <string name="layout">গঠন</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">ওয়ালপেপার দেখুন</string>
     <string name="wallpaper">ওয়ালপেপার</string>
     <string name="style">স্টাইল</string>
     <string name="background_opacity">ব্যাকগ্রাউন্ডের অস্বচ্ছতা</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">পৃথক সার্চ বারের ব্যাকগ্রাউন্ড</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">ক্লিপবোর্ডের অস্বচ্ছতা</string>
     <string name="calculator_search_result_copied_toast">ফলাফল ক্লিপবোর্ডে কপি করা হয়েছে</string>
@@ -115,10 +115,10 @@
     <string name="folders_filter_duplicates">শুধুমাত্র অনন্য অ্যাপগুলি দেখান</string>
     <string name="my_folder_label">আমার ফোল্ডার</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">To perform certain actions (such as locking your phone) when performing a gesture, Lawnchair requires accessibility access.\n\nLawnchair doesn\'t watch any user action, though the privilege to do so is required for all accessibility services. Lawnchair discards any event sent by the system.\n\nIn order to lock your phone, or to open the Recents screen, Lawnchair uses the performGlobalAction Accessibility service.</string>
+    <string name="accessibility_service_description">অঙ্গভঙ্গি করার সময় নির্দিষ্ট কিছু কাজ (যেমন আপনার ফোন লক করা) করার জন্য, লনচেয়ারের অ্যাক্সেসিবিলিটি অ্যাক্সেস প্রয়োজন. \n\nলনচেয়ার ব্যবহারকারীর কোনও ক্রিয়াকলাপ পর্যবেক্ষণ করে না, যদিও সমস্ত অ্যাক্সেসিবিলিটি পরিষেবার জন্য এটি করার অধিকার প্রয়োজন। লনচেয়ার সিস্টেম দ্বারা প্রেরিত যেকোনো ইভেন্ট বাতিল করে দেয়।\n\nআপনার ফোন লক করতে, অথবা Recents স্ক্রিন খুলতে, Lawnchair performGlobalAction অ্যাক্সেসিবিলিটি পরিষেবা ব্যবহার করে।.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
-    <string name="x_and_y">%1$s &amp; %2$s</string>
+    <string name="x_and_y">%1$s&amp;%2$s</string>
     <string name="advanced">উন্নত</string>
     <!--
 
@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">লনচেয়ার পুনরায় চালু করুন</string>
     <string name="experimental_features_label">পরীক্ষামূলক ফিচার</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">ফন্ট কাস্টমাইজেশন</string>
     <string name="font_picker_description">কিছু লেখা অপরিবর্তিত রয়ে গেছে</string>
     <string name="smartspace_calendar_label">At a Glance calendar customization</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
     <string name="always_reload_icons_label">Always reload icons</string>
     <string name="always_reload_icons_description">ক্যাসে থেকে আইকন ব্যাবহার করা থেকে এড়ান</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Icon swipe gestures</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Lock/unlock</string>
     <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">বর্গ</string>
     <string name="icon_shape_squircle">কাঠবিড়ালি</string>
     <string name="icon_shape_teardrop">জলফোঁটা</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">গ্রেগরিয়ান</string>
     <string name="smartspace_calendar_persian">পার্সিয়ান</string>
+    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s,%2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">চার্জ হচ্ছে</string>
     <string name="smartspace_battery_full">চার্জ হয়ে গেছে</string>
     <string name="smartspace_battery_low">Battery low</string>
@@ -408,6 +423,7 @@
     <string name="gesture_handler_sleep">বন্ধ</string>
     <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Open notification panel</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Open app</string>
     <string name="gesture_handler_open_app_config">খুলুন %1$s</string>
     <string name="gesture_handler_open_app_drawer">Open app drawer</string>
@@ -416,12 +432,15 @@
     <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">Pick app</string>
     <string name="dt2s_admin_hint_title">Admin permissions required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">ডাবল-ট্যাপে লক হওয়া বন্ধ হয়ে যাবে.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Turn on accessibility service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_recents_warning_open_settings">Open settings</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -464,10 +483,6 @@
     <string name="home_screen_unlock">Unlock home screen</string>
     <string name="home_screen_locked">Home screen is locked</string>
     <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
-    <string name="show_dot_pagination_label">Show dot pagination</string>
-    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
-    <string name="show_material_u_popup_label">Use new pop-up style</string>
-    <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
     <string name="popup_menu">Pop-up menu</string>
     <string name="popup_menu_items">Pop-up menu items</string>
     <string name="edit_menu_items">Edit pop-up menu items</string>

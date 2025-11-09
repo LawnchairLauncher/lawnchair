@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Taaskäivita Lawnchair</string>
     <string name="experimental_features_label">Katselised omadused</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Fondi kohandamine</string>
     <string name="font_picker_description">Osa tekstist jääb muutmata</string>
     <string name="smartspace_calendar_label">Ülevaate vidina kalendri kohandamine</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Suurenda avakuva maksimaalset lubatud ruudustiku suurust 10 x 10 > 20 x 20</string>
     <string name="always_reload_icons_label">Laadi ikoonid alati uuesti</string>
     <string name="always_reload_icons_description">Väldi ikoonipakettidest vahemällu salvestatud ikoonide kasutamist</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Ikoonide nipsamisliigutused</string>
     <string name="icon_swipe_gestures_description">Toimingute tegemiseks nipsa ikoonil paremale või vasakule, mitte avakuva liigutades</string>
     <string name="show_deck_layout">Doki paigutus</string>
     <string name="show_deck_layout_description">Rakenduste sahtli peitmiseks ja uute rakenduste automaatseks lisamiseks avakuvale kuva paigutuse valik</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Lukusta/ava</string>
     <string name="recents_lock_unlock_description">Takista valitud rakenduse sulgemine, kui vajutada nuppu \"Kustuta kõik\"</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">Ruut</string>
     <string name="icon_shape_squircle">Ruudukujuline ring</string>
     <string name="icon_shape_teardrop">Pisar</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Neljakandiline küpsis</string>
     <string name="icon_shape_seven_sided_cookie">Seitsmekandiline küpsis</string>
     <string name="icon_shape_arch">Kaar</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriuse</string>
     <string name="smartspace_calendar_persian">Pärsia</string>
+    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Laadimine</string>
     <string name="smartspace_battery_full">Laetud</string>
     <string name="smartspace_battery_low">Aku tühi</string>
@@ -408,6 +423,7 @@
     <string name="gesture_handler_sleep">Ooteseisund</string>
     <string name="gesture_handler_recents">Kuva hiljutised rakendused</string>
     <string name="gesture_handler_open_notifications">Ava märguannete paneel</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Ava rakendus</string>
     <string name="gesture_handler_open_app_config">Ava %1$s</string>
     <string name="gesture_handler_open_app_drawer">Ava rakenduste sahtel</string>
@@ -416,12 +432,15 @@
     <string name="gesture_handler_open_assistant">Ava assistent</string>
     <string name="pick_app_for_gesture">Vali rakendus</string>
     <string name="dt2s_admin_hint_title">Vaja on administraatori õigusi</string>
-    <string name="dt2s_admin_hint">Topeltpuudutusega unerežiimi kasutamiseks määra Lawnchair seadme administraatorirakenduseks. Puuduta valikut \"Ava seaded\", seejärel puuduta \"Aktiveeri selle seadme administraatorirakendus\".</string>
-    <string name="dt2s_admin_warning">Topeltpuudutus unerežiimi lülitamiseks lülitatakse välja.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Lülita juurdepääsetavuse teenus sisse</string>
-    <string name="dt2s_a11y_hint">Ekraani väljalülitamiseks topeltpuudutusega lülita sisse juurdepääsetavuse teenus. Puuduta valikut \"Ava Seaded\" ja luba Lawnchairi kasutamine. \"\n\nSee on tundlik luba, mis võimaldab jälgida muid rakendusi. Kuid Lawnchair pole selle funktsiooni jaoks seadistatud ega võta sündmusi vastu.</string>
-    <string name="dt2s_recents_warning_open_settings">Ava seaded</string>
-    <string name="recents_a11y_hint">Hiljutiste rakenduste akna kasutamiseks lülita sisse juurdepääsetavuse teenus. Puuduta valikut \"Ava Seaded\" ja luba Lawnchairi kasutamine. \"\n\nSelle toimingu tegemiseks kasutab Lawnchair juurdepääsetavuse meetodit `performGlobalAction`. See on tundlik luba, mis võimaldab jälgida muid rakendusi. Kuid Lawnchair pole selle funktsiooni jaoks seadistatud ega võta sündmusi vastu.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -464,10 +483,6 @@
     <string name="home_screen_unlock">Ava avakuva lukk</string>
     <string name="home_screen_locked">Avakuva on lukustatud</string>
     <string name="home_screen_lock_description">Väldi avakuva paigutuse muutmist</string>
-    <string name="show_dot_pagination_label">Tähista leheküljed punktidena</string>
-    <string name="show_dot_pagination_description">Kasuta leheküljenumbri kuvamiseks joonte asemel punkte</string>
-    <string name="show_material_u_popup_label">Kasuta uut hüpikakna stiili</string>
-    <string name="show_material_u_popup_description">Kasuta Material You veidi kompaktsemat hüpikaknastiili</string>
     <string name="popup_menu">Hüpikmenüü</string>
     <string name="popup_menu_items">Hüpikmenüü üksused</string>
     <string name="edit_menu_items">Muuda hüpikmenüü üksusi</string>

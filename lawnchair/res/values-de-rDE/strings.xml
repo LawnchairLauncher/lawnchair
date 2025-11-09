@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Lawnchair neustarten</string>
     <string name="experimental_features_label">Experimentelle Funktionen</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Arbeitsprofil</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Intern</string>
+    <string name="internal_description">Intern kann instabiler sein als andere experimentelle Gruppen</string>
     <string name="font_picker_label">Schriftartanpassung</string>
     <string name="font_picker_description">Manche Texte bleiben unverändert</string>
     <string name="smartspace_calendar_label">\"Auf einen Blick\"-Kalenderanpassung</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Erhöhe die zulässige Startbildschirm-Rastergröße von 10x10 auf 20x20</string>
     <string name="always_reload_icons_label">Symbole immer neu laden</string>
     <string name="always_reload_icons_description">Die Verwendung zwischengespeicherter Symbole aus Symbol-Paketen vermeiden</string>
+    <string name="always_reload_icons_warning">Führt zu regelmäßigem Neuladen von Icons. Nicht erforderlich, wenn das Icon-Pack nicht sehr häufig Updates erhält.</string>
     <string name="icon_swipe_gestures">Symbol-Wischgesten</string>
     <string name="icon_swipe_gestures_description">Führe beim nach links oder rechts Wischen Aktionen aus, statt zwischen Startbildschirmseiten zu wechseln</string>
     <string name="show_deck_layout">Deck-Layout</string>
     <string name="show_deck_layout_description">Zeige eine Layout-Option, um die App-Übersicht auszublenden und neue Apps automatisch zum Startbildschirm hinzuzufügen</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Material 3 Expressive-Änderungen im Arbeitsprofil aktivieren</string>
+    <string name="gesturenavcontract_label">GestureNavContract-API</string>
+    <string name="gesturenavcontract_description">Rendern von Launcher-Animationen ohne Root, funktioniert nicht mit stark modifizierten AOSP-ROMs</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract kann während der Animationen Artefakte verursachen</string>
     <string name="recents_lock_unlock">Anpinnen/Lösen</string>
     <string name="recents_lock_unlock_description">Verhindert, dass die gewählte App durch \"Alle Apps schließen\" entfernt wird</string>
     <!--Overlay-->
@@ -222,10 +232,12 @@
     <string name="icon_shape_square">Quadrat</string>
     <string name="icon_shape_squircle">Quadreis</string>
     <string name="icon_shape_teardrop">Tropfen</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Sehr sonnig</string>
+    <string name="icon_shape_complex_clover">Komplexes Kleeblatt</string>
     <string name="icon_shape_four_sided_cookie">Vierseitiges Cookie</string>
     <string name="icon_shape_seven_sided_cookie">Siebseitiges Cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_arch">Bogen</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Eigene Symbolform</string>
     <string name="custom_icon_shape_create">Eigene Symbolform erstellen</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregorianisch</string>
     <string name="smartspace_calendar_persian">Persisch</string>
+    <string name="smartspace_calendar_buddhist">Buddhistisch</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Schnelles Laden</string>
+    <string name="smartspace_battery_slow_charging">Langsames Laden</string>
     <string name="smartspace_battery_charging">Wird geladen</string>
     <string name="smartspace_battery_full">Geladen</string>
     <string name="smartspace_battery_low">Akku schwach</string>
@@ -408,6 +423,7 @@
     <string name="gesture_handler_sleep">Ruhezustand</string>
     <string name="gesture_handler_recents">Letzte Apps anzeigen</string>
     <string name="gesture_handler_open_notifications">Benachrichtigungsleiste öffnen</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">App öffnen</string>
     <string name="gesture_handler_open_app_config">%1$s öffnen</string>
     <string name="gesture_handler_open_app_drawer">App-Übersicht öffnen</string>
@@ -416,12 +432,15 @@
     <string name="gesture_handler_open_assistant">Assistent-App öffnen</string>
     <string name="pick_app_for_gesture">App auswählen</string>
     <string name="dt2s_admin_hint_title">Administrator-Berechtigungen erforderlich</string>
-    <string name="dt2s_admin_hint">Um Doppeltippen zum Display Ausschalten zu verwenden, aktiviere Lawnchair als App zur Geräteverwaltung. Tippe auf \"Einstellungen öffnen\" und tippe auf „Diese App zur Geräteverwaltung aktivieren“.</string>
-    <string name="dt2s_admin_warning">Doppeltes Tippen zum Schlafen wird deaktiviert.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Bedienungshilfen aktivieren</string>
-    <string name="dt2s_a11y_hint">Um Doppeltippen zum Display ausschalten zu verwenden, aktiviere die Bedienungshilfen. Tippe auf \"Einstellungen öffnen\", wähle \"Lawnchair\" aus und aktiviere \"Lawnchair verwenden\"\"\n\nLawnchair verwendet die Bedienungshilfe \'performGlobalAction\', um diese Aktion auszuführen. Dies ist eine sensible Berechtigung, die es ermöglicht, andere Apps zu überwachen. Lawnchair ist jedoch nicht für derartige Funktionen konfiguriert und liest keine Vorgänge aus.</string>
-    <string name="dt2s_recents_warning_open_settings">Einstellungen öffnen</string>
-    <string name="recents_a11y_hint">Um die letzten Apps anzuzeigen, aktiviere den Lawnchair Bedienungshilfen-Dienst für Lawnchair. Tippe auf „Einstellungen öffnen\", wähle „Lawnchair“ und aktiviere „Lawnchair verwenden“.\n\nLawnchair verwendet die „performGlobalAction“ Funktion des Bedienungshilfen-Dienstes um diese Aktion durchzuführen. Dies ist eine sensible Berechtigung, die die Überwachung anderer Apps erlaubt. Lawnchair ist jedoch nicht für diese Funktionalität konfiguriert und empfängt keine Ereignisse.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -464,10 +483,6 @@
     <string name="home_screen_unlock">Startbildschirm entsperren</string>
     <string name="home_screen_locked">Startbildschirm ist gesperrt</string>
     <string name="home_screen_lock_description">Verhindert Änderungen am Startbildschirm-Layout</string>
-    <string name="show_dot_pagination_label">Seitenübergangs-Punkte anzeigen</string>
-    <string name="show_dot_pagination_description">Verwende Punkte statt Linien, um Seitenzahl anzuzeigen</string>
-    <string name="show_material_u_popup_label">Neuen Popup-Stil verwenden</string>
-    <string name="show_material_u_popup_description">Benutze den hüpfenden und etwas kompakteren Popup-Stil von Material You</string>
     <string name="popup_menu">Pop-up-Menü</string>
     <string name="popup_menu_items">Pop-up-Menü-Einträge</string>
     <string name="edit_menu_items">Pop-up-Menü-Einträge bearbeiten</string>
@@ -646,32 +661,32 @@
     <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
     <string name="missing_notification_access_desc">Um Benachrichtigungspunkte anzuzeigen, aktiviere App-Benachrichtigungen für <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <string name="warn_contact_permission_title">Kontakte-Berechtigung erforderlich</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="warn_contact_permission_content">Um nach Kontakten zu suchen, erteile <xliff:g id="name" example="My App">%1$s</xliff:g> Berechtigungen für Kontakte und Telefon</string>
     <string name="permissions_music_audio">Musik- und Audio-Berechtigung erforderlich</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_music_audio_description">Um Musik und andere Audiodateien durchsuchen zu können, benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Berechtigung, auf Deine Medienbibliothek zuzugreifen.</string>
     <!-- Photos and videos -->
     <string name="permissions_photos_videos">Foto- und Videozugriff benötigt</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_photos_videos_description">Zum Durchsuchen Deiner Fotos und Videos benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Erlaubnis, auf Deine Medienbibliothek zuzugreifen.</string>
     <string name="permissions_photos_videos_full">Auf Deine vollständige Medienbibliothek zugreifen?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
+    <string name="permissions_photos_videos_full_description">Zum Durchsuchen aller Fotos und Videos benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Erlaubnis, auf Deine Medienbibliothek zuzugreifen.</string>
     <string name="permissions_photos_videos_grant_full">Vollständige Medienberechtigungen gewähren</string>
     <string name="permissions_photos_videos_manage_selected">Gewählte Elemente verwalten</string>
     <!-- External storage -->
     <string name="permissions_external_storage">Externe Speicher-Berechtigung erforderlich</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
+    <string name="permissions_external_storage_description">Um Deine Dateien durchsuchen zu können, benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Erlaubnis, auf den externen Speicher Deines Geräts zuzugreifen.</string>
     <string name="permissions_manage_storage">Speicherzugriff verwalten erforderlich</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
+    <string name="permissions_manage_storage_description">Um Deine Dateien in Suchergebnissen anzuzeigen, benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Erlaubnis, alle Dateien auf Deinem Gerät zu verwalten. Diese Berechtigung wird ausschließlich zur Anzeige von Dateien verwendet und nicht zum Lesen oder Ändern des Inhalts Deiner persönlichen Dateien.</string>
+    <string name="permission_desc_wallpaper_base">Um Vorschauen für Hintergrundbilder anzuzeigen und sie in Backups einzubinden, benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Berechtigung %2$s. Dies liegt an Systembeschränkungen für den Zugriff auf Hintergrunddaten.</string>
+    <string name="permission_desc_ending_read_all_files">um alle Dateien auf Deinem Gerät zu lesen</string>
+    <string name="permission_desc_ending_manage_all_files">um alle Dateien auf Deinem Gerät zu verwalten</string>
+    <string name="permission_desc_wallpaper_multiple">Mehrere Berechtigungen erforderlich</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Um Vorschauen für Hintergrundbilder anzuzeigen und sie in Backups einzubinden, benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> folgende Berechtigungen. Dies liegt an Systembeschränkungen für den Zugriff auf Hintergrunddaten.</string>
+    <string name="permission_label_manage_all_files">Alle Dateien auf dem Gerät verwalten</string>
+    <string name="permission_label_read_photos_videos">Fotos und Videos lesen</string>
     <string name="manage_storage_access_denied_title">Kann Berechtigung zur Speicherverwaltung nicht aktivieren</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="manage_storage_access_denied_description">Aufgrund der Play-Store-Richtlinien kann <xliff:g id="name" example="My App">%1$s</xliff:g> hier keinen vollständigen Speicherzugriff anfordern. Um auf alle Dateien zuzugreifen, lade <xliff:g id="name" example="My App">%1$s</xliff:g> von GitHub herunter. Alternativ kannst Du den Zugriff auf Fotos, Videos und Audiodateien in den Einstellungen einzeln erlauben.</string>
     <string name="open_permission_settings">Einstellungen öffnen</string>
     <string name="grant_requested_permissions">Berechtigungen erteilen</string>
     <string name="permissions_needed">Berechtigung benötigt</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="grant_requested_permissions_tap">Tippen um Berechtigungen zu erteilen</string>
 </resources>

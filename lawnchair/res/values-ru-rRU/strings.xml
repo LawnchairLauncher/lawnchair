@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Перезапустить Lawnchair</string>
     <string name="experimental_features_label">Эксперимент. функции</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Настройки шрифта</string>
     <string name="font_picker_description">Некоторый текст останется без изменений</string>
     <string name="smartspace_calendar_label">Настройки календаря виджета \"Самое главное\"</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Увеличить макс. допустимый размер сетки глав. экрана с 10х10 на 20x20</string>
     <string name="always_reload_icons_label">Всегда перезагружать иконки</string>
     <string name="always_reload_icons_description">Избегать использования кэшированных иконок из наборов иконок</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Свайп-жесты по иконкам</string>
     <string name="icon_swipe_gestures_description">Выполнять действия при смахивании влево или вправо по иконкам вместо прокрутки экрана</string>
     <string name="show_deck_layout">Стиль колоды</string>
     <string name="show_deck_layout_description">Показывать опцию для скрытия Меню приложений и автоматического добавления новых приложений на главный экран</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Блокировка/разблокировка</string>
     <string name="recents_lock_unlock_description">Запретить закрытие выбранного приложения при нажатии кнопки \"Очистить всё\"</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">Квадратный</string>
     <string name="icon_shape_squircle">Квадратный круг</string>
     <string name="icon_shape_teardrop">Капля</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">4-сторонняя печенька</string>
     <string name="icon_shape_seven_sided_cookie">7-сторонняя печенька</string>
     <string name="icon_shape_arch">Арка</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Григорианский</string>
     <string name="smartspace_calendar_persian">Персидский</string>
+    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Заряжается</string>
     <string name="smartspace_battery_full">Заряжено</string>
     <string name="smartspace_battery_low">Низкий заряд батареи</string>
@@ -408,6 +423,7 @@
     <string name="gesture_handler_sleep">Сон</string>
     <string name="gesture_handler_recents">Открыть Экран недавних приложений</string>
     <string name="gesture_handler_open_notifications">Открыть панель уведомлений</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Открыть приложение</string>
     <string name="gesture_handler_open_app_config">Открыть %1$s</string>
     <string name="gesture_handler_open_app_drawer">Открыть Меню приложений</string>
@@ -416,12 +432,15 @@
     <string name="gesture_handler_open_assistant">Открыть приложение-ассистент</string>
     <string name="pick_app_for_gesture">Выбрать приложение</string>
     <string name="dt2s_admin_hint_title">Необходимы права администратора</string>
-    <string name="dt2s_admin_hint">Чтобы использовать Спящий режим по двойному нажатию, назначьте Lawnchair администратором устройства. Для этого: откройте Настройки, затем нажмите на \"Активировать приложение администратора устройства.\"</string>
-    <string name="dt2s_admin_warning">Двойное нажатие для Спящего режима будет отключено.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Включить службу спец. возможностей</string>
-    <string name="dt2s_a11y_hint">Чтобы использовать двойное нажатие для Спящего режима, включите службу спец. возможностей Lawnchair. Нажмите «Открыть настройки», выберите «Lawnchair» и включите переключатель «Использовать Lawnchair». \n\nLawnchair использует метод спец. возможностей «performGlobalAction» для выполнения этого действия. Необходима осторожность, т.к. это разрешение позволяет отслеживать другие приложения. Тем не менее, Lawnchair не настроен на эту функциональность и не получает никаких событий.</string>
-    <string name="dt2s_recents_warning_open_settings">Открыть настройки</string>
-    <string name="recents_a11y_hint">Для открытия Экрана недавних приложений, включите службу спец. возможностей Lawnchair. Нажмите «Открыть настройки», выберите «Lawnchair» и включите переключатель «Использовать Lawnchair». \n\nLawnchair использует метод службы спец. возможностей «performGlobalAction» для выполнения этого действия. Необходима осторожность, т.к. это разрешение позволяет отслеживать другие приложения. Тем не менее, Lawnchair не настроен на эту функциональность и не получает никаких событий.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -464,10 +483,6 @@
     <string name="home_screen_unlock">Разблокировать глав. экран</string>
     <string name="home_screen_locked">Глав. экран заблокирован</string>
     <string name="home_screen_lock_description">Предотвращать изменения макета глав. экрана</string>
-    <string name="show_dot_pagination_label">Показывать точечную нумерацию страниц</string>
-    <string name="show_dot_pagination_description">Использовать точки вместо линий для индикации страниц</string>
-    <string name="show_material_u_popup_label">Использовать новый стиль всплывающего окна</string>
-    <string name="show_material_u_popup_description">Использовать стиль Material You для всплыв. окон</string>
     <string name="popup_menu">Всплывающее меню</string>
     <string name="popup_menu_items">Пункты всплывающего меню</string>
     <string name="edit_menu_items">Редактировать пункты всплыв. меню</string>
