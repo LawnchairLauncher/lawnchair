@@ -50,7 +50,7 @@ smartspacer = "1.1.2"
 uiautomator = "2.3.0"
 window = "1.5.0"
 
-agp = "8.13.0"
+agp = "8.13.1"
 baselineprofile = "1.4.1"
 kotlin = "2.2.21"
 protobuf = "0.9.5"
