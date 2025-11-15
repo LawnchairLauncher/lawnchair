@@ -152,12 +152,24 @@ class Flowerpot(private val context: Context, val name: String, private val load
 
         fun categorizeApps(appList: List<AppInfo?>?): Map<String, List<AppInfo>> {
             val categorizedApps = mutableMapOf<String, MutableList<AppInfo>>()
+            val categorizedAppKeys = mutableSetOf<String>()
+            val validAppList = appList?.filterNotNull() ?: emptyList()
+
             pots.values.forEach { pot ->
-                val potCategories = pot.categorizeApps(appList)
-                potCategories.forEach { (category, apps) ->
-                    categorizedApps.getOrPut(category) { mutableListOf() }.addAll(apps)
+                pot.categorizeApps(appList).forEach { (category, apps) ->
+                    apps.forEach { app ->
+                        app.toComponentKey().toString().takeIf { it !in categorizedAppKeys }?.let { key ->
+                            categorizedApps.getOrPut(category) { mutableListOf() }.add(app)
+                            categorizedAppKeys.add(key)
+                        }
+                    }
                 }
             }
+
+            validAppList.filter { it.toComponentKey().toString() !in categorizedAppKeys }
+                .takeIf { it.isNotEmpty() }
+                ?.let { categorizedApps["Other"] = it.toMutableList() }
+
             return categorizedApps.toSortedMap()
         }
 
