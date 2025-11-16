@@ -78,7 +78,7 @@ fun HomeScreenPreferences(
             val isDeckLayoutAdapter = prefs2.deckLayout.getAdapter()
             ExpandAndShrink(visible = !isDeckLayoutAdapter.state.value) {
                 SwitchPreference(
-                    checked = !lockHomeScreenAdapter.state.value && addIconToHomeAdapter.state.value,
+                    checked = (!lockHomeScreenAdapter.state.value && addIconToHomeAdapter.state.value) || isDeckLayoutAdapter.state.value,
                     onCheckedChange = addIconToHomeAdapter::onChange,
                     label = stringResource(id = R.string.auto_add_shortcuts_label),
                     description = if (lockHomeScreenAdapter.state.value) stringResource(id = R.string.home_screen_locked) else null,

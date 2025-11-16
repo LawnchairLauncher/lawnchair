@@ -421,7 +421,7 @@
     <string name="d2ts_recents_a11y_hint_title">Slå på tilgjengelighetsservice</string>
     <string name="dt2s_a11y_hint">For å bruke dobbelt-tapping for å sove, slå på tilgjengelighetstjenesten for Lawnchair. Trykk på \"Åpne innstillinger\", velg \"Lawnchair\" og slå på \"Bruk Lawnchair.\" \n\nLawnchair bruker tilgjengelighets \'performGlobalAction\'-metode for å utføre denne handlingen. Dette er en sensitiv tillatelse som gjør det mulig å overvåke andre apper. Lawnchair er imidlertid ikke konfigurert for denne funksjonaliteten og mottar ingen hendelser.</string>
     <string name="dt2s_recents_warning_open_settings">Åpne instillinger</string>
-    <string name="recents_a11y_hint"></string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting

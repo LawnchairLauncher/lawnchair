@@ -19,15 +19,19 @@ package app.lawnchair.flowerpot
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import app.lawnchair.flowerpot.rules.CodeRules
 import app.lawnchair.flowerpot.rules.Rules
 import com.android.launcher3.model.data.AppInfo
 
 class FlowerpotApps(private val context: Context, private val pot: Flowerpot) {
     private val intentMatches = mutableSetOf<String>()
+    private val codeRules = mutableListOf<CodeRules>()
     val categorizedApps = mutableMapOf<String, MutableList<AppInfo>>()
 
     init {
         populateIntentMatches()
+        populateCodeRules()
     }
 
     fun updateAppList(appList: List<AppInfo?>?) {
@@ -41,7 +45,7 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) {
             .toMap()
 
         val validPackages = appInfoMap.keys.filter { packageName ->
-            packageName in intentMatches || pot.rules.contains(Rules.Package(packageName))
+            matchesRules(packageName, appInfoMap[packageName]!!)
         }
 
         validPackages.forEach { packageName ->
@@ -49,6 +53,11 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) {
                 .add(appInfoMap[packageName]!!)
         }
     }
+
+    private fun matchesRules(packageName: String, appInfo: AppInfo): Boolean = packageName in intentMatches || pot.rules.contains(Rules.Package(packageName)) ||
+        codeRules.isNotEmpty() && runCatching {
+            codeRules.any { it.matches(context.packageManager.getApplicationInfo(packageName, 0)) }
+        }.getOrDefault(false)
 
     private fun populateIntentMatches() {
         intentMatches.clear()
@@ -63,5 +72,12 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) {
             context.packageManager.queryIntentActivities(intent, 0)
                 .mapNotNullTo(intentMatches) { it.activityInfo?.packageName }
         }
+    }
+
+    private fun populateCodeRules() {
+        codeRules.clear()
+        pot.rules.filterIsInstance<Rules.CodeRule>()
+            .mapNotNull { runCatching { CodeRules.get(it.rule, *it.args) }.getOrNull() }
+            .forEach { codeRules.add(it) }
     }
 }
