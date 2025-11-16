@@ -147,10 +147,6 @@
     <string name="debug_restart_launcher">Muat ulang Lawnchair</string>
     <string name="experimental_features_label">Masa datang eksperimental</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Perubahan huruf</string>
     <string name="font_picker_description">Beberapa teks tetap tidak berubah</string>
     <string name="smartspace_calendar_label">Perubahan kalender Sekilas</string>
@@ -159,16 +155,10 @@
     <string name="workspace_increase_max_grid_size_description">Tingkatkan batas ukuran kisi yang diperbolehkan dari 10x10 ke 20x20</string>
     <string name="always_reload_icons_label">Selalu muat ulang lambang</string>
     <string name="always_reload_icons_description">Hindari menggunakan ikon yang telah di tembolok dari paket lambang</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Gerakan menggeser ikon</string>
     <string name="icon_swipe_gestures_description">Lakukan tindakan saat menggeser ke kiri atau kanan pada ikon alih-alih memindahkan layar beranda</string>
     <string name="show_deck_layout">Tata letak dek</string>
     <string name="show_deck_layout_description">Tampilkan opsi tata letak untuk menyembunyikan laci aplikasi dan secara otomatis menambahkan aplikasi baru ke layar beranda</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Kunci/buka kunci</string>
     <string name="recents_lock_unlock_description">Cegah aplikasi terpilih untuk ditutup saat menekan \"Bersihkan semua\"</string>
     <!--Overlay-->
@@ -232,9 +222,7 @@
     <string name="icon_shape_square">Persegi</string>
     <string name="icon_shape_squircle">Squircle</string>
     <string name="icon_shape_teardrop">Tetesan air</string>
-    <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -327,11 +315,8 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregorian</string>
     <string name="smartspace_calendar_persian">Persia</string>
-    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Mengisi daya</string>
     <string name="smartspace_battery_full">Daya terisi penuh</string>
     <string name="smartspace_battery_low">Baterai lemah</string>
@@ -423,7 +408,6 @@
     <string name="gesture_handler_sleep">Tidur</string>
     <string name="gesture_handler_recents">Buka layar terbaru</string>
     <string name="gesture_handler_open_notifications">Buka panel notifikasi</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Buka apli</string>
     <string name="gesture_handler_open_app_config">Buka %1$s</string>
     <string name="gesture_handler_open_app_drawer">Buka laci apli</string>
@@ -432,15 +416,12 @@
     <string name="gesture_handler_open_assistant">Buka asisten</string>
     <string name="pick_app_for_gesture">Pilih apli</string>
     <string name="dt2s_admin_hint_title">Izin admin diperlukan</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai apli admin perangkat. Ketuk \"Buka pengaturan\", lalu ketuk \"Aktifkan apli admin perangkat ini.\"</string>
+    <string name="dt2s_admin_warning">Tap Dua Kali untuk Tidur akan dimatikan.</string>
     <string name="d2ts_recents_a11y_hint_title">Aktifkan layanan aksesibilitas</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk-Ganda untuk Tidur, aktifkan layanan aksesibilitas Lawnchair. Ketuk \"Buka pengaturan\", pilih \"Lawnchair\" dan aktifkan \"Gunakan Lawnchair\".\n\nLawnchair menggunakan metode performGlobalAction dari Aksesibilitas untuk melakukan tindakan ini. Ini adalah izin sensitif yang memungkinkan pemantauan aplikasi lain. Namun, Lawnchair tidak dikonfigurasi untuk fungsi tersebut dan tidak menerima acara apa pun.</string>
+    <string name="dt2s_recents_warning_open_settings">Buka pengaturan</string>
+    <string name="recents_a11y_hint">Untuk menggunakan Buka layar terbaru, aktifkan layanan aksesibilitas Lawnchair. Ketuk \"Buka pengaturan\", pilih \"Lawnchair\" dan aktifkan \"Gunakan Lawnchair\".\n\nLawnchair menggunakan metode `performGlobalAction` dari Aksesibilitas untuk melakukan tindakan ini. Ini adalah izin sensitif yang memungkinkan pemantauan aplikasi lain. Namun, Lawnchair tidak dikonfigurasi untuk fungsi tersebut dan tidak menerima kejadian apa pun.</string>
     <!--
 
     Bug reporting
@@ -483,6 +464,10 @@
     <string name="home_screen_unlock">Buka kunci layar beranda</string>
     <string name="home_screen_locked">Layar beranda dikunci</string>
     <string name="home_screen_lock_description">Mencegah perubahan pada tata letak layar utama</string>
+    <string name="show_dot_pagination_label">Tampilkan penomoran titik</string>
+    <string name="show_dot_pagination_description">Gunakan titik, bukan garis, untuk menunjukkan nomor halaman</string>
+    <string name="show_material_u_popup_label">Gunakan gaya pop-up baru</string>
+    <string name="show_material_u_popup_description">Gunakan gaya pop-up Material You yang bulat dan sedikit terkonsolidasi</string>
     <string name="popup_menu">Gaya pop-up</string>
     <string name="popup_menu_items">Item di menu pop-up</string>
     <string name="edit_menu_items">Sunting item di menu pop-up</string>

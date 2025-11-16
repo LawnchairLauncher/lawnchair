@@ -147,36 +147,26 @@
     <string name="debug_restart_launcher">লনচেয়ার পুনরায় চালু করুন</string>
     <string name="experimental_features_label">পরীক্ষামূলক ফিচার</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">ফন্ট কাস্টমাইজেশন</string>
     <string name="font_picker_description">কিছু লেখা অপরিবর্তিত রয়ে গেছে</string>
-    <string name="smartspace_calendar_label">At a Glance calendar customization</string>
+    <string name="smartspace_calendar_label">এক নজরে ক্যালেন্ডার কাস্টমাইজেশন</string>
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems</string>
     <string name="workspace_increase_max_grid_size_label">Increase maximum grid size limit</string>
     <string name="workspace_increase_max_grid_size_description">Increase maximum allowed home screen grid size from 10 x 10 to 20 x 20</string>
     <string name="always_reload_icons_label">Always reload icons</string>
     <string name="always_reload_icons_description">ক্যাসে থেকে আইকন ব্যাবহার করা থেকে এড়ান</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Icon swipe gestures</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Lock/unlock</string>
-    <string name="recents_lock_unlock_description">Prevent selected app from closing when pressing \"Clear all\"</string>
+    <string name="recents_lock_unlock_description"></string>
     <!--Overlay-->
     <string name="overlay_fade_in">Fade In</string>
     <string name="overlay_suck_in">Suck In</string>
     <string name="app_closing_animation">App closing animation</string>
     <string name="overlay_label">Overlay</string>
-    <string name="overlay_none">None</string>
+    <string name="overlay_none">কোনটা না</string>
     <!--
 
     Notifications
@@ -196,8 +186,8 @@
     -->
     <!-- General strings -->
     <string name="icon_style_label">Icon style</string>
-    <string name="icon_shape_label">Icon shape</string>
-    <string name="icon_sizes">Icon size</string>
+    <string name="icon_shape_label">আইকনের আকৃতি</string>
+    <string name="icon_sizes">আইকনের আকার</string>
     <string name="show_labels">Show labels</string>
     <string name="label_size">Label size</string>
     <string name="twoline_label">Use multiple lines</string>
@@ -206,7 +196,7 @@
     <string name="transparent_background_icons_description">স্বচ্ছ আইকন ব্যাবহার করুন থিম-যুক্ত আইকন গুলিতে</string>
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
-    <string name="shadow_bg_icons_label">Show shadow behind icons</string>
+    <string name="shadow_bg_icons_label">আইকনের পিছনে ছায়া দেখাও</string>
     <string name="background_lightness_label">Background lightness</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white</string>
     <string name="reset_custom_icons">Reset custom icons</string>
@@ -232,9 +222,7 @@
     <string name="icon_shape_square">বর্গ</string>
     <string name="icon_shape_squircle">কাঠবিড়ালি</string>
     <string name="icon_shape_teardrop">জলফোঁটা</string>
-    <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -246,9 +234,9 @@
     <string name="custom_icon_shape_corner_round">গোল</string>
     <string name="custom_icon_shape_corner_squircle">মসৃণ</string>
     <string name="custom_icon_shape_corner_cut">কাট</string>
-    <string name="custom_icon_shape_top_left">Top left</string>
-    <string name="custom_icon_shape_top_right">Top right</string>
-    <string name="custom_icon_shape_bottom_left">Bottom left</string>
+    <string name="custom_icon_shape_top_left">উপরের বামে</string>
+    <string name="custom_icon_shape_top_right">উপরের ডানে</string>
+    <string name="custom_icon_shape_bottom_left">নিচের বামে</string>
     <string name="custom_icon_shape_bottom_right">Bottom right</string>
     <string name="export_to_clipboard">Export to clipboard</string>
     <string name="import_from_clipboard">Import from clipboard</string>
@@ -266,7 +254,7 @@
     <!-- Fonts -->
     <string name="pref_fonts_add_fonts">Add fonts</string>
     <string name="pref_fonts_add_fonts_summary">OTF and TTF fonts are supported</string>
-    <string name="pref_fonts_missing_font">Font not found</string>
+    <string name="pref_fonts_missing_font">ফন্ট পাওয়া যায়নি</string>
     <string name="font_label">Font (experimental)</string>
     <string name="fontWorkspace">সাধারণ</string>
     <string name="fontHeading">Headings</string>
@@ -300,7 +288,7 @@
     <string name="color_style_tonal_spot">Tonal Spot</string>
     <string name="color_style_vibrant">Vibrant</string>
     <string name="color_style_expressive">Expressive</string>
-    <string name="color_style_rainbow">Rainbow</string>
+    <string name="color_style_rainbow">রংধনু</string>
     <string name="color_style_fruit_salad">Fruit Salad</string>
     <string name="color_style_content">Content</string>
     <string name="color_style_monochromatic">Monochromatic</string>
@@ -327,29 +315,26 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">গ্রেগরিয়ান</string>
     <string name="smartspace_calendar_persian">পার্সিয়ান</string>
-    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s,%2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">চার্জ হচ্ছে</string>
     <string name="smartspace_battery_full">চার্জ হয়ে গেছে</string>
     <string name="smartspace_battery_low">Battery low</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — সম্পূর্ণ হবে %2$s"</string>
     <string name="smartspace_widget">আট এ গ্লন্স</string>
-    <string name="smartspace_widget_description">What to show</string>
+    <string name="smartspace_widget_description">কী দেখানো হবে</string>
     <!-- Data and time format settings -->
     <string name="smartspace_calendar">ক্যালেন্ডার</string>
-    <string name="smartspace_date_and_time">Date and time</string>
+    <string name="smartspace_date_and_time">তারিখ ও সময়</string>
     <string name="smartspace_date">তারিখ</string>
     <string name="smartspace_time">সময়</string>
-    <string name="smartspace_time_format">Time format</string>
+    <string name="smartspace_time_format">সময়ের বিন্যাস</string>
     <string name="smartspace_time_follow_system">Follow system</string>
-    <string name="smartspace_time_12_hour_format">12-hour format</string>
-    <string name="smartspace_time_24_hour_format">24-hour format</string>
+    <string name="smartspace_time_12_hour_format">১২ ঘণ্টার বিন্যাস</string>
+    <string name="smartspace_time_24_hour_format">২৪ ঘণ্টার বিন্যাস</string>
     <!-- Available targets -->
     <string name="smartspace_weather">আবহাওয়া</string>
-    <string name="smartspace_battery_status">Battery status</string>
+    <string name="smartspace_battery_status">ব্যাটারির অবস্থা</string>
     <string name="smartspace_now_playing">এখন চলছে</string>
     <!-- Smartspacer strings -->
     <string name="maximum_number_of_targets">Maximum number of targets</string>
@@ -362,9 +347,9 @@
     <string name="smartspace_widget_toggle_label">Show on home screen</string>
     <string name="smartspace_widget_toggle_description">At a Glance can be manually added to the home screen by placing the Lawnchair widget</string>
     <!-- List of available providers -->
-    <string name="smartspace_mode_label">At a Glance provider</string>
-    <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Google Search</string>
+    <string name="smartspace_mode_label">এক নজর প্রদানকারী</string>
+    <string name="smartspace_mode_google">গুগল</string>
+    <string name="smartspace_mode_google_search">গুগল সার্চ</string>
     <!-- Miscellaneous Smartspace strings -->
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="accessibility_smartspace_page">পেজ %1$d মোট পেজ %2$d</string>
@@ -376,17 +361,17 @@
     -->
     <string name="support">সমর্থন</string>
     <string name="translate">অনুবাদ করুন</string>
-    <string name="donate">Donate</string>
+    <string name="donate">দান</string>
     <string name="product">পণ্য</string>
     <string name="design_and_development">Design and development</string>
     <string name="development">বিকাশ</string>
     <string name="quickswitch_maintenance">QuickSwitch maintenance</string>
     <string name="devops">দেভ-ওপস</string>
     <string name="support_and_pr">Support and PR</string>
-    <string name="community">Community</string>
-    <string name="telegram">Telegram</string>
+    <string name="community">সম্প্রদায়</string>
+    <string name="telegram">টেলিগ্রাম</string>
     <string name="news">খবর</string>
-    <string name="legal">Legal</string>
+    <string name="legal">আইন</string>
     <string name="acknowledgements">স্বীকৃতি</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
@@ -396,7 +381,7 @@
     Backup and restore
 
     -->
-    <string name="create_backup">Create backup</string>
+    <string name="create_backup">ব্যাকআপ তৈরি</string>
     <string name="what_to_backup">What to back up</string>
     <string name="backup_content_layout_and_settings">Layout and settings</string>
     <string name="backup_content_wallpaper">ওয়ালপেপার</string>
@@ -412,35 +397,31 @@
     Gesture settings
 
     -->
-    <string name="gesture_double_tap">Double tap</string>
-    <string name="gesture_swipe_up">Swipe up</string>
-    <string name="gesture_swipe_down">Swipe down</string>
-    <string name="gesture_home_tap">Home button</string>
-    <string name="gesture_back_tap">Back button</string>
-    <string name="gesture_swipe_left">Swipe left</string>
-    <string name="gesture_swipe_right">Swipe right</string>
-    <string name="gesture_handler_no_op">Do nothing</string>
+    <string name="gesture_double_tap">ডাবল ট্যাপ</string>
+    <string name="gesture_swipe_up">উপরের দিকে সোয়াইপ</string>
+    <string name="gesture_swipe_down"> নিচের দিকে সোয়াইপ</string>
+    <string name="gesture_home_tap">হোম বোতাম</string>
+    <string name="gesture_back_tap">ব্যাক বোতাম</string>
+    <string name="gesture_swipe_left">বন দিকে সোয়াইপ</string>
+    <string name="gesture_swipe_right">দান দিকে সোয়াইপ</string>
+    <string name="gesture_handler_no_op">কিছু করো না</string>
     <string name="gesture_handler_sleep">বন্ধ</string>
     <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Open notification panel</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
-    <string name="gesture_handler_open_app_option">Open app</string>
+    <string name="gesture_handler_open_app_option">অ্যাপ খুলুন</string>
     <string name="gesture_handler_open_app_config">খুলুন %1$s</string>
     <string name="gesture_handler_open_app_drawer">Open app drawer</string>
     <string name="gesture_handler_open_app_search">Open app search</string>
-    <string name="gesture_handler_open_search">Open search</string>
+    <string name="gesture_handler_open_search">সার্চ খুলুন</string>
     <string name="gesture_handler_open_assistant">Open assistant</string>
-    <string name="pick_app_for_gesture">Pick app</string>
+    <string name="pick_app_for_gesture">অ্যাপ বেছে নিন</string>
     <string name="dt2s_admin_hint_title">Admin permissions required</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">ডাবল-ট্যাপে লক হওয়া বন্ধ হয়ে যাবে.</string>
     <string name="d2ts_recents_a11y_hint_title">Turn on accessibility service</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_recents_warning_open_settings">Open settings</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -477,12 +458,16 @@
     <string name="wallpaper_scrolling_label">Scroll wallpaper</string>
     <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
-    <string name="show_sys_ui_scrim">Top shadow</string>
+    <string name="show_sys_ui_scrim">উপরের ছায়া </string>
     <string name="home_screen_grid">Home screen grid</string>
     <string name="home_screen_lock">Lock home screen</string>
     <string name="home_screen_unlock">Unlock home screen</string>
     <string name="home_screen_locked">Home screen is locked</string>
     <string name="home_screen_lock_description">Prevent changes to the home screen layout</string>
+    <string name="show_dot_pagination_label">Show dot pagination</string>
+    <string name="show_dot_pagination_description">Use dots instead of lines to show page number</string>
+    <string name="show_material_u_popup_label">Use new pop-up style</string>
+    <string name="show_material_u_popup_description">Use Material You\'s bouncy and slightly consolidated pop-up style</string>
     <string name="popup_menu">Pop-up menu</string>
     <string name="popup_menu_items">Pop-up menu items</string>
     <string name="edit_menu_items">Edit pop-up menu items</string>
@@ -492,7 +477,7 @@
     <string name="dark_status_bar_label">Dark status bar</string>
     <string name="status_bar_clock_label">Status bar clock</string>
     <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
-    <string name="home_screen_text_color">Text color</string>
+    <string name="home_screen_text_color">লেখার রং</string>
     <string name="color_light">হালকা</string>
     <string name="color_dark">গাঢ়</string>
     <string name="force_rounded_widgets">Rounded corners</string>
@@ -514,10 +499,10 @@
     <string name="qsb_hotseat_stroke_color">Outline color</string>
     <string name="corner_radius_label">কোণের ব্যাসার্ধ</string>
     <string name="apply_accent_color_label">Apply accent color</string>
-    <string name="search_provider">Search provider</string>
-    <string name="hotseat_background">Show background</string>
-    <string name="hotseat_bg_horizontal_inset_left">Left margin</string>
-    <string name="hotseat_bg_horizontal_inset_right">Right margin</string>
+    <string name="search_provider">সার্চ প্রদানকারী</string>
+    <string name="hotseat_background">ব্যাকগ্রাউন্ড দেখাও </string>
+    <string name="hotseat_bg_horizontal_inset_left">বাম মার্জিন</string>
+    <string name="hotseat_bg_horizontal_inset_right">ডান মার্জিন</string>
     <string name="hotseat_bg_vertical_inset_top">Top margin</string>
     <string name="hotseat_bg_vertical_inset_bottom">Bottom margin</string>
     <string name="hotseat_bg_color_label">Background color</string>
@@ -536,20 +521,20 @@
     <string name="search_provider_app_search">App search</string>
     <string name="search_provider_custom">পছন্দসই</string>
     <string name="search_provider_sponsored_description">%1$s and Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
-    <string name="app_label">App</string>
-    <string name="website_label">Website</string>
-    <string name="qsb_search_provider_app_required">App required</string>
+    <string name="app_label">অ্যাপ</string>
+    <string name="website_label">ওয়েবসাইট</string>
+    <string name="qsb_search_provider_app_required">অ্যাপ দরকার </string>
     <!-- Dock search bar a11y -->
     <string name="label_search">অনুসন্ধান করুন</string>
     <string name="label_lens">গুগল লেন্স</string>
     <string name="label_voice_search">কণ্ঠের সন্ধান</string>
     <!-- App drawer settings -->
-    <string name="hidden_apps_label">Hidden apps</string>
+    <string name="hidden_apps_label">লুকানো অ্যাপ</string>
     <string name="pref_all_apps_bulk_icon_loading_title">Load apps in bulk</string>
     <string name="pref_all_apps_bulk_icon_loading_description">Load and display icons in bulk instead of individually</string>
     <string name="pref_all_apps_remember_position_title">Remember position</string>
     <string name="pref_all_apps_remember_position_description">Remember app drawer position after leaving drawer</string>
-    <string name="pref_all_apps_show_scrollbar_title">Show scrollbar</string>
+    <string name="pref_all_apps_show_scrollbar_title">স্ক্রোলবার দেখাও</string>
     <string name="app_drawer_columns">App drawer columns</string>
     <string name="row_height_label">Row height</string>
     <string name="app_drawer_indent_label">Horizontal padding</string>

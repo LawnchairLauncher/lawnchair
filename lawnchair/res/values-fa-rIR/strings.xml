@@ -147,10 +147,6 @@
     <string name="debug_restart_launcher">راه‌اندازی مجدد Lawnchair</string>
     <string name="experimental_features_label">قابلیت‌های آزمایشی</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">شخصی‌سازی قلم</string>
     <string name="font_picker_description">بعضی متون بدون تغییر می‌مانند</string>
     <string name="smartspace_calendar_label">شخصی‌سازی تقویمِ در یک نگاه</string>
@@ -159,16 +155,10 @@
     <string name="workspace_increase_max_grid_size_description">افزایش حداکثر اندازه جدول صفحه اصلی از ۱۰ در ۱۰ به ۲۰ در ۲۰</string>
     <string name="always_reload_icons_label">همیشه بارگذاری دوباره آیکون‌ها</string>
     <string name="always_reload_icons_description">خودداری از استفاده از آیکون‌های ذخیره شده در آیکون پک‌ها</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">حرکات کشیدن آیکون</string>
     <string name="icon_swipe_gestures_description">انجام اقدامات هنگام کشیدن انگشت به چپ یا راست روی آیکون‌ها به جای حرکت دادن صفحه اصلی</string>
     <string name="show_deck_layout">چیدمان عرشه</string>
     <string name="show_deck_layout_description">نمایش گزینه طرح‌بندی برای مخفی کردن کشوی برنامه‌ها و افزودن خودکار برنامه‌های جدید به صفحه اصلی</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">قفل/بازکردن</string>
     <string name="recents_lock_unlock_description">جلوگیری از بسته شدن برنامه انتخابی با فشار دادن «پاک کردن همه»</string>
     <!--Overlay-->
@@ -232,9 +222,7 @@
     <string name="icon_shape_square">مربع</string>
     <string name="icon_shape_squircle">مربع دایره‌ای</string>
     <string name="icon_shape_teardrop">اشک</string>
-    <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">کوکی چهار طرفه</string>
     <string name="icon_shape_seven_sided_cookie">کوکی هفت ضلعی</string>
     <string name="icon_shape_arch">قوس</string>
@@ -327,11 +315,8 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">میلادی</string>
     <string name="smartspace_calendar_persian">شمسی</string>
-    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s، %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">درحال شارژ</string>
     <string name="smartspace_battery_full">شارژ شده</string>
     <string name="smartspace_battery_low">باتری کم است</string>
@@ -423,7 +408,6 @@
     <string name="gesture_handler_sleep">خاموش کردن صفحه نمایش</string>
     <string name="gesture_handler_recents">باز کردن صفحه موارد اخیر</string>
     <string name="gesture_handler_open_notifications">بازکردن صفحه اعلان</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">بازکردن برنامه</string>
     <string name="gesture_handler_open_app_config">بازکردن %1$s</string>
     <string name="gesture_handler_open_app_drawer">بازکردن کشوی برنامه‌</string>
@@ -432,15 +416,12 @@
     <string name="gesture_handler_open_assistant">بازکردن دستیار</string>
     <string name="pick_app_for_gesture">انتخاب برنامه</string>
     <string name="dt2s_admin_hint_title">دسترسی ادمین نیاز است</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">برای استفاده از قابلیت خواب با دو ضربه، Lawnchair را به عنوان یک برنامه‌ی مدیرِ دستگاه بگذارید. بر روی باز کردن تنظیمات ضربه بزنید، سپس بر روی «فعال سازی این برنامه مدیر دستگاه» ضربه بزنید.</string>
+    <string name="dt2s_admin_warning">دو ضربه سریع برای خواب خاموش خواهد شد.</string>
     <string name="d2ts_recents_a11y_hint_title">فعال‌سازی سرویس دسترس‌پذیری</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">برای استفاده از قابلیت خواب با دو ضربه، سرویس دسترسی به Lawnchair را روشن کنید. روی «بازکردن تنظیمات» ضربه بزنید، «Lawnchair» را انتخاب کنید و «استفاده از Lawnchair» را روشن کنید.\n\nLawnchair از روش «انجام عملکرد جهانی» برای انجام این عمل استفاده می‌کند. این یک مجوز حساس است که امکان نظارت بر برنامه های دیگر را فراهم می کند. با این حال، Lawnchair برای آن پیکربندی نشده است و هیچ رویدادی دریافت نمی‌کند.</string>
+    <string name="dt2s_recents_warning_open_settings">بازکردن تنظیمات</string>
+    <string name="recents_a11y_hint">برای استفاده از صفحه باز کردن برنامه‌های اخیر، سرویس دسترسی Lawnchair را روشن کنید. روی «باز کردن تنظیمات» ضربه بزنید، «Lawnchair» را انتخاب کنید و «استفاده از Lawnchair» را روشن کنید.\n\nLawnchair از متد «انجام عمل جهانی» در قابلیت دسترسی برای انجام این عمل استفاده می‌کند. این یک مجوز حساس است که امکان نظارت بر سایر برنامه‌ها را فراهم می‌کند. با این حال، Lawnchair برای این عملکرد پیکربندی نشده است و هیچ رویدادی دریافت نمی‌کند.</string>
     <!--
 
     Bug reporting
@@ -483,6 +464,10 @@
     <string name="home_screen_unlock">بازکردن قفل صفحه اصلی</string>
     <string name="home_screen_locked">صفحه اصلی قفل شده</string>
     <string name="home_screen_lock_description">جلوگیری از تغییرات در چیدمان صفحه اصلی</string>
+    <string name="show_dot_pagination_label">نمایش صفحه بندی نقطه</string>
+    <string name="show_dot_pagination_description">برای نمایش شماره صفحه به جای خطوط از نقطه استفاده کنید</string>
+    <string name="show_material_u_popup_label">استفاده از سبک بازشو جدید</string>
+    <string name="show_material_u_popup_description">از سبک بازشو جهنده و کمی ادغام شده Material You استفاده کنید</string>
     <string name="popup_menu">فهرست بازشو</string>
     <string name="popup_menu_items">موارد فهرست بازشو</string>
     <string name="edit_menu_items">ویرایش موارد فهرست بازشو</string>

@@ -147,10 +147,6 @@
     <string name="debug_restart_launcher">Lawnchair\'i Yeniden Başlat</string>
     <string name="experimental_features_label">Deneyimsel özellikler</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Yazı tipi özelleştirmesi</string>
     <string name="font_picker_description">Bazı metinler değişmeden kalır</string>
     <string name="smartspace_calendar_label">Bir Bakışta takvim özelleştirme</string>
@@ -159,16 +155,10 @@
     <string name="workspace_increase_max_grid_size_description">İzin verilen maksimum na ekran ızgara boyutunu 10 x 10\'dan 20 x 20\'ye artırın</string>
     <string name="always_reload_icons_label">Simgeleri her zaman yeniden yükle</string>
     <string name="always_reload_icons_description">Ön belleklenmiş simgeleri kullanmaktan kaçın</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Simge kaydırma hareketleri</string>
     <string name="icon_swipe_gestures_description">Ana ekranda kaydırmak yerine simgeleri sola ya da sağa kaydırarak işlemler yap</string>
     <string name="show_deck_layout">Deck düzeni</string>
     <string name="show_deck_layout_description">Uygulama çekmecesini gizle ve yeni uygulamaları ana ekrana ekle seçeneğini göster</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Kilitle/kilidi aç</string>
     <string name="recents_lock_unlock_description">\"Tümünü Temizle\"ye basıldığında seçilen uygulamanın kapanmasını engelle</string>
     <!--Overlay-->
@@ -232,9 +222,7 @@
     <string name="icon_shape_square">Kare</string>
     <string name="icon_shape_squircle">Yuvarlatılmış Kare</string>
     <string name="icon_shape_teardrop">Damla</string>
-    <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">Dörtgen kurabiye</string>
     <string name="icon_shape_seven_sided_cookie">Yedigen kurabiye</string>
     <string name="icon_shape_arch">Kavis</string>
@@ -327,11 +315,8 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoryen</string>
     <string name="smartspace_calendar_persian">Farsça</string>
-    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Şarj ediliyor</string>
     <string name="smartspace_battery_full">Şarj oldu</string>
     <string name="smartspace_battery_low">Pil zayıf</string>
@@ -423,7 +408,6 @@
     <string name="gesture_handler_sleep">Uyku</string>
     <string name="gesture_handler_recents">Son uygulamaları aç</string>
     <string name="gesture_handler_open_notifications">Bildirim panelini aç</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Uygulamayı aç</string>
     <string name="gesture_handler_open_app_config">Aç %1$s</string>
     <string name="gesture_handler_open_app_drawer">Uygulama çekmecesini aç</string>
@@ -432,15 +416,12 @@
     <string name="gesture_handler_open_assistant">Asistanı aç</string>
     <string name="pick_app_for_gesture">Uygulama seç</string>
     <string name="dt2s_admin_hint_title">Yönetici izinleri gerekli</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">Ekranı Kapatmak İçin Çift Dokunun\'u kullanmak için Lawnchair\'i bir cihaz yöneticisi uygulaması olarak ayarlayın. Ayarları Aç\'a tıklayın, ardından \"Bu cihaz yöneticisi uygulamasını aktif et\" seçeneğine tıklayın</string>
+    <string name="dt2s_admin_warning">Ekranı Kapatmak İçin Çift Dokunun kapatılacaktır.</string>
     <string name="d2ts_recents_a11y_hint_title">Erişilebilirlik hizmetini açın</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">Çift Dokunarak Uyutma özelliğini kullanmak için Lawnchair erişilebilirlik servisini açın. \"Ayarları aç\" seçeneğine dokunun, \"Lawnchair\"i seçin ve \"Etkinleştir\" seçeneğini aktif edin.\n\nLawnchair, bu işlemi gerçekleştirmek için Erişilebilirlik’in performGlobalAction yöntemini kullanır. Bu, diğer uygulamaları izlemeye olanak tanıyan hassas bir izindir. Ancak, Lawnchair bu işlevsellik için yapılandırılmamıştır ve herhangi bir etkinlik almaz.</string>
+    <string name="dt2s_recents_warning_open_settings">Ayarları aç</string>
+    <string name="recents_a11y_hint">Son Kullanılanlar özelliğini kullanmak için Lawnchair erişilebilirlik hizmetini açın. \"Ayarları aç\"a dokunun, \"Lawnchair\"i seçin ve etkinleştirin.\n\nLawnchair, bu işlemi gerçekleştirmek için Accessibility\'nin performGlobalAction yöntemini kullanır. Bu, diğer uygulamaları izlemeye olanak tanıyan hassas bir izindir. Ancak Lawnchair, bu işlev için yapılandırılmamıştır ve herhangi bir olay almaz.</string>
     <!--
 
     Bug reporting
@@ -483,6 +464,10 @@
     <string name="home_screen_unlock">Ana ekranın kilidini aç</string>
     <string name="home_screen_locked">Ana ekran kilitli</string>
     <string name="home_screen_lock_description">Ana Ekran düzeninde değişiklik yapılmasının önle</string>
+    <string name="show_dot_pagination_label">Nokta sayfalandırmasını göster</string>
+    <string name="show_dot_pagination_description">Sayfa numarasının gösterirken çizgi yerine nokta kullanın</string>
+    <string name="show_material_u_popup_label">Yeni açılır pencere stilini kullan</string>
+    <string name="show_material_u_popup_description">Material You\'nun hareketli ve biraz birleştirilmiş pop-up stilini kullanın</string>
     <string name="popup_menu">Açılır menü</string>
     <string name="popup_menu_items">Açılır menü öğeleri</string>
     <string name="edit_menu_items">Açılır menü öğelerini düzenle</string>
