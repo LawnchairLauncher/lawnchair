@@ -85,6 +85,7 @@ body:
         Add any other context about the problem here.
         
         If this is a crash report, paste or link the crash message here.
-      placeholder: Crash log: https://katb.in/examplelink
+      placeholder: |
+        Crash log: https://katb.in/examplelink
     validations:
       required: false
