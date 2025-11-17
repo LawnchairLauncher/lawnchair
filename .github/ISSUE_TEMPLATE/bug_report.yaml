@@ -81,7 +81,10 @@ body:
     id: additional-context
     attributes:
       label: Additional context
-      description: Add any other context about the problem here.
-      placeholder: If this is a crash report, paste or link the crash message here.
+      description: |
+        Add any other context about the problem here.
+        
+        If this is a crash report, paste or link the crash message here.
+      placeholder: Crash log: https://katb.in/examplelink
     validations:
       required: false
