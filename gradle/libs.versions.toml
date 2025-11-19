@@ -56,7 +56,7 @@ kotlin = "2.2.21"
 protobuf = "0.9.5"
 licensee = "1.14.1"
 refine = "4.4.0"
-spotless = "8.0.0"
+spotless = "8.1.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
