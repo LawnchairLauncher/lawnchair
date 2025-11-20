@@ -63,6 +63,7 @@ import java.util.function.Consumer;
 import app.lawnchair.compat.LawnchairQuickstepCompat;
 import app.lawnchair.compatlib.RecentsAnimationRunnerCompat;
 import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
+import app.lawnchair.compatlib.ten.ActivityManagerCompatVQ;
 
 public class ActivityManagerWrapper {
 
@@ -78,6 +79,7 @@ public class ActivityManagerWrapper {
     private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
     private final ActivityTaskManager mAtm = ActivityTaskManager.getInstance();
+    private final ActivityManagerCompatVQ mActivityManagerCompat = new ActivityManagerCompatVQ();
     private ActivityManagerWrapper() { }
 
     public static ActivityManagerWrapper getInstance() {
@@ -118,12 +120,16 @@ public class ActivityManagerWrapper {
      */
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
         // Note: The set of running tasks from the system is ordered by recency
-        List<ActivityManager.RunningTaskInfo> tasks =
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            List<ActivityManager.RunningTaskInfo> tasks =
                 mAtm.getTasks(1, filterOnlyVisibleRecents);
-        if (tasks.isEmpty()) {
-            return null;
+            if (tasks.isEmpty()) {
+                return null;
+            }
+            return tasks.get(0);
+        }else {
+            return mActivityManagerCompat.getRunningTask(filterOnlyVisibleRecents);
         }
-        return tasks.get(0);
     }
 
     /**
@@ -145,10 +151,16 @@ public class ActivityManagerWrapper {
     public ActivityManager.RunningTaskInfo[] getRunningTasks(boolean filterOnlyVisibleRecents,
             int displayId) {
         // Note: The set of running tasks from the system is ordered by recency
-        List<ActivityManager.RunningTaskInfo> tasks =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            List<ActivityManager.RunningTaskInfo> tasks =
                 mAtm.getTasks(NUM_RECENT_ACTIVITIES_REQUEST,
-                        filterOnlyVisibleRecents, /* keepInExtras= */ false, displayId);
-        return tasks.toArray(new RunningTaskInfo[tasks.size()]);
+                    filterOnlyVisibleRecents, /* keepInExtras= */ false, displayId);
+            return tasks.toArray(new RunningTaskInfo[tasks.size()]);
+        }else{
+            List<ActivityManager.RunningTaskInfo> tasks =
+                mActivityManagerCompat.getRunningTasks(filterOnlyVisibleRecents);
+            return tasks.toArray(new RunningTaskInfo[tasks.size()]);
+        }
     }
 
     /**
