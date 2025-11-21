@@ -68,7 +68,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-google-ksp = "com.google.devtools.ksp:2.3.2"
+google-ksp = "com.google.devtools.ksp:2.3.3"
 google-protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }
 cash-licensee = { id = "app.cash.licensee", version.ref = "licensee" }
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
