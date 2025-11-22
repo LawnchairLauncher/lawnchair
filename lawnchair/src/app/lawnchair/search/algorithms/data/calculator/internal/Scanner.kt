@@ -60,22 +60,39 @@ internal class Scanner(
             -> {
                 // Ignore whitespace.
             }
+
             '+' -> addToken(PLUS)
+
             '-' -> addToken(MINUS)
+
             '*' -> addToken(STAR)
+
             '/' -> addToken(SLASH)
+
             '%' -> addToken(MODULO)
+
             '^' -> addToken(EXPONENT)
+
             '√' -> addToken(SQUARE_ROOT)
+
             '=' -> if (match('=')) addToken(EQUAL_EQUAL) else addToken(ASSIGN)
+
             '!' -> if (match('=')) addToken(NOT_EQUAL) else invalidToken(c)
+
             '>' -> if (match('=')) addToken(GREATER_EQUAL) else addToken(GREATER)
+
             '<' -> if (match('=')) addToken(LESS_EQUAL) else addToken(LESS)
+
             '|' -> if (match('|')) addToken(BAR_BAR) else invalidToken(c)
+
             '&' -> if (match('&')) addToken(AMP_AMP) else invalidToken(c)
+
             ',' -> addToken(COMMA)
+
             '(' -> addToken(LEFT_PAREN)
+
             ')' -> addToken(RIGHT_PAREN)
+
             else -> {
                 when {
                     c.isDigit() -> number()

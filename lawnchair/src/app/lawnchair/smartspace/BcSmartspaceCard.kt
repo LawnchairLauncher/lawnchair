@@ -110,9 +110,11 @@ class BcSmartspaceCard @JvmOverloads constructor(
             headerAction.hasIntent -> {
                 BcSmartSpaceUtil.setOnClickListener(this, headerAction, null, "BcSmartspaceCard")
             }
+
             baseAction.hasIntent -> {
                 BcSmartSpaceUtil.setOnClickListener(this, baseAction, null, "BcSmartspaceCard")
             }
+
             else -> {
                 BcSmartSpaceUtil.setOnClickListener(this, headerAction, null, "BcSmartspaceCard")
             }
@@ -171,11 +173,13 @@ class BcSmartspaceCard @JvmOverloads constructor(
     ) {
         textView.contentDescription = when {
             title.isNullOrEmpty() -> contentDescription
+
             !contentDescription.isNullOrEmpty() -> context.getString(
                 R.string.generic_smartspace_concatenated_desc,
                 contentDescription,
                 title,
             )
+
             else -> title
         }
     }

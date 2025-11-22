@@ -34,10 +34,15 @@ data class FileInfo(
     @get:DrawableRes
     val iconRes = when (val mime = mimeType.orEmpty()) {
         in imageFileTypes.values -> R.drawable.ic_file_image
+
         in videoFileTypes.values -> R.drawable.ic_file_video
+
         in audioFileTypes.values -> R.drawable.ic_file_music
+
         in androidPkgTypes.values -> R.drawable.ic_file_app
+
         in archiveFileTypes.values -> R.drawable.ic_file_zip
+
         in documentFileTypes.values -> when {
             mime.contains("excel") || mime.contains("csv") -> R.drawable.ic_file_excel
             mime.contains("word") -> R.drawable.ic_file_word
@@ -46,6 +51,7 @@ data class FileInfo(
             mime.contains("srt") -> R.drawable.ic_file_subtitle
             else -> R.drawable.ic_file_text
         }
+
         else -> R.drawable.ic_file_unknown
     }
 

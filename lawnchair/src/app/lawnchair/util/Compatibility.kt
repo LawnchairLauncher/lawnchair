@@ -10,8 +10,11 @@ val isOnePlusStock = checkOnePlusStock()
 private fun checkOnePlusStock(): Boolean = when {
     getSystemProperty("ro.rom.version", "")
         .contains(Regex("Oxygen OS|Hydrogen OS|O2_BETA|H2_BETA")) -> true
+
     getSystemProperty("ro.oxygen.version", "").isNotEmpty() -> true
+
     getSystemProperty("ro.hydrogen.version", "").isNotEmpty() -> true
+
     else -> false
 }
 

@@ -97,6 +97,7 @@ class BlankActivity : ComponentActivity() {
                     }.launch(requireNotNull(intent.getParcelableExtra("intent")))
                 }
             }
+
             else -> {
                 finish()
                 return

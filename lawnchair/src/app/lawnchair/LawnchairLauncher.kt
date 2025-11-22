@@ -128,6 +128,7 @@ class LawnchairLauncher : QuickstepLauncher() {
                 -> {
                     LawnchairApp.instance.restoreClockInStatusBar()
                 }
+
                 else -> {
                     workspace.updateStatusbarClock()
                 }
@@ -483,6 +484,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     private fun restartIfPending() {
         when {
             sRestartFlags and FLAG_RESTART != 0 -> lawnchairApp.restart(false)
+
             sRestartFlags and FLAG_RECREATE != 0 -> {
                 sRestartFlags = 0
                 recreate()
