@@ -59,3 +59,25 @@
 
 # TODO: Remove this after the change in https://github.com/ChickenHook/RestrictionBypass/pull/9 has been released.
 -keep class org.chickenhook.restrictionbypass.** { *; }
+
+# One (Claude API) integration rules
+-keep class app.lawnchair.one.** { *; }
+-keepclassmembers class app.lawnchair.one.** {
+    @kotlinx.serialization.SerialName <fields>;
+}
+
+# OkHttp rules
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+
+# Kotlinx serialization
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.AnnotationsKt
+-keepclassmembers class kotlinx.serialization.json.** {
+    *** Companion;
+}
+-keepclasseswithmembers class kotlinx.serialization.json.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}

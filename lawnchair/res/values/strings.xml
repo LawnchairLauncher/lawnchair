@@ -525,6 +525,7 @@
     <string name="gesture_handler_open_app_search">Open app search</string>
     <string name="gesture_handler_open_search">Open search</string>
     <string name="gesture_handler_open_assistant">Open assistant</string>
+    <string name="gesture_handler_open_one">Open One</string>
 
     <string name="pick_app_for_gesture">Pick app</string>
 

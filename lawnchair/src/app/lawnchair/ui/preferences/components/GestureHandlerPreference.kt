@@ -47,6 +47,7 @@ val options = listOf(
     GestureHandlerOption.OpenSearch,
     GestureHandlerOption.OpenApp,
     GestureHandlerOption.OpenAssistant,
+    GestureHandlerOption.OpenOne,
 )
 
 @Composable

@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsCompat
@@ -279,7 +280,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     private fun setupOneInterface() {
         oneComposeView = ComposeView(this).apply {
             setContent {
-                Box(modifier = androidx.compose.ui.Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.fillMaxSize()) {
                     OneOverlay(
                         visible = oneOverlayVisible.value,
                         onDismiss = { hideOneOverlay() }
@@ -287,7 +288,7 @@ class LawnchairLauncher : QuickstepLauncher() {
                     OneFloatingButton(
                         visible = oneFloatingButtonVisible.value && !oneOverlayVisible.value,
                         onClick = { showOneOverlay() },
-                        modifier = androidx.compose.ui.Modifier
+                        modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(end = 16.dp, bottom = 80.dp)
                     )
