@@ -73,7 +73,7 @@
     <string name="time_months_ago">%dmo</string>
     <string name="time_years_ago">%dy</string>
 
-    <string name="managed_by_lawnchair">Managed by Lawnchair</string>
+    <string name="managed_by_lawnchair">Managed by System</string>
 
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferences</string>
@@ -185,7 +185,7 @@
     <string name="about_label">About</string>
 
     <string name="app_info_drop_target_label">App info</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">Restart System</string>
     <string name="experimental_features_label">Experimental features</string>
 
     <!-- Experimental features -->
@@ -223,7 +223,7 @@
 
     -->
 
-    <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
+    <string name="set_default_launcher_tip">To access shortcuts and additional features, set System as your default launcher</string>
 
     <string name="notification_dots">Notification dots</string>
     <string name="show_notification_count">Show notification counter</string>
@@ -544,7 +544,7 @@
     Bug reporting
 
     -->
-    <string name="lawnchair_bug_report">Lawnchair bug report</string>
+    <string name="lawnchair_bug_report">System bug report</string>
     <string name="crash_report_notif_title">%1$s crashed</string>
     <string name="action_upload_crash_report">Upload crash log</string>
 

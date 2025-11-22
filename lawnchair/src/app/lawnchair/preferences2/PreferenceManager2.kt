@@ -588,6 +588,22 @@ class PreferenceManager2 private constructor(private val context: Context) :
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_feed),
     )
 
+    // One interface preferences
+    val oneFloatingButton = preference(
+        key = booleanPreferencesKey(name = "one_floating_button"),
+        defaultValue = true,
+    )
+
+    val oneSwipeDown = preference(
+        key = booleanPreferencesKey(name = "one_swipe_down"),
+        defaultValue = false,
+    )
+
+    val oneSimplifiedMode = preference(
+        key = booleanPreferencesKey(name = "one_simplified_mode"),
+        defaultValue = false,
+    )
+
     val showComponentNames = preference(
         key = booleanPreferencesKey(name = "show_component_names"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_component_names),

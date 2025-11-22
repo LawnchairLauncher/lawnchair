@@ -27,13 +27,23 @@ import android.os.Bundle
 import android.util.Pair
 import android.view.Display
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.window.SplashScreen
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
+import app.lawnchair.one.OneFloatingButton
+import app.lawnchair.one.OneOverlay
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
 import app.lawnchair.compat.LawnchairQuickstepCompat
 import app.lawnchair.data.AppDatabase
@@ -150,6 +160,11 @@ class LawnchairLauncher : QuickstepLauncher() {
 
     val gestureController by unsafeLazy { GestureController(this) }
 
+    // One interface state
+    private val oneOverlayVisible = mutableStateOf(false)
+    private val oneFloatingButtonVisible = mutableStateOf(true)
+    private var oneComposeView: ComposeView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         if (!Utilities.ATLEAST_Q) {
             enableEdgeToEdge(
@@ -251,6 +266,54 @@ class LawnchairLauncher : QuickstepLauncher() {
         reloadIconsIfNeeded()
 
         AppDatabase.INSTANCE.get(this).checkpointSync()
+
+        // Initialize One interface
+        setupOneInterface()
+
+        // Observe One preferences
+        preferenceManager2.oneFloatingButton.get().distinctUntilChanged().onEach { show ->
+            oneFloatingButtonVisible.value = show
+        }.launchIn(scope = lifecycleScope)
+    }
+
+    private fun setupOneInterface() {
+        oneComposeView = ComposeView(this).apply {
+            setContent {
+                Box(modifier = androidx.compose.ui.Modifier.fillMaxSize()) {
+                    OneOverlay(
+                        visible = oneOverlayVisible.value,
+                        onDismiss = { hideOneOverlay() }
+                    )
+                    OneFloatingButton(
+                        visible = oneFloatingButtonVisible.value && !oneOverlayVisible.value,
+                        onClick = { showOneOverlay() },
+                        modifier = androidx.compose.ui.Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(end = 16.dp, bottom = 80.dp)
+                    )
+                }
+            }
+        }
+
+        dragLayer.addView(
+            oneComposeView,
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+        )
+    }
+
+    fun showOneOverlay() {
+        oneOverlayVisible.value = true
+    }
+
+    fun hideOneOverlay() {
+        oneOverlayVisible.value = false
+    }
+
+    fun toggleOneFloatingButton(visible: Boolean) {
+        oneFloatingButtonVisible.value = visible
     }
 
     override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {

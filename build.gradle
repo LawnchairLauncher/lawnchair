@@ -173,7 +173,7 @@ android {
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
             def channel = variant.productFlavors.last().name
-            outputFileName = "Lawnchair.${variant.versionName}.$channel.${variant.buildType.name}.apk"
+            outputFileName = "System.${variant.versionName}.$channel.${variant.buildType.name}.apk"
         }
     }
 
@@ -244,11 +244,11 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            resValue("string", "derived_app_name", "Lawnchair (Debug)")
+            resValue("string", "derived_app_name", "System (Debug)")
         }
 
         release {
-            resValue("string", "derived_app_name", "Lawnchair")
+            resValue("string", "derived_app_name", "System")
             minifyEnabled true
             shrinkResources true
             proguardFiles proguardFilesFromAosp + "proguard.pro"
@@ -278,17 +278,17 @@ android {
         }
 
         github {
-            applicationId 'app.lawnchair'
+            applicationId 'com.iotaverum.system'
             dimension "channel"
         }
 
         nightly {
-            applicationId 'app.lawnchair.nightly'
+            applicationId 'com.iotaverum.system.nightly'
             dimension "channel"
         }
 
         play {
-            applicationId "app.lawnchair.play"
+            applicationId "com.iotaverum.system.play"
             dimension "channel"
             isDefault true
         }
@@ -454,6 +454,10 @@ dependencies {
     implementation libs.hoko.blur
 
     implementation libs.androidx.window
+
+    // One (Claude) integration
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
 }
 
 ksp {

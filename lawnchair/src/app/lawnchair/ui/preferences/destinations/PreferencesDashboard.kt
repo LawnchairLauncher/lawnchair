@@ -67,6 +67,7 @@ import app.lawnchair.ui.preferences.navigation.Folders
 import app.lawnchair.ui.preferences.navigation.General
 import app.lawnchair.ui.preferences.navigation.Gestures
 import app.lawnchair.ui.preferences.navigation.HomeScreen
+import app.lawnchair.ui.preferences.navigation.One
 import app.lawnchair.ui.preferences.navigation.PreferenceRootRoute
 import app.lawnchair.ui.preferences.navigation.Quickstep
 import app.lawnchair.ui.preferences.navigation.Search
@@ -185,6 +186,14 @@ fun PreferencesDashboard(
                     isSelected = currentRoute is Quickstep,
                 )
             }
+
+            PreferenceCategory(
+                label = "One",
+                description = "Claude AI assistant",
+                iconResource = R.drawable.ic_smartspace,
+                onNavigate = { onNavigate(One) },
+                isSelected = currentRoute is One,
+            )
 
             PreferenceCategory(
                 label = stringResource(R.string.about_label),

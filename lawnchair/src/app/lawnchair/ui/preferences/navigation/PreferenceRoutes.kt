@@ -63,6 +63,9 @@ data object Smartspace : PreferenceRootRoute
 data object About : PreferenceRootRoute
 
 @Serializable
+data object One : PreferenceRootRoute
+
+@Serializable
 data object ExperimentalFeatures : PreferenceRootRoute
 
 @Serializable
