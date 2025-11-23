@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Рестартуј Lawnchair</string>
     <string name="experimental_features_label">Експерименталне функције</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Прилагођавање фонта</string>
     <string name="font_picker_description">Не утиче на сав текст</string>
     <string name="smartspace_calendar_label">Прилагођавање календара у виџету „Кратак преглед”</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Повећајте максималну величину мреже почетног екрана из 10 × 10 у 20 × 20</string>
     <string name="always_reload_icons_label">Увек учитавај иконе изнова</string>
     <string name="always_reload_icons_description">Не користи кеширане иконе из пакета икона</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Превлачење преко икона</string>
     <string name="icon_swipe_gestures_description">Извршава радње при превлачењу улево или удесно преко икона уместо померања екрана</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Закључај/откључај</string>
     <string name="recents_lock_unlock_description">Спречите затварање изабране апликације када додирнете „Обриши све”</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">Квадрат</string>
     <string name="icon_shape_squircle">Заокругљени квадрат</string>
     <string name="icon_shape_teardrop">Суза</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Грегоријански</string>
     <string name="smartspace_calendar_persian">Персијски</string>
+    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Пуни се</string>
     <string name="smartspace_battery_full">Напуњено</string>
     <string name="smartspace_battery_low">Батерија је на измаку</string>
@@ -408,6 +423,7 @@
     <string name="gesture_handler_sleep">Пређи у стање спавања</string>
     <string name="gesture_handler_recents">Отвори недавне апликације</string>
     <string name="gesture_handler_open_notifications">Отвори траку са обавештењима</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Отвори апликацију</string>
     <string name="gesture_handler_open_app_config">Отвори %1$s</string>
     <string name="gesture_handler_open_app_drawer">Отвори листу апликација</string>
@@ -416,12 +432,15 @@
     <string name="gesture_handler_open_assistant">Отвори помоћника</string>
     <string name="pick_app_for_gesture">Изаберите апликацију</string>
     <string name="dt2s_admin_hint_title">Потребне су администраторске дозволе</string>
-    <string name="dt2s_admin_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, подесите Lawnchair као администратор уређаја. У подешавањима додирните „Активирај ову апликацију за администратора уређаја”.</string>
-    <string name="dt2s_admin_warning">Функција „Додирните двапут за стање спавања” ће бити искључена</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Укључи услугу приступачности</string>
-    <string name="dt2s_a11y_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, укључите Lawnchair-ову услугу приступачности. Додирните „Отвори подешавања”, изаберите „Lawnchair” и укључите „Користи Lawnchair”.\n\nОва дозвола је осетљива јер омогућава надгледање других апликација, али је Lawnchair не користи у те сврхе.</string>
-    <string name="dt2s_recents_warning_open_settings">Отвори подешавања</string>
-    <string name="recents_a11y_hint">Да бисте користили функцију „Отвори недавне апликације”, укључите Lawnchair-ову услугу приступачности. Додирните „Отвори подешавања”, изаберите „Lawnchair” и укључите „Користи Lawnchair”.\n\nОва дозвола је осетљива јер омогућава надгледање других апликација, али је Lawnchair не користи у те сврхе.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -464,10 +483,6 @@
     <string name="home_screen_unlock">Откључај почетни екран</string>
     <string name="home_screen_locked">Почетни екран је закључан</string>
     <string name="home_screen_lock_description">Спречите промену распореда почетног екрана</string>
-    <string name="show_dot_pagination_label">Нумерисање страница помоћу тачака</string>
-    <string name="show_dot_pagination_description">Користите тачке уместо линија за приказ броја страница</string>
-    <string name="show_material_u_popup_label">Нови стил искачућег прозора</string>
-    <string name="show_material_u_popup_description">Користите анимиране и компактније искачуће прозоре у складу са дизајном Material You</string>
     <string name="popup_menu">Искачући мени</string>
     <string name="popup_menu_items">Ставке у искачућем менију</string>
     <string name="edit_menu_items">Уреди ставке у искачућем менију</string>

@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Riavvia Lawnchair</string>
     <string name="experimental_features_label">Funzionalità sperimentali</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Personalizzazione dei font</string>
     <string name="font_picker_description">Un po\' di testo rimane invariato</string>
     <string name="smartspace_calendar_label">Personalizzazione del calendario di ‘A Colpo d\'Occhio’</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Aumenta il limite massimo della dimensione della griglia della schermata Home da 10 × 10 a 20 × 20</string>
     <string name="always_reload_icons_label">Ricarica sempre le icone</string>
     <string name="always_reload_icons_description">Evita di utilizzare icone dalla cache dai pacchetti d\'icone</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Gesti di scorrimento icona</string>
     <string name="icon_swipe_gestures_description">Esegui azioni quando scorri a sinistra o a destra sulle icone invece di spostare la schermata Home</string>
     <string name="show_deck_layout">Disposizione a Deck</string>
     <string name="show_deck_layout_description">Mostra un\'opzione di disposizione per nascondere il Menu delle App e aggiungere automaticamente nuove app alla Schermata Home</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Blocca/Sblocca</string>
     <string name="recents_lock_unlock_description">Impedisci all\'app selezionata di chiudersi quando premi \"Cancella tutto\"</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">Quadrato</string>
     <string name="icon_shape_squircle">Supercerchio</string>
     <string name="icon_shape_teardrop">Goccia</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Biscotto a quattro</string>
     <string name="icon_shape_seven_sided_cookie">Biscotto a sette</string>
     <string name="icon_shape_arch">Arco</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriano</string>
     <string name="smartspace_calendar_persian">Persiano</string>
+    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">In carica</string>
     <string name="smartspace_battery_full">Carico</string>
     <string name="smartspace_battery_low">Batteria scarica</string>
@@ -408,6 +423,7 @@
     <string name="gesture_handler_sleep">Sospendi</string>
     <string name="gesture_handler_recents">Apri Schermata delle App Recenti</string>
     <string name="gesture_handler_open_notifications">Apri il pannello delle notifiche</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Apri un\'app</string>
     <string name="gesture_handler_open_app_config">Apri %1$s</string>
     <string name="gesture_handler_open_app_drawer">Apri il menu delle app</string>
@@ -416,12 +432,15 @@
     <string name="gesture_handler_open_assistant">Apri assistente</string>
     <string name="pick_app_for_gesture">Seleziona l\'app</string>
     <string name="dt2s_admin_hint_title">Necessari permessi di amministratore</string>
-    <string name="dt2s_admin_hint">Per sospendere lo schermo con un doppio tocco, imposta Lawnchair come amministratore del dispositivo. Tocca \"Apri impostazioni\", poi tocca \"Attiva questa app come amministratore del dispositivo\".</string>
-    <string name="dt2s_admin_warning">La sospensione con un doppio tocco sarà disabilitata.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Abilita il servizio di accessibilità</string>
-    <string name="dt2s_a11y_hint">Per sospendere lo schermo con un doppio tocco, abilita il servizio di accessibilità di Lawnchair. Tocca \"Apri impostazioni\", seleziona \"Lawnchair\" e abilita \"Usa Lawnchair\".\n\nLawnchair utilizza il metodo di accessibilità `performGlobalAction` per effettuare questa operazione. Si tratta di un permesso sensibile che permette di monitorare altre app, tuttavia Lawnchair non è configurato per quella funzionalità e non riceve alcun evento.</string>
-    <string name="dt2s_recents_warning_open_settings">Apri impostazioni</string>
-    <string name="recents_a11y_hint">Per utilizzare Apri Schermata delle App Recenti, abilita il servizio di accessibilità di Lawnchair. Tocca \"Apri impostazioni\", seleziona \"Lawnchair\" e abilita \"Usa Lawnchair\".\n\nLawnchair utilizza il metodo di accessibilità `performGlobalAction` per effettuare questa operazione. Si tratta di un permesso sensibile che permette di monitorare altre app, tuttavia Lawnchair non è configurato per quella funzionalità e non riceve alcun evento.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -464,10 +483,6 @@
     <string name="home_screen_unlock">Sblocca la schermata Home</string>
     <string name="home_screen_locked">La schermata Home è bloccata</string>
     <string name="home_screen_lock_description">Impedisci modifiche al layout della schermata Home</string>
-    <string name="show_dot_pagination_label">Mostra punti di paginazione</string>
-    <string name="show_dot_pagination_description">Usa punti invece che linee per mostrare il numero della pagina</string>
-    <string name="show_material_u_popup_label">Usa il nuovo stile popup</string>
-    <string name="show_material_u_popup_description">Usa lo stile dei popup di Material You, elastici e leggermente consolidati</string>
     <string name="popup_menu">Menu a comparsa</string>
     <string name="popup_menu_items">Voci del menu a comparsa</string>
     <string name="edit_menu_items">Modifica le voci del menu a comparsa</string>
