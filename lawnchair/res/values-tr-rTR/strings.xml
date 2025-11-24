@@ -91,7 +91,7 @@
     <string name="wallpaper">Duvar Kağıdı</string>
     <string name="style">Stil</string>
     <string name="background_opacity">Arka plan opaklığı</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">Ayrılmış Arama çubuğu arka planı</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Panoya kaydedildi</string>
     <string name="calculator_search_result_copied_toast">Sonuç panoya kopyalandı</string>
@@ -609,7 +609,7 @@
     <string name="search_algorithm_global_search_via_asi">Genel arama (ASI aracılığıyla)</string>
     <string name="custom_search_label">Makine ismi aratın</string>
     <string name="custom_search_url">Makine URL\'si aratın</string>
-    <string name="custom_search_suggestions_url">Search suggestions URL</string>
+    <string name="custom_search_suggestions_url">Arama önerisi URL\'si</string>
     <string name="custom_search_input_hint">&#37; arama sorgusu ile değiştirilecek</string>
     <string name="custom_search_suggestions_hint">&#37; arama sorgusu ile değiştirilecek. Sonuçlar JSON OpenSearch biçiminde olmalı.</string>
     <!-- Labels of each search result types -->

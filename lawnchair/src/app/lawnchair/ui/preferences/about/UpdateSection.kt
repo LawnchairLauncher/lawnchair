@@ -32,9 +32,11 @@ fun UpdateSection(
     ) {
         when (updateState) {
             UpdateState.Hidden -> { /* Render nothing */ }
+
             UpdateState.Checking -> {
                 CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
             }
+
             UpdateState.UpToDate -> {
                 Text(
                     text = stringResource(R.string.pro_updated),
@@ -43,6 +45,7 @@ fun UpdateSection(
                     modifier = Modifier.padding(top = 8.dp),
                 )
             }
+
             is UpdateState.Available -> {
                 Button(
                     onClick = onViewChanges,
@@ -51,6 +54,7 @@ fun UpdateSection(
                     Text(text = stringResource(R.string.download_update))
                 }
             }
+
             is UpdateState.Downloading -> {
                 LinearProgressIndicator(
                     progress = { updateState.progress },
@@ -63,6 +67,7 @@ fun UpdateSection(
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
+
             is UpdateState.Downloaded -> {
                 Button(
                     onClick = {
@@ -73,6 +78,7 @@ fun UpdateSection(
                     Text(text = stringResource(R.string.install_update))
                 }
             }
+
             UpdateState.Failed -> {
                 Text(
                     text = stringResource(R.string.update_check_failed),

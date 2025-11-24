@@ -225,7 +225,7 @@
     <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">Vierseitiges Cookie</string>
     <string name="icon_shape_seven_sided_cookie">Siebseitiges Cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_arch">Bogen</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Eigene Symbolform</string>
     <string name="custom_icon_shape_create">Eigene Symbolform erstellen</string>
@@ -646,32 +646,32 @@
     <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
     <string name="missing_notification_access_desc">Um Benachrichtigungspunkte anzuzeigen, aktiviere App-Benachrichtigungen für <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <string name="warn_contact_permission_title">Kontakte-Berechtigung erforderlich</string>
-    <string name="warn_contact_permission_content">To search for contacts, grant contacts and phone permissions to <xliff:g id="name" example="My App">%1$s</xliff:g></string>
+    <string name="warn_contact_permission_content">Um nach Kontakten zu suchen, erteile <xliff:g id="name" example="My App">%1$s</xliff:g> Berechtigungen für Kontakte und Telefon</string>
     <string name="permissions_music_audio">Musik- und Audio-Berechtigung erforderlich</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_music_audio_description">Um Musik und andere Audiodateien durchsuchen zu können, benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Berechtigung, auf Deine Medienbibliothek zuzugreifen.</string>
     <!-- Photos and videos -->
     <string name="permissions_photos_videos">Foto- und Videozugriff benötigt</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_photos_videos_description">Zum Durchsuchen Deiner Fotos und Videos benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Erlaubnis, auf Deine Medienbibliothek zuzugreifen.</string>
     <string name="permissions_photos_videos_full">Auf Deine vollständige Medienbibliothek zugreifen?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
+    <string name="permissions_photos_videos_full_description">Zum Durchsuchen aller Fotos und Videos benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Erlaubnis, auf Deine Medienbibliothek zuzugreifen.</string>
     <string name="permissions_photos_videos_grant_full">Vollständige Medienberechtigungen gewähren</string>
     <string name="permissions_photos_videos_manage_selected">Gewählte Elemente verwalten</string>
     <!-- External storage -->
     <string name="permissions_external_storage">Externe Speicher-Berechtigung erforderlich</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
+    <string name="permissions_external_storage_description">Um Deine Dateien durchsuchen zu können, benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Erlaubnis, auf den externen Speicher Deines Geräts zuzugreifen.</string>
     <string name="permissions_manage_storage">Speicherzugriff verwalten erforderlich</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
+    <string name="permissions_manage_storage_description">Um Deine Dateien in Suchergebnissen anzuzeigen, benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Erlaubnis, alle Dateien auf Deinem Gerät zu verwalten. Diese Berechtigung wird ausschließlich zur Anzeige von Dateien verwendet und nicht zum Lesen oder Ändern des Inhalts Deiner persönlichen Dateien.</string>
+    <string name="permission_desc_wallpaper_base">Um Vorschauen für Hintergrundbilder anzuzeigen und sie in Backups einzubinden, benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> die Berechtigung %2$s. Dies liegt an Systembeschränkungen für den Zugriff auf Hintergrunddaten.</string>
+    <string name="permission_desc_ending_read_all_files">um alle Dateien auf Deinem Gerät zu lesen</string>
+    <string name="permission_desc_ending_manage_all_files">um alle Dateien auf Deinem Gerät zu verwalten</string>
+    <string name="permission_desc_wallpaper_multiple">Mehrere Berechtigungen erforderlich</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Um Vorschauen für Hintergrundbilder anzuzeigen und sie in Backups einzubinden, benötigt <xliff:g id="name" example="My App">%1$s</xliff:g> folgende Berechtigungen. Dies liegt an Systembeschränkungen für den Zugriff auf Hintergrunddaten.</string>
+    <string name="permission_label_manage_all_files">Alle Dateien auf dem Gerät verwalten</string>
+    <string name="permission_label_read_photos_videos">Fotos und Videos lesen</string>
     <string name="manage_storage_access_denied_title">Kann Berechtigung zur Speicherverwaltung nicht aktivieren</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="manage_storage_access_denied_description">Aufgrund der Play-Store-Richtlinien kann <xliff:g id="name" example="My App">%1$s</xliff:g> hier keinen vollständigen Speicherzugriff anfordern. Um auf alle Dateien zuzugreifen, lade <xliff:g id="name" example="My App">%1$s</xliff:g> von GitHub herunter. Alternativ kannst Du den Zugriff auf Fotos, Videos und Audiodateien in den Einstellungen einzeln erlauben.</string>
     <string name="open_permission_settings">Einstellungen öffnen</string>
     <string name="grant_requested_permissions">Berechtigungen erteilen</string>
     <string name="permissions_needed">Berechtigung benötigt</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="grant_requested_permissions_tap">Tippen um Berechtigungen zu erteilen</string>
 </resources>

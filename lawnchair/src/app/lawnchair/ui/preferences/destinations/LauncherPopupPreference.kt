@@ -156,18 +156,21 @@ private fun LauncherPopupPreview(optionsList: List<LauncherOptionPopupItem>) {
 
                     val shape = when {
                         isSingleItem -> CircleShape
+
                         isFirst -> RoundedCornerShape(
                             clipRadius.topStart,
                             clipRadius.topEnd,
                             defaultCorner,
                             defaultCorner,
                         )
+
                         isLast -> RoundedCornerShape(
                             defaultCorner,
                             defaultCorner,
                             clipRadius.bottomStart,
                             clipRadius.bottomEnd,
                         )
+
                         else -> RoundedCornerShape(defaultCorner)
                     }
 

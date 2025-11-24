@@ -115,7 +115,7 @@
     <string name="folders_filter_duplicates">중복 앱 숨기기</string>
     <string name="my_folder_label">내 폴더</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">특정 액션들(휴대전화 잠그기 같은 액션)을 제스처로 발동시키려면, Lawnchair가 접근성 기능에 접근해야 합니다. \n\nLawnchair는 접근성 기능을 필요로 하지만 사용자의 활동을 감시하지 않으며, 시스템에서 발송된 모든 이벤트는 삭제됩니다. \n\nLawnchair는 휴대전화를 잠그거나 최근 앱을 보기 위해서 GlobalActionAccessbility 서비스를 사용합니다.</string>
+    <string name="accessibility_service_description">특정 액션들(휴대전화 잠그기 같은 액션)을 제스처로 작동시키려면, Lawnchair가 접근성 기능에 접근해야 합니다. \n\nLawnchair는 접근성 기능을 필요로 하지만 사용자의 활동을 감시하지 않으며, 시스템에서 발송된 모든 이벤트는 삭제됩니다. \n\nLawnchair는 휴대전화를 잠그거나 최근 앱을 보기 위해서 GlobalActionAccessbility 서비스를 사용합니다.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%1$s &amp; %2$s</string>
@@ -158,7 +158,7 @@
     <string name="icon_swipe_gestures">아이콘 스와이프 제스처</string>
     <string name="icon_swipe_gestures_description">홈 화면을 움직이는 대신 아이콘을 왼쪽이나 오른쪽으로 스와이프 할때 액션을 실행합니다</string>
     <string name="show_deck_layout">독 레이아웃</string>
-    <string name="show_deck_layout_description">앱 서랍을 가리고 홈 화면에 새 앱을 자동으로 추가하는 레이아웃 옵션을 보입니다</string>
+    <string name="show_deck_layout_description">앱 서랍을 가리고 홈 화면에 새 앱을 자동으로 추가하는 레이아웃 옵션을 표시합니다</string>
     <string name="recents_lock_unlock">잠금/잠금 해제</string>
     <string name="recents_lock_unlock_description">\"모두 지우기\" 사용 시 선택한 앱이 지워지지 않도록 방지</string>
     <!--Overlay-->

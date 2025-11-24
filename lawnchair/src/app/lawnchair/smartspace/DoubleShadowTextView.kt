@@ -34,10 +34,12 @@ open class DoubleShadowTextView @JvmOverloads constructor(
                 paint.clearShadowLayer()
                 return true
             }
+
             ambientShadowAlpha > 0 && keyShadowAlpha == 0 -> {
                 paint.setShadowLayer(shadowInfo.ambientShadowBlur, 0f, 0f, shadowInfo.ambientShadowColor)
                 return true
             }
+
             keyShadowAlpha > 0 && ambientShadowAlpha == 0 -> {
                 paint.setShadowLayer(
                     shadowInfo.keyShadowBlur,
@@ -47,6 +49,7 @@ open class DoubleShadowTextView @JvmOverloads constructor(
                 )
                 return true
             }
+
             else -> {
                 return false
             }

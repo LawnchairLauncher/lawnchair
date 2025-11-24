@@ -60,7 +60,7 @@
                 android:layout_marginTop="@dimen/ps_lock_icon_margin_top"
                 android:layout_marginBottom="@dimen/ps_lock_icon_margin_bottom"
                 android:importantForAccessibility="no"
-                android:src="@drawable/ic_lock"
+                android:src="@drawable/ic_pr_lock"
                 app:tint="@color/materialColorPrimaryFixedDim"
                 android:scaleType="center"/>
             <TextView

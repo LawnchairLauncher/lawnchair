@@ -43,7 +43,7 @@ public class WorkspaceItemSpaceFinder {
     private LauncherModel mModel;
 
     @Inject
-    WorkspaceItemSpaceFinder(
+    public WorkspaceItemSpaceFinder(
             BgDataModel dataModel, InvariantDeviceProfile idp, LauncherModel model) {
         mDataModel = dataModel;
         mIDP = idp;

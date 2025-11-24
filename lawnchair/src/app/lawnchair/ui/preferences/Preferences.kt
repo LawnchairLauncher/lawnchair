@@ -153,6 +153,7 @@ private fun PreferenceScreen(
                 displayFeatures = displayFeatures,
             )
         }
+
         isExpandedScreen -> {
             Surface(
                 color = MaterialTheme.colorScheme.surface,
@@ -166,6 +167,7 @@ private fun PreferenceScreen(
                 }
             }
         }
+
         else -> {
             moveableNavHost()
         }

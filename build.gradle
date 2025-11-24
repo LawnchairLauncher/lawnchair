@@ -155,7 +155,7 @@ final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 final def isReleaseBuild = ciBuild && ciRef.contains("beta")
 final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
 final def version = "16"
-final def releaseName = "Development 3 Release 0"
+final def releaseName = "Development 3 Release 2"
 final def versionDisplayName = "${version}.${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
@@ -166,10 +166,10 @@ android {
     namespace "com.android.launcher3"
     defaultConfig {
         /*
-         * Lawnchair Launcher 16.0 Development 3 Release 1
+         * Lawnchair Launcher 16.0 Development 3 Release 2
          * see CONTRIBUTING.md#versioning-scheme
          */
-        versionCode 16_00_01_03_01
+        versionCode 16_00_01_03_02
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
@@ -506,8 +506,8 @@ spotless {
     }
     kotlin {
         target("lawnchair/src/**/*.kt")
-        ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.4.27",
+        ktlint("1.8.0").customRuleSets([
+            "io.nlopez.compose.rules:ktlint:0.4.28",
         ]).editorConfigOverride([
             "ktlint_compose_compositionlocal-allowlist": "disabled",
             "ktlint_compose_lambda-param-event-trailing": "disabled",

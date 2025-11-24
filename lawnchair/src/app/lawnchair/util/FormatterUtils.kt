@@ -24,30 +24,37 @@ fun formatShortElapsedTime(context: Context, millis: Long): String? {
                 val roundedDays = duration.toDouble(DurationUnit.DAYS).round()
                 measureFormat.format(Measure(roundedDays, MeasureUnit.DAY))
             }
+
             days >= 2 || days > 0 && hours == 0 -> {
                 val roundedDays = duration.toDouble(DurationUnit.DAYS).round()
                 measureFormat.format(Measure(roundedDays, MeasureUnit.DAY))
             }
+
             days > 0 -> measureFormat.formatMeasures(
                 Measure(days, MeasureUnit.DAY),
                 Measure(hours, MeasureUnit.HOUR),
             )
+
             hours >= 2 || hours > 0 && minutes == 0 -> {
                 val roundedHours = duration.toDouble(DurationUnit.HOURS).round()
                 measureFormat.format(Measure(roundedHours, MeasureUnit.HOUR))
             }
+
             hours > 0 -> measureFormat.formatMeasures(
                 Measure(hours, MeasureUnit.HOUR),
                 Measure(minutes, MeasureUnit.MINUTE),
             )
+
             minutes >= 2 || minutes > 0 && seconds == 0 -> {
                 val roundedMinutes = duration.toDouble(DurationUnit.MINUTES).round()
                 measureFormat.format(Measure(roundedMinutes, MeasureUnit.MINUTE))
             }
+
             minutes > 0 -> measureFormat.formatMeasures(
                 Measure(minutes, MeasureUnit.MINUTE),
                 Measure(seconds, MeasureUnit.SECOND),
             )
+
             else -> measureFormat.format(Measure(seconds, MeasureUnit.SECOND))
         }
     }

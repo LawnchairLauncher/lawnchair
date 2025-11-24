@@ -144,6 +144,7 @@ fun ColorSelection(
                             )
                         }
                     }
+
                     1 -> {
                         CustomColorPicker(
                             selectedColor = selectedColor.intValue,

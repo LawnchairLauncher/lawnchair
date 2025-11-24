@@ -149,34 +149,42 @@ object LauncherOptionsPopup {
                 icon = R.drawable.ic_wallpaper,
                 isCarousel = true,
             )
+
             "lock" -> LauncherOptionMetadata(
                 label = R.string.home_screen_lock,
                 icon = R.drawable.ic_lock,
             )
+
             "sys_settings" -> LauncherOptionMetadata(
                 label = R.string.system_settings,
                 icon = R.drawable.ic_setting,
             )
+
             "edit_mode" -> LauncherOptionMetadata(
                 label = R.string.edit_home_screen,
                 icon = R.drawable.enter_home_gardening_icon,
             )
+
             "wallpaper" -> LauncherOptionMetadata(
                 label = R.string.styles_wallpaper_button_text,
                 icon = R.drawable.ic_palette,
             )
+
             "widgets" -> LauncherOptionMetadata(
                 label = R.string.widget_button_text,
                 icon = R.drawable.ic_widget,
             )
+
             "all_apps" -> LauncherOptionMetadata(
                 label = R.string.all_apps_button_label,
                 icon = R.drawable.ic_apps,
             )
+
             "home_settings" -> LauncherOptionMetadata(
                 label = R.string.settings_button_text,
                 icon = R.drawable.ic_home_screen,
             )
+
             else -> throw IllegalArgumentException("invalid popup option")
         }
     }

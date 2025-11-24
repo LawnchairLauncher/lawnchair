@@ -221,6 +221,7 @@ fun cutOutline(outline: Outline, height: Float, cutTop: Boolean, cutBottom: Bool
                 CornerRadius.Zero,
             ),
         )
+
         is Outline.Rounded -> Outline.Rounded(
             RoundRect(
                 cutRect(outline.roundRect.boundingRect, height, cutTop, cutBottom),
@@ -230,6 +231,7 @@ fun cutOutline(outline: Outline, height: Float, cutTop: Boolean, cutBottom: Bool
                 outline.roundRect.bottomRightCornerRadius,
             ),
         )
+
         else -> outline
     }
 }

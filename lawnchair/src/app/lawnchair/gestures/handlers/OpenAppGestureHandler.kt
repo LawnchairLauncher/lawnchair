@@ -29,6 +29,7 @@ class OpenAppGestureHandler(
                     null,
                 )
             }
+
             is OpenAppTarget.Shortcut -> Unit
         }
     }

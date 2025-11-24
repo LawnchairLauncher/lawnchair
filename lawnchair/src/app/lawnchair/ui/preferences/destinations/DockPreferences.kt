@@ -52,10 +52,6 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceGroupHeading
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import com.android.launcher3.R
 
-object DockRoutes {
-    const val SEARCH_PROVIDER = "searchProvider"
-}
-
 @Composable
 fun DockPreferences(modifier: Modifier = Modifier) {
     val prefs = preferenceManager()

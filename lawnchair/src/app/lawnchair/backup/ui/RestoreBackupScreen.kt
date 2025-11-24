@@ -90,11 +90,13 @@ fun RestoreBackupScreen(
     ) {
         when (uiState) {
             is RestoreBackupUiState.Success -> RestoreBackupOptions(isPortrait, uiState.backup)
+
             is RestoreBackupUiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }
+
             is RestoreBackupUiState.Error -> {
                 val context = LocalContext.current
                 val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher

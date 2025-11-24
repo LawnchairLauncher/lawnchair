@@ -49,18 +49,18 @@
     <string name="pro_updated">¡Tienes la última versión!</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Actualizaciones</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_error">Error al cargar cambios</string>
     <string name="changes_dialog_no_changes">No se encontraron cambios</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_build_format">Compilar #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">por %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">justo ahora</string>
-    <string name="time_minutes_ago">%dm</string>
+    <string name="time_minutes_ago">%dmin</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_weeks_ago">%ds</string>
+    <string name="time_months_ago">%dmes</string>
+    <string name="time_years_ago">%daño</string>
     <string name="managed_by_lawnchair">Gestionado por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferencias</string>
@@ -91,7 +91,7 @@
     <string name="wallpaper">Fondo de pantalla</string>
     <string name="style">Estilo</string>
     <string name="background_opacity">Opacidad del fondo</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">Fondo separado de la barra de búsqueda</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiado al portapapeles</string>
     <string name="calculator_search_result_copied_toast">Resultado copiado al portapapeles</string>
@@ -609,9 +609,9 @@
     <string name="search_algorithm_global_search_via_asi">Búsqueda global (a través de ASI)</string>
     <string name="custom_search_label">Nombre del buscador</string>
     <string name="custom_search_url">URL del buscador</string>
-    <string name="custom_search_suggestions_url">Search suggestions URL</string>
+    <string name="custom_search_suggestions_url">URL de sugerencias de búsqueda</string>
     <string name="custom_search_input_hint">&#37;s se reemplazará con la consulta de búsqueda</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_suggestions_hint">&#37;s se reemplazará con tu búsqueda. Los resultados deben estar en formato JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Mostrar en los resultados de búsqueda</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Aplicaciones y accesos directos</string>
@@ -649,30 +649,30 @@
     <string name="warn_contact_permission_title">El permiso CONTACTOS es necesario</string>
     <string name="warn_contact_permission_content">Para buscar contactos, debes otorgar el permiso CONTACTOS Y TELÉFONO a <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <string name="permissions_music_audio">Se necesita acceso a música y audio</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_music_audio_description">Para buscar su música y otros archivos de audio, <xliff:g id="name" example="My App">%1$s</xliff:g> necesita permiso para acceder a su biblioteca de medios.</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos">Acceso de fotos y videos necesario</string>
+    <string name="permissions_photos_videos_description">Para buscar tus fotos y videos, <xliff:g id="name" example="My App">%1$s</xliff:g> necesita permiso para acceder a tu biblioteca de medios.</string>
+    <string name="permissions_photos_videos_full">¿Acceder a toda tu biblioteca multimedia?</string>
+    <string name="permissions_photos_videos_full_description">Para buscar en todas tus fotos y videos, <xliff:g id="name" example="My App">%1$s</xliff:g> necesita acceso completo a tu biblioteca de medios.</string>
+    <string name="permissions_photos_videos_grant_full">Otorgar permisos completos de medios</string>
+    <string name="permissions_photos_videos_manage_selected">Gestionar elementos seleccionados</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage">Acceso de almacenamiento externo necesario</string>
+    <string name="permissions_external_storage_description">Para buscar en tus archivos, <xliff:g id="name" example="My App">%1$s</xliff:g> necesita permiso para acceder al almacenamiento externo del dispositivo.</string>
+    <string name="permissions_manage_storage">Permiso para gestionar mantenimiento necesario</string>
+    <string name="permissions_manage_storage_description">Para mostrar tus archivos en los resultados de búsqueda, <xliff:g id="name" example="My App">%1$s</xliff:g> requiere permiso para administrar todos los archivos de tu dispositivo. Este permiso se utiliza únicamente para listar archivos y no se utilizará para leer o cambiar el contenido de sus archivos personales.</string>
+    <string name="permission_desc_wallpaper_base">Para mostrar las vistas previas del fondo de pantalla e incluirlas en las copias de seguridad, <xliff:g id="name" example="My App">%1$s</xliff:g> requiere permiso %2$s. Esto se debe a limitaciones del sistema para acceder a los datos de fondos de pantalla.</string>
+    <string name="permission_desc_ending_read_all_files">para leer todos los archivos de tu dispositivo</string>
+    <string name="permission_desc_ending_manage_all_files">para administrar todos los archivos en tu dispositivo</string>
+    <string name="permission_desc_wallpaper_multiple">Se necesitan varios permisos</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Para mostrar las vistas previas del fondo de pantalla e incluirlas en las copias de seguridad, <xliff:g id="name" example="My App">%1$s</xliff:g> requiere los siguientes permisos. Esto se debe a limitaciones del sistema para acceder a los datos de fondos de pantalla.</string>
+    <string name="permission_label_manage_all_files">Administrar todos los archivos del dispositivo</string>
+    <string name="permission_label_read_photos_videos">Leer fotos y videos</string>
+    <string name="manage_storage_access_denied_title">No se puede habilitar la gestión de acceso de almacenamiento</string>
+    <string name="manage_storage_access_denied_description">Debido a la política de Play Store, <xliff:g id="name" example="My App">%1$s</xliff:g> no puede solicitar acceso completo de almacenamiento aquí. Para acceder a todos los archivos, descargue <xliff:g id="name" example="My App">%1$s</xliff:g> de GitHub. Alternativamente, puede permitir el acceso a fotos, vídeos y archivos de audio individualmente en ajustes.</string>
     <string name="open_permission_settings">Abrir ajustes</string>
     <string name="grant_requested_permissions">Conceder permisos</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">Se necesitan permisos</string>
+    <string name="grant_requested_permissions_tap">Pulse para conceder permisos</string>
 </resources>

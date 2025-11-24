@@ -539,6 +539,7 @@
     <string name="gesture_handler_sleep">Sleep</string>
     <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">Open notification panel</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Open app</string>
     <string name="gesture_handler_open_app_config">Open %1$s</string>
     <string name="gesture_handler_open_app_drawer">Open app drawer</string>
@@ -549,15 +550,18 @@
     <string name="pick_app_for_gesture">Pick app</string>
 
     <string name="dt2s_admin_hint_title">Admin permissions required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
-
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
 
     <string name="d2ts_recents_a11y_hint_title">Turn on accessibility service</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
-    <string name="dt2s_recents_warning_open_settings">Open settings</string>
 
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
 
     <!--
 

@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           submodules: true
       - uses: actions/setup-java@v5
@@ -63,7 +63,7 @@ jobs:
   check-style:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           submodules: true
       - uses: actions/setup-java@v5
@@ -78,7 +78,7 @@ jobs:
     if: github.repository_owner == 'LawnchairLauncher'
     needs: build-debug-apk
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           submodules: true
           fetch-depth: 0
@@ -125,7 +125,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v6
         with:
           name: Debug APK

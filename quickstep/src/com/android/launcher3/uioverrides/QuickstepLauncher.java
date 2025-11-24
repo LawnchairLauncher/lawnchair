@@ -955,14 +955,13 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
 
     @Override
     protected void registerBackDispatcher() {
-        if (Utilities.ATLEAST_T) {
+        if (Utilities.ATLEAST_U) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                     OnBackInvokedDispatcher.PRIORITY_DEFAULT,
                     new FlingOnBackAnimationCallback() {
 
                         @Nullable OnBackAnimationCallback mActiveOnBackAnimationCallback;
     
-                        @RequiresApi(api = VERSION_CODES.UPSIDE_DOWN_CAKE)
                         @Override
                         public void onBackStartedCompat(@NonNull BackEvent backEvent) {
                             if (mActiveOnBackAnimationCallback != null) {
@@ -972,7 +971,6 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                             mActiveOnBackAnimationCallback.onBackStarted(backEvent);
                         }
 
-                        @RequiresApi(VERSION_CODES.UPSIDE_DOWN_CAKE)
                         @Override
                         public void onBackInvokedCompat() {
                             // Recreate mActiveOnBackAnimationCallback if necessary to avoid NPE
@@ -989,7 +987,6 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                             TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
                         }
 
-                        @RequiresApi(api = VERSION_CODES.UPSIDE_DOWN_CAKE)
                         @Override
                         public void onBackProgressedCompat(@NonNull BackEvent backEvent) {
                             if (!FeatureFlags.IS_STUDIO_BUILD
@@ -999,7 +996,6 @@ public class QuickstepLauncher extends Launcher implements RecentsViewContainer,
                             mActiveOnBackAnimationCallback.onBackProgressed(backEvent);
                         }
 
-                        @RequiresApi(api = VERSION_CODES.UPSIDE_DOWN_CAKE)
                         @Override
                         public void onBackCancelledCompat() {
                             if (!FeatureFlags.IS_STUDIO_BUILD
