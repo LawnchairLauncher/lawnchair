@@ -160,7 +160,7 @@ public class QsbContainerView extends FrameLayout {
     }
 
     protected void setPaddingUnchecked(int left, int top, int right, int bottom) {
-        super.setPadding(left, top, right, bottom);
+        super.setPadding(0, 0, 0, 0);
     }
 
     /**
