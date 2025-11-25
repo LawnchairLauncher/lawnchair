@@ -127,6 +127,12 @@ fun HomeScreenPreferences(
                 label = stringResource(id = R.string.show_sys_ui_scrim),
             )
         }
+        PreferenceGroup(heading = stringResource(id = R.string.infinite_scrolling)) {
+            SwitchPreference(
+                prefs.infiniteScrolling.getAdapter(),
+                label = stringResource(id = R.string.infinite_scrolling_label),
+            )
+        }
         PreferenceGroup(heading = stringResource(id = R.string.layout)) {
             val columns by prefs.workspaceColumns.getAdapter()
             val rows by prefs.workspaceRows.getAdapter()
