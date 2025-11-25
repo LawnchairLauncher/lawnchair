@@ -62,7 +62,9 @@ internal class Evaluator : ExprVisitor<BigDecimal> {
 
         return when (expr.operator.type) {
             BAR_BAR -> left or right
+
             AMP_AMP -> left and right
+
             else -> throw ExpressionException(
                 "Invalid logical operator '${expr.operator.lexeme}'",
             )
@@ -75,17 +77,29 @@ internal class Evaluator : ExprVisitor<BigDecimal> {
 
         return when (expr.operator.type) {
             PLUS -> left + right
+
             MINUS -> left - right
+
             STAR -> left * right
+
             SLASH -> left.divide(right, mathContext)
+
             MODULO -> left.remainder(right, mathContext)
+
             EXPONENT -> left pow right
+
             EQUAL_EQUAL -> (left == right).toBigDecimal()
+
             NOT_EQUAL -> (left != right).toBigDecimal()
+
             GREATER -> (left > right).toBigDecimal()
+
             GREATER_EQUAL -> (left >= right).toBigDecimal()
+
             LESS -> (left < right).toBigDecimal()
+
             LESS_EQUAL -> (left <= right).toBigDecimal()
+
             else -> throw ExpressionException(
                 "Invalid binary operator '${expr.operator.lexeme}'",
             )
@@ -99,9 +113,11 @@ internal class Evaluator : ExprVisitor<BigDecimal> {
             MINUS -> {
                 right.negate()
             }
+
             SQUARE_ROOT -> {
                 right.pow(BigDecimal(0.5))
             }
+
             else -> throw ExpressionException("Invalid unary operator")
         }
     }

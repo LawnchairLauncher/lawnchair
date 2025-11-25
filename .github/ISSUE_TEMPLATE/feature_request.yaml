@@ -1,7 +1,7 @@
 name: Feature request
 description: Suggest features you want the developers (or contributors) to make for the launcher.
 title: "[FEATURE] "
-labels: [feature-request]
+labels: [feature-request, 'status: needs triage']
 type: Feature
 body:
   - type: markdown
@@ -12,11 +12,11 @@ body:
         > If you wish to help triage Lawnchair's issues, visit [#4232](https://github.com/LawnchairLauncher/lawnchair/issues/4232) for more information.
         
         Thanks for taking the time to file this issue! Here are a few things to do before submitting:
-        1. Make sure you're on the [latest **nightly** version](https://github.com/LawnchairLauncher/lawnchair#development-builds) of the app.
-        2. [Read the FAQ](https://lawnchair.app/faq) to check if it's one of the common issues you can encounter in the launcher; if it is, please don't create an issue about it.
-        3. Search through **both** [open and closed issues](https://github.com/LawnchairLauncher/lawnchair/issues?q=is%3Aissue+sort%3Aupdated-desc+) for your bug.
+        1. Use the [**latest nightly version**](https://github.com/LawnchairLauncher/lawnchair#development-builds) when requesting.
+        2. [**Read the FAQ**](https://lawnchair.app/faq) to check if your request is already planned by the developers.
+        3. Search **both [open and closed issues](https://github.com/LawnchairLauncher/lawnchair/issues?q=is%3Aissue+sort%3Aupdated-desc+)** for your feature request.
 
-        Please keep in mind that we may not always implement this feature request.
+        Please keep in mind that **we may not always implement this feature request**.
 
   - type: textarea
     id: feature-description
@@ -37,9 +37,11 @@ body:
   - type: dropdown
     id: feature-in-version-two
     attributes:
-      label: Did the feature exist in Lawnchair v2? (Play Store version)
+      label: Did the feature exist in Lawnchair Legacy?
       description: |
-        If so, the feature might be already in the dev's to-do list and may be closed. See [this page](https://lawnchair.app/faq#can-you-return-x-feature-from-lawnchair-2) for more information.
+        See [this FAQ page](https://lawnchair.app/faq/#what-happened-to-lawnchair-legacy) for more info about Lawnchair Legacy, previously
+        known as Lawnchair 2.
+        
       options:
         - "Yes"
         - "No"

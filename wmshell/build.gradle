@@ -1,7 +1,7 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'com.google.devtools.ksp'
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -23,8 +23,8 @@ addFrameworkJar('framework-15.jar')
 compileOnlyCommonJars()
 
 dependencies {
-    implementation "com.google.dagger:hilt-android:$daggerVersion"
-    ksp "com.google.dagger:hilt-compiler:$daggerVersion"
-    implementation 'androidx.core:core-animation:1.0.0'
-    implementation 'androidx.dynamicanimation:dynamicanimation:1.1.0'
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+    implementation libs.androidx.core.animation
+    implementation libs.androidx.dynamicanimation
 }

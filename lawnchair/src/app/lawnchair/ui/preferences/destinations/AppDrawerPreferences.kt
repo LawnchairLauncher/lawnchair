@@ -97,6 +97,10 @@ fun AppDrawerPreferences(
                 valueRange = 0F..1F,
                 showAsPercentage = true,
             )
+            SwitchPreference(
+                label = stringResource(id = R.string.pref_all_apps_search_bar_background),
+                adapter = prefs2.appDrawerSearchBarBackground.getAdapter(),
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(

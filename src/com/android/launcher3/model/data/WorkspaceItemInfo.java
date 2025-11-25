@@ -193,14 +193,20 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         if (shortcutInfo.isEnabled()) {
             runtimeStatusFlags &= ~FLAG_DISABLED_BY_PUBLISHER;
         } else {
-            Log.w(TAG, "updateFromDeepShortcutInfo: Updated shortcut has been disabled. "
-                    + " package=" + shortcutInfo.getPackage()
-                    + " disabledReason=" + shortcutInfo.getDisabledReason());
+            if (Utilities.ATLEAST_P) {
+                Log.w(TAG, "updateFromDeepShortcutInfo: Updated shortcut has been disabled. "
+                        + " package=" + shortcutInfo.getPackage()
+                        + " disabledReason=" + shortcutInfo.getDisabledReason());
+            }
             runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
         }
 
-        if (shortcutInfo.getDisabledReason() == ShortcutInfo.DISABLED_REASON_VERSION_LOWER) {
-            runtimeStatusFlags |= FLAG_DISABLED_VERSION_LOWER;
+        if (Utilities.ATLEAST_P) {
+            if (shortcutInfo.getDisabledReason() == ShortcutInfo.DISABLED_REASON_VERSION_LOWER) {
+                runtimeStatusFlags |= FLAG_DISABLED_VERSION_LOWER;
+            } else {
+                runtimeStatusFlags &= ~FLAG_DISABLED_VERSION_LOWER;
+            }
         } else {
             runtimeStatusFlags &= ~FLAG_DISABLED_VERSION_LOWER;
         }

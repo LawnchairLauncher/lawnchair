@@ -131,7 +131,20 @@ public class InvariantDeviceProfile implements SafeCloseable {
         public int[] numFolderColumns;
         public float[] iconSize;
         public float[] iconTextSize;
+        /**
+         * Bitmap size for workspace icons. This is calculated independently from all apps
+         * to allow different icon size factors without affecting each other.
+         */
         public int iconBitmapSize;
+        /**
+         * Bitmap size for all apps icons. This is calculated independently from workspace
+         * to allow different icon size factors without affecting each other.
+         */
+        public int allAppsIconBitmapSize;
+        /**
+         * The icon density used for loading resources. This is based on the maximum of
+         * iconBitmapSize and allAppsIconBitmapSize to ensure adequate quality for both.
+         */
         public int fillResIconDpi;
         public static @DeviceType int deviceType;
 
@@ -441,8 +454,11 @@ public class InvariantDeviceProfile implements SafeCloseable {
                 for (int i = 1; i < allAppsIconSize.length; i++) {
                     maxAllAppsIconSize = Math.max(maxAllAppsIconSize, allAppsIconSize[i]);
                 }
-                iconBitmapSize = ResourceUtils.pxFromDp(Math.max(maxIconSize, maxAllAppsIconSize), metrics);
-                fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
+                // Calculate separate bitmap sizes for workspace and all apps
+                iconBitmapSize = ResourceUtils.pxFromDp(maxIconSize, metrics);
+                allAppsIconBitmapSize = ResourceUtils.pxFromDp(maxAllAppsIconSize, metrics);
+                // Use the larger of the two for fillResIconDpi to ensure we have adequate resources
+                fillResIconDpi = getLauncherIconDensity(Math.max(iconBitmapSize, allAppsIconBitmapSize));
 
                 iconTextSize = displayOption.textSizes;
 
@@ -548,7 +564,7 @@ public class InvariantDeviceProfile implements SafeCloseable {
         private Object[] toModelState() {
                 return new Object[]{
                         numColumns, numRows, numSearchContainerColumns, numDatabaseHotseatIcons,
-                        iconBitmapSize, fillResIconDpi, numDatabaseAllAppsColumns, dbFile};
+                        iconBitmapSize, allAppsIconBitmapSize, fillResIconDpi, numDatabaseAllAppsColumns, dbFile};
         }
 
         /** Updates IDP using the provided context. Notifies listeners of change. */

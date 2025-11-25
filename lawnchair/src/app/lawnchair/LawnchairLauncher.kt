@@ -128,12 +128,22 @@ class LawnchairLauncher : QuickstepLauncher() {
                 -> {
                     LawnchairApp.instance.restoreClockInStatusBar()
                 }
+
                 else -> {
                     workspace.updateStatusbarClock()
                 }
             }
         }
         override fun onStateTransitionComplete(finalState: LauncherState) {}
+    }
+    private val clearSearchStateListener = object : StateManager.StateListener<LauncherState> {
+        override fun onStateTransitionComplete(finalState: LauncherState) {
+            if (finalState == LauncherState.NORMAL && mAppsView != null && mAppsView.isSearching) {
+                mAppsView?.post {
+                    mAppsView.reset(false, true)
+                }
+            }
+        }
     }
 
     private lateinit var colorScheme: ColorScheme
@@ -158,6 +168,7 @@ class LawnchairLauncher : QuickstepLauncher() {
         preferenceManager2.enableFeed.get().distinctUntilChanged().onEach { enable ->
             defaultOverlay.setEnableFeed(enable)
         }.launchIn(scope = lifecycleScope)
+        launcher.stateManager.addStateListener(clearSearchStateListener)
 
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {
@@ -473,6 +484,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     private fun restartIfPending() {
         when {
             sRestartFlags and FLAG_RESTART != 0 -> lawnchairApp.restart(false)
+
             sRestartFlags and FLAG_RECREATE != 0 -> {
                 sRestartFlags = 0
                 recreate()

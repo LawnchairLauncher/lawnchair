@@ -185,6 +185,7 @@ fun CustomColorPicker(
                                 },
                             )
                         }
+
                         1 -> {
                             RgbColorPicker(
                                 selectedColor = selectedColor,

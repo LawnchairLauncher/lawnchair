@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.movableContentOf
@@ -26,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.lawnchair.deck.LawndeckManager
@@ -34,6 +38,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.controls.SwitchPreferenceWithPreview
+import app.lawnchair.util.BackHandler
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,21 +60,76 @@ fun HomeLayoutSettings(
     val coroutineScope = rememberCoroutineScope()
 
     var isLoading by remember { mutableStateOf(false) }
+    var loadingMessage by remember { mutableStateOf("") }
+
+    // Block back button when loading
+    if (isLoading) {
+        BackHandler {
+            // Prevent back button during loading - do nothing
+        }
+    }
+
+    // Show blocking loading dialog
+    if (isLoading) {
+        AlertDialog(
+            onDismissRequest = {
+                // Prevent dismissal during loading
+            },
+            title = {
+                Text(
+                    text = stringResource(R.string.home_lawn_deck_label_beta),
+                    textAlign = TextAlign.Center,
+                )
+            },
+            text = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.padding(bottom = 16.dp),
+                    )
+                    if (loadingMessage.isNotEmpty()) {
+                        Text(
+                            text = loadingMessage,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    } else {
+                        Text(
+                            text = "Please wait...",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {},
+        )
+    }
 
     SwitchPreferenceWithPreview(
         label = stringResource(R.string.layout),
         checked = deskLayout.state.value,
         onCheckedChange = { newValue ->
             isLoading = true
+            loadingMessage = ""
             deskLayout.onChange(newValue)
             if (newValue) {
                 coroutineScope.launch {
                     swipeUpGesture.onChange(GestureHandlerConfig.NoOp)
                     addNewAppToHome.onChange(true)
                     withContext(Dispatchers.IO) {
-                        deckManager.enableLawndeck()
-                        isLoading = false
+                        deckManager.enableLawndeck { message ->
+                            // Update on main thread using coroutine scope
+                            coroutineScope.launch(Dispatchers.Main) {
+                                loadingMessage = message
+                            }
+                        }
                     }
+                    isLoading = false
+                    loadingMessage = ""
                 }
             } else {
                 coroutineScope.launch {
@@ -77,6 +137,7 @@ fun HomeLayoutSettings(
                     withContext(Dispatchers.IO) {
                         deckManager.disableLawndeck()
                         isLoading = false
+                        loadingMessage = ""
                     }
                 }
             }

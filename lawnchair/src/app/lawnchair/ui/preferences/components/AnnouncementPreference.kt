@@ -131,6 +131,7 @@ private fun AnnouncementItemContent(
                 }
 
                 SwipeToDismissBoxValue.EndToStart -> return@rememberSwipeToDismissBoxState false
+
                 SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState false
             }
             return@rememberSwipeToDismissBoxState true
@@ -180,7 +181,9 @@ private fun AnnouncementItemContent(
 
 fun calculateAlpha(progress: Float): Float {
     return when {
-        progress < 0.5f -> 1f // Fully opaque until halfway
+        progress < 0.5f -> 1f
+
+        // Fully opaque until halfway
         else -> 1f - (progress - 0.5f) * 2 // Fade out linearly from halfway to the end
     }
 }

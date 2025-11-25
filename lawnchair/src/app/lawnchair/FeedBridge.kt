@@ -108,6 +108,7 @@ class FeedBridge(private val context: Context) {
         open fun isSigned(): Boolean {
             when {
                 BuildConfig.DEBUG -> return true
+
                 Utilities.ATLEAST_P -> {
                     val info =
                         context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
@@ -115,6 +116,7 @@ class FeedBridge(private val context: Context) {
                     if (signingInfo!!.hasMultipleSigners()) return false
                     return signingInfo.signingCertificateHistory.any { it.hashCode() == signatureHash }
                 }
+
                 else -> {
                     val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
                     return if (info.signatures!!.any { it.hashCode() != signatureHash }) false else info.signatures!!.isNotEmpty()

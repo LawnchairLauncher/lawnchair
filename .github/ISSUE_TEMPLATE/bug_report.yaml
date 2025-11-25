@@ -1,7 +1,7 @@
 name: Bug report
 description: Create a report to help us address issues you are facing with the app.
 title: "[BUG] "
-labels: [bug]
+labels: [bug, 'status: needs triage']
 type: Bug
 body:
   - type: markdown
@@ -12,9 +12,9 @@ body:
         > If you wish to help triage Lawnchair's issues, visit [#4232](https://github.com/LawnchairLauncher/lawnchair/issues/4232) for more information.
         
         Thanks for taking the time to file this issue! Here are a few things to do before submitting:
-        1. Make sure you're on the [latest **nightly** version](https://github.com/LawnchairLauncher/lawnchair#development-builds) of the app.
-        2. [Read the FAQ](https://lawnchair.app/faq) to check if it's one of the common issues you can encounter in the launcher; if it is, please don't create an issue about it.
-        3. Search through **both** [open and closed issues](https://github.com/LawnchairLauncher/lawnchair/issues?q=is%3Aissue+sort%3Aupdated-desc+) for your bug.
+        1. Use the [**latest nightly version**](https://github.com/LawnchairLauncher/lawnchair#development-builds) when reporting bugs.
+        2. [**Read the FAQ**](https://lawnchair.app/faq/#common-issues) for common issues; if it is, please don't create an issue about it.
+        3. Search **both [open and closed issues](https://github.com/LawnchairLauncher/lawnchair/issues?q=is%3Aissue+sort%3Aupdated-desc+)** for your bug.
 
   - type: textarea
     id: bug-description
@@ -28,11 +28,11 @@ body:
     id: steps-to-reproduce
     attributes:
       label: Steps to reproduce
-      description: Steps to reproduce the bug. Be specific on what steps you need to do to encounter this bug.
+      description: Steps to reproduce the bug. **Be specific** on what steps you need to do to encounter this bug.
       placeholder: |
         1. Go to '...'
         2. Click on '....'
-        3. Scroll down to '....'
+        3. Scroll down to '...'
         4. See error
     validations:
       required: true
@@ -68,9 +68,12 @@ body:
     id: app-version
     attributes:
       label: App version
-      description: Open Lawnchair settings > About to view the app version. On nightly builds, long-press the version name and paste the GitHub link here.
+      description: |
+        Open Lawnchair settings > About to view the app version.
+        
+        On nightly builds, **long-press** the version name and paste the GitHub link here.
       placeholder: |
-        14 Beta 3
+        15 Beta 1
     validations:
       required: true
 
@@ -78,7 +81,11 @@ body:
     id: additional-context
     attributes:
       label: Additional context
-      description: Add any other context about the problem here.
-      placeholder: If this is a crash report, you can paste or link the crash message in here.
+      description: |
+        Add any other context about the problem here.
+        
+        If this is a crash report, paste or link the crash message here.
+      placeholder: |
+        Crash log: https://katb.in/examplelink
     validations:
       required: false

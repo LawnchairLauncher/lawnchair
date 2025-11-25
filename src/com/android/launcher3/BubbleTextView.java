@@ -241,7 +241,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mActivity = ActivityContext.lookupContext(context);
-        FastBitmapDrawable.setFlagHoverEnabled(LawnchairApp.isRecentsEnabled() && enableCursorHoverStates());
+        FastBitmapDrawable.setFlagHoverEnabled(enableCursorHoverStates());
         pref2 = PreferenceManager2.getInstance(context);
 
         TypedArray a = context.obtainStyledAttributes(attrs,

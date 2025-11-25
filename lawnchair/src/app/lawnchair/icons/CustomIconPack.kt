@@ -95,6 +95,7 @@ class CustomIconPack(context: Context, packPackageName: String) : IconPack(conte
                             }
                         }
                     }
+
                     "dynamic-clock" -> {
                         val drawableName = parseXml["drawable"]
                         if (drawableName != null) {
@@ -154,6 +155,7 @@ class CustomIconPack(context: Context, packPackageName: String) : IconPack(conte
                     endCategory()
                     currentTitle = title
                 }
+
                 "item" -> {
                     val drawableName = parser["drawable"] ?: continue
                     val resId = getDrawableId(drawableName)

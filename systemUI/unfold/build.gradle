@@ -1,7 +1,7 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'com.google.devtools.ksp'
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -16,20 +16,21 @@ android {
             aidl.srcDirs = ['src']
         }
     }
-    ksp {
-        arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
-    }
+}
+
+ksp {
+    arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
 }
 
 addFrameworkJar('framework-15.jar')
 compileOnlyCommonJars()
 
 dependencies {
-    implementation "com.google.dagger:hilt-android:$daggerVersion"
-    ksp "com.google.dagger:hilt-compiler:$daggerVersion"
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
 
-    implementation "androidx.concurrent:concurrent-futures:1.3.0"
-    implementation "androidx.lifecycle:lifecycle-common:2.9.4"
+    implementation libs.androidx.concurrent.futures
+    implementation libs.androidx.lifecycle.common
 
     compileOnly projects.androidxLib
 }

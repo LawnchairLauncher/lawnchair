@@ -81,9 +81,11 @@ fun SmartspacePreferences(
                         LawnchairSmartspace -> {
                             LawnchairSmartspaceSettings(smartspaceProvider)
                         }
+
                         Smartspacer -> {
                             SmartspacerSettings()
                         }
+
                         else -> {}
                     }
                 }

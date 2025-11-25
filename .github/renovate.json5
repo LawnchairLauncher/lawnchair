@@ -6,37 +6,4 @@
     labels: [
         'dependencies',
     ],
-    packageRules: [
-        {
-            groupName: 'Kotlin and KSP',
-            matchPackageNames: [
-                'com.google.devtools.ksp{/,}**',
-                '/org.jetbrains.kotlin.*/'
-            ],
-        },
-        {
-            groupName: 'AGP',
-            matchPackageNames: [
-                '/com.android.*/',
-            ],
-        },
-        {
-            groupName: 'dev.rikka.tools.refine',
-            matchPackageNames: [
-                'dev.rikka.tools.refine{/,}**',
-            ],
-        },
-        {
-            groupName: 'androidx.lifecycle',
-            matchPackageNames: [
-                '/androidx.lifecycle:*/',
-            ],
-        },
-        {
-            groupName: 'Dagger',
-            matchPackageNames: [
-                'com.google.dagger{/,}**',
-            ],
-        },
-    ],
 }
