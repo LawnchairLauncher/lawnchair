@@ -49,18 +49,18 @@
     <string name="pro_updated">¡Tienes la última versión!</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Actualizaciones</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
+    <string name="changes_dialog_error">Error al cargar cambios</string>
     <string name="changes_dialog_no_changes">No se encontraron cambios</string>
-    <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_build_format">Compilar #%1$d → #%2$d</string>
+    <string name="changes_dialog_commit_info">por %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">justo ahora</string>
-    <string name="time_minutes_ago">%dm</string>
+    <string name="time_minutes_ago">%dmin</string>
     <string name="time_hours_ago">%dh</string>
     <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_weeks_ago">%ds</string>
+    <string name="time_months_ago">%dmes</string>
+    <string name="time_years_ago">%daño</string>
     <string name="managed_by_lawnchair">Gestionado por Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferencias</string>
@@ -91,7 +91,7 @@
     <string name="wallpaper">Fondo de pantalla</string>
     <string name="style">Estilo</string>
     <string name="background_opacity">Opacidad del fondo</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">Fondo separado de la barra de búsqueda</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Copiado al portapapeles</string>
     <string name="calculator_search_result_copied_toast">Resultado copiado al portapapeles</string>
@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Reiniciar Lawnchair</string>
     <string name="experimental_features_label">Funciones experimentales</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Tipografía personalizada</string>
     <string name="font_picker_description">Algunos textos permanecen sin cambios</string>
     <string name="smartspace_calendar_label">Personalizar calendario en «un vistazo»</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Aumenta el tamaño máximo de la cuadrícula de pantalla de inicio de 10 x 10 a 20 x 20</string>
     <string name="always_reload_icons_label">Recargar siempre los iconos</string>
     <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Gestos al deslizar el dedo sobre iconos</string>
     <string name="icon_swipe_gestures_description">Realiza acciones al deslizar a la izquierda o derecha en los iconos en lugar de mover la pantalla de inicio</string>
     <string name="show_deck_layout">Diseño de colección</string>
     <string name="show_deck_layout_description">Mostrar una opción de diseño para ocultar el cajón de aplicaciones y agregar automáticamente nuevas aplicaciones a la pantalla de inicio</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Bloqueo/desbloqueo</string>
     <string name="recents_lock_unlock_description">Evita que la aplicación seleccionada se cierre al presionar «Borrar todo»</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">Cuadrado</string>
     <string name="icon_shape_squircle">Círculo encuadrado</string>
     <string name="icon_shape_teardrop">Lágrima</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Galleta (4 lados)</string>
     <string name="icon_shape_seven_sided_cookie">Galleta (7 lados)</string>
     <string name="icon_shape_arch">Arco</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriano</string>
     <string name="smartspace_calendar_persian">Persa</string>
+    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Cargando</string>
     <string name="smartspace_battery_full">Cargado</string>
     <string name="smartspace_battery_low">Batería baja</string>
@@ -408,6 +423,7 @@
     <string name="gesture_handler_sleep">Apagar la pantalla</string>
     <string name="gesture_handler_recents">Abrir aplicaciones recientes</string>
     <string name="gesture_handler_open_notifications">Abrir panel de notificaciones</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Abrir aplicación</string>
     <string name="gesture_handler_open_app_config">Abrir %1$s</string>
     <string name="gesture_handler_open_app_drawer">Abrir cajón de aplicaciones</string>
@@ -416,12 +432,15 @@
     <string name="gesture_handler_open_assistant">Abrir asistente</string>
     <string name="pick_app_for_gesture">Elegir aplicación</string>
     <string name="dt2s_admin_hint_title">Se necesitan permisos de administrador</string>
-    <string name="dt2s_admin_hint">Para hacer que funcione el doble toque para apagar pantalla, establece Lawnchair como aplicación del administrador de dispositivos. Pulsa en «Abrir ajustes», luego en «Activar esta aplicación de administrador de dispositivos».</string>
-    <string name="dt2s_admin_warning">Se desactivará el doble toque para apagar la pantalla.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Activar el servicio de accesibilidad</string>
-    <string name="dt2s_a11y_hint">Para hacer que funcione el doble toque para apagar pantalla activa el servicio de accesibilidad de Lawnchair. Pulsa en «Abrir ajustes», elige «Lawnchair» y activa «Usar Lawnchair». \n\nLawnchair solo utiliza el método `performGlobalAction` de la función de accesibilidad para realizar esta acción. Este es un permiso muy amplio que permite controlar otras aplicaciones, pero Lawnchair no hace nada más, ni recibe eventos.</string>
-    <string name="dt2s_recents_warning_open_settings">Abrir ajustes</string>
-    <string name="recents_a11y_hint">Para hacer que funcione «Aplicaciones recientes» activa el servicio de accesibilidad de Lawnchair. Pulsa en «Abrir ajustes», elige «Lawnchair» y activa «Usar Lawnchair». \n\nLawnchair solo utiliza el método `performGlobalAction` de la función de accesibilidad para realizar esta acción. Este es un permiso muy amplio que permite controlar otras aplicaciones, pero Lawnchair no hace nada más, ni recibe eventos.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -464,10 +483,6 @@
     <string name="home_screen_unlock">Desbloquear pantalla de inicio</string>
     <string name="home_screen_locked">La pantalla de inicio está bloqueada</string>
     <string name="home_screen_lock_description">Evita cambiar sin querer la disposición de la pantalla de inicio</string>
-    <string name="show_dot_pagination_label">Mostrar paginación de puntos</string>
-    <string name="show_dot_pagination_description">Usar puntos en vez de líneas para mostrar el número de página</string>
-    <string name="show_material_u_popup_label">Usar nuevo estilo de ventana emergente</string>
-    <string name="show_material_u_popup_description">Usar el estilo de «Material You» animado y minimalista para los menús emergentes</string>
     <string name="popup_menu">Menú emergente</string>
     <string name="popup_menu_items">Elementos del menú emergente</string>
     <string name="edit_menu_items">Editar los elementos del menú emergente</string>
@@ -609,9 +624,9 @@
     <string name="search_algorithm_global_search_via_asi">Búsqueda global (a través de ASI)</string>
     <string name="custom_search_label">Nombre del buscador</string>
     <string name="custom_search_url">URL del buscador</string>
-    <string name="custom_search_suggestions_url">Search suggestions URL</string>
+    <string name="custom_search_suggestions_url">URL de sugerencias de búsqueda</string>
     <string name="custom_search_input_hint">&#37;s se reemplazará con la consulta de búsqueda</string>
-    <string name="custom_search_suggestions_hint">&#37;s will be replaced with the search query. Results must be in JSON OpenSearch format.</string>
+    <string name="custom_search_suggestions_hint">&#37;s se reemplazará con tu búsqueda. Los resultados deben estar en formato JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
     <string name="show_search_result_types">Mostrar en los resultados de búsqueda</string>
     <string name="search_pref_result_apps_and_shortcuts_title">Aplicaciones y accesos directos</string>
@@ -649,30 +664,30 @@
     <string name="warn_contact_permission_title">El permiso CONTACTOS es necesario</string>
     <string name="warn_contact_permission_content">Para buscar contactos, debes otorgar el permiso CONTACTOS Y TELÉFONO a <xliff:g id="name" example="My App">%1$s</xliff:g></string>
     <string name="permissions_music_audio">Se necesita acceso a música y audio</string>
-    <string name="permissions_music_audio_description">To search your music and other audio files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
+    <string name="permissions_music_audio_description">Para buscar su música y otros archivos de audio, <xliff:g id="name" example="My App">%1$s</xliff:g> necesita permiso para acceder a su biblioteca de medios.</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Photos and videos access needed</string>
-    <string name="permissions_photos_videos_description">To search your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your media library.</string>
-    <string name="permissions_photos_videos_full">Access your full media library?</string>
-    <string name="permissions_photos_videos_full_description">To search all your photos and videos, <xliff:g id="name" example="My App">%1$s</xliff:g> needs full access to your media library.</string>
-    <string name="permissions_photos_videos_grant_full">Grant full media permissions</string>
-    <string name="permissions_photos_videos_manage_selected">Manage selected items</string>
+    <string name="permissions_photos_videos">Acceso de fotos y videos necesario</string>
+    <string name="permissions_photos_videos_description">Para buscar tus fotos y videos, <xliff:g id="name" example="My App">%1$s</xliff:g> necesita permiso para acceder a tu biblioteca de medios.</string>
+    <string name="permissions_photos_videos_full">¿Acceder a toda tu biblioteca multimedia?</string>
+    <string name="permissions_photos_videos_full_description">Para buscar en todas tus fotos y videos, <xliff:g id="name" example="My App">%1$s</xliff:g> necesita acceso completo a tu biblioteca de medios.</string>
+    <string name="permissions_photos_videos_grant_full">Otorgar permisos completos de medios</string>
+    <string name="permissions_photos_videos_manage_selected">Gestionar elementos seleccionados</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">External storage access needed</string>
-    <string name="permissions_external_storage_description">To search your files, <xliff:g id="name" example="My App">%1$s</xliff:g> needs permission to access your device\'s external storage.</string>
-    <string name="permissions_manage_storage">Manage storage access needed</string>
-    <string name="permissions_manage_storage_description">To display your files in search results, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission to manage all files on your device. This permission is used solely to list files and will not be used to read or change the content of your personal files.</string>
-    <string name="permission_desc_wallpaper_base">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires permission %2$s. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_desc_ending_read_all_files">to read all files on your device</string>
-    <string name="permission_desc_ending_manage_all_files">to manage all files on your device</string>
-    <string name="permission_desc_wallpaper_multiple">Multiple permissions needed</string>
-    <string name="permission_desc_wallpaper_multiple_desc">To display wallpaper previews and include them in backups, <xliff:g id="name" example="My App">%1$s</xliff:g> requires the following permissions. This is due to system limitations for accessing wallpaper data.</string>
-    <string name="permission_label_manage_all_files">Manage all files on device</string>
-    <string name="permission_label_read_photos_videos">Read photos and videos</string>
-    <string name="manage_storage_access_denied_title">Cannot enable manage storage access</string>
-    <string name="manage_storage_access_denied_description">Due to Play Store policy, <xliff:g id="name" example="My App">%1$s</xliff:g> cannot request full storage access here. To access all files, please download <xliff:g id="name" example="My App">%1$s</xliff:g> from GitHub. Alternatively, you can grant access to photos, videos, and audio files individually in settings.</string>
+    <string name="permissions_external_storage">Acceso de almacenamiento externo necesario</string>
+    <string name="permissions_external_storage_description">Para buscar en tus archivos, <xliff:g id="name" example="My App">%1$s</xliff:g> necesita permiso para acceder al almacenamiento externo del dispositivo.</string>
+    <string name="permissions_manage_storage">Permiso para gestionar mantenimiento necesario</string>
+    <string name="permissions_manage_storage_description">Para mostrar tus archivos en los resultados de búsqueda, <xliff:g id="name" example="My App">%1$s</xliff:g> requiere permiso para administrar todos los archivos de tu dispositivo. Este permiso se utiliza únicamente para listar archivos y no se utilizará para leer o cambiar el contenido de sus archivos personales.</string>
+    <string name="permission_desc_wallpaper_base">Para mostrar las vistas previas del fondo de pantalla e incluirlas en las copias de seguridad, <xliff:g id="name" example="My App">%1$s</xliff:g> requiere permiso %2$s. Esto se debe a limitaciones del sistema para acceder a los datos de fondos de pantalla.</string>
+    <string name="permission_desc_ending_read_all_files">para leer todos los archivos de tu dispositivo</string>
+    <string name="permission_desc_ending_manage_all_files">para administrar todos los archivos en tu dispositivo</string>
+    <string name="permission_desc_wallpaper_multiple">Se necesitan varios permisos</string>
+    <string name="permission_desc_wallpaper_multiple_desc">Para mostrar las vistas previas del fondo de pantalla e incluirlas en las copias de seguridad, <xliff:g id="name" example="My App">%1$s</xliff:g> requiere los siguientes permisos. Esto se debe a limitaciones del sistema para acceder a los datos de fondos de pantalla.</string>
+    <string name="permission_label_manage_all_files">Administrar todos los archivos del dispositivo</string>
+    <string name="permission_label_read_photos_videos">Leer fotos y videos</string>
+    <string name="manage_storage_access_denied_title">No se puede habilitar la gestión de acceso de almacenamiento</string>
+    <string name="manage_storage_access_denied_description">Debido a la política de Play Store, <xliff:g id="name" example="My App">%1$s</xliff:g> no puede solicitar acceso completo de almacenamiento aquí. Para acceder a todos los archivos, descargue <xliff:g id="name" example="My App">%1$s</xliff:g> de GitHub. Alternativamente, puede permitir el acceso a fotos, vídeos y archivos de audio individualmente en ajustes.</string>
     <string name="open_permission_settings">Abrir ajustes</string>
     <string name="grant_requested_permissions">Conceder permisos</string>
-    <string name="permissions_needed">Permissions needed</string>
-    <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <string name="permissions_needed">Se necesitan permisos</string>
+    <string name="grant_requested_permissions_tap">Pulse para conceder permisos</string>
 </resources>

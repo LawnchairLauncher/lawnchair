@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="experimental_features_label">實驗性功能</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">自訂字體</string>
     <string name="font_picker_description">部分文字維持原樣</string>
     <string name="smartspace_calendar_label">自訂資訊一覽日曆</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">提高主畫面網格最多 10 x 10 的限制至 20 x 20</string>
     <string name="always_reload_icons_label">一律重新載入圖示</string>
     <string name="always_reload_icons_description">避免使用圖示套件中已快取的圖示</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">滑動圖示手勢</string>
     <string name="icon_swipe_gestures_description">配置於圖示上向左/右滑動時的動作以取代移動主畫面</string>
     <string name="show_deck_layout">平面模式</string>
     <string name="show_deck_layout_description">顯示版面選項以隱藏應用程式抽屜並自動將項目加到主畫面</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">鎖定/解鎖</string>
     <string name="recents_lock_unlock_description">按下 \"全部清除\" 時略過已選取的應用程式</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">方形</string>
     <string name="icon_shape_squircle">方圓形</string>
     <string name="icon_shape_teardrop">水滴形</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">公曆</string>
     <string name="smartspace_calendar_persian">伊朗曆</string>
+    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s、%2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">充電中</string>
     <string name="smartspace_battery_full">已完全充飽</string>
     <string name="smartspace_battery_low">低電量</string>
@@ -408,6 +423,7 @@
     <string name="gesture_handler_sleep">休眠</string>
     <string name="gesture_handler_recents">開啟最近使用畫面</string>
     <string name="gesture_handler_open_notifications">開啟通知面板</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">開啟應用程式</string>
     <string name="gesture_handler_open_app_config">開啟 %1$s</string>
     <string name="gesture_handler_open_app_drawer">開啟應用程式抽屜</string>
@@ -416,12 +432,15 @@
     <string name="gesture_handler_open_assistant">開啟助理</string>
     <string name="pick_app_for_gesture">選擇應用程式</string>
     <string name="dt2s_admin_hint_title">需要管理員權限</string>
-    <string name="dt2s_admin_hint">如要使用輕觸兩下休眠，請將 Lawnchair 設為裝置管理員應用程式。按下 \"開啟設定\" 然後選擇 \"啟用這個裝置管理員應用程式\"。</string>
-    <string name="dt2s_admin_warning">將會停用輕觸兩下休眠。</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">啟用無障礙服務</string>
-    <string name="dt2s_a11y_hint">如要使用輕觸兩下休眠，請啟用 Lawnchair 無障礙服務。按下 \"開啟設定\" 選擇 \"Lawnchair\"，再開啟 \"使用 Lawnchair\" 控制項。\n\nLawnchair 使用 performGlobalAction 無障礙服務執行這項動作。此為允許監控其他應用程式的敏感權限，然而 Lawnchair 並未配置與接收任何事件。</string>
-    <string name="dt2s_recents_warning_open_settings">開啟設定</string>
-    <string name="recents_a11y_hint">如要開啟最近使用畫面，請啟用 Lawnchair 無障礙服務。按下 \"開啟設定\" 選擇 \"Lawnchair\"，再開啟 \"使用 Lawnchair\" 控制項。\n\nLawnchair 使用 performGlobalAction 無障礙服務執行這項動作。此為允許監控其他應用程式的敏感權限，然而 Lawnchair 並未配置與接收任何事件。</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -464,10 +483,6 @@
     <string name="home_screen_unlock">解鎖主畫面版面</string>
     <string name="home_screen_locked">主畫面版面已鎖定</string>
     <string name="home_screen_lock_description">防止主畫面版面更動</string>
-    <string name="show_dot_pagination_label">顯示圓點頁面指示器</string>
-    <string name="show_dot_pagination_description">以小圓點取代線狀頁面指示器</string>
-    <string name="show_material_u_popup_label">使用新的彈出樣式</string>
-    <string name="show_material_u_popup_description">使用 Material You 輕彈的選單樣式</string>
     <string name="popup_menu">彈出選單</string>
     <string name="popup_menu_items">彈出選單項目</string>
     <string name="edit_menu_items">編輯彈出選單項目</string>

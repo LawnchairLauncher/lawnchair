@@ -79,10 +79,12 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
                 allowLongClick = false
                 bindFromAction(target, iconComponentKey == null)
             }
+
             target.shortcutInfo != null -> {
                 allowLongClick = true
                 bindFromShortcutInfo(target.shortcutInfo)
             }
+
             else -> {
                 allowLongClick = true
                 val className = extras.getString("class").orEmpty()
@@ -207,7 +209,9 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
             info.bitmap = when {
                 info.hasFlags(SearchActionItemInfo.FLAG_PRIMARY_ICON_FROM_TITLE) ->
                     li.createIconBitmap("${info.title}", packageIcon.color)
+
                 icon == null -> packageIcon
+
                 else -> icon.loadDrawable(context)?.let { li.createBadgedIconBitmap(it, BaseIconFactory.IconOptions().setUser(info.user)) }
             }
             if (info.hasFlags(SearchActionItemInfo.FLAG_BADGE_WITH_COMPONENT_NAME) && target.extras.containsKey("class")) {

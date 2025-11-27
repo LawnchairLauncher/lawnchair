@@ -30,6 +30,7 @@ class InterceptingViewPager @JvmOverloads constructor(
                     postDelayed(longPressCallback, ViewConfiguration.getLongPressTimeout().toLong())
                 }
             }
+
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 cancelScheduledLongPress()
             }

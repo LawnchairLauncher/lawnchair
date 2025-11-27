@@ -368,8 +368,10 @@ class PhysicsAnimator<T> private constructor(target: T) {
             flingConfigCopy.startVelocity = when {
                 distanceToDestination > 0f && startVelocity >= 0f ->
                     max(velocityToReachDestination, startVelocity)
+
                 distanceToDestination < 0f && startVelocity <= 0f ->
                     min(velocityToReachDestination, startVelocity)
+
                 else -> startVelocity
             }
 

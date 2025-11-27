@@ -73,10 +73,15 @@ class SharedPreferencesMigration(private val context: Context) {
             val newKey = keys[key] ?: key
             when (value) {
                 is Boolean -> mutablePreferences[booleanPreferencesKey(newKey)] = value
+
                 is Float -> mutablePreferences[floatPreferencesKey(newKey)] = value
+
                 is Int -> mutablePreferences[intPreferencesKey(newKey)] = value
+
                 is Long -> mutablePreferences[longPreferencesKey(newKey)] = value
+
                 is String -> mutablePreferences[stringPreferencesKey(newKey)] = value
+
                 is Set<*> -> {
                     mutablePreferences[stringSetPreferencesKey(newKey)] = value as Set<String>
                 }
