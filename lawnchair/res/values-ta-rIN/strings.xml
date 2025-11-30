@@ -147,10 +147,6 @@
     <string name="debug_restart_launcher">Lawnchairஐ மறுதுவக்கு</string>
     <string name="experimental_features_label">பரீட்சார்த்த அம்சங்கள்</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">எழுத்துரு தனிப்பயனாக்கம்</string>
     <string name="font_picker_description">சில உரைகள் மாறாமல் இருக்கும்</string>
     <string name="smartspace_calendar_label">கிளான்ஸ் காலண்டரை தனிப்பயனாக்குதல்</string>
@@ -159,16 +155,10 @@
     <string name="workspace_increase_max_grid_size_description">முகப்பு திரையின் அனுமதிக்கப்பட்ட கிரிட் அளவான 10x10-இல் இருந்து 20x20-ஆக உயர்த்து</string>
     <string name="always_reload_icons_label">எப்போதும் சின்னங்களை மீண்டும் ஏற்று</string>
     <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Icon swipe gestures</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">பூட்டு/திறத்தல்</string>
     <string name="recents_lock_unlock_description">\"அனைத்தையும் அழி\" என்பதை அழுத்தும்போது தேர்ந்தெடுக்கப்பட்ட பயன்பாட்டை மூடுவதைத் தடுக்கவும்</string>
     <!--Overlay-->
@@ -232,9 +222,7 @@
     <string name="icon_shape_square">சதுரம்</string>
     <string name="icon_shape_squircle">சதுரவட்டம்</string>
     <string name="icon_shape_teardrop">கண்ணீர் துளி</string>
-    <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -327,11 +315,8 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">கிரிகோரியன்</string>
     <string name="smartspace_calendar_persian">பெர்சிய</string>
-    <string name="smartspace_calendar_buddhist">Buddhist</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">மின் ஏறுகிறது</string>
     <string name="smartspace_battery_full">மின் ஏறியது</string>
     <string name="smartspace_battery_low">பேட்டரி குறைவு</string>
@@ -423,7 +408,6 @@
     <string name="gesture_handler_sleep">தூங்கு</string>
     <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">அறிவிப்பு பேனலைத் திறக்கவும்</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">செயலியைத் திற</string>
     <string name="gesture_handler_open_app_config">%1$s திற</string>
     <string name="gesture_handler_open_app_drawer">ஆப் ட்ரையர் திற</string>
@@ -432,15 +416,12 @@
     <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">செயலியைத் தேர்ந்தெடு</string>
     <string name="dt2s_admin_hint_title">நிர்வாக அனுமதி தேவை</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">அணைக்க இரட்டைத்தட்டலைப் பயன்படுத்த Lawnchairஐச் சாதன நிர்வாகிச் செயலியாக அமை. அமைப்பைத் திற என்பதைத் தட்டி, “இந்தச் சாதன நிர்வாகி ஆப்ஸைச் செயல்படுத்து” என்பதைத் தட்டுக</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="d2ts_recents_a11y_hint_title">அணுகல்தன்மை சேவையை இயக்கு</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_recents_warning_open_settings">அமைப்புகளைத் திற</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -483,6 +464,10 @@
     <string name="home_screen_unlock">முகப்பு திரையைத் திறக்கவும்</string>
     <string name="home_screen_locked">முகப்புத் திரை பூட்டப்பட்டுள்ளது</string>
     <string name="home_screen_lock_description">முகப்புத் திரை தளவமைப்பில் மாற்றங்களைத் தடுக்கவும்</string>
+    <string name="show_dot_pagination_label">புள்ளி பக்கங்களைக் காட்டு</string>
+    <string name="show_dot_pagination_description">பக்க எண்ணைக் காட்ட கோடுகளுக்குப் பதிலாகப் புள்ளிகளைப் பயன்படுத்தவும்</string>
+    <string name="show_material_u_popup_label">புதிய பாப்அப் பாணியைப் பயன்படுத்து</string>
+    <string name="show_material_u_popup_description">மெட்டீரியல் யூ துள்ளல் மற்றும் சற்று ஒருங்கிணைக்கப்பட்ட பாப்-அப் பாணியைப் பயன்படுத்தவும்</string>
     <string name="popup_menu">பாப்அப் மெனு</string>
     <string name="popup_menu_items">Pop-up menu items</string>
     <string name="edit_menu_items">Edit pop-up menu items</string>

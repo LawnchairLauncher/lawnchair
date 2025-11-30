@@ -1,5 +1,6 @@
 package app.lawnchair.smartspace
 
+import android.app.ActivityOptions
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.util.Log
 import android.view.View
 import app.lawnchair.smartspace.model.SmartspaceAction
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 object BcSmartSpaceUtil {
     fun getIconDrawable(icon: Icon?, context: Context): Drawable? {
@@ -27,6 +29,12 @@ object BcSmartSpaceUtil {
         onClickListener: View.OnClickListener? = null,
         str: String?,
     ) {
+        val options = ActivityOptions.makeBasic()
+        if (Utilities.ATLEAST_U) {
+            options.setPendingIntentBackgroundActivityStartMode(
+                ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED,
+            )
+        }
         if (view == null || action == null) {
             Log.e(str, "No tap action can be set up")
             return
@@ -36,7 +44,11 @@ object BcSmartSpaceUtil {
                 if (action.intent != null) {
                     view.context.startActivity(action.intent)
                 } else if (action.pendingIntent != null) {
-                    action.pendingIntent.send()
+                    if (Utilities.ATLEAST_U) {
+                        action.pendingIntent.send(options.toBundle())
+                    } else {
+                        action.pendingIntent.send()
+                    }
                 } else if (action.onClick != null) {
                     action.onClick.run()
                 }
