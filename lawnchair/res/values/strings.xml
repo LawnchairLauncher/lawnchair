@@ -586,8 +586,8 @@
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
     
-    <string name="infinite_scrolling">Infinite scrolling</string>
-    <string name="infinite_scrolling_label">Allow looping through the homescreen pages.</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_descriptions">Swipe to loop between the first and last pages</string>
     
     <string name="home_screen_grid">Home screen grid</string>
     <string name="home_screen_lock">Lock home screen</string>
