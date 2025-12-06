@@ -83,7 +83,12 @@ public class WorkProfileManager extends UserProfileManager
                 }
                 // https://github.com/LawnchairLauncher/lawnchair/issues/3145
                 try {
-                    mUserManager.requestQuietModeEnabled(!enabled, userProfile);
+                    // Pass null as the target Intent to skip credential challenge/authentication prompt
+                    if (Utilities.ATLEAST_P) {
+                        mUserManager.requestQuietModeEnabled(!enabled, userProfile, null);
+                    } else {
+                        mUserManager.requestQuietModeEnabled(!enabled, userProfile);
+                    }
                 } catch (RuntimeException e) {
                     Log.e(TAG, "Failed to set quiet mode for user " + userProfile, e);
                 }
