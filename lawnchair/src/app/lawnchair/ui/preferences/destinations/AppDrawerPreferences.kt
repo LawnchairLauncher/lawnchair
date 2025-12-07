@@ -97,6 +97,11 @@ fun AppDrawerPreferences(
                 valueRange = 0F..1F,
                 showAsPercentage = true,
             )
+            ColorPreference(preference = prefs2.workProfileTabBackgroundColor)
+            SwitchPreference(
+                label = stringResource(id = R.string.work_profile_tab_container_background_label),
+                adapter = prefs2.workProfileTabContainerBackground.getAdapter(),
+            )
             SwitchPreference(
                 label = stringResource(id = R.string.pref_all_apps_search_bar_background),
                 adapter = prefs2.appDrawerSearchBarBackground.getAdapter(),

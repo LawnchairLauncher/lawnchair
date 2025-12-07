@@ -808,7 +808,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             return;
         float prog1 = Utilities.boundToRange((float) scrolledOffset / mHeaderThreshold, 0f, 1f);
         int headerColor = getHeaderColor(prog1);
-        int tabsAlpha = mHeader.getPeripheralProtectionHeight(/* expectedHeight */ false) == 0 ? 0
+        
+        // Check if tab container background should be shown
+        boolean showTabContainerBackground = PreferenceExtensionsKt.firstBlocking(
+                pref2.getWorkProfileTabContainerBackground());
+        
+        int tabsAlpha = (!showTabContainerBackground || mHeader.getPeripheralProtectionHeight(/* expectedHeight */ false) == 0) ? 0
                 : (int) (Utilities.boundToRange(
                         (scrolledOffset + mHeader.mSnappedScrolledY) / mHeaderThreshold, 0f, 1f)
                         * 255);

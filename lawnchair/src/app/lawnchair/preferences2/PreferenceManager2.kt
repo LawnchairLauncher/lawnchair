@@ -175,6 +175,20 @@ class PreferenceManager2 private constructor(private val context: Context) :
         onSet = { reloadHelper.recreate() },
     )
 
+    val workProfileTabBackgroundColor = preference(
+        key = stringPreferencesKey(name = "work_profile_tab_background_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.SystemAccent,
+    )
+
+    val workProfileTabContainerBackground = preference(
+        key = booleanPreferencesKey(name = "work_profile_tab_container_background"),
+        defaultValue = true,
+        onSet = { reloadHelper.recreate() },
+    )
+
     val notificationDotColor = preference(
         key = stringPreferencesKey(name = "notification_dot_color"),
         parse = ColorOption::fromString,
