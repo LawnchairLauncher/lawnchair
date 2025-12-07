@@ -81,13 +81,22 @@ public class WorkProfileManager extends UserProfileManager
                 if (android.os.Process.myUserHandle().equals(userProfile)) {
                     continue;
                 }
+                
+                // Only process actual work profiles, skip private spaces (secure folders)
+                if (!mWorkProfileMatcher.test(userProfile)) {
+                    continue;
+                }
+                
                 // https://github.com/LawnchairLauncher/lawnchair/issues/3145
                 try {
-                    // Pass null as the target Intent to skip credential challenge/authentication prompt
+                    boolean success = false;
+                    // Try with null Intent first to skip credential challenge
                     if (Utilities.ATLEAST_P) {
-                        mUserManager.requestQuietModeEnabled(!enabled, userProfile, null);
-                    } else {
-                        mUserManager.requestQuietModeEnabled(!enabled, userProfile);
+                        success = mUserManager.requestQuietModeEnabled(!enabled, userProfile, null);
+                    }
+                    // Fallback to version without Intent if null didn't work or on older Android
+                    if (!success) {
+                        success = mUserManager.requestQuietModeEnabled(!enabled, userProfile);
                     }
                 } catch (RuntimeException e) {
                     Log.e(TAG, "Failed to set quiet mode for user " + userProfile, e);
@@ -151,11 +160,8 @@ public class WorkProfileManager extends UserProfileManager
      * {@link ActivityAllAppsContainerView}
      */
     public boolean attachWorkModeSwitch() {
-        if (!mAllApps.getAppsStore().hasModelFlag(
-                FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION)) {
-            Log.e(TAG, "unable to attach work mode switch; Missing required permissions");
-            return false;
-        }
+        // Skip permission checks - being the default launcher is sufficient for work profile control
+        // FLAG_HAS_SHORTCUT_PERMISSION and FLAG_QUIET_MODE_CHANGE_PERMISSION are not required
         if (mWorkModeSwitch == null) {
             mWorkModeSwitch = (WorkModeSwitch) mAllApps.getLayoutInflater().inflate(
                     R.layout.work_mode_fab, mAllApps, false);
@@ -163,8 +169,11 @@ public class WorkProfileManager extends UserProfileManager
         if (mWorkModeSwitch.getParent() == null) {
             mAllApps.addView(mWorkModeSwitch);
         }
-        if (mAllApps.getCurrentPage() != WORK) {
+        int currentPage = mAllApps.getCurrentPage();
+        if (currentPage != WORK) {
             mWorkModeSwitch.animateVisibility(false);
+        } else {
+            mWorkModeSwitch.animateVisibility(true);
         }
         if (getAH() != null) {
             getAH().applyPadding();
