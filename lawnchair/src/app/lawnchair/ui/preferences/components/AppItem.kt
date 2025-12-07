@@ -38,44 +38,18 @@ import com.android.launcher3.model.data.AppInfo
 
 @Composable
 fun AppItem(
-    app: App,
-    onClick: (app: App) -> Unit,
-    widget: (@Composable () -> Unit)? = null,
-) {
-    AppItem(
-        label = app.label,
-        icon = app.icon,
-        onClick = { onClick(app) },
-        widget = widget,
-    )
-}
-
-@Composable
-fun AppItem(
-    appInfo: AppInfo,
-    onClick: (appInfo: AppInfo) -> Unit,
-    widget: (@Composable () -> Unit)? = null,
-) {
-    AppItem(
-        label = appInfo.title.toString(),
-        icon = appInfo.bitmap.icon,
-        onClick = { onClick(appInfo) },
-        widget = widget,
-    )
-}
-
-@Composable
-fun AppItem(
     label: String,
     icon: Bitmap,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     widget: (@Composable () -> Unit)? = null,
+    endWidget: (@Composable () -> Unit)? = null,
 ) {
     AppItemLayout(
         modifier = modifier
             .clickable(onClick = onClick),
         widget = widget,
+        endWidget = endWidget,
         icon = {
             Image(
                 bitmap = icon.asImageBitmap(),
@@ -84,6 +58,38 @@ fun AppItem(
             )
         },
         title = { Text(text = label) },
+    )
+}
+
+@Composable
+fun AppItem(
+    app: App,
+    onClick: (app: App) -> Unit,
+    widget: (@Composable () -> Unit)? = null,
+    endWidget: (@Composable () -> Unit)? = null,
+) {
+    AppItem(
+        label = app.label,
+        icon = app.icon,
+        onClick = { onClick(app) },
+        widget = widget,
+        endWidget = endWidget,
+    )
+}
+
+@Composable
+fun AppItem(
+    appInfo: AppInfo,
+    onClick: (appInfo: AppInfo) -> Unit,
+    widget: (@Composable () -> Unit)? = null,
+    endWidget: (@Composable () -> Unit)? = null,
+) {
+    AppItem(
+        label = appInfo.title.toString(),
+        icon = appInfo.bitmap.icon,
+        onClick = { onClick(appInfo) },
+        widget = widget,
+        endWidget = endWidget,
     )
 }
 
@@ -125,6 +131,7 @@ private fun AppItemLayout(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     widget: (@Composable () -> Unit)? = null,
+    endWidget: (@Composable () -> Unit)? = null,
 ) {
     PreferenceTemplate(
         title = title,
@@ -136,6 +143,7 @@ private fun AppItemLayout(
             }
             icon()
         },
+        endWidget = endWidget,
         verticalPadding = 12.dp,
     )
 }

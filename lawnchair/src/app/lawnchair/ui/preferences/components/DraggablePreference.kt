@@ -23,6 +23,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +56,7 @@ fun <T> DraggablePreferenceGroup(
     defaultList: List<T>,
     onOrderChange: (List<T>) -> Unit,
     modifier: Modifier = Modifier,
+    onSettle: ((List<T>) -> Unit)? = null,
     itemContent: @Composable ReorderableScope.(
         item: T,
         index: Int,
@@ -62,7 +64,14 @@ fun <T> DraggablePreferenceGroup(
         onDraggingChange: (Boolean) -> Unit,
     ) -> Unit,
 ) {
-    var localItems = items
+    var localItems by remember { mutableStateOf(items) }
+
+    LaunchedEffect(items) {
+        if (localItems != items) {
+            localItems = items
+        }
+    }
+
     var isAnyDragging by remember { mutableStateOf(false) }
 
     val color by animateColorAsState(
@@ -85,12 +94,15 @@ fun <T> DraggablePreferenceGroup(
                 modifier = Modifier,
                 list = localItems,
                 onSettle = { fromIndex, toIndex ->
-                    localItems = localItems.toMutableList().apply {
+                    val newItems = localItems.toMutableList().apply {
                         add(toIndex, removeAt(fromIndex))
-                    }.toList().also { newItems ->
-                        onOrderChange(newItems)
-                        isAnyDragging = false
+                    }.toList()
+                    localItems = newItems
+                    onOrderChange(newItems)
+                    if (onSettle != null) {
+                        onSettle(newItems)
                     }
+                    isAnyDragging = false
                 },
                 onMove = {
                     isAnyDragging = true
@@ -107,8 +119,20 @@ fun <T> DraggablePreferenceGroup(
                                 .a11yDrag(
                                     index = index,
                                     items = items,
-                                    onMoveUp = { localItems = it },
-                                    onMoveDown = { localItems = it },
+                                    onMoveUp = {
+                                        localItems = it
+                                        onOrderChange(it)
+                                        if (onSettle != null) {
+                                            onSettle(it)
+                                        }
+                                    },
+                                    onMoveDown = {
+                                        localItems = it
+                                        onOrderChange(it)
+                                        if (onSettle != null) {
+                                            onSettle(it)
+                                        }
+                                    },
                                 ),
                         ) {
                             itemContent(
@@ -132,7 +156,11 @@ fun <T> DraggablePreferenceGroup(
         ExpandAndShrink(visible = localItems != defaultList) {
             PreferenceGroup {
                 ClickablePreference(label = stringResource(id = R.string.action_reset)) {
-                    onOrderChange(defaultList)
+                    val resetList = defaultList
+                    onOrderChange(resetList)
+                    if (onSettle != null) {
+                        onSettle(resetList)
+                    }
                 }
             }
         }

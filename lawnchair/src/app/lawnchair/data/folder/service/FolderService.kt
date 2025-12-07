@@ -38,8 +38,8 @@ class FolderService(val context: Context) : SafeCloseable {
     suspend fun updateFolderWithItems(folderInfoId: Int, title: String, appInfos: List<AppInfo>) = withContext(Dispatchers.IO) {
         folderDao.insertFolderWithItems(
             FolderInfoEntity(id = folderInfoId, title = title),
-            appInfos.map {
-                it.toEntity(folderInfoId)
+            appInfos.mapIndexed { index, appInfo ->
+                appInfo.toEntity(folderInfoId).copy(rank = index)
             }.toList(),
         )
     }
@@ -70,7 +70,7 @@ class FolderService(val context: Context) : SafeCloseable {
                 title = folderWithItems.folder.title
             }
 
-            folderWithItems.items.forEach { itemEntity ->
+            folderWithItems.items.sortedBy { it.rank }.forEach { itemEntity ->
                 // Consider caching toItemInfo results if componentKey lookups are slow
                 // and items don't change frequently without folder data changing
                 toItemInfo(itemEntity.componentKey)?.let { appInfo ->
