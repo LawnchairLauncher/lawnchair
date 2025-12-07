@@ -717,7 +717,10 @@ public class LoaderTask implements Runnable {
             if (apps == null || apps.isEmpty()) {
                 return allActivityList;
             }
-            boolean quietMode = mUserManagerState.isUserQuiet(user);
+            // Query UserManager directly for current quiet mode state to avoid stale cached values
+            boolean quietMode = mUserManager.isQuietModeEnabled(user);
+            // Update the cached state for consistency
+            mUserManagerState.updateUserQuietMode(mUserCache, user, quietMode);
 
             if (Flags.enablePrivateSpace()) {
                 if (mUserCache.getUserInfo(user).isWork()) {
