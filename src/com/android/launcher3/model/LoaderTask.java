@@ -721,9 +721,9 @@ public class LoaderTask implements Runnable {
 
             if (Flags.enablePrivateSpace()) {
                 if (mUserCache.getUserInfo(user).isWork()) {
-                    isWorkProfileQuiet = quietMode;
+                    isWorkProfileQuiet |= quietMode;
                 } else if (mUserCache.getUserInfo(user).isPrivate()) {
-                    isPrivateProfileQuiet = quietMode;
+                    isPrivateProfileQuiet |= quietMode;
                 }
             }
             // Create the ApplicationInfos
