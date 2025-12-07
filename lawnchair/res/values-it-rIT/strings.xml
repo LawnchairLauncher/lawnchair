@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Effetto di profondità nello sfondo</string>
     <string name="wallpaper_depth_effect_description">Effettua zoom dello sfondo durante il passaggio tra aree diverse del launcher</string>
     <string name="show_sys_ui_scrim">Ombra in cima</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Griglia della schermata Home</string>
     <string name="home_screen_lock">Blocca la schermata Home</string>
     <string name="home_screen_unlock">Sblocca la schermata Home</string>

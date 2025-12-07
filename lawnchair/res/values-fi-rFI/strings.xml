@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Taustakuvan syvyysefekti</string>
     <string name="wallpaper_depth_effect_description">Zoomaa sisään ja ulos taustakuvasta aloitusnäytön eri osien välillä liikuttaessa</string>
     <string name="show_sys_ui_scrim">Yläosan varjo</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Aloitusnäytön ruudukko</string>
     <string name="home_screen_lock">Lukitse aloitusnäyttö</string>
     <string name="home_screen_unlock">Poista aloitusnäytön lukitus</string>

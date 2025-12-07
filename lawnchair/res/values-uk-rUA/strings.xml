@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Ефект глибини шпалер</string>
     <string name="wallpaper_depth_effect_description">Ефект збільшення та зменшення шпалер під час переходу між областями лаунчера</string>
     <string name="show_sys_ui_scrim">Тінь зверху</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Сітка головного екрану</string>
     <string name="home_screen_lock">Заблокувати головний екран</string>
     <string name="home_screen_unlock">Розблокувати головний екран</string>

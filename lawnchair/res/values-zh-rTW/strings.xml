@@ -144,7 +144,7 @@
     <string name="quickstep_description">清除全部按鈕、圓角大小</string>
     <string name="about_label">關於</string>
     <string name="app_info_drop_target_label">應用程式資訊</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">重啟 Lawnchair</string>
     <string name="experimental_features_label">實驗性功能</string>
     <!-- Experimental features -->
     <string name="font_picker_label">自訂字體</string>
@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">桌布景深效果</string>
     <string name="wallpaper_depth_effect_description">切換主畫面區域時縮放桌布</string>
     <string name="show_sys_ui_scrim">頂部陰影</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">主畫面網格</string>
     <string name="home_screen_lock">鎖定主畫面版面</string>
     <string name="home_screen_unlock">解鎖主畫面版面</string>

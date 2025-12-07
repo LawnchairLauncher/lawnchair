@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Efekt hĺbky pozadia</string>
     <string name="wallpaper_depth_effect_description">Priblížiť a oddialiť pozadie pri prechode medzi stavmi</string>
     <string name="show_sys_ui_scrim">Vrchný tieň</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Mriežka na domovskej obrazovke</string>
     <string name="home_screen_lock">Uzamknúť domovskú obrazovku</string>
     <string name="home_screen_unlock">Odomknúť domovskú obrazovku</string>

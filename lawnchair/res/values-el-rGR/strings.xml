@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Εφέ βάθους ταπετσαρίας</string>
     <string name="wallpaper_depth_effect_description">Μεγέθυνση και σμίκρυνση της ταπετσαρίας κατά τη μετάβαση μεταξύ περιοχών του εκκινητή</string>
     <string name="show_sys_ui_scrim">Σκιά κορυφής</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Πλέγμα αρχικής οθόνης</string>
     <string name="home_screen_lock">Κλείδωμα Αρχ. Οθ.</string>
     <string name="home_screen_unlock">Ξεκλείδωμα Αρχ. Οθ.</string>

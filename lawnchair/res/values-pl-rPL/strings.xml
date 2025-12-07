@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Efekt głębi tapety</string>
     <string name="wallpaper_depth_effect_description">Przybliżaj i oddalaj tapetę podczas przechodzenia przez ekrany</string>
     <string name="show_sys_ui_scrim">Cień górny</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Siatka ekranu głównego</string>
     <string name="home_screen_lock">Zablokuj ekran główny</string>
     <string name="home_screen_unlock">Odblokuj ekran główny</string>

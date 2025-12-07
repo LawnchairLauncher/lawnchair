@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Efeito de Profundidade do Plano de Fundo</string>
     <string name="wallpaper_depth_effect_description">Aumentar e diminuir a ampliação do papel de parede ao transitar entre as áreas do launcher</string>
     <string name="show_sys_ui_scrim">Sombra superior</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Grade da tela inicial</string>
     <string name="home_screen_lock">Bloquear a tela inicial</string>
     <string name="home_screen_unlock">Desbloquear a tela inicial</string>

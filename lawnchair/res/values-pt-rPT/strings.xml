@@ -460,6 +460,8 @@ Transparentes</string>
     <string name="wallpaper_depth_effect_label">Efeito de profundidade do papel de parede</string>
     <string name="wallpaper_depth_effect_description">Aproximar e afastar o papel de parede ao transitar entre as áreas do launcher</string>
     <string name="show_sys_ui_scrim">Sombra superior</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Grelha do ecrã principal</string>
     <string name="home_screen_lock">Bloquear o ecrã principal</string>
     <string name="home_screen_unlock">Desbloquear o ecrã principal</string>

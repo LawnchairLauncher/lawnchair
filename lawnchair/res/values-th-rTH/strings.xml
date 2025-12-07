@@ -37,15 +37,15 @@
     <string name="action_copy_link">คัดลอกลิ้งค์</string>
     <string name="action_copy">คัดลอก</string>
     <string name="action_paste">วาง</string>
-    <string name="action_done">Done</string>
-    <string name="select_all">Select all</string>
-    <string name="deselect_all">Deselect all</string>
+    <string name="action_done">เสร็จสิ้น</string>
+    <string name="select_all">เลือกทั้งหมด</string>
+    <string name="deselect_all">ยกเลิกเลือกทั้งหมด</string>
     <string name="inverse_selection">Inverse selection</string>
     <string name="loading">กำลังโหลด…</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="download_update">Download update</string>
+    <string name="dismiss">ยกเลิก</string>
+    <string name="download_update">ดาวน์โหลดอัปเดต</string>
     <string name="install_update">ติดตั้งอัปเดต</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">ดูการเปลี่ยนแปลง</string>
     <string name="pro_updated">You\'re up-to-date!</string>
     <!-- Changes dialog strings -->
     <string name="changes_dialog_title">Updates</string>
@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">เอฟเฟกต์ความลึกของพื้นหลัง</string>
     <string name="wallpaper_depth_effect_description">ขยายเข้าและออกของพื้นหลังเมื่อเกิดการเปลี่ยนแปลงระหว่างพื้นที่ของ Launcher</string>
     <string name="show_sys_ui_scrim">เงาด้านบน</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Home screen grid</string>
     <string name="home_screen_lock">ล็อกหน้าแรก</string>
     <string name="home_screen_unlock">ปลดล็อคหน้าแรก</string>

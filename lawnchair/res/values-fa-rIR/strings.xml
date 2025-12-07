@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">افکت عمق تصویر زمینه</string>
     <string name="wallpaper_depth_effect_description">هنگام انتقال بین حالت‌ها، تصویر زمینه بزرگ‌نمایی و کوچک‌نمایی شود</string>
     <string name="show_sys_ui_scrim">سایه بالا</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">جدول صفحه‌اصلی</string>
     <string name="home_screen_lock">قفل صفحه اصلی</string>
     <string name="home_screen_unlock">بازکردن قفل صفحه اصلی</string>

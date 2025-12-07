@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Efekat dubine pozadine</string>
     <string name="wallpaper_depth_effect_description">Uvećajte ili umanjite prikaz pozadine pri prelasku između različitih delova pokretača</string>
     <string name="show_sys_ui_scrim">Gornja senka</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Mreža početnog ekrana</string>
     <string name="home_screen_lock">Zaključaj početni ekran</string>
     <string name="home_screen_unlock">Otključaj početni ekran</string>

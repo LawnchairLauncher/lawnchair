@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Achtergrond diepte-effect</string>
     <string name="wallpaper_depth_effect_description">Achtergrond in- en uitzoomen bij de overgang tussen de verschillende schermen</string>
     <string name="show_sys_ui_scrim">Schaduw bovenzijde</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Startscherm-raster</string>
     <string name="home_screen_lock">Startscherm vergrendelen</string>
     <string name="home_screen_unlock">Startscherm ontgrendelen</string>

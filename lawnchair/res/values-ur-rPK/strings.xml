@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">وال پیپر کی گہرائی کا اثر</string>
     <string name="wallpaper_depth_effect_description">لانچر کے علاقوں کے درمیان منتقلی کے وقت وال پیپر کو زوم ان اور آؤٹ کریں۔</string>
     <string name="show_sys_ui_scrim">اوپر کا سایہ</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">ہوم اسکرین گرڈ</string>
     <string name="home_screen_lock">ہوم اسکرین کو لاک کریں۔</string>
     <string name="home_screen_unlock">ہوم اسکرین کو غیر مقفل کریں۔</string>

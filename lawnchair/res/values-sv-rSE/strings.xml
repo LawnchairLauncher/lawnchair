@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Djupeffekt på bakgrundsbild</string>
     <string name="wallpaper_depth_effect_description">Zooma in och ut på bakgrundsbilden vid övergång mellan startskärmsappens lägen</string>
     <string name="show_sys_ui_scrim">Toppskugga</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Rutnät på startskärmen</string>
     <string name="home_screen_lock">Lås startskärm</string>
     <string name="home_screen_unlock">Lås upp startskärm</string>

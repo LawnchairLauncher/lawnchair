@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">壁紙の深度エフェクト</string>
     <string name="wallpaper_depth_effect_description">ランチャーのエリアを移動する際に背景がズームイン・ズームアウトします</string>
     <string name="show_sys_ui_scrim">上部の影</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">ホーム画面のグリッド</string>
     <string name="home_screen_lock">ホーム画面をロック</string>
     <string name="home_screen_unlock">ホーム画面のロックを解除</string>

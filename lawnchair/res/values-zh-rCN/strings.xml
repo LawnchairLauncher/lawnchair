@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">壁纸缩放特效</string>
     <string name="wallpaper_depth_effect_description">在启动器区域之间过渡时缩放壁纸</string>
     <string name="show_sys_ui_scrim">顶部阴影</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">主屏幕网格</string>
     <string name="home_screen_lock">锁定主屏幕</string>
     <string name="home_screen_unlock">解锁主屏幕</string>

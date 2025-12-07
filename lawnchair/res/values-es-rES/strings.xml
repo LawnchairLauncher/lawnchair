@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Efecto de profundidad del fondo de pantalla</string>
     <string name="wallpaper_depth_effect_description">Acerca y aleja el fondo de pantalla al cambiar entre áreas del lanzador</string>
     <string name="show_sys_ui_scrim">Sombra en el borde superior</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Cuadrícula de la pantalla de inicio</string>
     <string name="home_screen_lock">Bloquear pantalla de inicio</string>
     <string name="home_screen_unlock">Desbloquear pantalla de inicio</string>

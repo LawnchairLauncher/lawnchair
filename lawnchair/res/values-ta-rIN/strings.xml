@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">வால்பேப்பர் ஆழம் விளைவு</string>
     <string name="wallpaper_depth_effect_description">துவக்கியின் பகுதிகளுக்கு இடையில் மாறும்போது வால்பேப்பரை பெரிதாக்கவும் மற்றும் சிறிதாக்கவும்</string>
     <string name="show_sys_ui_scrim">மேற்புற நிழல்</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">முகப்புத்திரை கட்டம்</string>
     <string name="home_screen_lock">முகப்பு திரையை மூடவும்</string>
     <string name="home_screen_unlock">முகப்பு திரையைத் திறக்கவும்</string>

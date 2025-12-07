@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Taustapildi sügavuse efekt</string>
     <string name="wallpaper_depth_effect_description">Käivitaja erinevate alade vahel liikumisel suumi taustapilti sisse ja välja</string>
     <string name="show_sys_ui_scrim">Ülemine vari</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Avakuva ruudustik</string>
     <string name="home_screen_lock">Lukusta avakuva</string>
     <string name="home_screen_unlock">Ava avakuva lukk</string>

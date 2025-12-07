@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">تأثير عمق الخلفية</string>
     <string name="wallpaper_depth_effect_description">تكبير وتصغير الخلفية عند الانتقال بين مناطق المشغل</string>
     <string name="show_sys_ui_scrim">الظل العلوي</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">شبكة الشاشة الرئيسية</string>
     <string name="home_screen_lock">قفل الشاشة الرئيسية</string>
     <string name="home_screen_unlock">فتح قفل الشاشة الرئيسية</string>

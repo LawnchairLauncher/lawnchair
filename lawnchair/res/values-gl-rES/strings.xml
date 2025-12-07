@@ -52,7 +52,7 @@
     <string name="changes_dialog_error">Failed to load changes</string>
     <string name="changes_dialog_no_changes">Non se atoparon cambios</string>
     <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_commit_info">por %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
     <string name="time_just_now">xusto agora</string>
     <string name="time_minutes_ago">%d m</string>
@@ -174,7 +174,7 @@
     -->
     <string name="set_default_launcher_tip">To access shortcuts and additional features, set Lawnchair as your default launcher</string>
     <string name="notification_dots">Puntos de notificación</string>
-    <string name="show_notification_count">Show notification counter</string>
+    <string name="show_notification_count">Amosar contador de notificacións</string>
     <string name="notification_dots_color">Cor do punto de notificación</string>
     <string name="notification_dots_text_color">Cor do contador de notificacións</string>
     <string name="notification_dots_color_contrast_warning_always">Warning: Notification dot and counter colors don\'t have enough contrast with each other</string>
@@ -190,10 +190,10 @@
     <string name="icon_sizes">Tamaño das iconas</string>
     <string name="show_labels">Amosar etiquetas</string>
     <string name="label_size">Tamaño da etiqueta</string>
-    <string name="twoline_label">Use multiple lines</string>
+    <string name="twoline_label">Usar varias liñas</string>
     <!-- Icon-related settings -->
-    <string name="transparent_background_icons_label">Transparent themed icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="transparent_background_icons_label">Iconas temáticas transparentes</string>
+    <string name="transparent_background_icons_description">Usar fondo transparente nas iconas temáticas</string>
     <string name="auto_adaptive_icons_label">Auto-adaptive icons</string>
     <string name="auto_adaptive_icons_description">For all non-adaptive icons</string>
     <string name="shadow_bg_icons_label">Show shadow behind icons</string>
@@ -277,10 +277,10 @@
 
     -->
     <!-- Theme -->
-    <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">System</string>
+    <string name="theme_label">Tema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Escuro</string>
+    <string name="theme_system_default">Sistema</string>
     <string name="theme_follow_wallpaper">Match wallpaper</string>
     <!-- Color style -->
     <string name="color_style_label">Color style</string>
@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Wallpaper depth effect</string>
     <string name="wallpaper_depth_effect_description">Zoom in and out of the wallpaper when transitioning between areas of the launcher</string>
     <string name="show_sys_ui_scrim">Top shadow</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Home screen grid</string>
     <string name="home_screen_lock">Lock home screen</string>
     <string name="home_screen_unlock">Unlock home screen</string>

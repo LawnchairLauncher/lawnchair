@@ -42,25 +42,25 @@
     <string name="deselect_all">Batal pilih semua</string>
     <string name="inverse_selection">Balik pilihan</string>
     <string name="loading">Memuat…</string>
-    <string name="dismiss">Dismiss</string>
+    <string name="dismiss">Menolak</string>
     <string name="download_update">Unduh pembaruan</string>
     <string name="install_update">Pasang pembaruan</string>
-    <string name="view_changes">View changes</string>
+    <string name="view_changes">Tampilkan perubahan</string>
     <string name="pro_updated">Sudah versi terbaru!</string>
     <!-- Changes dialog strings -->
-    <string name="changes_dialog_title">Updates</string>
-    <string name="changes_dialog_error">Failed to load changes</string>
-    <string name="changes_dialog_no_changes">No changes found</string>
+    <string name="changes_dialog_title">Pembaruan</string>
+    <string name="changes_dialog_error">Gagal untuk memproses pembaruan</string>
+    <string name="changes_dialog_no_changes">Tidak ditemukan pembaruan</string>
     <string name="changes_dialog_build_format">Build #%1$d → #%2$d</string>
-    <string name="changes_dialog_commit_info">by %1$s • %2$s • %3$s</string>
+    <string name="changes_dialog_commit_info">oleh %1$s • %2$s • %3$s</string>
     <!-- Time ago strings -->
-    <string name="time_just_now">just now</string>
+    <string name="time_just_now">baru saja</string>
     <string name="time_minutes_ago">%dm</string>
-    <string name="time_hours_ago">%dh</string>
-    <string name="time_days_ago">%dd</string>
-    <string name="time_weeks_ago">%dw</string>
-    <string name="time_months_ago">%dmo</string>
-    <string name="time_years_ago">%dy</string>
+    <string name="time_hours_ago">%dj</string>
+    <string name="time_days_ago">%dh</string>
+    <string name="time_weeks_ago">%dmg</string>
+    <string name="time_months_ago">%dbln</string>
+    <string name="time_years_ago">%dthn</string>
     <string name="managed_by_lawnchair">Dikelola oleh Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferensi</string>
@@ -87,11 +87,11 @@
     <string name="grid">Kisi</string>
     <string name="layout">Tata Letak</string>
     <!-- Generic styling options -->
-    <string name="show_wallpaper">Show wallpaper</string>
+    <string name="show_wallpaper">Tampilkan wallpaper</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="style">Gaya</string>
     <string name="background_opacity">Tingkat transparan latar belakang</string>
-    <string name="pref_all_apps_search_bar_background">Separated Search bar background</string>
+    <string name="pref_all_apps_search_bar_background">Pisahkan latar Bilah pencari</string>
     <!-- Toast text and tips -->
     <string name="copied_toast">Disalin ke papan klip</string>
     <string name="calculator_search_result_copied_toast">Hasil disalin ke papan klip</string>
@@ -223,9 +223,9 @@
     <string name="icon_shape_squircle">Squircle</string>
     <string name="icon_shape_teardrop">Tetesan air</string>
     <!-- Icon shape (Material 3 Expressive) -->
-    <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
-    <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
-    <string name="icon_shape_arch">Arch</string>
+    <string name="icon_shape_four_sided_cookie">Cookie empat sisi</string>
+    <string name="icon_shape_seven_sided_cookie">Cookie tujuh sisi</string>
+    <string name="icon_shape_arch">Lengkungan</string>
     <!-- Custom icon shapes -->
     <string name="custom_icon_shape">Bentuk ikon kustom</string>
     <string name="custom_icon_shape_create">Buat bentuk ikon kustom</string>
@@ -368,14 +368,14 @@
     <string name="quickswitch_maintenance">Pemeliharaan QuickSwitch</string>
     <string name="devops">DevOps</string>
     <string name="support_and_pr">Bantuan dan relasi Publik</string>
-    <string name="community">Community</string>
+    <string name="community">Komunitas</string>
     <string name="telegram">Telegram</string>
     <string name="news">Berita</string>
     <string name="legal">Legal</string>
     <string name="acknowledgements">Ucapan Terima Kasih</string>
-    <string name="privacy_policy">Privacy policy</string>
-    <string name="contributor_status_active">Active</string>
-    <string name="update_check_failed">Failed to check for updates</string>
+    <string name="privacy_policy">Kebijakan privasi</string>
+    <string name="contributor_status_active">Aktif</string>
+    <string name="update_check_failed">Gagal untuk cek pembaruan</string>
     <!--
 
     Backup and restore
@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Efek kedalaman wallpaper</string>
     <string name="wallpaper_depth_effect_description">Perbesar dan perkecil wallpaper ketika beralih area dalam peluncur</string>
     <string name="show_sys_ui_scrim">Bayangan atas</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Kisi layar utama</string>
     <string name="home_screen_lock">Kunci layar beranda</string>
     <string name="home_screen_unlock">Buka kunci layar beranda</string>

@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Hintergrundbild-Tiefeneffekt</string>
     <string name="wallpaper_depth_effect_description">Beim Wechsel der Launcher-Bereiche Bildschirmhintergrund herein- und herauszoomen</string>
     <string name="show_sys_ui_scrim">Oberer Schatten</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Startbildschirm-Raster</string>
     <string name="home_screen_lock">Startbildschirm sperren</string>
     <string name="home_screen_unlock">Startbildschirm entsperren</string>

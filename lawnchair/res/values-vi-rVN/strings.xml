@@ -459,6 +459,8 @@
     <string name="wallpaper_depth_effect_label">Hiệu ứng chiều sâu của hình nền</string>
     <string name="wallpaper_depth_effect_description">Phóng to và thu nhỏ hình nền khi chuyển đổi giữa các khu vực của trình chạy</string>
     <string name="show_sys_ui_scrim">Bóng trên cùng</string>
+    <string name="infinite_scrolling_label">Infinite scrolling</string>
+    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
     <string name="home_screen_grid">Lưới màn hình chính</string>
     <string name="home_screen_lock">Khóa trang chủ</string>
     <string name="home_screen_unlock">Mở khóa trang chủ</string>
