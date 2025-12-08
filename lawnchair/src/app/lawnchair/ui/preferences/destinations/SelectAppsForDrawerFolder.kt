@@ -1,4 +1,4 @@
-﻿package app.lawnchair.ui.preferences.destinations
+package app.lawnchair.ui.preferences.destinations
 
 import android.content.Context
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -114,7 +114,7 @@ fun SelectAppsForDrawerFolder(
                                 folderInfo?.title.toString(),
                                 newOrder.map { it.toAppInfo(context) },
                             )
-                        }
+                        },
                     ) { app, _, _, onDraggingChange ->
                         val interactionSource = remember { MutableInteractionSource() }
                         AppItem(
@@ -144,7 +144,7 @@ fun SelectAppsForDrawerFolder(
                                 }) {
                                     Icon(Icons.Rounded.Close, contentDescription = stringResource(R.string.delete_label))
                                 }
-                            }
+                            },
                         )
                     }
                 }
