@@ -64,7 +64,7 @@
     <string name="managed_by_lawnchair">Gestito da Lawnchair</string>
     <!-- When mentioning settings UI -->
     <string name="smartspace_preferences">Preferenze</string>
-    <string name="settings_button_text">Impostazioni Schermata Home</string>
+    <string name="settings_button_text">Impostazioni Home</string>
     <string name="system_settings">Impostazioni di sistema</string>
     <string name="title_change_settings">Modifica impostazioni</string>
     <!--
@@ -115,7 +115,7 @@
     <string name="folders_filter_duplicates">Mostra solo app uniche</string>
     <string name="my_folder_label">La mia cartella</string>
     <!-- A11y description -->
-    <string name="accessibility_service_description">Per eseguire determinate azioni (come bloccare il telefono) quando si esegue un gesto, Lawnchair richiede l\'accesso all\'accessibilità.\n\nLawnchair non guarda nessuna azione utente, sebbene il privilegio di farlo sia richiesto per tutti i servizi di accessibilità. Lawnchair scarta qualsiasi evento inviato dal sistema.\n\nPer bloccare il telefono, o per aprire la Schermata Recenti, Lawnchair utilizza il servizio di accessibilità performGlobalAction.</string>
+    <string name="accessibility_service_description">Per eseguire determinate azioni (come bloccare il telefono) quando si esegue un gesto, Lawnchair richiede l\'accesso all\'accessibilità.\n\nLawnchair non guarda nessuna azione dell\'utente, sebbene il privilegio di farlo sia richiesto per tutti i servizi di accessibilità. Lawnchair scarta qualsiasi evento inviato dal sistema.\n\nPer bloccare il telefono, o per aprire la Schermata Recenti, Lawnchair utilizza il servizio di accessibilità performGlobalAction.</string>
     <string name="x_with_y_count">%1$s (%2$d)</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%1$s e %2$s</string>
@@ -134,7 +134,7 @@
     <string name="dock_description">Barra di ricerca, numero d\'icone</string>
     <string name="app_drawer_label">Menu delle app</string>
     <string name="app_drawer_description">Applicazioni nascoste, numero di colonne, icone</string>
-    <string name="drawer_search_label">Ricerca nel menu app</string>
+    <string name="drawer_search_label">Ricerca nel menu delle app</string>
     <string name="drawer_search_description">Suggerimenti dal web, ricerca globale</string>
     <string name="folders_label">Cartelle</string>
     <string name="folders_description">Numero di righe e colonne</string>
@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Riavvia Lawnchair</string>
     <string name="experimental_features_label">Funzionalità sperimentali</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Personalizzazione dei font</string>
     <string name="font_picker_description">Un po\' di testo rimane invariato</string>
     <string name="smartspace_calendar_label">Personalizzazione del calendario di ‘A Colpo d\'Occhio’</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Aumenta il limite massimo della dimensione della griglia della schermata Home da 10 × 10 a 20 × 20</string>
     <string name="always_reload_icons_label">Ricarica sempre le icone</string>
     <string name="always_reload_icons_description">Evita di utilizzare icone dalla cache dai pacchetti d\'icone</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Gesti di scorrimento icona</string>
     <string name="icon_swipe_gestures_description">Esegui azioni quando scorri a sinistra o a destra sulle icone invece di spostare la schermata Home</string>
     <string name="show_deck_layout">Disposizione a Deck</string>
-    <string name="show_deck_layout_description">Mostra un\'opzione di disposizione per nascondere il Menu delle App e aggiungere automaticamente nuove app alla Schermata Home</string>
+    <string name="show_deck_layout_description">Mostra un\'opzione di disposizione per nascondere il menu delle app e aggiungere automaticamente nuove app alla schermata Home</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Blocca/Sblocca</string>
     <string name="recents_lock_unlock_description">Impedisci all\'app selezionata di chiudersi quando premi \"Cancella tutto\"</string>
     <!--Overlay-->
@@ -174,11 +184,11 @@
     -->
     <string name="set_default_launcher_tip">Per accedere alle scorciatoie e ad altre funzioni aggiuntive, imposta Lawnchair come launcher predefinito</string>
     <string name="notification_dots">Punti di notifica</string>
-    <string name="show_notification_count">Mostra Contatore di notifica</string>
-    <string name="notification_dots_color">Colore dei Punti di notifica</string>
-    <string name="notification_dots_text_color">Colore dei Contatori di notifica</string>
-    <string name="notification_dots_color_contrast_warning_always">Attenzione: I colori dei Punti e dei Contatori di notifica non hanno un contrasto sufficiente tra loro</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Attenzione: I colori dei Punti e dei Contatori di notifica potrebbero non avere sempre un contrasto sufficiente tra loro</string>
+    <string name="show_notification_count">Mostra contatore di notifica</string>
+    <string name="notification_dots_color">Colore dei punti di notifica</string>
+    <string name="notification_dots_text_color">Colore dei contatori di notifica</string>
+    <string name="notification_dots_color_contrast_warning_always">Attenzione: I colori dei punti e dei contatori di notifica non hanno un contrasto sufficiente tra loro</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Attenzione: I colori dei punti e dei contatori di notifica potrebbero non avere sempre un contrasto sufficiente tra loro</string>
     <!--
 
     Icons
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">Quadrato</string>
     <string name="icon_shape_squircle">Supercerchio</string>
     <string name="icon_shape_teardrop">Goccia</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Biscotto a quattro</string>
     <string name="icon_shape_seven_sided_cookie">Biscotto a sette</string>
     <string name="icon_shape_arch">Arco</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriano</string>
     <string name="smartspace_calendar_persian">Persiano</string>
+    <string name="smartspace_calendar_chinese">Chinese</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">In carica</string>
     <string name="smartspace_battery_full">Carico</string>
     <string name="smartspace_battery_low">Batteria scarica</string>
@@ -337,12 +352,12 @@
     <string name="smartspace_battery_status">Stato della batteria</string>
     <string name="smartspace_now_playing">In Riproduzione</string>
     <!-- Smartspacer strings -->
-    <string name="maximum_number_of_targets">Numero massimo di Target</string>
+    <string name="maximum_number_of_targets">Numero massimo di target</string>
     <string name="open_smartspacer_settings">Apri le impostazioni di Smartspacer</string>
     <string name="smartspacer_settings">Impostazioni di Smartspacer</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Tocca per configurare</string>
-    <string name="event_provider_missing_notification_dots">Per utilizzare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, attiva i Punti di notifica.</string>
+    <string name="event_provider_missing_notification_dots">Per utilizzare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, attiva i Punti di Notifica.</string>
     <!-- Toggle button for enabling Smartspace -->
     <string name="smartspace_widget_toggle_label">Mostra nella schermata Home</string>
     <string name="smartspace_widget_toggle_description">‘A Colpo d\'Occhio’ può essere aggiunto manualmente alla schermata Home inserendo il widget di Lawnchair</string>
@@ -376,6 +391,8 @@
     <string name="privacy_policy">Informativa sulla privacy</string>
     <string name="contributor_status_active">Attivo</string>
     <string name="update_check_failed">Impossibile controllare gli aggiornamenti</string>
+    <string name="major_update_label">Breaking change!</string>
+    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -408,6 +425,7 @@
     <string name="gesture_handler_sleep">Sospendi</string>
     <string name="gesture_handler_recents">Apri Schermata delle App Recenti</string>
     <string name="gesture_handler_open_notifications">Apri il pannello delle notifiche</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Apri un\'app</string>
     <string name="gesture_handler_open_app_config">Apri %1$s</string>
     <string name="gesture_handler_open_app_drawer">Apri il menu delle app</string>
@@ -416,12 +434,15 @@
     <string name="gesture_handler_open_assistant">Apri assistente</string>
     <string name="pick_app_for_gesture">Seleziona l\'app</string>
     <string name="dt2s_admin_hint_title">Necessari permessi di amministratore</string>
-    <string name="dt2s_admin_hint">Per sospendere lo schermo con un doppio tocco, imposta Lawnchair come amministratore del dispositivo. Tocca \"Apri impostazioni\", poi tocca \"Attiva questa app come amministratore del dispositivo\".</string>
-    <string name="dt2s_admin_warning">La sospensione con un doppio tocco sarà disabilitata.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Abilita il servizio di accessibilità</string>
-    <string name="dt2s_a11y_hint">Per sospendere lo schermo con un doppio tocco, abilita il servizio di accessibilità di Lawnchair. Tocca \"Apri impostazioni\", seleziona \"Lawnchair\" e abilita \"Usa Lawnchair\".\n\nLawnchair utilizza il metodo di accessibilità `performGlobalAction` per effettuare questa operazione. Si tratta di un permesso sensibile che permette di monitorare altre app, tuttavia Lawnchair non è configurato per quella funzionalità e non riceve alcun evento.</string>
-    <string name="dt2s_recents_warning_open_settings">Apri impostazioni</string>
-    <string name="recents_a11y_hint">Per utilizzare Apri Schermata delle App Recenti, abilita il servizio di accessibilità di Lawnchair. Tocca \"Apri impostazioni\", seleziona \"Lawnchair\" e abilita \"Usa Lawnchair\".\n\nLawnchair utilizza il metodo di accessibilità `performGlobalAction` per effettuare questa operazione. Si tratta di un permesso sensibile che permette di monitorare altre app, tuttavia Lawnchair non è configurato per quella funzionalità e non riceve alcun evento.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -459,17 +480,13 @@
     <string name="wallpaper_depth_effect_label">Effetto di profondità nello sfondo</string>
     <string name="wallpaper_depth_effect_description">Effettua zoom dello sfondo durante il passaggio tra aree diverse del launcher</string>
     <string name="show_sys_ui_scrim">Ombra in cima</string>
-    <string name="infinite_scrolling_label">Infinite scrolling</string>
-    <string name="infinite_scrolling_description">Swipe to loop between the first and last pages</string>
+    <string name="infinite_scrolling_label">Scorrimento infinito</string>
+    <string name="infinite_scrolling_description">Scorri per passare ciclicamente tra la prima e l\'ultima pagina</string>
     <string name="home_screen_grid">Griglia della schermata Home</string>
     <string name="home_screen_lock">Blocca la schermata Home</string>
     <string name="home_screen_unlock">Sblocca la schermata Home</string>
     <string name="home_screen_locked">La schermata Home è bloccata</string>
     <string name="home_screen_lock_description">Impedisci modifiche al layout della schermata Home</string>
-    <string name="show_dot_pagination_label">Mostra punti di paginazione</string>
-    <string name="show_dot_pagination_description">Usa punti invece che linee per mostrare il numero della pagina</string>
-    <string name="show_material_u_popup_label">Usa il nuovo stile popup</string>
-    <string name="show_material_u_popup_description">Usa lo stile dei popup di Material You, elastici e leggermente consolidati</string>
     <string name="popup_menu">Menu a comparsa</string>
     <string name="popup_menu_items">Voci del menu a comparsa</string>
     <string name="edit_menu_items">Modifica le voci del menu a comparsa</string>
@@ -611,7 +628,7 @@
     <string name="search_algorithm_global_search_via_asi">Ricerca globale (tramite ASI)</string>
     <string name="custom_search_label">Nome motore di ricerca</string>
     <string name="custom_search_url">URL motore di ricerca</string>
-    <string name="custom_search_suggestions_url">Search suggestions URL</string>
+    <string name="custom_search_suggestions_url">URL dei suggerimenti di ricerca</string>
     <string name="custom_search_input_hint">&#37;s sarà sostituito con la query di ricerca</string>
     <string name="custom_search_suggestions_hint">&#37;s diventerà la query di ricerca. I risultati devono essere in formato JSON OpenSearch.</string>
     <!-- Labels of each search result types -->
@@ -647,21 +664,21 @@
     <!-- Permission management -->
     <string name="missing_notification_access_label">Accesso alle notifiche necessario</string>
     <string name="missing_notification_access_desc">Per mostrare i Punti di notifica, attiva le notifiche per <xliff:g id="name" example="My App">%1$s</xliff:g></string>
-    <string name="warn_contact_permission_title">Necessario accesso ai contatti</string>
+    <string name="warn_contact_permission_title">Accesso ai contatti necessario</string>
     <string name="warn_contact_permission_content">Per cercare tra i contatti, concedi a <xliff:g id="name" example="My App">%1$s</xliff:g> i permessi Contatti e Telefono</string>
-    <string name="permissions_music_audio">Necessario accesso a musica e audio</string>
+    <string name="permissions_music_audio">Accesso a musica e audio necessario</string>
     <string name="permissions_music_audio_description">Per cercare la tua musica e altri file audio, <xliff:g id="name" example="My App">%1$s</xliff:g> ha bisogno del permesso per accedere alla tua libreria multimediale.</string>
     <!-- Photos and videos -->
-    <string name="permissions_photos_videos">Necessario accesso a foto e video</string>
+    <string name="permissions_photos_videos">Accesso a foto e video necessario</string>
     <string name="permissions_photos_videos_description">Per cercare le tue foto e video, <xliff:g id="name" example="My App">%1$s</xliff:g> ha bisogno del permesso per accedere alla tua libreria multimediale.</string>
     <string name="permissions_photos_videos_full">Accedi alla tua libreria multimediale completa?</string>
     <string name="permissions_photos_videos_full_description">Per cercare tutte le tue foto e video, <xliff:g id="name" example="My App">%1$s</xliff:g> ha bisogno del permesso per l\'accesso completo alla tua libreria multimediale.</string>
     <string name="permissions_photos_videos_grant_full">Concedi permessi multimediali completi</string>
     <string name="permissions_photos_videos_manage_selected">Gestisci gli elementi selezionati</string>
     <!-- External storage -->
-    <string name="permissions_external_storage">Necessario accesso alla memoria esterna</string>
+    <string name="permissions_external_storage">Accesso alla memoria esterna necessario</string>
     <string name="permissions_external_storage_description">Per cercare i tuoi file, <xliff:g id="name" example="My App">%1$s</xliff:g> ha bisogno del permesso per accedere alla memoria esterna del tuo dispositivo.</string>
-    <string name="permissions_manage_storage">Necessario accesso alla gestione archiviazione</string>
+    <string name="permissions_manage_storage">Accesso alla gestione archiviazione necessario</string>
     <string name="permissions_manage_storage_description">Per visualizzare i file nei risultati di ricerca, <xliff:g id="name" example="My App">%1$s</xliff:g> ha bisogno del permesso per gestire tutti i file sul tuo dispositivo. Questo permesso viene usato esclusivamente per elencare i file e non verrà usato per leggere o modificare il contenuto dei file personali.</string>
     <string name="permission_desc_wallpaper_base">Per visualizzare le anteprime dello sfondo e includerle nei backup, <xliff:g id="name" example="My App">%1$s</xliff:g> ha bisogno del permesso %2$s. Ciò è dovuto alle limitazioni di sistema all\'accesso ai dati dello sfondo.</string>
     <string name="permission_desc_ending_read_all_files">per leggere tutti i file sul tuo dispositivo</string>

@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Reiniciar o Lawnchair</string>
     <string name="experimental_features_label">Funcionalidades experimentais</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Personalização de fontes</string>
     <string name="font_picker_description">Algum texto mantém-se inalterado</string>
     <string name="smartspace_calendar_label">Personalização do calendário da Visualização rápida</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Aumentar o tamanho máximo permitido da grelha do ecrã inicial de 10 x 10 para 20 x 20</string>
     <string name="always_reload_icons_label">Recarregar sempre os ícones</string>
     <string name="always_reload_icons_description">Evitar utilizar ícones em cache dos pacotes de ícones</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Gesto de deslizar no ícone</string>
     <string name="icon_swipe_gestures_description">Fazer uma ação quando faz um gesto para a esquerda ou direita sobre um ícone em vez de o mover para o ecrã principal</string>
     <string name="show_deck_layout">Ambiente do Deck</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Bloquear/desbloquear</string>
     <string name="recents_lock_unlock_description">Impedir que a aplicação selecionada seja fechada ao pressionar \"Limpar tudo\"</string>
     <!--Overlay-->
@@ -223,7 +233,9 @@ Transparentes</string>
     <string name="icon_shape_square">Quadrado</string>
     <string name="icon_shape_squircle">Quadrado Arredondado</string>
     <string name="icon_shape_teardrop">Lágrima</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -316,8 +328,11 @@ Transparentes</string>
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriano</string>
     <string name="smartspace_calendar_persian">Persa</string>
+    <string name="smartspace_calendar_chinese">Chinese</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">A carregar</string>
     <string name="smartspace_battery_full">Carregado</string>
     <string name="smartspace_battery_low">Bateria fraca</string>
@@ -377,6 +392,8 @@ Transparentes</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Ativo</string>
     <string name="update_check_failed">Falha na procura de atualizações</string>
+    <string name="major_update_label">Breaking change!</string>
+    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -409,6 +426,7 @@ Transparentes</string>
     <string name="gesture_handler_sleep">Suspender</string>
     <string name="gesture_handler_recents">Abrir ecrã de recentes</string>
     <string name="gesture_handler_open_notifications">Abrir painel de notificações</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Abrir aplicação</string>
     <string name="gesture_handler_open_app_config">Abrir %1$s</string>
     <string name="gesture_handler_open_app_drawer">Abrir gaveta de aplicações</string>
@@ -417,12 +435,15 @@ Transparentes</string>
     <string name="gesture_handler_open_assistant">Abrir assistente</string>
     <string name="pick_app_for_gesture">Escolher aplicação</string>
     <string name="dt2s_admin_hint_title">Permissões de administrador necessárias</string>
-    <string name="dt2s_admin_hint">Para usar o Toque Duplo para Adormecer, defina o Lawnchair como uma aplicação de administração do dispositivo. Toque em \"Abrir definições\", depois em \"Ativar esta aplicação de administração do dispositivo.\"</string>
-    <string name="dt2s_admin_warning">O Duplo Toque para Dormir será desativado.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Ativar o serviço de acessibilidade</string>
-    <string name="dt2s_a11y_hint">Para usar o Toque Duplo para Dormir, ativa o serviço de acessibilidade do Lawnchair. Toca em \"Abrir definições\", seleciona \"Lawnchair\" e ativa \"Usar Lawnchair\".\n\nO Lawnchair utiliza o método `performGlobalAction` da Acessibilidade para realizar esta ação. Esta é uma permissão sensível que permite monitorizar outras aplicações. No entanto, o Lawnchair não está configurado para essa funcionalidade e não recebe eventos.</string>
-    <string name="dt2s_recents_warning_open_settings">Abrir definições</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -467,10 +488,6 @@ Transparentes</string>
     <string name="home_screen_unlock">Desbloquear o ecrã principal</string>
     <string name="home_screen_locked">Ecrã principal bloqueado</string>
     <string name="home_screen_lock_description">Impedir alterações na disposição do ecrã principal</string>
-    <string name="show_dot_pagination_label">Mostrar paginação de pontos</string>
-    <string name="show_dot_pagination_description">Usar pontos em vez de linhas para mostrar o número da página</string>
-    <string name="show_material_u_popup_label">Usar novo estilo de pop-up</string>
-    <string name="show_material_u_popup_description">Usar o estilo de pop-up animado e ligeiramente consolidado do Material You</string>
     <string name="popup_menu">Menu suspenso</string>
     <string name="popup_menu_items">Itens do menu suspenso</string>
     <string name="edit_menu_items">Editar itens do menu suspenso</string>

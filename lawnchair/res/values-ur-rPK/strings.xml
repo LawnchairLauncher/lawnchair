@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">لان چیئر کو دوبارہ شروع کریں۔</string>
     <string name="experimental_features_label">تجرباتی خصوصیات</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">فونٹ حسب ضرورت</string>
     <string name="font_picker_description">کچھ متن غیر تبدیل شدہ رہتا ہے۔</string>
     <string name="smartspace_calendar_label">ایک نظر میں کیلنڈر حسب ضرورت</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">زیادہ سے زیادہ اجازت شدہ ہوم اسکرین گرڈ سائز کو 10 x 10 سے 20 x 20 تک بڑھا دیں۔</string>
     <string name="always_reload_icons_label">ہمیشہ شبیہیں دوبارہ لوڈ کریں۔</string>
     <string name="always_reload_icons_description">آئیکن پیک سے کیشڈ آئیکنز استعمال کرنے سے گریز کریں۔</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Icon swipe gestures</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">لاک/انلاک</string>
     <string name="recents_lock_unlock_description">\"سب کو صاف کریں\" دبانے پر منتخب ایپ کو بند ہونے سے روکیں۔</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">مربع</string>
     <string name="icon_shape_squircle">سکورکل</string>
     <string name="icon_shape_teardrop">آنسو</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">گریگورین</string>
     <string name="smartspace_calendar_persian">فارسی</string>
+    <string name="smartspace_calendar_chinese">Chinese</string>
     <string name="generic_smartspace_concatenated_desc">%1$s %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">چارج ہو رہا ہے۔</string>
     <string name="smartspace_battery_full">چارج کیا گیا۔</string>
     <string name="smartspace_battery_low">بیٹری کم ہے۔</string>
@@ -376,6 +391,8 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
+    <string name="major_update_label">Breaking change!</string>
+    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -408,6 +425,7 @@
     <string name="gesture_handler_sleep">سونا</string>
     <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">نوٹیفکیشن پینل کھولیں۔</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">ایپ کھولیں۔</string>
     <string name="gesture_handler_open_app_config">%1$s کھولیں۔</string>
     <string name="gesture_handler_open_app_drawer">ایپ دراز کھولیں۔</string>
@@ -416,12 +434,15 @@
     <string name="gesture_handler_open_assistant">اسسٹنٹ کھولیں۔</string>
     <string name="pick_app_for_gesture">ایپ چنیں۔</string>
     <string name="dt2s_admin_hint_title">ایڈمن کی اجازت درکار ہے۔</string>
-    <string name="dt2s_admin_hint">سونے کے لیے ڈبل تھپتھپائیں استعمال کرنے کے لیے، Lawnchair کو بطور ڈیوائس ایڈمن ایپ سیٹ کریں۔ \"کھولیں ترتیبات\" کو تھپتھپائیں، پھر \"اس ڈیوائس ایڈمن ایپ کو چالو کریں\" پر ٹیپ کریں۔</string>
-    <string name="dt2s_admin_warning">دو بار دوبا کر سولانا غیر فعال ہو جائے گا۔.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">ایکسیسبیلٹی سروس کو آن کریں۔</string>
-    <string name="dt2s_a11y_hint">سونے کے لیے ڈبل تھپتھپائیں استعمال کرنے کے لیے، لانچ چیئر تک رسائی کی خدمت کو آن کریں۔ \"اوپن سیٹنگز\" کو تھپتھپائیں، \"لان چیئر\" کو منتخب کریں اور \"لان چیئر کا استعمال کریں\" کو آن کریں۔\n\nلان چیئر اس کارروائی کو انجام دینے کے لیے ایکسیسبیلٹی کا `پرفارم گلوبل ایکشن` طریقہ استعمال کرتی ہے۔ یہ ایک حساس اجازت ہے جو دوسری ایپس کی نگرانی کرنے کی اجازت دیتی ہے۔ تاہم، Lawnchair کو اس فعالیت کے لیے ترتیب نہیں دیا گیا ہے اور اسے کوئی ایونٹ نہیں ملتا ہے۔</string>
-    <string name="dt2s_recents_warning_open_settings">ترتیبات کھولیں۔</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -466,10 +487,6 @@
     <string name="home_screen_unlock">ہوم اسکرین کو غیر مقفل کریں۔</string>
     <string name="home_screen_locked">ہوم اسکرین مقفل ہے۔</string>
     <string name="home_screen_lock_description">ہوم اسکرین لے آؤٹ میں تبدیلیوں کو روکیں۔</string>
-    <string name="show_dot_pagination_label">ڈاٹ صفحہ بندی دکھائیں۔</string>
-    <string name="show_dot_pagination_description">صفحہ نمبر دکھانے کے لیے لائنوں کے بجائے نقطوں کا استعمال کریں۔</string>
-    <string name="show_material_u_popup_label">نیا پاپ اپ اسٹائل استعمال کریں۔</string>
-    <string name="show_material_u_popup_description">مواد کا استعمال کریں جو آپ کا اچھالتا ہے اور تھوڑا سا مستحکم پاپ اپ اسٹائل ہے۔</string>
     <string name="popup_menu">پاپ اپ مینو</string>
     <string name="popup_menu_items"> پاپ اپ مینو آئٹمز</string>
     <string name="edit_menu_items">پاپ اپ مینو آئٹمز میں ترمیم کریں۔</string>
