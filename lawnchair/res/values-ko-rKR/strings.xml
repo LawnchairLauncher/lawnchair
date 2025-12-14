@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Lawnchair 다시 시작</string>
     <string name="experimental_features_label">실험적 기능</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">글꼴 사용자 정의</string>
     <string name="font_picker_description">일부 텍스트는 변경되지 않습니다.</string>
     <string name="smartspace_calendar_label">한눈에 보기 달력 사용자 정의</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">허용되는 최대 홈 화면 그리드 크기를 10 x 10에서 20 x 20으로 늘립니다.</string>
     <string name="always_reload_icons_label">항상 아이콘 새로고침</string>
     <string name="always_reload_icons_description">아이콘 팩에서 캐시된 아이콘 사용 안 함</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">아이콘 스와이프 제스처</string>
     <string name="icon_swipe_gestures_description">홈 화면을 움직이는 대신 아이콘을 왼쪽이나 오른쪽으로 스와이프 할때 액션을 실행합니다</string>
     <string name="show_deck_layout">독 레이아웃</string>
     <string name="show_deck_layout_description">앱 서랍을 가리고 홈 화면에 새 앱을 자동으로 추가하는 레이아웃 옵션을 표시합니다</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">잠금/잠금 해제</string>
     <string name="recents_lock_unlock_description">\"모두 지우기\" 사용 시 선택한 앱이 지워지지 않도록 방지</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">사각형</string>
     <string name="icon_shape_squircle">둥근 사각형</string>
     <string name="icon_shape_teardrop">물방울</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">사각형 쿠키</string>
     <string name="icon_shape_seven_sided_cookie">칠각형 쿠키</string>
     <string name="icon_shape_arch">아치</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">그레고리력</string>
     <string name="smartspace_calendar_persian">페르시아력</string>
+    <string name="smartspace_calendar_chinese">Chinese</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">충전 중</string>
     <string name="smartspace_battery_full">충전 됨</string>
     <string name="smartspace_battery_low">배터리 부족</string>
@@ -376,6 +391,8 @@
     <string name="privacy_policy">개인정보 처리방침</string>
     <string name="contributor_status_active">작동 중</string>
     <string name="update_check_failed">업데이트를 확인하는데 실패하였습니다</string>
+    <string name="major_update_label">Breaking change!</string>
+    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -408,6 +425,7 @@
     <string name="gesture_handler_sleep">절전</string>
     <string name="gesture_handler_recents">최근 앱 열기</string>
     <string name="gesture_handler_open_notifications">알림 패널 열기</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">앱 열기</string>
     <string name="gesture_handler_open_app_config">%1$s 열기</string>
     <string name="gesture_handler_open_app_drawer">앱 서랍 열기</string>
@@ -416,12 +434,15 @@
     <string name="gesture_handler_open_assistant">어시스턴트 열기</string>
     <string name="pick_app_for_gesture">앱 선택</string>
     <string name="dt2s_admin_hint_title">관리자 권한이 필요합니다</string>
-    <string name="dt2s_admin_hint">두 번 눌러 화면 끄기 기능을 사용하려면, Lawnchair 앱을 기기 관리자 앱으로 할당 받아야 합니다. \"설정 열기\"를 누른 후, \"이 기기 관리자 앱 활성화\"를 누르세요.</string>
-    <string name="dt2s_admin_warning">두 번 눌러 화면 끄기 기능이 비활성화됩니다.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">접근성 서비스가 활성화되어야합니다</string>
-    <string name="dt2s_a11y_hint">두 번 눌러 화면 끄기 기능을 사용하려면 Lawnchair 접근성 서비스를 사용해야 합니다. \"설정 열기\"를 눌러 나오는 화면에서 \"Lawnchair\"를 누른 뒤, \"Lawnchair 사용\"을 켜세요.\n\nLawnchair는 기기를 잠그거나 최근 앱 화면을 열기 위해 접근성 서비스의 performGlobalAction 메소드를 사용합니다. 이 메소드는 다른 앱을 감시할 수 있는 민감한 권한이지만, Lawnchair는 앱 감시 기능이 없으며 시스템에서 보내는 이벤트를 모두 무시합니다.</string>
-    <string name="dt2s_recents_warning_open_settings">설정 열기</string>
-    <string name="recents_a11y_hint">최근 앱 화면을 사용하려면 접근성 서비스에서 Lawnchair 를 켜주셔야 합니다. \"설정 열기\"를 탭하고, \"Lawnchair\"를 \"Lawnchair 사용\"으로 켜 주십시오.\n\nLawnchair 는 최근 앱 화면 열기 를 실행하는 방법으로 접근성의 `performGlobalAction`을 사용합니다. 이 권한은 다른 앱을 감시할 수 있는 민감한 권한이나, Lawnchair 는 그러한 기능이 없으며 관련된 이벤트를 받지 않습니다.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -466,10 +487,6 @@
     <string name="home_screen_unlock">홈 화면 잠금해제</string>
     <string name="home_screen_locked">홈 화면이 잠겨 있습니다.</string>
     <string name="home_screen_lock_description">홈 화면 레이아웃 변경 방지</string>
-    <string name="show_dot_pagination_label">도트 페이지네이션 표시</string>
-    <string name="show_dot_pagination_description">선 대신 점을 사용하여 페이지 번호 표시</string>
-    <string name="show_material_u_popup_label">새로운 팝업 스타일 사용</string>
-    <string name="show_material_u_popup_description">Material You의 탄력 있고 통합된 팝업 스타일 사용</string>
     <string name="popup_menu">팝업 메뉴</string>
     <string name="popup_menu_items">팝업 메뉴 항목</string>
     <string name="edit_menu_items">팝업 메뉴 항목 편집</string>
