@@ -54,17 +54,17 @@ androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
 compose-bom = "androidx.compose:compose-bom:2025.12.00"
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+compose-foundation = { module = "androidx.compose.foundation:foundation" }
 compose-material = "androidx.compose.material:material:1.10.0"
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = { group = "androidx.compose.material3", name = "material3"}
-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class"}
-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-compose-ui-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
+compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-ui-util = { module = "androidx.compose.ui:ui-util" }
 
 # Dagger & Hilt
 error_prone_annotations = "com.google.errorprone:error_prone_annotations:2.45.0"
