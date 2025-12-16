@@ -53,7 +53,7 @@ allprojects {
         protobuf {
             // Configure the protoc executable
             protoc {
-                artifact = "com.google.protobuf:protoc:${libs.versions.protocVersion.get()}"
+                artifact = libs.protobuf.protoc.get().toString()
             }
             generateProtoTasks {
                 all().configureEach { task ->

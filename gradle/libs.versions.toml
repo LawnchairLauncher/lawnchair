@@ -9,6 +9,7 @@ androidx-room = "2.8.4"
 androidx-lifecycle = "2.10.0"
 accompanist = "0.37.3"
 opto = "1.0.18"
+protobuf = "4.33.2"
 retrofit = "3.0.0"
 dagger = "2.57.2"
 libsu = "6.0.0"
@@ -83,7 +84,6 @@ opto-compose = { group = "com.patrykmichalik.opto", name = "compose", version.re
 opto-domain = { group = "com.patrykmichalik.opto", name = "domain", version.ref = "opto" }
 
 # Retrofit & OkHttp
-protobuf-javalite = "com.google.protobuf:protobuf-javalite:4.33.2"
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-kotlinx = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
 okhttp = "com.squareup.okhttp3:okhttp:5.3.2"
@@ -99,6 +99,9 @@ kotlin-parcelizeRuntime = { module = "org.jetbrains.kotlin:kotlin-parcelize-runt
 # KotlinX
 kotlinx-coroutines-android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
+
+protobuf-protoc = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
+protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf" }
 
 # Other
 android-desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.1.5"
