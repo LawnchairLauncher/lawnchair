@@ -411,7 +411,6 @@ dependencies {
     implementation libs.compose.ui.google.fonts
     implementation libs.compose.foundation
     implementation libs.compose.material.icons
-    implementation libs.compose.material
     implementation libs.compose.runtime.livedata
     implementation libs.compose.material3
     implementation libs.compose.material3.windowSizeClass
