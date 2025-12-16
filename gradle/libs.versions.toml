@@ -52,7 +52,7 @@ window = "1.5.1"
 
 agp = "8.13.2"
 baselineprofile = "1.4.1"
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 protobuf = "0.9.5"
 licensee = "1.14.1"
 refine = "4.4.0"
