@@ -3,7 +3,6 @@ jdkRelease = "17"
 
 agp = "8.13.2"
 kotlin = "2.2.21"
-androidx-compose = "1.10.0"
 androidx-composeMaterial3 = "1.4.0"
 androidx-room = "2.8.4"
 androidx-lifecycle = "2.10.0"
@@ -56,17 +55,17 @@ androidx-window = "androidx.window:window:1.5.1"
 
 # Compose
 compose-bom = "androidx.compose:compose-bom:2025.12.00"
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "androidx-compose" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 compose-material = "androidx.compose.material:material:1.10.0"
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-composeMaterial3" }
 compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidx-composeMaterial3" }
-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "androidx-compose" }
-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "androidx-compose" }
-compose-ui-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "androidx-compose" }
-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "androidx-compose" }
-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "androidx-compose" }
-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util", version.ref = "androidx-compose" }
+compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-ui-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 
 # Dagger & Hilt
 error_prone_annotations = "com.google.errorprone:error_prone_annotations:2.45.0"
