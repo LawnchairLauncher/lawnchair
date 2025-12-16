@@ -3,7 +3,6 @@ jdkRelease = "17"
 
 agp = "8.13.2"
 kotlin = "2.2.21"
-androidx-composeMaterial3 = "1.4.0"
 androidx-room = "2.8.4"
 androidx-lifecycle = "2.10.0"
 accompanist = "0.37.3"
@@ -58,8 +57,8 @@ compose-bom = "androidx.compose:compose-bom:2025.12.00"
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 compose-material = "androidx.compose.material:material:1.10.0"
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-composeMaterial3" }
-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidx-composeMaterial3" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3"}
+compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class"}
 compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
