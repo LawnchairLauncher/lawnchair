@@ -21,17 +21,17 @@ kotlin = "2.2.21"
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-test = { id = "com.android.test", version.ref = "agp" }
-androidx-baselineprofile = { id = "androidx.baselineprofile", version = "1.4.1" }
+androidx-baselineprofile = "androidx.baselineprofile:1.4.1"
 
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-ksp = "com.google.devtools.ksp:2.3.3"
-google-protobuf = { id = "com.google.protobuf", version = "0.9.5" }
-cash-licensee = { id = "app.cash.licensee", version = "1.14.1" }
+google-protobuf = "com.google.protobuf:0.9.5"
+cash-licensee = "app.cash.licensee:1.14.1"
 rikka-refine = { id = "dev.rikka.tools.refine", version.ref = "refine" }
-diffplug-spotless = { id = "com.diffplug.spotless", version = "8.1.0" }
+diffplug-spotless = "com.diffplug.spotless:8.1.0"
 
 [libraries]
 # AndroidX
