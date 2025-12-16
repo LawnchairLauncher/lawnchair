@@ -55,7 +55,7 @@ androidx-window = "androidx.window:window:1.5.1"
 # Compose
 compose-bom = "androidx.compose:compose-bom:2025.12.00"
 compose-foundation = { module = "androidx.compose.foundation:foundation" }
-compose-material = "androidx.compose.material:material:1.10.0"
+compose-material = { module = "androidx.compose.material:material" }
 compose-material-icons = "androidx.compose.material:material-icons-extended:1.7.8"
 compose-material3 = { module = "androidx.compose.material3:material3" }
 compose-material3-windowSizeClass = { module = "androidx.compose.material3:material3-window-size-class" }
