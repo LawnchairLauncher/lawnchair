@@ -148,18 +148,18 @@ object DrawableTokens {
             context,
             R.drawable.all_apps_tabs_background,
         )
-        
+
         // Get custom color from preferences
         val prefs2 = PreferenceManager2.getInstance(context)
         val colorOption = prefs2.workProfileTabBackgroundColor.firstBlocking()
         val customColor = colorOption.colorPreferenceEntry.lightColor.invoke(context)
-        
+
         val selectedColor = if (customColor != 0) {
             customColor
         } else {
             ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode)
         }
-        
+
         selected?.setTint(selectedColor)
 
         list.addState(intArrayOf(-android.R.attr.state_selected), unselected)
