@@ -147,6 +147,10 @@
     <string name="debug_restart_launcher">Omstart av Lawnchair</string>
     <string name="experimental_features_label">Eksperimentelle funksjoner</string>
     <!-- Experimental features -->
+    <string name="workspace_label">Workspace</string>
+    <string name="smartspace_label">Smartspace</string>
+    <string name="internal_label">Internal</string>
+    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Endre font</string>
     <string name="font_picker_description">Noe tekst er uforandret</string>
     <string name="smartspace_calendar_label">Hurtig overblikkskalender tilpassing</string>
@@ -155,10 +159,16 @@
     <string name="workspace_increase_max_grid_size_description">Øk maks antall ruter på hjemmeskjerm fra 10 x 10 til 20 x 20</string>
     <string name="always_reload_icons_label">Alltid last ikoner på nytt</string>
     <string name="always_reload_icons_description">Unngå å bruk buffrede ikoner fra ikonpakker</string>
+    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Ikon-sveipegester</string>
     <string name="icon_swipe_gestures_description">Utfør handlinger når du sveiper til venstre eller høyre på ikoner, i stedet for å flytte på hjemskjermen</string>
     <string name="show_deck_layout">Kortoppsett</string>
     <string name="show_deck_layout_description">Vis et oppsett-alternativ for å skjule appskuffen og automatisk legge til nye apper til startskjermen</string>
+    <string name="material_expressive_label">Material 3 Expressive</string>
+    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
+    <string name="gesturenavcontract_label">GestureNavContract API</string>
+    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
+    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Lås/lås opp</string>
     <string name="recents_lock_unlock_description">Forhindre at valgt app lukker seg når man trykker \"Tøm alle\"</string>
     <!--Overlay-->
@@ -222,7 +232,9 @@
     <string name="icon_shape_square">Firkant</string>
     <string name="icon_shape_squircle">Sirkel</string>
     <string name="icon_shape_teardrop">Tåreform</string>
-    <!-- Icon shape (Material 3 Expressive) -->
+    <!-- Icon shapes (Material 3 Expressive) -->
+    <string name="icon_shape_very_sunny">Very sunny</string>
+    <string name="icon_shape_complex_clover">Complex clover</string>
     <string name="icon_shape_four_sided_cookie">Firesidet kjeks</string>
     <string name="icon_shape_seven_sided_cookie">Syvsidet kjeks</string>
     <string name="icon_shape_arch">Bue</string>
@@ -315,8 +327,11 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregoriansk</string>
     <string name="smartspace_calendar_persian">Persisk</string>
+    <string name="smartspace_calendar_chinese">Chinese</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
+    <string name="smartspace_battery_fast_charging">Fast charging</string>
+    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Lader</string>
     <string name="smartspace_battery_full">Ladet</string>
     <string name="smartspace_battery_low">Lavt batteri</string>
@@ -376,6 +391,8 @@
     <string name="privacy_policy">Retningslinjer for personvern</string>
     <string name="contributor_status_active">Aktiv</string>
     <string name="update_check_failed">Kunne ikke se etter oppdateringer</string>
+    <string name="major_update_label">Breaking change!</string>
+    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -408,6 +425,7 @@
     <string name="gesture_handler_sleep">Sov</string>
     <string name="gesture_handler_recents">Åpne nylig brukte skjermen</string>
     <string name="gesture_handler_open_notifications">Åpne varslingspanel</string>
+    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Åpne app</string>
     <string name="gesture_handler_open_app_config">Åpne %1$s</string>
     <string name="gesture_handler_open_app_drawer">Åpne appskuff</string>
@@ -416,12 +434,15 @@
     <string name="gesture_handler_open_assistant">Åpne assistent</string>
     <string name="pick_app_for_gesture">Velg app</string>
     <string name="dt2s_admin_hint_title">Administratortilgang er nødvendig</string>
-    <string name="dt2s_admin_hint">For å bruke dobbelt-tapping for å sove, sett Lawnchair som enhetsadministrator app. Trykk på \"åpne instillinger\", trykk på \"Aktiver denne app som enhetsadministrator\"</string>
-    <string name="dt2s_admin_warning">Dobbeltrykk for å slukke vil bli slått av.</string>
+    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
+    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
     <string name="d2ts_recents_a11y_hint_title">Slå på tilgjengelighetsservice</string>
-    <string name="dt2s_a11y_hint">For å bruke dobbelt-tapping for å sove, slå på tilgjengelighetstjenesten for Lawnchair. Trykk på \"Åpne innstillinger\", velg \"Lawnchair\" og slå på \"Bruk Lawnchair.\" \n\nLawnchair bruker tilgjengelighets \'performGlobalAction\'-metode for å utføre denne handlingen. Dette er en sensitiv tillatelse som gjør det mulig å overvåke andre apper. Lawnchair er imidlertid ikke konfigurert for denne funksjonaliteten og mottar ingen hendelser.</string>
-    <string name="dt2s_recents_warning_open_settings">Åpne instillinger</string>
-    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="sleep_a11y_hint">put the device to sleep</string>
+    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
+    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
+    <string name="recents_screen_a11y_hint">open the Recents screen</string>
+    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
+    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -466,10 +487,6 @@
     <string name="home_screen_unlock">Lås opp hjemskjerm</string>
     <string name="home_screen_locked">Hjemskjerm er låst</string>
     <string name="home_screen_lock_description">Forhindre endringer på hjemmeskjermlayout</string>
-    <string name="show_dot_pagination_label">Vis punktpaginering</string>
-    <string name="show_dot_pagination_description">Bruk prikker i stedet for linjer for å vise sidenummer</string>
-    <string name="show_material_u_popup_label">Bruk ny pop-opp stil</string>
-    <string name="show_material_u_popup_description">Bruk Material You\'s spenstige og litt konsoliderte pop-up-stil</string>
     <string name="popup_menu">Popp-opp meny</string>
     <string name="popup_menu_items">Pop-up menu items</string>
     <string name="edit_menu_items">Edit pop-up menu items</string>
