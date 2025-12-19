@@ -154,6 +154,35 @@ public class ModelWriter {
             throw e;
         }
     }
+    
+    /**
+     * Clears all views from the home screen.
+     */
+    public boolean clearAllHomeScreenViewsByType(int type) {
+        final ArrayList<ItemInfo> itemsToRemove = new ArrayList<>();
+
+        for (ItemInfo item : mBgDataModel.itemsIdMap) {
+            if (item.container == type) {
+                itemsToRemove.add(item);
+            }
+        }
+
+        if (itemsToRemove.isEmpty()) {
+            return false;
+        }
+
+        enqueueDeleteRunnable(newModelTask(() -> {
+            final ModelDbController db = mModel.getModelDbController();
+
+            for (ItemInfo item : itemsToRemove) {
+                db.delete(TABLE_NAME, itemIdMatch(item.id), null);
+                mBgDataModel.removeItem(mContext, item);
+            }
+        }));
+
+        mModel.forceReload();
+        return true;
+    }
 
     /**
      * Move an item in the DB to a new <container, screen, cellX, cellY>

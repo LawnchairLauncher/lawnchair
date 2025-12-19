@@ -39,6 +39,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.ArchiveCompatibilityParams;
 import android.os.UserHandle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.os.BuildCompat;
@@ -218,6 +219,19 @@ public class LauncherAppState implements SafeCloseable {
 
     public void reloadIcons() {
         refreshAndReloadLauncher();
+    }
+
+    public void clearAllViewsFromHomeScreen() {
+        final boolean isViewsRemoved =
+            mLauncher.getModelWriter().clearAllHomeScreenViewsByType(
+                LauncherSettings.Favorites.CONTAINER_DESKTOP);
+        if (isViewsRemoved) {
+            Toast.makeText(
+                mLauncher,
+                R.string.home_screen_all_views_removed_msg,
+                Toast.LENGTH_SHORT
+            ).show();
+        }
     }
 
     private void refreshAndReloadLauncher() {

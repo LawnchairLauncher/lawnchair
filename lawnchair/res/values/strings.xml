@@ -164,6 +164,8 @@
     <string name="home_screen_label">Home screen</string>
     <string name="home_screen_description">Feed, grid, icons</string>
 
+    <string name="home_screen_actions">Home screen actions</string>
+
     <string name="dock_label">Dock</string>
     <string name="dock_description">Search bar, icon count</string>
 
@@ -259,6 +261,9 @@
 
     <string name="reset_custom_icons">Reset custom icons</string>
     <string name="reset_custom_icons_confirmation">All custom icons will be reset. Do you want to continue?</string>
+
+    <string name="remove_all_views_from_home_screen">Clear home screen</string>
+    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
 
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Icons</string>
@@ -887,4 +892,6 @@
     <string name="grant_requested_permissions">Grant permissions</string>
     <string name="permissions_needed">Permissions needed</string>
     <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <!-- Message shown when all home screen views are removed -->
+    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
 </resources>
