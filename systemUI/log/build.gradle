@@ -23,5 +23,5 @@ compileOnlyCommonJars()
 dependencies {
     compileOnly projects.plugincore
     compileOnly projects.common
-    implementation libs.error.prone.annotations
+    implementation libs.errorprone.annotations
 }

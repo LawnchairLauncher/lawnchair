@@ -60,8 +60,12 @@ class FolderViewModel(
     fun updateFolderItems(id: Int, title: String, appInfo: List<AppInfo>) {
         viewModelScope.launch {
             repository.updateFolderWithItems(id, title, appInfo)
+            // Update the local state flow so UI can observe changes without full reload if needed,
+            // though for now we just rely on reloadGrid to refresh the launcher.
+            // We call reloadGrid *after* the DB update is complete.
+            _folderInfo.value = repository.getFolderInfo(id, true)
+            reloadHelper.reloadGrid()
         }
-        reloadHelper.reloadGrid()
     }
 
     fun createFolder(folderInfo: FolderInfo) {
