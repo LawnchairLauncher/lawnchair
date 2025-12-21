@@ -102,6 +102,8 @@
     <string name="caddy_beta">Caddy(ベータ版)</string>
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">アプリドロワーのフォルダー</string>
+    <string name="selected_apps">Selected apps</string>
+    <string name="add_apps">Add apps</string>
     <string name="app_drawer_folder_settings">ドロワーフォルダー</string>
     <string name="add_folder">フォルダーを作成する</string>
     <string name="edit_folder">フォルダーを編集する</string>
@@ -130,6 +132,7 @@
     <string name="general_description">色、アイコンパック、通知ドット</string>
     <string name="home_screen_label">ホーム画面</string>
     <string name="home_screen_description">フィード、グリッド、アイコン</string>
+    <string name="home_screen_actions">Home screen actions</string>
     <string name="dock_label">ドック</string>
     <string name="dock_description">検索バー、アイコン数</string>
     <string name="app_drawer_label">アプリドロワー</string>
@@ -147,10 +150,6 @@
     <string name="debug_restart_launcher">Lawnchairを再起動</string>
     <string name="experimental_features_label">実験的機能</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">フォントのカスタマイズ</string>
     <string name="font_picker_description">一部のテキストは変更されません</string>
     <string name="smartspace_calendar_label">At a Grance カレンダーのカスタマイズ</string>
@@ -159,16 +158,10 @@
     <string name="workspace_increase_max_grid_size_description">ホーム画面のグリッド数を 10 × 10 から 20 × 20 まで増やします</string>
     <string name="always_reload_icons_label">常にアイコンを再読み込みします</string>
     <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにします</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">アイコンのスワイプジェスチャー</string>
     <string name="icon_swipe_gestures_description">アイコンを左右にスワイプした時にホーム画面の移動の代わりにアクションを実行します</string>
     <string name="show_deck_layout">ドックのレイアウト</string>
     <string name="show_deck_layout_description">アプリドロワーを非表示にし、自動的に新しいアプリをホーム画面に追加するためのレイアウトオプションを表示します</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">ロック/ロック解除</string>
     <string name="recents_lock_unlock_description">「すべてクリア」を押したときに選択したアプリを閉じないようにします</string>
     <!--Overlay-->
@@ -211,6 +204,8 @@
     <string name="adaptive_icon_background_description">背景の明るさを100%に設定すると背景が白くなります</string>
     <string name="reset_custom_icons">カスタムアイコンをリセット</string>
     <string name="reset_custom_icons_confirmation">すべてのカスタムアイコンがリセットされます。続行しますか？</string>
+    <string name="remove_all_views_from_home_screen">Clear home screen</string>
+    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">アイコン</string>
     <string name="icon_picker_reset_to_default">デフォルトにリセット</string>
@@ -232,9 +227,7 @@
     <string name="icon_shape_square">四角形</string>
     <string name="icon_shape_squircle">丸みがかった正方形</string>
     <string name="icon_shape_teardrop">水滴型</string>
-    <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">四面クッキー</string>
     <string name="icon_shape_seven_sided_cookie">七面クッキー</string>
     <string name="icon_shape_arch">アーチ</string>
@@ -327,11 +320,8 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">グレゴリオ暦</string>
     <string name="smartspace_calendar_persian">ペルシア暦</string>
-    <string name="smartspace_calendar_chinese">Chinese</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">充電中</string>
     <string name="smartspace_battery_full">充電完了</string>
     <string name="smartspace_battery_low">バッテリー残量の低下</string>
@@ -391,8 +381,6 @@
     <string name="privacy_policy">プライバシーポリシー</string>
     <string name="contributor_status_active">アクティブ</string>
     <string name="update_check_failed">アップデートの確認に失敗しました</string>
-    <string name="major_update_label">Breaking change!</string>
-    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -425,7 +413,6 @@
     <string name="gesture_handler_sleep">スリープ状態にします</string>
     <string name="gesture_handler_recents">タスク管理画面を開く</string>
     <string name="gesture_handler_open_notifications">通知パネルを開く</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">アプリを開く</string>
     <string name="gesture_handler_open_app_config">%1$s を開く</string>
     <string name="gesture_handler_open_app_drawer">アプリドロワーを開く</string>
@@ -434,15 +421,12 @@
     <string name="gesture_handler_open_assistant">アシスタントを起動する</string>
     <string name="pick_app_for_gesture">アプリを選択</string>
     <string name="dt2s_admin_hint_title">管理者権限が必要です</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">ダブルタップでスリープ状態にするには、Lawnchair をデバイス管理者アプリとして設定します。「設定を開く」をタップし、「このデバイス管理者アプリを有効にする」をタップします。</string>
+    <string name="dt2s_admin_warning">ダブルタップでスリープを解除します</string>
     <string name="d2ts_recents_a11y_hint_title">ユーザー補助サービスを ON にする</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">ダブルタップでスリープするには、Lawnchair アクセシビリティサービスをオンにします。「オープン設定」をタップし、「Lawnchair」を選択し、「Lawnchairを使用」をオンにします。\n\nLawnchair はこのアクションを実行するためにアクセシビリティの `performGlobalAction` メソッドを使用します。 これは他のアプリの監視を可能にする機密性の高い権限です。ただし、Lawnchair はその機能に対して設定されておらず、イベントを受信しません。</string>
+    <string name="dt2s_recents_warning_open_settings">設定を開く</string>
+    <string name="recents_a11y_hint">最近の画面を開くには、Lawnchair アクセシビリティサービスをオンにします。「設定を開く」をタップし、「Lawnchair」を選択して「Lawnchairを使用」をオンにします。\n\nLawnchair はこのアクションを実行するためにアクセシビリティの `performGlobalAction` メソッドを使用します。 これは他のアプリの監視を可能にする機密性の高い権限です。ただし、Lawnchair はその機能に対して設定されておらず、イベントを受信しません。</string>
     <!--
 
     Bug reporting
@@ -487,6 +471,10 @@
     <string name="home_screen_unlock">ホーム画面のロックを解除</string>
     <string name="home_screen_locked">ホーム画面はロックされています</string>
     <string name="home_screen_lock_description">ホーム画面のレイアウトを固定する</string>
+    <string name="show_dot_pagination_label">ドットページネーションを表示</string>
+    <string name="show_dot_pagination_description">ラインの代わりにドットを使用してページ番号を表示する</string>
+    <string name="show_material_u_popup_label">新しいポップアップスタイルを使用する</string>
+    <string name="show_material_u_popup_description">Material Youの弾むような、まとまりのあるポップアップスタイルを使用する</string>
     <string name="popup_menu">ポップアップメニュー</string>
     <string name="popup_menu_items">ポップアップメニューの項目</string>
     <string name="edit_menu_items">ポップアップメニューの項目を編集</string>
@@ -592,7 +580,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">アプリ、ウェブ、その他を検索</string>
+    <string name="all_apps_device_search_hint">Search web and more</string>
     <string name="all_apps_search_bar_hint">アプリを検索</string>
     <string name="all_apps_no_search_results"><xliff:g example="Android" id="query">%1$s</xliff:g> と一致するアプリがありません</string>
     <string name="all_apps_search_result_suggestions">Web</string>
@@ -692,4 +680,6 @@
     <string name="grant_requested_permissions">権限の許可</string>
     <string name="permissions_needed">権限が必要です</string>
     <string name="grant_requested_permissions_tap">タップして権限を付与</string>
+    <!-- Message shown when all home screen views are removed -->
+    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
 </resources>

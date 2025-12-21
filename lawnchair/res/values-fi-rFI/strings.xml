@@ -102,6 +102,8 @@
     <string name="caddy_beta">Ryhmitetyt sovellukset (Beta)</string>
     <string name="caddy">Ryhmitetty sovellukset</string>
     <string name="app_drawer_folder">Kansiot sovellusvalikossa</string>
+    <string name="selected_apps">Selected apps</string>
+    <string name="add_apps">Add apps</string>
     <string name="app_drawer_folder_settings">Sovellusvalikon kansio</string>
     <string name="add_folder">Luo kansio</string>
     <string name="edit_folder">Muokkaa kansiota</string>
@@ -130,6 +132,7 @@
     <string name="general_description">Värit, kuvakepaketit, ilmoituspisteet</string>
     <string name="home_screen_label">Aloitusnäyttö</string>
     <string name="home_screen_description">Syöte, ruudukko, kuvakkeet</string>
+    <string name="home_screen_actions">Home screen actions</string>
     <string name="dock_label">Telakka</string>
     <string name="dock_description">Hakupalkki, kuvakkeiden määrä</string>
     <string name="app_drawer_label">Sovellusvalikko</string>
@@ -147,10 +150,6 @@
     <string name="debug_restart_launcher">Uudelleenkäynnistä Lawnchair</string>
     <string name="experimental_features_label">Kokeelliset ominaisuudet</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Fontin muokkaus</string>
     <string name="font_picker_description">Jotkin tekstit eivät muutu</string>
     <string name="smartspace_calendar_label">Silmien edessä -ominaisuuden kalenterin muokkaus</string>
@@ -159,16 +158,10 @@
     <string name="workspace_increase_max_grid_size_description">Kasvata suurinta mahdollista aloitusnäytön ruudukon kokoa 10 X 10:stä 20 X 20:een</string>
     <string name="always_reload_icons_label">Lataa kuvakkeet aina uudelleen</string>
     <string name="always_reload_icons_description">Vältä välimuistissa olevien kuvakkeiden käyttöä kuvakepakkauksissa</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Kuvakkeiden pyyhkäisyliikkeet</string>
     <string name="icon_swipe_gestures_description">Suorita toimintoja kuvakkeita oikealle tai vasemmalle pyyhkäisemällä aloitusnäytön siirtämisen sijaan</string>
     <string name="show_deck_layout">Telakan asettelu</string>
     <string name="show_deck_layout_description">Näytä asetus sovellusvalikon piilottamiseksi ja sovellusten automaattisen aloitusnäyttöön lisäämiseksi</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Lukitsee/avaa</string>
     <string name="recents_lock_unlock_description">Estä valittua sovellusta sulkeutumaan kun painetaan: \"Poista kaikki\"</string>
     <!--Overlay-->
@@ -211,6 +204,8 @@
     <string name="adaptive_icon_background_description">Käytä 100% kirkkautta saadaksesi valkoisen taustan</string>
     <string name="reset_custom_icons">Nollaa mukautetut kuvakkeet</string>
     <string name="reset_custom_icons_confirmation">Kaikki mukautetut kuvakkeet nollataan. Haluatko jatkaa?</string>
+    <string name="remove_all_views_from_home_screen">Clear home screen</string>
+    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Kuvakkeet</string>
     <string name="icon_picker_reset_to_default">Palauta oletukseen</string>
@@ -232,9 +227,7 @@
     <string name="icon_shape_square">Neliö</string>
     <string name="icon_shape_squircle">Ympyrä</string>
     <string name="icon_shape_teardrop">Pisara</string>
-    <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">Neljäreunainen keksi</string>
     <string name="icon_shape_seven_sided_cookie">Seitsemänreunainen keksi</string>
     <string name="icon_shape_arch">Kaari</string>
@@ -327,11 +320,8 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Gregorialainen</string>
     <string name="smartspace_calendar_persian">Persialainen</string>
-    <string name="smartspace_calendar_chinese">Chinese</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Ladataan</string>
     <string name="smartspace_battery_full">Ladattu</string>
     <string name="smartspace_battery_low">Akku vähissä</string>
@@ -391,8 +381,6 @@
     <string name="privacy_policy">Yksityisyyskäytäntö</string>
     <string name="contributor_status_active">Aktiivinen</string>
     <string name="update_check_failed">Päivitysten tarkistaminen epäonnistui</string>
-    <string name="major_update_label">Breaking change!</string>
-    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -425,7 +413,6 @@
     <string name="gesture_handler_sleep">Lepotila</string>
     <string name="gesture_handler_recents">Avaa viimeisimmät-näkymä</string>
     <string name="gesture_handler_open_notifications">Avaa ilmoituspaneeli</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Avaa sovellus</string>
     <string name="gesture_handler_open_app_config">Avaa %1$s</string>
     <string name="gesture_handler_open_app_drawer">Avaa sovellusvalikko</string>
@@ -434,15 +421,12 @@
     <string name="gesture_handler_open_assistant">Avaa avustajasovellus</string>
     <string name="pick_app_for_gesture">Valitse sovellus</string>
     <string name="dt2s_admin_hint_title">Laitteenhallintasovelluksen oikeudet vaaditaan</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">Sammuttaaksesi puhelimesi kaksoisnapauttamalla, aseta Lawnchair laitteenhallintasovellukseksi. Paina \"Avaa asetukset\", ja sitten \"Aktivoi laitteenhallintasovellus\".</string>
+    <string name="dt2s_admin_warning">Kaksoisnapautus lepotilaan tulee olemaan pois päältä.</string>
     <string name="d2ts_recents_a11y_hint_title">Ota esteettömyyspalvelu käyttöön</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">Sammuttaaksesi näytön kaksoisnapauttamalla, aseta Lawnchair saavutettavuuspalveluksi. Napauta \"Avaa asetukset\", valitse lawnchair ja laita se päälle.\n\nLawnchair käyttää Saavutettavuuspalvelun performGlobalAction-toimintoa. Tämä on herkkä käyttöoikeus joka sallii muiden sovellusten valvomisen. Lawnchair ei kuitenkaan tee näin eikä vastaanota mitään tapahtumia.</string>
+    <string name="dt2s_recents_warning_open_settings">Avaa asetukset</string>
+    <string name="recents_a11y_hint">Avataksesi viimeisimmät-näytön, aseta Lawnchair saavutettavuuspalveluksi. Napauta \"Avaa asetukset\", valitse lawnchair ja laita se päälle.\n\nLawnchair käyttää Saavutettavuuspalvelun performGlobalAction-toimintoa. Tämä on herkkä käyttöoikeus joka sallii muiden sovellusten valvomisen. Lawnchair ei kuitenkaan tee näin eikä vastaanota mitään tapahtumia.</string>
     <!--
 
     Bug reporting
@@ -487,6 +471,10 @@
     <string name="home_screen_unlock">Poista aloitusnäytön lukitus</string>
     <string name="home_screen_locked">Aloitusnäyttö on lukittu</string>
     <string name="home_screen_lock_description">Estä muutokset aloitusnäytön asetteluun</string>
+    <string name="show_dot_pagination_label">Näytä pisteiden sivutus</string>
+    <string name="show_dot_pagination_description">Käytä pisteitä viivojen sijaan näyttääksesi sivun numeron</string>
+    <string name="show_material_u_popup_label">Käytä uutta ponnahdusikkunaa</string>
+    <string name="show_material_u_popup_description">Käytä Material You -teeman pomppivaa ja hieman yhtenäisempää ponnahdusikkunatyyliä</string>
     <string name="popup_menu">Ponnahdusikkuna</string>
     <string name="popup_menu_items">Ponnahdusikkunan kohteet</string>
     <string name="edit_menu_items">Muokkaa ponnahdusikkunan kohteita</string>
@@ -593,7 +581,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Hae sovelluksia, internetistä ja muuta</string>
+    <string name="all_apps_device_search_hint">Search web and more</string>
     <string name="all_apps_search_bar_hint">Hae sovelluksia</string>
     <string name="all_apps_no_search_results">Yhtään \"<xliff:g example="Android" id="query">%1$s</xliff:g>\" vastaavaa sovellusta ei löytynyt</string>
     <string name="all_apps_search_result_suggestions">Verkosta</string>
@@ -693,4 +681,6 @@
     <string name="grant_requested_permissions">Grant permissions</string>
     <string name="permissions_needed">Permissions needed</string>
     <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <!-- Message shown when all home screen views are removed -->
+    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
 </resources>

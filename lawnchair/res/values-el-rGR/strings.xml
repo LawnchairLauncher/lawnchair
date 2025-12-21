@@ -102,6 +102,8 @@
     <string name="caddy_beta">Κατηγορίες (Beta)</string>
     <string name="caddy">Κατηγορίες</string>
     <string name="app_drawer_folder">Φάκελοι συρταριού εφαρμογών</string>
+    <string name="selected_apps">Selected apps</string>
+    <string name="add_apps">Add apps</string>
     <string name="app_drawer_folder_settings">Δημιουργία, διαγραφή ή επεξεργασία φακέλων</string>
     <string name="add_folder">Δημιουργία φακέλου</string>
     <string name="edit_folder">Επεξεργασία φακέλου</string>
@@ -130,6 +132,7 @@
     <string name="general_description">Χρώματα, πακέτα εικονιδίων, κουκκίδες ειδοποίησης</string>
     <string name="home_screen_label">Αρχική οθόνη</string>
     <string name="home_screen_description">Ροή, πλέγμα, εικονίδια</string>
+    <string name="home_screen_actions">Home screen actions</string>
     <string name="dock_label">Ράφι</string>
     <string name="dock_description">Μπάρα αναζήτησης, αριθμός εικονιδίων</string>
     <string name="app_drawer_label">Συρτάρι εφαρμογών</string>
@@ -147,10 +150,6 @@
     <string name="debug_restart_launcher">Επανεκκίνηση του Lawnchair</string>
     <string name="experimental_features_label">Πειραματικές λειτουργίες</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">Προσαρμογή γραμματοσειράς</string>
     <string name="font_picker_description">Μερικά κείμενα παραμένουν αμετάβλητα</string>
     <string name="smartspace_calendar_label">Προσαρμογή ημερολογίου Με μια Ματιά</string>
@@ -159,16 +158,10 @@
     <string name="workspace_increase_max_grid_size_description">Αύξηση του μέγιστου επιτρεπόμενου μεγέθους πλέγματος αρχικής οθόνης από 10×10 έως 20×20</string>
     <string name="always_reload_icons_label">Επαναφόρτωση εικονιδίων πάντοτε</string>
     <string name="always_reload_icons_description">Αποφυγή χρήσης αποθηκευμένων εικονιδίων από πακέτα εικονιδίων</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Χειρονομίες σάρωσης εικονιδίων</string>
     <string name="icon_swipe_gestures_description">Εκτελέστε ενέργειες όταν σύρετε αριστερά ή δεξιά στα εικονίδια αντί να μετακινείτε την αρχική οθόνη</string>
     <string name="show_deck_layout">Διάταξη τράπουλας</string>
     <string name="show_deck_layout_description">Εμφάνιση μιας επιλογής διάταξης για την απόκρυψη του συρταριού εφαρμογών και την αυτόματη προσθήκη νέων εφαρμογών στην αρχική οθόνη</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">Κλείδωμα/ξεκλείδωμα</string>
     <string name="recents_lock_unlock_description">Αποτροπή κλεισίματος επιλεγμένης εφαρμογής κατά το πάτημα του \"Καθαρισμός όλων\"</string>
     <!--Overlay-->
@@ -211,6 +204,8 @@
     <string name="adaptive_icon_background_description">Χρήση 100% φωτεινότητας για λευκό φόντο</string>
     <string name="reset_custom_icons">Επαναφορά προσαρμοζόμενων εικονιδίων</string>
     <string name="reset_custom_icons_confirmation">Θα γίνει επαναφορά όλων των προσαρμοσμένων εικονιδίων. Θέλετε να συνεχίσετε;</string>
+    <string name="remove_all_views_from_home_screen">Clear home screen</string>
+    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">Εικονίδια</string>
     <string name="icon_picker_reset_to_default">Επαναφορά στο προεπιλεγμένο εικονίδιο</string>
@@ -232,9 +227,7 @@
     <string name="icon_shape_square">Τετράγωνο</string>
     <string name="icon_shape_squircle">Οβάλ Τετράγωνο</string>
     <string name="icon_shape_teardrop">Δάκρυ</string>
-    <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">Τετράπλευρο μπισκότο</string>
     <string name="icon_shape_seven_sided_cookie">Επτάπλευρο μπισκότο</string>
     <string name="icon_shape_arch">Αψίδα</string>
@@ -327,11 +320,8 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">Γρηγοριανό</string>
     <string name="smartspace_calendar_persian">Περσικό</string>
-    <string name="smartspace_calendar_chinese">Chinese</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">Φόρτιση</string>
     <string name="smartspace_battery_full">Φορτισμένο</string>
     <string name="smartspace_battery_low">Χαμηλή μπαταρία</string>
@@ -391,8 +381,6 @@
     <string name="privacy_policy">Πολιτική απορρήτου</string>
     <string name="contributor_status_active">Ενεργό</string>
     <string name="update_check_failed">Αποτυχία ελέγχου ενημερώσεων</string>
-    <string name="major_update_label">Breaking change!</string>
-    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -425,7 +413,6 @@
     <string name="gesture_handler_sleep">Αναστολή</string>
     <string name="gesture_handler_recents">Άνοιγμα Οθόνης πρόσφατων εφαρμογών</string>
     <string name="gesture_handler_open_notifications">Άνοιγμα πίνακα ειδοποιήσεων</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">Άνοιγμα εφαρμογής</string>
     <string name="gesture_handler_open_app_config">Άνοιγμα %1$s</string>
     <string name="gesture_handler_open_app_drawer">Άνοιγμα συρταριού εφαρμογών</string>
@@ -434,15 +421,12 @@
     <string name="gesture_handler_open_assistant">Άνοιγμα βοηθού</string>
     <string name="pick_app_for_gesture">Επιλογή εφαρμογής</string>
     <string name="dt2s_admin_hint_title">Απαιτούνται δικαιώματα διαχειριστή</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">Για να χρησιμοποιήσετε το διπλό πάτημα για ύπνο, ορίστε τον εκκινητή Lawnchair ως εφαρμογή διαχείρισης συσκευής. Πατήστε στο “Άνοιγμα ρυθμίσεων” και μετά πατήστε “Ενεργοποίηση αυτής της εφαρμογής ως διαχειριστή της συσκευής.”</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="d2ts_recents_a11y_hint_title">Ενεργοποίηση υπηρεσίας προσβασιμότητας</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">Για να χρησιμοποιήσετε την λειτουργία Διπλό Πάτημα Για Ύπνο, ενεργοποιήστε την υπηρεσία προσβασιμότητας του εκκινητή Lawnchair. Πατήστε \"Άνοιγμα ρυθμίσεων\", επιλέξτε \"Lawnchair\" και ενεργοποιήστε τη \"Χρήση Lawnchair\".\n\nΟ εκκινητής Lawnchair χρησιμοποιεί τη μέθοδο `performGlobalAction` της Προσβασιμότητας Εφαρμογών για την εκτέλεση αυτής της ενέργειας. Αυτή είναι μια ευαίσθητη άδεια που επιτρέπει την παρακολούθηση άλλων εφαρμογών. Ωστόσο, ο εκκινητής Lawnchair δεν έχει ρυθμιστεί για αυτήν τη λειτουργία και δεν λαμβάνει συμβάντα.</string>
+    <string name="dt2s_recents_warning_open_settings">Άνοιγμα ρυθμίσεων</string>
+    <string name="recents_a11y_hint">Για να χρησιμοποιήσετε την οθόνη Άνοιγμα πρόσφατων εφαρμογών, ενεργοποιήστε την υπηρεσία προσβασιμότητας του εκκινητή Lawnchair. Πατήστε «Άνοιγμα ρυθμίσεων», επιλέξτε \"Lawchchair\" και ενεργοποιήστε την «Χρήση Lawnchair».\n\nΟ εκκινητής Lawnchair χρησιμοποιεί τη μέθοδο `performGlobalAction` της Προσβασιμότητας για την εκτέλεση αυτής της ενέργειας. Πρόκειται για ένα ευαίσθητο δικαίωμα που επιτρέπει την παρακολούθηση άλλων εφαρμογών. Ωστόσο, ο εκκινητής Lawnchair δεν έχει διαμορφωθεί για αυτήν τη λειτουργικότητα και δεν λαμβάνει συμβάντα.</string>
     <!--
 
     Bug reporting
@@ -487,6 +471,10 @@
     <string name="home_screen_unlock">Ξεκλείδωμα Αρχ. Οθ.</string>
     <string name="home_screen_locked">Η Αρχ. Οθ. είναι κλειδωμένη</string>
     <string name="home_screen_lock_description">Αποτροπή αλλαγών στη διάταξη της αρχικής οθόνης</string>
+    <string name="show_dot_pagination_label">Εμφάνιση διαχωριστικών κουκκίδων επιφανειών εργασίας</string>
+    <string name="show_dot_pagination_description">Χρήση κουκκίδων αντί γραμμών για εμφάνιση αριθμού σελίδας</string>
+    <string name="show_material_u_popup_label">Χρήση νέου αναδυόμενου στυλ</string>
+    <string name="show_material_u_popup_description">Χρήση του ελαφρώς ενοποιημένου αναδυόμενου στυλ, βασισμένο στον σχεδιασμό Material U</string>
     <string name="popup_menu">Αναδυόμενο μενού</string>
     <string name="popup_menu_items">Στοιχεία αναδυόμενου μενού</string>
     <string name="edit_menu_items">Επεξεργασία στοιχείων αναδυόμενου μενού</string>
@@ -593,7 +581,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Αναζήτηση ιστού και άλλα</string>
+    <string name="all_apps_device_search_hint">Search web and more</string>
     <string name="all_apps_search_bar_hint">Αναζήτηση εφαρμογών</string>
     <string name="all_apps_no_search_results">Δεν βρέθηκαν εφαρμογές που να ταιριάζουν “<xliff:g example="Android" id="query">%1$s</xliff:g>”</string>
     <string name="all_apps_search_result_suggestions">Από το διαδίκτυο</string>
@@ -693,4 +681,6 @@
     <string name="grant_requested_permissions">Εκχώρηση δικαιωμάτων</string>
     <string name="permissions_needed">Απαιτούνται δικαιώματα</string>
     <string name="grant_requested_permissions_tap">Πατήστε για εκχώρηση δικαιωμάτων</string>
+    <!-- Message shown when all home screen views are removed -->
+    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
 </resources>

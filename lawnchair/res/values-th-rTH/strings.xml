@@ -102,6 +102,8 @@
     <string name="caddy_beta">แคดดี้ (เบต้า)</string>
     <string name="caddy">แคดดี้</string>
     <string name="app_drawer_folder">App drawer folders</string>
+    <string name="selected_apps">Selected apps</string>
+    <string name="add_apps">Add apps</string>
     <string name="app_drawer_folder_settings">Drawer folder</string>
     <string name="add_folder">สร้างโฟลเดอร์</string>
     <string name="edit_folder">แก้ไขโฟลเดอร์</string>
@@ -130,6 +132,7 @@
     <string name="general_description">สี, ชุดไอคอน, จุดแจ้งเตือน</string>
     <string name="home_screen_label">หน้าโฮม</string>
     <string name="home_screen_description">ฟีด, กริด, ไอคอน</string>
+    <string name="home_screen_actions">Home screen actions</string>
     <string name="dock_label">แถบรายการโปรด</string>
     <string name="dock_description">แถบค้นหา, จำนวนไอคอน</string>
     <string name="app_drawer_label">รายการแอป</string>
@@ -147,10 +150,6 @@
     <string name="debug_restart_launcher">เริ่มต้น Lawnchair ใหม่</string>
     <string name="experimental_features_label">ฟีเจอร์ทดลอง</string>
     <!-- Experimental features -->
-    <string name="workspace_label">หน้าจอหลัก</string>
-    <string name="smartspace_label">ข้อมูลโดยย่อ</string>
-    <string name="internal_label">ภายใน</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">การปรับแต่งแบบอักษร</string>
     <string name="font_picker_description">ข้อความบางส่วนยังไม่ถูกเปลี่ยนแปลง</string>
     <string name="smartspace_calendar_label">ปรับแต่งปฎิบัติข้อมูลโดยย่อ</string>
@@ -159,16 +158,10 @@
     <string name="workspace_increase_max_grid_size_description">เพิ่มขนาดกริดหน้าจอสูงสุดจาก 10 x 10 เป็น 20 x 20</string>
     <string name="always_reload_icons_label">โหลดไอคอนใหม่เสมอ</string>
     <string name="always_reload_icons_description">หลีกเลี่ยงการแคชจากชุดไอคอน</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Icon swipe gestures</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">เปิดใช้งานดีไซน์ Material 3 Expressive ในหน้าแรก</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">เรนเจอร์แอนิเมชั่นของหน้าหลักโดยไม่ใช้รูท ไม่สามารถใช้ได้กับ AOSP ที่มีการเปลี่ยนแปลงมาก</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract อาจทำให้เกิดแอปแอนิเมชั่นที่ผิดปกติ</string>
     <string name="recents_lock_unlock">ล็อก/ปลดล็อก</string>
     <string name="recents_lock_unlock_description">ป้องกันไม่ให้แอปที่เลือกปิดตัวลงเมื่อกด \"ล้างทั้งหมด\"</string>
     <!--Overlay-->
@@ -211,6 +204,8 @@
     <string name="adaptive_icon_background_description">ใช้ความสว่าง 100% สำหรับสีขาว</string>
     <string name="reset_custom_icons">คืนค่าไอคอนที่กำหนดเอง</string>
     <string name="reset_custom_icons_confirmation">ไอคอนที่กำหนดเองทั้งหมดจะถูกคืนเป็นค่าเริ่มต้น, คุณต้องการดำเนินการต่อหรือไม่?</string>
+    <string name="remove_all_views_from_home_screen">Clear home screen</string>
+    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">ไอคอน</string>
     <string name="icon_picker_reset_to_default">กลับเป็นค่าเริ่มต้น</string>
@@ -232,9 +227,7 @@
     <string name="icon_shape_square">ทรงสี่เหลี่ยมจัตุรัส</string>
     <string name="icon_shape_squircle">ทรงจตุรัสมีขอบมนมาก</string>
     <string name="icon_shape_teardrop">ทรงหยดน้ำ</string>
-    <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -327,11 +320,8 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">เกรกอเรียน</string>
     <string name="smartspace_calendar_persian">เปอร์เซีย</string>
-    <string name="smartspace_calendar_chinese">จีน</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">กำลังชาร์จอย่างเร็ว</string>
-    <string name="smartspace_battery_slow_charging">กำลังชาร์จอย่างช้า</string>
     <string name="smartspace_battery_charging">กำลังชาร์จ</string>
     <string name="smartspace_battery_full">ชาร์จแล้ว</string>
     <string name="smartspace_battery_low">แบตเตอร์รี่ต่ำ</string>
@@ -391,8 +381,6 @@
     <string name="privacy_policy">นโยบายความเป็นส่วนตัว</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
-    <string name="major_update_label">Breaking change!</string>
-    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -425,7 +413,6 @@
     <string name="gesture_handler_sleep">นอน</string>
     <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">เปิดแผงการแจ้งเตือน</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">เปิดแอป</string>
     <string name="gesture_handler_open_app_config">เปิด %1$s</string>
     <string name="gesture_handler_open_app_drawer">เปิดรายการแอพ</string>
@@ -434,15 +421,12 @@
     <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">เลือกแอป</string>
     <string name="dt2s_admin_hint_title">จำเป็นต้องมีสิทธิ์ผู้ดูแลอุปกรณ์</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">หากต้องการแตะสองครั้งเพี่อปิดจอ ให้ตั้งค่า Lawnchair เป็นแอปผู้ดูแลอุปกรณ์ แตะเปิดการตั้งค่า จากนั้นแตะ “เปิดใช้งานแอปผู้ดูแลระบบอุปกรณ์นี้”</string>
+    <string name="dt2s_admin_warning">แตะสองครั้งเพื่อเข้าสู่โหมดสลีป หน้าจอจะถูกปิด</string>
     <string name="d2ts_recents_a11y_hint_title">เปิดบริการการช่วยการเข้าถึง</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">เปิดแผงการแจ้งเตือน</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_recents_warning_open_settings">เปิดการตั้งค่า</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -487,6 +471,10 @@
     <string name="home_screen_unlock">ปลดล็อคหน้าแรก</string>
     <string name="home_screen_locked">หน้าจอหลักถูกล็อคแล้ว</string>
     <string name="home_screen_lock_description">ป้องกันการเปลี่ยนแปลงของวัตถุบนหน้าจอหลัก</string>
+    <string name="show_dot_pagination_label">ใช้ตัวแบ่งหน้าแบบจุด</string>
+    <string name="show_dot_pagination_description">ใช้จุดแทนเส้นเพื่อแสดงหมายเลขหน้า</string>
+    <string name="show_material_u_popup_label">ใช้ลักษณะป็อปอัพแบบใหม่</string>
+    <string name="show_material_u_popup_description">ใช้ลักษณะป๊อปอัพที่เด้งรวมกับ Material You</string>
     <string name="popup_menu">เมนูป็อปอัพ</string>
     <string name="popup_menu_items">Pop-up menu items</string>
     <string name="edit_menu_items">Edit pop-up menu items</string>
@@ -592,7 +580,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">Search web and more</string>
     <string name="all_apps_search_bar_hint">ค้นหา</string>
     <string name="all_apps_no_search_results">ไม่เจอแอปที่ตรงกัน \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="all_apps_search_result_suggestions">จากเว็บไซต์</string>
@@ -692,4 +680,6 @@
     <string name="grant_requested_permissions">ให้สิทธิ์</string>
     <string name="permissions_needed">Permissions needed</string>
     <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <!-- Message shown when all home screen views are removed -->
+    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
 </resources>

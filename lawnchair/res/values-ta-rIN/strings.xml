@@ -102,6 +102,8 @@
     <string name="caddy_beta">Caddy (Beta)</string>
     <string name="caddy">Caddy</string>
     <string name="app_drawer_folder">App drawer folders</string>
+    <string name="selected_apps">Selected apps</string>
+    <string name="add_apps">Add apps</string>
     <string name="app_drawer_folder_settings">Drawer folder</string>
     <string name="add_folder">Create folder</string>
     <string name="edit_folder">Edit folder</string>
@@ -130,6 +132,7 @@
     <string name="general_description">நிறங்கள், சின்னச்சிப்பம், அறிவிப்புப் புள்ளிகள்</string>
     <string name="home_screen_label">முகப்புத் திரை</string>
     <string name="home_screen_description">ஊட்டம், கட்டம், சின்னங்கள்</string>
+    <string name="home_screen_actions">Home screen actions</string>
     <string name="dock_label">கூண்டு பெயர்கள்</string>
     <string name="dock_description">தேடல் பட்டி, சின்ன எண்ணிக்கை</string>
     <string name="app_drawer_label">செயலி இழுப்பறை</string>
@@ -147,10 +150,6 @@
     <string name="debug_restart_launcher">Lawnchairஐ மறுதுவக்கு</string>
     <string name="experimental_features_label">பரீட்சார்த்த அம்சங்கள்</string>
     <!-- Experimental features -->
-    <string name="workspace_label">Workspace</string>
-    <string name="smartspace_label">Smartspace</string>
-    <string name="internal_label">Internal</string>
-    <string name="internal_description">Internal may be more unstable than other experimental group</string>
     <string name="font_picker_label">எழுத்துரு தனிப்பயனாக்கம்</string>
     <string name="font_picker_description">சில உரைகள் மாறாமல் இருக்கும்</string>
     <string name="smartspace_calendar_label">கிளான்ஸ் காலண்டரை தனிப்பயனாக்குதல்</string>
@@ -159,16 +158,10 @@
     <string name="workspace_increase_max_grid_size_description">முகப்பு திரையின் அனுமதிக்கப்பட்ட கிரிட் அளவான 10x10-இல் இருந்து 20x20-ஆக உயர்த்து</string>
     <string name="always_reload_icons_label">எப்போதும் சின்னங்களை மீண்டும் ஏற்று</string>
     <string name="always_reload_icons_description">ஐகான் பேக்குகளிலிருந்து தற்காலிகச் சேமிப்பு ஐகான்களைப் பயன்படுத்துவதைத் தவிர்க்கவும்</string>
-    <string name="always_reload_icons_warning">Will cause icon to reload regularly, this is not required if icon pack doesn\'t update regularly</string>
     <string name="icon_swipe_gestures">Icon swipe gestures</string>
     <string name="icon_swipe_gestures_description">Perform actions when swiping left or right on icons instead of moving the home screen</string>
     <string name="show_deck_layout">Deck layout</string>
     <string name="show_deck_layout_description">Show a layout option to hide the app drawer and automatically add new apps to the home screen</string>
-    <string name="material_expressive_label">Material 3 Expressive</string>
-    <string name="material_expressive_description">Enable Material 3 Expressive changes in workspace</string>
-    <string name="gesturenavcontract_label">GestureNavContract API</string>
-    <string name="gesturenavcontract_description">Render launcher animations without root, does not work with heavily modified AOSP</string>
-    <string name="gesturenavcontract_warning_incompatibility">GestureNavContract may cause artifacting during animations</string>
     <string name="recents_lock_unlock">பூட்டு/திறத்தல்</string>
     <string name="recents_lock_unlock_description">\"அனைத்தையும் அழி\" என்பதை அழுத்தும்போது தேர்ந்தெடுக்கப்பட்ட பயன்பாட்டை மூடுவதைத் தடுக்கவும்</string>
     <!--Overlay-->
@@ -211,6 +204,8 @@
     <string name="adaptive_icon_background_description">வெள்ளைக்கு 100% பின்புல இலேசுத்தன்மை பயன்படுத்து</string>
     <string name="reset_custom_icons">தனிப்பயன் சின்னங்களை மீட்டமைக்கவும்</string>
     <string name="reset_custom_icons_confirmation">அனைத்து தனிப்பயன் சின்னங்களும் மீட்டமைக்கப்படும். தொடர வேண்டுமா?</string>
+    <string name="remove_all_views_from_home_screen">Clear home screen</string>
+    <string name="remove_all_views_from_home_screen_desc">Home screen will be cleared. Do you want to continue?</string>
     <!-- Icon picker -->
     <string name="icon_picker_default_category">சின்னங்கள்</string>
     <string name="icon_picker_reset_to_default">இயல்பிருப்பிற்கு அகரமாக்கு</string>
@@ -232,9 +227,7 @@
     <string name="icon_shape_square">சதுரம்</string>
     <string name="icon_shape_squircle">சதுரவட்டம்</string>
     <string name="icon_shape_teardrop">கண்ணீர் துளி</string>
-    <!-- Icon shapes (Material 3 Expressive) -->
-    <string name="icon_shape_very_sunny">Very sunny</string>
-    <string name="icon_shape_complex_clover">Complex clover</string>
+    <!-- Icon shape (Material 3 Expressive) -->
     <string name="icon_shape_four_sided_cookie">Four-sided cookie</string>
     <string name="icon_shape_seven_sided_cookie">Seven-sided cookie</string>
     <string name="icon_shape_arch">Arch</string>
@@ -327,11 +320,8 @@
     <!-- Date formats -->
     <string name="smartspace_calendar_gregorian">கிரிகோரியன்</string>
     <string name="smartspace_calendar_persian">பெர்சிய</string>
-    <string name="smartspace_calendar_chinese">Chinese</string>
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <!-- Battery labels -->
-    <string name="smartspace_battery_fast_charging">Fast charging</string>
-    <string name="smartspace_battery_slow_charging">Slow charging</string>
     <string name="smartspace_battery_charging">மின் ஏறுகிறது</string>
     <string name="smartspace_battery_full">மின் ஏறியது</string>
     <string name="smartspace_battery_low">பேட்டரி குறைவு</string>
@@ -391,8 +381,6 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="contributor_status_active">Active</string>
     <string name="update_check_failed">Failed to check for updates</string>
-    <string name="major_update_label">Breaking change!</string>
-    <string name="major_update_description">You are about to update from Lawnchair <xliff:g example="15" id="current_major_version">%1$s</xliff:g> to Lawnchair <xliff:g example="16" id="next_major_version">%2$s</xliff:g>, please consider carefully as newer major version may be unstable than current version.</string>
     <!--
 
     Backup and restore
@@ -425,7 +413,6 @@
     <string name="gesture_handler_sleep">தூங்கு</string>
     <string name="gesture_handler_recents">Open Recents screen</string>
     <string name="gesture_handler_open_notifications">அறிவிப்பு பேனலைத் திறக்கவும்</string>
-    <string name="gesture_handler_open_quick_settings">Open Quick Settings</string>
     <string name="gesture_handler_open_app_option">செயலியைத் திற</string>
     <string name="gesture_handler_open_app_config">%1$s திற</string>
     <string name="gesture_handler_open_app_drawer">ஆப் ட்ரையர் திற</string>
@@ -434,15 +421,12 @@
     <string name="gesture_handler_open_assistant">Open assistant</string>
     <string name="pick_app_for_gesture">செயலியைத் தேர்ந்தெடு</string>
     <string name="dt2s_admin_hint_title">நிர்வாக அனுமதி தேவை</string>
-    <string name="dt2s_admin_hint">To put the device to sleep, set Lawnchair as a device admin app. Tap \"Open settings\", then tap \"Activate this device admin app.\"</string>
-    <string name="dt2s_admin_warning">Gestures to put the device to sleep will be turned off.</string>
+    <string name="dt2s_admin_hint">அணைக்க இரட்டைத்தட்டலைப் பயன்படுத்த Lawnchairஐச் சாதன நிர்வாகிச் செயலியாக அமை. அமைப்பைத் திற என்பதைத் தட்டி, “இந்தச் சாதன நிர்வாகி ஆப்ஸைச் செயல்படுத்து” என்பதைத் தட்டுக</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="d2ts_recents_a11y_hint_title">அணுகல்தன்மை சேவையை இயக்கு</string>
-    <string name="sleep_a11y_hint">put the device to sleep</string>
-    <string name="notifications_fallback_a11y_hint">open the notification panel</string>
-    <string name="quick_settings_a11y_hint">open the Quick Settings panel</string>
-    <string name="recents_screen_a11y_hint">open the Recents screen</string>
-    <string name="generic_a11y_hint">To %1$s, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"</string>
-    <string name="generic_a11y_disclaimer">Lawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
+    <string name="dt2s_recents_warning_open_settings">அமைப்புகளைத் திற</string>
+    <string name="recents_a11y_hint">To use Open Recents screen, turn on the Lawnchair accessibility service. Tap \"Open settings\", select \"Lawnchair\" and turn on \"Use Lawnchair.\"\n\nLawnchair uses Accessibility\'s `performGlobalAction` method to perform this action. This is a sensitive permission that allows monitoring other apps. However, Lawnchair is not configured for that functionality and receives no events.</string>
     <!--
 
     Bug reporting
@@ -487,6 +471,10 @@
     <string name="home_screen_unlock">முகப்பு திரையைத் திறக்கவும்</string>
     <string name="home_screen_locked">முகப்புத் திரை பூட்டப்பட்டுள்ளது</string>
     <string name="home_screen_lock_description">முகப்புத் திரை தளவமைப்பில் மாற்றங்களைத் தடுக்கவும்</string>
+    <string name="show_dot_pagination_label">புள்ளி பக்கங்களைக் காட்டு</string>
+    <string name="show_dot_pagination_description">பக்க எண்ணைக் காட்ட கோடுகளுக்குப் பதிலாகப் புள்ளிகளைப் பயன்படுத்தவும்</string>
+    <string name="show_material_u_popup_label">புதிய பாப்அப் பாணியைப் பயன்படுத்து</string>
+    <string name="show_material_u_popup_description">மெட்டீரியல் யூ துள்ளல் மற்றும் சற்று ஒருங்கிணைக்கப்பட்ட பாப்-அப் பாணியைப் பயன்படுத்தவும்</string>
     <string name="popup_menu">பாப்அப் மெனு</string>
     <string name="popup_menu_items">Pop-up menu items</string>
     <string name="edit_menu_items">Edit pop-up menu items</string>
@@ -593,7 +581,7 @@
 
     -->
     <!-- Launcher strings used -->
-    <string name="all_apps_device_search_hint">Search apps, web, and more</string>
+    <string name="all_apps_device_search_hint">Search web and more</string>
     <string name="all_apps_search_bar_hint">செயலிகளை தேட</string>
     <string name="all_apps_no_search_results">\"<xliff:g example="Android" id="query">%1$s</xliff:g>\" உடன் பொருந்தக்கூடிய பயன்பாடுகள் எதுவும் இல்லை</string>
     <string name="all_apps_search_result_suggestions">இணையத்திலிருந்து</string>
@@ -693,4 +681,6 @@
     <string name="grant_requested_permissions">அனுமதிகளை வழங்கவும்</string>
     <string name="permissions_needed">Permissions needed</string>
     <string name="grant_requested_permissions_tap">Tap to grant permissions</string>
+    <!-- Message shown when all home screen views are removed -->
+    <string name="home_screen_all_views_removed_msg">Home screen cleared</string>
 </resources>
