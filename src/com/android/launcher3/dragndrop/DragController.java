@@ -44,7 +44,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.Optional;

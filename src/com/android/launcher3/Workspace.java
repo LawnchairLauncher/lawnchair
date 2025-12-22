@@ -142,7 +142,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+import app.lawnchair.preferences2.PreferenceExtensionsKt;
 import static app.lawnchair.util.LawnchairUtilsKt.toBitmap;
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
